@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">BEGIN NAMESPACE</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>BEGIN NAMESPACE</title>
   <keywords>
-    <keyword translate="true">BEGIN</keyword>
-    <keyword translate="true">END</keyword>
-    <keyword translate="true">NAMESPACE</keyword>
+    <keyword>BEGIN</keyword>
+    <keyword>END</keyword>
+    <keyword>NAMESPACE</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">BEGIN NAMESPACE</text></para>
+      <para styleclass="Heading1">BEGIN NAMESPACE</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The syntax rule for namespaces is:</text></para>
+    <para styleclass="Normal">The syntax rule for namespaces is:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">namespace</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">:</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">BEGIN NAMESPACE &lt;Namespace&gt; EOS</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">(</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities" styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">entity</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">)*</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">END NAMESPACE EOS</text><br/><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">namespace</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">:</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN NAMESPACE &lt;Namespace&gt; EOS</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities" style="font-weight:normal; font-style:normal; color:#000000;">entity</link><text style="font-weight:normal; font-style:normal; color:#000000;">)*</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; </text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">END NAMESPACE EOS</text><br/><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

@@ -1,31 +1,31 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0178</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0178</title>
   <keywords>
-    <keyword translate="true">XS0178</keyword>
+    <keyword>XS0178</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0178</text></para>
+      <para styleclass="Heading1">XS0178</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Invalid rank specifier: expected &apos;,&apos; or &apos;]&apos;</text></para>
+    <para styleclass="Normal">Invalid rank specifier: expected &apos;,&apos; or &apos;]&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">An array initialization was ill-formed. For example, when specifying the array dimensions, you can specify the following:</text></para>
+    <para styleclass="Normal">An array initialization was ill-formed. For example, when specifying the array dimensions, you can specify the following:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">A number in brackets</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Empty brackets</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">A comma enclosed in brackets</text></li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">A number in brackets</li>
+      <li styleclass="Normal" style="margin-left:13px;">Empty brackets</li>
+      <li styleclass="Normal" style="margin-left:13px;">A comma enclosed in brackets</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information, see Arrays and the X# specification (X# Language Specification) section on array initializers.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">For more information, see Arrays and the X# specification (X# Language Specification) section on array initializers.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0178.</text></para>
+    <para styleclass="Normal">The following sample generates XS0178.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0178.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0178.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

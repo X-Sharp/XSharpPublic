@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0446</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0446</title>
   <keywords>
-    <keyword translate="true">XS0446</keyword>
+    <keyword>XS0446</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0446</text></para>
+      <para styleclass="Heading1">XS0446</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Foreach cannot operate on a &apos;Method or Delegate&apos;. Did you intend to invoke the &apos;Method or Delegate&apos;?</text></para>
+    <para styleclass="Normal">Foreach cannot operate on a &apos;Method or Delegate&apos;. Did you intend to invoke the &apos;Method or Delegate&apos;?</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error is caused by specifying a method without parentheses or an anonymous method without parentheses in the part of the foreach statement where you would normally put a collection class. Note that it is valid, though unusual, to put a method call in that location, if the method returns a collection class.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">This error is caused by specifying a method without parentheses or an anonymous method without parentheses in the part of the foreach statement where you would normally put a collection class. Note that it is valid, though unusual, to put a method call in that location, if the method returns a collection class.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code will generate XS0446.</text></para>
+    <para styleclass="Normal">The following code will generate XS0446.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0446.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0446.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

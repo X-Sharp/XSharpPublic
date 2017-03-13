@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1640</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1640</title>
   <keywords>
-    <keyword translate="true">XS1640</keyword>
+    <keyword>XS1640</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1640</text></para>
+      <para styleclass="Heading1">XS1640</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">foreach statement cannot operate on variables of type &apos;type&apos; because it implements multiple instantiations of &apos;interface&apos;, try casting to a specific interface instantiation</text></para>
+    <para styleclass="Normal">foreach statement cannot operate on variables of type &apos;type&apos; because it implements multiple instantiations of &apos;interface&apos;, try casting to a specific interface instantiation</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The type inherits from two or more instances of IEnumerator&lt;T&gt;, which means there is not a unique enumeration of the type that foreach could use. Specify the type of IEnumerator&lt;T&gt; or use another looping construct.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">The type inherits from two or more instances of IEnumerator&lt;T&gt;, which means there is not a unique enumeration of the type that foreach could use. Specify the type of IEnumerator&lt;T&gt; or use another looping construct.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1640:</text></para>
+    <para styleclass="Normal">The following sample generates XS1640:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1640.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1640.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

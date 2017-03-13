@@ -1,28 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">X# (XSharp)</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>X# (XSharp)</title>
   <keywords>
-    <keyword translate="true">Click here for the version history</keyword>
+    <keyword>Click here for the version history</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# (XSharp)</text></para>
+      <para styleclass="Heading1">X# (XSharp)</para>
     </header>
-    <para styleclass="Heading1 Black" style="text-align:center;"><text styleclass="Heading1 Black" translate="true">Welcome to X# (XSharp) version </text><var styleclass="Heading1 Black">&lt;%VERSION%&gt;</var></para>
+    <para styleclass="Heading1 Black" style="text-align:center;">Welcome to X# (XSharp) version <var>&lt;%VERSION%&gt;</var></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.png" scale="57.54%" width="339" height="267" styleclass="Image Caption"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory" styleclass="Normal" translate="true">Click here for the version history</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues" styleclass="Normal" translate="true">Click here for the list of known issues</link></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">X# is an open source development language for .NET, based on the xBase language.</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory">Click here for the version history</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues">Click here for the list of known issues</link></para>
+    <para styleclass="Normal">X# is an open source development language for .NET, based on the xBase language.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">It comes in different flavors, such as Core, Visual Objects, Vulcan.NET, xBase++, Harbour, Foxpro and more.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The current version of X# supports the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Core</text><text styleclass="Normal" translate="true"> dialect as well as the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">VO </text><text styleclass="Normal" translate="true">and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Vulcan </text><text styleclass="Normal" translate="true">dialect</text></para>
+    <para styleclass="Normal">It comes in different flavors, such as Core, Visual Objects, Vulcan.NET, xBase++, Harbour, Foxpro and more.</para>
+    <para styleclass="Normal">The current version of X# supports the <text style="font-weight:bold;">Core</text> dialect as well as the <text style="font-weight:bold;">VO </text>and <text style="font-weight:bold;">Vulcan </text>dialect</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
-    <para style="margin-bottom:11px; line-height:1.05;"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This documentation is also still under development. Most sections in the documentation are incomplete. We have included it so you can see a list of the supported compiler options as well as the version history.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">More information will follow </text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.05; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Normal">This documentation is also still under development. Most sections in the documentation are incomplete. We have included it so you can see a list of the supported compiler options as well as the version history.</para>
+    <para styleclass="Normal">More information will follow </para>
   </body>
 </topic>

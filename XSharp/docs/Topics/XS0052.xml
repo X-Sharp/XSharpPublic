@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0052</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0052</title>
   <keywords>
-    <keyword translate="true">XS0052</keyword>
+    <keyword>XS0052</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0052</text></para>
+      <para styleclass="Heading1">XS0052</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Inconsistent accessibility: field type &apos;type&apos; is less accessible than field &apos;field&apos;</text></para>
+    <para styleclass="Normal">Inconsistent accessibility: field type &apos;type&apos; is less accessible than field &apos;field&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The type of a field cannot be less accessible than the field itself because all public constructs must return a publicly accessible object.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">The type of a field cannot be less accessible than the field itself because all public constructs must return a publicly accessible object.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0052:</text></para>
+    <para styleclass="Normal">The following sample generates XS0052:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0052.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0052.prg &#160;<br/></para>
   </body>
 </topic>

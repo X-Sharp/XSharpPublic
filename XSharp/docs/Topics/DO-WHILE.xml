@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">DO WHILE</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>DO WHILE</title>
   <keywords>
-    <keyword translate="true">DO</keyword>
-    <keyword translate="true">END</keyword>
-    <keyword translate="true">ENDDO</keyword>
-    <keyword translate="true">WHILE</keyword>
+    <keyword>DO</keyword>
+    <keyword>END</keyword>
+    <keyword>ENDDO</keyword>
+    <keyword>WHILE</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">DO WHILE</text></para>
+      <para styleclass="Heading1">DO WHILE</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">whilestmt &#160; : DO? WHILE expression </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;StmtBlk=</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">&#32;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160;</text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(END DO? | ENDDO) &#160; &#160;</text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">whilestmt &#160; : DO? WHILE expression </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;StmtBlk=</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(END DO? | ENDDO) &#160; &#160;</text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

@@ -1,37 +1,37 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0507</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0507</title>
   <keywords>
-    <keyword translate="true">XS0507</keyword>
+    <keyword>XS0507</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0507</text></para>
+      <para styleclass="Heading1">XS0507</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;function1&apos; : cannot change access modifiers when overriding &apos;access&apos; inherited member &apos;function2&apos;</text></para>
+    <para styleclass="Normal">&apos;function1&apos; : cannot change access modifiers when overriding &apos;access&apos; inherited member &apos;function2&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">An attempt was made to change the access specification in a method override.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">An attempt was made to change the access specification in a method override.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0507.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0507.prg &#160;</text><br/><text styleclass="Code with box" translate="true">&#32;</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">XS0507 can also occur if a class attempts to override a method marked as </text><text styleclass="Code Example" translate="true">protected internal</text><text styleclass="Normal" translate="true"> defined in referenced metadata. In this situation, the overriding method should be marked as </text><text styleclass="Code Example" translate="true">protected</text><text styleclass="Normal" translate="true">.</text></para>
+    <para styleclass="Normal">The following sample generates XS0507.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0507_b.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160;</text></para>
+    <para styleclass="Code with box">// XS0507.prg &#160;<br/>&#32;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0507.</text></para>
+    <para styleclass="Normal">XS0507 can also occur if a class attempts to override a method marked as <text styleclass="Code Example">protected internal</text> defined in referenced metadata. In this situation, the overriding method should be marked as <text styleclass="Code Example">protected</text>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0507_c.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:XS0507_b.dll &#160;</text><br/><text styleclass="Code with box" translate="true">public class cly : clx &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0507_b.prg &#160;<br/>// compile with: /target:library &#160;<br/> &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0507.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0507_c.prg &#160;<br/>// compile with: /reference:XS0507_b.dll &#160;<br/>public class cly : clx &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

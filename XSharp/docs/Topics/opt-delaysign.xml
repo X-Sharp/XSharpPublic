@@ -1,39 +1,39 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/delaysign</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/delaysign</title>
   <keywords>
-    <keyword translate="true">/delaysign</keyword>
+    <keyword>/delaysign</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/delaysign</text></para>
+      <para styleclass="Heading1">/delaysign</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option causes the compiler to reserve space in the output file so that a digital signature can be added later.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">This compiler option causes the compiler to reserve space in the output file so that a digital signature can be added later.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/delaysign[ + | - ] &#160;</text></para>
+    <para styleclass="Code with box">/delaysign[ + | - ] &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | -</text><tab /><text styleclass="List" translate="true">Use /delaysign- if you want a fully signed assembly. Use /delaysign+ if you only want to place the public key in the assembly. The default is /delaysign-.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab />Use /delaysign- if you want a fully signed assembly. Use /delaysign+ if you only want to place the public key in the assembly. The default is /delaysign-.</para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /delaysign option has no effect unless used with /keyfile or /keycontainer.</text></para>
+    <para styleclass="Normal">The /delaysign option has no effect unless used with /keyfile or /keycontainer.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you request a fully signed assembly, the compiler hashes the file that contains the manifest (assembly metadata) and signs that hash with the private key. The resulting digital signature is stored in the file that contains the manifest. When an assembly is delay signed, the compiler does not compute and store the signature, but reserves space in the file so the signature can be added later.</text></para>
+    <para styleclass="Normal">When you request a fully signed assembly, the compiler hashes the file that contains the manifest (assembly metadata) and signs that hash with the private key. The resulting digital signature is stored in the file that contains the manifest. When an assembly is delay signed, the compiler does not compute and store the signature, but reserves space in the file so the signature can be added later.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For example, using /delaysign+ allows a tester to put the assembly in the global cache. After testing, you can fully sign the assembly by placing the private key in the assembly using the Assembly Linker utility.</text></para>
+    <para styleclass="Normal">For example, using /delaysign+ allows a tester to put the assembly in the global cache. After testing, you can fully sign the assembly by placing the private key in the assembly using the Assembly Linker utility.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information, see Creating and Using Strong-Named Assemblies and Delay Signing an Assembly.</text></para>
+    <para styleclass="Normal">For more information, see Creating and Using Strong-Named Assemblies and Delay Signing an Assembly.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the Properties page for the project.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Modify the Delay sign only property.</text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the Properties page for the project.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Modify the Delay sign only property.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For information on how to set this compiler option programmatically, see DelaySign.</text></para>
+    <para styleclass="Normal">For information on how to set this compiler option programmatically, see DelaySign.</para>
   </body>
 </topic>

@@ -1,38 +1,38 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1674</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1674</title>
   <keywords>
-    <keyword translate="true">XS1674</keyword>
+    <keyword>XS1674</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1674</text></para>
+      <para styleclass="Heading1">XS1674</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;T&apos;: type used in a using statement must be implicitly convertible to &apos;System.IDisposable&apos;</text></para>
+    <para styleclass="Normal">&apos;T&apos;: type used in a using statement must be implicitly convertible to &apos;System.IDisposable&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The using Statement is intended to be used to ensure the disposal of an object at the end of the using block, thus, only types which are disposable may be used in such a statement. For example, value types are not disposable, and type parameters which are not constrained to be classes may not be assumed to be disposable.</text></para>
+    <para styleclass="Normal">The using Statement is intended to be used to ensure the disposal of an object at the end of the using block, thus, only types which are disposable may be used in such a statement. For example, value types are not disposable, and type parameters which are not constrained to be classes may not be assumed to be disposable.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1674.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674.prg &#160;</text><br/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1674.</text></para>
+    <para styleclass="Normal">The following sample generates XS1674.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674_b.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1674.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following case illustrates the need for a class type constraint to guarantee that an unknown type parameter is disposable. The following sample generates XS1674.</text></para>
+    <para styleclass="Normal">The following sample generates XS1674.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674_c.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1674_b.prg &#160;<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following case illustrates the need for a class type constraint to guarantee that an unknown type parameter is disposable. The following sample generates XS1674.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1674_c.prg &#160;<br/>// compile with: /target:library &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

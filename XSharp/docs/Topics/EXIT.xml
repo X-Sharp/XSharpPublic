@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">EXIT</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>EXIT</title>
   <keywords>
-    <keyword translate="true">EXIT</keyword>
+    <keyword>EXIT</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">EXIT</text></para>
+      <para styleclass="Heading1">EXIT</para>
     </header>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The Exit statement jumps out of the current DO WHILE, FOR NEXT, FOREACH NEXT or REPEAT UNTIL block</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">exitstmt &#160; : EXIT </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160;</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Body Text">The Exit statement jumps out of the current DO WHILE, FOR NEXT, FOREACH NEXT or REPEAT UNTIL block</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">exitstmt &#160; : EXIT </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

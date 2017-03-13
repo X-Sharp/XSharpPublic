@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">GLOBAL</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>GLOBAL</title>
   <keywords>
-    <keyword translate="true">GLOBAL</keyword>
-    <keyword translate="true">STATIC</keyword>
+    <keyword>GLOBAL</keyword>
+    <keyword>STATIC</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">GLOBAL</text></para>
+      <para styleclass="Heading1">GLOBAL</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">voglobal &#160; &#160; &#160; &#160; : (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Attributes" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">attributes</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">)? (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">funcprocModifiers</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">)? GLOBAL (CONST)? classVarList </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">voglobal &#160; &#160; &#160; &#160; : (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Attributes" style="font-weight:normal; font-style:normal; color:#000000;">attributes</link><text style="font-weight:normal; font-style:normal; color:#000000;">)? (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers" style="font-weight:normal; font-style:normal; color:#000000;">funcprocModifiers</link><text style="font-weight:normal; font-style:normal; color:#000000;">)? GLOBAL (CONST)? classVarList </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">classVarList &#160; &#160; &#160;: classvar (COMMA classvar)* (AS | IS) datatype)?</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text><br/></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">classvar &#160; &#160; &#160; &#160; : (DIM)? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">identifier</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> (LBRKT </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Array-Indices" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">arraysub</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> RBRKT)? (ASSIGN_OP expression)?</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text><br/></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">classVarList &#160; &#160; &#160;: classvar (COMMA classvar)* (AS | IS) datatype)?</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text><br/></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">classvar &#160; &#160; &#160; &#160; : (DIM)? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> (LBRKT </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Array-Indices" style="font-weight:normal; font-style:normal; color:#000000;">arraysub</link><text style="font-weight:normal; font-style:normal; color:#000000;"> RBRKT)? (ASSIGN_OP expression)?</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text><br/></para>
     <para styleclass="Code Example"><br/><br/><br/></para>
   </body>
 </topic>

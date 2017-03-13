@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/wx</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/wx</title>
   <keywords>
-    <keyword translate="true">/warnaserror</keyword>
-    <keyword translate="true">/wx</keyword>
+    <keyword>/warnaserror</keyword>
+    <keyword>/wx</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/wx</text></para>
+      <para styleclass="Heading1">/wx</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /wx compiler option is an alias for the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror" styleclass="Normal" translate="true">/warnaserror</link><text styleclass="Normal" translate="true"> compiler option for Vulcan compatibility</text></para>
+    <para styleclass="Normal">The /wx compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">/warnaserror</link> compiler option for Vulcan compatibility</para>
   </body>
 </topic>

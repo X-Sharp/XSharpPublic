@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/snk</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/snk</title>
   <keywords>
-    <keyword translate="true">/keyfile</keyword>
-    <keyword translate="true">/snk</keyword>
+    <keyword>/keyfile</keyword>
+    <keyword>/snk</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/snk</text></para>
+      <para styleclass="Heading1">/snk</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /snk compiler option is an alias for the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile" styleclass="Normal" translate="true">/keyfile </link><text styleclass="Normal" translate="true">option, for compatibility with Vulcan</text></para>
+    <para styleclass="Normal">The /snk compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">/keyfile </link>option, for compatibility with Vulcan</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

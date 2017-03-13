@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">BEGIN LOCK</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>BEGIN LOCK</title>
   <keywords>
-    <keyword translate="true">BEGIN</keyword>
-    <keyword translate="true">END</keyword>
-    <keyword translate="true">LOCK</keyword>
+    <keyword>BEGIN</keyword>
+    <keyword>END</keyword>
+    <keyword>LOCK</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">BEGIN LOCK</text></para>
+      <para styleclass="Heading1">BEGIN LOCK</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">BEGIN LOCK expression </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">END LOCK? </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN LOCK expression </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END LOCK? </text></para>
   </body>
 </topic>

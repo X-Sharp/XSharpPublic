@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/errorendlocation</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/errorendlocation</title>
   <keywords>
-    <keyword translate="true">/errorendlocation</keyword>
+    <keyword>/errorendlocation</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/errorendlocation</text></para>
+      <para styleclass="Heading1">/errorendlocation</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /errorendlocation tells the compiler to Output the line and column of the end location of &#160;each error in addition to the start location of the error/</text></para>
+    <para styleclass="Normal">The /errorendlocation tells the compiler to Output the line and column of the end location of &#160;each error in addition to the start location of the error/</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/errorendlocation</text></para>
+    <para styleclass="Code with box">/errorendlocation</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option is unavailable in Visual Studio and cannot be changed programmatically. It is enabled by default when compiling inside Visual Studio.</text></para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically. It is enabled by default when compiling inside Visual Studio.</para>
   </body>
 </topic>

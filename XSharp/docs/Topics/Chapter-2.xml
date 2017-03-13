@@ -1,52 +1,52 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">X# Language Reference</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>X# Language Reference</title>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# Language Reference</text></para>
+      <para styleclass="Heading1">X# Language Reference</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This section is a reference to the X# language</text></para>
+    <para styleclass="Normal">This section is a reference to the X# language</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">X# Language elements</text></para>
+    <para styleclass="Heading2">X# Language elements</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following table shows reference topics that provide tables of keywords, symbols and literals used as tokens in X#.</text></para>
+    <para styleclass="Normal">The following table shows reference topics that provide tables of keywords, symbols and literals used as tokens in X#.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Title</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Title</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Description</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Keywords" styleclass="Normal" translate="true">Keyword Reference (X#)</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Keywords">Keyword Reference (X#)</link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Contains links to information about all X# language keywords.</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators" styleclass="Normal" translate="true">Symbol and Operator Reference (X#)</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Contains a table of symbols and operators that are used in the X# language.</text></para>
+          <para styleclass="Normal">Contains links to information about all X# language keywords.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals" styleclass="Normal" translate="true">Literals (X#)</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Symbols-And-Operators">Symbol and Operator Reference (X#)</link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Describes the syntax for literal values in X# and how to specify type information for X# literals.</text></para>
+          <para styleclass="Normal">Contains a table of symbols and operators that are used in the X# language.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals (X#)</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Describes the syntax for literal values in X# and how to specify type information for X# literals.</para>
         </td>
       </tr>
     </table></para>
-    <para style="margin-top:7px; margin-bottom:7px;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:7px; margin-right:0px; margin-bottom:7px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

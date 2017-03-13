@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">DO CASE</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>DO CASE</title>
   <keywords>
-    <keyword translate="true">CASE</keyword>
-    <keyword translate="true">DO CASE</keyword>
-    <keyword translate="true">END</keyword>
-    <keyword translate="true">OTHERWISE</keyword>
+    <keyword>CASE</keyword>
+    <keyword>DO CASE</keyword>
+    <keyword>END</keyword>
+    <keyword>OTHERWISE</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">DO CASE</text></para>
+      <para styleclass="Heading1">DO CASE</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">casestmt &#160; &#160; &#160;: DO CASE </text><br/><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160;(CASE expression </text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> )*</text></para>
-    <para styleclass="Code Example"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;(OTHERWISE </text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock)</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> ?</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(END CASE? | ENDCASE) </text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">;</text><br/><br/></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">casestmt &#160; &#160; &#160;: DO CASE </text><br/><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;(CASE expression </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><text style="font-weight:normal; font-style:normal; color:#000000;"> )*</text></para>
+    <para styleclass="Code Example"><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;(OTHERWISE </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock)</link><text style="font-weight:normal; font-style:normal; color:#000000;"> ?</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(END CASE? | ENDCASE) </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text><br/><br/></para>
   </body>
 </topic>

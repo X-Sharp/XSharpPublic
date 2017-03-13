@@ -1,334 +1,334 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">Compiler Macros</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Compiler Macros</title>
   <keywords>
-    <keyword translate="true">__ARRAYBASE__</keyword>
-    <keyword translate="true">__CLR2__</keyword>
-    <keyword translate="true">__CLR4__</keyword>
-    <keyword translate="true">__CLRVERSION__</keyword>
-    <keyword translate="true">__DATE__</keyword>
-    <keyword translate="true">__DATETIME__</keyword>
-    <keyword translate="true">__DEBUG__</keyword>
-    <keyword translate="true">__ENTITY__</keyword>
-    <keyword translate="true">__FILE__</keyword>
-    <keyword translate="true">__LINE__</keyword>
-    <keyword translate="true">__MODULE__</keyword>
-    <keyword translate="true">__SIG__</keyword>
-    <keyword translate="true">__SRCLOC__</keyword>
-    <keyword translate="true">__SYSDIR__</keyword>
-    <keyword translate="true">__TIME__</keyword>
-    <keyword translate="true">__UTCTIME__</keyword>
-    <keyword translate="true">__VERSION__</keyword>
-    <keyword translate="true">__VO1__</keyword>
-    <keyword translate="true">__VO10__</keyword>
-    <keyword translate="true">__VO11__</keyword>
-    <keyword translate="true">__VO12__</keyword>
-    <keyword translate="true">__VO13__</keyword>
-    <keyword translate="true">__VO14__</keyword>
-    <keyword translate="true">__VO15__</keyword>
-    <keyword translate="true">__VO2__</keyword>
-    <keyword translate="true">__VO3__</keyword>
-    <keyword translate="true">__VO4__</keyword>
-    <keyword translate="true">__VO5__</keyword>
-    <keyword translate="true">__VO6__</keyword>
-    <keyword translate="true">__VO7__</keyword>
-    <keyword translate="true">__VO8__</keyword>
-    <keyword translate="true">__VO9__</keyword>
-    <keyword translate="true">__WINDIR__</keyword>
-    <keyword translate="true">__WINDRIVE__</keyword>
-    <keyword translate="true">__XSHARP__</keyword>
+    <keyword>__ARRAYBASE__</keyword>
+    <keyword>__CLR2__</keyword>
+    <keyword>__CLR4__</keyword>
+    <keyword>__CLRVERSION__</keyword>
+    <keyword>__DATE__</keyword>
+    <keyword>__DATETIME__</keyword>
+    <keyword>__DEBUG__</keyword>
+    <keyword>__ENTITY__</keyword>
+    <keyword>__FILE__</keyword>
+    <keyword>__LINE__</keyword>
+    <keyword>__MODULE__</keyword>
+    <keyword>__SIG__</keyword>
+    <keyword>__SRCLOC__</keyword>
+    <keyword>__SYSDIR__</keyword>
+    <keyword>__TIME__</keyword>
+    <keyword>__UTCTIME__</keyword>
+    <keyword>__VERSION__</keyword>
+    <keyword>__VO1__</keyword>
+    <keyword>__VO10__</keyword>
+    <keyword>__VO11__</keyword>
+    <keyword>__VO12__</keyword>
+    <keyword>__VO13__</keyword>
+    <keyword>__VO14__</keyword>
+    <keyword>__VO15__</keyword>
+    <keyword>__VO2__</keyword>
+    <keyword>__VO3__</keyword>
+    <keyword>__VO4__</keyword>
+    <keyword>__VO5__</keyword>
+    <keyword>__VO6__</keyword>
+    <keyword>__VO7__</keyword>
+    <keyword>__VO8__</keyword>
+    <keyword>__VO9__</keyword>
+    <keyword>__WINDIR__</keyword>
+    <keyword>__WINDRIVE__</keyword>
+    <keyword>__XSHARP__</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Compiler Macros</text></para>
+      <para styleclass="Heading1">Compiler Macros</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following defines can be used in your code and will be replaced by the compiler with a literal value:</text></para>
+    <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="26" colcount="3">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Name</text></para>
+          <para styleclass="Normal">Name</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Type</text></para>
+          <para styleclass="Normal">Type</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Value</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__ARRAYBASE__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Integer</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">0 or 1 depending on the /ax compiler option</text></para>
+          <para styleclass="Normal">Value</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__CLR2__</text></para>
+          <para styleclass="Normal">__ARRAYBASE__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">Integer</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__CLR2__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__CLR4__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__CLR4__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</text></para>
+          <para styleclass="Normal">0 or 1 depending on the /ax compiler option</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__CLRVERSION__</text></para>
+          <para styleclass="Normal">__CLR2__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__CLR2____CLRVERSION__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__DATE__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Current date in YYYYMMDD format</text></para>
+          <para styleclass="Normal">__CLR2__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__DATETIME__</text></para>
+          <para styleclass="Normal">__CLR4__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Current date/time in format from regional settings</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__DIALECT__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Name of the current dialect</text></para>
+          <para styleclass="Normal">__CLR4__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__DIALECT_CORE__</text></para>
+          <para styleclass="Normal">__CLRVERSION__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logical</text></para>
+          <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Defined with TRUE when Core dialect is selected</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__DIALECT_VO__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logical</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Defined with TRUE when VO dialect is selected</text></para>
+          <para styleclass="Normal">__CLR2____CLRVERSION__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__DIALECT_VULCAN__</text></para>
+          <para styleclass="Normal">__DATE__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logical</text></para>
+          <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Defined with TRUE when Vulcan dialect is selected</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__DEBUG__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logical Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">TRUE when compiling in debug mode. Undefined in Release mode</text></para>
+          <para styleclass="Normal">Current date in YYYYMMDD format</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__ENTITY__</text></para>
+          <para styleclass="Normal">__DATETIME__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Name of current entity</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__FILE__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Current source file name</text></para>
+          <para styleclass="Normal">Current date/time in format from regional settings</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__LINE__</text></para>
+          <para styleclass="Normal">__DIALECT__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">String</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Current source line number</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__MODULE__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Current source file name</text></para>
+          <para styleclass="Normal">Name of the current dialect</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__SIG__</text></para>
+          <para styleclass="Normal">__DIALECT_CORE__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Signature of current entity</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__SRCLOC__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Filename and line number in the source</text></para>
+          <para styleclass="Normal">Defined with TRUE when Core dialect is selected</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__SYSDIR__</text></para>
+          <para styleclass="Normal">__DIALECT_VO__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Systemdir (on developers machine!)</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__TIME__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Compile time in HH:mm:ss format</text></para>
+          <para styleclass="Normal">Defined with TRUE when VO dialect is selected</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__UTCTIME__</text></para>
+          <para styleclass="Normal">__DIALECT_VULCAN__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">UTC Compile time in HH:mm:ss format</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__VERSION__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Version of the compiler</text></para>
+          <para styleclass="Normal">Defined with TRUE when Vulcan dialect is selected</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__VO1__ , __VO2__ ... __VO15__</text></para>
+          <para styleclass="Normal">__DEBUG__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logical</text></para>
+          <para styleclass="Normal">Logical Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Current value of the matching VO compatibility compiler option</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__WINDIR__</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows dir (on developers machine!)</text></para>
+          <para styleclass="Normal">TRUE when compiling in debug mode. Undefined in Release mode</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__WINDRIVE__</text></para>
+          <para styleclass="Normal">__ENTITY__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">String Literal</text></para>
+          <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows drive (on developers machine!)</text></para>
+          <para styleclass="Normal">Name of current entity</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">__XSHARP__</text></para>
+          <para styleclass="Normal">__FILE__</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logical Literal</text></para>
+          <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Always TRUE</text></para>
+          <para styleclass="Normal">Current source file name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__LINE__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Current source line number</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__MODULE__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Current source file name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__SIG__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Signature of current entity</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__SRCLOC__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Filename and line number in the source</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__SYSDIR__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Systemdir (on developers machine!)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__TIME__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Compile time in HH:mm:ss format</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__UTCTIME__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">UTC Compile time in HH:mm:ss format</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__VERSION__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Version of the compiler</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__VO1__ , __VO2__ ... __VO15__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Current value of the matching VO compatibility compiler option</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__WINDIR__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows dir (on developers machine!)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__WINDRIVE__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows drive (on developers machine!)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__XSHARP__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Always TRUE</para>
         </td>
       </tr>
     </table></para>

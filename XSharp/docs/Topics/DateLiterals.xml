@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">Date Literals</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Date Literals</title>
   <keywords>
-    <keyword translate="true">Date</keyword>
+    <keyword>Date</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Date Literals</text></para>
+      <para styleclass="Heading1">Date Literals</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Date literals are formatted </text></para>
+    <para styleclass="Normal">Date literals are formatted </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">YYYY.MM.DD</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">YYYY.MM.DD</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Examples:</text></para>
+    <para styleclass="Body Text">Examples:</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; 2000.01.01</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; 2012.02.29</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; 2015.09.25</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2000.01.01</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2012.02.29</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2015.09.25</text></para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

@@ -1,24 +1,24 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0417</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0417</title>
   <keywords>
-    <keyword translate="true">XS0417</keyword>
+    <keyword>XS0417</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0417</text></para>
+      <para styleclass="Heading1">XS0417</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;identifier&apos;: cannot provide arguments when creating an instance of a variable type</text></para>
+    <para styleclass="Normal">&apos;identifier&apos;: cannot provide arguments when creating an instance of a variable type</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error occurs if a call to the new operator on a type parameter has arguments. The only constructor that can be called by using the new operator on an unknown parameter type is a constructor that has no arguments. If you need to call another constructor, consider using a class type constraint or interface constraint.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">This error occurs if a call to the new operator on a type parameter has arguments. The only constructor that can be called by using the new operator on an unknown parameter type is a constructor that has no arguments. If you need to call another constructor, consider using a class type constraint or interface constraint.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0417:</text></para>
+    <para styleclass="Normal">The following example generates XS0417:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0417 &#160;</text><br/><text styleclass="Code with box" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
+    <para styleclass="Code with box">// XS0417 &#160;<br/>&#32;</para>
+    <para styleclass="Normal"> &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

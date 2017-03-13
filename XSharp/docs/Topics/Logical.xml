@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">Logical</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Logical</title>
   <keywords>
-    <keyword translate="true">!</keyword>
-    <keyword translate="true">&amp;&amp;</keyword>
-    <keyword translate="true">.AND.</keyword>
-    <keyword translate="true">.NOT.</keyword>
-    <keyword translate="true">.OR.</keyword>
-    <keyword translate="true">.XOR.</keyword>
-    <keyword translate="true">||</keyword>
+    <keyword>!</keyword>
+    <keyword>&amp;&amp;</keyword>
+    <keyword>.AND.</keyword>
+    <keyword>.NOT.</keyword>
+    <keyword>.OR.</keyword>
+    <keyword>.XOR.</keyword>
+    <keyword>||</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Logical</text></para>
+      <para styleclass="Heading1">Logical</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal">Enter topic text here.</para>
   </body>
 </topic>

@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0260</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0260</title>
   <keywords>
-    <keyword translate="true">XS0260</keyword>
+    <keyword>XS0260</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0260</text></para>
+      <para styleclass="Heading1">XS0260</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Missing partial modifier on declaration of type &apos;type&apos;; another partial declaration of this type exists</text></para>
+    <para styleclass="Normal">Missing partial modifier on declaration of type &apos;type&apos;; another partial declaration of this type exists</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error indicates that you have declared multiple classes that have the same name. In addition, at least one but not all of the declarations contains the partial modifier. If you want to define a class in several parts, you must declare each part by using the keyword partial.</text></para>
+    <para styleclass="Normal">This error indicates that you have declared multiple classes that have the same name. In addition, at least one but not all of the declarations contains the partial modifier. If you want to define a class in several parts, you must declare each part by using the keyword partial.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error also occurs if you declare a class and accidentally give it the same name as a partial class that&apos;s declared elsewhere in the same namespace.</text></para>
+    <para styleclass="Normal">This error also occurs if you declare a class and accidentally give it the same name as a partial class that&apos;s declared elsewhere in the same namespace.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0260:</text></para>
+    <para styleclass="Normal">The following sample generates XS0260:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0260.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// You must mark both parts of the definition of class C &#160; </text><br/></para>
+    <para styleclass="Code with box">// XS0260.prg &#160;<br/>// You must mark both parts of the definition of class C &#160; <br/></para>
   </body>
 </topic>

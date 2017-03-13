@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1061</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1061</title>
   <keywords>
-    <keyword translate="true">XS1061</keyword>
+    <keyword>XS1061</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1061</text></para>
+      <para styleclass="Heading1">XS1061</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;type&apos; does not contain a definition for &apos;member&apos; and no extension method &apos;name&apos; accepting a first argument of type &apos;type&apos; could be found (are you missing a using directive or an assembly reference?).</text></para>
+    <para styleclass="Normal">&apos;type&apos; does not contain a definition for &apos;member&apos; and no extension method &apos;name&apos; accepting a first argument of type &apos;type&apos; could be found (are you missing a using directive or an assembly reference?).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error occurs when you try to call a method or access a class member that does not exist.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">This error occurs when you try to call a method or access a class member that does not exist.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS1061 because TestClass1 does not have a DisplaySomething method. It does have a method that is called WriteSomething. Perhaps that is what the author of this source code meant to write.</text></para>
+    <para styleclass="Normal">The following example generates XS1061 because TestClass1 does not have a DisplaySomething method. It does have a method that is called WriteSomething. Perhaps that is what the author of this source code meant to write.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1061.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1061.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

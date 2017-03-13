@@ -1,39 +1,39 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/az</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/az</title>
   <keywords>
-    <keyword translate="true">/az</keyword>
+    <keyword>/az</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/az</text></para>
+      <para styleclass="Heading1">/az</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /az option specifies that array elements begin with 0, rather than with 1 (the default).</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /az option specifies that array elements begin with 0, rather than with 1 (the default).</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/az[+|-]</text></para>
+    <para styleclass="Code with box">/az[+|-]</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /az, directs the compiler to use 0-based array indexing rather than 1-based indexing. </text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option is off by default, since it would break existing Visual Objects source code. If you prefer to use 0-based arrays with existing code written for Visual Objects, you will need to examine every place in your source code that uses arrays and manually make the appropriate adjustments.</text></para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just /az, directs the compiler to use 0-based array indexing rather than 1-based indexing. </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">This option is off by default, since it would break existing Visual Objects source code. If you prefer to use 0-based arrays with existing code written for Visual Objects, you will need to examine every place in your source code that uses arrays and manually make the appropriate adjustments.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: This option does not affect how the assembly being compiled is used from other applications. When the /az option is not used, the compiler generates code to subtract 1 from the array index in order to provide 1-based array indexing semantics at the language level. When the /az option is used, the compiler does not adjust array indexes. Either way, the resulting arrays are always 0-based at the IL level, which allows compatibility with all other .NET languages. </text></para>
+    <para styleclass="Normal">Note: This option does not affect how the assembly being compiled is used from other applications. When the /az option is not used, the compiler generates code to subtract 1 from the array index in order to provide 1-based array indexing semantics at the language level. When the /az option is used, the compiler does not adjust array indexes. Either way, the resulting arrays are always 0-based at the IL level, which allows compatibility with all other .NET languages. </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the General section, modify the &quot;Use Zero Based Arrays&quot; property. </text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the General section, modify the &quot;Use Zero Based Arrays&quot; property. </li>
     </list>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">FUNCTION Start() AS VOID</text><br/><text styleclass="Code with box" translate="true"> &#160;</text><tab /><text styleclass="Code with box" translate="true">LOCAL DIM a[1] AS INT</text><br/><text styleclass="Code with box" translate="true"> &#160;</text><tab /><text styleclass="Code with box" translate="true">? a[0] // runtime error when /az switch is NOT used</text><br/><text styleclass="Code with box" translate="true"> &#160;</text><tab /><text styleclass="Code with box" translate="true">? a[1] // runtime error when /az switch is used </text><br/><tab /><text styleclass="Code with box" translate="true">RETURN </text></para>
+    <para styleclass="Code with box">FUNCTION Start() AS VOID<br/> &#160;<tab />LOCAL DIM a[1] AS INT<br/> &#160;<tab />? a[0] // runtime error when /az switch is NOT used<br/> &#160;<tab />? a[1] // runtime error when /az switch is used <br/><tab />RETURN </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"></para>

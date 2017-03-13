@@ -1,32 +1,32 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/nostdlib</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/nostdlib</title>
   <keywords>
-    <keyword translate="true">/nostdlib</keyword>
+    <keyword>/nostdlib</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/nostdlib</text></para>
+      <para styleclass="Heading1">/nostdlib</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">/nostdlib prevents the import of mscorlib.dll, which defines the entire System namespace.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">/nostdlib prevents the import of mscorlib.dll, which defines the entire System namespace.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/nostdlib[+ | -] &#160;</text></para>
+    <para styleclass="Code with box">/nostdlib[+ | -] &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Use this option if you want to define or create your own System namespace and objects.</text></para>
+    <para styleclass="Normal">Use this option if you want to define or create your own System namespace and objects.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you do not specify /nostdlib, mscorlib.dll will be imported into your program (same as specifying /nostdlib-). Specifying /nostdlib is the same as specifying /nostdlib+.</text></para>
+    <para styleclass="Normal">If you do not specify /nostdlib, mscorlib.dll will be imported into your program (same as specifying /nostdlib-). Specifying /nostdlib is the same as specifying /nostdlib+.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the Properties page for the project.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Build properties page.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Add the option in the &quot;User-Defined Command Line options&quot; property</text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the Properties page for the project.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Build properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Add the option in the &quot;User-Defined Command Line options&quot; property</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
   </body>

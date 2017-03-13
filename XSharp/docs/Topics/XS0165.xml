@@ -1,32 +1,32 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0165</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0165</title>
   <keywords>
-    <keyword translate="true">XS0165</keyword>
+    <keyword>XS0165</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0165</text></para>
+      <para styleclass="Heading1">XS0165</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Use of unassigned local variable &apos;name&apos;</text></para>
+    <para styleclass="Normal">Use of unassigned local variable &apos;name&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The X# compiler does not allow the use of uninitialized variables. If the compiler detects the use of a variable that might not have been initialized, it generates compiler error XS0165. For more information, see Fields. Note that this error is generated when the compiler encounters a construct that might result in the use of an unassigned variable, even if your particular code does not. This avoids the necessity of overly-complex rules for definite assignment.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">The X# compiler does not allow the use of uninitialized variables. If the compiler detects the use of a variable that might not have been initialized, it generates compiler error XS0165. For more information, see Fields. Note that this error is generated when the compiler encounters a construct that might result in the use of an unassigned variable, even if your particular code does not. This avoids the necessity of overly-complex rules for definite assignment.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0165:</text></para>
+    <para styleclass="Normal">The following sample generates XS0165:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0165.prg &#160;</text><br/></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
+    <para styleclass="Code with box">// XS0165.prg &#160;<br/></para>
+    <para styleclass="Normal"> &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compiler error XS0165 can occur in recursive delegate definitions. You can avoid the error by defining the delegate in two statements so that the variable is not used before it is initialized. The following example demonstrates the error and the resolution.</text></para>
+    <para styleclass="Normal">Compiler error XS0165 can occur in recursive delegate definitions. You can avoid the error by defining the delegate in two statements so that the variable is not used before it is initialized. The following example demonstrates the error and the resolution.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
+    <para styleclass="Normal"> &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

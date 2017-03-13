@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS9012</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS9012</title>
   <keywords>
-    <keyword translate="true">XS9012</keyword>
+    <keyword>XS9012</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS9012</text></para>
+      <para styleclass="Heading1">XS9012</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Duplicate define with different value detected &apos;{0}&apos;, {1} &lt;=&gt; {2}</text></para>
+    <para styleclass="Normal">Duplicate define with different value detected &apos;{0}&apos;, {1} &lt;=&gt; {2}</para>
   </body>
 </topic>

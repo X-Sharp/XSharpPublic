@@ -1,31 +1,31 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1936</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1936</title>
   <keywords>
-    <keyword translate="true">XS1936</keyword>
+    <keyword>XS1936</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1936</text></para>
+      <para styleclass="Heading1">XS1936</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Could not find an implementation of the query pattern for source type &apos;type&apos;. &apos;method&apos; not found.</text></para>
+    <para styleclass="Normal">Could not find an implementation of the query pattern for source type &apos;type&apos;. &apos;method&apos; not found.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In order to query a source type, that type must implement the standard query operator methods that you are invoking in the query. The implementation can be either in the form of class members or extension methods that are brought into scope with the appropriate using directive.</text></para>
+    <para styleclass="Normal">In order to query a source type, that type must implement the standard query operator methods that you are invoking in the query. The implementation can be either in the form of class members or extension methods that are brought into scope with the appropriate using directive.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
+    <para styleclass="Heading3">To correct this error</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Make sure that you are querying a collection of objects, not an individual object.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Make sure that you have specified the necessary using directives.</text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Make sure that you are querying a collection of objects, not an individual object.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Make sure that you have specified the necessary using directives.</li>
     </list>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example produces XS1936:</text></para>
+    <para styleclass="Normal">The following example produces XS1936:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1936.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1936.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error typically occurs when you accidentally try to query an object of some type instead of a collection of those objects.</text></para>
+    <para styleclass="Normal">This error typically occurs when you accidentally try to query an object of some type instead of a collection of those objects.</para>
   </body>
 </topic>

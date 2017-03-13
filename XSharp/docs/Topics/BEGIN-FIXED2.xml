@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">BEGIN FIXED</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>BEGIN FIXED</title>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">BEGIN FIXED</text></para>
+      <para styleclass="Heading1">BEGIN FIXED</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">BEGIN FIXED </text><link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">variableDeclaration</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160;</text><br/><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">END FIXED? </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN FIXED </text><link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL" style="font-weight:normal; font-style:normal; color:#000000;">variableDeclaration</link><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><br/><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END FIXED? </text></para>
   </body>
 </topic>

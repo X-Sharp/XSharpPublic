@@ -1,58 +1,41 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">Bound Expressions</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Bound Expressions</title>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Bound Expressions</text></para>
+      <para styleclass="Heading1">Bound Expressions</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Bound expressions are expressions that access properties or members from objects or structures</text></para>
+    <para styleclass="Normal">Bound expressions are expressions that access properties or members from objects or structures</para>
     <para styleclass="Heading2"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><table styleclass="Default" rowcount="7" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Expression type</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Expression type</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Syntax</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Syntax</text></para>
         </td>
         <td style="vertical-align:middle; width:60px;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" style="font-weight:bold;" translate="true">VO</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO</text></para>
         </td>
         <td style="vertical-align:middle; width:60px;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" style="font-weight:bold;" translate="true">VN</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VN</text></para>
         </td>
         <td style="vertical-align:middle; width:60px;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" style="font-weight:bold;" translate="true">X#</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">X#</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Bound Member Access</text></para>
+          <para styleclass="Normal">Bound Member Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">boundexpression (DOT|COLON) simpleName</text></para>
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">boundexpression (DOT|COLON) simpleName</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Bound Method Call</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">boundexpression LPAREN argumentlist? RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
+          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -63,13 +46,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Bound Array Access</text></para>
+          <para styleclass="Normal">Bound Method Call</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">boundexpression LBRKT argumentlist RBRKT</text></para>
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">boundexpression LPAREN argumentlist? RPAREN</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
+          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -80,44 +63,61 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Bound Conditional Access </text></para>
+          <para styleclass="Normal">Bound Array Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">expression QMARK boundexpression</text></para>
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">boundexpression LBRKT argumentlist RBRKT</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Bind Member Access</text></para>
+          <para styleclass="Normal">Bound Conditional Access </para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(DOT|COLON) simpleName</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression QMARK boundexpression</text></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Bind Array Access</text></para>
+          <para styleclass="Normal">Bind Member Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">LBRKT argumentlist RBRKT</text></para>
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">(DOT|COLON) simpleName</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Bind Array Access</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">LBRKT argumentlist RBRKT</text></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -126,7 +126,7 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
+          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
       </tr>
     </table></para>

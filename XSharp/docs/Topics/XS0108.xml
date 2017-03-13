@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0108</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0108</title>
   <keywords>
-    <keyword translate="true">XS0108</keyword>
+    <keyword>XS0108</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0108</text></para>
+      <para styleclass="Heading1">XS0108</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;member1&apos; hides inherited member &apos;member2&apos;. Use the new keyword if hiding was intended.</text></para>
+    <para styleclass="Normal">&apos;member1&apos; hides inherited member &apos;member2&apos;. Use the new keyword if hiding was intended.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">A variable was declared with the same name as a variable in a base class. However, the new keyword was not used. This warning informs you that you should use new; the variable is declared as if new had been used in the declaration.</text></para>
+    <para styleclass="Normal">A variable was declared with the same name as a variable in a base class. However, the new keyword was not used. This warning informs you that you should use new; the variable is declared as if new had been used in the declaration.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0108:</text></para>
+    <para styleclass="Normal">The following sample generates XS0108:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0108.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /W:2 &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0108.prg &#160;<br/>// compile with: /W:2 &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

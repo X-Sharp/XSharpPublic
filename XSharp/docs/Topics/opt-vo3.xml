@@ -1,48 +1,48 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/vo3</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/vo3</title>
   <keywords>
-    <keyword translate="true">/vo3</keyword>
+    <keyword>/vo3</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo3</text><tab /><tab /><text styleclass="Heading1" translate="true">All instance methods virtual </text></para>
+      <para styleclass="Heading1">/vo3<tab /><tab />All instance methods virtual </para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo3 option directs the compiler to treat all methods (including ACCESS and ASSIGN methods) as virtual.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /vo3 option directs the compiler to treat all methods (including ACCESS and ASSIGN methods) as virtual.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo3[+|-]</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Code with box">/vo3[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo3, directs the compiler to treat all methods (including ACCESS and ASSIGN methods) as virtual, regardless of whether the VIRTUAL modifier is used or not. This provides compatibility with the Visual Objects inheritance model. </text></para>
-    <para styleclass="List"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just /vo3, directs the compiler to treat all methods (including ACCESS and ASSIGN methods) as virtual, regardless of whether the VIRTUAL modifier is used or not. This provides compatibility with the Visual Objects inheritance model. </para>
+    <para styleclass="List"><text styleclass="Heading2">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">A class method may always be explicitly declared as a virtual method by using the VIRTUAL keyword, regardless of whether /vo3 is used or not.</text></para>
+    <para styleclass="Normal">A class method may always be explicitly declared as a virtual method by using the VIRTUAL keyword, regardless of whether /vo3 is used or not.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For performance reasons, this option is off by default. Virtual methods incur a slight performance penalty since the actual method implementation that is called cannot be determined until run-time, and depends on the run-time type of the instance on which the invocation takes place. In contrast, calls to non-virtual members can be fully resolved at compile time, and the call is always made to the compile-time type of the instance.</text></para>
+    <para styleclass="Normal">For performance reasons, this option is off by default. Virtual methods incur a slight performance penalty since the actual method implementation that is called cannot be determined until run-time, and depends on the run-time type of the instance on which the invocation takes place. In contrast, calls to non-virtual members can be fully resolved at compile time, and the call is always made to the compile-time type of the instance.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the &quot;All instance methods virtual&quot; property. </text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;All instance methods virtual&quot; property. </li>
     </list>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">&#32;</para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When the /vo3 switch is not used, the call to &apos;c:WhoAmI()&apos; always resolves to the implementation in BaseClass, since the variable &apos;c&apos; is typed as &apos;BaseClass&apos; and &apos;BaseClass.WhoAmI&apos; is a non-virtual method.</text></para>
+    <para styleclass="Normal">When the /vo3 switch is not used, the call to &apos;c:WhoAmI()&apos; always resolves to the implementation in BaseClass, since the variable &apos;c&apos; is typed as &apos;BaseClass&apos; and &apos;BaseClass.WhoAmI&apos; is a non-virtual method.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When the /vo3 switch is used, the call to &apos;c:WhoAmI()&apos; resolves to the implementation in &apos;DerivedClass&apos;. Even though the variable &apos;c&apos; is typed as &apos;BaseClass&apos;, the actual type of the instance stored in &apos;c&apos; at runtime determines what implementation of &apos;WhoAmI&apos; to invoke since &apos;BaseClass.WhoAmI&apos; is a virtual method.</text></para>
+    <para styleclass="Normal">When the /vo3 switch is used, the call to &apos;c:WhoAmI()&apos; resolves to the implementation in &apos;DerivedClass&apos;. Even though the variable &apos;c&apos; is typed as &apos;BaseClass&apos;, the actual type of the instance stored in &apos;c&apos; at runtime determines what implementation of &apos;WhoAmI&apos; to invoke since &apos;BaseClass.WhoAmI&apos; is a virtual method.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The same behavior without using /vo3 could be obtained by doing:</text></para>
+    <para styleclass="Normal">The same behavior without using /vo3 could be obtained by doing:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">VIRTUAL METHOD WhoAmI() AS STRING CLASS BaseClass</text><br/><text styleclass="Code with box" translate="true"> &#160; ...</text><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Code with box">VIRTUAL METHOD WhoAmI() AS STRING CLASS BaseClass<br/> &#160; ...<text styleclass="Normal">&#32;</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This is preferable over using /vo3 since you have explicit control over which methods are and are not virtual, and no unnecessary overhead is incurred where virtual inheritance is not required. However, existing Visual Objects code may not work properly without /vo3, and it may not be practical to modify existing code and add the VIRTUAL keyword to those methods that really need it.</text></para>
+    <para styleclass="Normal">This is preferable over using /vo3 since you have explicit control over which methods are and are not virtual, and no unnecessary overhead is incurred where virtual inheritance is not required. However, existing Visual Objects code may not work properly without /vo3, and it may not be practical to modify existing code and add the VIRTUAL keyword to those methods that really need it.</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

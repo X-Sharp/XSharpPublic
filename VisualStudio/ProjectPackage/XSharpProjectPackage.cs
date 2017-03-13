@@ -19,6 +19,7 @@ using XSharp.Project.WPF;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Globalization;
+using static XSharp.Project.XSharpConstants;
 #if VODESIGNER
 using XSharp.VOEditors;
 #endif
@@ -42,7 +43,7 @@ namespace XSharp.Project
     /// </remarks>
     ///
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
-    [Description("XSharp Project System")]
+    [Description(ProjectSystemName)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]      // 53651BEA-799A-45EB-B58C-C884F5417219
@@ -50,21 +51,18 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpBuildPropertyPage))]        // E994C210-9D6D-4CF4-A061-EBBEA2BC626B
     [ProvideObject(typeof(XSharpBuildEventsPropertyPage))]  // 49306259-9119-466E-8780-486CFBE2597D
     [ProvideObject(typeof(XSharpDebugPropertyPage))]        // 2955A638-C389-4675-BB1C-6B2BC173C1E7
-    [ProvideProjectFactory(typeof(XSharpProjectFactory),
-        XSharpConstants.LanguageName,
-        XSharpConstants.LanguageName + " Project Files (*." + XSharpConstants.ProjectExtension + ");*." + XSharpConstants.ProjectExtension,
-        XSharpConstants.ProjectExtension,
-        XSharpConstants.ProjectExtensions,
+    [ProvideProjectFactory(typeof(XSharpProjectFactory), 
+        LanguageName, ProjectFileMask,ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
-    [ProvideService(typeof(XSharpLanguageService), ServiceName = "XSharp Language Service")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".vh")]
+    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), FileExtension1)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), FileExtension2)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), PpoExtension)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), HeaderExtension1)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), HeaderExtension2)]
     [ProvideLanguageService(typeof(XSharpLanguageService),
-                         "XSharp",
+                         LanguageName,
                          1,                            // resource ID of localized language name
                          AutoOutlining =true,
                          CodeSense = true,             // Supports IntelliSense
@@ -90,9 +88,9 @@ namespace XSharp.Project
                  )]
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
-         "XSharp",  // Name of language used as registry key.
+         LanguageName,  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
-         "XSharp",  // language key used in snippet templates.
+         LanguageName,  // language key used in snippet templates.
          @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
          SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
@@ -132,18 +130,18 @@ namespace XSharp.Project
         null,
         null,
         null,
-        LanguageVsTemplate = XSharpConstants.LanguageName,
+        LanguageVsTemplate = LanguageName,
         TemplateGroupIDsVsTemplate = "WPF",
         ShowOnlySpecifiedTemplatesVsTemplate = false, SortPriority =100)]
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
 
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = "XSharp Source Code Editor",NameResourceID =109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension1, 0x42, DefaultName = EditorName, NameResourceID =109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), PpoExtension, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension1, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
@@ -167,10 +165,6 @@ namespace XSharp.Project
 #endif
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
-    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "ResXFileCodeGenerator", contextGuid: "ResXFileCodeGenerator", GeneratesDesignTimeSource =true, GeneratorRegKeyName = "Microsoft ResX File Code Generator")]
-    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "PublicResXFileCodeGenerator", contextGuid: "{69b6a86d-ef43-4d9e-a758-8a18b38a7384}", GeneratesDesignTimeSource=true,GeneratorRegKeyName = "Microsoft ResX File Code Generator (public class)")]
-    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "SettingsSingleFileGenerator", contextGuid: "{3B4C204A-88A2-3AF8-BCFD-CFCB16399541}", GeneratesDesignTimeSource = false, GeneratesSharedDesignTimeSource =true,GeneratorRegKeyName = "Generator for strongly typed settings class")]
-    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "PublicSettingsSingleFileGenerator", contextGuid: "{940f36b5-a42e-435e-8ef4-20b9d4801d22}", GeneratesDesignTimeSource = false, GeneratesSharedDesignTimeSource = true, GeneratorRegKeyName = "Generator for strongly typed settings class (public class)")]
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
     {

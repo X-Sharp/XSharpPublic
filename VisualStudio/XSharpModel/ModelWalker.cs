@@ -134,42 +134,6 @@ namespace XSharpModel
             } while (true);
         }
 
-        /*
-        public void FileWalk_org(XFile file, string code)
-        {
-            // abort when the project is unloaded
-            if (!file.Project.Loaded)
-                return;
-
-            var stream = new AntlrInputStream(code.ToString());
-            var lexer = new XSharpLexer(stream);
-            // if you want VO style lexing uncomment the following lines.
-            //lexer.AllowFourLetterAbbreviations = true; // enables 4 letter abbreviations
-            //lexer.AllowOldStyleComments = true; // enables && commments
-
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new XSharpParser(tokens);
-            var tree = parser.source();
-            var walker = new ParseTreeWalker();
-            var entityparser = new EntityParser(file);
-            file.Parsed = false;
-            try
-            {
-                walker.Walk(entityparser, tree);
-            }
-            catch (Exception ex)
-            {
-                // Push Exception away...
-                throw ex;
-            }
-            finally
-            {
-                // And don't forget to release the Mutex
-                file.Parsed = true;
-            }
-        }
-        */
-
         internal void FileWalk( XFile file )
         {
             SourceWalker sw = new SourceWalker();

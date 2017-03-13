@@ -828,6 +828,26 @@ namespace XSharp.Project
             return base.IsItemTypeFileType(type);
         }
 
+        internal override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
+        {
+            base.OnAfterProjectOpen(sender, e);
+            foreach (var url in this.URLNodes.Keys)
+            {
+                if (!IsProjectFile(url) && this.BuildProject != null)
+                {
+                    var xnode = this.URLNodes[url] as XSharpFileNode;
+                    if (xnode != null && !xnode.IsNonMemberItem)
+                    {
+                        if (File.Exists(url) && IsCodeFile(url))
+                        {
+                            this.ProjectModel.AddFile(url);
+                        }
+                    }
+                }
+            }
+        }
+
+
         public override void Load(string filename, string location, string name, uint flags, ref Guid iidProject, out int canceled)
         {
             // check for incomplete conditions
@@ -1107,7 +1127,7 @@ namespace XSharp.Project
             // XSharpProjectReference
             // So, we will add files only (currently) => Don't forget RemoveURL
 #if CODEMODEL
-            if (!IsProjectFile(url))
+            if (!IsProjectFile(url) && this.IsProjectOpened)
             {
                 var xnode = node as XSharpFileNode;
                 if (xnode != null && !xnode.IsNonMemberItem)

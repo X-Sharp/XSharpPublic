@@ -6929,7 +6929,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
-        internal void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
+        internal virtual void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             this.projectOpened = true;
         }

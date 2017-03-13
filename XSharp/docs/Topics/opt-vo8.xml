@@ -1,75 +1,75 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/vo8</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/vo8</title>
   <keywords>
-    <keyword translate="true">/vo8</keyword>
+    <keyword>/vo8</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo8</text><tab /><tab /><text styleclass="Heading1" translate="true">Compatible preprocessor </text></para>
+      <para styleclass="Heading1">/vo8<tab /><tab />Compatible preprocessor </para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo8 option enables Visual-Objects compatible preprocessor behavior.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /vo8 option enables Visual-Objects compatible preprocessor behavior.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo8[+|-]</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Code with box">/vo8[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo8, changes certain aspects of the preprocessor to behave like Visual Objects. </text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just /vo8, changes certain aspects of the preprocessor to behave like Visual Objects. </para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Unlike Visual Objects, X# uses a file-based preprocessor which has characteristics of traditional preprocessors in languages such as C, C++ and Clipper. The /vo8 option controls the following behaviors:</text></para>
+    <para styleclass="Normal">Unlike Visual Objects, X# uses a file-based preprocessor which has characteristics of traditional preprocessors in languages such as C, C++ and Clipper. The /vo8 option controls the following behaviors:</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Case Sensitivity</text></li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">Case Sensitivity</text></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In a traditional preprocessor, #define foo 1 and #define FOO 2 declare two separate preprocessor symbols, because preprocessor symbols are case-sensitive.</text></para>
+    <para styleclass="Normal">In a traditional preprocessor, #define foo 1 and #define FOO 2 declare two separate preprocessor symbols, because preprocessor symbols are case-sensitive.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">However, in Visual Objects, DEFINE foo := 1 and DEFINE FOO := 2 declare the same entity (and would cause a compiler error because of the duplicate entity declaration).</text></para>
+    <para styleclass="Normal">However, in Visual Objects, DEFINE foo := 1 and DEFINE FOO := 2 declare the same entity (and would cause a compiler error because of the duplicate entity declaration).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When /vo8 is used, #define foo 1 and #define FOO 2 declare the same preprocessor symbol (and would cause a compiler warning because of the redefinition).</text></para>
+    <para styleclass="Normal">When /vo8 is used, #define foo 1 and #define FOO 2 declare the same preprocessor symbol (and would cause a compiler warning because of the redefinition).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code is valid in Visual Objects:</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">but the following code will raise an unknown variable error on ? Foo because the X# preprocessor is case-sensitive by default:</text></para>
+    <para styleclass="Normal">The following code is valid in Visual Objects:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the /vo8 option will allow the above example to compile. An alternative to using /vo8 is to modify the code so that the case of the text you want to replace matches the case used in #define.</text></para>
+    <para styleclass="Normal">but the following code will raise an unknown variable error on ? Foo because the X# preprocessor is case-sensitive by default:</para>
     <para styleclass="Normal"></para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">#ifdef</text></li>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Using the /vo8 option will allow the above example to compile. An alternative to using /vo8 is to modify the code so that the case of the text you want to replace matches the case used in #define.</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">#ifdef</text></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In a traditional preprocessor, code within a #ifdef ... #endif (or #else) block is compiled if the symbol after #ifdef is defined. It does not matter what the symbol resolves to, if it resolves to anything at all.</text></para>
+    <para styleclass="Normal">In a traditional preprocessor, code within a #ifdef ... #endif (or #else) block is compiled if the symbol after #ifdef is defined. It does not matter what the symbol resolves to, if it resolves to anything at all.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In Visual Objects, code within a #ifdef ... #endif (or #else) block is compiled only if the symbol after #ifdef is defined, and it resolves to an expression which resolves to a logical TRUE value. In the example below, The code will print &quot;in #else&quot;:</text></para>
+    <para styleclass="Normal">In Visual Objects, code within a #ifdef ... #endif (or #else) block is compiled only if the symbol after #ifdef is defined, and it resolves to an expression which resolves to a logical TRUE value. In the example below, The code will print &quot;in #else&quot;:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">whereas the equivalent code in X# would print &quot;in #ifdef&quot;:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When /vo8 is used, the X# preprocessor examines the value of the preprocessor symbol to determine if the symbol resolves to a logical TRUE or FALSE value. &#160;However, the X# preprocessor does not evaluate preprocessor expressions, whereas Visual Objects does. Even with /vo8 enabled, the preprocessor symbol must resolve to a single expression containing TRUE or FALSE (case-insensitive) or a numerical value. Numerical values of 0 resolve to FALSE and all non-zero numbers resolve to TRUE. Preprocessor symbols that resolve to expressions are not evaluated and effectively resolve to FALSE.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For example:</text></para>
+    <para styleclass="Normal">whereas the equivalent code in X# would print &quot;in #ifdef&quot;:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> Tip: </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /ppo option is useful for debugging the output generated by the preprocessor. </text></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
+    <para styleclass="Normal">When /vo8 is used, the X# preprocessor examines the value of the preprocessor symbol to determine if the symbol resolves to a logical TRUE or FALSE value. &#160;However, the X# preprocessor does not evaluate preprocessor expressions, whereas Visual Objects does. Even with /vo8 enabled, the preprocessor symbol must resolve to a single expression containing TRUE or FALSE (case-insensitive) or a numerical value. Numerical values of 0 resolve to FALSE and all non-zero numbers resolve to TRUE. Preprocessor symbols that resolve to expressions are not evaluated and effectively resolve to FALSE.</para>
     <para styleclass="Normal"></para>
-    <list id="5" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the &quot;Compatible preprocessor&quot; property. </text></li>
+    <para styleclass="Normal">For example:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"> Tip: </para>
+    <para styleclass="Normal">The /ppo option is useful for debugging the output generated by the preprocessor. </para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page </li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Compatible preprocessor&quot; property. </li>
     </list>
     <para styleclass="Normal"></para>
   </body>

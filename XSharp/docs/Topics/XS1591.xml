@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1591</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1591</title>
   <keywords>
-    <keyword translate="true">XS1591</keyword>
+    <keyword>XS1591</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1591</text></para>
+      <para styleclass="Heading1">XS1591</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Missing XML comment for publicly visible type or member &apos;Type_or_Member&apos;</text></para>
+    <para styleclass="Normal">Missing XML comment for publicly visible type or member &apos;Type_or_Member&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-doc" styleclass="Normal" translate="true">/doc</link><text styleclass="Normal" translate="true"> compiler option was specified, but one or more constructs did not have comments.</text></para>
+    <para styleclass="Normal">The <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-doc">/doc</link> compiler option was specified, but one or more constructs did not have comments.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1591:</text></para>
+    <para styleclass="Normal">The following sample generates XS1591:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Normal" translate="true">/</text><text styleclass="Code with box" translate="true">/ XS1591.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /W:4 /doc:x.xml &#160;</text><br/></para>
+    <para styleclass="Code with box"><text styleclass="Normal">/</text>/ XS1591.prg &#160;<br/>// compile with: /W:4 /doc:x.xml &#160;<br/></para>
   </body>
 </topic>

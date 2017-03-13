@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1519</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1519</title>
   <keywords>
-    <keyword translate="true">XS1519</keyword>
+    <keyword>XS1519</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1519</text></para>
+      <para styleclass="Heading1">XS1519</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Invalid token &apos;token&apos; in class, struct, or interface member declaration</text></para>
+    <para styleclass="Normal">Invalid token &apos;token&apos; in class, struct, or interface member declaration</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error is generated whenever a token is encountered in a location where it does not belong. A token is a keyword; an identifier (the name of a class, struct, method, and so on); a string, character, or numeric literal value such as 108, &quot;Hello&quot;, or &apos;A&apos;; or an operator or punctuator such as == or ;.</text></para>
+    <para styleclass="Normal">This error is generated whenever a token is encountered in a location where it does not belong. A token is a keyword; an identifier (the name of a class, struct, method, and so on); a string, character, or numeric literal value such as 108, &quot;Hello&quot;, or &apos;A&apos;; or an operator or punctuator such as == or ;.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Any class, struct, or interface member declaration that contains invalid modifiers before the type will generate this error. To fix the error, remove the invalid modifiers.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1519 in five places because tokens are placed in locations where they are not valid:</text></para>
+    <para styleclass="Normal">Any class, struct, or interface member declaration that contains invalid modifiers before the type will generate this error. To fix the error, remove the invalid modifiers.</para>
+    <para styleclass="Normal">The following sample generates XS1519 in five places because tokens are placed in locations where they are not valid:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1519.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// Generates XS1519 because a class name cannot be a number: &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1519.prg &#160;<br/>// Generates XS1519 because a class name cannot be a number: &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

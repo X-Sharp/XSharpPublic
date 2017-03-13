@@ -1,40 +1,40 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/recurse</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/recurse</title>
   <keywords>
-    <keyword translate="true">/recurse</keyword>
+    <keyword>/recurse</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/recurse</text></para>
+      <para styleclass="Heading1">/recurse</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /recurse option enables you to compile source code files in all child directories of either the specified directory (dir) or of the project directory.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /recurse option enables you to compile source code files in all child directories of either the specified directory (dir) or of the project directory.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/recurse:[dir\]file &#160;</text></para>
+    <para styleclass="Code with box">/recurse:[dir\]file &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="List" translate="true">dir (optional)</text><tab /><text styleclass="List" translate="true">The directory in which you want the search to begin. If this is not specified, the search begins in the project directory.</text></para>
-    <para styleclass="List"><text styleclass="List" translate="true">file</text><tab /><text styleclass="List" translate="true">The file(s) to search for. Wildcard characters are allowed.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List">dir (optional)<tab />The directory in which you want the search to begin. If this is not specified, the search begins in the project directory.</para>
+    <para styleclass="List">file<tab />The file(s) to search for. Wildcard characters are allowed.</para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /recurse option lets you compile source code files in all child directories of either the specified directory (dir) or of the project directory.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can use wildcards in a file name to compile all matching files in the project directory without using /recurse.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">The /recurse option lets you compile source code files in all child directories of either the specified directory (dir) or of the project directory.</para>
+    <para styleclass="Normal">You can use wildcards in a file name to compile all matching files in the project directory without using /recurse.</para>
+    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compiles all X# files in the current directory:</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc *.prg &#160;</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compiles all of the X# files in the dir1\dir2 directory and any directories below it and generates dir2.dll:</text></para>
+    <para styleclass="Normal">Compiles all X# files in the current directory:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc /target:library /out:dir2.dll /recurse:dir1\dir2\*.prg &#160;</text></para>
+    <para styleclass="Code with box">xsc *.prg &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Compiles all of the X# files in the dir1\dir2 directory and any directories below it and generates dir2.dll:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">xsc /target:library /out:dir2.dll /recurse:dir1\dir2\*.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

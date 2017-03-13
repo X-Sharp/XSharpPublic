@@ -1,30 +1,30 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1943</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1943</title>
   <keywords>
-    <keyword translate="true">XS1943</keyword>
+    <keyword>XS1943</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1943</text></para>
+      <para styleclass="Heading1">XS1943</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">An expression of type &apos;type&apos; is not allowed in a subsequent from clause in a query expression with source type &apos;type&apos;. Type inference failed in the call to &apos;method&apos;.</text></para>
+    <para styleclass="Normal">An expression of type &apos;type&apos; is not allowed in a subsequent from clause in a query expression with source type &apos;type&apos;. Type inference failed in the call to &apos;method&apos;.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">All range variables must represent queryable types.</text></para>
+    <para styleclass="Normal">All range variables must represent queryable types.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
+    <para styleclass="Heading3">To correct this error</para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Make sure that the type is a queryable type that implements IEnumerable, IEnumerable&lt;T&gt; or a derived interface, or any other type which has a query pattern defined for it.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">If the type is a non-generic IEnumerable, provide an explicit type on the range variable.</text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Make sure that the type is a queryable type that implements IEnumerable, IEnumerable&lt;T&gt; or a derived interface, or any other type which has a query pattern defined for it.</li>
+      <li styleclass="Normal" style="margin-left:13px;">If the type is a non-generic IEnumerable, provide an explicit type on the range variable.</li>
     </list>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code generates XS1943:</text></para>
+    <para styleclass="Normal">The following code generates XS1943:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1943.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1943.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

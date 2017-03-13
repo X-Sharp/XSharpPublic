@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">YIELD RETURN</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>YIELD RETURN</title>
   <keywords>
-    <keyword translate="true">VAR</keyword>
+    <keyword>VAR</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">YIELD RETURN</text></para>
+      <para styleclass="Heading1">YIELD RETURN</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">yieldstmt &#160; </text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">: YIELD RETURN (VOID | expression)? </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160;</text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">yieldstmt &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: YIELD RETURN (VOID | expression)? </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

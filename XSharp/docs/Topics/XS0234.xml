@@ -1,30 +1,30 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0234</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0234</title>
   <keywords>
-    <keyword translate="true">/reference</keyword>
-    <keyword translate="true">XS0234</keyword>
+    <keyword>/reference</keyword>
+    <keyword>XS0234</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0234</text></para>
+      <para styleclass="Heading1">XS0234</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The type or namespace name &apos;name&apos; does not exist in the namespace &apos;namespace&apos; (are you missing an assembly reference?)</text></para>
+    <para styleclass="Normal">The type or namespace name &apos;name&apos; does not exist in the namespace &apos;namespace&apos; (are you missing an assembly reference?)</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">A type was expected. Possible causes for this error include the following:</text></para>
+    <para styleclass="Normal">A type was expected. Possible causes for this error include the following:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">An assembly that contains the definition of a type was not referenced in the compilation; use</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference" styleclass="Normal" translate="true"> /reference</link><text styleclass="Normal" translate="true"> (Import Metadata) to specify the assembly</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">You passed a variable name to the typeof operator.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">You tried to reference an assembly that is not part of your target .NET Framework profile. For more information, see Troubleshooting .NET Framework Targeting Errors.</text></li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">An assembly that contains the definition of a type was not referenced in the compilation; use<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference"> /reference</link> (Import Metadata) to specify the assembly</li>
+      <li styleclass="Normal" style="margin-left:13px;">You passed a variable name to the typeof operator.</li>
+      <li styleclass="Normal" style="margin-left:13px;">You tried to reference an assembly that is not part of your target .NET Framework profile. For more information, see Troubleshooting .NET Framework Targeting Errors.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you see this error after moving code from one development machine to another, make sure that the project on the new machine has the correct references, and that the versions of the assemblies are the same as on the old machine. You can also use the Object Browser to inspect an assembly and verify whether it contains the types that you expect it to contain.</text></para>
+    <para styleclass="Normal">If you see this error after moving code from one development machine to another, make sure that the project on the new machine has the correct references, and that the versions of the assemblies are the same as on the old machine. You can also use the Object Browser to inspect an assembly and verify whether it contains the types that you expect it to contain.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0234:</text></para>
+    <para styleclass="Normal">The following sample generates XS0234:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0234.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0234.prg &#160;<br/></para>
   </body>
 </topic>

@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">FOR ... NEXT</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>FOR ... NEXT</title>
   <keywords>
-    <keyword translate="true">DOWNTO</keyword>
-    <keyword translate="true">FOR</keyword>
-    <keyword translate="true">NEXT</keyword>
-    <keyword translate="true">TO</keyword>
-    <keyword translate="true">UPTO</keyword>
+    <keyword>DOWNTO</keyword>
+    <keyword>FOR</keyword>
+    <keyword>NEXT</keyword>
+    <keyword>TO</keyword>
+    <keyword>UPTO</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">FOR ... NEXT</text></para>
+      <para styleclass="Heading1">FOR ... NEXT</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">forstmt: &#160; FOR</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;( expression</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;| (LOCAL? IMPLIED | VAR) </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">identifier</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> ASSIGN_OP expression</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;| LOCAL </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">identifier</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> ASSIGN_OP expression (AS datatype)?</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;)</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;(TO | UPTO | DOWNTO) expression</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;(STEP expression)? </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;StmtBlk=</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link></para>
-    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; NEXT </text></para>
-    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">forstmt: &#160; FOR</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;( expression</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;| (LOCAL? IMPLIED | VAR) </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> ASSIGN_OP expression</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;| LOCAL </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> ASSIGN_OP expression (AS datatype)?</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;(TO | UPTO | DOWNTO) expression</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;(STEP expression)? </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;StmtBlk=</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link></para>
+    <para styleclass="Code Example"><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; NEXT </text></para>
+    <para styleclass="Code Example"><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
     <para styleclass="Code Example"></para>
   </body>
 </topic>

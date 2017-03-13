@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0266</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0266</title>
   <keywords>
-    <keyword translate="true">XS0266</keyword>
+    <keyword>XS0266</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0266</text></para>
+      <para styleclass="Heading1">XS0266</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Cannot implicitly convert type &apos;type1&apos; to &apos;type2&apos;. An explicit conversion exists (are you missing a cast?)</text></para>
+    <para styleclass="Normal">Cannot implicitly convert type &apos;type1&apos; to &apos;type2&apos;. An explicit conversion exists (are you missing a cast?)</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error occurs when your code tries to convert between two types that cannot be implicitly converted, but where an explicit conversion is available. For more information, see Casting and Type Conversions.</text></para>
+    <para styleclass="Normal">This error occurs when your code tries to convert between two types that cannot be implicitly converted, but where an explicit conversion is available. For more information, see Casting and Type Conversions.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code shows examples that generate XS0266.</text></para>
+    <para styleclass="Normal">The following code shows examples that generate XS0266.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0266.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0266.prg &#160;<br/></para>
   </body>
 </topic>

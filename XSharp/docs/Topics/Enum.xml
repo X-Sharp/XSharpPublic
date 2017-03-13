@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">ENUM</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>ENUM</title>
   <keywords>
-    <keyword translate="true">END</keyword>
-    <keyword translate="true">ENUM</keyword>
-    <keyword translate="true">MEMBER</keyword>
+    <keyword>END</keyword>
+    <keyword>ENUM</keyword>
+    <keyword>MEMBER</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">ENUM</text></para>
+      <para styleclass="Heading1">ENUM</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">enum_ &#160; &#160; &#160; &#160; &#160; &#160;: (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Attributes" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">attributes</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">)? (enumModifiers)?</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;ENUM (nameDot)? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">identifier</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> (AS datatype)? </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;(enummember)+</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;END ENUM? </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text><br/><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">enummember &#160; &#160; &#160; &#160; : (attributes)? MEMBER? identifier (ASSIGN_OP expression)? </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">enum_ &#160; &#160; &#160; &#160; &#160; &#160;: (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Attributes" style="font-weight:normal; font-style:normal; color:#000000;">attributes</link><text style="font-weight:normal; font-style:normal; color:#000000;">)? (enumModifiers)?</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;ENUM (nameDot)? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> (AS datatype)? </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;(enummember)+</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;END ENUM? </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;">enummember &#160; &#160; &#160; &#160; : (attributes)? MEMBER? identifier (ASSIGN_OP expression)? </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
   </body>
 </topic>

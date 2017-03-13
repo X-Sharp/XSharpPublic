@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0579</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0579</title>
   <keywords>
-    <keyword translate="true">XS0579</keyword>
+    <keyword>XS0579</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0579</text></para>
+      <para styleclass="Heading1">XS0579</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Duplicate &apos;attribute&apos; attribute</text></para>
+    <para styleclass="Normal">Duplicate &apos;attribute&apos; attribute</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">It is not possible to specify the same attribute more than once unless the attribute specifies AllowMultiple=true in its AttributeUsage.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">It is not possible to specify the same attribute more than once unless the attribute specifies AllowMultiple=true in its AttributeUsage.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0579.</text></para>
+    <para styleclass="Normal">The following example generates XS0579.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0579.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0579.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

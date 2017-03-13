@@ -1,40 +1,40 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/vo13</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/vo13</title>
   <keywords>
-    <keyword translate="true">/vo13</keyword>
+    <keyword>/vo13</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo13</text><tab /><text styleclass="Heading1" translate="true">Compatible String Comparisons </text></para>
+      <para styleclass="Heading1">/vo13<tab />Compatible String Comparisons </para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo13 option enables VO compatible string comparisons</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /vo13 option enables VO compatible string comparisons</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo13[+|-]</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Code with box">/vo13[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo13, tells the compiler that string comparisons are to be performed the same way as they are in VO, and in the RDDs, where the comparison depends on the SetCollation() setting. &#160;When - is specified, or /vo13 is not specified, string comparisons in code use String.Compare() </text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just /vo13, tells the compiler that string comparisons are to be performed the same way as they are in VO, and in the RDDs, where the comparison depends on the SetCollation() setting. &#160;When - is specified, or /vo13 is not specified, string comparisons in code use String.Compare() </para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When this option is enabled string comparisions are compatible with VO and the RDDs, and depend on SetCollation() as follows:</text></para>
+    <para styleclass="Normal">When this option is enabled string comparisions are compatible with VO and the RDDs, and depend on SetCollation() as follows:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When collation=#WINDOWS, string comparisons make use of services provided by Windows that automatically handle foreign character sets. These string comparisons are implemented with a call to CompareStringA() function in kernel32.dll.</text></para>
+    <para styleclass="Normal">When collation=#WINDOWS, string comparisons make use of services provided by Windows that automatically handle foreign character sets. These string comparisons are implemented with a call to CompareStringA() function in kernel32.dll.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When collation = #CLIPPER, comparisons are performed byte by byte, using a weight table for each char. As in VO, a different table can be selected with the SetNatDll() function. </text><br/><text styleclass="Normal" translate="true">When compiled in BYOR mode we are using the Vulcan.NET runtime. In this runtime the nation DLLs are not physically implemented as separate files; the weighting tables are embedded as resources inside VulcanRTFuncs.dll.</text></para>
+    <para styleclass="Normal">When collation = #CLIPPER, comparisons are performed byte by byte, using a weight table for each char. As in VO, a different table can be selected with the SetNatDll() function. <br/>When compiled in BYOR mode we are using the Vulcan.NET runtime. In this runtime the nation DLLs are not physically implemented as separate files; the weighting tables are embedded as resources inside VulcanRTFuncs.dll.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When /v013 is not enabled string comparisons are performed using String.Compare(), where the comparison makes use of culture-sensitive sort rules according to the current culture selected.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Compatibility Note: </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When using /vo13 string comparisons involve converting unicode strings to ansi for compatibility and consequently are slower than with String.Compare().</text></para>
+    <para styleclass="Normal">When /v013 is not enabled string comparisons are performed using String.Compare(), where the comparison makes use of culture-sensitive sort rules according to the current culture selected.</para>
+    <para styleclass="Heading2">Compatibility Note: </para>
+    <para styleclass="Normal">When using /vo13 string comparisons involve converting unicode strings to ansi for compatibility and consequently are slower than with String.Compare().</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
+    <para styleclass="Normal">&#32;<text styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</text></para>
     <para styleclass="Normal"></para>
-    <list id="14" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the &quot;Compatible string comparions&quot; property. </text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Compatible string comparions&quot; property. </li>
     </list>
     <para styleclass="Normal"></para>
   </body>

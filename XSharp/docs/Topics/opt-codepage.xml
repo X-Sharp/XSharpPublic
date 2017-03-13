@@ -1,30 +1,30 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/codepage</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/codepage</title>
   <keywords>
-    <keyword translate="true">/codepage</keyword>
+    <keyword>/codepage</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/codepage</text></para>
+      <para styleclass="Heading1">/codepage</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option specifies which codepage to use during compilation if the required page is not the current default codepage for the system.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">This option specifies which codepage to use during compilation if the required page is not the current default codepage for the system.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/codepage:id &#160;</text></para>
+    <para styleclass="Code with box">/codepage:id &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="List" translate="true">id</text><tab /><text styleclass="List" translate="true">The id of the code page to use for all source code files in the compilation.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List">id<tab />The id of the code page to use for all source code files in the compilation.</para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you compile one or more source code files that were not created to use the default code page on your computer, you can use the /codepage option to specify which code page should be used. /codepage applies to all source code files in your compilation.</text></para>
+    <para styleclass="Normal">If you compile one or more source code files that were not created to use the default code page on your computer, you can use the /codepage option to specify which code page should be used. /codepage applies to all source code files in your compilation.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">If the source code files were created with the same codepage that is in effect on your computer or if the source code files were created with UNICODE or UTF-8, you need not use /codepage.</text></para>
+    <para styleclass="Normal">If the source code files were created with the same codepage that is in effect on your computer or if the source code files were created with UNICODE or UTF-8, you need not use /codepage.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">See GetCPInfo for information on how to find which code pages are supported on your system.</text></para>
+    <para styleclass="Normal">See GetCPInfo for information on how to find which code pages are supported on your system.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</text></para>
+    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
   </body>
 </topic>

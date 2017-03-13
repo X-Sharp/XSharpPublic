@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/analyzer, /a</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/analyzer, /a</title>
   <keywords>
-    <keyword translate="true">/a</keyword>
-    <keyword translate="true">/analyzer</keyword>
+    <keyword>/a</keyword>
+    <keyword>/analyzer</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/analyzer, /a</text></para>
+      <para styleclass="Heading1">/analyzer, /a</para>
     </header>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Run the analyzers from this assembly </text></para>
+    <para styleclass="Body Text">Run the analyzers from this assembly </para>
   </body>
 </topic>

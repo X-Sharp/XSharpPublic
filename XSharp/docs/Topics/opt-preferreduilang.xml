@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/preferreduilang</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/preferreduilang</title>
   <keywords>
-    <keyword translate="true">/preferreduilang</keyword>
+    <keyword>/preferreduilang</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/preferreduilang</text></para>
+      <para styleclass="Heading1">/preferreduilang</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">By using the /preferreduilang compiler option, you can specify the language in which the X# compiler displays output, such as error messages.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">By using the /preferreduilang compiler option, you can specify the language in which the X# compiler displays output, such as error messages.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/preferreduilang: language &#160;</text></para>
+    <para styleclass="Code with box">/preferreduilang: language &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">language</text><tab /><text styleclass="List" translate="true">The language name of the language to use for compiler output.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List"><text styleclass="Code Example">language</text><tab />The language name of the language to use for compiler output.</para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The preferreduilang compiler option is recognized but ignored. The X# compiler only works in the english language (for now ?)</text></para>
+    <para styleclass="Normal">The preferreduilang compiler option is recognized but ignored. The X# compiler only works in the english language (for now ?)</para>
   </body>
 </topic>

@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1018</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1018</title>
   <keywords>
-    <keyword translate="true">XS1018</keyword>
+    <keyword>XS1018</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1018</text></para>
+      <para styleclass="Heading1">XS1018</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Keyword &apos;SELF&apos; or &apos;SUPER&apos; expected</text></para>
+    <para styleclass="Normal">Keyword &apos;SELF&apos; or &apos;SUPER&apos; expected</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler encountered an incomplete constructor declaration.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">The compiler encountered an incomplete constructor declaration.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS1018, and suggests several ways to resolve the error:</text></para>
+    <para styleclass="Normal">The following example generates XS1018, and suggests several ways to resolve the error:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1018.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1018.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

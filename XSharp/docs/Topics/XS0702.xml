@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0702</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0702</title>
   <keywords>
-    <keyword translate="true">XS0702</keyword>
+    <keyword>XS0702</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0702</text></para>
+      <para styleclass="Heading1">XS0702</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Constraint cannot be special class &apos;identifier&apos;</text></para>
+    <para styleclass="Normal">Constraint cannot be special class &apos;identifier&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following types may not be used as constraints: System.Object,``System.Array, System.Delegate, System.Enum, or System.ValueType.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">The following types may not be used as constraints: System.Object,``System.Array, System.Delegate, System.Enum, or System.ValueType.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0702:</text></para>
+    <para styleclass="Normal">The following sample generates XS0702:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0702.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0702.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

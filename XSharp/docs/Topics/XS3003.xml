@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS3003</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS3003</title>
   <keywords>
-    <keyword translate="true">XS3003</keyword>
+    <keyword>XS3003</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS3003</text></para>
+      <para styleclass="Heading1">XS3003</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Type of &apos;variable&apos; is not CLS-compliant</text></para>
+    <para styleclass="Normal">Type of &apos;variable&apos; is not CLS-compliant</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">A public, protected, or protected internal variable must be of a type that is compliant with the Common Language Specification (CLS). For more information on CLS Compliance, see Language Independence and Language-Independent Components.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">A public, protected, or protected internal variable must be of a type that is compliant with the Common Language Specification (CLS). For more information on CLS Compliance, see Language Independence and Language-Independent Components.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS3003:</text></para>
+    <para styleclass="Normal">The following example generates XS3003:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS3003.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS3003.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

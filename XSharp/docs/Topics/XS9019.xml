@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS9019</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS9019</title>
   <keywords>
-    <keyword translate="true">XS9019</keyword>
+    <keyword>XS9019</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS9019</text></para>
+      <para styleclass="Heading1">XS9019</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compiler option &apos;{0}&apos; ({1}) is not supported for dialect {2}</text></para>
+    <para styleclass="Normal">Compiler option &apos;{0}&apos; ({1}) is not supported for dialect {2}</para>
   </body>
 </topic>

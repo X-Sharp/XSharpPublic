@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">?, ??</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>?, ??</title>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">?, ??, QOut</text></para>
+      <para styleclass="Heading1">?, ??, QOut</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The ? and ?? statements allow to write information to the system console.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The syntax for these statements is</text></para>
+    <para styleclass="Normal">The ? and ?? statements allow to write information to the system console.</para>
+    <para styleclass="Normal">The syntax for these statements is</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">qoutstmt &#160;: &#160; QMARK (QMARK?) expression (COMMA expression)* </text><br/><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">qoutstmt &#160;: &#160; QMARK (QMARK?) expression (COMMA expression)* </text><br/><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"></para>
   </body>

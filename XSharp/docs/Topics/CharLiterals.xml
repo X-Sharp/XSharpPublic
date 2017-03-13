@@ -1,55 +1,55 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">Char Literals</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Char Literals</title>
   <keywords>
-    <keyword translate="true">Char</keyword>
+    <keyword>Char</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Char Literals</text></para>
+      <para styleclass="Heading1">Char Literals</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Character literals inside X# start and end with a single quote (&apos;) and may have embedded control characters with escaped notation:</text></para>
+    <para styleclass="Normal">Character literals inside X# start and end with a single quote (&apos;) and may have embedded control characters with escaped notation:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Literal</text></para>
+          <para styleclass="Normal">Literal</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Description</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;A&apos;</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Capital A</text></para>
+          <para styleclass="Normal">Description</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;\t&apos;</text></para>
+          <para styleclass="Normal">&apos;A&apos;</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Tab Character</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;\u0100&apos;</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Unicode notation for </text><text styleclass="Font Style" style="font-family:Arial; font-size:13pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Ā (A-macron)</text></para>
+          <para styleclass="Normal">Capital A</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;\x002a&apos;</text></para>
+          <para styleclass="Normal">&apos;\t&apos;</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Hex notation for character 42 (asterisk *)</text></para>
+          <para styleclass="Normal">Tab Character</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&apos;\u0100&apos;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Unicode notation for <text styleclass="" style="font-family:Arial; font-size:13pt; color:#000000;">Ā (A-macron)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&apos;\x002a&apos;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Hex notation for character 42 (asterisk *)</para>
         </td>
       </tr>
     </table></para>

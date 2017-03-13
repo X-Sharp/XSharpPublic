@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/nowin32manifest</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/nowin32manifest</title>
   <keywords>
-    <keyword translate="true">/nowin32manifest</keyword>
+    <keyword>/nowin32manifest</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/nowin32manifest</text></para>
+      <para styleclass="Heading1">/nowin32manifest</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Use the /nowin32manifest option to instruct the compiler not to embed any application manifest into the executable file.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">Use the /nowin32manifest option to instruct the compiler not to embed any application manifest into the executable file.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/nowin32manifest &#160;</text></para>
+    <para styleclass="Code with box">/nowin32manifest &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When this option is used, the application will be subject to virtualization on Windows Vista unless you provide an application manifest in a Win32 Resource file or during a later build step.</text></para>
+    <para styleclass="Normal">When this option is used, the application will be subject to virtualization on Windows Vista unless you provide an application manifest in a Win32 Resource file or during a later build step.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

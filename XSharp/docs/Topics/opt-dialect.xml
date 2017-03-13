@@ -1,31 +1,31 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/dialect</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/dialect</title>
   <keywords>
-    <keyword translate="true">/dialect</keyword>
-    <keyword translate="true">dbase</keyword>
-    <keyword translate="true">foxpro</keyword>
-    <keyword translate="true">Harbour</keyword>
-    <keyword translate="true">vo</keyword>
-    <keyword translate="true">vulcan</keyword>
-    <keyword translate="true">xBase++</keyword>
+    <keyword>/dialect</keyword>
+    <keyword>dbase</keyword>
+    <keyword>foxpro</keyword>
+    <keyword>Harbour</keyword>
+    <keyword>vo</keyword>
+    <keyword>vulcan</keyword>
+    <keyword>xBase++</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/dialect</text></para>
+      <para styleclass="Heading1">/dialect</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /dialect compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /dialect compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/dialect: Core | VO | Vulcan</text></para>
+    <para styleclass="Code with box">/dialect: Core | VO | Vulcan</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="List" translate="true">Core</text><tab /><text styleclass="List" translate="true">Use the Core dialect. This is like C# with an xBase syntax. </text></para>
-    <para styleclass="List"><text styleclass="List" translate="true">VO</text><tab /><text styleclass="List" translate="true">This activates the VO dialect. At this moment this only works in BYOR mode.</text></para>
-    <para styleclass="List"><text styleclass="List" translate="true">Vulcan</text><tab /><text styleclass="List" translate="true">This activates the Vulcan dialect. At this moment this only works in BYOR mode.</text></para>
-    <para styleclass="Heading3"><link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects" styleclass="Heading3" style="font-weight:normal;" translate="true">See the dialect topic for differences between dialects</link></para>
+    <para styleclass="List">Core<tab />Use the Core dialect. This is like C# with an xBase syntax. </para>
+    <para styleclass="List">VO<tab />This activates the VO dialect. At this moment this only works in BYOR mode.</para>
+    <para styleclass="List">Vulcan<tab />This activates the Vulcan dialect. At this moment this only works in BYOR mode.</para>
+    <para styleclass="Heading3"><link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects" style="font-weight:normal;">See the dialect topic for differences between dialects</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

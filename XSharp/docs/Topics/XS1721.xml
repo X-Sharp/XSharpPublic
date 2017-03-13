@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1721</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1721</title>
   <keywords>
-    <keyword translate="true">XS1721</keyword>
+    <keyword>XS1721</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1721</text></para>
+      <para styleclass="Heading1">XS1721</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Class &apos;class&apos; cannot have multiple base classes: &apos;class_1&apos; and &apos;class_2&apos;</text></para>
+    <para styleclass="Normal">Class &apos;class&apos; cannot have multiple base classes: &apos;class_1&apos; and &apos;class_2&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The most common cause of this error message is attempting to use multiple inheritance. A class in X# may only inherit directly from one class. However, a class can implement any number of interfaces.</text></para>
+    <para styleclass="Normal">The most common cause of this error message is attempting to use multiple inheritance. A class in X# may only inherit directly from one class. However, a class can implement any number of interfaces.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example shows one way in which SC1721 is generated, and then shows two possible ways to avoid the error.</text></para>
+    <para styleclass="Normal">The following example shows one way in which SC1721 is generated, and then shows two possible ways to avoid the error.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1721.prg &#160;</text><br/></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
+    <para styleclass="Code with box">// XS1721.prg &#160;<br/></para>
+    <para styleclass="Normal"> &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0445</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0445</title>
   <keywords>
-    <keyword translate="true">XS0445</keyword>
+    <keyword>XS0445</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0445</text></para>
+      <para styleclass="Heading1">XS0445</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Cannot modify the result of an unboxing conversion</text></para>
+    <para styleclass="Normal">Cannot modify the result of an unboxing conversion</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The result of an unboxing conversion is a temporary variable. The compiler prevents you from modifying such variables because any modification would go away when the temporary variable goes away. To fix this, declare a new value-type variable to store the intermediate expression, and assign the result of the unboxing conversion to that variable.</text></para>
+    <para styleclass="Normal">The result of an unboxing conversion is a temporary variable. The compiler prevents you from modifying such variables because any modification would go away when the temporary variable goes away. To fix this, declare a new value-type variable to store the intermediate expression, and assign the result of the unboxing conversion to that variable.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code generates XS0455.</text></para>
+    <para styleclass="Normal">The following code generates XS0455.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0445.prg &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160;</text></para>
+    <para styleclass="Code with box">// XS0445.prg &#160;<br/> &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

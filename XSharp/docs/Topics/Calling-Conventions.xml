@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">Calling Conventions</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Calling Conventions</title>
   <keywords>
-    <keyword translate="true">CLIPPER</keyword>
-    <keyword translate="true">FASTCALL</keyword>
-    <keyword translate="true">PASCAL</keyword>
-    <keyword translate="true">STRICT</keyword>
-    <keyword translate="true">THISCALL</keyword>
+    <keyword>CLIPPER</keyword>
+    <keyword>FASTCALL</keyword>
+    <keyword>PASCAL</keyword>
+    <keyword>STRICT</keyword>
+    <keyword>THISCALL</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Calling Conventions</text></para>
+      <para styleclass="Heading1">Calling Conventions</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">CLIPPER</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">STRICT</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">PASCAL</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">FASTCALL</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">THISCALL</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">ASPEN</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">WINCALL</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">CALLBACK</text></para>
+    <para styleclass="Normal">CLIPPER</para>
+    <para styleclass="Normal">STRICT</para>
+    <para styleclass="Normal">PASCAL</para>
+    <para styleclass="Normal">FASTCALL</para>
+    <para styleclass="Normal">THISCALL</para>
+    <para styleclass="Normal">ASPEN</para>
+    <para styleclass="Normal">WINCALL</para>
+    <para styleclass="Normal">CALLBACK</para>
   </body>
 </topic>

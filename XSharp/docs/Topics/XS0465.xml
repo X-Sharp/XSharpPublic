@@ -1,24 +1,24 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0465</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0465</title>
   <keywords>
-    <keyword translate="true">XS0465</keyword>
+    <keyword>XS0465</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0465</text></para>
+      <para styleclass="Heading1">XS0465</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Introducing a &apos;Finalize&apos; method can interfere with destructor invocation. Did you intend to declare a destructor?</text></para>
+    <para styleclass="Normal">Introducing a &apos;Finalize&apos; method can interfere with destructor invocation. Did you intend to declare a destructor?</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This warning occurs when you create a class with a method whose signature is public virtual void Finalize.</text></para>
+    <para styleclass="Normal">This warning occurs when you create a class with a method whose signature is public virtual void Finalize.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">If such a class is used as a base class and if the deriving class defines a destructor, the destructor will override the base class Finalize method, not Finalize.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">If such a class is used as a base class and if the deriving class defines a destructor, the destructor will override the base class Finalize method, not Finalize.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0465.</text></para>
+    <para styleclass="Normal">The following sample generates XS0465.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0465.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0465.prg &#160;<br/>// compile with: /target:library &#160;<br/></para>
   </body>
 </topic>

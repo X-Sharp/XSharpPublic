@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">Disclaimer</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Disclaimer</title>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Disclaimer</text></para>
+      <para styleclass="Heading1">Disclaimer</para>
     </header>
-    <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#ff0000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The VO &amp; Vulcan dialect is now supported in combination with the Vulcan runtime.</text><br/><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#ff0000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">We have successfully compiled both the Vulcan SDK and applications that depend on this SDK.</text><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues" styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#ff0000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Click here for the complete (but short) list of known issues</link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.05; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#ff0000;">The VO &amp; Vulcan dialect is now supported in combination with the Vulcan runtime.</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#ff0000;">We have successfully compiled both the Vulcan SDK and applications that depend on this SDK.</text><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues" styleclass="" style="font-family:Calibri; font-size:11pt; color:#ff0000;">Click here for the complete (but short) list of known issues</link></para>
   </body>
 </topic>

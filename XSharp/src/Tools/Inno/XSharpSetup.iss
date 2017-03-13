@@ -18,8 +18,8 @@
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
 #define VIVersion       "0.2.10.2100"
 #define VITextVersion   "0.2.10.2100 (Beta 10)"                                                                                            
-#define TouchDate       "2017-02-14"
-#define TouchTime       "02:10:01"
+#define TouchDate       "2017-03-13"
+#define TouchTime       "02:10:00"
 #define InstallPath     "XSharpPath"
 
 
@@ -131,7 +131,7 @@ Name: "main";             Description: "The XSharp Compiler and Build System";  
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";              Types: full custom;         Check: Vs2015IsInstalled;
 Name: "vs2015\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer22Found;
 Name: "vs2017";           Description: "Visual Studio 2017 Integration";              Types: full custom;         Check: vs2017IsInstalled;
-Name: "vs2017\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer23Found;
+Name: "vs2017\help";      Description: "Install VS documentation";                    Types: full custom;         Check: vs2017IsInstalled;
 Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";  Types: full custom;                  
 
 
@@ -243,7 +243,7 @@ Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{pf}\MsBuild
 Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: main
 Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: main
 
-; MsBuild files from VS15 Preview 4 in a private directory per installation
+; MsBuild files for VS2017 in a private directory per installation
 Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:Getvs2017BaseDir}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Components: vs2017
 Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:Getvs2017BaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: vs2017
 Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:Getvs2017BaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: vs2017
@@ -408,11 +408,11 @@ Filename: "{app}\Tools\RegisterProvider.exe"; Flags: runhidden;
 
 ; Remove old Help contents
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vs2017\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vs2017\help; StatusMsg:"UnInstalling VS Help for VS2017"; Flags: waituntilidle;
 
 
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio14 {#HelpInstall2}";     Components: vs2015\help; StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     Components: vs2017\help; StatusMsg:"Installing VS Help for VS 15";  Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     Components: vs2017\help; StatusMsg:"Installing VS Help for VS2017";  Flags: waituntilidle;
 Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  Components: XIDE;
 
 ; The following will only work if we make sure our assemblies have a strong name
@@ -422,7 +422,7 @@ Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Inst
 
 [UninstallRun]
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vs2017\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vs2017\help; StatusMsg:"UnInstalling VS Help for VS2017"; Flags: waituntilidle;
 
 
 [InstallDelete]
@@ -496,6 +496,7 @@ var
   Vs2015BaseDir: String;
   VulcanInstalled: Boolean;
   VulcanBaseDir: String;
+  CancelSetup : Boolean;
   
   vs2017Path : String;
   vs2017Version: String;
@@ -516,9 +517,10 @@ var
   HelpViewer22Installed : Boolean;
   HelpViewer22Dir : String;
   OurHelp22Installed: Boolean;
-  {HelpViewer23Installed : Boolean;}
+  HelpViewer23Installed : Boolean;
   HelpViewer23Dir : String;
-  {OurHelp23Installed: Boolean;}
+  OurHelp23Installed: Boolean;
+  OriginalTypeChange: TNotifyEvent;
 
 procedure PrintButtonClick(Sender: TObject);
 var ResultCode :integer;
@@ -637,9 +639,16 @@ begin
   FindVS2017;
 
   HelpViewer22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.2','AppRoot',HelpViewer22Dir) ;
-  {HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;}
-
-
+  HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;
+{
+  if Vs2017Installed and Not HelpViewer23Installed then
+  begin
+    if MsgBox('Visual Studio 2017 has been detected, but not the VS 2017 help viewer. To install the VS 2017 help you need to install the HelpViewer component. Exit installation?', mbConfirmation, MB_YESNO) = IDYES then
+    begin
+    CancelSetup := true;
+    end
+  end
+ }
   VulcanPrgAssociation := false;
   if Vs2015Installed then
   begin
@@ -650,7 +659,7 @@ begin
       end
   end
   OurHelp22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help22Installed',temp) ;
-  {OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;}
+  OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;
   Log('VS2015: '+Vs2015BaseDir); 
   Log('VS2017: '+Vs2017BaseDir);
  
@@ -681,7 +690,7 @@ end;
 
 function HelpViewer23Found: Boolean;
 begin
-  result := false; {HelpViewer23Installed;}
+  result := HelpViewer23Installed;
 
 end;
 
@@ -735,6 +744,17 @@ begin
   result := HelpViewer23Dir;
 end;
 
+Procedure Checkvs2017Help();
+begin
+  if Vs2017Installed and Not HelpViewer23Installed then
+  begin
+     WizardForm.ComponentsList.ItemCaption[4] := 'Cannot install the VS 2017 documentation because the Help component is not installed';
+     WizardForm.ComponentsList.ItemEnabled[4] := false;
+     WizardForm.ComponentsList.Checked[4] := false;
+  end
+
+end;
+
 Procedure CurPageChanged(CurPage: Integer);
 
 begin
@@ -757,7 +777,7 @@ begin
     vs2017VersionPage.CheckListBox.ItemCaption[2] := '';
     vs2017VersionPage.CheckListBox.ItemEnabled[2] := false;
     end
-
+  Checkvs2017Help;
 end;
 
 procedure RegisterPreviousData(PreviousDataKey: Integer);
@@ -773,8 +793,15 @@ begin
   SetPreviousData(PreviousDataKey, 'VS2017Version', Version);
 end;
 
+procedure TypeChange (Sender: TObject);
+begin
+OriginalTypeChange(Sender);
+Checkvs2017Help;
+end;
+
 procedure InitializeWizard();
 begin
+    
     Log('InitializeWizard start');
     vs2017VersionPage := CreateInputOptionPage(wpSelectComponents,
                 'Visual Studio 2017', 
@@ -797,8 +824,9 @@ begin
   else
     vs2017VersionPage.SelectedValueIndex := 0;
   end;
-
-    Log('InitializeWizard end');
+  OriginalTypeChange := WizardForm.TypesCombo.OnChange ;
+  WizardForm.TypesCombo.OnChange := @TypeChange;
+  Log('InitializeWizard end');
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
@@ -820,10 +848,11 @@ function InitializeSetup(): Boolean;
 var
   ErrorCode: Integer;
 begin
+  CancelSetup := false;
   Log('InitializeSetup start');
   DetectVS();
-  result := true;
-  if not Vs2015Installed and not vs2017Installed then
+  result := not CancelSetup ;
+  if result and not Vs2015Installed and not vs2017Installed then
   begin
     if MsgBox('Visual Studio 2015 has not been detected, do you want to download the free Visual Studio Community Edition ?', mbConfirmation, MB_YESNO) = IDYES then
     begin
@@ -832,11 +861,7 @@ begin
     end
   end;
  
-  {vs2017Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','15.0',vs2017BaseDir) ;}
-
   { When more than 1 VS 2017 installation, ask for the instance}
-
-
   Log('InitializeSetup end');  
 end;
 

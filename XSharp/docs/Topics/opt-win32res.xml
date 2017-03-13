@@ -1,39 +1,39 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/win32res</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/win32res</title>
   <keywords>
-    <keyword translate="true">/win32res</keyword>
+    <keyword>/win32res</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/win32res</text></para>
+      <para styleclass="Heading1">/win32res</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /win32res option inserts a Win32 resource in the output file.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /win32res option inserts a Win32 resource in the output file.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/win32res:filename &#160;</text></para>
+    <para styleclass="Code with box">/win32res:filename &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="List" translate="true">filename</text><tab /><text styleclass="List" translate="true">The resource file that you want to add to your output file.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List">filename<tab />The resource file that you want to add to your output file.</para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">A Win32 resource file can be created with the Resource Compiler. The Resource Compiler is invoked when include native resources (.RC files) in your X# Visual studio solution</text></para>
+    <para styleclass="Normal">A Win32 resource file can be created with the Resource Compiler. The Resource Compiler is invoked when include native resources (.RC files) in your X# Visual studio solution</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">A Win32 resource can contain version or bitmap (icon) information that would help identify your application in the File Explorer. If you do not specify /win32res, the compiler will generate version information based on the assembly version. You can also include Menu and Dialog definitions in a RC file.</text></para>
+    <para styleclass="Normal">A Win32 resource can contain version or bitmap (icon) information that would help identify your application in the File Explorer. If you do not specify /win32res, the compiler will generate version information based on the assembly version. You can also include Menu and Dialog definitions in a RC file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">See </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource" styleclass="Normal" translate="true">/linkresource</link><text styleclass="Normal" translate="true"> (to reference) or </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource" styleclass="Normal" translate="true">/resource</link><text styleclass="Normal" translate="true"> (to attach) a .NET Framework resource file.</text></para>
+    <para styleclass="Normal">See <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">/linkresource</link> (to reference) or <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">/resource</link> (to attach) a .NET Framework resource file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">You cannot set this compiler option inside Visual Studio. If your application has native resource files, then the build system will automatically convert this to a nativeresources.res file and include this file with the /win32res command line option in your assembly.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal">You cannot set this compiler option inside Visual Studio. If your application has native resource files, then the build system will automatically convert this to a nativeresources.res file and include this file with the /win32res command line option in your assembly.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compile </text><text styleclass="Code Example" translate="true">in.prg</text><text styleclass="Normal" translate="true"> and attach a Win32 resource file </text><text styleclass="Code Example" translate="true">rf.res</text><text styleclass="Normal" translate="true"> to produce </text><text styleclass="Code Example" translate="true">in.exe</text><text styleclass="Normal" translate="true">:</text></para>
+    <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> and attach a Win32 resource file <text styleclass="Code Example">rf.res</text> to produce <text styleclass="Code Example">in.exe</text>:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc /win32res:rf.res in.prg &#160;</text></para>
+    <para styleclass="Code with box">xsc /win32res:rf.res in.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

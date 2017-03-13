@@ -1,30 +1,30 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0201</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0201</title>
   <keywords>
-    <keyword translate="true">XS0201</keyword>
+    <keyword>XS0201</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0201</text></para>
+      <para styleclass="Heading1">XS0201</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Only assignment, call, increment, decrement, and new object expressions can be used as a statement</text></para>
+    <para styleclass="Normal">Only assignment, call, increment, decrement, and new object expressions can be used as a statement</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler generates an error when it encounters an invalid statement. An invalid statement is any line or series of lines ending in a semicolon that does not represent an assignment (=), method call (), new, -- or ++ operation. For more information, see Statements, Expressions, and Operators.</text></para>
+    <para styleclass="Normal">The compiler generates an error when it encounters an invalid statement. An invalid statement is any line or series of lines ending in a semicolon that does not represent an assignment (=), method call (), new, -- or ++ operation. For more information, see Statements, Expressions, and Operators.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0201 because 2 * 3 is an expression, not a statement. To make the code compile, try assigning the value of the expression to a variable.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0201.prg &#160;</text><br/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0201 because checked by itself is not a statement, even though it is parameterized by an increment operation.</text></para>
+    <para styleclass="Normal">The following sample generates XS0201 because 2 * 3 is an expression, not a statement. To make the code compile, try assigning the value of the expression to a variable.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0201_b.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0201.prg &#160;<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0201 because checked by itself is not a statement, even though it is parameterized by an increment operation.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0201_b.prg &#160;<br/>// compile with: /target:library &#160;<br/></para>
   </body>
 </topic>

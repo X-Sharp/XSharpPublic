@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">IF ... ELSE ... ENDIF</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>IF ... ELSE ... ENDIF</title>
   <keywords>
-    <keyword translate="true">ELSE</keyword>
-    <keyword translate="true">ELSEIF</keyword>
-    <keyword translate="true">END</keyword>
-    <keyword translate="true">ENDIF</keyword>
-    <keyword translate="true">IF</keyword>
+    <keyword>ELSE</keyword>
+    <keyword>ELSEIF</keyword>
+    <keyword>END</keyword>
+    <keyword>ENDIF</keyword>
+    <keyword>IF</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">IF ... ELSE ... ENDIF</text></para>
+      <para styleclass="Heading1">IF ... ELSE ... ENDIF</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">ifstmt &#160; </text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">: &#160; &#160;IF expression </text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(ELSEIF expression </text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">) *</text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(ELSE </text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">)?</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(END IF? | ENDIF) &#160;</text><br/><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">ifstmt &#160; </text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: &#160; &#160;IF expression </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(ELSEIF expression </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><text style="font-weight:normal; font-style:normal; color:#000000;">) *</text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(ELSE </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><text style="font-weight:normal; font-style:normal; color:#000000;">)?</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(END IF? | ENDIF) &#160;</text><br/><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

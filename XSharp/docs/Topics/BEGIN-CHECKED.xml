@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">BEGIN (UN)CHECKED</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>BEGIN (UN)CHECKED</title>
   <keywords>
-    <keyword translate="true">BEGIN</keyword>
-    <keyword translate="true">CHECKED</keyword>
-    <keyword translate="true">END</keyword>
-    <keyword translate="true">UNCHECKED</keyword>
+    <keyword>BEGIN</keyword>
+    <keyword>CHECKED</keyword>
+    <keyword>END</keyword>
+    <keyword>UNCHECKED</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">BEGIN (UN)CHECKED</text></para>
+      <para styleclass="Heading1">BEGIN (UN)CHECKED</para>
     </header>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">BEGIN CHECKED </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">END CHECKED? </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN CHECKED </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END CHECKED? </text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">BEGIN UNCHECKED </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">END CHECKED? </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN UNCHECKED </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END CHECKED? </text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"></para>
   </body>

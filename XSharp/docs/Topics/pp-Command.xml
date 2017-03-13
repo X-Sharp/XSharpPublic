@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">#command</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>#command</title>
   <keywords>
-    <keyword translate="true">#command</keyword>
-    <keyword translate="true">Preprocessor</keyword>
+    <keyword>#command</keyword>
+    <keyword>Preprocessor</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">#command</text></para>
+      <para styleclass="Heading1">#command</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Not supported yet</text></para>
+    <para styleclass="Normal">Not supported yet</para>
   </body>
 </topic>

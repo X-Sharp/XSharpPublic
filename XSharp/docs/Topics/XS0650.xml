@@ -1,31 +1,31 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0650</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0650</title>
   <keywords>
-    <keyword translate="true">XS0650</keyword>
+    <keyword>XS0650</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0650</text></para>
+      <para styleclass="Heading1">XS0650</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Bad array declarator: To declare a managed array the rank specifier precedes the variable&apos;s identifier. To declare a fixed size buffer field, use the fixed keyword before the field type.</text></para>
+    <para styleclass="Normal">Bad array declarator: To declare a managed array the rank specifier precedes the variable&apos;s identifier. To declare a fixed size buffer field, use the fixed keyword before the field type.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">An array was declared incorrectly. In X#, unlike in C and C++, the square brackets follow the type, not the variable name. Also, realize that the syntax for a fixed size buffer differs from that of an array.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">An array was declared incorrectly. In X#, unlike in C and C++, the square brackets follow the type, not the variable name. Also, realize that the syntax for a fixed size buffer differs from that of an array.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example code generates XS0650.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0650.prg &#160;</text><br/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example shows how to use the fixed keyword when you create a fixed size buffer:</text></para>
+    <para styleclass="Normal">The following example code generates XS0650.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// This code must appear in an unsafe block. &#160; </text><br/></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
+    <para styleclass="Code with box">// XS0650.prg &#160;<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example shows how to use the fixed keyword when you create a fixed size buffer:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// This code must appear in an unsafe block. &#160; <br/></para>
+    <para styleclass="Normal"> &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

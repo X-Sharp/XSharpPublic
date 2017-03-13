@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0592</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0592</title>
   <keywords>
-    <keyword translate="true">XS0592</keyword>
+    <keyword>XS0592</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0592</text></para>
+      <para styleclass="Heading1">XS0592</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Attribute &apos;attribute&apos; is not valid on this declaration type. It is valid on &apos;type&apos; declarations only.</text></para>
+    <para styleclass="Normal">Attribute &apos;attribute&apos; is not valid on this declaration type. It is valid on &apos;type&apos; declarations only.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you define an attribute, you define what constructs it can be applied to by specifying an AttributeTargets value. In the following example, the MyAttribute attribute can be applied to interfaces only, because the AttributeUsage attribute specifies AttributeTargets.Iterface. The error is generated because the attribute is applied to a class (class A).</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">When you define an attribute, you define what constructs it can be applied to by specifying an AttributeTargets value. In the following example, the MyAttribute attribute can be applied to interfaces only, because the AttributeUsage attribute specifies AttributeTargets.Iterface. The error is generated because the attribute is applied to a class (class A).</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0592:</text></para>
+    <para styleclass="Normal">The following sample generates XS0592:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0592.prg &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0592.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

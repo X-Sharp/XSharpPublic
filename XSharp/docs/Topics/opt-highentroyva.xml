@@ -1,35 +1,35 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/highentroyva</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/highentroyva</title>
   <keywords>
-    <keyword translate="true">/highentroyva</keyword>
+    <keyword>/highentroyva</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/highentroyva</text></para>
+      <para styleclass="Heading1">/highentroyva</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /highentropyva compiler option tells the Windows kernel whether a particular executable supports high entropy Address Space Layout Randomization (ASLR).</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /highentropyva compiler option tells the Windows kernel whether a particular executable supports high entropy Address Space Layout Randomization (ASLR).</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/highentropyva[+ | -] </text><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Code with box">/highentropyva[+ | -] <text styleclass="Normal">&#32;</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | -</text><tab /><text styleclass="List" translate="true">This option specifies that a 64-bit executable or an executable that is marked by the /platform:anycpu compiler option supports a high entropy virtual address space. The option is disabled by default. Use /highentropyva+ or /highentropyva to enable it.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab />This option specifies that a 64-bit executable or an executable that is marked by the /platform:anycpu compiler option supports a high entropy virtual address space. The option is disabled by default. Use /highentropyva+ or /highentropyva to enable it.</para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /highentropyva option enables compatible versions of the Windows kernel to use higher degrees of entropy when randomizing the address space layout of a process as part of ASLR. Using higher degrees of entropy means that a larger number of addresses can be allocated to memory regions such as stacks and heaps. As a result, it is more difficult to guess the location of a particular memory region.</text></para>
+    <para styleclass="Normal">The /highentropyva option enables compatible versions of the Windows kernel to use higher degrees of entropy when randomizing the address space layout of a process as part of ASLR. Using higher degrees of entropy means that a larger number of addresses can be allocated to memory regions such as stacks and heaps. As a result, it is more difficult to guess the location of a particular memory region.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When the /highentropyva compiler option is specified, the target executable and any modules that it depends on must be able to handle pointer values that are larger than 4 gigabytes (GB) when they are running as a 64-bit process.</text></para>
+    <para styleclass="Normal">When the /highentropyva compiler option is specified, the target executable and any modules that it depends on must be able to handle pointer values that are larger than 4 gigabytes (GB) when they are running as a 64-bit process.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Build property page.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Add the option in the &quot;User-Defined Command Line options&quot; property</text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Add the option in the &quot;User-Defined Command Line options&quot; property</li>
     </list>
   </body>
 </topic>

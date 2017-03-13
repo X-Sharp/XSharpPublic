@@ -1,44 +1,44 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1701</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1701</title>
   <keywords>
-    <keyword translate="true">XS1701</keyword>
+    <keyword>XS1701</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1701</text></para>
+      <para styleclass="Heading1">XS1701</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Assuming assembly reference &quot;Assembly Name #1&quot; matches &quot;Assembly Name #2&quot;, you may need to supply runtime policy</text></para>
+    <para styleclass="Normal">Assuming assembly reference &quot;Assembly Name #1&quot; matches &quot;Assembly Name #2&quot;, you may need to supply runtime policy</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The two assemblies differ in release and/or version number. For unification to occur, you must specify directives in the application&apos;s .config file, and you must provide the correct strong name of an assembly, as demonstrated in the following example code.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">The two assemblies differ in release and/or version number. For unification to occur, you must specify directives in the application&apos;s .config file, and you must provide the correct strong name of an assembly, as demonstrated in the following example code.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following multifile sample references an assembly using two different external aliases. This first sample builds the older version of the code that creates assembly XS1701_d.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_a.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:XS1701_d.dll /keyfile:mykey.snk &#160;</text><br/><text styleclass="Code with box" translate="true">&#32;</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This is the code that creates the newer version of assembly XS1701_d. Note that it compiles into a different directory than the older version, necessary since the output files have the same names.</text></para>
+    <para styleclass="Normal">The following multifile sample references an assembly using two different external aliases. This first sample builds the older version of the code that creates assembly XS1701_d.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_b.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:c:\\XS1701_d.dll /keyfile:mykey.snk &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1701_a.prg &#160;<br/>// compile with: /target:library /out:XS1701_d.dll /keyfile:mykey.snk &#160;<br/>&#32;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample sets up the external aliases A1 and A2.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_c.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /reference:A2=c:\\XS1701_d.dll /reference:A1=XS1701_d.dll &#160;</text><br/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample calls methods using two different aliases of A. The following sample generates C1701.</text></para>
+    <para styleclass="Normal">This is the code that creates the newer version of assembly XS1701_d. Note that it compiles into a different directory than the older version, necessary since the output files have the same names.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_d.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:c:\\XS1701_d.dll /reference:XS1701_c.dll &#160;</text><br/><text styleclass="Code with box" translate="true">// XS1701 expected &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS1701_b.prg &#160;<br/>// compile with: /target:library /out:c:\\XS1701_d.dll /keyfile:mykey.snk &#160;<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This sample sets up the external aliases A1 and A2.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1701_c.prg &#160;<br/>// compile with: /target:library /reference:A2=c:\\XS1701_d.dll /reference:A1=XS1701_d.dll &#160;<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This sample calls methods using two different aliases of A. The following sample generates C1701.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1701_d.prg &#160;<br/>// compile with: /reference:c:\\XS1701_d.dll /reference:XS1701_c.dll &#160;<br/>// XS1701 expected &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

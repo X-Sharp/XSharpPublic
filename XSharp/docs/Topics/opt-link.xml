@@ -1,54 +1,54 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/link</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/link</title>
   <keywords>
-    <keyword translate="true">/link</keyword>
+    <keyword>/link</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/link</text></para>
+      <para styleclass="Heading1">/link</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Causes the compiler to make COM type information in the specified assemblies available to the project that you are currently compiling.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">Causes the compiler to make COM type information in the specified assemblies available to the project that you are currently compiling.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/link:fileList &#160;</text><br/><text styleclass="Code with box" translate="true">// -or- &#160;</text><br/><text styleclass="Code with box" translate="true">/l:fileList &#160;</text></para>
+    <para styleclass="Code with box">/link:fileList &#160;<br/>// -or- &#160;<br/>/l:fileList &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">fileList</text><tab /><text styleclass="List" translate="true">Required. Comma-delimited list of assembly file names. If the file name contains a space, enclose the name in quotation marks.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The </text><text styleclass="Code Example" translate="true">/link</text><text styleclass="Normal" translate="true"> option enables you to deploy an application that has embedded type information. The application can then use types in a runtime assembly that implement the embedded type information without requiring a reference to the runtime assembly. If various versions of the runtime assembly are published, the application that contains the embedded type information can work with the various versions without having to be recompiled. For an example, see Walkthrough: Embedding Types from Managed Assemblies.</text></para>
+    <para styleclass="List"><text styleclass="Code Example">fileList</text><tab />Required. Comma-delimited list of assembly file names. If the file name contains a space, enclose the name in quotation marks.</para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">The <text styleclass="Code Example">/link</text> option enables you to deploy an application that has embedded type information. The application can then use types in a runtime assembly that implement the embedded type information without requiring a reference to the runtime assembly. If various versions of the runtime assembly are published, the application that contains the embedded type information can work with the various versions without having to be recompiled. For an example, see Walkthrough: Embedding Types from Managed Assemblies.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the /link option is especially useful when you are working with COM interop. You can embed COM types so that your application no longer requires a primary interop assembly (PIA) on the target computer. The </text><text styleclass="Code Example" translate="true">/link</text><text styleclass="Normal" translate="true"> option instructs the compiler to embed the COM type information from the referenced interop assembly into the resulting compiled code. The COM type is identified by the CLSID (GUID) value. As a result, your application can run on a target computer that has installed the same COM types with the same CLSID values. Applications that automate Microsoft Office are a good example. Because applications like Office usually keep the same CLSID value across different versions, your application can use the referenced COM types as long as .NET Framework 4 or later is installed on the target computer and your application uses methods, properties, or events that are included in the referenced COM types.</text></para>
+    <para styleclass="Normal">Using the /link option is especially useful when you are working with COM interop. You can embed COM types so that your application no longer requires a primary interop assembly (PIA) on the target computer. The <text styleclass="Code Example">/link</text> option instructs the compiler to embed the COM type information from the referenced interop assembly into the resulting compiled code. The COM type is identified by the CLSID (GUID) value. As a result, your application can run on a target computer that has installed the same COM types with the same CLSID values. Applications that automate Microsoft Office are a good example. Because applications like Office usually keep the same CLSID value across different versions, your application can use the referenced COM types as long as .NET Framework 4 or later is installed on the target computer and your application uses methods, properties, or events that are included in the referenced COM types.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The </text><text styleclass="Code Example" translate="true">/link</text><text styleclass="Normal" translate="true"> option embeds only interfaces, structures, and delegates. Embedding COM classes is not supported.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Note </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you create an instance of an embedded COM type in your code, you must create the instance by using the appropriate interface. Attempting to create an instance of an embedded COM type by using the CoClass causes an error.</text></para>
+    <para styleclass="Normal">The <text styleclass="Code Example">/link</text> option embeds only interfaces, structures, and delegates. Embedding COM classes is not supported.</para>
+    <para styleclass="Heading2">Note </para>
+    <para styleclass="Normal">When you create an instance of an embedded COM type in your code, you must create the instance by using the appropriate interface. Attempting to create an instance of an embedded COM type by using the CoClass causes an error.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To set the </text><text styleclass="Code Example" translate="true">/link</text><text styleclass="Normal" translate="true"> option in Visual Studio, add an assembly reference and set the Embed Interop Types property to true. The default for the Embed Interop Types property is false.</text></para>
+    <para styleclass="Normal">To set the <text styleclass="Code Example">/link</text> option in Visual Studio, add an assembly reference and set the Embed Interop Types property to true. The default for the Embed Interop Types property is false.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you link to a COM assembly (Assembly A) which itself references another COM assembly (Assembly B), you also have to link to Assembly B if either of the following is true:</text></para>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">A type from Assembly A inherits from a type or implements an interface from Assembly B.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">A field, property, event, or method that has a return type or parameter type from Assembly B is invoked.</text></li>
+    <para styleclass="Normal">If you link to a COM assembly (Assembly A) which itself references another COM assembly (Assembly B), you also have to link to Assembly B if either of the following is true:</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">A type from Assembly A inherits from a type or implements an interface from Assembly B.</li>
+      <li styleclass="Normal" style="margin-left:13px;">A field, property, event, or method that has a return type or parameter type from Assembly B is invoked.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Like the /reference compiler option, the</text><text styleclass="Code Example" translate="true"> /link</text><text styleclass="Normal" translate="true"> compiler option uses the xsc.rsp response file, which references frequently used .NET Framework assemblies. Use the /noconfig compiler option if you do not want the compiler to use the xsc.rsp file.</text></para>
+    <para styleclass="Normal">Like the /reference compiler option, the<text styleclass="Code Example"> /link</text> compiler option uses the xsc.rsp response file, which references frequently used .NET Framework assemblies. Use the /noconfig compiler option if you do not want the compiler to use the xsc.rsp file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The short form of </text><text styleclass="Code Example" translate="true">/link</text><text styleclass="Normal" translate="true"> is </text><text styleclass="Code Example" translate="true">/l.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Generics and Embedded Types</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sections describe the limitations on using generic types in applications that embed interop types.</text></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Generic Interfaces</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Generic interfaces that are embedded from an interop assembly cannot be used. </text></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Types That Have Generic Parameters</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Types that have a generic parameter whose type is embedded from an interop assembly cannot be used if that type is from an external assembly. This restriction does not apply to interfaces. For example, consider the Range interface that is defined in the Microsoft.Office.Interop.Excel assembly. If a library embeds interop types from the Microsoft.Office.Interop.Excel assembly and exposes a method that returns a generic type that has a parameter whose type is the Range interface, that method must return a generic interface, as shown in the following code example.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code compiles source file </text><text styleclass="Code Example" translate="true">OfficeApp.prg</text><text styleclass="Normal" translate="true"> and reference assemblies from </text><text styleclass="Code Example" translate="true">COMData1.dll</text><text styleclass="Normal" translate="true"> and </text><text styleclass="Code Example" translate="true">COMData2.dll</text><text styleclass="Normal" translate="true"> to produce </text><text styleclass="Code Example" translate="true">OfficeApp.exe</text><text styleclass="Normal" translate="true">.</text></para>
+    <para styleclass="Normal">The short form of <text styleclass="Code Example">/link</text> is <text styleclass="Code Example">/l.</text></para>
+    <para styleclass="Heading2">Generics and Embedded Types</para>
+    <para styleclass="Normal">The following sections describe the limitations on using generic types in applications that embed interop types.</para>
+    <para styleclass="Heading3">Generic Interfaces</para>
+    <para styleclass="Normal">Generic interfaces that are embedded from an interop assembly cannot be used. </para>
+    <para styleclass="Heading3">Types That Have Generic Parameters</para>
+    <para styleclass="Normal">Types that have a generic parameter whose type is embedded from an interop assembly cannot be used if that type is from an external assembly. This restriction does not apply to interfaces. For example, consider the Range interface that is defined in the Microsoft.Office.Interop.Excel assembly. If a library embeds interop types from the Microsoft.Office.Interop.Excel assembly and exposes a method that returns a generic type that has a parameter whose type is the Range interface, that method must return a generic interface, as shown in the following code example.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">The following code compiles source file <text styleclass="Code Example">OfficeApp.prg</text> and reference assemblies from <text styleclass="Code Example">COMData1.dll</text> and <text styleclass="Code Example">COMData2.dll</text> to produce <text styleclass="Code Example">OfficeApp.exe</text>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc /link:COMData1.dll,COMData2.dll /out:OfficeApp.exe OfficeApp.prg &#160;</text></para>
+    <para styleclass="Code with box">xsc /link:COMData1.dll,COMData2.dll /out:OfficeApp.exe OfficeApp.prg &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

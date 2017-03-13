@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">Generic Types</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Generic Types</title>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Generic Types</text></para>
+      <para styleclass="Heading1">Generic Types</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Generic types can be recognized by type parameters and type parameter constraints</text></para>
+    <para styleclass="Normal">Generic types can be recognized by type parameters and type parameter constraints</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">typeparameters &#160; &#160; &#160;: LT typeparameter (COMMA attributes? typeparameter)* GT</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example">typeparameters &#160; &#160; &#160;: LT typeparameter (COMMA attributes? typeparameter)* GT</para>
+    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">typeparameter &#160; &#160; &#160; : </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Attributes" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">attributes</link><text styleclass="Code Example" translate="true">? (IN | OUT)? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">identifier</link></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example">typeparameter &#160; &#160; &#160; : <link displaytype="text" defaultstyle="true" type="topiclink" href="Attributes" style="font-weight:normal; font-style:normal; color:#000000;">attributes</link>? (IN | OUT)? <link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link></para>
+    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">typeparameterconstraintsclause</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;: WHERE </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">identifier</link><text styleclass="Code Example" translate="true"> IS typeparameterconstraint (COMMA typeparameterconstraint)*</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example">typeparameterconstraintsclause</para>
+    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;: WHERE <link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link> IS typeparameterconstraint (COMMA typeparameterconstraint)*</para>
+    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">typeparameterconstraint: (CLASS|STRUCTURE)</text><tab /><tab /><tab /><tab /><text styleclass="Code Example" translate="true">// &#160;Class Foo&lt;t&gt; WHERE T IS (CLASS|STRUCTURE)</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; | typeName</text><tab /><tab /><tab /><tab /><tab /><tab /><text styleclass="Code Example" translate="true">// &#160;Class Foo&lt;t&gt; WHERE T IS Customer</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; | NEW LPAREN RPAREN</text><tab /><tab /><tab /><tab /><text styleclass="Code Example" translate="true">// &#160;Class Foo&lt;t&gt; WHERE T IS NEW()</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; ;</text></para>
+    <para styleclass="Code Example">typeparameterconstraint: (CLASS|STRUCTURE)<tab /><tab /><tab /><tab />// &#160;Class Foo&lt;t&gt; WHERE T IS (CLASS|STRUCTURE)</para>
+    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; | typeName<tab /><tab /><tab /><tab /><tab /><tab />// &#160;Class Foo&lt;t&gt; WHERE T IS Customer</para>
+    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; | NEW LPAREN RPAREN<tab /><tab /><tab /><tab />// &#160;Class Foo&lt;t&gt; WHERE T IS NEW()</para>
+    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; ;</para>
     <para styleclass="Code Example"></para>
   </body>
 </topic>

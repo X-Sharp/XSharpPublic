@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0016</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0016</title>
   <keywords>
-    <keyword translate="true">XS0016</keyword>
+    <keyword>XS0016</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0016</text></para>
+      <para styleclass="Heading1">XS0016</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Could not write to output file &apos;file&apos; — &apos;reason&apos;</text></para>
+    <para styleclass="Normal">Could not write to output file &apos;file&apos; — &apos;reason&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler could not write to an output file. Check the path to the file to make sure it exists. If a previously built file is already at the location, make sure it is writeable, and that no process currently has a lock on the file. For example,make sure your executable is not running when you attempt to build.</text></para>
+    <para styleclass="Normal">The compiler could not write to an output file. Check the path to the file to make sure it exists. If a previously built file is already at the location, make sure it is writeable, and that no process currently has a lock on the file. For example,make sure your executable is not running when you attempt to build.</para>
   </body>
 </topic>

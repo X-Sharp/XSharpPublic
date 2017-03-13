@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">#region - #endregion</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>#region - #endregion</title>
   <keywords>
-    <keyword translate="true">#endregion</keyword>
-    <keyword translate="true">#ifdef</keyword>
-    <keyword translate="true">#region</keyword>
-    <keyword translate="true">Preprocessor</keyword>
+    <keyword>#endregion</keyword>
+    <keyword>#ifdef</keyword>
+    <keyword>#region</keyword>
+    <keyword>Preprocessor</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">#region - #endregion</text></para>
+      <para styleclass="Heading1">#region - #endregion</para>
     </header>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">#region lets you specify a block of code that you can expand or collapse when using the outlining feature of the Visual Studio Code Editor. In longer code files, it is convenient to be able to collapse or hide one or more regions so that you can focus on the part of the file that you are currently working on. The following example shows how to define a region:</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-size:12pt;" translate="true">#region MyClass definition</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-size:12pt;" translate="true">CLASS MyClass</text></para>
-    <para styleclass="Code Example"><tab /><text styleclass="Code Example" style="font-size:12pt;" translate="true">EXPORT Name as STRING</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-size:12pt;" translate="true">END CLASS</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-size:12pt;" translate="true">#endregion</text></para>
+    <para styleclass="Body Text">#region lets you specify a block of code that you can expand or collapse when using the outlining feature of the Visual Studio Code Editor. In longer code files, it is convenient to be able to collapse or hide one or more regions so that you can focus on the part of the file that you are currently working on. The following example shows how to define a region:</para>
+    <para styleclass="Code Example"><text style="font-size:12pt;">#region MyClass definition</text></para>
+    <para styleclass="Code Example"><text style="font-size:12pt;">CLASS MyClass</text></para>
+    <para styleclass="Code Example"><tab /><text style="font-size:12pt;">EXPORT Name as STRING</text></para>
+    <para styleclass="Code Example"><text style="font-size:12pt;">END CLASS</text></para>
+    <para styleclass="Code Example"><text style="font-size:12pt;">#endregion</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Comments</text></para>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">A #region block must be terminated with a #endregion directive.</text></para>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">A #region block cannot overlap with a </text><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef" styleclass="Body Text" translate="true">#ifdef</link><text styleclass="Body Text" translate="true"> block or an </text><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef" styleclass="Body Text" translate="true">#ifndef</link><text styleclass="Body Text" translate="true"> block. However, a #region block can be nested in a #ifdef or #ifndef block, and a #ifdef or #ifndef block can be nested in a #region block.</text></para>
+    <para styleclass="Heading3">Comments</para>
+    <para styleclass="Body Text">A #region block must be terminated with a #endregion directive.</para>
+    <para styleclass="Body Text">A #region block cannot overlap with a <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link> block or an <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link> block. However, a #region block can be nested in a #ifdef or #ifndef block, and a #ifdef or #ifndef block can be nested in a #region block.</para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0229</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0229</title>
   <keywords>
-    <keyword translate="true">XS0229</keyword>
+    <keyword>XS0229</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0229</text></para>
+      <para styleclass="Heading1">XS0229</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Ambiguity between &apos;member1&apos; and &apos;member2&apos;</text></para>
+    <para styleclass="Normal">Ambiguity between &apos;member1&apos; and &apos;member2&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Members of different interfaces have the same name. If you want to keep the same names, you must qualify the names. For more information, see Interfaces.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Note </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In some cases, this ambiguity can be resolved by providing an explicit prefix to the identifier via a using alias.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">Members of different interfaces have the same name. If you want to keep the same names, you must qualify the names. For more information, see Interfaces.</para>
+    <para styleclass="Heading2">Note </para>
+    <para styleclass="Normal">In some cases, this ambiguity can be resolved by providing an explicit prefix to the identifier via a using alias.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0229:</text></para>
+    <para styleclass="Normal">The following example generates XS0229:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0229.prg &#160;</text><br/><br/><text styleclass="Code with box" translate="true">FUNCTION Start AS VOID</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;RETURN</text><br/><text styleclass="Code with box" translate="true">FUNCTION Test(x AS IListCounter) &#160;AS VOID</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;x:Count := 1</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// Try one of the following lines instead:</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// ((IList)x):Count := 1</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// or</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// ((Icounter)x):Count := 1</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;RETURN</text><br/><br/><text styleclass="Code with box" translate="true">INTERFACE IList</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;PROPERTY Count AS LONG GET SET</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;METHOD Counter AS VOID</text><br/><text styleclass="Code with box" translate="true">END INTERFACE</text><br/><br/><text styleclass="Code with box" translate="true">INTERFACE ICounter</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;PROPERTY Count AS REAL8 GET SET</text><br/><text styleclass="Code with box" translate="true">END INTERFACE</text><br/><br/><text styleclass="Code with box" translate="true">INTERFACE IListCounter INHERIT Ilist, ICounter</text><br/><text styleclass="Code with box" translate="true">END INTERFACE</text><br/></para>
+    <para styleclass="Code with box">// XS0229.prg &#160;<br/><br/>FUNCTION Start AS VOID<br/> &#160; &#160;RETURN<br/>FUNCTION Test(x AS IListCounter) &#160;AS VOID<br/> &#160; &#160;x:Count := 1<br/> &#160; &#160;// Try one of the following lines instead:<br/> &#160; &#160;// ((IList)x):Count := 1<br/> &#160; &#160;// or<br/> &#160; &#160;// ((Icounter)x):Count := 1<br/> &#160; &#160;RETURN<br/><br/>INTERFACE IList<br/> &#160; &#160;PROPERTY Count AS LONG GET SET<br/> &#160; &#160;METHOD Counter AS VOID<br/>END INTERFACE<br/><br/>INTERFACE ICounter<br/> &#160; &#160;PROPERTY Count AS REAL8 GET SET<br/>END INTERFACE<br/><br/>INTERFACE IListCounter INHERIT Ilist, ICounter<br/>END INTERFACE<br/></para>
   </body>
 </topic>

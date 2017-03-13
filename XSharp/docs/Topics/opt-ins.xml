@@ -1,47 +1,47 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/ins</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/ins</title>
   <keywords>
-    <keyword translate="true">/ins</keyword>
+    <keyword>/ins</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/ins</text></para>
+      <para styleclass="Heading1">/ins</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /ins option specifies whether the compiler should automatically include namespaces from Vulcan Assemblies or X# assemblies compiled in VO/Vulcan dialect &#160;marked with the VulcanImplicitNameSpaceAttribute.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /ins option specifies whether the compiler should automatically include namespaces from Vulcan Assemblies or X# assemblies compiled in VO/Vulcan dialect &#160;marked with the VulcanImplicitNameSpaceAttribute.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/ins[+|-]</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Code with box">/ins[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just /ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Class Libraries can be compiled with a special attribute:</text></para>
+    <para styleclass="Normal">Class Libraries can be compiled with a special attribute:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">[assembly: VulcanImplicitNamespaceAttribute( &quot;SomeNameSpace )]</text></para>
+    <para styleclass="Code with box">[assembly: VulcanImplicitNamespaceAttribute( &quot;SomeNameSpace )]</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This attribute tells the compiler that classes that are placed inside that namespace should be automatically included when searching for classes, as if there was a #using SomeNameSpace statement in the source code.</text></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
+    <para styleclass="Normal">This attribute tells the compiler that classes that are placed inside that namespace should be automatically included when searching for classes, as if there was a #using SomeNameSpace statement in the source code.</para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="9" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Namespaces section, modify the Enable Implicit Lookup of Namespaces property. </text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the Namespaces section, modify the Enable Implicit Lookup of Namespaces property. </li>
     </list>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example will compile when the /ins switch is used and the VulcanVOGUIClasses assembly is included. Without /ins, errors will be raised.</text></para>
+    <para styleclass="Normal">The following example will compile when the /ins switch is used and the VulcanVOGUIClasses assembly is included. Without /ins, errors will be raised.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note that the App class and ShellWindow class are located in the Vulcan.VO namespace</text></para>
+    <para styleclass="Normal">Note that the App class and ShellWindow class are located in the Vulcan.VO namespace</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Normal">&#32;</para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">If the /ins option is enabled, then the above example will be compiled as if it was written:</text></para>
+    <para styleclass="Normal">If the /ins option is enabled, then the above example will be compiled as if it was written:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>

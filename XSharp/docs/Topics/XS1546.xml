@@ -1,32 +1,32 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS1546</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1546</title>
   <keywords>
-    <keyword translate="true">XS1546</keyword>
+    <keyword>XS1546</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1546</text></para>
+      <para styleclass="Heading1">XS1546</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Property, indexer, or event &apos;property&apos; is not supported by the language; try directly calling accessor method &apos;accessor&apos;</text></para>
+    <para styleclass="Normal">Property, indexer, or event &apos;property&apos; is not supported by the language; try directly calling accessor method &apos;accessor&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Your code is consuming an object that has a default indexed property and tried to use the indexed syntax. To resolve this error, call the property&apos;s accessor method. For more information on indexers and properties, see Indexers.</text></para>
+    <para styleclass="Normal">Your code is consuming an object that has a default indexed property and tried to use the indexed syntax. To resolve this error, call the property&apos;s accessor method. For more information on indexers and properties, see Indexers.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1546.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal">The following sample generates XS1546.</para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This code sample consists of a .cpp file, which compiles to a .dll, and a .prg file, which uses that .dll. The following code is for the .dll file, and defines a property to be accessed by the code in the .prg file.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CPP1546.cpp &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /clr /LD &#160;</text><br/><text styleclass="Code with box" translate="true">using namespace System; &#160;</text><br/><text styleclass="Code with box" translate="true">public ref class MCPP &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">public: &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;property int Prop [int,int] &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;int get( int i, int b ) &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;return i; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">}; &#160;</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This is the X# file.</text></para>
+    <para styleclass="Normal">This code sample consists of a .cpp file, which compiles to a .dll, and a .prg file, which uses that .dll. The following code is for the .dll file, and defines a property to be accessed by the code in the .prg file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1546.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /r:CPP1546.dll &#160; </text><br/></para>
+    <para styleclass="Code with box">// CPP1546.cpp &#160;<br/>// compile with: /clr /LD &#160;<br/>using namespace System; &#160;<br/>public ref class MCPP &#160;<br/>{ &#160;<br/>public: &#160;<br/> &#160; &#160;property int Prop [int,int] &#160;<br/> &#160; &#160;{ &#160;<br/> &#160; &#160; &#160; &#160;int get( int i, int b ) &#160;<br/> &#160; &#160; &#160; &#160;{ &#160;<br/> &#160; &#160; &#160; &#160; &#160; &#160;return i; &#160;<br/> &#160; &#160; &#160; &#160;} &#160;<br/> &#160; &#160;} &#160;<br/>}; &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This is the X# file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1546.prg &#160;<br/>// compile with: /r:CPP1546.dll &#160; <br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

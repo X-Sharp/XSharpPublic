@@ -1,72 +1,72 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">User defined Types</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>User defined Types</title>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">User defined Types</text></para>
+      <para styleclass="Heading1">User defined Types</para>
     </header>
     <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2">
       <thead style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Type</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Description</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CLASS" styleclass="Normal" translate="true">CLASS</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CLASS">CLASS</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DELEGATE" styleclass="Normal" translate="true">DELEGATE</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DELEGATE">DELEGATE</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Enum" styleclass="Normal" translate="true">ENUM</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Enum">ENUM</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Generic-Types" styleclass="Normal" translate="true">Generic Types</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Generic-Types">Generic Types</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INTERFACE" styleclass="Normal" translate="true">INTERFACE</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INTERFACE">INTERFACE</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Structure" styleclass="Normal" translate="true">STRUCTURE</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Structure">STRUCTURE</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="UNION" styleclass="Normal" translate="true">UNION</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="UNION">UNION</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VOSTRUCT" styleclass="Normal" translate="true">VOSTRUCT</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VOSTRUCT">VOSTRUCT</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>

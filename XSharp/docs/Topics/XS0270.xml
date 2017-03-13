@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">XS0270</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0270</title>
   <keywords>
-    <keyword translate="true">XS0270</keyword>
+    <keyword>XS0270</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0270</text></para>
+      <para styleclass="Heading1">XS0270</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Array size cannot be specified in a variable declaration (try initializing with a &apos;new&apos; expression)</text></para>
+    <para styleclass="Normal">Array size cannot be specified in a variable declaration (try initializing with a &apos;new&apos; expression)</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error occurs when a size is specified as part of an array declaration. To resolve, use the new Operator expression.</text></para>
+    <para styleclass="Normal">This error occurs when a size is specified as part of an array declaration. To resolve, use the new Operator expression.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0270:</text></para>
+    <para styleclass="Normal">The following example generates XS0270:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0270.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /t:module &#160;</text><br/></para>
+    <para styleclass="Code with box">// XS0270.prg &#160;<br/>// compile with: /t:module &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

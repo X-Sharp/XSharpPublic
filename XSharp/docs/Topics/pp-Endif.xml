@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">#endif</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>#endif</title>
   <keywords>
-    <keyword translate="true">#endif</keyword>
-    <keyword translate="true">Preprocessor</keyword>
+    <keyword>#endif</keyword>
+    <keyword>Preprocessor</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">#endif</text></para>
+      <para styleclass="Heading1">#endif</para>
     </header>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">#endif specifies the end of a conditional directive, which began with the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef" styleclass="Body Text" translate="true">#ifdef</link><text styleclass="Body Text" translate="true"> &#160;or </text><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef" styleclass="Body Text" translate="true">#ifndef</link><text styleclass="Body Text" translate="true"> directive. For example:</text></para>
+    <para styleclass="Body Text">#endif specifies the end of a conditional directive, which began with the <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link> &#160;or <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link> directive. For example:</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#define DEBUG</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">// ...</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#if DEBUG</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#endif</text></para>
+    <para styleclass="Code Example">#define DEBUG</para>
+    <para styleclass="Code Example">// ...</para>
+    <para styleclass="Code Example">#if DEBUG</para>
+    <para styleclass="Code Example"> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);</para>
+    <para styleclass="Code Example">#endif</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -1,117 +1,117 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title translate="true">/vo4</title>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>/vo4</title>
   <keywords>
-    <keyword translate="true">/vo4</keyword>
+    <keyword>/vo4</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo4</text><tab /><tab /><text styleclass="Heading1" translate="true">Implicit signed/unsigned conversions</text></para>
+      <para styleclass="Heading1">/vo4<tab /><tab />Implicit signed/unsigned conversions</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo4 option directs the compiler to implicitly convert signed integer types to/from unsigned types, and larger integer types to smaller types.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal">The /vo4 option directs the compiler to implicitly convert signed integer types to/from unsigned types, and larger integer types to smaller types.</para>
+    <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo4[+|-]</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Code with box">/vo4[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo4, directs the compiler to implicitly convert signed integer values to/from unsigned values, and larger integer types to smaller integer types. This provides compatibility with Visual Objects, which permits such conversions without an explicit cast or conversion operator. </text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just /vo4, directs the compiler to implicitly convert signed integer values to/from unsigned values, and larger integer types to smaller integer types. This provides compatibility with Visual Objects, which permits such conversions without an explicit cast or conversion operator. </para>
+    <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For safety reasons, this option is off by default. Implicitly converting between signed and unsigned integer types or between larger to smaller integer types can cause numeric overflow errors at runtime or unintended values to be passed depending upon whether overflow checking is enabled or disabled. By default, you must explicitly cast a signed integer to its unsigned counterpart and from larger integer types to smaller integer types and by explicitly doing so, it is assumed that the conversion is known by the programmer to be safe.</text></para>
+    <para styleclass="Normal">For safety reasons, this option is off by default. Implicitly converting between signed and unsigned integer types or between larger to smaller integer types can cause numeric overflow errors at runtime or unintended values to be passed depending upon whether overflow checking is enabled or disabled. By default, you must explicitly cast a signed integer to its unsigned counterpart and from larger integer types to smaller integer types and by explicitly doing so, it is assumed that the conversion is known by the programmer to be safe.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When this option is enabled, the compiler will implicitly convert the data types listed in the table below:</text></para>
+    <para styleclass="Normal">When this option is enabled, the compiler will implicitly convert the data types listed in the table below:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">From</text></para>
+          <para styleclass="Normal">From</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">To</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">SByte </text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">BYTE, WORD, Char, DWORD</text></para>
+          <para styleclass="Normal">To</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">SHORT </text></para>
+          <para styleclass="Normal">SByte </para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">BYTE, SByte, WORD, Char, DWORD</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">INT </text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">BYTE, SByte, WORD, SHORT, Char, DWORD</text></para>
+          <para styleclass="Normal">BYTE, WORD, Char, DWORD</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">INT64</text></para>
+          <para styleclass="Normal">SHORT </para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">BYTE, SByte, WORD, SHORT, Char, INT, DWORD, UINT64</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">BYTE</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">SByte</text></para>
+          <para styleclass="Normal">BYTE, SByte, WORD, Char, DWORD</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">WORD</text></para>
+          <para styleclass="Normal">INT </para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">SByte, BYTE, SHORT, Char, INT</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">DWORD</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">SByte, BYTE, WORD, SHORT, INT</text></para>
+          <para styleclass="Normal">BYTE, SByte, WORD, SHORT, Char, DWORD</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">UINT64</text></para>
+          <para styleclass="Normal">INT64</para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">SByte, BYTE, WORD, SHORT, Char, INT, DWORD, INT64</text></para>
+          <para styleclass="Normal">BYTE, SByte, WORD, SHORT, Char, INT, DWORD, UINT64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">BYTE</para>
+        </td>
+        <td>
+          <para styleclass="Normal">SByte</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">WORD</para>
+        </td>
+        <td>
+          <para styleclass="Normal">SByte, BYTE, SHORT, Char, INT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DWORD</para>
+        </td>
+        <td>
+          <para styleclass="Normal">SByte, BYTE, WORD, SHORT, INT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">UINT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">SByte, BYTE, WORD, SHORT, Char, INT, DWORD, INT64</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For each conversion, the compiler will raise an appropriate warning. You may disable the warning with the /wx switch, or insert an explicit cast in the source code to eliminate the warning.</text></para>
+    <para styleclass="Normal">For each conversion, the compiler will raise an appropriate warning. You may disable the warning with the /wx switch, or insert an explicit cast in the source code to eliminate the warning.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> It is strongly recommended that you do not use this compiler option in new code. All of the conversions listed in the table above have the ability to lose data or return incorrect values, since the range of values in the source data type cannot be represented in the target data type.</text></para>
+    <para styleclass="Normal"> It is strongly recommended that you do not use this compiler option in new code. All of the conversions listed in the table above have the ability to lose data or return incorrect values, since the range of values in the source data type cannot be represented in the target data type.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For example, an INT containing a negative number cannot be represented in a DWORD. Similarly, an INT greater than 65535 cannot be represeneted in a SHORT. If you must mix signed and unsigned types or pass a larger type to a smaller type, you should always supply an explicit cast rather than using /vo4. This will document the fact that the conversion is known to be safe, and it will not suppress compile time errors if incompatible integer types are unintentionally used. </text></para>
+    <para styleclass="Normal">For example, an INT containing a negative number cannot be represented in a DWORD. Similarly, an INT greater than 65535 cannot be represeneted in a SHORT. If you must mix signed and unsigned types or pass a larger type to a smaller type, you should always supply an explicit cast rather than using /vo4. This will document the fact that the conversion is known to be safe, and it will not suppress compile time errors if incompatible integer types are unintentionally used. </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the &quot;Implicit signed/unsigned conversions&quot; property. </text></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Implicit signed/unsigned conversions&quot; property. </li>
     </list>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
   </body>

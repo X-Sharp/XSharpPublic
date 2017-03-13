@@ -81,7 +81,6 @@
     </Compile>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="CompletionType.cs" />
-    <Compile Include="EntityParser.cs" />
     <Compile Include="IXSharpProject.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="ModelParser\ColorizerConstants.cs" />

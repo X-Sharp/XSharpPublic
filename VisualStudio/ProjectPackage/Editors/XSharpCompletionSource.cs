@@ -1351,6 +1351,8 @@ namespace XSharpLanguage
                 int Line = prev.Line;
                 do
                 {
+                    if (prev.TokenIndex == 0)
+                        break;
                     prev = tokens.Get(prev.TokenIndex - 1);
                     if (prev.Line != Line)
                     {
@@ -2953,12 +2955,14 @@ namespace XSharpLanguage
                 int Line = prev.Line;
                 do
                 {
+                    if (prev.TokenIndex == 0)
+                        break;
                     prev = tokens.Get(prev.TokenIndex - 1);
                     if (prev.Line != Line)
                     {
                         prev = null;
                     }
-                } while ((prev != null) && ( String.IsNullOrWhiteSpace( prev.Text)));
+                } while ((prev != null) && ( String.IsNullOrWhiteSpace( prev.Text)) );
             }
             return prev;
         }

@@ -116,6 +116,8 @@ namespace XSharp.Project
                 case ".prg":
                 case ".xs":
                     return XSharpFileType.SourceCode;
+                case ".ppo":
+                    return XSharpFileType.PreprocessorOutput;
                 case ".vh":
                 case ".xh":
                     return XSharpFileType.Header;
@@ -184,7 +186,6 @@ namespace XSharp.Project
                     break;
                 case XSharpFileType.Header:
                 case XSharpFileType.PreprocessorOutput:
-
                     ret = XSharpImageListIndex.Source + XSharpProjectNode.imageOffset;
                     break;
                 case XSharpFileType.VOForm:

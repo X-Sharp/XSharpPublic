@@ -57,6 +57,7 @@ namespace XSharp.Project
                 {
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                    case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
                         handled = StartSession(nCmdID, '\0');
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
@@ -139,6 +140,9 @@ namespace XSharp.Project
                             break;
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
                             Filter();
+                            break;
+                        case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                            
                             break;
                     }
                 }

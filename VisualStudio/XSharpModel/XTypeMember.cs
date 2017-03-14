@@ -127,7 +127,7 @@ namespace XSharpModel
                     desc += this.Kind.ToString() + " ";
                 desc += this.Prototype;
                 //
-                if ((this.Kind == Kind.Method) || (this.Kind == Kind.Function) || (this.Kind == Kind.Property ) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
+                if (this.Kind.HasReturnType())
                 {
                     desc += " as " + this.TypeName;
                 }
@@ -140,11 +140,7 @@ namespace XSharpModel
         {
             get
             {
-                if ( (this.Kind == Kind.Property) || 
-                    (this.Kind == Kind.Access) || 
-                    (this.Kind == Kind.ClassVar) ||
-                    (this.Kind == Kind.EnumMember) ||
-                    (this.Kind == Kind.Event))
+                if ( !this.Kind.HasParameters())
                     return this.Name;
                 //
                 String vars = "";

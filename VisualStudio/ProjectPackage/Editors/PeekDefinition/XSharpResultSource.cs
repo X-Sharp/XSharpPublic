@@ -23,15 +23,22 @@ namespace XSharp.Project
             {
                 return;
             }
+            var fileName = Path.GetFileName(this.peekableItem._gotoElement.File.FullPath);
+            
+            var label = string.Format("{0} - ({1}, {2})", fileName, this.peekableItem._gotoElement.Range.StartLine, this.peekableItem._gotoElement.Range.StartColumn);
 
-            using (var displayInfo = new PeekResultDisplayInfo(label: peekableItem._fileName, labelTooltip: peekableItem._fileName, title: Path.GetFileName(peekableItem._fileName), titleTooltip: peekableItem._fileName))
+            using (var displayInfo = new PeekResultDisplayInfo(label: label, labelTooltip: this.peekableItem._gotoElement.File.FullPath, title: label, titleTooltip: this.peekableItem._gotoElement.File.FullPath))
             {
                 var result = peekableItem._peekResultFactory.Create
                 (
                     displayInfo,
-                    peekableItem._fileName,
-                    new Span(peekableItem._point, 1),
-                    peekableItem._point,
+                    this.peekableItem._gotoElement.File.FullPath,
+                    this.peekableItem._gotoElement.Range.StartLine,
+                    this.peekableItem._gotoElement.Range.StartColumn,
+                    this.peekableItem._gotoElement.Range.EndLine,
+                    this.peekableItem._gotoElement.Range.EndColumn,
+                    this.peekableItem._gotoElement.Range.StartLine,
+                    this.peekableItem._gotoElement.Range.StartColumn,
                     false
                 );
 

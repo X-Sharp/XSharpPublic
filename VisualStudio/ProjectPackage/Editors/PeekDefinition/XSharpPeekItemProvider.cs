@@ -7,7 +7,7 @@ using static XSharp.Project.XSharpConstants;
 namespace XSharp.Project
 {
     [Export(typeof(IPeekableItemSourceProvider))]
-    [ContentType( "disable_" + LanguageName)]
+    [ContentType( LanguageName)]
     [Name("XSharp Class Peekable Item Provider")]
     [SupportsStandaloneFiles(false)]
     class XSharpPeekItemProvider : IPeekableItemSourceProvider

@@ -174,7 +174,6 @@
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Editors\EditorHelpers.cs" />
-    <Compile Include="Editors\PeekDefinition\PeekHelpers.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpResultSource.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpDefinitionPeekItem.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemSource.cs" />

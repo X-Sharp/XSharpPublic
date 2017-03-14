@@ -7,16 +7,12 @@ namespace XSharp.Project
     class XSharpDefinitionPeekItem : IPeekableItem
     {
         internal readonly IPeekResultFactory _peekResultFactory;
-        internal SnapshotPoint _point;
-        internal readonly ITextBuffer _textbuffer;
-        internal string _fileName;
+        internal XSharpModel.XElement _gotoElement;
 
-        public XSharpDefinitionPeekItem(SnapshotPoint point, IPeekResultFactory peekResultFactory, ITextBuffer textbuffer)
+        public XSharpDefinitionPeekItem(XSharpModel.XElement gotoElement, IPeekResultFactory peekResultFactory)
         {
-            _point = point;
+            _gotoElement = gotoElement;
             _peekResultFactory = peekResultFactory;
-            _textbuffer = textbuffer;
-            _fileName = EditorHelpers.GetDocumentFileName(textbuffer);
         }
 
         public string DisplayName

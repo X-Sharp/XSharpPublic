@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System;
+using LanguageService.SyntaxTree;
+using XSharpLanguage;
 
 namespace XSharp.Project
 {
@@ -22,32 +24,30 @@ namespace XSharp.Project
             {
                 return;
             }
-
-            var triggerPoint = session.GetTriggerPoint(_textBuffer.CurrentSnapshot);
-            if (!triggerPoint.HasValue)
+            //
+            var tp = session.GetTriggerPoint(_textBuffer.CurrentSnapshot);
+            if (!tp.HasValue)
             {
                 return;
             }
-
-
-            string fileName = EditorHelpers.GetDocumentFileName(session.TextView.TextBuffer);
-
-            var snapLine = triggerPoint.Value.GetContainingLine();
-
-            //triggerPoint.Value.
-            //snapLine.
-
-
-            string text = snapLine.GetText();
-         
-
-
-            int lineNumber = triggerPoint.Value.GetContainingLine().LineNumber;
             //
-            //int offset = this.GetLineOffsetFromColumn(text, errorColumn - 1, tabSize);
-
-
-            //peekableItems.Add(new XSharpDefinitionPeekItem(triggerPoint.Value, _peekResultFactory, _textBuffer));
+            var triggerPoint = tp.Value;
+            string fileName = EditorHelpers.GetDocumentFileName(session.TextView.TextBuffer);
+            IToken stopToken;
+            //
+            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _textBuffer.CurrentSnapshot.GetText(), out stopToken, false);
+            // Check if we can get the member where we are
+            XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.Position, fileName);
+            XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, fileName);
+            // LookUp for the BaseType, reading the TokenList (From left to right)
+            XSharpModel.XElement gotoElement;
+            System.Reflection.MemberInfo dummyElement;
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, stopToken, out gotoElement, out dummyElement);
+            //
+            if (gotoElement != null)
+            {
+                peekableItems.Add(new XSharpDefinitionPeekItem(gotoElement, _peekResultFactory));
+            }
         }
 
         public void Dispose()

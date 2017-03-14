@@ -745,12 +745,20 @@ begin
 end;
 
 Procedure Checkvs2017Help();
+var
+  VsHelpItem: Integer;
+
 begin
+  if vs2015Installed and Vs2017Installed then
+     vsHelpItem := 4
+  else
+     vsHelpItem := 2;
+   
   if Vs2017Installed and Not HelpViewer23Installed then
   begin
-     WizardForm.ComponentsList.ItemCaption[4] := 'Cannot install the VS 2017 documentation because the Help component is not installed';
-     WizardForm.ComponentsList.ItemEnabled[4] := false;
-     WizardForm.ComponentsList.Checked[4] := false;
+     WizardForm.ComponentsList.ItemCaption[VsHelpItem] := 'Cannot install the VS 2017 documentation because the Help Viewer component is not installed';
+     WizardForm.ComponentsList.ItemEnabled[VsHelpItem] := false;
+     WizardForm.ComponentsList.Checked[VsHelpItem] := false;
   end
 
 end;

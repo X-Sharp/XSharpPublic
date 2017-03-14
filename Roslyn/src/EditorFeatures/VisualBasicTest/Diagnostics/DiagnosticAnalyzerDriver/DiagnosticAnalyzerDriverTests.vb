@@ -9,23 +9,23 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.UnitTests.Diagnostics
 
 Public Class DiagnosticAnalyzerDriverTests
-    <WpfFact>
-    Public Sub DiagnosticAnalyzerDriverAllInOne()
+    <Fact>
+    Public Async Function DiagnosticAnalyzerDriverAllInOne() As Task
         Dim source = TestResource.AllInOneVisualBasicCode
         Dim analyzer = New BasicTrackingDiagnosticAnalyzer()
-        Using workspace = VisualBasicWorkspaceFactory.CreateWorkspaceFromFile(source)
+        Using workspace = Await TestWorkspace.CreateVisualBasicAsync(source)
             Dim document = workspace.CurrentSolution.Projects.Single().Documents.Single()
             AccessSupportedDiagnostics(analyzer)
-            DiagnosticProviderTestUtilities.GetAllDiagnostics(analyzer, document, New TextSpan(0, document.GetTextAsync().Result.Length))
+            Await DiagnosticProviderTestUtilities.GetAllDiagnosticsAsync(analyzer, document, New TextSpan(0, document.GetTextAsync().Result.Length))
             analyzer.VerifyAllAnalyzerMembersWereCalled()
             analyzer.VerifyAnalyzeSymbolCalledForAllSymbolKinds()
-            analyzer.VerifyAnalyzeNodeCalledForAllSyntaxKinds()
+            analyzer.VerifyAnalyzeNodeCalledForAllSyntaxKinds(New HashSet(Of SyntaxKind)())
             analyzer.VerifyOnCodeBlockCalledForAllSymbolAndMethodKinds(allowUnexpectedCalls:=True)
         End Using
-    End Sub
+    End Function
 
-    <WpfFact, WorkItem(908658)>
-    Public Sub DiagnosticAnalyzerDriverVsAnalyzerDriverOnCodeBlock()
+    <Fact, WorkItem(908658, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/908658")>
+    Public Async Function DiagnosticAnalyzerDriverVsAnalyzerDriverOnCodeBlock() As Task
         Dim methodNames As String() = {"Initialize", "AnalyzeCodeBlock"}
         Dim source = <file><![CDATA[
 <System.Obsolete>
@@ -36,9 +36,9 @@ End Class
 ]]></file>
 
         Dim ideEngineAnalyzer = New BasicTrackingDiagnosticAnalyzer()
-        Using ideEngineWorkspace = VisualBasicWorkspaceFactory.CreateWorkspaceFromFile(source.Value)
+        Using ideEngineWorkspace = Await TestWorkspace.CreateVisualBasicAsync(source.Value)
             Dim ideEngineDocument = ideEngineWorkspace.CurrentSolution.Projects.Single().Documents.Single()
-            DiagnosticProviderTestUtilities.GetAllDiagnostics(ideEngineAnalyzer, ideEngineDocument, New TextSpan(0, ideEngineDocument.GetTextAsync().Result.Length))
+            Await DiagnosticProviderTestUtilities.GetAllDiagnosticsAsync(ideEngineAnalyzer, ideEngineDocument, New TextSpan(0, ideEngineDocument.GetTextAsync().Result.Length))
             For Each method In methodNames
                 Assert.False(ideEngineAnalyzer.CallLog.Any(Function(e) e.CallerName = method AndAlso If(e.SymbolKind = SymbolKind.Event, False)))
                 Assert.False(ideEngineAnalyzer.CallLog.Any(Function(e) e.CallerName = method AndAlso If(e.SymbolKind = SymbolKind.NamedType, False)))
@@ -47,7 +47,7 @@ End Class
         End Using
 
         Dim compilerEngineAnalyzer = New BasicTrackingDiagnosticAnalyzer()
-        Using compilerEngineWorkspace = VisualBasicWorkspaceFactory.CreateWorkspaceFromFile(source.Value)
+        Using compilerEngineWorkspace = Await TestWorkspace.CreateVisualBasicAsync(source.Value)
             Dim compilerEngineCompilation = CType(compilerEngineWorkspace.CurrentSolution.Projects.Single().GetCompilationAsync().Result, VisualBasicCompilation)
             compilerEngineCompilation.GetAnalyzerDiagnostics({compilerEngineAnalyzer})
             For Each method In methodNames
@@ -56,21 +56,21 @@ End Class
                 Assert.True(compilerEngineAnalyzer.CallLog.Any(Function(e) e.CallerName = method AndAlso If(e.SymbolKind = SymbolKind.Property, False)))
             Next method
         End Using
-    End Sub
+    End Function
 
-    <WpfFact>
-    <WorkItem(759)>
-    Public Sub DiagnosticAnalyzerDriverIsSafeAgainstAnalyzerExceptions()
+    <Fact>
+    <WorkItem(759, "https://github.com/dotnet/roslyn/issues/759")>
+    Public Async Function DiagnosticAnalyzerDriverIsSafeAgainstAnalyzerExceptions() As Task
         Dim source = TestResource.AllInOneVisualBasicCode
-        Using Workspace = VisualBasicWorkspaceFactory.CreateWorkspaceFromFile(source)
+        Using Workspace = Await TestWorkspace.CreateVisualBasicAsync(source)
             Dim document = Workspace.CurrentSolution.Projects.Single().Documents.Single()
-            ThrowingDiagnosticAnalyzer(Of SyntaxKind).VerifyAnalyzerEngineIsSafeAgainstExceptions(
-                Function(analyzer) DiagnosticProviderTestUtilities.GetAllDiagnostics(analyzer, document, New TextSpan(0, document.GetTextAsync().Result.Length), logAnalyzerExceptionAsDiagnostics:=True))
+            Await ThrowingDiagnosticAnalyzer(Of SyntaxKind).VerifyAnalyzerEngineIsSafeAgainstExceptionsAsync(
+                Async Function(analyzer) Await DiagnosticProviderTestUtilities.GetAllDiagnosticsAsync(analyzer, document, New TextSpan(0, document.GetTextAsync().Result.Length), logAnalyzerExceptionAsDiagnostics:=True))
         End Using
-    End Sub
+    End Function
 
-    <WorkItem(908621)>
-    <WpfFact>
+    <WorkItem(908621, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/908621")>
+    <Fact>
     Public Sub DiagnosticServiceIsSafeAgainstAnalyzerExceptions()
         Dim analyzer = New ThrowingDiagnosticAnalyzer(Of SyntaxKind)()
         analyzer.ThrowOn(GetType(DiagnosticAnalyzer).GetProperties().Single().Name)
@@ -82,9 +82,9 @@ End Class
         diagnosticService.GetDiagnosticDescriptors(projectOpt:=Nothing)
     End Sub
 
-    <WpfFact>
-    Public Sub AnalyzerOptionsArePassedToAllAnalyzers()
-        Using workspace = VisualBasicWorkspaceFactory.CreateWorkspaceFromFile(TestResource.AllInOneVisualBasicCode)
+    <Fact>
+    Public Async Function AnalyzerOptionsArePassedToAllAnalyzers() As Task
+        Using workspace = Await TestWorkspace.CreateVisualBasicAsync(TestResource.AllInOneVisualBasicCode)
             Dim currentProject = workspace.CurrentSolution.Projects.Single()
             Dim additionalDocId = DocumentId.CreateNewId(currentProject.Id)
             Dim newSln = workspace.CurrentSolution.AddAdditionalDocument(additionalDocId, "add.config", SourceText.From("random text"))
@@ -92,14 +92,14 @@ End Class
             currentProject = newSln.Projects.Single()
             Dim additionalDocument = currentProject.GetAdditionalDocument(additionalDocId)
 
-            Dim additionalStream As AdditionalText = New AdditionalTextDocument(additionalDocument.GetDocumentState())
+            Dim additionalStream As AdditionalText = New AdditionalTextDocument(additionalDocument.State)
             Dim options = New AnalyzerOptions(ImmutableArray.Create(additionalStream))
             Dim analyzer = New OptionsDiagnosticAnalyzer(Of SyntaxKind)(expectedOptions:=options)
 
             Dim sourceDocument = currentProject.Documents.Single()
-            DiagnosticProviderTestUtilities.GetAllDiagnostics(analyzer, sourceDocument, New Text.TextSpan(0, sourceDocument.GetTextAsync().Result.Length))
+            Await DiagnosticProviderTestUtilities.GetAllDiagnosticsAsync(analyzer, sourceDocument, New Text.TextSpan(0, sourceDocument.GetTextAsync().Result.Length))
             analyzer.VerifyAnalyzerOptions()
         End Using
-    End Sub
+    End Function
 
 End Class

@@ -1,11 +1,19 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis.CodeFixes
 Imports Microsoft.CodeAnalysis.Diagnostics
+Imports Xunit.Abstractions
 
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics.GenerateMethod
     Partial Public Class GenerateMethodCrossLanguageTests
         Inherits AbstractCrossLanguageUserDiagnosticTest
+
+        Private ReadOnly _outputHelper As ITestOutputHelper
+
+        Public Sub New(outputHelper As ITestOutputHelper)
+            _outputHelper = outputHelper
+        End Sub
 
         Friend Overrides Function CreateDiagnosticProviderAndFixer(workspace As Workspace, language As String) As Tuple(Of DiagnosticAnalyzer, CodeFixProvider)
             If language = LanguageNames.CSharp Then
@@ -19,8 +27,9 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics.GenerateMethod
             End If
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInstanceMethod_CSharpToVisualBasic()
+        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/9412")>
+        <Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInstanceMethod_CSharpToVisualBasic() As System.Threading.Tasks.Task
             Dim input =
         <Workspace>
             <Project Language="C#" AssemblyName="CSharpAssembly1" CommonReferences="true">
@@ -54,11 +63,11 @@ public class VBClass
 end class
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleStaticMethod_CSharpToVisualBasic()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleStaticMethod_CSharpToVisualBasic() As System.Threading.Tasks.Task
             Dim input =
         <Workspace>
             <Project Language="C#" AssemblyName="CSharpAssembly1" CommonReferences="true">
@@ -91,11 +100,11 @@ public class VBClass
 end class
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestParameters_CSharpToVisualBasic()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestParameters_CSharpToVisualBasic() As System.Threading.Tasks.Task
             Dim input =
         <Workspace>
             <Project Language="C#" AssemblyName="CSharpAssembly1" CommonReferences="true">
@@ -133,11 +142,11 @@ public class VBClass
 end class
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestExplicitInterface_CSharpToVisualBasic()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestExplicitInterface_CSharpToVisualBasic() As Task
             Dim input =
         <Workspace>
             <Project Language="C#" AssemblyName="CSharpAssembly1" CommonReferences="true">
@@ -167,11 +176,11 @@ end class
                     end interface
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDelegate_CSharpToVisualBasic()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDelegate_CSharpToVisualBasic() As Task
             Dim input =
         <Workspace>
             <Project Language="C#" AssemblyName="CSharpAssembly1" CommonReferences="true">
@@ -209,11 +218,11 @@ end class
                     end class
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestAbstractMethod_CSharpToVisualBasic()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestAbstractMethod_CSharpToVisualBasic() As Task
             Dim input =
         <Workspace>
             <Project Language="C#" AssemblyName="CSharpAssembly1" CommonReferences="true">
@@ -245,11 +254,11 @@ end class
                     end class
                 </text>.Value.Trim()
 
-            Test(input, expected, codeActionIndex:=1)
-        End Sub
+            Await TestAsync(input, expected, codeActionIndex:=1)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInstanceMethod_VisualBasicToCSharp()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInstanceMethod_VisualBasicToCSharp() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -284,11 +293,11 @@ end class
                     }
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestIntoNestedType_CSharpToVisualBasic()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestIntoNestedType_CSharpToVisualBasic() As Task
             Dim input =
         <Workspace>
             <Project Language="C#" AssemblyName="CSharpAssembly1" CommonReferences="true">
@@ -325,11 +334,11 @@ end class
                     end class
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestIntoNestedGenericType_CSharpToVisualBasic()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestIntoNestedGenericType_CSharpToVisualBasic() As Task
             Dim input =
         <Workspace>
             <Project Language="C#" AssemblyName="CSharpAssembly1" CommonReferences="true">
@@ -366,11 +375,11 @@ end class
     end class
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestIntoNestedType_VisualBasicToCSharp()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestIntoNestedType_VisualBasicToCSharp() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -411,11 +420,11 @@ end class
                     }
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestIntoNestedGenericType_VisualBasicToCSharp()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestIntoNestedGenericType_VisualBasicToCSharp() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -456,12 +465,12 @@ end class
                     }]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WorkItem(608827)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub GenerateMethodUsingTypeConstraint_SingleNamedType()
+        <WorkItem(608827, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608827")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function GenerateMethodUsingTypeConstraint_SingleNamedType() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -470,7 +479,7 @@ end class
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange($$foo())
+        list.AddRange1($$foo())
     End Sub
 End Module
                 </Document>
@@ -484,7 +493,7 @@ using System.Threading.Tasks;
  
 public static class extensions
 {
-    public static void AddRange<T, U>(this List<T> list, MyStruct<U> items) where U : T
+    public static void AddRange1<T, U>(this List<T> list, MyStruct<U> items) where U : T
     {
     }
 }
@@ -502,7 +511,7 @@ public struct MyStruct<T>
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange(foo())
+        list.AddRange1(foo())
     End Sub
 
     Private Function foo() As MyStruct(Of String)
@@ -511,12 +520,12 @@ Module Program
 End Module]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WorkItem(608827)>
+        <WorkItem(608827, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608827")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub GenerateMethodUsingTypeConstraint_2BaseTypeConstraints()
+        Public Async Function GenerateMethodUsingTypeConstraint_2BaseTypeConstraints() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -525,7 +534,7 @@ End Module]]>
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange($$foo())
+        list.AddRange1($$foo())
     End Sub
 End Module
                 </Document>
@@ -539,7 +548,7 @@ using System.Threading.Tasks;
 
 public static class extensions
 {
-    public static void AddRange<T, U>(this List<T> list, MyStruct<U> items) where U : AAA, BBB
+    public static void AddRange1<T, U>(this List<T> list, MyStruct<U> items) where U : AAA, BBB
     {
     }
 }
@@ -572,7 +581,7 @@ public class CCC : AAA, BBB
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange(foo())
+        list.AddRange1(foo())
     End Sub
 
     Private Function foo() As MyStruct(Of CCC)
@@ -581,12 +590,12 @@ Module Program
 End Module]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WorkItem(608827)>
+        <WorkItem(608827, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608827")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub GenerateMethodUsingTypeConstraint_2BaseTypeConstraints_Interfaces()
+        Public Async Function GenerateMethodUsingTypeConstraint_2BaseTypeConstraints_Interfaces() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -595,7 +604,7 @@ End Module]]>
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange($$foo())
+        list.AddRange1($$foo())
     End Sub
 End Module
                 </Document>
@@ -609,7 +618,7 @@ using System.Threading.Tasks;
 
 public static class extensions
 {
-    public static void AddRange<T, U>(this List<T> list, MyStruct<U> items) where U : AAA, BBB
+    public static void AddRange1<T, U>(this List<T> list, MyStruct<U> items) where U : AAA, BBB
     {
     }
 }
@@ -642,7 +651,7 @@ public class CCC : AAA, BBB
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange(foo())
+        list.AddRange1(foo())
     End Sub
 
     Private Function foo() As MyStruct(Of CCC)
@@ -651,12 +660,12 @@ Module Program
 End Module]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WorkItem(608827)>
+        <WorkItem(608827, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608827")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub GenerateMethodUsingTypeConstraint_3BaseTypeConstraints_NoCommonDerived()
+        Public Async Function GenerateMethodUsingTypeConstraint_3BaseTypeConstraints_NoCommonDerived() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -665,7 +674,7 @@ End Module]]>
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange($$foo())
+        list.AddRange1($$foo())
     End Sub
 End Module
                 </Document>
@@ -679,7 +688,7 @@ using System.Threading.Tasks;
 
 public static class extensions
 {
-    public static void AddRange<T, U>(this List<T> list, MyStruct<U> items) where U : interface1, interface2, interface3
+    public static void AddRange1<T, U>(this List<T> list, MyStruct<U> items) where U : interface1, interface2, interface3
     {
     }
 }
@@ -722,7 +731,7 @@ public class derived2 : interface3
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange(foo())
+        list.AddRange1(foo())
     End Sub
 
     Private Function foo() As MyStruct(Of Object)
@@ -731,10 +740,10 @@ Module Program
 End Module]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        Public Sub GenerateMethodUsingTypeConstraint_3BaseTypeConstraints_CommonDerived()
+        Public Async Function GenerateMethodUsingTypeConstraint_3BaseTypeConstraints_CommonDerived() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -819,12 +828,12 @@ Module Program
 End Module]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WorkItem(608827)>
+        <WorkItem(608827, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608827")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub GenerateMethodUsingTypeConstraint_3BaseTypeConstraints_CommonDerivedNestedType()
+        Public Async Function GenerateMethodUsingTypeConstraint_3BaseTypeConstraints_CommonDerivedNestedType() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -833,7 +842,7 @@ End Module]]>
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange($$foo())
+        list.AddRange1($$foo())
     End Sub
 End Module
                 </Document>
@@ -847,7 +856,7 @@ using System.Threading.Tasks;
 
 public static class extensions
 {
-    public static void AddRange<T, U>(this List<T> list, MyStruct<U> items) where U : interface1, interface2, interface3
+    public static void AddRange1<T, U>(this List<T> list, MyStruct<U> items) where U : interface1, interface2, interface3
     {
     }
 }
@@ -895,7 +904,7 @@ public class derived3 : derived1, interface3
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange(foo())
+        list.AddRange1(foo())
     End Sub
 
     Private Function foo() As MyStruct(Of derived3)
@@ -904,12 +913,12 @@ Module Program
 End Module]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WorkItem(608827)>
+        <WorkItem(608827, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608827")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub GenerateMethodUsingTypeConstraint_3BaseTypeConstraints_CommonDerivedInstantiatedTypes()
+        Public Async Function GenerateMethodUsingTypeConstraint_3BaseTypeConstraints_CommonDerivedInstantiatedTypes() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -918,7 +927,7 @@ End Module]]>
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange($$foo())
+        list.AddRange1($$foo())
     End Sub
 End Module
                 </Document>
@@ -932,7 +941,7 @@ using System.Threading.Tasks;
 
 public static class extensions
 {
-    public static void AddRange<T, U>(this List<T> list, MyStruct<U> items) where U : interface1, interface2, interface3
+    public static void AddRange1<T, U>(this List<T> list, MyStruct<U> items) where U : interface1, interface2, interface3
     {
     }
 }
@@ -987,7 +996,7 @@ public class outer
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange(foo())
+        list.AddRange1(foo())
     End Sub
 
     Private Function foo() As MyStruct(Of outer.inner.derived3)
@@ -996,12 +1005,12 @@ Module Program
 End Module]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
-        <WorkItem(608827)>
+        <WorkItem(608827, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608827")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub GenerateMethodUsingTypeConstraint_InstantiatedGenerics()
+        Public Async Function GenerateMethodUsingTypeConstraint_InstantiatedGenerics() As Task
             Dim input =
         <Workspace>
             <Project Language="Visual Basic" AssemblyName="VBAssembly1" CommonReferences="true">
@@ -1009,7 +1018,7 @@ End Module]]>
                 <Document>Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange($$foo())
+        list.AddRange1($$foo())
     End Sub
 End Module</Document>
             </Project>
@@ -1022,7 +1031,7 @@ using System.Threading.Tasks;
 
 public static class extensions
 {
-    public static void AddRange<T, U>(this List<T> list, MyStruct<U> items) where U : Base1<AAA>, inter1
+    public static void AddRange1<T, U>(this List<T> list, MyStruct<U> items) where U : Base1<AAA>, inter1
     {
     }
 }
@@ -1060,7 +1069,7 @@ public class FinalType<T> : Base1<T>, inter1 where T : AAA
 Module Program
     Sub Main(args As String())
         Dim list = New List(Of String)
-        list.AddRange(foo())
+        list.AddRange1(foo())
     End Sub
 
     Private Function foo() As MyStruct(Of FinalType(Of AAA))
@@ -1069,14 +1078,14 @@ Module Program
 End Module]]>
                 </text>.Value.Trim()
 
-            Test(input, expected)
-        End Sub
+            Await TestAsync(input, expected, onAfterWorkspaceCreated:=Sub(w) w.SetTestLogger(AddressOf _outputHelper.WriteLine))
+        End Function
 
 #Region "Normal tests"
 
         <WorkItem(144843, "Generate method stub generates into *.Designer.cs")>
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub PreferNormalFileOverAutoGeneratedFile_CSharp()
+        Public Async Function PreferNormalFileOverAutoGeneratedFile_CSharp() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -1129,12 +1138,12 @@ partial class UserControl1
 </Text>.Value.Trim()}
                 }
 
-            Test(input, fileNameToExpected:=expectedFileWithText)
-        End Sub
+            Await TestAsync(input, fileNameToExpected:=expectedFileWithText)
+        End Function
 
         <WorkItem(144843, "Generate method stub generates into *.Designer.cs")>
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub IntoAutoGeneratedFileIfNoBetterLocationExists_CSharp()
+        Public Async Function IntoAutoGeneratedFileIfNoBetterLocationExists_CSharp() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -1173,12 +1182,12 @@ partial class UserControl1
 }
 </Text>.Value.Trim()}}
 
-            Test(input, fileNameToExpected:=expectedFileWithText)
-        End Sub
+            Await TestAsync(input, fileNameToExpected:=expectedFileWithText)
+        End Function
 
         <WorkItem(144843, "Generate method stub generates into *.Designer.cs")>
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub InAutoGeneratedFiles_CSharp()
+        Public Async Function InAutoGeneratedFiles_CSharp() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -1216,12 +1225,12 @@ class Form1
 }
 </Text>.Value.Trim()}}
 
-            Test(input, fileNameToExpected:=expectedFileWithText)
-        End Sub
+            Await TestAsync(input, fileNameToExpected:=expectedFileWithText)
+        End Function
 
         <WorkItem(144843, "Generate method stub generates into *.Designer.cs")>
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub PreferNormalFileOverAutoGeneratedFile_Basic()
+        Public Async Function PreferNormalFileOverAutoGeneratedFile_Basic() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -1266,12 +1275,12 @@ End Class
 </Text>.Value.Trim()}
                 }
 
-            Test(input, fileNameToExpected:=expectedFileWithText)
-        End Sub
+            Await TestAsync(input, fileNameToExpected:=expectedFileWithText)
+        End Function
 
         <WorkItem(144843, "Generate method stub generates into *.Designer.cs")>
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub IntoAutoGeneratedFileIfNoBetterLocationExists_Basic()
+        Public Async Function IntoAutoGeneratedFileIfNoBetterLocationExists_Basic() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -1304,12 +1313,12 @@ Partial Class UserControl1
 End Class
 </Text>.Value.Trim()}}
 
-            Test(input, fileNameToExpected:=expectedFileWithText)
-        End Sub
+            Await TestAsync(input, fileNameToExpected:=expectedFileWithText)
+        End Function
 
         <WorkItem(144843, "Generate method stub generates into *.Designer.cs")>
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub InAutoGeneratedFiles_Basic()
+        Public Async Function InAutoGeneratedFiles_Basic() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -1337,8 +1346,8 @@ Class Form1
 End Class
 </Text>.Value.Trim()}}
 
-            Test(input, fileNameToExpected:=expectedFileWithText)
-        End Sub
+            Await TestAsync(input, fileNameToExpected:=expectedFileWithText)
+        End Function
 
 #End Region
 

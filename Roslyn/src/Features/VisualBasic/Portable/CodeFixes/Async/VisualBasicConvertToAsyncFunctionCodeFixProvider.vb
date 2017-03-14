@@ -8,14 +8,13 @@ Imports Microsoft.CodeAnalysis.CodeFixes
 Imports Microsoft.CodeAnalysis.CodeFixes.Async
 Imports Microsoft.CodeAnalysis.Formatting
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
-Imports Resources = Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.Async
     <ExportCodeFixProvider(LanguageNames.VisualBasic, Name:=PredefinedCodeFixProviderNames.ConvertToAsync), [Shared]>
     Friend Class VisualBasicConvertToAsyncFunctionCodeFixProvider
         Inherits AbstractChangeToAsyncCodeFixProvider
 
-        Friend Const BC37001 As String = "BC37001" ' error BC37001: 'Blah' Does not return a Task and is not awaited consider changing to and Aync Function.
+        Friend Const BC37001 As String = "BC37001" ' error BC37001: 'Blah' Does not return a Task and is not awaited consider changing to an Async Function.
 
         Friend ReadOnly Ids As ImmutableArray(Of String) = ImmutableArray.Create(Of String)(BC37001)
 
@@ -27,7 +26,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.Async
 
         Protected Overrides Async Function GetDescription(diagnostic As Diagnostic, node As SyntaxNode, semanticModel As SemanticModel, cancellationToken As CancellationToken) As Task(Of String)
             Dim methodNode = Await GetMethodFromExpression(node, semanticModel, cancellationToken).ConfigureAwait(False)
-            Return String.Format(Resources.MakeAsyncFunction, methodNode.Item2.BlockStatement)
+            Return String.Format(VBFeaturesResources.Make_0_an_Async_Function, methodNode.Item2.BlockStatement)
         End Function
 
         Protected Overrides Async Function GetRootInOtherSyntaxTree(node As SyntaxNode, semanticModel As SemanticModel, diagnostic As Diagnostic, cancellationToken As CancellationToken) As Task(Of Tuple(Of SyntaxTree, SyntaxNode))

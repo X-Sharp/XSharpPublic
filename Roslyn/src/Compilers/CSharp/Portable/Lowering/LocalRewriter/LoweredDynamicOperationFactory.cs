@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // that redefines these constants and is not supposed to run existing programs.
 
         /// <summary>
-        /// Corresponds to <see cref="Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags"/>.
+        /// Corresponds to Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags.
         /// </summary>
         [Flags]
         private enum CSharpBinderFlags
@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         /// <summary>
-        /// Corresponds to <see cref="Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags"/>.
+        /// Corresponds to Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags.
         /// </summary>
         [Flags]
         private enum CSharpArgumentInfoFlags
@@ -238,7 +238,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // type arguments:
                 typeArguments.IsDefaultOrEmpty ?
                     _factory.Null(_factory.WellKnownArrayType(WellKnownType.System_Type)) :
-                    _factory.Array(_factory.WellKnownType(WellKnownType.System_Type), _factory.TypeOfs(typeArguments)),
+                    _factory.ArrayOrEmpty(_factory.WellKnownType(WellKnownType.System_Type), _factory.TypeOfs(typeArguments)),
 
                 // context:
                 _factory.TypeofDynamicOperationContextType(),
@@ -322,7 +322,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         internal LoweredDynamicOperation MakeDynamicConstructorInvocation(
-        CSharpSyntaxNode syntax,
+            SyntaxNode syntax,
             TypeSymbol type,
             ImmutableArray<BoundExpression> loweredArguments,
             ImmutableArray<string> argumentNames,
@@ -595,7 +595,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 infos[j++] = GetArgumentInfo(argumentInfoFactory, loweredRight, NoName, RefKind.None, isStaticType: false);
             }
 
-            return _factory.Array(argumentInfoFactory.ContainingType, infos);
+            return _factory.ArrayOrEmpty(argumentInfoFactory.ContainingType, infos);
         }
 
         internal LoweredDynamicOperation MakeDynamicOperation(
@@ -640,6 +640,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var containerDef = (SynthesizedContainer)_currentDynamicCallSiteContainer.OriginalDefinition;
             var methodToContainerTypeParametersMap = containerDef.TypeMap;
 
+            ImmutableArray<LocalSymbol> temps = MakeTempsForDiscardArguments(ref loweredArguments);
+             
             var callSiteType = callSiteTypeGeneric.Construct(new[] { delegateTypeOverMethodTypeParameters });
             var callSiteFactoryMethod = callSiteFactoryGeneric.AsMember(callSiteType);
             var callSiteTargetField = callSiteTargetFieldGeneric.AsMember(callSiteType);
@@ -660,7 +662,26 @@ namespace Microsoft.CodeAnalysis.CSharp
                 delegateInvoke,
                 callSiteArguments);
 
-            return new LoweredDynamicOperation(_factory, siteInitialization, siteInvocation, resultType);
+            return new LoweredDynamicOperation(_factory, siteInitialization, siteInvocation, resultType, temps);
+        }
+
+        /// <summary>
+        /// If there are any discards in the arguments, create locals for each, updates the arguments and
+        /// returns the symbols that were created.
+        /// Returns default if no discards found.
+        /// </summary>
+        private ImmutableArray<LocalSymbol> MakeTempsForDiscardArguments(ref ImmutableArray<BoundExpression> loweredArguments)
+        {
+            int discardCount = loweredArguments.Count(a => a.Kind == BoundKind.DiscardExpression);
+
+            if (discardCount == 0)
+            {
+                return ImmutableArray<LocalSymbol>.Empty;
+            }
+
+            ArrayBuilder<LocalSymbol> temporariesBuilder = ArrayBuilder<LocalSymbol>.GetInstance(discardCount);
+            loweredArguments = _factory.MakeTempsForDiscardArguments(loweredArguments, temporariesBuilder);
+            return temporariesBuilder.ToImmutableAndFree();
         }
 
         private static NamedTypeSymbol CreateCallSiteContainer(SyntheticBoundNodeFactory factory, int methodOrdinal)
@@ -754,8 +775,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             int parameterCount = delegateSignature.Length - (returnsVoid ? 0 : 1);
-
-            return _factory.Compilation.AnonymousTypeManager.SynthesizeDelegate(parameterCount, byRefs, returnsVoid).Construct(delegateSignature);
+            int generation = _factory.CompilationState.ModuleBuilderOpt.CurrentGenerationOrdinal;
+            var synthesizedType = _factory.Compilation.AnonymousTypeManager.SynthesizeDelegate(parameterCount, byRefs, returnsVoid, generation);
+            return synthesizedType.Construct(delegateSignature);
         }
 
         internal BoundExpression GetArgumentInfo(

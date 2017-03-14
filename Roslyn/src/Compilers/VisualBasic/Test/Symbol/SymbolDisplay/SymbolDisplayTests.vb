@@ -6,7 +6,6 @@ Imports System.Threading
 Imports System.Xml.Linq
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Test.Utilities
-Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -1123,7 +1122,7 @@ end namespace
                                 typeQualificationStyle:=SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
                                 miscellaneousOptions:=SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers)
 
-            ' making sure that types still get escaped if no special type formatting was choosen
+            ' making sure that types still get escaped if no special type formatting was chosen
             TestSymbolDescription(
                 text,
                 findSymbol,
@@ -1151,7 +1150,7 @@ end namespace
                                 typeQualificationStyle:=SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
                                 miscellaneousOptions:=SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers Or SymbolDisplayMiscellaneousOptions.UseSpecialTypes)
 
-            ' making sure that types don't get escaped if special type formatting was choosen
+            ' making sure that types don't get escaped if special type formatting was chosen
             TestSymbolDescription(
                 text,
                 findSymbol,
@@ -1179,7 +1178,7 @@ end namespace
                     typeQualificationStyle:=SymbolDisplayTypeQualificationStyle.NameOnly,
                     miscellaneousOptions:=SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers)
 
-            ' making sure that types don't get escaped if special type formatting was choosen
+            ' making sure that types don't get escaped if special type formatting was chosen
             TestSymbolDescription(
                 text,
                 findSymbol,
@@ -3092,7 +3091,6 @@ End Class
                 findSymbol,
                 format,
                 "M(ByRef s As Int16, i As Int32, ParamArray args As String())",
-                {
                 SymbolDisplayPartKind.MethodName,
                 SymbolDisplayPartKind.Punctuation,
                 SymbolDisplayPartKind.Keyword,
@@ -3120,7 +3118,59 @@ End Class
                 SymbolDisplayPartKind.ClassName,
                 SymbolDisplayPartKind.Punctuation,
                 SymbolDisplayPartKind.Punctuation,
-                SymbolDisplayPartKind.Punctuation})
+                SymbolDisplayPartKind.Punctuation)
+
+            ' Without SymbolDisplayParameterOptions.IncludeParamsRefOut.
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format.WithParameterOptions(SymbolDisplayParameterOptions.IncludeType Or SymbolDisplayParameterOptions.IncludeName),
+                "M(s As Int16, i As Int32, args As String())",
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Punctuation)
+
+            ' Without SymbolDisplayParameterOptions.IncludeType.
+            TestSymbolDescription(
+                text,
+                findSymbol,
+                format.WithParameterOptions(SymbolDisplayParameterOptions.IncludeParamsRefOut Or SymbolDisplayParameterOptions.IncludeName),
+                "M(ByRef s, i, ParamArray args)",
+                SymbolDisplayPartKind.MethodName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ParameterName,
+                SymbolDisplayPartKind.Punctuation)
         End Sub
 
         ' "Public" and "MustOverride" should not be included for interface members.
@@ -3249,7 +3299,7 @@ End Class
                 "Public P As Object")
         End Sub
 
-        <WorkItem(540253, "DevDiv")>
+        <WorkItem(540253, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540253")>
         <Fact()>
         Public Sub TestOverloads()
             Dim text =
@@ -3677,7 +3727,7 @@ End Class
                 SymbolDisplayPartKind.ClassName)
         End Sub
 
-        <WorkItem(537447, "DevDiv")>
+        <WorkItem(537447, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/537447")>
         <Fact>
         Public Sub TestBug2239()
             Dim text =
@@ -3712,7 +3762,7 @@ End class
                 SymbolDisplayPartKind.Punctuation})
         End Sub
 
-        <WorkItem(538954, "DevDiv")>
+        <WorkItem(538954, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/538954")>
         <Fact>
         Public Sub ParameterOptionsIncludeName()
             Dim text =
@@ -3741,7 +3791,7 @@ End Class
                 {SymbolDisplayPartKind.ParameterName})
         End Sub
 
-        <WorkItem(539076, "DevDiv")>
+        <WorkItem(539076, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539076")>
         <Fact>
         Public Sub Bug4878()
             Dim text =
@@ -3767,7 +3817,7 @@ End Namespace
             Assert.Equal("Global.Global.c1", comp.SourceModule.GlobalNamespace.LookupNestedNamespace({"Global"}).GetTypeMembers.Single().ToDisplayString(format))
         End Sub
 
-        <WorkItem(541005, "DevDiv")>
+        <WorkItem(541005, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541005")>
         <Fact>
         Public Sub Bug7515()
             Dim text =
@@ -3795,7 +3845,7 @@ End Namespace
                                                                 GetMembers("MyDel").Single().ToDisplayString(m_DelegateSignatureFormat))
         End Sub
 
-        <WorkItem(542619, "DevDiv")>
+        <WorkItem(542619, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542619")>
         <Fact>
         Public Sub Bug9913()
             Dim text =
@@ -3847,7 +3897,7 @@ End Class
                 minimal:=True)
         End Sub
 
-        <WorkItem(542619, "DevDiv")>
+        <WorkItem(542619, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542619")>
         <Fact>
         Public Sub Bug9913_2()
             Dim text =
@@ -3897,7 +3947,7 @@ End Class
                 minimal:=True)
         End Sub
 
-        <WorkItem(542619, "DevDiv")>
+        <WorkItem(542619, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542619")>
         <Fact>
         Public Sub Bug9913_3()
             Dim text =
@@ -4066,7 +4116,7 @@ End Class
                 SymbolDisplayPartKind.ClassName}, minimal:=True)
         End Sub
 
-        <WorkItem(543938, "DevDiv")>
+        <WorkItem(543938, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543938")>
         <Fact>
         Public Sub Bug12025()
             Dim text =
@@ -4117,7 +4167,7 @@ End Class
                 minimal:=True)
         End Sub
 
-        <Fact, WorkItem(544414, "DevDiv")>
+        <Fact, WorkItem(544414, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544414")>
         Public Sub Bug12724()
             Dim text =
         <compilation>
@@ -4263,7 +4313,7 @@ End Class
                 minimal:=False)
         End Sub
 
-        <Fact, WorkItem(543806, "DevDiv")>
+        <Fact, WorkItem(543806, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543806")>
         Public Sub Bug11752()
             Dim text =
         <compilation>
@@ -4310,7 +4360,7 @@ End Module
                 SymbolDisplayPartKind.Punctuation}, minimal:=True)
         End Sub
 
-        <Fact(), WorkItem(529764, "DevDiv")>
+        <Fact(), WorkItem(529764, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529764")>
         Public Sub TypeParameterFromMetadata()
             Dim src1 =
         <compilation>
@@ -4364,7 +4414,7 @@ End Class
 
         End Sub
 
-        <Fact, WorkItem(545625, "DevDiv")>
+        <Fact, WorkItem(545625, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545625")>
         Public Sub ReverseArrayRankSpecifiers()
             Dim text =
 <compilation>
@@ -4497,7 +4547,7 @@ End Module
                 minimal:=True)
         End Sub
 
-        <WorkItem(765287, "DevDiv")>
+        <WorkItem(765287, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/765287")>
         <Fact>
         Public Sub TestCSharpSymbols()
             Dim csComp = CreateCSharpCompilation("CSharp", <![CDATA[
@@ -4603,9 +4653,433 @@ class Outer
             Assert.Equal(Nothing, SymbolDisplay.FormatPrimitive(New Object(), quoteStrings:=False, useHexadecimalNumbers:=False))
         End Sub
 
+        <Fact()>
+        Public Sub Tuple()
+            TestSymbolDescription(
+                <compilation>
+                    <file name="a.vb">
+Class C
+    Private f As (Integer, String)
+End Class
+                    </file>
+                </compilation>,
+                FindSymbol("C.f"),
+                New SymbolDisplayFormat(memberOptions:=SymbolDisplayMemberOptions.IncludeType),
+                "f As (Int32, String)",
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation)
+        End Sub
+
+        <Fact()>
+        Public Sub TupleWithNames()
+            TestSymbolDescription(
+                <compilation>
+                    <file name="a.vb">
+Class C
+    Private f As (x As Integer, y As String)
+End Class
+                    </file>
+                </compilation>,
+                FindSymbol("C.f"),
+                New SymbolDisplayFormat(memberOptions:=SymbolDisplayMemberOptions.IncludeType),
+                "f As (x As Int32, y As String)",
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.StructName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.ClassName,
+                SymbolDisplayPartKind.Punctuation)
+        End Sub
+
+        <Fact()>
+        Public Sub LongTupleWithSpecialTypes()
+            TestSymbolDescription(
+                <compilation>
+                    <file name="a.vb">
+Class C
+    Private f As (Integer, String, Boolean, Byte, Long, ULong, Short, UShort)
+End Class
+                    </file>
+                </compilation>,
+                FindSymbol("C.f"),
+                New SymbolDisplayFormat(
+                    memberOptions:=SymbolDisplayMemberOptions.IncludeType,
+                    miscellaneousOptions:=SymbolDisplayMiscellaneousOptions.UseSpecialTypes),
+                "f As (Integer, String, Boolean, Byte, Long, ULong, Short, UShort)",
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation)
+        End Sub
+
+        <Fact()>
+        Public Sub TupleProperty()
+            TestSymbolDescription(
+                <compilation>
+                    <file name="a.vb">
+Class C
+    Property P As (Item1 As Integer, Item2 As String)
+End Class
+                    </file>
+                </compilation>,
+                FindSymbol("C.P"),
+                New SymbolDisplayFormat(
+                    memberOptions:=SymbolDisplayMemberOptions.IncludeType,
+                    miscellaneousOptions:=SymbolDisplayMiscellaneousOptions.UseSpecialTypes),
+                "P As (Item1 As Integer, Item2 As String)",
+                SymbolDisplayPartKind.PropertyName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation)
+        End Sub
+
+        <Fact()>
+        Public Sub TupleQualifiedNames()
+            Dim text =
+"Imports NAB = N.A.B
+Namespace N
+    Class A
+        Friend Class B
+        End Class
+    End Class
+    Class C(Of T)
+        ' offset 1
+    End Class
+End Namespace
+Class C
+    Private f As (One As Integer, N.C(Of (Object(), Two As NAB)), Integer, Four As Object, Integer, Object, Integer, Object, Nine As N.A)
+    ' offset 2
+End Class"
+            Dim source =
+                <compilation>
+                    <file name="a.vb"><%= text %></file>
+                </compilation>
+            Dim format = New SymbolDisplayFormat(
+                globalNamespaceStyle:=SymbolDisplayGlobalNamespaceStyle.Included,
+                typeQualificationStyle:=SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+                genericsOptions:=SymbolDisplayGenericsOptions.IncludeTypeParameters,
+                memberOptions:=SymbolDisplayMemberOptions.IncludeType,
+                miscellaneousOptions:=SymbolDisplayMiscellaneousOptions.UseSpecialTypes)
+            Dim comp = CompilationUtils.CreateCompilationWithMscorlib(source, references:={SystemRuntimeFacadeRef, ValueTupleRef})
+            comp.VerifyDiagnostics()
+            Dim symbol = comp.GetMember("C.f")
+
+            ' Fully qualified format.
+            Verify(
+                SymbolDisplay.ToDisplayParts(symbol, format),
+                "f As (One As Integer, Global.N.C(Of (Object(), Two As Global.N.A.B)), Integer, Four As Object, Integer, Object, Integer, Object, Nine As Global.N.A)")
+
+            ' Minimally qualified format.
+            Verify(
+                SymbolDisplay.ToDisplayParts(symbol, SymbolDisplayFormat.MinimallyQualifiedFormat),
+                "C.f As (One As Integer, C(Of (Object(), Two As B)), Integer, Four As Object, Integer, Object, Integer, Object, Nine As A)")
+
+            ' ToMinimalDisplayParts.
+            Dim model = comp.GetSemanticModel(comp.SyntaxTrees(0))
+            Verify(
+                SymbolDisplay.ToMinimalDisplayParts(symbol, model, text.IndexOf("offset 1"), format),
+                "f As (One As Integer, C(Of (Object(), Two As NAB)), Integer, Four As Object, Integer, Object, Integer, Object, Nine As A)")
+            Verify(
+                SymbolDisplay.ToMinimalDisplayParts(symbol, model, text.IndexOf("offset 2"), format),
+                "f As (One As Integer, N.C(Of (Object(), Two As NAB)), Integer, Four As Object, Integer, Object, Integer, Object, Nine As N.A)")
+        End Sub
+
+        ' A tuple type symbol that is not Microsoft.CodeAnalysis.VisualBasic.Symbols.TupleTypeSymbol.
+        <Fact()>
+        Public Sub NonTupleTypeSymbol()
+            Dim source =
+"class C
+{
+#pragma warning disable CS0169
+    (int Alice, string Bob) F;
+    (int, string) G;
+#pragma warning restore CS0169
+}"
+            Dim format = New SymbolDisplayFormat(
+                memberOptions:=SymbolDisplayMemberOptions.IncludeType,
+                miscellaneousOptions:=SymbolDisplayMiscellaneousOptions.UseSpecialTypes)
+            Dim comp = CreateCSharpCompilation(GetUniqueName(), source, referencedAssemblies:={MscorlibRef, SystemRuntimeFacadeRef, ValueTupleRef})
+            comp.VerifyDiagnostics()
+            Dim type = comp.GlobalNamespace.GetTypeMembers("C").Single()
+            Verify(
+                SymbolDisplay.ToDisplayParts(type.GetMembers("F").Single(), format),
+                "F As (Alice As Integer, Bob As String)",
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation)
+            Verify(
+                SymbolDisplay.ToDisplayParts(type.GetMembers("G").Single(), format),
+                "G As (Integer, String)",
+                SymbolDisplayPartKind.FieldName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Punctuation)
+        End Sub
+
+        ' SymbolDisplayMemberOptions.IncludeRef is ignored in VB.
+        <WorkItem(11356, "https://github.com/dotnet/roslyn/issues/11356")>
+        <Fact()>
+        Public Sub RefReturn()
+            Dim sourceA =
+"public delegate ref int D();
+public class C
+{
+    public ref int F(ref int i) => ref i;
+    int _p;
+    public ref int P => ref _p;
+    public ref int this[int i] => ref _p;
+}"
+            Dim compA = CreateCSharpCompilation(GetUniqueName(), sourceA)
+            compA.VerifyDiagnostics()
+            Dim refA = compA.EmitToImageReference()
+            ' From C# symbols.
+            RefReturnInternal(compA)
+
+            Dim sourceB =
+        <compilation>
+            <file name="b.vb">
+            </file>
+        </compilation>
+            Dim compB = CompilationUtils.CreateCompilationWithMscorlib(sourceB, references:={refA})
+            compB.VerifyDiagnostics()
+            ' From VB symbols.
+            RefReturnInternal(compB)
+        End Sub
+
+        Private Shared Sub RefReturnInternal(comp As Compilation)
+            Dim formatWithRef = New SymbolDisplayFormat(
+                memberOptions:=SymbolDisplayMemberOptions.IncludeParameters Or SymbolDisplayMemberOptions.IncludeType Or SymbolDisplayMemberOptions.IncludeRef,
+                parameterOptions:=SymbolDisplayParameterOptions.IncludeType Or SymbolDisplayParameterOptions.IncludeParamsRefOut,
+                propertyStyle:=SymbolDisplayPropertyStyle.ShowReadWriteDescriptor,
+                delegateStyle:=SymbolDisplayDelegateStyle.NameAndSignature,
+                miscellaneousOptions:=SymbolDisplayMiscellaneousOptions.UseSpecialTypes)
+
+            Dim [global] = comp.GlobalNamespace
+            Dim type = [global].GetTypeMembers("C").Single()
+            Dim method = type.GetMembers("F").Single()
+            Dim [property] = type.GetMembers("P").Single()
+            Dim indexer = type.GetMembers().Where(Function(m) m.Kind = SymbolKind.Property AndAlso DirectCast(m, IPropertySymbol).IsIndexer).Single()
+            Dim [delegate] = [global].GetTypeMembers("D").Single()
+
+            ' Method with IncludeRef.
+            ' https://github.com/dotnet/roslyn/issues/14683: missing ByRef for C# parameters.
+            If comp.Language = "C#" Then
+                Verify(
+                    SymbolDisplay.ToDisplayParts(method, formatWithRef),
+                    "ByRef F(Integer) As Integer",
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.MethodName,
+                    SymbolDisplayPartKind.Punctuation,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Punctuation,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword)
+            Else
+                Verify(
+                    SymbolDisplay.ToDisplayParts(method, formatWithRef),
+                    "ByRef F(ByRef Integer) As Integer",
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.MethodName,
+                    SymbolDisplayPartKind.Punctuation,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Punctuation,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword)
+            End If
+
+            ' Property with IncludeRef.
+            Verify(
+                SymbolDisplay.ToDisplayParts([property], formatWithRef),
+                "ReadOnly ByRef P As Integer",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.PropertyName,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword)
+
+            ' Indexer with IncludeRef.
+            ' https://github.com/dotnet/roslyn/issues/14684: "this[]" for C# indexer.
+            If comp.Language = "C#" Then
+                Verify(
+                    SymbolDisplay.ToDisplayParts(indexer, formatWithRef),
+                    "ReadOnly ByRef this[](Integer) As Integer",
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.PropertyName,
+                    SymbolDisplayPartKind.Punctuation,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Punctuation,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword)
+            Else
+                Verify(
+                    SymbolDisplay.ToDisplayParts(indexer, formatWithRef),
+                    "ReadOnly ByRef Item(Integer) As Integer",
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.PropertyName,
+                    SymbolDisplayPartKind.Punctuation,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Punctuation,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword,
+                    SymbolDisplayPartKind.Space,
+                    SymbolDisplayPartKind.Keyword)
+            End If
+
+            ' Delegate with IncludeRef.
+            Verify(
+                SymbolDisplay.ToDisplayParts([delegate], formatWithRef),
+                "ByRef Function D() As Integer",
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.DelegateName,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Punctuation,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword,
+                SymbolDisplayPartKind.Space,
+                SymbolDisplayPartKind.Keyword)
+        End Sub
+
+        <Fact>
+        Public Sub AliasInSpeculativeSemanticModel()
+            Dim text =
+        <compilation>
+            <file name="a.vb">
+Imports A = N.M
+Namespace N.M
+    Class B
+    End Class
+End Namespace
+Class C
+    Shared Sub M()
+        Dim o = 1
+    End Sub
+End Class
+                </file>
+        </compilation>
+            Dim comp = CompilationUtils.CreateCompilationWithMscorlib(text)
+            Dim tree = comp.SyntaxTrees.First()
+            Dim model = comp.GetSemanticModel(tree)
+            Dim methodDecl = tree.GetCompilationUnitRoot().DescendantNodes().OfType(Of MethodBlockBaseSyntax)().First()
+            Dim position = methodDecl.Statements(0).SpanStart
+            tree = VisualBasicSyntaxTree.ParseText("
+Class C
+    Shared Sub M()
+        Dim o = 1
+    End Sub
+End Class")
+            methodDecl = tree.GetCompilationUnitRoot().DescendantNodes().OfType(Of MethodBlockBaseSyntax)().First()
+            Assert.True(model.TryGetSpeculativeSemanticModelForMethodBody(position, methodDecl, model))
+            Dim symbol = comp.GetMember(Of NamedTypeSymbol)("N.M.B")
+            position = methodDecl.Statements(0).SpanStart
+            Dim description = symbol.ToMinimalDisplayParts(model, position, SymbolDisplayFormat.MinimallyQualifiedFormat)
+            Verify(description, "A.B", SymbolDisplayPartKind.AliasName, SymbolDisplayPartKind.Operator, SymbolDisplayPartKind.ClassName)
+        End Sub
+
 #Region "Helpers"
 
-        Private Sub TestSymbolDescription(
+        Private Shared Sub TestSymbolDescription(
             text As XElement,
             findSymbol As Func(Of NamespaceSymbol, Symbol),
             format As SymbolDisplayFormat,
@@ -4649,7 +5123,7 @@ class Outer
             Verify(description, expectedText, kinds)
         End Sub
 
-        Private Sub TestSymbolDescription(
+        Private Shared Sub TestSymbolDescription(
             text As XElement,
             findSymbol As Func(Of NamespaceSymbol, Symbol),
             format As SymbolDisplayFormat,
@@ -4676,11 +5150,16 @@ class Outer
             Assert.Equal(expectedText, parts.ToDisplayString())
 
             If (kinds.Length > 0) Then
-                AssertEx.Equal(kinds, parts.Select(Function(d) d.Kind))
+                AssertEx.Equal(kinds, parts.Select(Function(p) p.Kind), itemInspector:=Function(p) $"                SymbolDisplayPartKind.{p}")
             End If
 
             Return parts
         End Function
+
+        Private Shared Function FindSymbol(qualifiedName As String) As Func(Of NamespaceSymbol, Symbol)
+            Return Function([namespace]) [namespace].GetMember(qualifiedName)
+        End Function
+
 #End Region
 
     End Class

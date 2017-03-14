@@ -169,12 +169,11 @@ End Class
 
                 Dim outWriter = New StringWriter()
                 Dim cmd = New VisualBasicCompilerServer(
+                    DesktopCompilerServerHost.SharedAssemblyReferenceProvider,
                     {"/nologo",
                      "/touchedfiles:" + touchedBase,
                      source1},
-                    Nothing,
-                    _baseDirectory,
-                    RuntimeEnvironment.GetRuntimeDirectory(),
+                    New BuildPaths(Nothing, _baseDirectory, RuntimeEnvironment.GetRuntimeDirectory(), Path.GetTempPath()),
                     s_libDirectory,
                     New TestAnalyzerAssemblyLoader())
                 Dim expectedReads As List(Of String) = Nothing

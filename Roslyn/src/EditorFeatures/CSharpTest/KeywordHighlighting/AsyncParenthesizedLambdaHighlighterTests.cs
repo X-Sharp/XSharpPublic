@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.CSharp.KeywordHighlighting.KeywordHighlighters;
 using Roslyn.Test.Utilities;
 using Xunit;
@@ -13,12 +14,13 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.KeywordHighlighting
             return new AsyncParenthesizedLambdaHighlighter();
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample3_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample3_1()
         {
-            Test(
+            await TestAsync(
 @"using System;
 using System.Threading.Tasks;
+
 class AsyncExample
 {
     async Task<int> AsyncMethod()
@@ -33,16 +35,12 @@ class AsyncExample
         {
             return [|await|] AsyncMethod();
         };
-
         int result = await AsyncMethod();
-
         Task<int> resultTask = AsyncMethod();
         result = await resultTask;
-
         result = await lambda();
     }
-}
-");
+}");
         }
     }
 }

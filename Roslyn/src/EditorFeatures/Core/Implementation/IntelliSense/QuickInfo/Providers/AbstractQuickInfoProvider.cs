@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,14 +9,11 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Projection;
-using Microsoft.VisualStudio.Utilities;
 
 namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
 {
     internal abstract partial class AbstractQuickInfoProvider : IQuickInfoProvider
     {
-        private readonly ITextBufferFactoryService _textBufferFactoryService;
-        private readonly IContentTypeRegistryService _contentTypeRegistryService;
         private readonly IProjectionBufferFactoryService _projectionBufferFactoryService;
         private readonly IEditorOptionsFactoryService _editorOptionsFactoryService;
         private readonly ITextEditorFactoryService _textEditorFactoryService;
@@ -25,16 +21,12 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
         private readonly ClassificationTypeMap _typeMap;
 
         protected AbstractQuickInfoProvider(
-            ITextBufferFactoryService textBufferFactoryService,
-            IContentTypeRegistryService contentTypeRegistryService,
             IProjectionBufferFactoryService projectionBufferFactoryService,
             IEditorOptionsFactoryService editorOptionsFactoryService,
             ITextEditorFactoryService textEditorFactoryService,
             IGlyphService glyphService,
             ClassificationTypeMap typeMap)
         {
-            _textBufferFactoryService = textBufferFactoryService;
-            _contentTypeRegistryService = contentTypeRegistryService;
             _projectionBufferFactoryService = projectionBufferFactoryService;
             _editorOptionsFactoryService = editorOptionsFactoryService;
             _textEditorFactoryService = textEditorFactoryService;
@@ -48,10 +40,10 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
             CancellationToken cancellationToken)
         {
             var tree = await document.GetSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
-            var token = tree.GetTouchingToken(position, cancellationToken, findInsideTrivia: true);
+            var token = await tree.GetTouchingTokenAsync(position, cancellationToken, findInsideTrivia: true).ConfigureAwait(false);
 
-            QuickInfoItem state;
-            if ((state = await GetQuickInfoItemAsync(document, token, position, cancellationToken).ConfigureAwait(false)) != null)
+            var state = await GetQuickInfoItemAsync(document, token, position, cancellationToken).ConfigureAwait(false);
+            if (state != null)
             {
                 return state;
             }
@@ -99,12 +91,12 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
             ISymbol symbol,
             bool showWarningGlyph,
             bool showSymbolGlyph,
-            IList<SymbolDisplayPart> mainDescription,
+            IList<TaggedText> mainDescription,
             IDeferredQuickInfoContent documentation,
-            IList<SymbolDisplayPart> typeParameterMap,
-            IList<SymbolDisplayPart> anonymousTypes,
-            IList<SymbolDisplayPart> usageText,
-            IList<SymbolDisplayPart> exceptionText)
+            IList<TaggedText> typeParameterMap,
+            IList<TaggedText> anonymousTypes,
+            IList<TaggedText> usageText,
+            IList<TaggedText> exceptionText)
         {
             return new QuickInfoDisplayDeferredContent(
                 symbolGlyph: showSymbolGlyph ? CreateGlyphDeferredContent(symbol) : null,
@@ -124,12 +116,12 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
 
         protected IDeferredQuickInfoContent CreateQuickInfoDisplayDeferredContent(
             Glyph glyph,
-            IList<SymbolDisplayPart> mainDescription,
+            IList<TaggedText> mainDescription,
             IDeferredQuickInfoContent documentation,
-            IList<SymbolDisplayPart> typeParameterMap,
-            IList<SymbolDisplayPart> anonymousTypes,
-            IList<SymbolDisplayPart> usageText,
-            IList<SymbolDisplayPart> exceptionText)
+            IList<TaggedText> typeParameterMap,
+            IList<TaggedText> anonymousTypes,
+            IList<TaggedText> usageText,
+            IList<TaggedText> exceptionText)
         {
             return new QuickInfoDisplayDeferredContent(
                 symbolGlyph: new SymbolGlyphDeferredContent(glyph, _glyphService),
@@ -147,10 +139,10 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
             return new SymbolGlyphDeferredContent(symbol.GetGlyph(), _glyphService);
         }
 
-        protected IDeferredQuickInfoContent CreateClassifiableDeferredContent(IList<SymbolDisplayPart> content)
+        protected IDeferredQuickInfoContent CreateClassifiableDeferredContent(
+            IList<TaggedText> content)
         {
-            return new ClassifiableDeferredContent(
-                content, _textBufferFactoryService, _contentTypeRegistryService, _typeMap);
+            return new ClassifiableDeferredContent(content, _typeMap);
         }
 
         protected IDeferredQuickInfoContent CreateDocumentationCommentDeferredContent(

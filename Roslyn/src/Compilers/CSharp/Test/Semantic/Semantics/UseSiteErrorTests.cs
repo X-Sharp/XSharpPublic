@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
@@ -1074,7 +1075,7 @@ class C : ILErrors.InterfaceEvents
                 );
         }
 
-        [Fact, WorkItem(531090, "DevDiv")]
+        [Fact, WorkItem(531090, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531090")]
         public void Constructor()
         {
             string srcLib1 = @"
@@ -1112,7 +1113,7 @@ class Program
                 Diagnostic(ErrorCode.ERR_NoTypeDef, "A").WithArguments("System.Func<,>", "System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"));
         }
 
-        [Fact, WorkItem(530974, "DevDiv")]
+        [Fact, WorkItem(530974, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530974")]
         public void SynthesizedInterfaceImplementation()
         {
             var xSource = @"
@@ -1145,7 +1146,7 @@ class B : C, I { }
                 Diagnostic(ErrorCode.ERR_MissingTypeInSource, "B").WithArguments("X"));
         }
 
-        [Fact, WorkItem(530974, "DevDiv")]
+        [Fact, WorkItem(530974, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530974")]
         public void NoSynthesizedInterfaceImplementation()
         {
             var xSource = @"
@@ -1174,7 +1175,7 @@ class B : C, I { }
             main.VerifyEmitDiagnostics();
         }
 
-        [Fact, WorkItem(530974, "DevDiv")]
+        [Fact, WorkItem(530974, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530974")]
         public void SynthesizedInterfaceImplementation_Indexer()
         {
             var xSource = @"
@@ -1209,7 +1210,7 @@ class B : C, I { }
                 Diagnostic(ErrorCode.ERR_NoTypeDef, "B").WithArguments("X", "X, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"));
         }
 
-        [Fact, WorkItem(530974, "DevDiv")]
+        [Fact, WorkItem(530974, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530974")]
         public void SynthesizedInterfaceImplementation_ModOpt()
         {
             var unavailableRef = TestReferences.SymbolsTests.UseSiteErrors.Unavailable;
@@ -1223,7 +1224,7 @@ class B : ILErrors.ClassEventsNonVirtual, ILErrors.InterfaceEvents { }
             CompileAndVerify(main);
         }
 
-        [Fact, WorkItem(530974, "DevDiv")]
+        [Fact, WorkItem(530974, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530974")]
         public void NoSynthesizedInterfaceImplementation_ModOpt()
         {
             var unavailableRef = TestReferences.SymbolsTests.UseSiteErrors.Unavailable;
@@ -1237,7 +1238,7 @@ class B : ILErrors.ClassEvents, ILErrors.InterfaceEvents { }
             CompileAndVerify(main);
         }
 
-        [Fact, WorkItem(530974, "DevDiv")]
+        [Fact, WorkItem(530974, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530974")]
         public void SynthesizedInterfaceImplementation_ModReq()
         {
             var unavailableRef = TestReferences.SymbolsTests.UseSiteErrors.Unavailable;
@@ -1288,6 +1289,36 @@ class B : ILErrors.ModReqClassEventsNonVirtual, ILErrors.ModReqInterfaceEvents {
             {
                 Assert.DoesNotContain("System.Runtime.CompilerServices.CompilerGeneratedAttribute", diag.GetMessage(), StringComparison.Ordinal);
             }
+        }
+
+        [Fact]
+        public void UseSiteErrorsForSwitchSubsumption()
+        {
+            var baseSource =
+@"public class Base {}";
+            var baseLib = CreateCompilationWithMscorlib(baseSource, assemblyName: "BaseAssembly");
+            var derivedSource =
+@"public class Derived : Base {}";
+            var derivedLib = CreateCompilationWithMscorlib(derivedSource, assemblyName: "DerivedAssembly", references: new[] { new CSharpCompilationReference(baseLib) });
+            var programSource =
+@"
+class Program
+{
+    public static void Main(string[] args)
+    {
+        object o = args;
+        switch (o)
+        {
+            case string s: break;
+            case Derived d: break;
+        }
+    }
+}";
+            CreateCompilationWithMscorlib(programSource, references: new[] { new CSharpCompilationReference(derivedLib) }).VerifyDiagnostics(
+                // (10,13): error CS0012: The type 'Base' is defined in an assembly that is not referenced. You must add a reference to assembly 'BaseAssembly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null'.
+                //             case Derived d: break;
+                Diagnostic(ErrorCode.ERR_NoTypeDef, "case Derived d:").WithArguments("Base", "BaseAssembly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null").WithLocation(10, 13)
+                );
         }
 
         #region Attributes for unsafe code
@@ -1613,7 +1644,7 @@ namespace System.Security
                 Diagnostic(ErrorCode.ERR_PredefinedTypeNotFound, "SecurityAction").WithArguments("System.Int32"));
         }
 
-        [WorkItem(708169, "DevDiv")]
+        [WorkItem(708169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/708169")]
         [Fact]
         public void OverloadResolutionWithUseSiteErrors()
         {
@@ -1709,7 +1740,7 @@ class C
                 Diagnostic(ErrorCode.ERR_NoTypeDef, "new Indexer2()[2]").WithArguments("Missing", "Missing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"));
         }
 
-        [WorkItem(708169, "DevDiv")]
+        [WorkItem(708169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/708169")]
         [Fact]
         public void OverloadResolutionWithUseSiteErrors_LessDerived()
         {
@@ -1762,7 +1793,7 @@ class Derived : Base
                 Diagnostic(ErrorCode.ERR_NoTypeDef, "d[1]").WithArguments("Missing", "Missing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"));
         }
 
-        [WorkItem(708169, "DevDiv")]
+        [WorkItem(708169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/708169")]
         [Fact]
         public void OverloadResolutionWithUseSiteErrors_NoCorrespondingParameter()
         {
@@ -1819,7 +1850,7 @@ class Test
                 Diagnostic(ErrorCode.ERR_NoTypeDef, @"c[""A""]").WithArguments("Missing", "Missing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"));
         }
 
-        [WorkItem(708169, "DevDiv")]
+        [WorkItem(708169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/708169")]
         [Fact]
         public void OverloadResolutionWithUseSiteErrors_NameUsedForPositional()
         {
@@ -1876,7 +1907,7 @@ class Test
                 Diagnostic(ErrorCode.ERR_NoTypeDef, @"c[""A"", null]").WithArguments("Missing", "Missing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"));
         }
 
-        [WorkItem(708169, "DevDiv")]
+        [WorkItem(708169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/708169")]
         [Fact]
         public void OverloadResolutionWithUseSiteErrors_RequiredParameterMissing()
         {
@@ -1933,7 +1964,52 @@ class Test
                 Diagnostic(ErrorCode.ERR_NoTypeDef, @"c[null, ""A""]").WithArguments("Missing", "Missing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"));
         }
 
-        [WorkItem(708169, "DevDiv")]
+        [Fact]
+        public void OverloadResolutionWithUseSiteErrors_WithParamsArguments_ReturnsUseSiteErrors()
+        {
+            var missingSource = @"
+public class Missing { }
+";
+
+            var libSource = @"
+public class C
+{
+    public static Missing GetMissing(params int[] args) { return null; }
+    public static void SetMissing(params Missing[] args) { }
+    public static Missing GetMissing(string firstArgument, params int[] args) { return null; }
+    public static void SetMissing(string firstArgument, params Missing[] args) { }
+}
+";
+
+            var testSource = @"
+class Test
+{
+    static void Main()
+    {
+        C.GetMissing();
+        C.GetMissing(1, 1);
+        C.SetMissing();
+        C.GetMissing(string.Empty);
+        C.GetMissing(string.Empty, 1, 1);
+        C.SetMissing(string.Empty);
+    }
+}
+";
+            var missingRef = CreateCompilationWithMscorlib(missingSource, assemblyName: "Missing").EmitToImageReference();
+            var libRef = CreateCompilationWithMscorlib(libSource, new[] { missingRef }).EmitToImageReference();
+            CreateCompilationWithMscorlib(testSource, new[] { libRef, missingRef }).VerifyDiagnostics();
+            var getMissingDiagnostic = Diagnostic(ErrorCode.ERR_NoTypeDef, @"C.GetMissing").WithArguments("Missing", "Missing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
+            var setMissingDiagnostic = Diagnostic(ErrorCode.ERR_NoTypeDef, @"C.SetMissing").WithArguments("Missing", "Missing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
+            CreateCompilationWithMscorlib(testSource, new[] { libRef /* and not missingRef */ }).VerifyDiagnostics(
+                getMissingDiagnostic,
+                getMissingDiagnostic,
+                setMissingDiagnostic,
+                getMissingDiagnostic,
+                getMissingDiagnostic,
+                setMissingDiagnostic);
+        }
+
+        [WorkItem(708169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/708169")]
         [ClrOnlyFact(ClrOnlyReason.Ilasm)]
         public void OverloadResolutionWithUnsupportedMetadata_UnsupportedMetadata_SupportedExists()
         {
@@ -2056,7 +2132,7 @@ class C
                 Diagnostic(ErrorCode.ERR_BadArgType, "null").WithArguments("1", "<null>", "int"));
         }
 
-        [WorkItem(708169, "DevDiv")]
+        [WorkItem(708169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/708169")]
         [ClrOnlyFact(ClrOnlyReason.Ilasm)]
         public void OverloadResolutionWithUnsupportedMetadata_UnsupportedMetadata_SupportedDoesNotExist()
         {
@@ -2151,7 +2227,7 @@ class C
                 Diagnostic(ErrorCode.ERR_BindToBogusProp1, "new Indexers()[null]").WithArguments("Indexers.this[?]", "Indexers.get_Item(?)"));
         }
 
-        [WorkItem(939928, "DevDiv")]
+        [WorkItem(939928, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939928")]
         [WorkItem(132, "CodePlex")]
         [Fact]
         public void MissingBaseTypeForCatch()
@@ -2260,6 +2336,171 @@ namespace System
 
             var failingCompilation = CreateCompilationWithMscorlib(source, new MetadataReference[] { csharpAssemblyReference, ilAssemblyReference });
             return failingCompilation;
+        }
+
+        [Fact]
+        [WorkItem(14267, "https://github.com/dotnet/roslyn/issues/14267")]
+        public void MissingTypeKindBasisTypes()
+        {
+            var source1 = @"
+public struct A {}
+
+public enum B {}
+
+public class C {}
+public delegate void D();
+
+public interface I1 {}
+";
+            var compilation1 = CreateCompilation(source1, options: TestOptions.ReleaseDll, references: new[] { MinCorlibRef });
+            compilation1.VerifyEmitDiagnostics();
+
+            Assert.Equal(TypeKind.Struct, compilation1.GetTypeByMetadataName("A").TypeKind);
+            Assert.Equal(TypeKind.Enum, compilation1.GetTypeByMetadataName("B").TypeKind);
+            Assert.Equal(TypeKind.Class, compilation1.GetTypeByMetadataName("C").TypeKind);
+            Assert.Equal(TypeKind.Delegate, compilation1.GetTypeByMetadataName("D").TypeKind);
+            Assert.Equal(TypeKind.Interface, compilation1.GetTypeByMetadataName("I1").TypeKind);
+
+            var source2 = @"
+interface I2
+{
+    I1 M(A a, B b, C c, D d); 
+}
+";
+
+            var compilation2 = CreateCompilation(source2, options: TestOptions.ReleaseDll, references: new[] { compilation1.EmitToImageReference(), MinCorlibRef });
+
+            compilation2.VerifyEmitDiagnostics();
+            CompileAndVerify(compilation2);
+
+            Assert.Equal(TypeKind.Struct, compilation2.GetTypeByMetadataName("A").TypeKind);
+            Assert.Equal(TypeKind.Enum, compilation2.GetTypeByMetadataName("B").TypeKind);
+            Assert.Equal(TypeKind.Class, compilation2.GetTypeByMetadataName("C").TypeKind);
+            Assert.Equal(TypeKind.Delegate, compilation2.GetTypeByMetadataName("D").TypeKind);
+            Assert.Equal(TypeKind.Interface, compilation2.GetTypeByMetadataName("I1").TypeKind);
+
+            var compilation3 = CreateCompilation(source2, options: TestOptions.ReleaseDll, references: new[] { compilation1.ToMetadataReference(), MinCorlibRef });
+
+            compilation3.VerifyEmitDiagnostics();
+            CompileAndVerify(compilation3);
+
+            Assert.Equal(TypeKind.Struct, compilation3.GetTypeByMetadataName("A").TypeKind);
+            Assert.Equal(TypeKind.Enum, compilation3.GetTypeByMetadataName("B").TypeKind);
+            Assert.Equal(TypeKind.Class, compilation3.GetTypeByMetadataName("C").TypeKind);
+            Assert.Equal(TypeKind.Delegate, compilation3.GetTypeByMetadataName("D").TypeKind);
+            Assert.Equal(TypeKind.Interface, compilation3.GetTypeByMetadataName("I1").TypeKind);
+
+            var compilation4 = CreateCompilation(source2, options: TestOptions.ReleaseDll, references: new[] { compilation1.EmitToImageReference() });
+
+            compilation4.VerifyDiagnostics(
+                // (4,10): error CS0012: The type 'ValueType' is defined in an assembly that is not referenced. You must add a reference to assembly 'mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2'.
+                //     I1 M(A a, B b, C c, D d); 
+                Diagnostic(ErrorCode.ERR_NoTypeDef, "A").WithArguments("System.ValueType", "mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2").WithLocation(4, 10),
+                // (4,15): error CS0012: The type 'Enum' is defined in an assembly that is not referenced. You must add a reference to assembly 'mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2'.
+                //     I1 M(A a, B b, C c, D d); 
+                Diagnostic(ErrorCode.ERR_NoTypeDef, "B").WithArguments("System.Enum", "mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2").WithLocation(4, 15),
+                // (4,25): error CS0012: The type 'MulticastDelegate' is defined in an assembly that is not referenced. You must add a reference to assembly 'mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2'.
+                //     I1 M(A a, B b, C c, D d); 
+                Diagnostic(ErrorCode.ERR_NoTypeDef, "D").WithArguments("System.MulticastDelegate", "mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2").WithLocation(4, 25)
+                );
+
+            var a = compilation4.GetTypeByMetadataName("A");
+            var b = compilation4.GetTypeByMetadataName("B");
+            var c = compilation4.GetTypeByMetadataName("C");
+            var d = compilation4.GetTypeByMetadataName("D");
+            var i1 = compilation4.GetTypeByMetadataName("I1");
+            Assert.Equal(TypeKind.Class, a.TypeKind);
+            Assert.NotNull(a.GetUseSiteDiagnostic());
+            Assert.Equal(TypeKind.Class, b.TypeKind);
+            Assert.NotNull(b.GetUseSiteDiagnostic());
+            Assert.Equal(TypeKind.Class, c.TypeKind);
+            Assert.Null(c.GetUseSiteDiagnostic());
+            Assert.Equal(TypeKind.Class, d.TypeKind);
+            Assert.NotNull(d.GetUseSiteDiagnostic());
+            Assert.Equal(TypeKind.Interface, i1.TypeKind);
+            Assert.Null(i1.GetUseSiteDiagnostic());
+
+            var compilation5 = CreateCompilation(source2, options: TestOptions.ReleaseDll, references: new[] { compilation1.ToMetadataReference() });
+
+            compilation5.VerifyEmitDiagnostics(
+                // warning CS8021: No value for RuntimeMetadataVersion found. No assembly containing System.Object was found nor was a value for RuntimeMetadataVersion specified through options.
+                Diagnostic(ErrorCode.WRN_NoRuntimeMetadataVersion).WithLocation(1, 1)
+                );
+            CompileAndVerify(compilation5);
+
+            Assert.Equal(TypeKind.Struct, compilation5.GetTypeByMetadataName("A").TypeKind);
+            Assert.Equal(TypeKind.Enum, compilation5.GetTypeByMetadataName("B").TypeKind);
+            Assert.Equal(TypeKind.Class, compilation5.GetTypeByMetadataName("C").TypeKind);
+            Assert.Equal(TypeKind.Delegate, compilation5.GetTypeByMetadataName("D").TypeKind);
+            Assert.Equal(TypeKind.Interface, compilation5.GetTypeByMetadataName("I1").TypeKind);
+
+            var compilation6 = CreateCompilation(source2, options: TestOptions.ReleaseDll, references: new[] { compilation1.EmitToImageReference(), MscorlibRef });
+
+            compilation6.VerifyDiagnostics(
+                // (4,10): error CS0012: The type 'ValueType' is defined in an assembly that is not referenced. You must add a reference to assembly 'mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2'.
+                //     I1 M(A a, B b, C c, D d); 
+                Diagnostic(ErrorCode.ERR_NoTypeDef, "A").WithArguments("System.ValueType", "mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2").WithLocation(4, 10),
+                // (4,15): error CS0012: The type 'Enum' is defined in an assembly that is not referenced. You must add a reference to assembly 'mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2'.
+                //     I1 M(A a, B b, C c, D d); 
+                Diagnostic(ErrorCode.ERR_NoTypeDef, "B").WithArguments("System.Enum", "mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2").WithLocation(4, 15),
+                // (4,25): error CS0012: The type 'MulticastDelegate' is defined in an assembly that is not referenced. You must add a reference to assembly 'mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2'.
+                //     I1 M(A a, B b, C c, D d); 
+                Diagnostic(ErrorCode.ERR_NoTypeDef, "D").WithArguments("System.MulticastDelegate", "mincorlib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ce65828c82a341f2").WithLocation(4, 25)
+                );
+
+            a = compilation6.GetTypeByMetadataName("A");
+            b = compilation6.GetTypeByMetadataName("B");
+            c = compilation6.GetTypeByMetadataName("C");
+            d = compilation6.GetTypeByMetadataName("D");
+            i1 = compilation6.GetTypeByMetadataName("I1");
+            Assert.Equal(TypeKind.Class, a.TypeKind);
+            Assert.NotNull(a.GetUseSiteDiagnostic());
+            Assert.Equal(TypeKind.Class, b.TypeKind);
+            Assert.NotNull(b.GetUseSiteDiagnostic());
+            Assert.Equal(TypeKind.Class, c.TypeKind);
+            Assert.Null(c.GetUseSiteDiagnostic());
+            Assert.Equal(TypeKind.Class, d.TypeKind);
+            Assert.NotNull(d.GetUseSiteDiagnostic());
+            Assert.Equal(TypeKind.Interface, i1.TypeKind);
+            Assert.Null(i1.GetUseSiteDiagnostic());
+
+            var compilation7 = CreateCompilation(source2, options: TestOptions.ReleaseDll, references: new[] { compilation1.ToMetadataReference(), MscorlibRef });
+
+            compilation7.VerifyEmitDiagnostics();
+            CompileAndVerify(compilation7);
+
+            Assert.Equal(TypeKind.Struct, compilation7.GetTypeByMetadataName("A").TypeKind);
+            Assert.Equal(TypeKind.Enum, compilation7.GetTypeByMetadataName("B").TypeKind);
+            Assert.Equal(TypeKind.Class, compilation7.GetTypeByMetadataName("C").TypeKind);
+            Assert.Equal(TypeKind.Delegate, compilation7.GetTypeByMetadataName("D").TypeKind);
+            Assert.Equal(TypeKind.Interface, compilation7.GetTypeByMetadataName("I1").TypeKind);
+        }
+
+        [Fact, WorkItem(15435, "https://github.com/dotnet/roslyn/issues/15435")]
+        public void TestGettingAssemblyIdsFromDiagnostic1()
+        {
+            var text = @"
+class C : CSharpErrors.ClassMethods
+{
+    public override UnavailableClass ReturnType1() { return null; }
+    public override UnavailableClass[] ReturnType2() { return null; }
+}";
+
+            var compilation = CompileWithMissingReference(text);
+            var diagnostics = compilation.GetDiagnostics();
+            Assert.True(diagnostics.Any(d => d.Code == (int)ErrorCode.ERR_NoTypeDef));
+
+            foreach (var diagnostic in diagnostics)
+            {
+                if (diagnostic.Code == (int)ErrorCode.ERR_NoTypeDef)
+                {
+                    var actualAssemblyId = compilation.GetUnreferencedAssemblyIdentities(diagnostic).Single();
+                    AssemblyIdentity expectedAssemblyId;
+                    AssemblyIdentity.TryParseDisplayName("Unavailable, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", out expectedAssemblyId);
+
+                    Assert.Equal(actualAssemblyId, expectedAssemblyId);
+                }
+            }
         }
     }
 }

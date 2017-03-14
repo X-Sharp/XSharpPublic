@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editor.Host;
 using Microsoft.CodeAnalysis.Editor.Implementation.DocumentationComments;
 using Microsoft.CodeAnalysis.Shared.Extensions;
-using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 
@@ -19,6 +18,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.DocumentationComments
 {
     [ExportCommandHandler(PredefinedCommandHandlerNames.DocumentationComments, ContentTypeNames.CSharpContentType)]
     [Order(After = PredefinedCommandHandlerNames.Rename)]
+    [Order(After = PredefinedCommandHandlerNames.Completion)]
     internal class DocumentationCommentCommandHandler
         : AbstractDocumentationCommentCommandHandler<DocumentationCommentTriviaSyntax, MemberDeclarationSyntax>
     {
@@ -26,16 +26,12 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.DocumentationComments
         public DocumentationCommentCommandHandler(
             IWaitIndicator waitIndicator,
             ITextUndoHistoryRegistry undoHistoryRegistry,
-            IEditorOperationsFactoryService editorOperationsFactoryService,
-            IAsyncCompletionService completionService) :
-            base(waitIndicator, undoHistoryRegistry, editorOperationsFactoryService, completionService)
+            IEditorOperationsFactoryService editorOperationsFactoryService) 
+            : base(waitIndicator, undoHistoryRegistry, editorOperationsFactoryService)
         {
         }
 
-        protected override string ExteriorTriviaText
-        {
-            get { return "///"; }
-        }
+        protected override string ExteriorTriviaText => "///";
 
         protected override MemberDeclarationSyntax GetContainingMember(
             SyntaxTree syntaxTree, int position, CancellationToken cancellationToken)

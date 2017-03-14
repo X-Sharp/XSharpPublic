@@ -140,12 +140,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return ContainingType.Locations; }
         }
 
+        internal override RefKind RefKind
+        {
+            get { return RefKind.None; }
+        }
+
         public sealed override TypeSymbol ReturnType
         {
             get { return ContainingAssembly.GetSpecialType(SpecialType.System_Void); }
         }
 
         public sealed override ImmutableArray<CustomModifier> ReturnTypeCustomModifiers
+        {
+            get { return ImmutableArray<CustomModifier>.Empty; }
+        }
+
+        public override ImmutableArray<CustomModifier> RefCustomModifiers
         {
             get { return ImmutableArray<CustomModifier>.Empty; }
         }

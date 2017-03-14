@@ -49,6 +49,10 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                     onSuccess: method => GetFrameName(inspectionContext, workList, frame, argumentFlags, completionRoutine, method),
                     onFailure: e => completionRoutine(DkmGetFrameNameAsyncResult.CreateErrorResult(e)));
             }
+            catch (NotImplementedMetadataException)
+            {
+                inspectionContext.GetFrameName(workList, frame, argumentFlags, completionRoutine);
+            }
             catch (Exception e) when (ExpressionEvaluatorFatalError.CrashIfFailFastEnabled(e))
             {
                 throw ExceptionUtilities.Unreachable;
@@ -66,6 +70,10 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                 GetNameWithGenericTypeArguments(inspectionContext, workList, frame,
                     onSuccess: method => completionRoutine(new DkmGetFrameReturnTypeAsyncResult(_instructionDecoder.GetReturnTypeName(method))),
                     onFailure: e => completionRoutine(DkmGetFrameReturnTypeAsyncResult.CreateErrorResult(e)));
+            }
+            catch (NotImplementedMetadataException)
+            {
+                inspectionContext.GetFrameReturnType(workList, frame, completionRoutine);
             }
             catch (Exception e) when (ExpressionEvaluatorFatalError.CrashIfFailFastEnabled(e))
             {
@@ -104,7 +112,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                             }
                             onSuccess(method);
                         }
-                        catch (Exception e) when (ExpressionEvaluatorFatalError.ReportNonFatalException(e, DkmComponentManager.ReportCurrentNonFatalException))
+                        catch (Exception e)
                         {
                             onFailure(e);
                         }
@@ -173,7 +181,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                             builder?.Free();
                             completionRoutine(new DkmGetFrameNameAsyncResult(frameName));
                         }
-                        catch (Exception e) when (ExpressionEvaluatorFatalError.ReportNonFatalException(e, DkmComponentManager.ReportCurrentNonFatalException))
+                        catch (Exception e)
                         {
                             completionRoutine(DkmGetFrameNameAsyncResult.CreateErrorResult(e));
                         }

@@ -3,9 +3,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Microsoft.CodeAnalysis.CodeGeneration
 {
@@ -93,6 +91,14 @@ namespace Microsoft.CodeAnalysis.CodeGeneration
             }
         }
 
+        public bool ReturnsByRef
+        {
+            get
+            {
+                return this.GetMethod != null && this.GetMethod.ReturnsByRef;
+            }
+        }
+
         public new IPropertySymbol OriginalDefinition
         {
             get
@@ -114,6 +120,14 @@ namespace Microsoft.CodeAnalysis.CodeGeneration
             get
             {
                 return false;
+            }
+        }
+
+        public ImmutableArray<CustomModifier> RefCustomModifiers
+        {
+            get
+            {
+                return ImmutableArray.Create<CustomModifier>();
             }
         }
 

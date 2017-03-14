@@ -55,12 +55,107 @@ class Module1
 ";
             var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
 
+            var test = compilation.GetTypeByMetadataName("Test1").GetMember<MethodSymbol>("Test");
+            var type = (INamedTypeSymbol)test.Parameters.First().Type;
+            Assert.Equal("System.Int32 modopt(System.Runtime.CompilerServices.IsLong)?", type.ToTestDisplayString());
+            Assert.Equal("System.Runtime.CompilerServices.IsLong", type.GetTypeArgumentCustomModifiers(0).Single().Modifier.ToTestDisplayString());
+            Assert.Throws<System.IndexOutOfRangeException>(() => type.GetTypeArgumentCustomModifiers(1));
+            Assert.Throws<System.IndexOutOfRangeException>(() => type.GetTypeArgumentCustomModifiers(-1));
+
+            var nullable = type.OriginalDefinition;
+            Assert.Equal("System.Nullable<T>", nullable.ToTestDisplayString());
+            Assert.True(nullable.GetTypeArgumentCustomModifiers(0).IsEmpty);
+            Assert.Throws<System.IndexOutOfRangeException>(() => nullable.GetTypeArgumentCustomModifiers(1));
+            Assert.Throws<System.IndexOutOfRangeException>(() => nullable.GetTypeArgumentCustomModifiers(-1));
+
+            var i = (INamedTypeSymbol)type.TypeArguments.First();
+            Assert.Equal("System.Int32", i.ToTestDisplayString());
+            Assert.Throws<System.IndexOutOfRangeException>(() => i.GetTypeArgumentCustomModifiers(0));
+
+            nullable = nullable.Construct(i);
+            Assert.Equal("System.Int32?", nullable.ToTestDisplayString());
+            Assert.True(nullable.GetTypeArgumentCustomModifiers(0).IsEmpty);
+            Assert.Throws<System.IndexOutOfRangeException>(() => nullable.GetTypeArgumentCustomModifiers(1));
+            Assert.Throws<System.IndexOutOfRangeException>(() => nullable.GetTypeArgumentCustomModifiers(-1));
+
+            CompileAndVerify(compilation, expectedOutput: "Test");
+        }
+
+        [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
+        public void ModifiedTypeArgument_02()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit Test1
+       extends[mscorlib] System.Object
+        {
+  .method public hidebysig specialname rtspecialname
+          instance void  .ctor() cil managed
+        {
+    // Code size       8 (0x8)
+    .maxstack  8
+    IL_0000:  ldarg.0
+    IL_0001:  call instance void[mscorlib]
+        System.Object::.ctor()
+    IL_0006:  nop
+    IL_0007:  ret
+    } // end of method Test1::.ctor
+
+  .method public hidebysig static void Test(class [mscorlib] System.Collections.Generic.Dictionary`2<int32, int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong) modopt([mscorlib]System.Runtime.CompilerServices.IsConst)> x) cil managed
+    {
+    // Code size       11 (0xb)
+    .maxstack  1
+    IL_0000:  ldstr      ""Test""
+    IL_0005:  call       void [mscorlib]System.Console::WriteLine(string)
+    IL_000a:  ret
+    } // end of method Test1::Test
+
+} // end of class Test1
+";
+
+            var source = @"
+class Module1
+{
+     static void Main()
+    {
+        Test1.Test(null);
+    }
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+
+            var test = compilation.GetTypeByMetadataName("Test1").GetMember<MethodSymbol>("Test");
+            var type = (INamedTypeSymbol)test.Parameters.First().Type;
+            Assert.Equal("System.Collections.Generic.Dictionary<System.Int32, System.Int32 modopt(System.Runtime.CompilerServices.IsConst) modopt(System.Runtime.CompilerServices.IsLong)>", 
+                         type.ToTestDisplayString());
+            Assert.True(type.GetTypeArgumentCustomModifiers(0).IsEmpty);
+            var modifiers = type.GetTypeArgumentCustomModifiers(1);
+            Assert.Equal(2, modifiers.Length);
+            Assert.Equal("System.Runtime.CompilerServices.IsConst", modifiers.First().Modifier.ToTestDisplayString());
+            Assert.Equal("System.Runtime.CompilerServices.IsLong", modifiers.Last().Modifier.ToTestDisplayString());
+            Assert.Throws<System.IndexOutOfRangeException>(() => type.GetTypeArgumentCustomModifiers(2));
+            Assert.Throws<System.IndexOutOfRangeException>(() => type.GetTypeArgumentCustomModifiers(-1));
+
+            var dictionary = type.OriginalDefinition;
+            Assert.Equal("System.Collections.Generic.Dictionary<TKey, TValue>", dictionary.ToTestDisplayString());
+            Assert.True(dictionary.GetTypeArgumentCustomModifiers(0).IsEmpty);
+            Assert.True(dictionary.GetTypeArgumentCustomModifiers(1).IsEmpty);
+            Assert.Throws<System.IndexOutOfRangeException>(() => dictionary.GetTypeArgumentCustomModifiers(2));
+            Assert.Throws<System.IndexOutOfRangeException>(() => dictionary.GetTypeArgumentCustomModifiers(-1));
+
+            var i = type.TypeArguments.First();
+            dictionary = dictionary.Construct(i, i);
+            Assert.Equal("System.Collections.Generic.Dictionary<System.Int32, System.Int32>", dictionary.ToTestDisplayString());
+            Assert.True(dictionary.GetTypeArgumentCustomModifiers(0).IsEmpty);
+            Assert.True(dictionary.GetTypeArgumentCustomModifiers(1).IsEmpty);
+            Assert.Throws<System.IndexOutOfRangeException>(() => dictionary.GetTypeArgumentCustomModifiers(2));
+            Assert.Throws<System.IndexOutOfRangeException>(() => dictionary.GetTypeArgumentCustomModifiers(-1));
+
             CompileAndVerify(compilation, expectedOutput: "Test");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiers_01()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -109,14 +204,14 @@ class Module1
     }
 }
 ";
-            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options:TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
 
             CompileAndVerify(compilation, expectedOutput: "Test");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiers_02()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -173,7 +268,7 @@ class CL3
 {
     public override void Test(int x)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }
 ";
@@ -187,15 +282,15 @@ class CL3
             var withoutModifiers = withModifiers.OriginalDefinition.Construct(withModifiers.TypeArguments);
             Assert.True(withModifiers.HasTypeArgumentsCustomModifiers);
             Assert.False(withoutModifiers.HasTypeArgumentsCustomModifiers);
-            Assert.True(withoutModifiers.Equals(withModifiers, ignoreCustomModifiersAndArraySizesAndLowerBounds:true));
+            Assert.True(withoutModifiers.Equals(withModifiers, TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds));
             Assert.NotEqual(withoutModifiers, withModifiers);
 
-            CompileAndVerify(compilation, expectedOutput: "Overriden");
+            CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiersAndByRef_01()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -251,7 +346,7 @@ class CL3
 {
     public override void Test(ref int x)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }
 ";
@@ -261,12 +356,12 @@ class CL3
             var test = cl3.GetMember<MethodSymbol>("Test");
             Assert.Equal("void CL3.Test(ref System.Int32 modopt(System.Runtime.CompilerServices.IsConst) modopt(System.Runtime.CompilerServices.IsLong) x)", test.ToTestDisplayString());
 
-            CompileAndVerify(compilation, expectedOutput: "Overriden");
+            CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiersAndByRef_02()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -322,7 +417,7 @@ class CL3
 {
     public override void Test(ref int x)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }
 ";
@@ -332,12 +427,12 @@ class CL3
             var test = cl3.GetMember<MethodSymbol>("Test");
             Assert.Equal("void CL3.Test(ref modopt(System.Runtime.CompilerServices.IsConst) System.Int32 modopt(System.Runtime.CompilerServices.IsLong) x)", test.ToTestDisplayString());
 
-            CompileAndVerify(compilation, expectedOutput: "Overriden");
+            CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiersAndByRef_03()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -393,7 +488,7 @@ class CL3
 {
     public override void Test(ref int x)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }
 ";
@@ -403,12 +498,12 @@ class CL3
             var test = cl3.GetMember<MethodSymbol>("Test");
             Assert.Equal("void CL3.Test(ref System.Int32 modopt(System.Runtime.CompilerServices.IsLong) x)", test.ToTestDisplayString());
 
-            CompileAndVerify(compilation, expectedOutput: "Overriden");
+            CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiersAndByRef_04()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -465,7 +560,7 @@ class CL3
 {
     public override void Test(ref int x)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }
 ";
@@ -475,12 +570,538 @@ class CL3
             var test = cl3.GetMember<MethodSymbol>("Test");
             Assert.Equal("void CL3.Test(ref modopt(System.Runtime.CompilerServices.IsConst) System.Int32 modopt(System.Runtime.CompilerServices.IsVolatile) modopt(System.Runtime.CompilerServices.IsLong) x)", test.ToTestDisplayString());
 
-            CompileAndVerify(compilation, expectedOutput:"Overriden");
+            CompileAndVerify(compilation, expectedOutput: "Overridden");
+        }
+
+        [Fact, WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
+        public void ConcatModifiersAndByRefReturn_01()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit CL1`1<T1>
+       extends[mscorlib] System.Object
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: call instance void[mscorlib] System.Object::.ctor()
+      IL_0006: ret
+    } // end of method CL1`1::.ctor
+
+    .field private !T1 f1
+
+    .method public hidebysig newslot virtual
+            instance !T1 modopt([mscorlib]System.Runtime.CompilerServices.IsConst)& Test() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  8
+      IL_0000:  ldarg.0
+      IL_0001:  ldflda     !0 class CL1`1<!T1>::f1
+      IL_0006:  ret
+    } // end of method CL1`1::Test
+
+    .method public hidebysig newslot virtual
+            instance !T1 modopt([mscorlib]System.Runtime.CompilerServices.IsConst)& get_P() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  8
+      IL_0000:  ldarg.0
+      IL_0001:  ldflda     !0 class CL1`1<!T1>::f1
+      IL_0006:  ret
+    } 
+
+    .property instance !T1 modopt([mscorlib]System.Runtime.CompilerServices.IsConst)& P()
+    {
+      .get instance !T1 modopt([mscorlib]System.Runtime.CompilerServices.IsConst)& CL1`1::get_P()
+    } 
+
+} // end of class CL1`1
+
+.class public auto ansi beforefieldinit CL2
+       extends class CL1`1<int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong)>
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000:  ldarg.0
+      IL_0001:  call instance void class CL1`1<int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong)>::.ctor()
+      IL_0006:  ret
+    } // end of method CL2::.ctor
+} // end of class CL2
+
+";
+            var source = @"
+class Module1
+{
+    static void Main()
+    {
+        CL2 x = new CL3();
+
+        x.Test() = 2;
+        x.P = 3;
+    }
+}
+
+class CL3
+    : CL2
+{
+    private int f2;
+
+    public override ref int Test()
+    {
+        System.Console.WriteLine(""Overridden"");
+        return ref f2;
+    }
+
+    public override ref int P
+    {
+        get
+        {
+            System.Console.WriteLine(""Overridden P"");
+            return ref f2;
+        }
+    }
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            Assert.Equal("ref System.Int32 modopt(System.Runtime.CompilerServices.IsConst) modopt(System.Runtime.CompilerServices.IsLong) CL3.Test()", cl3.GetMember<MethodSymbol>("Test").ToTestDisplayString());
+            Assert.Equal("ref System.Int32 modopt(System.Runtime.CompilerServices.IsConst) modopt(System.Runtime.CompilerServices.IsLong) CL3.P { get; }", cl3.GetMember<PropertySymbol>("P").ToTestDisplayString());
+
+            var cl1 = compilation.GetTypeByMetadataName("CL1`1");
+            Assert.Equal("ref T1 modopt(System.Runtime.CompilerServices.IsConst) CL1<T1>.Test()", cl1.GetMember<MethodSymbol>("Test").ToTestDisplayString());
+            Assert.Equal("ref T1 modopt(System.Runtime.CompilerServices.IsConst) CL1<T1>.P { get; }", cl1.GetMember<PropertySymbol>("P").ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput:
+@"Overridden
+Overridden P");
+        }
+
+        [Fact, WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
+        public void ConcatModifiersAndByRefReturn_02()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit CL1`1<T1>
+       extends[mscorlib] System.Object
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: call instance void[mscorlib] System.Object::.ctor()
+      IL_0006: ret
+    } // end of method CL1`1::.ctor
+
+    .field private !T1 f1
+
+    .method public hidebysig newslot virtual
+            instance !T1& modopt([mscorlib]System.Runtime.CompilerServices.IsConst) Test() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  8
+      IL_0000:  ldarg.0
+      IL_0001:  ldflda     !0 class CL1`1<!T1>::f1
+      IL_0006:  ret
+    } // end of method CL1`1::Test
+
+    .method public hidebysig newslot virtual
+            instance !T1& modopt([mscorlib]System.Runtime.CompilerServices.IsConst) get_P() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  8
+      IL_0000:  ldarg.0
+      IL_0001:  ldflda     !0 class CL1`1<!T1>::f1
+      IL_0006:  ret
+    } 
+
+    .property instance !T1& modopt([mscorlib]System.Runtime.CompilerServices.IsConst) P()
+    {
+      .get instance !T1& modopt([mscorlib]System.Runtime.CompilerServices.IsConst) CL1`1::get_P()
+    } 
+} // end of class CL1`1
+
+.class public auto ansi beforefieldinit CL2
+       extends class CL1`1<int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong)>
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000:  ldarg.0
+      IL_0001:  call instance void class CL1`1<int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong)>::.ctor()
+      IL_0006:  ret
+    } // end of method CL2::.ctor
+} // end of class CL2
+
+";
+            var source = @"
+class Module1
+{
+    static void Main()
+    {
+        CL2 x = new CL3();
+
+        x.Test() = 2;
+        x.P = 3;
+    }
+}
+
+class CL3
+    : CL2
+{
+    private int f2;
+
+    public override ref int Test()
+    {
+        System.Console.WriteLine(""Overridden"");
+        return ref f2;
+    }
+
+    public override ref int P
+    {
+        get
+        {
+            System.Console.WriteLine(""Overridden P"");
+            return ref f2;
+        }
+    }
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) System.Int32 modopt(System.Runtime.CompilerServices.IsLong) CL3.Test()", cl3.GetMember<MethodSymbol>("Test").ToTestDisplayString());
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) System.Int32 modopt(System.Runtime.CompilerServices.IsLong) CL3.P { get; }", cl3.GetMember<PropertySymbol>("P").ToTestDisplayString());
+
+            var cl1 = compilation.GetTypeByMetadataName("CL1`1");
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) T1 CL1<T1>.Test()", cl1.GetMember<MethodSymbol>("Test").ToTestDisplayString());
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) T1 CL1<T1>.P { get; }", cl1.GetMember<PropertySymbol>("P").ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput:
+@"Overridden
+Overridden P");
+        }
+
+        [Fact, WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
+        public void ConcatModifiersAndByRefReturn_03()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit CL1`1<T1>
+       extends[mscorlib] System.Object
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: call instance void[mscorlib] System.Object::.ctor()
+      IL_0006: ret
+    } // end of method CL1`1::.ctor
+
+    .field private !T1 f1
+
+    .method public hidebysig newslot virtual
+            instance !T1& Test() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  8
+      IL_0000:  ldarg.0
+      IL_0001:  ldflda     !0 class CL1`1<!T1>::f1
+      IL_0006:  ret
+    } // end of method CL1`1::Test
+
+    .method public hidebysig newslot virtual
+            instance !T1& get_P() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  8
+      IL_0000:  ldarg.0
+      IL_0001:  ldflda     !0 class CL1`1<!T1>::f1
+      IL_0006:  ret
+    } 
+
+    .property instance !T1& P()
+    {
+      .get instance !T1& CL1`1::get_P()
+    } 
+} // end of class CL1`1
+
+.class public auto ansi beforefieldinit CL2
+       extends class CL1`1<int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong)>
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000:  ldarg.0
+      IL_0001:  call instance void class CL1`1<int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong)>::.ctor()
+      IL_0006:  ret
+    } // end of method CL2::.ctor
+} // end of class CL2
+
+";
+            var source = @"
+class Module1
+{
+    static void Main()
+    {
+        CL2 x = new CL3();
+
+        x.Test() = 2;
+        x.P = 3;
+    }
+}
+
+class CL3
+    : CL2
+{
+    private int f2;
+
+    public override ref int Test()
+    {
+        System.Console.WriteLine(""Overridden"");
+        return ref f2;
+    }
+
+    public override ref int P
+    {
+        get
+        {
+            System.Console.WriteLine(""Overridden P"");
+            return ref f2;
+        }
+    }
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            Assert.Equal("ref System.Int32 modopt(System.Runtime.CompilerServices.IsLong) CL3.Test()", cl3.GetMember<MethodSymbol>("Test").ToTestDisplayString());
+            Assert.Equal("ref System.Int32 modopt(System.Runtime.CompilerServices.IsLong) CL3.P { get; }", cl3.GetMember<PropertySymbol>("P").ToTestDisplayString());
+
+            var cl1 = compilation.GetTypeByMetadataName("CL1`1");
+            Assert.Equal("ref T1 CL1<T1>.Test()", cl1.GetMember<MethodSymbol>("Test").ToTestDisplayString());
+            Assert.Equal("ref T1 CL1<T1>.P { get; }", cl1.GetMember<PropertySymbol>("P").ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput:
+@"Overridden
+Overridden P");
+        }
+
+        [Fact, WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
+        public void ConcatModifiersAndByRefReturn_04()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit CL1`1<T1>
+       extends[mscorlib] System.Object
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: call instance void[mscorlib] System.Object::.ctor()
+      IL_0006: ret
+    } // end of method CL1`1::.ctor
+
+    .field private !T1 f1
+
+    .method public hidebysig newslot virtual
+            instance !T1 modopt([mscorlib]System.Runtime.CompilerServices.IsVolatile) & modopt([mscorlib]System.Runtime.CompilerServices.IsConst) Test() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  8
+      IL_0000:  ldarg.0
+      IL_0001:  ldflda     !0 class CL1`1<!T1>::f1
+      IL_0006:  ret
+    } // end of method CL1`1::Test
+
+    .method public hidebysig newslot virtual
+            instance !T1 modopt([mscorlib]System.Runtime.CompilerServices.IsVolatile) & modopt([mscorlib]System.Runtime.CompilerServices.IsConst) get_P() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  8
+      IL_0000:  ldarg.0
+      IL_0001:  ldflda     !0 class CL1`1<!T1>::f1
+      IL_0006:  ret
+    } 
+
+    .property instance !T1 modopt([mscorlib]System.Runtime.CompilerServices.IsVolatile) & modopt([mscorlib]System.Runtime.CompilerServices.IsConst) P()
+    {
+      .get instance !T1 modopt([mscorlib]System.Runtime.CompilerServices.IsVolatile) & modopt([mscorlib]System.Runtime.CompilerServices.IsConst) CL1`1::get_P()
+    } 
+} // end of class CL1`1
+
+.class public auto ansi beforefieldinit CL2
+       extends class CL1`1<int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong)>
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000:  ldarg.0
+      IL_0001:  call instance void class CL1`1<int32 modopt([mscorlib]System.Runtime.CompilerServices.IsLong)>::.ctor()
+      IL_0006:  ret
+    } // end of method CL2::.ctor
+} // end of class CL2
+
+";
+            var source = @"
+class Module1
+{
+    static void Main()
+    {
+        CL2 x = new CL3();
+
+        x.Test() = 2;
+        x.P = 3;
+    }
+}
+
+class CL3
+    : CL2
+{
+    private int f2;
+
+    public override ref int Test()
+    {
+        System.Console.WriteLine(""Overridden"");
+        return ref f2;
+    }
+
+    public override ref int P
+    {
+        get
+        {
+            System.Console.WriteLine(""Overridden P"");
+            return ref f2;
+        }
+    }
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) System.Int32 modopt(System.Runtime.CompilerServices.IsVolatile) modopt(System.Runtime.CompilerServices.IsLong) CL3.Test()", cl3.GetMember<MethodSymbol>("Test").ToTestDisplayString());
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) System.Int32 modopt(System.Runtime.CompilerServices.IsVolatile) modopt(System.Runtime.CompilerServices.IsLong) CL3.P { get; }", cl3.GetMember<PropertySymbol>("P").ToTestDisplayString());
+
+            var cl1 = compilation.GetTypeByMetadataName("CL1`1");
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) T1 modopt(System.Runtime.CompilerServices.IsVolatile) CL1<T1>.Test()", cl1.GetMember<MethodSymbol>("Test").ToTestDisplayString());
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) T1 modopt(System.Runtime.CompilerServices.IsVolatile) CL1<T1>.P { get; }", cl1.GetMember<PropertySymbol>("P").ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput:
+@"Overridden
+Overridden P");
+        }
+
+        [Fact, WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
+        public void ConcatModifiersAndByRefReturn_05()
+        {
+            var ilSource = @"
+.class interface public abstract auto ansi I1
+{
+  .method public hidebysig newslot abstract virtual 
+          instance int32 modopt([mscorlib]System.Runtime.CompilerServices.IsVolatile) & modopt([mscorlib]System.Runtime.CompilerServices.IsConst)  M() cil managed
+  {
+  } // end of method I1::M
+
+  .method public hidebysig newslot specialname abstract virtual 
+          instance int32 modopt([mscorlib]System.Runtime.CompilerServices.IsVolatile) & modopt([mscorlib]System.Runtime.CompilerServices.IsConst) get_P() cil managed
+  {
+  } // end of method I1::get_P
+
+  .property instance int32 modopt([mscorlib]System.Runtime.CompilerServices.IsVolatile) & modopt([mscorlib]System.Runtime.CompilerServices.IsConst) P()
+  {
+    .get instance int32 modopt([mscorlib]System.Runtime.CompilerServices.IsVolatile) & modopt([mscorlib]System.Runtime.CompilerServices.IsConst) I1::get_P()
+  } // end of property I1::P
+} // end of class I1
+";
+            var source = @"
+class Module1
+{
+    static void Main()
+    {
+        I1 x = new CL2();
+        x.M() = 2;
+        x.P = 3;
+
+        x = new CL3();
+        x.M() = 4;
+        x.P = 5;
+    }
+}
+
+class CL2 : I1
+{
+    private int f2;
+
+    public ref int M()
+    {
+        System.Console.WriteLine(""CL2.M"");
+        return ref f2;
+    }
+
+    public ref int P 
+    {
+        get
+        {
+            System.Console.WriteLine(""CL2.P"");
+            return ref f2;
+        }
+    }
+}
+
+class CL3 : I1
+{
+    private int f3;
+
+    ref int I1.M()
+    {
+        System.Console.WriteLine(""CL3.M"");
+        return ref f3;
+    }
+
+    ref int I1.P 
+    {
+        get
+        {
+            System.Console.WriteLine(""CL3.P"");
+            return ref f3;
+        }
+    }
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) System.Int32 modopt(System.Runtime.CompilerServices.IsVolatile) CL3.I1.M()",
+                             cl3.GetMember<MethodSymbol>("I1.M").ToTestDisplayString());
+            Assert.Equal("ref modopt(System.Runtime.CompilerServices.IsConst) System.Int32 modopt(System.Runtime.CompilerServices.IsVolatile) CL3.I1.P { get; }",
+                             cl3.GetMember<PropertySymbol>("I1.P").ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput:
+@"CL2.M
+CL2.P
+CL3.M
+CL3.P
+");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiers_03()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -557,12 +1178,12 @@ class CL3
     {
         get
         {
-            System.Console.WriteLine(""Get Overriden"");
+            System.Console.WriteLine(""Get Overridden"");
             return 0;
         }
         set
         {
-            System.Console.WriteLine(""Set Overriden"");
+            System.Console.WriteLine(""Set Overridden"");
         }
     }
 }
@@ -575,13 +1196,13 @@ class CL3
             Assert.Equal("System.Int32 modopt(System.Runtime.CompilerServices.IsConst) modopt(System.Runtime.CompilerServices.IsLong) CL3.Test.get", test.GetMethod.ToTestDisplayString());
             Assert.True(test.GetMethod.ReturnTypeCustomModifiers.SequenceEqual(test.SetMethod.Parameters.First().CustomModifiers));
 
-            CompileAndVerify(compilation, expectedOutput: @"Set Overriden
-Get Overriden");
+            CompileAndVerify(compilation, expectedOutput: @"Set Overridden
+Get Overridden");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiers_04()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -636,7 +1257,7 @@ class CL3
 {
     public override void Test(int [] x)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }
 ";
@@ -646,12 +1267,12 @@ class CL3
             var test = cl3.GetMember<MethodSymbol>("Test");
             Assert.Equal("void CL3.Test(System.Int32 modopt(System.Runtime.CompilerServices.IsConst) modopt(System.Runtime.CompilerServices.IsLong) [] x)", test.ToTestDisplayString());
 
-            CompileAndVerify(compilation, expectedOutput:"Overriden");
+            CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConcatModifiers_05()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -705,7 +1326,7 @@ class Module1
     }
 }
 ";
-            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options:TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
 
             var cl2 = compilation.GetTypeByMetadataName("CL2");
             Assert.Equal("System.Int32 modopt(System.Runtime.CompilerServices.IsConst) modopt(System.Runtime.CompilerServices.IsLong) CL1<System.Int32 modopt(System.Runtime.CompilerServices.IsLong)>.Test", cl2.BaseType.GetMember("Test").ToTestDisplayString());
@@ -715,7 +1336,7 @@ class Module1
 
         [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void ConstructedTypesEquality_02()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit CL1`1<T1>
        extends[mscorlib] System.Object
@@ -791,7 +1412,7 @@ class Module1
     }
 }
 ";
-            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options:TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
 
             var base1 = compilation.GetTypeByMetadataName("CL2").BaseType;
             var base2 = compilation.GetTypeByMetadataName("CL3").BaseType;
@@ -799,18 +1420,18 @@ class Module1
 
             Assert.True(base1.HasTypeArgumentsCustomModifiers);
             Assert.True(base2.HasTypeArgumentsCustomModifiers);
-            Assert.True(base1.Equals(base2, ignoreCustomModifiersAndArraySizesAndLowerBounds:true));
+            Assert.True(base1.Equals(base2, TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds));
             Assert.NotEqual(base1, base2);
 
             Assert.True(base3.HasTypeArgumentsCustomModifiers);
-            Assert.True(base1.Equals(base3, ignoreCustomModifiersAndArraySizesAndLowerBounds: true));
+            Assert.True(base1.Equals(base3, TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds));
             Assert.Equal(base1, base3);
             Assert.NotSame(base1, base3);
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void RetargetingModifiedTypeArgument_01()
-        { 
+        {
             var ilSource = @"
 .class public auto ansi beforefieldinit Test1
        extends[mscorlib] System.Object
@@ -855,23 +1476,23 @@ class Module1
             Assert.Equal("void Module1.Test(System.Int32 modopt(System.Runtime.CompilerServices.IsLong)? x)", test.ToTestDisplayString());
 
             Assert.Same(compilation1.SourceModule.CorLibrary(), test.Parameters.First().Type.OriginalDefinition.ContainingAssembly);
-            Assert.Same(compilation1.SourceModule.CorLibrary(), ((NamedTypeSymbol)test.Parameters.First().Type).TypeArgumentsCustomModifiers.First().First().Modifier.ContainingAssembly);
+            Assert.Same(compilation1.SourceModule.CorLibrary(), ((NamedTypeSymbol)test.Parameters.First().Type).GetTypeArgumentCustomModifiers(0).First().Modifier.ContainingAssembly);
 
-            var compilation2 = CreateCompilationWithMscorlib45(new SyntaxTree[] {}, references: new [] {new CSharpCompilationReference(compilation1)});
+            var compilation2 = CreateCompilationWithMscorlib45(new SyntaxTree[] { }, references: new[] { new CSharpCompilationReference(compilation1) });
 
             test = compilation2.GetTypeByMetadataName("Module1").GetMember<MethodSymbol>("Test");
             Assert.Equal("void Module1.Test(System.Int32 modopt(System.Runtime.CompilerServices.IsLong)? x)", test.ToTestDisplayString());
 
             Assert.IsType<CSharp.Symbols.Retargeting.RetargetingAssemblySymbol>(test.ContainingAssembly);
             Assert.Same(compilation2.SourceModule.CorLibrary(), test.Parameters.First().Type.OriginalDefinition.ContainingAssembly);
-            Assert.Same(compilation2.SourceModule.CorLibrary(), ((NamedTypeSymbol)test.Parameters.First().Type).TypeArgumentsCustomModifiers.First().First().Modifier.ContainingAssembly);
+            Assert.Same(compilation2.SourceModule.CorLibrary(), ((NamedTypeSymbol)test.Parameters.First().Type).GetTypeArgumentCustomModifiers(0).First().Modifier.ContainingAssembly);
 
             Assert.NotSame(compilation1.SourceModule.CorLibrary(), compilation2.SourceModule.CorLibrary());
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void TypeUnification_01()
-        { 
+        {
             var ilSource = @"
 .class interface public abstract auto ansi ITest0`1<T>
 {
@@ -910,7 +1531,7 @@ interface ITest4<T, U>
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void TypeUnification_02()
-        { 
+        {
             var ilSource = @"
 .class interface public abstract auto ansi ITest0`1<T>
 {
@@ -949,7 +1570,7 @@ interface ITest4<T, U>
 
         [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void TypeUnification_03()
-        { 
+        {
             var ilSource = @"
 .class interface public abstract auto ansi ITest0`1<T>
 {
@@ -981,7 +1602,7 @@ interface ITest4<T, U>
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void TypeUnification_04()
-        { 
+        {
             var ilSource = @"
 .class interface public abstract auto ansi ITest0`1<T>
 {
@@ -1020,7 +1641,7 @@ interface ITest4<T, U>
 
         [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void TypeUnification_05()
-        { 
+        {
             var ilSource = @"
 .class interface public abstract auto ansi ITest0`1<T>
 {
@@ -1062,7 +1683,7 @@ interface ITest4<T, U>
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         public void TypeUnification_06()
-        { 
+        {
             var ilSource = @"
 .class interface public abstract auto ansi ITest0`1<T>
 {
@@ -1146,7 +1767,7 @@ class CL3 : CL2
 {
     public override void Test(Dictionary<dynamic, dynamic> a, Dictionary<dynamic, dynamic> b, Dictionary<dynamic, dynamic> c)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
         foreach (var param in typeof(CL3).GetMethod(""Test"").GetParameters())
             {
                 System.Console.WriteLine(param.GetCustomAttributesData().Single());
@@ -1169,11 +1790,11 @@ class CL3 : CL2
                 Assert.Equal("void CL3.Test(System.Collections.Generic.Dictionary<dynamic modopt(System.Runtime.CompilerServices.IsConst), dynamic> a, System.Collections.Generic.Dictionary<dynamic, dynamic modopt(System.Runtime.CompilerServices.IsConst)> b, System.Collections.Generic.Dictionary<dynamic modopt(System.Runtime.CompilerServices.IsConst), dynamic modopt(System.Runtime.CompilerServices.IsConst)> c)", test.ToTestDisplayString());
             };
 
-            CompileAndVerify(compilation, expectedOutput: @"Overriden
+            CompileAndVerify(compilation, expectedOutput: @"Overridden
 [System.Runtime.CompilerServices.DynamicAttribute(new Boolean[3] { False, True, True })]
 [System.Runtime.CompilerServices.DynamicAttribute(new Boolean[3] { False, True, True })]
 [System.Runtime.CompilerServices.DynamicAttribute(new Boolean[3] { False, True, True })]",
-                             sourceSymbolValidator:validator, symbolValidator:validator);
+                             sourceSymbolValidator: validator, symbolValidator: validator);
         }
 
         [Fact, WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
@@ -1298,7 +1919,7 @@ class CL3 : CL2
 {
     public override int Test(System.Func<int, int> x, int y)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
         return x(y);
     }
 }
@@ -1307,9 +1928,9 @@ class CL3 : CL2
 
             CompileAndVerify(compilation, expectedOutput: @"Test 1
 Test 2
-Overriden
+Overridden
 Test 3
-Overriden
+Overridden
 Test 4
 MyDelegate
 Test 5
@@ -1362,13 +1983,13 @@ class Test11 : Test1
 {
     public override void Test(int [,] c)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }";
             var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
 
             CompileAndVerify(compilation, expectedOutput: @"Test
-Overriden");
+Overridden");
         }
 
         [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(5725, "https://github.com/dotnet/roslyn/issues/5725")]
@@ -1431,13 +2052,13 @@ class CL3 : CL2
 {
     public override void Test(int c)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }";
             var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
 
             CompileAndVerify(compilation, expectedOutput: @"Test
-Overriden");
+Overridden");
         }
 
         [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(5725, "https://github.com/dotnet/roslyn/issues/5725")]
@@ -1500,13 +2121,13 @@ class CL3 : CL2
 {
     public override void Test(int c)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
     }
 }";
             var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
 
             CompileAndVerify(compilation, expectedOutput: @"Test
-Overriden");
+Overridden");
         }
 
         [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(5725, "https://github.com/dotnet/roslyn/issues/5725")]
@@ -1570,14 +2191,520 @@ class CL3 : CL2
 {
     public override int[] Test(int c)
     {
-        System.Console.WriteLine(""Overriden"");
+        System.Console.WriteLine(""Overridden"");
         return null;
     }
 }";
             var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
 
             CompileAndVerify(compilation, expectedOutput: @"Test
-Overriden");
+Overridden");
+        }
+
+        [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(14453, "https://github.com/dotnet/roslyn/issues/14453")]
+        public void ModifiersWithConstructedType_04()
+        {
+            var source = @"
+class Test
+{
+    static void Main()
+    {
+        CL1 x = new CL2();
+        x.Test<int>(1);
+    }
+}
+
+class CL2 : CL1
+{
+    public override System.ValueType Test<U>(System.ValueType c)
+    {
+        System.Console.WriteLine(""Overridden"");
+        return c;
+    }
+}";
+            var compilation = CreateCompilationWithMscorlib(source, references: new[] { TestReferences.SymbolsTests.CustomModifiers.GenericMethodWithModifiers.dll }, 
+                                                            options: TestOptions.ReleaseExe);
+
+            var cl2 = compilation.GetTypeByMetadataName("CL2");
+            var test = cl2.GetMember<MethodSymbol>("Test");
+            Assert.Equal("System.ValueType modopt(System.Runtime.CompilerServices.IsBoxed) modopt(U?) CL2.Test<U>(System.ValueType modopt(System.Runtime.CompilerServices.IsBoxed) modopt(U?) c)", test.ToTestDisplayString());
+            Assert.Equal("System.ValueType modopt(System.Runtime.CompilerServices.IsBoxed) modopt(T?) CL1.Test<T>(System.ValueType modopt(System.Runtime.CompilerServices.IsBoxed) modopt(T?) x)", test.OverriddenMethod.ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput: @"Overridden");
+        }
+
+        [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(14453, "https://github.com/dotnet/roslyn/issues/14453")]
+        public void ModifiersWithConstructedType_05()
+        {
+            var source = @"
+class Test
+{
+    static void Main()
+    {
+        I1 x = new CL2();
+        x.Test<int>(1);
+
+        x = new CL3();
+        x.Test<int>(2);
+    }
+}
+
+class CL2 : I1
+{
+    public System.ValueType Test<U>(System.ValueType c) where U : struct
+    {
+        System.Console.WriteLine(""CL2.Test"");
+        return c;
+    }
+}
+
+class CL3 : I1
+{
+    System.ValueType I1.Test<U>(System.ValueType c) 
+    {
+        System.Console.WriteLine(""CL3.Test"");
+        return c;
+    }
+}";
+            var compilation = CreateCompilationWithMscorlib(source, references: new[] { TestReferences.SymbolsTests.CustomModifiers.GenericMethodWithModifiers.dll },
+                                                            options: TestOptions.ReleaseExe);
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            var test = cl3.GetMember<MethodSymbol>("I1.Test");
+            Assert.Equal("System.ValueType modopt(System.Runtime.CompilerServices.IsBoxed) modopt(U?) CL3.I1.Test<U>(System.ValueType modopt(System.Runtime.CompilerServices.IsBoxed) modopt(U?) c)", test.ToTestDisplayString());
+            Assert.Equal("System.ValueType modopt(System.Runtime.CompilerServices.IsBoxed) modopt(T?) I1.Test<T>(System.ValueType modopt(System.Runtime.CompilerServices.IsBoxed) modopt(T?) x)", test.ExplicitInterfaceImplementations[0].ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput: 
+@"CL2.Test
+CL3.Test");
+        }
+
+        [ClrOnlyFact(ClrOnlyReason.Ilasm), WorkItem(5993, "https://github.com/dotnet/roslyn/issues/5993")]
+        public void ConcatModifiersAndByRef_05()
+        {
+            var ilSource = @"
+.class interface public abstract auto ansi beforefieldinit X.I
+{
+  .method public newslot abstract virtual 
+          instance void  A(uint32& modopt([mscorlib]System.Runtime.CompilerServices.IsImplicitlyDereferenced) x) cil managed
+  {
+  } // end of method I::A
+
+  .method public newslot abstract virtual 
+          instance void  B(uint32& x) cil managed
+  {
+  } // end of method I::B
+
+} // end of class X.I
+";
+
+            var source = @"
+using X;
+
+namespace ConsoleApplication21
+{
+    class CI : I 
+    {
+        public void A(ref uint x)
+        {
+            System.Console.WriteLine(""Implemented A"");
+        }
+
+        public void B(ref uint x)
+        {
+            System.Console.WriteLine(""Implemented B"");
+        }
+    }
+
+    internal class Program
+    {
+        private static void Main()
+        {
+            I x = new CI();
+            uint y = 0;
+            x.A(ref y);
+            x.B(ref y);
+        }
+    }
+}";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+
+            CompileAndVerify(compilation, expectedOutput: @"Implemented A
+Implemented B");
+        }
+
+        [Fact, WorkItem(6372, "https://github.com/dotnet/roslyn/issues/6372")]
+        public void ModifiedTypeParameterAsTypeArgument_01()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit CL1`1<T1>
+       extends[mscorlib] System.Object
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: call instance void[mscorlib] System.Object::.ctor()
+      IL_0006:
+        ret
+    } // end of method CL1`1::.ctor
+
+    .method public hidebysig newslot virtual
+            instance void  Test1(class CL1`1<!T1 modopt([mscorlib]System.Runtime.CompilerServices.IsConst)> t1) cil managed
+    {
+      // Code size       1 (0x1)
+      .maxstack  0
+      IL_0000:
+        ret
+    } // end of method CL1`1::Test
+
+    .method public hidebysig newslot virtual
+            instance void  Test2(class CL1`1<!T1> t1) cil managed
+    {
+      // Code size       1 (0x1)
+      .maxstack  0
+      IL_0000:
+        ret
+    } // end of method CL1`1::Test
+} // end of class CL1`1
+";
+            var source = @"";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, options: TestOptions.ReleaseExe);
+
+            var cl1 = compilation.GetTypeByMetadataName("CL1`1");
+            var test1 = cl1.GetMember<MethodSymbol>("Test1");
+            Assert.Equal("void CL1<T1>.Test1(CL1<T1 modopt(System.Runtime.CompilerServices.IsConst)> t1)", test1.ToTestDisplayString());
+
+            var test2 = cl1.GetMember<MethodSymbol>("Test2");
+            Assert.Equal("void CL1<T1>.Test2(CL1<T1> t1)", test2.ToTestDisplayString());
+
+            var t1 = test1.Parameters[0].Type;
+            var t2 = test2.Parameters[0].Type;
+
+            Assert.False(t1.Equals(t2));
+            Assert.False(t2.Equals(t1));
+
+            Assert.True(t1.Equals(t2, TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds));
+            Assert.True(t2.Equals(t1, TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds));
+        }
+
+        [Fact, WorkItem(7674, "https://github.com/dotnet/roslyn/issues/7674")]
+        public void PropertyWithDynamic()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit CL1
+       extends [mscorlib] System.Object
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: call instance void[mscorlib] System.Object::.ctor()
+      IL_0006: ret
+    } // end of method CL1`1::.ctor
+
+    .property instance object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[] modopt([mscorlib]System.Runtime.CompilerServices.IsConst)
+            Test()
+    {
+      .get instance object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[] modopt([mscorlib]System.Runtime.CompilerServices.IsConst) CL1::get_Test()
+      .set instance void CL1::set_Test(object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[] modopt([mscorlib]System.Runtime.CompilerServices.IsConst))
+    } // end of property CL1::Test
+
+    .method public hidebysig newslot specialname virtual
+            instance object modopt([mscorlib]System.Runtime.CompilerServices.IsConst) [] modopt([mscorlib]System.Runtime.CompilerServices.IsConst)
+            get_Test() cil managed
+    {
+      // Code size       2 (0x2)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: throw
+    } // end of method CL1::get_Test
+
+    .method public hidebysig newslot specialname virtual
+            instance void  set_Test(object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[] modopt([mscorlib]System.Runtime.CompilerServices.IsConst) x) cil managed
+    {
+      // Code size       3 (0x3)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: throw
+      IL_0002:  ret
+    } // end of method CL1::set_Test
+} // end of class CL1
+";
+            var source = @"
+class Module1
+{
+    static void Main()
+    {
+        CL1 x = new CL2();
+
+        x.Test = null;
+        var y = x.Test;
+
+        x = new CL3();
+
+        x.Test = null;
+        var z = x.Test;
+    }
+}
+
+class CL2
+    : CL1
+{
+    public override dynamic[] Test
+    {
+        get
+        {
+            System.Console.WriteLine(""Get Overridden2"");
+            return null;
+        }
+        set
+        {
+            System.Console.WriteLine(""Set Overridden2"");
+        }
+    }
+}
+
+class CL3
+    : CL1
+{
+    public override object[] Test
+    {
+        get
+        {
+            System.Console.WriteLine(""Get Overridden3"");
+            return null;
+        }
+        set
+        {
+            System.Console.WriteLine(""Set Overridden3"");
+        }
+    }
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, new[] { CSharpRef, SystemCoreRef }, options: TestOptions.ReleaseExe);
+
+            var cl2 = compilation.GetTypeByMetadataName("CL2");
+            var test2 = cl2.GetMember<PropertySymbol>("Test");
+            Assert.Equal("dynamic modopt(System.Runtime.CompilerServices.IsConst) [] modopt(System.Runtime.CompilerServices.IsConst) CL2.Test { get; set; }", 
+                         test2.ToTestDisplayString());
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            var test3 = cl3.GetMember<PropertySymbol>("Test");
+            Assert.Equal("System.Object modopt(System.Runtime.CompilerServices.IsConst) [] modopt(System.Runtime.CompilerServices.IsConst) CL3.Test { get; set; }", 
+                         test3.ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput: @"Set Overridden2
+Get Overridden2
+Set Overridden3
+Get Overridden3");
+        }
+
+        [Fact, WorkItem(7674, "https://github.com/dotnet/roslyn/issues/7674")]
+        public void EventWithDynamic()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit CL1
+       extends [mscorlib] System.Object
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: call instance void[mscorlib] System.Object::.ctor()
+      IL_0006: ret
+    } // end of method CL1`1::.ctor
+
+    .event class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]> Test
+    {
+      .addon instance void CL1::add_Test(class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]>)
+      .removeon instance void CL1::remove_Test(class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]>)
+    } // end of event CL1::Test
+
+    .method public hidebysig newslot specialname virtual 
+            instance void  add_Test(class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]> 'value') cil managed
+    {
+      // Code size       2 (0x2)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: throw
+    } // end of method CL1::get_Test
+
+    .method public hidebysig newslot specialname virtual 
+            instance void  remove_Test(class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]> 'value') cil managed
+    {
+      // Code size       3 (0x3)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: throw
+      IL_0002:  ret
+    } // end of method CL1::set_Test
+} // end of class CL1
+";
+            var source = @"
+using System;
+
+class Module1
+{
+    static void Main()
+    {
+        CL1 x = new CL2();
+
+        x.Test+= null;
+        x.Test-= null;
+
+        x = new CL3();
+
+        x.Test+= null;
+        x.Test-= null;
+    }
+}
+
+class CL2
+    : CL1
+{
+    public override event Action<dynamic[]> Test
+    {
+        add
+        {
+            System.Console.WriteLine(""Add Overridden2"");
+        }
+        remove
+        {
+            System.Console.WriteLine(""Remove Overridden2"");
+        }
+    }
+}
+
+class CL3
+    : CL1
+{
+    public override event Action<object[]> Test
+    {
+        add
+        {
+            System.Console.WriteLine(""Add Overridden3"");
+        }
+        remove
+        {
+            System.Console.WriteLine(""Remove Overridden3"");
+        }
+    }
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, new[] { CSharpRef, SystemCoreRef }, options: TestOptions.ReleaseExe);
+
+            var cl2 = compilation.GetTypeByMetadataName("CL2");
+            var test2 = cl2.GetMember<EventSymbol>("Test");
+            Assert.Equal("event System.Action<dynamic modopt(System.Runtime.CompilerServices.IsConst) []> CL2.Test",
+                         test2.ToTestDisplayString());
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            var test3 = cl3.GetMember<EventSymbol>("Test");
+            Assert.Equal("event System.Action<System.Object modopt(System.Runtime.CompilerServices.IsConst) []> CL3.Test",
+                         test3.ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput: @"Add Overridden2
+Remove Overridden2
+Add Overridden3
+Remove Overridden3");
+        }
+
+        [Fact, WorkItem(7845, "https://github.com/dotnet/roslyn/issues/7845")]
+        public void EventFieldWithDynamic()
+        {
+            var ilSource = @"
+.class public auto ansi beforefieldinit CL1
+       extends [mscorlib] System.Object
+{
+    .method public hidebysig specialname rtspecialname
+            instance void  .ctor() cil managed
+    {
+      // Code size       7 (0x7)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: call instance void[mscorlib] System.Object::.ctor()
+      IL_0006: ret
+    } // end of method CL1`1::.ctor
+
+    .event class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]> Test
+    {
+      .addon instance void CL1::add_Test(class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]>)
+      .removeon instance void CL1::remove_Test(class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]>)
+    } // end of event CL1::Test
+
+    .method public hidebysig newslot specialname virtual 
+            instance void  add_Test(class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]> 'value') cil managed
+    {
+      // Code size       2 (0x2)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: throw
+    } // end of method CL1::get_Test
+
+    .method public hidebysig newslot specialname virtual 
+            instance void  remove_Test(class [mscorlib]System.Action`1<object modopt([mscorlib]System.Runtime.CompilerServices.IsConst)[]> 'value') cil managed
+    {
+      // Code size       3 (0x3)
+      .maxstack  1
+      IL_0000: ldarg.0
+      IL_0001: throw
+      IL_0002:  ret
+    } // end of method CL1::set_Test
+} // end of class CL1
+";
+            var source = @"
+using System;
+
+class Module1
+{
+    static void Main()
+    {
+        CL2 cl2 = new CL2();
+        CL1 cl1 = cl2;
+        cl1.Test += (d) => Console.WriteLine(d[0] + "" and "" + d[1]);
+        cl2.Raise();
+
+        CL3 cl3 = new CL3();
+        cl1 = cl3;
+        cl1.Test += (d) => Console.WriteLine(""Charlie"");
+        cl3.Raise();
+    }
+}
+
+class CL2 : CL1
+{
+    public override event Action<dynamic[]> Test;
+    public void Raise() => Test(new string[] { ""Alice"", ""Bob"" });
+}
+
+class CL3 : CL1
+{
+    public override event Action<object[]> Test;
+    public void Raise() => Test(null);
+}
+";
+            var compilation = CreateCompilationWithCustomILSource(source, ilSource, new[] { CSharpRef, SystemCoreRef }, options: TestOptions.ReleaseExe);
+
+            var cl2 = compilation.GetTypeByMetadataName("CL2");
+            var test2 = cl2.GetMember<EventSymbol>("Test");
+            Assert.Equal("event System.Action<dynamic modopt(System.Runtime.CompilerServices.IsConst) []> CL2.Test",
+                         test2.ToTestDisplayString());
+
+            var cl3 = compilation.GetTypeByMetadataName("CL3");
+            var test3 = cl3.GetMember<EventSymbol>("Test");
+            Assert.Equal("event System.Action<System.Object modopt(System.Runtime.CompilerServices.IsConst) []> CL3.Test",
+                         test3.ToTestDisplayString());
+
+            CompileAndVerify(compilation, expectedOutput: 
+@"Alice and Bob
+Charlie");
         }
     }
 }

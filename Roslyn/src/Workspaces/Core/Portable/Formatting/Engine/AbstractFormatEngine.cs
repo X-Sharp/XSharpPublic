@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Formatting.Rules;
 using Microsoft.CodeAnalysis.Internal.Log;
 using Microsoft.CodeAnalysis.Options;
@@ -101,7 +100,7 @@ namespace Microsoft.CodeAnalysis.Formatting
         protected abstract AbstractTriviaDataFactory CreateTriviaFactory();
         protected abstract AbstractFormattingResult CreateFormattingResult(TokenStream tokenStream);
 
-        public AbstractFormattingResult Format(CancellationToken cancellationToken)
+        public async Task<AbstractFormattingResult> FormatAsync(CancellationToken cancellationToken)
         {
             using (Logger.LogBlock(FunctionId.Formatting_Format, FormatSummary, cancellationToken))
             {
@@ -124,7 +123,8 @@ namespace Microsoft.CodeAnalysis.Formatting
 
                 ApplyBeginningOfTreeTriviaOperation(context, tokenStream, cancellationToken);
 
-                ApplyTokenOperations(context, tokenStream, anchorContextTask, nodeOperations, tokenOperationTask.WaitAndGetResult(cancellationToken), cancellationToken);
+                await ApplyTokenOperationsAsync(context, tokenStream, anchorContextTask, nodeOperations,
+                    await tokenOperationTask.ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
                 ApplyTriviaOperations(context, tokenStream, cancellationToken);
 
@@ -266,7 +266,7 @@ namespace Microsoft.CodeAnalysis.Formatting
             cancellationToken);
         }
 
-        private void ApplyTokenOperations(
+        private async Task ApplyTokenOperationsAsync(
             FormattingContext context,
             TokenStream tokenStream,
             Task anchorContextTask,
@@ -278,11 +278,11 @@ namespace Microsoft.CodeAnalysis.Formatting
             ApplySpaceAndWrappingOperations(context, tokenStream, tokenOperations, applier, cancellationToken);
 
             // wait until anchor task to finish adding its information to context
-            anchorContextTask.Wait(cancellationToken);
+            await anchorContextTask.ConfigureAwait(false);
 
             ApplyAnchorOperations(context, tokenStream, tokenOperations, applier, cancellationToken);
 
-            ApplySpecialOperations(context, tokenStream, nodeOperations, applier, cancellationToken);
+            await ApplySpecialOperationsAsync(context, tokenStream, nodeOperations, applier, cancellationToken).ConfigureAwait(false);
         }
 
         private void ApplyBeginningOfTreeTriviaOperation(
@@ -349,7 +349,7 @@ namespace Microsoft.CodeAnalysis.Formatting
             return TextSpan.FromBounds(startPosition, endPosition);
         }
 
-        private void ApplySpecialOperations(
+        private async Task ApplySpecialOperationsAsync(
             FormattingContext context, TokenStream tokenStream, NodeOperations nodeOperationsCollector, OperationApplier applier, CancellationToken cancellationToken)
         {
             // apply alignment operation
@@ -360,7 +360,7 @@ namespace Microsoft.CodeAnalysis.Formatting
                 // TODO : figure out a way to run alignment operations in parallel. probably find
                 // unions and run each chunk in separate tasks
                 var previousChangesMap = new Dictionary<SyntaxToken, int>();
-                var alignmentOperations = nodeOperationsCollector.AlignmentOperationTask.WaitAndGetResult(cancellationToken);
+                var alignmentOperations = await nodeOperationsCollector.AlignmentOperationTask.ConfigureAwait(false);
 
                 alignmentOperations.Do(operation =>
                 {

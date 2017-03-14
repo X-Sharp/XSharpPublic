@@ -10,9 +10,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New AccessorDeclarationHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertyAccessorsSample1_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertyAccessorsSample1_1() As Task
+            Await TestAsync(<Text>
 Class C
 Public Property Foo As Integer Implements IFoo.Foo
     {|Cursor:[|Get|]|}
@@ -23,11 +23,11 @@ Public Property Foo As Integer Implements IFoo.Foo
     End Set
 End Property
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertyAccessorsSample1_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertyAccessorsSample1_2() As Task
+            Await TestAsync(<Text>
 Class C
 Public Property Foo As Integer Implements IFoo.Foo
     [|Get|]
@@ -38,11 +38,11 @@ Public Property Foo As Integer Implements IFoo.Foo
     End Set
 End Property
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertyAccessorsSample1_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertyAccessorsSample1_3() As Task
+            Await TestAsync(<Text>
 Class C
 Public Property Foo As Integer Implements IFoo.Foo
     [|Get|]
@@ -53,11 +53,11 @@ Public Property Foo As Integer Implements IFoo.Foo
     End Set
 End Property
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertyAccessorsSample2_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertyAccessorsSample2_1() As Task
+            Await TestAsync(<Text>
 Class C
 Public Property Foo As Integer Implements IFoo.Foo
     Get
@@ -68,11 +68,11 @@ Public Property Foo As Integer Implements IFoo.Foo
     [|End Set|]
 End Property
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertyAccessorsSample2_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertyAccessorsSample2_2() As Task
+            Await TestAsync(<Text>
 Class C
 Public Property Foo As Integer Implements IFoo.Foo
     Get
@@ -83,11 +83,11 @@ Public Property Foo As Integer Implements IFoo.Foo
     [|End Set|]
 End Property
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertyAccessorsSample2_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertyAccessorsSample2_3() As Task
+            Await TestAsync(<Text>
 Class C
 Public Property Foo As Integer Implements IFoo.Foo
     Get
@@ -98,11 +98,11 @@ Public Property Foo As Integer Implements IFoo.Foo
     {|Cursor:[|End Set|]|}
 End Property
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventAccessorsSample1_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventAccessorsSample1_1() As Task
+            Await TestAsync(<Text>
 Class C
 Public Custom Event Foo As EventHandler Implements IFoo.Foo
     {|Cursor:[|AddHandler|]|}(value As EventHandler)
@@ -114,11 +114,11 @@ Public Custom Event Foo As EventHandler Implements IFoo.Foo
     End RaiseEvent
 End Event
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventAccessorsSample1_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventAccessorsSample1_2() As Task
+            Await TestAsync(<Text>
 Class C
 Public Custom Event Foo As EventHandler Implements IFoo.Foo
     [|AddHandler|](value As EventHandler)
@@ -130,11 +130,11 @@ Public Custom Event Foo As EventHandler Implements IFoo.Foo
     End RaiseEvent
 End Event
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventAccessorsSample1_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventAccessorsSample1_3() As Task
+            Await TestAsync(<Text>
 Class C
 Public Custom Event Foo As EventHandler Implements IFoo.Foo
     [|AddHandler|](value As EventHandler)
@@ -146,11 +146,11 @@ Public Custom Event Foo As EventHandler Implements IFoo.Foo
     End RaiseEvent
 End Event
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventAccessorsSample2_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventAccessorsSample2_1() As Task
+            Await TestAsync(<Text>
 Class C
 Public Custom Event Foo As EventHandler Implements IFoo.Foo
     AddHandler(value As EventHandler)
@@ -162,11 +162,11 @@ Public Custom Event Foo As EventHandler Implements IFoo.Foo
     End RaiseEvent
 End Event
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventAccessorsSample2_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventAccessorsSample2_2() As Task
+            Await TestAsync(<Text>
 Class C
 Public Custom Event Foo As EventHandler Implements IFoo.Foo
     AddHandler(value As EventHandler)
@@ -178,11 +178,11 @@ Public Custom Event Foo As EventHandler Implements IFoo.Foo
     End RaiseEvent
 End Event
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventAccessorsSample3_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventAccessorsSample3_1() As Task
+            Await TestAsync(<Text>
 Class C
 Public Custom Event Foo As EventHandler Implements IFoo.Foo
     AddHandler(value As EventHandler)
@@ -194,11 +194,11 @@ Public Custom Event Foo As EventHandler Implements IFoo.Foo
     [|End RaiseEvent|]
 End Event
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventAccessorsSample3_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventAccessorsSample3_2() As Task
+            Await TestAsync(<Text>
 Class C
 Public Custom Event Foo As EventHandler Implements IFoo.Foo
     AddHandler(value As EventHandler)
@@ -210,11 +210,11 @@ Public Custom Event Foo As EventHandler Implements IFoo.Foo
     {|Cursor:[|End RaiseEvent|]|}
 End Event
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestProperty_IteratorExample5_1()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestProperty_IteratorExample5_1() As Task
+            Await TestAsync(
 <Text>
 ReadOnly Iterator Property Foo As IEnumerable(Of Integer)
     {|Cursor:[|Get|]|}
@@ -222,11 +222,11 @@ ReadOnly Iterator Property Foo As IEnumerable(Of Integer)
     [|End Get|]
 End Property
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestProperty_IteratorExample5_2()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestProperty_IteratorExample5_2() As Task
+            Await TestAsync(
 <Text>
 ReadOnly Iterator Property Foo As IEnumerable(Of Integer)
     [|Get|]
@@ -234,11 +234,11 @@ ReadOnly Iterator Property Foo As IEnumerable(Of Integer)
     [|End Get|]
 End Property
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestProperty_IteratorExample5_3()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestProperty_IteratorExample5_3() As Task
+            Await TestAsync(
 <Text>
 ReadOnly Iterator Property Foo As IEnumerable(Of Integer)
     [|Get|]
@@ -246,7 +246,7 @@ ReadOnly Iterator Property Foo As IEnumerable(Of Integer)
     {|Cursor:[|End Get|]|}
 End Property
 </Text>)
-        End Sub
+        End Function
 
     End Class
 End Namespace

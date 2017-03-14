@@ -10,9 +10,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New SyncLockBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestSyncLockBlock1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestSyncLockBlock1() As Task
+            Await TestAsync(<Text>
 Class C
 Sub M()
 {|Cursor:[|SyncLock|]|} Me
@@ -20,11 +20,11 @@ Sub M()
 [|End SyncLock|]
 End Sub
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestSyncLockBlock2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestSyncLockBlock2() As Task
+            Await TestAsync(<Text>
 Class C
 Sub M()
 [|SyncLock|] Me
@@ -32,6 +32,6 @@ Sub M()
 {|Cursor:[|End SyncLock|]|}
 End Sub
 End Class</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

@@ -10,9 +10,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New XmlCDataHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestXmlLiteralSample6_1()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestXmlLiteralSample6_1() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 Dim q = <?xml version="1.0"?>
@@ -25,11 +25,11 @@ Dim q = <?xml version="1.0"?>
 </contact>
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestXmlLiteralSample6_2()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestXmlLiteralSample6_2() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 Dim q = <?xml version="1.0"?>
@@ -42,11 +42,11 @@ Dim q = <?xml version="1.0"?>
 </contact>
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestXmlLiteralSample6_3()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestXmlLiteralSample6_3() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 Dim q = <?xml version="1.0"?>
@@ -59,6 +59,6 @@ Dim q = <?xml version="1.0"?>
 </contact>
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Formatting;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.Options;
@@ -36,10 +37,15 @@ namespace Roslyn.VisualStudio.CSharp.UnitTests.Options
             return viewModel.TextViewHost.TextView.TextBuffer.CurrentSnapshot.GetText().ToString();
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Options)]
-        public void TestCheckBox()
+        public OptionViewModelTests()
         {
-            using (var workspace = CSharpWorkspaceFactory.CreateWorkspaceFromFile(""))
+            WpfTestCase.RequireWpfFact("Tests create WPF ViewModels and updates previews with them");
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.Options)]
+        public async Task TestCheckBox()
+        {
+            using (var workspace = await TestWorkspace.CreateCSharpAsync(""))
             {
                 var serviceProvider = new MockServiceProvider(workspace.ExportProvider);
                 using (var viewModel = new SpacingViewModel(workspace.Options, serviceProvider))
@@ -63,13 +69,11 @@ namespace Roslyn.VisualStudio.CSharp.UnitTests.Options
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.Options)]
-        public void TestOptionLoading()
+        public async Task TestOptionLoading()
         {
-            using (var workspace = CSharpWorkspaceFactory.CreateWorkspaceFromFile(""))
+            using (var workspace = await TestWorkspace.CreateCSharpAsync(""))
             {
-                var optionService = workspace.GetService<IOptionService>();
-                var optionSet = optionService.GetOptions();
-                optionSet = optionSet.WithChangedOption(CSharpFormattingOptions.SpacingAfterMethodDeclarationName, true);
+                var optionSet = workspace.Options.WithChangedOption(CSharpFormattingOptions.SpacingAfterMethodDeclarationName, true);
 
                 var serviceProvider = new MockServiceProvider(workspace.ExportProvider);
                 using (var viewModel = new SpacingViewModel(optionSet, serviceProvider))
@@ -82,9 +86,9 @@ namespace Roslyn.VisualStudio.CSharp.UnitTests.Options
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.Options)]
-        public void TestOptionSaving()
+        public async Task TestOptionSaving()
         {
-            using (var workspace = CSharpWorkspaceFactory.CreateWorkspaceFromFile(""))
+            using (var workspace = await TestWorkspace.CreateCSharpAsync(""))
             {
                 var serviceProvider = new MockServiceProvider(workspace.ExportProvider);
                 using (var viewModel = new SpacingViewModel(workspace.Options, serviceProvider))
@@ -94,33 +98,8 @@ namespace Roslyn.VisualStudio.CSharp.UnitTests.Options
                     var initial = checkbox.IsChecked;
                     checkbox.IsChecked = !checkbox.IsChecked;
 
-                    var optionService = workspace.GetService<IOptionService>();
-                    var optionSet = optionService.GetOptions();
-
-                    var changedOptions = viewModel.ApplyChangedOptions(optionSet);
+                    var changedOptions = viewModel.ApplyChangedOptions(workspace.Options);
                     Assert.NotEqual(changedOptions.GetOption(CSharpFormattingOptions.SpacingAfterMethodDeclarationName), initial);
-                }
-            }
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Options)]
-        public void TestFeatureBasedSaving()
-        {
-            using (var workspace = CSharpWorkspaceFactory.CreateWorkspaceFromFile(""))
-            {
-                // Set an option for an unrelated feature
-                var optionService = workspace.GetService<IOptionService>();
-                var optionSet = optionService.GetOptions();
-                var expectedValue = !CSharpFormattingOptions.NewLineForCatch.DefaultValue;
-                optionSet = optionSet.WithChangedOption(CSharpFormattingOptions.NewLineForCatch, expectedValue);
-                optionService.SetOptions(optionSet);
-
-                // Save the options
-                var serviceProvider = new MockServiceProvider(workspace.ExportProvider);
-                using (var viewModel = new SpacingViewModel(workspace.Options, serviceProvider))
-                {
-                    var changedOptions = optionService.GetOptions();
-                    Assert.Equal(changedOptions.GetOption(CSharpFormattingOptions.NewLineForCatch), expectedValue);
                 }
             }
         }

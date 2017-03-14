@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 {
     internal sealed class EditSession
     {
-        [SuppressMessage("Performance", "RS0008", Justification = "Equality not actually implemented")]
+        [SuppressMessage("Performance", "CA1067", Justification = "Equality not actually implemented")]
         private struct Analysis
         {
             public readonly Document Document;
@@ -44,7 +44,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 
         private readonly Solution _baseSolution;
 
-        // signalled when the session is terminated:
+        // signaled when the session is terminated:
         private readonly CancellationTokenSource _cancellation;
 
         // document id -> [active statements ordered by position]
@@ -64,6 +64,11 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
         private readonly Dictionary<DocumentId, Analysis> _analyses;
 
         // A document id is added whenever any analysis reports rude edits.
+        // We collect a set of document ids that contained a rude edit
+        // at some point in time during the lifespan of an edit session.
+        // At the end of the session we aks the diagnostic analyzer to reanalyze 
+        // the documents to clean up the diagnostics.
+        // An id may be present in this set even if the document doesn't have a rude edit anymore.
         private readonly object _documentsWithReportedRudeEditsGuard = new object();
         private readonly HashSet<DocumentId> _documentsWithReportedRudeEdits;
 
@@ -138,8 +143,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 
         internal bool HasProject(ProjectId id)
         {
-            ProjectReadOnlyReason reason;
-            return Projects.TryGetValue(id, out reason);
+            return Projects.TryGetValue(id, out var reason);
         }
 
         private List<ValueTuple<DocumentId, AsyncLazy<DocumentAnalysisResults>>> GetChangedDocumentsAnalyses(Project baseProject, Project project)
@@ -198,16 +202,13 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 
         private AsyncLazy<DocumentAnalysisResults> GetDocumentAnalysisNoLock(Document document)
         {
-            Analysis analysis;
-            if (_analyses.TryGetValue(document.Id, out analysis) && analysis.Document == document)
+            if (_analyses.TryGetValue(document.Id, out var analysis) && analysis.Document == document)
             {
                 return analysis.Results;
             }
 
             var analyzer = document.Project.LanguageServices.GetService<IEditAndContinueAnalyzer>();
-
-            ImmutableArray<ActiveStatementSpan> activeStatements;
-            if (!_baseActiveStatements.TryGetValue(document.Id, out activeStatements))
+            if (!_baseActiveStatements.TryGetValue(document.Id, out var activeStatements))
             {
                 activeStatements = ImmutableArray.Create<ActiveStatementSpan>();
             }
@@ -383,9 +384,10 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                     return new Deltas(ilStream.ToArray(), metadataStream.ToArray(), updateMethodTokens, pdbStream, changes.LineChanges, result);
                 }
             }
-            catch (Exception e) when (FatalError.ReportUnlessCanceled(e))
+            catch (Exception e) when (FatalError.ReportWithoutCrash(e))
             {
-                throw ExceptionUtilities.Unreachable;
+                // recover (cancel EnC)
+                return null;
             }
         }
 

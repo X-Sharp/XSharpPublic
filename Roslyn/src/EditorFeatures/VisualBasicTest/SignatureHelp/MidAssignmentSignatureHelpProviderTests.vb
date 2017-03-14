@@ -2,7 +2,8 @@
 
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.SignatureHelp
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
-Imports Microsoft.CodeAnalysis.Editor.VisualBasic.SignatureHelp
+Imports Microsoft.CodeAnalysis.SignatureHelp
+Imports Microsoft.CodeAnalysis.VisualBasic.SignatureHelp
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.SignatureHelp
     Public Class MidAssignmentSignatureHelpProviderTests
@@ -16,8 +17,8 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.SignatureHelp
             Return New MidAssignmentSignatureHelpProvider()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
-        Public Sub TestInvocationForMidAssignmentFirstArgument()
+        <Fact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        Public Async Function TestInvocationForMidAssignmentFirstArgument() As Task
             Dim markup = <a><![CDATA[
 Class C
     Sub Foo()
@@ -28,16 +29,16 @@ End Class
 
             Dim expectedOrderedItems = New List(Of SignatureHelpTestItem)()
             expectedOrderedItems.Add(New SignatureHelpTestItem(
-                                     $"Mid({StringName}, {StartIndex}, [{Length}]) = {StringExpression}",
-                                     ReplacesChars,
-                                     NameOfStringVariable,
+                                     $"Mid({VBWorkspaceResources.stringName}, {VBWorkspaceResources.startIndex}, [{VBWorkspaceResources.length}]) = {VBWorkspaceResources.stringExpression}",
+                                     VBWorkspaceResources.Replaces_a_specified_number_of_characters_in_a_String_variable_with_characters_from_another_string,
+                                     VBWorkspaceResources.The_name_of_the_string_variable_to_modify,
                                      currentParameterIndex:=0))
-            Test(markup, expectedOrderedItems)
-            Test(markup, expectedOrderedItems, usePreviousCharAsTrigger:=True)
-        End Sub
+            Await TestAsync(markup, expectedOrderedItems)
+            Await TestAsync(markup, expectedOrderedItems, usePreviousCharAsTrigger:=True)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
-        Public Sub TestInvocationForMidAssignmentSecondArgument()
+        <Fact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        Public Async Function TestInvocationForMidAssignmentSecondArgument() As Task
             Dim markup = <a><![CDATA[
 Class C
     Sub Foo()
@@ -48,16 +49,16 @@ End Class
 
             Dim expectedOrderedItems = New List(Of SignatureHelpTestItem)()
             expectedOrderedItems.Add(New SignatureHelpTestItem(
-                                     $"Mid({StringName}, {StartIndex}, [{Length}]) = {StringExpression}",
-                                     ReplacesChars,
-                                     OneBasedStartPos,
+                                     $"Mid({VBWorkspaceResources.stringName}, {VBWorkspaceResources.startIndex}, [{VBWorkspaceResources.length}]) = {VBWorkspaceResources.stringExpression}",
+                                     VBWorkspaceResources.Replaces_a_specified_number_of_characters_in_a_String_variable_with_characters_from_another_string,
+                                     VBWorkspaceResources.The_one_based_character_position_in_the_string_where_the_replacement_of_text_begins,
                                      currentParameterIndex:=1))
-            Test(markup, expectedOrderedItems)
-            Test(markup, expectedOrderedItems, usePreviousCharAsTrigger:=True)
-        End Sub
+            Await TestAsync(markup, expectedOrderedItems)
+            Await TestAsync(markup, expectedOrderedItems, usePreviousCharAsTrigger:=True)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
-        Public Sub TestInvocationForMidAssignmentThirdArgument()
+        <Fact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        Public Async Function TestInvocationForMidAssignmentThirdArgument() As Task
             Dim markup = <a><![CDATA[
 Class C
     Sub Foo()
@@ -68,12 +69,12 @@ End Class
 
             Dim expectedOrderedItems = New List(Of SignatureHelpTestItem)()
             expectedOrderedItems.Add(New SignatureHelpTestItem(
-                                     $"Mid({StringName}, {StartIndex}, [{Length}]) = {StringExpression}",
-                                     ReplacesChars,
-                                     NumberOfCharsToReplace,
+                                     $"Mid({VBWorkspaceResources.stringName}, {VBWorkspaceResources.startIndex}, [{VBWorkspaceResources.length}]) = {VBWorkspaceResources.stringExpression}",
+                                     VBWorkspaceResources.Replaces_a_specified_number_of_characters_in_a_String_variable_with_characters_from_another_string,
+                                     VBWorkspaceResources.The_number_of_characters_to_replace_If_omitted_the_length_of_stringExpression_is_used,
                                      currentParameterIndex:=2))
-            Test(markup, expectedOrderedItems)
-            Test(markup, expectedOrderedItems, usePreviousCharAsTrigger:=True)
-        End Sub
+            Await TestAsync(markup, expectedOrderedItems)
+            Await TestAsync(markup, expectedOrderedItems, usePreviousCharAsTrigger:=True)
+        End Function
     End Class
 End Namespace

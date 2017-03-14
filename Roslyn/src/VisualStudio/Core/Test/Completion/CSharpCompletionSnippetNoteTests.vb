@@ -20,64 +20,86 @@ class C
     void M() { }
 }]]></document>
 
-        <WorkItem(726497)>
+        <WorkItem(726497, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/726497")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        Public Async Function SnippetExpansionNoteAddedToDescription_ExactMatch() As Threading.Tasks.Task
-            Using state = Await CreateCSharpSnippetExpansionNoteTestState(_markup, "interface").ConfigureAwait(True)
+        Public Async Function SnippetExpansionNoteAddedToDescription_ExactMatch() As Task
+            Using state = CreateCSharpSnippetExpansionNoteTestState(_markup, "interface")
                 state.SendTypeChars("interfac")
-                Await state.AssertCompletionSession().ConfigureAwait(True)
+                Await state.AssertCompletionSession()
                 Await state.AssertSelectedCompletionItem(description:="title" & vbCrLf &
                     "description" & vbCrLf &
-                    String.Format(FeaturesResources.NoteTabTwiceToInsertTheSnippet, "interface")).ConfigureAwait(True)
+                    String.Format(FeaturesResources.Note_colon_Tab_twice_to_insert_the_0_snippet, "interface"))
             End Using
         End Function
 
-        <WorkItem(726497)>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        Public Async Function SnippetExpansionNoteAddedToDescription_DifferentSnippetShortcutCasing() As Threading.Tasks.Task
-            Using state = Await CreateCSharpSnippetExpansionNoteTestState(_markup, "intErfaCE").ConfigureAwait(True)
-                state.SendTypeChars("interfac")
-                Await state.AssertCompletionSession().ConfigureAwait(True)
-                Await state.AssertSelectedCompletionItem(description:=$"{String.Format(FeaturesResources.Keyword, "interface")}
-{String.Format(FeaturesResources.NoteTabTwiceToInsertTheSnippet, "interface")}").ConfigureAwait(True)
+        Public Async Function ColonDoesntTriggerSnippetInTupleLiteral() As Task
+            Using state = CreateCSharpSnippetExpansionNoteTestState(_markup, "interface")
+                state.SendTypeChars("var t = (interfac")
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(displayText:="interface", isHardSelected:=True)
+                state.SendTypeChars(":")
+                Assert.Contains("(interfac:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
             End Using
         End Function
 
-        <WorkItem(726497)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function ColonDoesntTriggerSnippetInTupleLiteralAfterComma() As Task
+            Using state = CreateCSharpSnippetExpansionNoteTestState(_markup, "interface")
+                state.SendTypeChars("var t = (1, interfac")
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(displayText:="interface", isHardSelected:=True)
+                state.SendTypeChars(":")
+                Assert.Contains("(1, interfac:", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+            End Using
+        End Function
+
+        <WorkItem(726497, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/726497")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function SnippetExpansionNoteAddedToDescription_DifferentSnippetShortcutCasing() As Task
+            Using state = CreateCSharpSnippetExpansionNoteTestState(_markup, "intErfaCE")
+                state.SendTypeChars("interfac")
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(description:=$"{String.Format(FeaturesResources._0_Keyword, "interface")}
+{String.Format(FeaturesResources.Note_colon_Tab_twice_to_insert_the_0_snippet, "interface")}")
+            End Using
+        End Function
+
+        <WorkItem(726497, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/726497")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Sub SnippetExpansionNoteNotAddedToDescription_ShortcutIsProperSubstringOfInsertedText()
-            Using state = Await CreateCSharpSnippetExpansionNoteTestState(_markup, "interfac").ConfigureAwait(True)
+            Using state = CreateCSharpSnippetExpansionNoteTestState(_markup, "interfac")
                 state.SendTypeChars("interfac")
-                Await state.AssertCompletionSession().ConfigureAwait(True)
+                Await state.AssertCompletionSession()
                 Await state.AssertSelectedCompletionItem(description:="title" & vbCrLf &
                     "description" & vbCrLf &
-                    String.Format(FeaturesResources.NoteTabTwiceToInsertTheSnippet, "interfac")).ConfigureAwait(True)
+                    String.Format(FeaturesResources.Note_colon_Tab_twice_to_insert_the_0_snippet, "interfac"))
             End Using
         End Sub
 
-        <WorkItem(726497)>
+        <WorkItem(726497, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/726497")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Sub SnippetExpansionNoteNotAddedToDescription_ShortcutIsProperSuperstringOfInsertedText()
-            Using state = Await CreateCSharpSnippetExpansionNoteTestState(_markup, "interfaces").ConfigureAwait(True)
+            Using state = CreateCSharpSnippetExpansionNoteTestState(_markup, "interfaces")
                 state.SendTypeChars("interfac")
-                Await state.AssertCompletionSession().ConfigureAwait(True)
-                Await state.AssertSelectedCompletionItem(description:=String.Format(FeaturesResources.Keyword, "interface")).ConfigureAwait(True)
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(description:=String.Format(FeaturesResources._0_Keyword, "interface"))
             End Using
         End Sub
 
-        <WorkItem(726497)>
+        <WorkItem(726497, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/726497")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Sub SnippetExpansionNoteAddedToDescription_DisplayTextDoesNotMatchShortcutButInsertionTextDoes()
-            Using state = Await CreateCSharpSnippetExpansionNoteTestState(_markup, "InsertionText").ConfigureAwait(True)
+            Using state = CreateCSharpSnippetExpansionNoteTestState(_markup, "InsertionText")
 
                 state.SendTypeChars("DisplayTex")
-                Await state.AssertCompletionSession().ConfigureAwait(True)
-                Await state.AssertSelectedCompletionItem(description:=String.Format(FeaturesResources.NoteTabTwiceToInsertTheSnippet, "InsertionText")).ConfigureAwait(True)
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(description:=String.Format(FeaturesResources.Note_colon_Tab_twice_to_insert_the_0_snippet, "InsertionText"))
             End Using
         End Sub
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion), Trait(Traits.Feature, Traits.Features.Interactive)>
-        Public Async Function SnippetExpansionNoteNotAddedToDescription_Interactive() As Threading.Tasks.Task
+        Public Async Function SnippetExpansionNoteNotAddedToDescription_Interactive() As Task
             Dim workspaceXml =
                 <Workspace>
                     <Submission Language="C#" CommonReferences="true">
@@ -87,32 +109,33 @@ class C
 
             Using state = TestState.CreateTestStateFromWorkspace(
                 workspaceXml,
-                New CompletionListProvider() {New MockCompletionProvider(New TextSpan(31, 10))},
+                New CompletionProvider() {New MockCompletionProvider()},
                 Nothing,
                 New List(Of Type) From {GetType(TestCSharpSnippetInfoService)},
                 WorkspaceKind.Interactive)
 
                 Dim testSnippetInfoService = DirectCast(state.Workspace.Services.GetLanguageServices(LanguageNames.CSharp).GetService(Of ISnippetInfoService)(), TestCSharpSnippetInfoService)
-                Await testSnippetInfoService.SetSnippetShortcuts({"for"}).ConfigureAwait(True)
+                testSnippetInfoService.SetSnippetShortcuts({"for"})
 
                 state.Workspace.Options = state.Workspace.Options.WithChangedOption(InternalFeatureOnOffOptions.Snippets, False)
 
                 state.SendTypeChars("for")
-                Await state.AssertCompletionSession().ConfigureAwait(True)
-                Await state.AssertSelectedCompletionItem(description:=String.Format(FeaturesResources.Keyword, "for")).ConfigureAwait(True)
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(
+                    description:=String.Format(FeaturesResources._0_Keyword, "for") & vbCrLf &
+                                 String.Format(FeaturesResources.Note_colon_Tab_twice_to_insert_the_0_snippet, "for"))
             End Using
         End Function
 
-        Private Async Function CreateCSharpSnippetExpansionNoteTestState(xElement As XElement, ParamArray snippetShortcuts As String()) As Task(Of TestState)
+        Private Function CreateCSharpSnippetExpansionNoteTestState(xElement As XElement, ParamArray snippetShortcuts As String()) As TestState
             Dim state = TestState.CreateCSharpTestState(
                 xElement,
-                New CompletionListProvider() {New MockCompletionProvider(New TextSpan(31, 10))},
+                New CompletionProvider() {New MockCompletionProvider()},
                 Nothing,
                 New List(Of Type) From {GetType(TestCSharpSnippetInfoService)})
 
             Dim testSnippetInfoService = DirectCast(state.Workspace.Services.GetLanguageServices(LanguageNames.CSharp).GetService(Of ISnippetInfoService)(), TestCSharpSnippetInfoService)
-            Await testSnippetInfoService.SetSnippetShortcuts(snippetShortcuts).ConfigureAwait(True)
-
+            testSnippetInfoService.SetSnippetShortcuts(snippetShortcuts)
             Return state
         End Function
     End Class

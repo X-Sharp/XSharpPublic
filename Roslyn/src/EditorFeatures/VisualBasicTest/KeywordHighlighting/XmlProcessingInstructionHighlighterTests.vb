@@ -10,34 +10,34 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New XmlProcessingInstructionHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestXmlProcessingInstruction1()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestXmlProcessingInstruction1() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 Dim q = {|Cursor:[|<?|]|}fogbar[|?>|]
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestXmlProcessingInstruction2()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestXmlProcessingInstruction2() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 Dim q = [|<?|]fogbar{|Cursor:[|?>|]|}
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestXmlProcessingInstruction3()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestXmlProcessingInstruction3() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 Dim q = <?f{|Cursor:ooba|}r?>
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

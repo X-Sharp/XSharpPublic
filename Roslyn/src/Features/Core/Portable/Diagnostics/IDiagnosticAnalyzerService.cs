@@ -13,7 +13,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
         /// <summary>
         /// re-analyze given projects and documents
         /// </summary>
-        void Reanalyze(Workspace workspace, IEnumerable<ProjectId> projectIds = null, IEnumerable<DocumentId> documentIds = null);
+        void Reanalyze(Workspace workspace, IEnumerable<ProjectId> projectIds = null, IEnumerable<DocumentId> documentIds = null, bool highPriority = false);
 
         /// <summary>
         /// get specific diagnostics currently stored in the source. returned diagnostic might be out-of-date if solution has changed but analyzer hasn't run for the new solution.
@@ -23,7 +23,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
         /// <summary>
         /// get diagnostics currently stored in the source. returned diagnostic might be out-of-date if solution has changed but analyzer hasn't run for the new solution.
         /// </summary>
-        Task<ImmutableArray<DiagnosticData>> GetCachedDiagnosticsAsync(Workspace workspace, ProjectId projectId = null, DocumentId documentId = null, bool includeSuppressedDiagnostics = false,  CancellationToken cancellationToken = default(CancellationToken));
+        Task<ImmutableArray<DiagnosticData>> GetCachedDiagnosticsAsync(Workspace workspace, ProjectId projectId = null, DocumentId documentId = null, bool includeSuppressedDiagnostics = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// get specific diagnostics for the given solution. all diagnostics returned should be up-to-date with respect to the given solution.
@@ -34,6 +34,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics
         /// get diagnostics for the given solution. all diagnostics returned should be up-to-date with respect to the given solution.
         /// </summary>
         Task<ImmutableArray<DiagnosticData>> GetDiagnosticsAsync(Solution solution, ProjectId projectId = null, DocumentId documentId = null, bool includeSuppressedDiagnostics = false, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// true if given project has any diagnostics
+        /// </summary>
+        bool ContainsDiagnostics(Workspace workspace, ProjectId projectId);
 
         /// <summary>
         /// get diagnostics of the given diagnostic ids from the given solution. all diagnostics returned should be up-to-date with respect to the given solution.
@@ -91,5 +96,10 @@ namespace Microsoft.CodeAnalysis.Diagnostics
         /// Check whether given <see cref="DiagnosticAnalyzer"/> is compiler analyzer for the language or not.
         /// </summary>
         bool IsCompilerDiagnosticAnalyzer(string language, DiagnosticAnalyzer analyzer);
+
+        /// <summary>
+        /// Return host <see cref="AnalyzerReference"/>s. (ex, analyzers installed by vsix)
+        /// </summary>
+        IEnumerable<AnalyzerReference> GetHostAnalyzerReferences();
     }
 }

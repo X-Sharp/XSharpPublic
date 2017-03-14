@@ -162,6 +162,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
+        internal override RefKind RefKind
+        {
+            get
+            {
+                return _overriddenAccessor.RefKind;
+            }
+        }
+
         public override TypeSymbol ReturnType
         {
             get
@@ -212,6 +220,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get
             {
                 return _overriddenAccessor.ReturnTypeCustomModifiers;
+            }
+        }
+        
+        public override ImmutableArray<CustomModifier> RefCustomModifiers
+        {
+            get
+            {
+                return _overriddenAccessor.RefCustomModifiers;
             }
         }
 

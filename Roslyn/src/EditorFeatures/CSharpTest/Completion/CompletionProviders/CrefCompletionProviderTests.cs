@@ -1,19 +1,13 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
+using System.Collections.Immutable;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Completion.Providers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editor.UnitTests;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
-using Microsoft.CodeAnalysis.FindSymbols;
-using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.LanguageServices;
 using Microsoft.CodeAnalysis.Shared.Extensions;
-using Microsoft.CodeAnalysis.Text;
 using Roslyn.Test.Utilities;
 using Xunit;
 
@@ -25,27 +19,31 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionPr
         {
         }
 
-        internal override CompletionListProvider CreateCompletionProvider()
+        internal override CompletionProvider CreateCompletionProvider()
         {
             return new CrefCompletionProvider();
         }
 
-        protected override void VerifyWorker(string code, int position, string expectedItemOrNull, string expectedDescriptionOrNull, SourceCodeKind sourceCodeKind, bool usePreviousCharAsTrigger, bool checkForAbsence, bool experimental, int? glyph)
+        protected override async Task VerifyWorkerAsync(
+            string code, int position,
+            string expectedItemOrNull, string expectedDescriptionOrNull,
+            SourceCodeKind sourceCodeKind, bool usePreviousCharAsTrigger, bool checkForAbsence,
+            int? glyph, int? matchPriority)
         {
-            VerifyAtPosition(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, experimental, glyph);
-            VerifyAtEndOfFile(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, experimental, glyph);
+            await VerifyAtPositionAsync(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, glyph, matchPriority);
+            await VerifyAtEndOfFileAsync(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, glyph, matchPriority);
 
             // Items cannot be partially written if we're checking for their absence,
             // or if we're verifying that the list will show up (without specifying an actual item)
             if (!checkForAbsence && expectedItemOrNull != null)
             {
-                VerifyAtPosition_ItemPartiallyWritten(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, experimental, glyph);
-                VerifyAtEndOfFile_ItemPartiallyWritten(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, experimental, glyph);
+                await VerifyAtPosition_ItemPartiallyWrittenAsync(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, glyph, matchPriority);
+                await VerifyAtEndOfFile_ItemPartiallyWrittenAsync(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, glyph, matchPriority);
             }
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void NameCref()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NameCref()
         {
             var text = @"using System;
 namespace Foo
@@ -55,11 +53,11 @@ namespace Foo
     {
     }
 }";
-            VerifyItemExists(text, "AccessViolationException");
+            await VerifyItemExistsAsync(text, "AccessViolationException");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void QualifiedCref()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task QualifiedCref()
         {
             var text = @"using System;
 namespace Foo
@@ -71,11 +69,11 @@ namespace Foo
         void foo() { }
     }
 }";
-            VerifyItemExists(text, "foo");
+            await VerifyItemExistsAsync(text, "foo");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void CrefArgumentList()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CrefArgumentList()
         {
             var text = @"using System;
 namespace Foo
@@ -87,12 +85,12 @@ namespace Foo
         void foo(int i) { }
     }
 }";
-            VerifyItemIsAbsent(text, "foo(int)");
-            VerifyItemExists(text, "int");
+            await VerifyItemIsAbsentAsync(text, "foo(int)");
+            await VerifyItemExistsAsync(text, "int");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void CrefTypeParameterInArgumentList()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CrefTypeParameterInArgumentList()
         {
             var text = @"using System;
 namespace Foo
@@ -104,11 +102,11 @@ namespace Foo
         void foo(T i) { }
     }
 }";
-            VerifyItemExists(text, "Q");
+            await VerifyItemExistsAsync(text, "Q");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion), WorkItem(530887)]
-        public void PrivateMember()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion), WorkItem(530887, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530887")]
+        public async Task PrivateMember()
         {
             var text = @"using System;
 namespace Foo
@@ -124,11 +122,11 @@ namespace Foo
         public int Public;
     }
 }";
-            VerifyItemExists(text, "Private");
+            await VerifyItemExistsAsync(text, "Private");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void AfterSingleQuote()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task AfterSingleQuote()
         {
             var text = @"using System;
 namespace Foo
@@ -138,24 +136,24 @@ namespace Foo
     {
     }
 }";
-            VerifyItemExists(text, "Exception");
+            await VerifyItemExistsAsync(text, "Exception");
         }
 
-        [WorkItem(531315)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void EscapePredefinedTypeName()
+        [WorkItem(531315, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531315")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task EscapePredefinedTypeName()
         {
             var text = @"using System;
 /// <see cref=""@vo$$""/>
 class @void { }
 ";
-            VerifyItemExists(text, "@void");
+            await VerifyItemExistsAsync(text, "@void");
         }
 
-        [WorkItem(531345)]
-        [WorkItem(598159)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ShowParameterNames()
+        [WorkItem(531345, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531345")]
+        [WorkItem(598159, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/598159")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ShowParameterNames()
         {
             var text = @"/// <see cref=""C.$$""/>
 class C
@@ -166,14 +164,14 @@ class C
 }
 
 ";
-            VerifyItemExists(text, "M(int)");
-            VerifyItemExists(text, "M(ref long)");
-            VerifyItemExists(text, "M{T}(T)");
+            await VerifyItemExistsAsync(text, "M(int)");
+            await VerifyItemExistsAsync(text, "M(ref long)");
+            await VerifyItemExistsAsync(text, "M{T}(T)");
         }
 
-        [WorkItem(531345)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ShowTypeParameterNames()
+        [WorkItem(531345, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531345")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ShowTypeParameterNames()
         {
             var text = @"/// <see cref=""C$$""/>
 class C<TFoo>
@@ -184,12 +182,12 @@ class C<TFoo>
 }
 
 ";
-            VerifyItemExists(text, "C{TFoo}");
+            await VerifyItemExistsAsync(text, "C{TFoo}");
         }
 
-        [WorkItem(531156)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ShowConstructors()
+        [WorkItem(531156, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531156")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ShowConstructors()
         {
             var text = @"using System;
 
@@ -204,14 +202,14 @@ class C<T>
 }
 
 ";
-            VerifyItemExists(text, "C");
-            VerifyItemExists(text, "C(T)");
-            VerifyItemExists(text, "C(int)");
+            await VerifyItemExistsAsync(text, "C");
+            await VerifyItemExistsAsync(text, "C(T)");
+            await VerifyItemExistsAsync(text, "C(int)");
         }
 
-        [WorkItem(598679)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void NoParamsModifier()
+        [WorkItem(598679, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/598679")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NoParamsModifier()
         {
             var text = @"/// <summary>
 /// <see cref=""C.$$""/>
@@ -224,24 +222,24 @@ class C
 
 
 ";
-            VerifyItemExists(text, "M(long[])");
+            await VerifyItemExistsAsync(text, "M(long[])");
         }
 
-        [WorkItem(607773)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void UnqualifiedTypes()
+        [WorkItem(607773, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/607773")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task UnqualifiedTypes()
         {
             var text = @"
 using System.Collections.Generic;
 /// <see cref=""List{T}.$$""/>
 class C { }
 ";
-            VerifyItemExists(text, "Enumerator");
+            await VerifyItemExistsAsync(text, "Enumerator");
         }
 
-        [WorkItem(607773)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void CommitUnqualifiedTypes()
+        [WorkItem(607773, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/607773")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CommitUnqualifiedTypes()
         {
             var text = @"
 using System.Collections.Generic;
@@ -254,12 +252,12 @@ using System.Collections.Generic;
 /// <see cref=""List{T}.Enumerator ""/>
 class C { }
 ";
-            VerifyProviderCommit(text, "Enumerator", expected, ' ', "Enum");
+            await VerifyProviderCommitAsync(text, "Enumerator", expected, ' ', "Enum");
         }
 
-        [WorkItem(642285)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void SuggestOperators()
+        [WorkItem(642285, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/642285")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task SuggestOperators()
         {
             var text = @"
 class Test
@@ -283,15 +281,15 @@ class Test
     }
 }
 ";
-            VerifyItemExists(text, "operator !(Test)");
-            VerifyItemExists(text, "operator +(Test, Test)");
-            VerifyItemExists(text, "operator true(Test)");
-            VerifyItemExists(text, "operator false(Test)");
+            await VerifyItemExistsAsync(text, "operator !(Test)");
+            await VerifyItemExistsAsync(text, "operator +(Test, Test)");
+            await VerifyItemExistsAsync(text, "operator true(Test)");
+            await VerifyItemExistsAsync(text, "operator false(Test)");
         }
 
-        [WorkItem(641096)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void SuggestIndexers()
+        [WorkItem(641096, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/641096")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task SuggestIndexers()
         {
             var text = @"
 /// <see cref=""thi$$""/>
@@ -305,12 +303,12 @@ class Program
     }
 }
 ";
-            VerifyItemExists(text, "this[int]");
+            await VerifyItemExistsAsync(text, "this[int]");
         }
 
-        [WorkItem(531315)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void CommitEscapedPredefinedTypeName()
+        [WorkItem(531315, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531315")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CommitEscapedPredefinedTypeName()
         {
             var text = @"using System;
 /// <see cref=""@vo$$""/>
@@ -321,12 +319,12 @@ class @void { }
 /// <see cref=""@void ""/>
 class @void { }
 ";
-            VerifyProviderCommit(text, "@void", expected, ' ', "@vo");
+            await VerifyProviderCommitAsync(text, "@void", expected, ' ', "@vo");
         }
 
-        [WorkItem(598159)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void RefOutModifiers()
+        [WorkItem(598159, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/598159")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task RefOutModifiers()
         {
             var text = @"/// <summary>
 /// <see cref=""C.$$""/>
@@ -338,13 +336,13 @@ class C
 }
 
 ";
-            VerifyItemExists(text, "M(ref int)");
-            VerifyItemExists(text, "M(out long)");
+            await VerifyItemExistsAsync(text, "M(ref int)");
+            await VerifyItemExistsAsync(text, "M(out long)");
         }
 
-        [WorkItem(673587)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void NestedNamespaces()
+        [WorkItem(673587, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/673587")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NestedNamespaces()
         {
             var text = @"namespace N
 {
@@ -368,13 +366,13 @@ class Program
 
     }
 }";
-            VerifyItemExists(text, "N");
-            VerifyItemExists(text, "C");
+            await VerifyItemExistsAsync(text, "N");
+            await VerifyItemExistsAsync(text, "C");
         }
 
-        [WorkItem(730338)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void PermitTypingTypeParameters()
+        [WorkItem(730338, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730338")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PermitTypingTypeParameters()
         {
             var text = @"
 using System.Collections.Generic;
@@ -387,12 +385,12 @@ using System.Collections.Generic;
 /// <see cref=""List{""/>
 class C { }
 ";
-            VerifyProviderCommit(text, "List{T}", expected, '{', "List");
+            await VerifyProviderCommitAsync(text, "List{T}", expected, '{', "List");
         }
 
-        [WorkItem(730338)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void PermitTypingParameterTypes()
+        [WorkItem(730338, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730338")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PermitTypingParameterTypes()
         {
             var text = @"
 using System.Collections.Generic;
@@ -411,505 +409,56 @@ class C
     public void foo(int x) { }
 }
 ";
-            VerifyProviderCommit(text, "foo(int)", expected, '(', "foo");
+            await VerifyProviderCommitAsync(text, "foo(int)", expected, '(', "foo");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void CrefCompletionSpeculatesOutsideTrivia()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CrefCompletionSpeculatesOutsideTrivia()
         {
             var text = @"
 /// <see cref=""$$
 class C
 {
 }";
-            var exportProvider = MinimalTestExportProvider.CreateExportProvider(TestExportProvider.EntireAssemblyCatalogWithCSharpAndVisualBasic.WithPart(typeof(PickySemanticFactsService)));
-            using (var workspace = TestWorkspaceFactory.CreateWorkspaceFromFiles(LanguageNames.CSharp, new CSharpCompilationOptions(OutputKind.ConsoleApplication), new CSharpParseOptions(), new[] { text }, exportProvider))
+            using (var workspace = await TestWorkspace.CreateAsync(LanguageNames.CSharp, new CSharpCompilationOptions(OutputKind.ConsoleApplication), new CSharpParseOptions(), new[] { text }))
             {
-                // This test uses MEF to compose in an ISyntaxFactsService that 
-                // asserts it isn't asked to speculate on nodes inside documentation trivia.
-                // This verifies that the provider is asking for a speculative SemanticModel
-                // by walking to the node the documentation is attached to. 
+                var called = false;
+                var provider = new CrefCompletionProvider(testSpeculativeNodeCallbackOpt: n =>
+                {
+                    // asserts that we aren't be asked speculate on nodes inside documentation trivia.
+                    // This verifies that the provider is asking for a speculative SemanticModel
+                    // by walking to the node the documentation is attached to. 
 
-                var provider = new CrefCompletionProvider();
+                    called = true;
+                    var parent = n.GetAncestor<DocumentationCommentTriviaSyntax>();
+                    Assert.Null(parent);
+                });
+
                 var hostDocument = workspace.DocumentWithCursor;
                 var document = workspace.CurrentSolution.GetDocument(hostDocument.Id);
-                var completionList = GetCompletionList(provider, document, hostDocument.CursorPosition.Value, CompletionTriggerInfo.CreateInvokeCompletionTriggerInfo());
+                var service = CreateCompletionService(workspace,
+                    ImmutableArray.Create<CompletionProvider>(provider));
+                var completionList = await GetCompletionListAsync(service, document, hostDocument.CursorPosition.Value, CompletionTrigger.Default);
+
+                Assert.True(called);
             }
         }
 
-        [ExportLanguageService(typeof(ISyntaxFactsService), LanguageNames.CSharp, ServiceLayer.Host), System.Composition.Shared]
-        internal class PickySemanticFactsService : ISyntaxFactsService
+        [WorkItem(16060, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/16060")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task SpecialTypeNames()
         {
-            public bool IsCaseSensitive
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public bool ContainsInMemberBody(SyntaxNode node, TextSpan span)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode ConvertToSingleLine(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxToken FindTokenOnLeftOfPosition(SyntaxNode node, int position, bool includeSkipped = true, bool includeDirectives = false, bool includeDocumentationComments = false)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxToken FindTokenOnRightOfPosition(SyntaxNode node, int position, bool includeSkipped = true, bool includeDirectives = false, bool includeDocumentationComments = false)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode GetBindableParent(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IEnumerable<SyntaxNode> GetConstructors(SyntaxNode root, CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode GetContainingMemberDeclaration(SyntaxNode root, int position, bool useFullSpan = true)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode GetContainingTypeDeclaration(SyntaxNode root, int position)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode GetContainingVariableDeclaratorOfFieldDeclaration(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode GetExpressionOfArgument(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode GetExpressionOfConditionalMemberAccessExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode GetExpressionOfMemberAccessExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxToken GetIdentifierOfGenericName(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public TextSpan GetMemberBodySpanForSpeculativeBinding(SyntaxNode node)
-            {
-                var parent = node.GetAncestor<DocumentationCommentTriviaSyntax>();
-                Assert.Null(parent);
-                return default(TextSpan);
-            }
-
-            public SyntaxNode GetMethodLevelMember(SyntaxNode root, int memberId)
-            {
-                throw new NotImplementedException();
-            }
-
-            public int GetMethodLevelMemberId(SyntaxNode root, SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public List<SyntaxNode> GetMethodLevelMembers(SyntaxNode root)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void GetNameAndArityOfSimpleName(SyntaxNode node, out string name, out int arity)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode GetNameOfAttribute(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public RefKind GetRefKindOfArgument(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public string GetText(int kind)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool HasIncompleteParentMember(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsAnonymousFunction(SyntaxNode n)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsAttribute(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsAttributeName(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsAttributeNamedArgumentIdentifier(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsAwaitKeyword(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsBaseConstructorInitializer(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsBindableToken(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsConditionalMemberAccessExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsContextualKeyword(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsDirective(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsElementAccessExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsEntirelyWithinStringOrCharOrNumericLiteral(SyntaxTree syntaxTree, int position, CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsForEachStatement(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsGenericName(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsGlobalNamespaceKeyword(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsHashToken(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsIdentifier(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsIdentifierEscapeCharacter(char c)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsIdentifierPartCharacter(char c)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsIdentifierStartCharacter(char c)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsInConstantContext(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsInConstructor(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsIndexerMemberCRef(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsInInactiveRegion(SyntaxTree syntaxTree, int position, CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsInNamespaceOrTypeContext(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsInNonUserCode(SyntaxTree syntaxTree, int position, CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsInStaticContext(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsInvocationExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsKeyword(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsLiteral(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsLockStatement(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsMemberAccessExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsMemberAccessExpressionName(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsMethodLevelMember(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsNamedParameter(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsObjectCreationExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsObjectCreationExpressionType(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsObjectInitializerNamedAssignmentIdentifier(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsOperator(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsPointerMemberAccessExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsPredefinedOperator(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsPredefinedOperator(SyntaxToken token, PredefinedOperator op)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsPredefinedType(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsPredefinedType(SyntaxToken token, PredefinedType type)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsPreprocessorKeyword(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsQueryExpression(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsRightSideOfQualifiedName(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsSkippedTokensTrivia(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsStartOfUnicodeEscapeSequence(char c)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsStringLiteral(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsThisConstructorInitializer(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsTopLevelNodeWithMembers(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsTypeCharacter(char c)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsTypeNamedDynamic(SyntaxToken token, SyntaxNode parent)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsTypeNamedVarInVariableOrFieldDeclaration(SyntaxToken token, SyntaxNode parent)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsUnsafeContext(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsUsingDirectiveName(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsUsingStatement(SyntaxNode node)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsValidIdentifier(string identifier)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsVerbatimIdentifier(string identifier)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsVerbatimIdentifier(SyntaxToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxNode Parenthesize(SyntaxNode expression, bool includeElasticTrivia = true)
-            {
-                throw new NotImplementedException();
-            }
-
-            public SyntaxToken ToIdentifierToken(string name)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGetCorrespondingOpenBrace(SyntaxToken token, out SyntaxToken openBrace)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGetDeclaredSymbolInfo(SyntaxNode node, out DeclaredSymbolInfo declaredSymbolInfo)
-            {
-                throw new NotImplementedException();
-            }
-
-            public string GetDisplayName(SyntaxNode node, DisplayNameOptions options, string rootNamespace = null)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGetExternalSourceInfo(SyntaxNode directive, out ExternalSourceInfo info)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGetPredefinedOperator(SyntaxToken token, out PredefinedOperator op)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGetPredefinedType(SyntaxToken token, out PredefinedType type)
-            {
-                throw new NotImplementedException();
-            }
-
-            public TextSpan GetInactiveRegionSpanAroundPosition(SyntaxTree tree, int position, CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
+            var text = @"
+using System;
+/// <see cref=""$$""/>
+class C 
+{ 
+    public void foo(int x) { }
+}
+";
+
+            await VerifyItemExistsAsync(text, "uint");
+            await VerifyItemExistsAsync(text, "UInt32");
         }
     }
 }
-

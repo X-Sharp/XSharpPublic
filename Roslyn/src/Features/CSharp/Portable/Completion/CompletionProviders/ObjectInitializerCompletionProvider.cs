@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
             // We're exclusive if this context could only be an object initializer and not also a
             // collection initializer. If we're initializing something that could be initialized as
             // an object or as a collection, say we're not exclusive. That way the rest of
-            // intellisense can be used in the collection intializer.
+            // intellisense can be used in the collection initializer.
             // 
             // Consider this case:
 
@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
             return true;
         }
 
-        public override bool IsTriggerCharacter(SourceText text, int characterPosition, OptionSet options)
+        internal override bool IsInsertionTrigger(SourceText text, int characterPosition, OptionSet options)
         {
             return CompletionUtilities.IsTriggerCharacter(text, characterPosition, options) || text[characterPosition] == ' ';
         }
@@ -168,11 +168,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
             }
 
             return new HashSet<string>();
-        }
-
-        protected override TextSpan GetTextChangeSpan(SourceText text, int position)
-        {
-            return CompletionUtilities.GetTextChangeSpan(text, position);
         }
 
         protected override bool IsInitializable(ISymbol member, INamedTypeSymbol containingType)

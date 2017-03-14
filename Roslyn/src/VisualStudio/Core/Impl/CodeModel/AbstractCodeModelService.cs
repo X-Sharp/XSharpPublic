@@ -31,6 +31,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.GeneratedCodeRecognition;
+using Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel.Interop;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 {
@@ -119,9 +120,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             foreach (var node in GetFlattenedMemberNodes(syntaxTree))
             {
                 var name = _nodeNameGenerator.GenerateName(node);
-
-                int ordinal;
-                if (!nameOrdinalMap.TryGetValue(name, out ordinal))
+                if (!nameOrdinalMap.TryGetValue(name, out var ordinal))
                 {
                     ordinal = 0;
                 }
@@ -155,9 +154,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
         public SyntaxNodeKey TryGetNodeKey(SyntaxNode node)
         {
             var nodeKeyMap = GetNodeKeyMap(node.SyntaxTree);
-
-            SyntaxNodeKey nodeKey;
-            if (!nodeKeyMap.TryGetKey(node, out nodeKey))
+            if (!nodeKeyMap.TryGetKey(node, out var nodeKey))
             {
                 return SyntaxNodeKey.Empty;
             }
@@ -168,9 +165,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
         public SyntaxNode LookupNode(SyntaxNodeKey nodeKey, SyntaxTree syntaxTree)
         {
             var nodeKeyMap = GetNodeKeyMap(syntaxTree);
-
-            SyntaxNode node;
-            if (!nodeKeyMap.TryGetValue(nodeKey, out node))
+            if (!nodeKeyMap.TryGetValue(nodeKey, out var node))
             {
                 throw new ArgumentException();
             }
@@ -215,7 +210,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
         /// </summary>
         /// <param name="container">The <see cref="SyntaxNode"/> from which to retrieve members.</param>
         /// <param name="includeSelf">If true, the container is returned as well.</param>
-        /// <param name="recursive">If true, members are recursed to return descendent members as well
+        /// <param name="recursive">If true, members are recursed to return descendant members as well
         /// as immediate children. For example, a namespace would return the namespaces and types within.
         /// However, if <paramref name="recursive"/> is true, members with the namespaces and types would
         /// also be returned.</param>
@@ -304,8 +299,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
                 return (EnvDTE.CodeElement)ExternalCodeClass.Create(state, projectId, obj);
             }
 
-            EnvDTE.CodeElement element;
-            if (TryGetElementFromSource(state, project, typeSymbol, out element))
+            if (TryGetElementFromSource(state, project, typeSymbol, out var element))
             {
                 return element;
             }
@@ -405,19 +399,14 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
                 }
             }
 
-            string name;
-            int ordinal;
-            GetAttributeNameAndOrdinal(parentNode, node, out name, out ordinal);
+            GetAttributeNameAndOrdinal(parentNode, node, out var name, out var ordinal);
 
             return CodeAttribute.Create(state, fileCodeModel, parentObject, name, ordinal);
         }
 
         protected EnvDTE80.CodeImport CreateInternalCodeImport(CodeModelState state, FileCodeModel fileCodeModel, SyntaxNode node)
         {
-            SyntaxNode parentNode;
-            string name;
-
-            GetImportParentAndName(node, out parentNode, out name);
+            GetImportParentAndName(node, out var parentNode, out var name);
 
             AbstractCodeElement parentObj = null;
             if (parentNode != null)
@@ -450,9 +439,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
         protected EnvDTE80.CodeElement2 CreateInternalCodeOptionStatement(CodeModelState state, FileCodeModel fileCodeModel, SyntaxNode node)
         {
-            string name;
-            int ordinal;
-            GetOptionNameAndOrdinal(node.Parent, node, out name, out ordinal);
+            GetOptionNameAndOrdinal(node.Parent, node, out var name, out var ordinal);
 
             return CodeOptionsStatement.Create(state, fileCodeModel, name, ordinal);
         }
@@ -468,9 +455,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
                 throw new InvalidOperationException();
             }
 
-            string namespaceName;
-            int ordinal;
-            GetInheritsNamespaceAndOrdinal(parentNode, node, out namespaceName, out ordinal);
+            GetInheritsNamespaceAndOrdinal(parentNode, node, out var namespaceName, out var ordinal);
 
             var parent = fileCodeModel.GetOrCreateCodeElement<EnvDTE.CodeElement>(parentNode);
             var parentObj = ComAggregate.GetManagedObject<AbstractCodeMember>(parent);
@@ -489,9 +474,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
                 throw new InvalidOperationException();
             }
 
-            string namespaceName;
-            int ordinal;
-            GetImplementsNamespaceAndOrdinal(parentNode, node, out namespaceName, out ordinal);
+            GetImplementsNamespaceAndOrdinal(parentNode, node, out var namespaceName, out var ordinal);
 
             var parent = fileCodeModel.GetOrCreateCodeElement<EnvDTE.CodeElement>(parentNode);
             var parentObj = ComAggregate.GetManagedObject<AbstractCodeMember>(parent);
@@ -501,10 +484,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
         protected EnvDTE80.CodeAttributeArgument CreateInternalCodeAttributeArgument(CodeModelState state, FileCodeModel fileCodeModel, SyntaxNode node)
         {
-            SyntaxNode attributeNode;
-            int index;
-
-            GetAttributeArgumentParentAndIndex(node, out attributeNode, out index);
+            GetAttributeArgumentParentAndIndex(node, out var attributeNode, out var index);
 
             var codeAttribute = CreateInternalCodeAttribute(state, fileCodeModel, attributeNode);
             var codeAttributeObj = ComAggregate.GetManagedObject<CodeAttribute>(codeAttribute);
@@ -541,15 +521,13 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
             // Save the node keys.
             var nodeKeyValidation = new NodeKeyValidation();
-            foreach (var project in workspace.ProjectTracker.Projects)
+            foreach (var project in workspace.DeferredState.ProjectTracker.ImmutableProjects)
             {
                 nodeKeyValidation.AddProject(project);
             }
 
-            var optionSet = workspace.Services.GetService<IOptionService>().GetOptions();
-
             // Rename symbol.
-            var newSolution = Renamer.RenameSymbolAsync(solution, symbol, newName, optionSet).WaitAndGetResult(CancellationToken.None);
+            var newSolution = Renamer.RenameSymbolAsync(solution, symbol, newName, solution.Options).WaitAndGetResult_CodeModel(CancellationToken.None);
             var changedDocuments = newSolution.GetChangedDocuments(solution);
 
             // Notify third parties of the coming rename operation and let exceptions propagate out
@@ -635,8 +613,6 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             //     1. Prefer source files that we don't heuristically flag as generated code.
             //     2. If all of the source files are generated code, pick the first one.
 
-            var generatedCodeRecognitionService = project.Solution.Workspace.Services.GetService<IGeneratedCodeRecognitionService>();
-
             Compilation compilation = null;
             Tuple<DocumentId, Location> generatedCode = null;
 
@@ -647,13 +623,13 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             {
                 if (location.IsInSource)
                 {
-                    compilation = compilation ?? project.GetCompilationAsync(CancellationToken.None).WaitAndGetResult(CancellationToken.None);
+                    compilation = compilation ?? project.GetCompilationAsync(CancellationToken.None).WaitAndGetResult_CodeModel(CancellationToken.None);
 
                     if (compilation.ContainsSyntaxTree(location.SourceTree))
                     {
                         var document = project.GetDocument(location.SourceTree);
 
-                        if (generatedCodeRecognitionService?.IsGeneratedCode(document) == false)
+                        if (document.IsGeneratedCode() == false)
                         {
                             chosenLocation = location;
                             chosenDocumentId = document.Id;
@@ -687,10 +663,12 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             return false;
         }
 
+        public abstract bool IsExpressionBodiedProperty(SyntaxNode node);
         public abstract bool IsAccessorNode(SyntaxNode node);
         public abstract MethodKind GetAccessorKind(SyntaxNode node);
 
         public abstract bool TryGetAccessorNode(SyntaxNode parentNode, MethodKind kind, out SyntaxNode accessorNode);
+        public abstract bool TryGetAutoPropertyExpressionBody(SyntaxNode parentNode, out SyntaxNode accessorNode);
         public abstract bool TryGetParameterNode(SyntaxNode parentNode, string name, out SyntaxNode parameterNode);
         public abstract bool TryGetImportNode(SyntaxNode parentNode, string dottedName, out SyntaxNode importNode);
         public abstract bool TryGetOptionNode(SyntaxNode parentNode, string name, int ordinal, out SyntaxNode optionNode);
@@ -732,6 +710,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
         public abstract EnvDTE80.vsCMParameterKind GetParameterKind(SyntaxNode node);
         public abstract SyntaxNode SetParameterKind(SyntaxNode node, EnvDTE80.vsCMParameterKind kind);
+        public abstract EnvDTE80.vsCMParameterKind UpdateParameterKind(EnvDTE80.vsCMParameterKind parameterKind, PARAMETER_PASSING_MODE passingMode);
+
         public abstract SyntaxNode CreateParameterNode(string name, string type);
 
         public abstract EnvDTE.vsCMFunction ValidateFunctionKind(SyntaxNode containerNode, EnvDTE.vsCMFunction kind, string name);
@@ -830,7 +810,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             }
             else
             {
-                throw new ArgumentException(ServicesVSResources.InvalidAccess, "access");
+                throw new ArgumentException(ServicesVSResources.Invalid_access, nameof(access));
             }
         }
 
@@ -1151,7 +1131,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
         private Document FormatAnnotatedNode(Document document, SyntaxAnnotation annotation, IEnumerable<IFormattingRule> additionalRules, CancellationToken cancellationToken)
         {
-            var root = document.GetSyntaxRootAsync(cancellationToken).WaitAndGetResult(cancellationToken);
+            var root = document.GetSyntaxRootSynchronously(cancellationToken);
             var annotatedNode = root.GetAnnotatedNodesAndTokens(annotation).Single().AsNode();
             var formattingSpan = GetSpanToFormat(root, annotatedNode.FullSpan);
 
@@ -1166,7 +1146,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
                 new TextSpan[] { formattingSpan },
                 options: null,
                 rules: formattingRules,
-                cancellationToken: cancellationToken).WaitAndGetResult(cancellationToken);
+                cancellationToken: cancellationToken).WaitAndGetResult_CodeModel(cancellationToken);
         }
 
         private SyntaxNode InsertNode(
@@ -1179,7 +1159,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             CancellationToken cancellationToken,
             out Document newDocument)
         {
-            var root = document.GetSyntaxRootAsync(cancellationToken).WaitAndGetResult(cancellationToken);
+            var root = document.GetSyntaxRootSynchronously(cancellationToken);
 
             // Annotate the member we're inserting so we can get back to it.
             var annotation = new SyntaxAnnotation();
@@ -1199,7 +1179,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
             if (!batchMode)
             {
-                document = Simplifier.ReduceAsync(document, annotation, optionSet: null, cancellationToken: cancellationToken).WaitAndGetResult(cancellationToken);
+                document = Simplifier.ReduceAsync(document, annotation, optionSet: null, cancellationToken: cancellationToken).WaitAndGetResult_CodeModel(cancellationToken);
             }
 
             document = FormatAnnotatedNode(document, annotation, new[] { _lineAdjustmentFormattingRule, _endRegionFormattingRule }, cancellationToken);
@@ -1209,7 +1189,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
             // new node
             return document
-                .GetSyntaxRootAsync(cancellationToken).WaitAndGetResult(cancellationToken)
+                .GetSyntaxRootSynchronously(cancellationToken)
                 .GetAnnotatedNodesAndTokens(annotation)
                 .Single()
                 .AsNode();
@@ -1233,7 +1213,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             // REVIEW: how simplifier ever worked for code model? nobody added simplifier.Annotation before?
             var annotatedNode = newNode.WithAdditionalAnnotations(annotation, Simplifier.Annotation);
 
-            var oldRoot = document.GetSyntaxRootAsync(cancellationToken).WaitAndGetResult(cancellationToken);
+            var oldRoot = document.GetSyntaxRootSynchronously(cancellationToken);
             var newRoot = oldRoot.ReplaceNode(node, annotatedNode);
 
             document = document.WithSyntaxRoot(newRoot);
@@ -1367,28 +1347,28 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
         public virtual IList<string> GetHandledEventNames(SyntaxNode method, SemanticModel semanticModel)
         {
-            // descendents may override (particularly VB).
+            // descendants may override (particularly VB).
 
             return SpecializedCollections.EmptyList<string>();
         }
 
         public virtual bool HandlesEvent(string eventName, SyntaxNode method, SemanticModel semanticModel)
         {
-            // descendents may override (particularly VB).
+            // descendants may override (particularly VB).
 
             return false;
         }
 
         public virtual Document AddHandlesClause(Document document, string eventName, SyntaxNode method, CancellationToken cancellationToken)
         {
-            // descendents may override (particularly VB).
+            // descendants may override (particularly VB).
 
             return document;
         }
 
         public virtual Document RemoveHandlesClause(Document document, string eventName, SyntaxNode method, CancellationToken cancellationToken)
         {
-            // descendents may override (particularly VB).
+            // descendants may override (particularly VB).
 
             return document;
         }

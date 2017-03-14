@@ -34,12 +34,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         private struct PackedFlags
         {
             // Layout:
-            // |.............|h|rr|cccccccc|vvvvvvvv|
+            // |.............|n|rr|cccccccc|vvvvvvvv|
             // 
             // v = decoded well known attribute values. 8 bits.
             // c = completion states for well known attributes. 1 if given attribute has been decoded, 0 otherwise. 8 bits.
             // r = RefKind. 2 bits.
-            // h = hasByRefBeforeCustomModifiers. 1 bit.
+            // n = hasNameInMetadata. 1 bit.
 
             private const int WellKnownAttributeDataOffset = 0;
             private const int WellKnownAttributeCompletionFlagOffset = 8;
@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             private const int WellKnownAttributeDataMask = 0xFF;
             private const int WellKnownAttributeCompletionFlagMask = WellKnownAttributeDataMask;
 
-            // Available bit 0x1 << 18;
+            private const int HasNameInMetadataBit = 0x1 << 18;
 
             private const int AllWellKnownAttributesCompleteNoData = WellKnownAttributeCompletionFlagMask << WellKnownAttributeCompletionFlagOffset;
 
@@ -58,6 +58,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             public RefKind RefKind
             {
                 get { return (RefKind)((_bits >> RefKindOffset) & RefKindMask); }
+            }
+
+            public bool HasNameInMetadata
+            {
+                get { return (_bits & HasNameInMetadataBit) != 0; }
             }
 
 #if DEBUG
@@ -80,12 +85,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
 #endif
 
-            public PackedFlags(RefKind refKind, bool attributesAreComplete)
+            public PackedFlags(RefKind refKind, bool attributesAreComplete, bool hasNameInMetadata)
             {
                 int refKindBits = ((int)refKind & RefKindMask) << RefKindOffset;
                 int attributeBits = attributesAreComplete ? AllWellKnownAttributesCompleteNoData : 0;
+                int hasNameInMetadataBits = hasNameInMetadata ? HasNameInMetadataBit : 0;
 
-                _bits = refKindBits | attributeBits;
+                _bits = refKindBits | attributeBits | hasNameInMetadataBits;
             }
 
             public bool SetWellKnownAttribute(WellKnownAttributeFlags flag, bool value)
@@ -137,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             ParamInfo<TypeSymbol> parameter,
             out bool isBad)
         {
-            return Create(moduleSymbol, containingSymbol, ordinal, parameter.IsByRef, parameter.CountOfCustomModifiersPrecedingByRef, parameter.Type, parameter.Handle, parameter.CustomModifiers, out isBad);
+            return Create(moduleSymbol, containingSymbol, ordinal, parameter.IsByRef, parameter.RefCustomModifiers, parameter.Type, parameter.Handle, parameter.CustomModifiers, out isBad);
         }
 
         /// <summary>
@@ -159,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             ParamInfo<TypeSymbol> parameter,
             out bool isBad)
         {
-            return Create(moduleSymbol, containingSymbol, ordinal, parameter.IsByRef, parameter.CountOfCustomModifiersPrecedingByRef, parameter.Type, handle, parameter.CustomModifiers, out isBad);
+            return Create(moduleSymbol, containingSymbol, ordinal, parameter.IsByRef, parameter.RefCustomModifiers, parameter.Type, handle, parameter.CustomModifiers, out isBad);
         }
 
         private PEParameterSymbol(
@@ -190,7 +196,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             {
                 refKind = isByRef ? RefKind.Ref : RefKind.None;
 
+                type = TupleTypeSymbol.TransformToTupleIfCompatible(type);
                 _type = type;
+
                 _lazyCustomAttributes = ImmutableArray<CSharpAttributeData>.Empty;
                 _lazyHiddenAttributes = ImmutableArray<CSharpAttributeData>.Empty;
                 _lazyDefaultValue = ConstantValue.NotAvailable;
@@ -214,18 +222,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 }
 
                 // CONSIDER: Can we make parameter type computation lazy?
-                _type = DynamicTypeDecoder.TransformType(type, countOfCustomModifiers, handle, moduleSymbol, refKind);
+                type = DynamicTypeDecoder.TransformType(type, countOfCustomModifiers, handle, moduleSymbol, refKind);
+
+                _type = TupleTypeDecoder.DecodeTupleTypesIfApplicable(type, handle, moduleSymbol);
             }
 
-            if (string.IsNullOrEmpty(_name))
+            bool hasNameInMetadata = !string.IsNullOrEmpty(_name);
+            if (!hasNameInMetadata)
             {
                 // As was done historically, if the parameter doesn't have a name, we give it the name "value".
                 _name = "value";
             }
 
-            _packedFlags = new PackedFlags(refKind, attributesAreComplete: handle.IsNil);
+            _packedFlags = new PackedFlags(refKind, attributesAreComplete: handle.IsNil, hasNameInMetadata: hasNameInMetadata);
 
             Debug.Assert(refKind == this.RefKind);
+            Debug.Assert(hasNameInMetadata == this.HasNameInMetadata);
+        }
+
+        private bool HasNameInMetadata
+        {
+            get
+            {
+                return _packedFlags.HasNameInMetadata;
+            }
         }
 
         private static PEParameterSymbol Create(
@@ -233,42 +253,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             Symbol containingSymbol,
             int ordinal,
             bool isByRef,
-            ushort countOfCustomModifiersPrecedingByRef,
+            ImmutableArray<ModifierInfo<TypeSymbol>> refCustomModifiers,
             TypeSymbol type,
             ParameterHandle handle,
             ImmutableArray<ModifierInfo<TypeSymbol>> customModifiers,
             out bool isBad)
         {
-            if (customModifiers.IsDefaultOrEmpty)
+            if (customModifiers.IsDefaultOrEmpty && refCustomModifiers.IsDefaultOrEmpty)
             {
                 return new PEParameterSymbol(moduleSymbol, containingSymbol, ordinal, isByRef, type, handle, 0, out isBad);
             }
 
-            return new PEParameterSymbolWithCustomModifiers(moduleSymbol, containingSymbol, ordinal, isByRef, countOfCustomModifiersPrecedingByRef, type, handle, customModifiers, out isBad);
+            return new PEParameterSymbolWithCustomModifiers(moduleSymbol, containingSymbol, ordinal, isByRef, refCustomModifiers, type, handle, customModifiers, out isBad);
         }
 
         private sealed class PEParameterSymbolWithCustomModifiers : PEParameterSymbol
         {
             private readonly ImmutableArray<CustomModifier> _customModifiers;
-            private readonly ushort _countOfCustomModifiersPrecedingByRef;
+            private readonly ImmutableArray<CustomModifier> _refCustomModifiers;
 
             public PEParameterSymbolWithCustomModifiers(
                 PEModuleSymbol moduleSymbol,
                 Symbol containingSymbol,
                 int ordinal,
                 bool isByRef,
-                ushort countOfCustomModifiersPrecedingByRef,
+                ImmutableArray<ModifierInfo<TypeSymbol>> refCustomModifiers,
                 TypeSymbol type,
                 ParameterHandle handle,
                 ImmutableArray<ModifierInfo<TypeSymbol>> customModifiers,
                 out bool isBad) :
-                    base(moduleSymbol, containingSymbol, ordinal, isByRef, type, handle, customModifiers.Length, out isBad)
+                    base(moduleSymbol, containingSymbol, ordinal, isByRef, type, handle,
+                         refCustomModifiers.NullToEmpty().Length + customModifiers.NullToEmpty().Length, 
+                         out isBad)
             {
                 _customModifiers = CSharpCustomModifier.Convert(customModifiers);
-                _countOfCustomModifiersPrecedingByRef = countOfCustomModifiersPrecedingByRef;
+                _refCustomModifiers = CSharpCustomModifier.Convert(refCustomModifiers);
 
-                Debug.Assert(_countOfCustomModifiersPrecedingByRef == 0 || isByRef);
-                Debug.Assert(_countOfCustomModifiersPrecedingByRef <= _customModifiers.Length);
+                Debug.Assert(_refCustomModifiers.IsEmpty || isByRef);
             }
 
             public override ImmutableArray<CustomModifier> CustomModifiers
@@ -279,11 +300,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 }
             }
 
-            internal override ushort CountOfCustomModifiersPrecedingByRef
+            public override ImmutableArray<CustomModifier> RefCustomModifiers
             {
                 get
                 {
-                    return _countOfCustomModifiersPrecedingByRef;
+                    return _refCustomModifiers;
                 }
             }
         }
@@ -301,6 +322,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             get
             {
                 return _name;
+            }
+        }
+
+        public override string MetadataName
+        {
+            get
+            {
+                return HasNameInMetadata ? _name : string.Empty;
             }
         }
 
@@ -574,11 +603,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
         }
 
-        internal override ushort CountOfCustomModifiersPrecedingByRef
+        public override ImmutableArray<CustomModifier> RefCustomModifiers
         {
             get
             {
-                return 0;
+                return ImmutableArray<CustomModifier>.Empty;
             }
         }
 

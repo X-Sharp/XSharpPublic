@@ -4,6 +4,7 @@ Imports Microsoft.CodeAnalysis.Editor.Implementation.Interactive
 Imports Microsoft.CodeAnalysis.Editor.UnitTests
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.ChangeSignature
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
+Imports Microsoft.CodeAnalysis.Editor.UnitTests.Utilities
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
 Imports Microsoft.CodeAnalysis.Editor.VisualBasic.ChangeSignature
 
@@ -12,7 +13,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.ChangeSignature
         Inherits AbstractChangeSignatureTests
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
-        Public Sub RemoveParameters1()
+        Public Async Function TestRemoveParameters1() As Task
 
             Dim markup = <Text><![CDATA[
 Module Program
@@ -86,18 +87,18 @@ End Module
 
 ]]></Text>.NormalizedValue()
 
-            TestChangeSignatureViaCommand(LanguageNames.VisualBasic, markup, updatedSignature:=permutation, expectedUpdatedInvocationDocumentCode:=updatedCode)
+            Await TestChangeSignatureViaCommandAsync(LanguageNames.VisualBasic, markup, updatedSignature:=permutation, expectedUpdatedInvocationDocumentCode:=updatedCode)
 
-        End Sub
+        End Function
 
         <WpfFact>
         <Trait(Traits.Feature, Traits.Features.ChangeSignature)>
         <Trait(Traits.Feature, Traits.Features.Interactive)>
-        Public Sub ChangeSignatureCommandDisabledInSubmission()
+        Public Async Function TestChangeSignatureCommandDisabledInSubmission() As Task
             Dim exportProvider = MinimalTestExportProvider.CreateExportProvider(
                 TestExportProvider.EntireAssemblyCatalogWithCSharpAndVisualBasic.WithParts(GetType(InteractiveDocumentSupportsFeatureService)))
 
-            Using workspace = TestWorkspaceFactory.CreateWorkspace(
+            Using workspace = Await TestWorkspace.CreateAsync(
                 <Workspace>
                     <Submission Language="Visual Basic" CommonReferences="true">  
                         Class C
@@ -114,7 +115,7 @@ End Module
 
                 Dim textView = workspace.Documents.Single().GetTextView()
 
-                Dim handler = New ChangeSignatureCommandHandler()
+                Dim handler = New VisualBasicChangeSignatureCommandHandler(TestWaitIndicator.Default)
                 Dim delegatedToNext = False
                 Dim nextHandler =
                     Function()
@@ -131,6 +132,6 @@ End Module
                 Assert.True(delegatedToNext)
                 Assert.False(state.IsAvailable)
             End Using
-        End Sub
+        End Function
     End Class
 End Namespace

@@ -78,19 +78,19 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Utilities
             }
         }
 
-        [WpfFact]
+        [Fact]
         public void Test1()
         {
             Test(isCaseSensitive: true);
         }
 
-        [WpfFact]
+        [Fact]
         public void TestInsensitive()
         {
             Test(isCaseSensitive: false);
         }
 
-        [WpfFact]
+        [Fact]
         public void TestEmpty()
         {
             for (var d = 0.1; d >= 0.0001; d /= 10)
@@ -109,20 +109,20 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Utilities
             }
         }
 
-        [WpfFact]
+        [Fact]
         public void TestSerialization()
         {
             var stream = new MemoryStream();
             var bloomFilter = new BloomFilter(0.001, false, new[] { "Hello, World" });
 
-            using (var writer = new ObjectWriter(stream))
+            using (var writer = new StreamObjectWriter(stream))
             {
                 bloomFilter.WriteTo(writer);
             }
 
             stream.Position = 0;
 
-            using (var reader = new ObjectReader(stream))
+            using (var reader = StreamObjectReader.TryGetReader(stream))
             {
                 var rehydratedFilter = BloomFilter.ReadFrom(reader);
                 Assert.True(bloomFilter.IsEquivalent(rehydratedFilter));

@@ -8,7 +8,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
 
     ''' <summary>
-    ''' The base class for potentially constructable (i.e. with known arity) error type symbols
+    ''' The base class for potentially constructible (i.e. with known arity) error type symbols
     ''' </summary>
     Friend MustInherit Class InstanceErrorTypeSymbol
         Inherits ErrorTypeSymbol
@@ -31,7 +31,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             End Get
         End Property
 
-        ' Instance types are always constructable if they have arity >= 1
+        ' Instance types are always constructible if they have arity >= 1
         Friend Overrides ReadOnly Property CanConstruct As Boolean
             Get
                 Return _arity > 0
@@ -123,12 +123,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             End Get
         End Property
 
-        Friend NotOverridable Overrides ReadOnly Property TypeArgumentsCustomModifiers As ImmutableArray(Of ImmutableArray(Of CustomModifier))
-            Get
-                ' This is always the instance type, so the type arguments do not have any modifiers.
-                Return CreateEmptyTypeArgumentsCustomModifiers()
-            End Get
-        End Property
+        Public NotOverridable Overrides Function GetTypeArgumentCustomModifiers(ordinal As Integer) As ImmutableArray(Of CustomModifier)
+            ' This is always the instance type, so the type arguments do not have any modifiers.
+            Return GetEmptyTypeArgumentCustomModifiers(ordinal)
+        End Function
 
         Friend NotOverridable Overrides ReadOnly Property HasTypeArgumentsCustomModifiers As Boolean
             Get

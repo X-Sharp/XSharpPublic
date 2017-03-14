@@ -1091,6 +1091,12 @@ namespace XSharpLanguage
                     }
                 }
             }
+            // We will miss the System.Object members
+            if ( sType.IsInterface )
+            {
+                System.Type obj = new Object().GetType();
+                FillMembers(compList, obj, minVisibility, staticOnly, startWith);
+            }
         }
 
 
@@ -2560,7 +2566,7 @@ namespace XSharpLanguage
                                         cType = SearchFieldTypeIn(cType, currentToken, visibility, out foundElement);
                                     }
                                     else
-                                        cTemp = cType;
+                                        cType = cTemp;
                                 }
                             }
                         }
@@ -2581,7 +2587,7 @@ namespace XSharpLanguage
                                 cType = SearchFieldTypeIn(cType, currentToken, visibility, out foundElement);
                             }
                             else
-                                cTemp = cType;
+                                cType = cTemp;
                         }
                     }
                 }

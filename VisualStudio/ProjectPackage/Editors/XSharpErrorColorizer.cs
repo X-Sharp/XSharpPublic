@@ -48,7 +48,7 @@ namespace XSharp.Project
         public XSharpErrorColorizer(IWpfTextView view)
         {
             this.view = view;
-            string fileName = this.GetDocumentFileName(this.view.TextBuffer);
+            string fileName = EditorHelpers.GetDocumentFileName(this.view.TextBuffer);
             file = XSharpModel.XSolution.FindFullPath(fileName);
             if (file == null)
             {
@@ -127,18 +127,6 @@ namespace XSharp.Project
                 //
                 layer.AddAdornment( span, null, border);
             }
-        }
-
-        private String GetDocumentFileName(ITextBuffer TextBuffer)
-        {
-            String fileName = "";
-            ITextDocument textDoc;
-            var rc = TextBuffer.Properties.TryGetProperty<ITextDocument>(typeof(ITextDocument), out textDoc);
-            if (rc == true)
-            {
-                fileName = textDoc.FilePath;
-            }
-            return fileName;
         }
 
         // Code extract from StringExtensions.cs, in namespace Microsoft.CodeAnalysis.Shared.Extensions, from Roslyn code

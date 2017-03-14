@@ -153,7 +153,7 @@ namespace XSharp.Project
             int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
             int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
             String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
-            string fileName = this.GetDocumentFileName( this.TextView.TextBuffer );
+            string fileName = EditorHelpers.GetDocumentFileName( this.TextView.TextBuffer );
             if (String.IsNullOrEmpty(fileName))
                 return;
             // Then, the corresponding Type/Element if possible
@@ -174,18 +174,6 @@ namespace XSharp.Project
                 gotoElement.OpenEditor();
             }
             //
-        }
-
-        private String GetDocumentFileName( ITextBuffer TextBuffer)
-        {
-            String fileName = "";
-            ITextDocument textDoc;
-            var rc = TextBuffer.Properties.TryGetProperty<ITextDocument>( typeof(ITextDocument), out textDoc);
-            if (rc == true)
-            {
-                fileName = textDoc.FilePath;
-            }
-            return fileName;
         }
 
         private void Filter()
@@ -276,6 +264,15 @@ namespace XSharp.Project
                         return VSConstants.S_OK;
                 }
             }
+            //else if (pguidCmdGroup == VSConstants.CMDSETID.StandardCommandSet12_guid )
+            //{
+            //    switch ((VSConstants.VSStd12CmdID)prgCmds[0].cmdID)
+            //    {
+            //        case VSConstants.VSStd12CmdID.PeekDefinition:
+            //            prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;
+            //            return VSConstants.S_OK;
+            //    }
+            //}
             return Next.QueryStatus(pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
 

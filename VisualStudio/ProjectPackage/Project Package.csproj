@@ -156,8 +156,9 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="XSharp.CodeAnalysis, Version=0.2.10.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
-      <HintPath>..\..\External\Release\XSharp.CodeAnalysis.dll</HintPath>
+    <Reference Include="XSharp.CodeAnalysis, Version=0.2.9.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\XSharp\DevPublic\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +173,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Editors\EditorHelpers.cs" />
+    <Compile Include="Editors\PeekDefinition\PeekHelpers.cs" />
+    <Compile Include="Editors\PeekDefinition\XSharpResultSource.cs" />
+    <Compile Include="Editors\PeekDefinition\XSharpDefinitionPeekItem.cs" />
+    <Compile Include="Editors\PeekDefinition\XSharpPeekItemSource.cs" />
+    <Compile Include="Editors\PeekDefinition\XSharpPeekItemProvider.cs" />
     <Compile Include="Editors\XSharpErrorColorizer.cs" />
     <Compile Include="Editors\XSharpQuickInfo.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />

@@ -1130,6 +1130,24 @@ namespace XSharpLanguage
                 System.Type obj = typeof(object);
                 FillMembers(compList, obj, minVisibility, staticOnly, startWith);
             }
+            if (sType.IsEnum)
+            {
+                // todo:
+                // Fill enum members
+                var names = sType.GetEnumNames();
+                var scope = StandardGlyphItem.GlyphItemPublic;
+                // must be public or nested, otherwise we would not see it.
+                if (sType.IsNested)
+                {
+                    scope = StandardGlyphItem.GlyphItemFriend;
+                }
+                ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupEnumMember, scope);
+                foreach (string name in names)
+                {
+                    compList.Add(new XSCompletion(name, name, "", icon, null));
+                }
+
+            }
         }
 
 

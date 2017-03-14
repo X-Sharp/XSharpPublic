@@ -45,7 +45,6 @@ namespace XSharpLanguage
 #endif
         }
 
-
         private string GetFileName(ITextBuffer buffer)
         {
             IVsTextBuffer bufferAdapter;
@@ -72,6 +71,12 @@ namespace XSharpLanguage
         private bool _settingIgnoreCase;
         // Keep a trace of the Context of the TokenList build
         private IToken _stopToken;
+        internal static bool StringEquals(string lhs, string rhs)
+        {
+            if (String.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }
 
         public XSharpCompletionSource(XSharpCompletionSourceProvider provider, ITextBuffer buffer, String fileName)
         {
@@ -546,12 +551,12 @@ namespace XSharpLanguage
                     // this a Method call
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     // Do we already know in which Type we are ?
-                    if (cType != null)
+                    if (!cType.IsEmpty())
                     {
                         // Now, search for a Method
                         cType = SearchMethodTypeIn(cType, currentToken, visibility);
                     }
-                    if ((cType != null) && (!cType.IsInitialized))
+                    if (cType.IsEmpty())
                     {
                         cType = null;
                     }
@@ -562,21 +567,17 @@ namespace XSharpLanguage
                     if (currentPos == 0)
                     {
                         // Search in Parameters
-                        element = currentMember.Parameters.Find(x => x.Name.ToLower() == currentToken.ToLower());
+                        element = currentMember.Parameters.Find(x => StringEquals(x.Name,currentToken));
                         if (element == null)
                         {
                             // then Locals
-                            element = currentMember.Locals.Find(x => x.Name.ToLower() == currentToken.ToLower());
+                            element = currentMember.Locals.Find(x => StringEquals(x.Name,currentToken));
                             if (element == null)
                             {
                                 // We can have a Property/Field of the current CompletionType
                                 if (cType != null)
                                 {
-                                    cType = SearchPropertyTypeIn(cType, currentToken, visibility);
-                                    if ((cType != null) && (!cType.IsInitialized))
-                                    {
-                                        cType = SearchFieldTypeIn(cType, currentToken, visibility);
-                                    }
+                                    cType = SearchPropertyOrFieldIn(cType, currentToken, visibility);
                                 }
                             }
                         }
@@ -588,18 +589,14 @@ namespace XSharpLanguage
                     else
                     {
                         // We can have a Property/Field of the current CompletionType
-                        if (cType != null)
+                        if (!cType.IsEmpty())
                         {
-                            cType = SearchPropertyTypeIn(cType, currentToken, visibility);
-                            if ((cType != null) && (!cType.IsInitialized))
-                            {
-                                cType = SearchFieldTypeIn(cType, currentToken, visibility);
-                            }
+                            cType = SearchPropertyOrFieldIn(cType, currentToken, visibility);
                         }
                     }
                 }
                 //
-                if ((cType != null) && (!cType.IsInitialized))
+                if (cType.IsEmpty())
                 {
                     cType = null;
                 }
@@ -615,6 +612,25 @@ namespace XSharpLanguage
             return cType;
         }
 
+        /// <summary>
+        /// Search for a Property or a Field in a CompletionType, based on the Visibility.
+        /// A Completion can have a XType (XSharp parsed type) or a SType (A System type or a Type found inside a library Reference)
+        /// </summary>
+        /// <param name="cType">The CompletionType to look into</param>
+        /// <param name="currentToken">The Property we are searching</param>
+        /// <param name="minVisibility"></param>
+        /// <returns>The CompletionType of the Property (If found).
+        /// If not found, the CompletionType.IsInitialized is false
+        /// </returns>
+        private CompletionType SearchPropertyOrFieldIn(CompletionType cType, string currentToken, Modifiers minVisibility)
+        {
+            CompletionType result = SearchPropertyTypeIn(cType, currentToken, minVisibility);
+            if (result.IsEmpty())
+            {
+                result = SearchFieldTypeIn(cType, currentToken, minVisibility);
+            }
+            return result;
+        }
 
         /// <summary>
         /// Search for a Property, in a CompletionType, based on the Visibility.
@@ -634,7 +650,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.Property) || (x.Kind == Kind.Access) || (x.Kind == Kind.Assign))
                     {
-                        return (x.Name.ToLower() == currentToken.ToLower());
+                        return (StringEquals(x.Name, currentToken));
                     }
                     return false;
                 });
@@ -682,7 +698,7 @@ namespace XSharpLanguage
                 Type declType = null;
                 foreach (var member in members)
                 {
-                    if (member.Name.ToLower() == currentToken.ToLower())
+                    if (StringEquals(member.Name, currentToken))
                     {
                         PropertyInfo prop = member as PropertyInfo;
                         declType = prop.PropertyType;
@@ -696,6 +712,12 @@ namespace XSharpLanguage
                     {
                         return SearchPropertyTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public);
                     }
+                    // Not needed: no properties inside object type
+                    //else if (cType.SType.IsInterface)
+                    //{
+                    //    return SearchPropertyTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public);
+                    //}
+
                 }
                 else
                 {
@@ -724,7 +746,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.ClassVar))
                     {
-                        return (x.Name.ToLower() == currentToken.ToLower());
+                        return StringEquals(x.Name , currentToken);
                     }
                     return false;
                 });
@@ -772,7 +794,7 @@ namespace XSharpLanguage
                 Type declType = null;
                 foreach (var member in members)
                 {
-                    if (member.Name.ToLower() == currentToken.ToLower())
+                    if (StringEquals(member.Name, currentToken))
                     {
                         FieldInfo field = member as FieldInfo;
                         declType = field.FieldType;
@@ -786,6 +808,12 @@ namespace XSharpLanguage
                     {
                         return SearchFieldTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public);
                     }
+                    // not needed: no fields inside object type
+                    //else if (cType.SType.IsInterface)
+                    //{
+                    //    return SearchFieldTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public);
+                    //}
+
                 }
                 else
                 {
@@ -815,7 +843,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.Method))
                     {
-                        return (x.Name.ToLower() == currentToken.ToLower());
+                        return (StringEquals(x.Name, currentToken));
                     }
                     return false;
                 });
@@ -875,7 +903,7 @@ namespace XSharpLanguage
                 {
                     if (member.MemberType == MemberTypes.Method)
                     {
-                        if (member.Name.ToLower() == currentToken.ToLower())
+                        if (StringEquals(member.Name, currentToken))
                         {
                             MethodInfo method = member as MethodInfo;
                             declType = method.ReturnType;
@@ -889,6 +917,11 @@ namespace XSharpLanguage
                     if (cType.SType.BaseType != null)
                     {
                         return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public);
+                    }
+                    // Look for methods in the object type
+                    if (cType.SType.IsInterface)
+                    {
+                        return SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public);
                     }
                 }
                 else
@@ -1094,7 +1127,7 @@ namespace XSharpLanguage
             // We will miss the System.Object members
             if ( sType.IsInterface )
             {
-                System.Type obj = new Object().GetType();
+                System.Type obj = typeof(object);
                 FillMembers(compList, obj, minVisibility, staticOnly, startWith);
             }
         }
@@ -2144,6 +2177,11 @@ namespace XSharpLanguage
     public static class XSharpTokenTools
     {
 
+        public static bool StringEquals(string lhs, string rhs)
+        {
+            return XSharpCompletionSource.StringEquals(lhs, rhs);
+        }
+
         /// <summary>
         /// Retrieve a List of Token, based on a position in buffer. 
         /// Moving back in the buffer, all tokens are retrieved and stored.
@@ -2521,7 +2559,7 @@ namespace XSharpLanguage
                     // this a Constructor call
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
-                    if ((cType != null) && (cType.IsInitialized) && (cType.XType != null))
+                    if (!cType.IsEmpty() && cType.XType != null)
                     {
                         foundElement = cType.XType;
                     }
@@ -2531,12 +2569,21 @@ namespace XSharpLanguage
                     // this a Method call
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     // Do we already know in which Type we are ?
-                    if (cType != null)
+                    if (!cType.IsEmpty())
                     {
                         // Now, search for a Method
                         cType = SearchMethodTypeIn(cType, currentToken, visibility, out foundElement, out sysFoundElement);
                     }
-                    if ((cType != null) && (!cType.IsInitialized))
+                    if (cType.IsEmpty())
+                    {
+                        // check to see if this is a method from the Object Type, such as ToString().
+                        cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, out foundElement, out sysFoundElement);
+                        if (! cTemp.IsEmpty())
+                        {
+                            cType = cTemp;
+                        }
+                    }
+                    if (cType.IsEmpty())
                     {
                         cType = null;
                     }
@@ -2550,23 +2597,17 @@ namespace XSharpLanguage
                     if (currentPos == 0)
                     {
                         // Search in Parameters
-                        element = currentMember.Parameters.Find(x => x.Name.ToLower() == currentToken.ToLower());
+                        element = currentMember.Parameters.Find(x => StringEquals(x.Name,currentToken));
                         if (element == null)
                         {
                             // then Locals
-                            element = currentMember.Locals.Find(x => x.Name.ToLower() == currentToken.ToLower());
+                            element = currentMember.Locals.Find(x => StringEquals(x.Name,currentToken));
                             if (element == null)
                             {
                                 // We can have a Property/Field of the current CompletionType
-                                if (cType != null)
+                                if (!cType.IsEmpty())
                                 {
-                                    cTemp = SearchPropertyTypeIn(cType, currentToken, visibility, out foundElement);
-                                    if ((cTemp != null) && (!cTemp.IsInitialized))
-                                    {
-                                        cType = SearchFieldTypeIn(cType, currentToken, visibility, out foundElement);
-                                    }
-                                    else
-                                        cType = cTemp;
+                                    cType  = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
                                 }
                             }
                         }
@@ -2579,20 +2620,14 @@ namespace XSharpLanguage
                     else
                     {
                         // We can have a Property/Field of the current CompletionType
-                        if (cType != null)
+                        if (!cType.IsEmpty())
                         {
-                            cTemp = SearchPropertyTypeIn(cType, currentToken, visibility, out foundElement);
-                            if ((cTemp != null) && (!cTemp.IsInitialized))
-                            {
-                                cType = SearchFieldTypeIn(cType, currentToken, visibility, out foundElement);
-                            }
-                            else
-                                cType = cTemp;
+                            cType = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
                         }
                     }
                 }
                 //
-                if ((cType != null) && (!cType.IsInitialized))
+                if (cType.IsEmpty())
                 {
                     cType = null;
                 }
@@ -2620,6 +2655,26 @@ namespace XSharpLanguage
         }
 
 
+        /// <summary>
+        /// Search for a Property or a Field, in a CompletionType, based on the Visibility.
+        /// A Completion can have a XType (XSharp parsed type) or a SType (A System type or a Type found inside a library Reference)
+        /// </summary>
+        /// <param name="cType">The CompletionType to look into</param>
+        /// <param name="currentToken">The Property we are searching</param>
+        /// <param name="minVisibility"></param>
+        /// <returns>The CompletionType of the Property (If found).
+        /// If not found, the CompletionType.IsInitialized is false
+        /// </returns>
+        private static CompletionType SearchPropertyOrFieldIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement)
+        {
+            CompletionType result = SearchPropertyTypeIn(cType, currentToken, minVisibility, out foundElement);
+            if (result.IsEmpty())
+            {
+                result = SearchFieldTypeIn(cType, currentToken, minVisibility, out foundElement);
+            }
+            return result;
+        }
+
 
         /// <summary>
         /// Search for a Property, in a CompletionType, based on the Visibility.
@@ -2640,7 +2695,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.Property) || (x.Kind == Kind.Access) || (x.Kind == Kind.Assign))
                     {
-                        return (x.Name.ToLower() == currentToken.ToLower());
+                        return StringEquals(x.Name,currentToken);
                     }
                     return false;
                 });
@@ -2690,7 +2745,7 @@ namespace XSharpLanguage
                 Type declType = null;
                 foreach (var member in members)
                 {
-                    if (member.Name.ToLower() == currentToken.ToLower())
+                    if (StringEquals(member.Name,currentToken))
                     {
                         PropertyInfo prop = member as PropertyInfo;
                         declType = prop.PropertyType;
@@ -2704,6 +2759,11 @@ namespace XSharpLanguage
                     {
                         return SearchPropertyTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
                     }
+                    // not needed: no properties in object type
+                    //else if (cType.SType.IsInterface)
+                    //{
+                    //    return SearchPropertyTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, out foundElement);
+                    //}
                 }
                 else
                 {
@@ -2733,7 +2793,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.ClassVar))
                     {
-                        return (x.Name.ToLower() == currentToken.ToLower());
+                        return StringEquals(x.Name,currentToken);
                     }
                     return false;
                 });
@@ -2783,7 +2843,7 @@ namespace XSharpLanguage
                 Type declType = null;
                 foreach (var member in members)
                 {
-                    if (member.Name.ToLower() == currentToken.ToLower())
+                    if (StringEquals(member.Name, currentToken))
                     {
                         FieldInfo field = member as FieldInfo;
                         declType = field.FieldType;
@@ -2797,6 +2857,11 @@ namespace XSharpLanguage
                     {
                         return SearchFieldTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
                     }
+                    // not needed: no fields in object type
+                    //else if (cType.SType.IsInterface)
+                    //{
+                    //    return SearchFieldTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, out foundElement);
+                    //}
                 }
                 else
                 {
@@ -2828,7 +2893,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.Method))
                     {
-                        return (x.Name.ToLower() == currentToken.ToLower());
+                        return StringEquals(x.Name,currentToken);
                     }
                     return false;
                 });
@@ -2890,7 +2955,7 @@ namespace XSharpLanguage
                 {
                     if (member.MemberType == MemberTypes.Method)
                     {
-                        if (member.Name.ToLower() == currentToken.ToLower())
+                        if (StringEquals(member.Name,currentToken))
                         {
                             method = member as MethodInfo;
                             declType = method.ReturnType;
@@ -2904,6 +2969,10 @@ namespace XSharpLanguage
                     if (cType.SType.BaseType != null)
                     {
                         return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement, out systemElement);
+                    }
+                    else if (cType.SType.IsInterface)
+                    {
+                        return SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, out foundElement, out systemElement);
                     }
                 }
                 else

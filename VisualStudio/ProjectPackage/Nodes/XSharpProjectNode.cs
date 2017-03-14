@@ -845,6 +845,7 @@ namespace XSharp.Project
                     }
                 }
             }
+            this.ProjectModel.Walk();
         }
 
 
@@ -871,7 +872,6 @@ namespace XSharp.Project
             // Run the background Walker/Listener, to fill the Model
             CreateErrorListManager();
 
-            this.ProjectModel.Walk();
 
         }
         #endregion

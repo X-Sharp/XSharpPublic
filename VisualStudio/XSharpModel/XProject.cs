@@ -13,7 +13,7 @@ namespace XSharpModel
 {
     public class XProject
     {
-        private List<XFile> xFiles;
+        private Dictionary<string, XFile> xFilesDict;
         private IXSharpProject _projectNode;
         //private XType _globalType;
         private bool _loaded;
@@ -23,7 +23,7 @@ namespace XSharpModel
         public XProject(IXSharpProject project)
         {
             _projectNode = project;
-            xFiles = new List<XFile>();
+            xFilesDict = new Dictionary<String, XFile>(StringComparer.OrdinalIgnoreCase);
             //this._globalType = XType.CreateGlobalType();
             //
             this._typeController = new SystemTypeController();
@@ -48,7 +48,7 @@ namespace XSharpModel
         {
             get
             {
-                return xFiles;
+                return xFilesDict.Values.ToList();
             }
         }
 
@@ -101,9 +101,12 @@ namespace XSharpModel
         {
             if (xFile != null)
             {
-                xFiles.Add(xFile);
+                if (xFilesDict.ContainsKey(xFile.FullPath))
+                {
+                    xFilesDict.Remove(xFile.FullPath);
+                }
+                xFilesDict.Add(xFile.FullPath, xFile);
                 xFile.Project = this;
-                
                 return true;
             }
             return false;
@@ -111,12 +114,14 @@ namespace XSharpModel
 
         public XFile Find(string fileName)
         {
-            return xFiles.Find(f => f.Name.ToLower() == fileName.ToLower());
+            return Files.Find(f => f.Name.ToLower() == fileName.ToLower());
         }
 
         public XFile FindFullPath(string fullPath)
         {
-            return xFiles.Find(f => f.FullPath.ToLower() == fullPath.ToLower());
+            if (xFilesDict.ContainsKey(fullPath))
+                return xFilesDict[fullPath];
+            return null;
         }
 
         public void Walk()
@@ -129,10 +134,17 @@ namespace XSharpModel
 
         public void RemoveFile(string url)
         {
-            XFile xFile = this.Find(url);
-            if (xFile != null)
+            if (this.xFilesDict.ContainsKey(url))
             {
-                this.xFiles.Remove(xFile);
+                this.xFilesDict.Remove(url);
+            }
+            else
+            {
+                XFile xFile = this.Find(url);
+                if (xFile != null)
+                {
+                    this.xFilesDict.Remove(xFile.FullPath);
+                }
             }
         }
 
@@ -145,10 +157,12 @@ namespace XSharpModel
         /// <returns></returns>
         public XType Lookup(string typeName, bool caseInvariant)
         {
-            //
+            // Create local copies of the collections to make sure that other background
+            // operations do not change the collections
             XType xType = null;
             XType xTemp = null;
-            foreach (XFile file in this.Files)
+            var aFiles = this.xFilesDict.Values.ToArray();
+            foreach (XFile file in aFiles)
             {
                 //
                 if (caseInvariant)
@@ -187,13 +201,15 @@ namespace XSharpModel
 
         public XType LookupFullName(string typeName, bool caseInvariant)
         {
-            //
+            // Create local copies of the collections to make sure that other background
+            // operations do not change the collections
             XType xType = null;
             XType xTemp = null;
-            foreach (XFile file in this.Files)
+            var aFiles = this.xFilesDict.Values.ToArray();
+            foreach (XFile file in aFiles)
             {
-                //
-                foreach (XType x in file.TypeList.Values)
+                var aTypes = file.TypeList.Values.ToArray();
+                foreach (XType x in aTypes)
                 {
                     if (caseInvariant)
                     {
@@ -241,11 +257,14 @@ namespace XSharpModel
         {
             get
             {
+                // Create local copies of the collections to make sure that other background
+                // operations do not change the collections
                 List<XType> ns = new List<XType>();
-                //
-                foreach (XFile file in this.Files)
+                var aFiles = this.Files.ToArray();
+                foreach (XFile file in aFiles)
                 {
-                    foreach (XType elmt in file.TypeList.Values)
+                    var aTypes = file.TypeList.Values;
+                    foreach (XType elmt in aTypes)
                     {
                         if (elmt.Kind == Kind.Namespace)
                         {

@@ -17,12 +17,11 @@ namespace XSharpModel
 
         static XSolution()
         {
-            xProjects = new Dictionary<string, XProject>();
+            xProjects = new Dictionary<string, XProject>(StringComparer.OrdinalIgnoreCase);
         }
 
         public static bool Add(string projectName, XProject project)
         {
-            projectName = projectName.ToLower();
             if (xProjects.ContainsKey(projectName))
             {
                 return false;
@@ -39,7 +38,6 @@ namespace XSharpModel
 
         public static bool Remove(string projectName)
         {
-            projectName = projectName.ToLower();
             if (xProjects.ContainsKey(projectName))
             {
                 var project = xProjects[projectName];
@@ -94,7 +92,7 @@ namespace XSharpModel
         {
             XProject project;
             projectFile = System.IO.Path.GetFileNameWithoutExtension(projectFile);
-            if (xProjects.TryGetValue(projectFile.ToLower(), out project))
+            if (xProjects.TryGetValue(projectFile, out project))
             {
                 return project;
             }

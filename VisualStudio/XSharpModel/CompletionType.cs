@@ -56,10 +56,14 @@ namespace XSharpModel
         public CompletionType(XTypeMember element)
         {
             //throw new NotImplementedException();
-            XType xType = element.Parent as XType;
-            if (xType != null)
+            if (element.Kind.HasReturnType())
             {
-                this._xtype = xType;
+                // lookup type from Return type
+                CheckProjectType(element.TypeName, element.File, element.Parent.NameSpace);
+            }
+            else
+            {
+                this._xtype = element.Parent as XType;
             }
         }
 
@@ -250,6 +254,15 @@ namespace XSharpModel
                 }
             }
             return null;
+        }
+    }
+    public static class CompletionTypeExtensions
+    {
+        public static bool IsEmpty(this CompletionType cType)
+        {
+            if (cType == null)
+                return true;
+            return !cType.IsInitialized;
         }
     }
 }

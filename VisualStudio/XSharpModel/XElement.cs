@@ -76,13 +76,13 @@ namespace XSharpModel
 
         public void ForceComplete()
         {
-            if (_parent == null && ! String.IsNullOrEmpty(ParentName))
+            if (_parent == null && !String.IsNullOrEmpty(ParentName))
             {
                 string parentName = this.ParentName;
                 string thisName = this.FullName;
-                if (parentName.IndexOf(".") ==-1 && thisName.IndexOf(".")>0)
+                if (parentName.IndexOf(".") == -1 && thisName.IndexOf(".") > 0)
                 {
-                    parentName = thisName.Substring(0, thisName.LastIndexOf(".")+1) + parentName;
+                    parentName = thisName.Substring(0, thisName.LastIndexOf(".") + 1) + parentName;
                 }
                 var tmp = File.Project.LookupFullName(parentName, true);
                 if (tmp == null)
@@ -92,6 +92,8 @@ namespace XSharpModel
                 if (tmp != null)
                 {
                     _parent = tmp;
+                    // Ensure whole tree is resolved.
+                    _parent.ForceComplete();
                 }
             }
         }
@@ -167,9 +169,9 @@ namespace XSharpModel
 
         public void OpenEditor()
         {
-            if ( ( this._File != null ) && (this._File.Project != null ))
+            if ((this._File != null) && (this._File.Project != null))
             {
-                if ( this._File.Project.ProjectNode != null )
+                if (this._File.Project.ProjectNode != null)
                 {
                     this._File.Project.ProjectNode.OpenElement(this._File.FullPath, this.Range.StartLine, this.Range.StartColumn);
                 }
@@ -545,5 +547,43 @@ namespace XSharpModel
         Private,
         ImageListOverlayArrow,
     }
+    public static class ElementExtensions
+    {
+        public static bool HasReturnType( this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Method:
+                case Kind.Access:
+                case Kind.ClassVar:
+                case Kind.Property:
+                case Kind.Function:
+                case Kind.Delegate:
+                case Kind.Operator:
+                case Kind.Parameter:
+                case Kind.Local:
+                    return true;
+            }
+            return false;
+        }
 
+        public static bool HasParameters(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Function:
+                case Kind.Procedure:
+                case Kind.Method:
+                case Kind.Assign:
+                case Kind.Event:
+                case Kind.Delegate:
+                case Kind.Constructor:
+                case Kind.Operator:
+                case Kind.VODLL:
+                    return true;
+            }
+            return false;
+        }
+
+    }
 }

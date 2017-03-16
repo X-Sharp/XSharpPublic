@@ -290,13 +290,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 addErrorMessage(udc, "repeated match/result markers are not (yet) supported ");
             }
         }
-        bool isRepeatToken(string left, string right)
+        bool isRepeatToken(string left, string right, bool first = true)
         {
             if (left.EndsWith("n", StringComparison.OrdinalIgnoreCase))
             {
                 if (string.Compare(left, 0, right, 0, left.Length - 1, StringComparison.OrdinalIgnoreCase) == 0 )
                 {
-                    // exp1 and expn
+                    // exp1 and expn 
                     if (left.Length == right.Length  && right.EndsWith("1"))
                         return true;
                     // exp and expn
@@ -305,16 +305,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                     
             }
-            if (right.EndsWith("n", StringComparison.OrdinalIgnoreCase))
-            {
-                if (string.Compare(left, 0, right, 0, right.Length - 1, StringComparison.OrdinalIgnoreCase) == 0 )
-                    // exp1 and expn
-                    if (right.Length == left.Length && left.EndsWith("1"))
-                        return true;
-                    // exp and expn
-                    if (right.Length == left.Length + 1)
-                        return true;
-            }
+            // try the other way around
+            if (first)
+                return isRepeatToken(right, left, false);
             return false;
         }
         void addErrorMessage(XSharpToken token, string message)

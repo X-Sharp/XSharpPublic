@@ -37,7 +37,7 @@ namespace XSharpModel
             {
                 this._isStatic = true;
             }
-            if (modifiers.HasFlag( Modifiers.Partial))
+            if (modifiers.HasFlag(Modifiers.Partial))
             {
                 this._isPartial = true;
             }
@@ -171,7 +171,7 @@ namespace XSharpModel
                 {
                     return this.Parent.Name;
                 }
-                else if ( this._parentName != null )
+                else if (this._parentName != null)
                 {
                     return this._parentName;
                 }
@@ -182,7 +182,7 @@ namespace XSharpModel
             {
                 if (this.Parent != null)
                 {
-                    throw new Exception( "Cannot set ParentName if Parent is not null" );
+                    throw new Exception("Cannot set ParentName if Parent is not null");
                 }
                 this._parentName = value;
             }
@@ -204,16 +204,23 @@ namespace XSharpModel
                 //
                 String desc = modVis;
                 //
-                desc += this.Kind.ToString() + " ";
-                desc += this.Prototype;
+                if (this.Kind == Kind.Keyword)
+                {
+                    desc = this.Name + " " + this.Kind.ToString();
+                }
+                else
+                {
+                    desc += this.Kind.ToString() + " ";
+                    desc += this.Prototype;
+                }
                 //
                 return desc;
             }
         }
 
-        public static XType CreateGlobalType( XFile file )
+        public static XType CreateGlobalType(XFile file)
         {
-            XType globalType = new XType( XType.GlobalName, Kind.Class, Modifiers.None, Modifiers.Public, new TextRange(1,1,1,1), new TextInterval());
+            XType globalType = new XType(XType.GlobalName, Kind.Class, Modifiers.None, Modifiers.Public, new TextRange(1, 1, 1, 1), new TextInterval());
             globalType.IsPartial = true;
             globalType.IsStatic = true;
             globalType.File = file;

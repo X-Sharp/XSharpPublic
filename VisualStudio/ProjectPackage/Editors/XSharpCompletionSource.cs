@@ -189,7 +189,7 @@ namespace XSharpLanguage
             {
                 var ns = member.Parent.Parent;
                 string nsName = "";
-                if (ns.Kind == Kind.Namespace)
+                if (( ns != null) && (ns.Kind == Kind.Namespace) )
                 {
                     nsName = ns.Name+".";
                 }
@@ -2688,16 +2688,18 @@ namespace XSharpLanguage
 
         static XSharpTypes()
         {
+            // Dummy call to a Lexer; just to copy the Keywords, Types, ...
+            var stream = new AntlrInputStream("");
+            var lexer = new XSharpLexer(stream);
+            //
+            
             _xTypes = new List<XType>();
             //
-            _xTypes.Add(new XType("BYTE", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
-            _xTypes.Add(new XType("DWORD", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
-            _xTypes.Add(new XType("DYNAMIC", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
-            _xTypes.Add(new XType("SHORTINT", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
-            _xTypes.Add(new XType("INT", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
-            _xTypes.Add(new XType("INT64", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
-            _xTypes.Add(new XType("LOGIC", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
-
+            foreach( var keyword in lexer.KwIds )
+            {
+                _xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+            }
+            //
         }
 
         internal static List<XType> Get()

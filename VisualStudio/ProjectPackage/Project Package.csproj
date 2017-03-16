@@ -173,6 +173,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Editors\BraceMatching\BraceMatching.cs" />
     <Compile Include="Editors\EditorHelpers.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpResultSource.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpDefinitionPeekItem.cs" />

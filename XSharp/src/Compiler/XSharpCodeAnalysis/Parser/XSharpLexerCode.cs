@@ -904,7 +904,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"_XOR", VO_XOR},
 
 			// Predefined types
-			{"ARRAY", ARRAY},
+            {"ARRAY", ARRAY},
             {"BYTE", BYTE},
             {"_CODEBLOCK", CODEBLOCK},
             {"CODEBLOCK", CODEBLOCK},
@@ -974,7 +974,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-
+            if (_Four)
+            {
+                ids.Add("ANY", USUAL);
+            }
             var Keywords = new Dictionary<string, int>
         {
 			// Vulcan keywords

@@ -281,6 +281,19 @@ namespace XSharpModel
                         if (current.DataType != null)
                         {
                             //
+                            // structure is:
+                            /*
+                            classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList eos
+                                                ;
+
+                            classVarList		: Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
+                                                ;
+
+                            classvar			: (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
+                                                ;
+                            */
+                            // we want to include the stop position of the datatype in the classvar
+                            // so we set the range to the whole classvarlist 
                             foreach (var varContext in current._Var)
                             {
                                 //
@@ -288,8 +301,8 @@ namespace XSharpModel
                                 //
                                 XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
                                     kind, Modifiers.None, this._currentVarVisibility,
-                                    new TextRange(varContext.Start.Line, varContext.Start.Column, varContext.Start.Line, varContext.Start.Column+(context.Start.StopIndex - context.Stop.StartIndex)), 
-                                    new TextInterval(varContext), current.DataType.GetText());
+                                    new TextRange(varContext.Start.Line, varContext.Start.Column, current.Stop.Line, current.Stop.Column), 
+                                    new TextInterval(current), current.DataType.GetText());
                                 newClassVar.File = this._file;
                                 //
                                 if (this._currentTypes != null && _currentTypes.Count > 0)

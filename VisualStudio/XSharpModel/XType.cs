@@ -16,7 +16,7 @@ namespace XSharpModel
 {
 
     /// <summary>
-    /// Model for Class or a Structure
+    /// Model for Namespace, Class, Interface, Structure, Enum
     /// </summary>
     [DebuggerDisplay("{FullName,nq}")]
     public class XType : XElement

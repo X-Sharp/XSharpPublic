@@ -108,7 +108,7 @@ namespace XSharpModel
 #if DEBUG
                 Stopwatch stopWatch = new Stopwatch();
 #endif
-                foreach (XFile file in project.Files)
+                foreach (XFile file in project.Files.ToArray())
                 {
                     // Detect project unload
                     if (!project.Loaded)

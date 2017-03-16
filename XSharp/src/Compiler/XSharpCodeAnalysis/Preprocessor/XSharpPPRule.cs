@@ -1092,16 +1092,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iSource = 0;
             matchInfo = new PPMatchRange[_matchtokens.Length];
             List<XSharpToken> matchedWithToken = new List<XSharpToken>();
+            int firstOptional = -1;
+            bool hasSkippedMarkers = false;
             while (iRule < _matchtokens.Length && iSource < tokens.Count)
             {
                 var mtoken = _matchtokens[iRule];
+                if (mtoken.IsOptional && firstOptional == -1)
+                    firstOptional = iRule;
                 if (!matchToken(mtoken, ref iRule, _matchtokens.Length, ref iSource, tokens, matchInfo, matchedWithToken))
                 {
                     if (!mtoken.IsOptional)
                         return false;
-                    matchInfo[iRule] = PPMatchRange.Optional();
+                    matchInfo[iRule] = PPMatchRange.Skipped();
+                    hasSkippedMarkers = true;
                     iRule++;
                 }
+            }
+            // try to match remaining optional match markers until no matching 
+            // items are found or until the end of the token list is reached
+            while (hasSkippedMarkers)
+            {
+                hasSkippedMarkers = false;
+                bool hasMatchedAnItem = false;
+                for (int i = firstOptional; i < matchInfo.Length && iSource < tokens.Count; i++)
+                {
+                    if (matchInfo[i].IsSkipped)
+                    {
+                        var mtoken = _matchtokens[i];
+                        if (!matchToken(mtoken, ref iRule, _matchtokens.Length, ref iSource, tokens, matchInfo, matchedWithToken))
+                        {
+                            hasSkippedMarkers = true;
+                        }
+                        else
+                        {
+                            hasMatchedAnItem = true;
+                        }
+                    }
+                }
+                if (!hasMatchedAnItem)
+                    break;
             }
             // #command and #xcommand should match all tokens on the input line
             if (iSource < tokens.Count && (this.Type == PPUDCType.Command || this.Type == PPUDCType.XCommand))
@@ -1116,7 +1145,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     return false;
                 }
-                matchInfo[iRule] = PPMatchRange.Optional();
+                matchInfo[iRule] = PPMatchRange.Skipped();
                 iRule++;
             }
 

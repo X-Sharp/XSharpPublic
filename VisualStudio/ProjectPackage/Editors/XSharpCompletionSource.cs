@@ -186,7 +186,11 @@ namespace XSharpLanguage
                 Usings.Add(currentNamespace.Name);
             }
             // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
-
+            int tokenType = XSharpLexer.UNRECOGNIZED;
+            if (this._stopToken != null)
+            {
+                tokenType = this._stopToken.Type;
+            }
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XElement foundElement;
             MemberInfo dummyElement;
@@ -200,68 +204,46 @@ namespace XSharpLanguage
                         if (!filterText.EndsWith("."))
                             filterText += ".";
                     }
-                    if (this._stopToken != null)
+                    switch (tokenType)
                     {
-                        switch (this._stopToken.Type)
-                        {
-                            case XSharpLexer.USING:
-                                // It can be a namespace 
-                                AddNamespaces(compList, file.Project, filterText);
-                                break;
-                            case XSharpLexer.AS:
-                            case XSharpLexer.IS:
-                            case XSharpLexer.REF:
-                            case XSharpLexer.INHERIT:
-                                // It can be a namespace 
-                                AddNamespaces(compList, file.Project, filterText);
-                                // It can be Type, FullyQualified
-                                // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                                AddTypeNames(compList, file.Project, filterText, Usings);
-                                //
-                                AddXSharpTypeNames(compList, filterText);
-                                break;
-                            case XSharpLexer.IMPLEMENTS:
-                                // It can be a namespace 
-                                AddNamespaces(compList, file.Project, filterText);
-                                // TODO: add Interfaces only
-                                break;
-                            default:
-                                // It can be a namespace 
-                                AddNamespaces(compList, file.Project, filterText);
-                                // It can be Type, FullyQualified
-                                // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                                AddTypeNames(compList, file.Project, filterText, Usings);
-                                //
-                                AddXSharpTypeNames(compList, filterText);
-                                // it can be a static Method/Property/Enum
-                                if (cType != null)
-                                {
-                                    // First we need to remove the trailing dot
-                                    filterText = filterText.Substring(0, filterText.Length - 1);
-                                    BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
-                                }
-                                break;
-
-                        }
-                    }
-                    else
-                    {
-                        // It can be a namespace 
-                        AddNamespaces(compList, file.Project, filterText);
-                        // It can be Type, FullyQualified
-                        // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                        AddTypeNames(compList, file.Project, filterText, Usings);
-                        //
-                        AddXSharpTypeNames(compList, filterText);
-                        // it can be a static Method/Property/Enum
-                        if (cType != null)
-                        {
-                            // First we need to keep only the text AFTER the last dot
-                            int dotPos = filterText.LastIndexOf('.');
-                            filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
-                            BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
-                        }
-                        break;
+                        case XSharpLexer.USING:
+                            // It can be a namespace 
+                            AddNamespaces(compList, file.Project, filterText);
+                            break;
+                        case XSharpLexer.AS:
+                        case XSharpLexer.IS:
+                        case XSharpLexer.REF:
+                        case XSharpLexer.INHERIT:
+                            // It can be a namespace 
+                            AddNamespaces(compList, file.Project, filterText);
+                            // It can be Type, FullyQualified
+                            // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                            AddTypeNames(compList, file.Project, filterText, Usings);
+                            //
+                            AddXSharpTypeNames(compList, filterText);
+                            break;
+                        case XSharpLexer.IMPLEMENTS:
+                            // It can be a namespace 
+                            AddNamespaces(compList, file.Project, filterText);
+                            // TODO: add Interfaces only
+                            break;
+                        default:
+                            // It can be a namespace 
+                            AddNamespaces(compList, file.Project, filterText);
+                            // It can be Type, FullyQualified
+                            // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                            AddTypeNames(compList, file.Project, filterText, Usings);
+                            //
+                            AddXSharpTypeNames(compList, filterText);
+                            // it can be a static Method/Property/Enum
+                            if (cType != null)
+                            {
+                                // First we need to keep only the text AFTER the last dot
+                                int dotPos = filterText.LastIndexOf('.');
+                                filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
+                                BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
+                            }
+                            break;
                     }
                     break;
                 case ':':
@@ -269,9 +251,9 @@ namespace XSharpLanguage
                     if (cType != null)
                     {
                         Modifiers visibleAs = Modifiers.Public;
-                        if ( foundElement != null)
+                        if (foundElement != null)
                         {
-                            if ( String.Compare( foundElement.Name, "self", true )==0)
+                            if (String.Compare(foundElement.Name, "self", true) == 0)
                             {
                                 visibleAs = Modifiers.Private;
                             }
@@ -308,7 +290,7 @@ namespace XSharpLanguage
                     }
                     else
                     {
-                        switch (this._stopToken.Type)
+                        switch (tokenType)
                         {
                             case XSharpLexer.USING:
                                 // It can be a namespace 
@@ -567,11 +549,11 @@ namespace XSharpLanguage
                     if (currentPos == 0)
                     {
                         // Search in Parameters
-                        element = currentMember.Parameters.Find(x => StringEquals(x.Name,currentToken));
+                        element = currentMember.Parameters.Find(x => StringEquals(x.Name, currentToken));
                         if (element == null)
                         {
                             // then Locals
-                            element = currentMember.Locals.Find(x => StringEquals(x.Name,currentToken));
+                            element = currentMember.Locals.Find(x => StringEquals(x.Name, currentToken));
                             if (element == null)
                             {
                                 // We can have a Property/Field of the current CompletionType
@@ -667,7 +649,7 @@ namespace XSharpLanguage
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchPropertyTypeIn(new CompletionType( cType.XType.Parent), currentToken, Modifiers.Public);
+                        return SearchPropertyTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public);
                     }
                     else if (cType.XType.ParentName != null)
                     {
@@ -746,7 +728,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.ClassVar))
                     {
-                        return StringEquals(x.Name , currentToken);
+                        return StringEquals(x.Name, currentToken);
                     }
                     return false;
                 });
@@ -1033,7 +1015,7 @@ namespace XSharpLanguage
                 if (cType.XType.Parent != null)
                 {
                     // Parent is a XElement, so one of our Types
-                    BuildCompletionList(compList, new CompletionType((XType) cType.XType.Parent), Modifiers.Protected, staticOnly, startWith);
+                    BuildCompletionList(compList, new CompletionType((XType)cType.XType.Parent), Modifiers.Protected, staticOnly, startWith);
                 }
                 else if (cType.XType.ParentName != null)
                 {
@@ -1125,7 +1107,7 @@ namespace XSharpLanguage
                 }
             }
             // We will miss the System.Object members
-            if ( sType.IsInterface )
+            if (sType.IsInterface)
             {
                 System.Type obj = typeof(object);
                 FillMembers(compList, obj, minVisibility, staticOnly, startWith);
@@ -2009,7 +1991,7 @@ namespace XSharpLanguage
         {
             get
             {
-                StandardGlyphGroup imgG ;
+                StandardGlyphGroup imgG;
                 //
                 switch (this.Kind)
                 {
@@ -2038,7 +2020,7 @@ namespace XSharpLanguage
         {
             get
             {
-                StandardGlyphItem imgI ;
+                StandardGlyphItem imgI;
                 //
                 switch (this.Visibility)
                 {
@@ -2267,7 +2249,7 @@ namespace XSharpLanguage
                     token = "[]";
                     break;
             }
-            if ( ! String.IsNullOrEmpty(token) )
+            if (!String.IsNullOrEmpty(token))
                 tokenList.Add(token);
             triggerToken = GetPreviousToken(tokens, nextToken);
             //
@@ -2349,7 +2331,7 @@ namespace XSharpLanguage
                     case XSharpLexer.SUPER:
                         break;
                     default:
-                        if ( XSharpLexer.IsKeyword(triggerToken.Type) ||
+                        if (XSharpLexer.IsKeyword(triggerToken.Type) ||
                             XSharpLexer.IsOperator(triggerToken.Type)
                             )
                         {
@@ -2548,7 +2530,7 @@ namespace XSharpLanguage
                     }
                 }
                 //
-                if ( stopToken != null)
+                if (stopToken != null)
                 {
                     switch (stopToken.Type)
                     {
@@ -2596,7 +2578,7 @@ namespace XSharpLanguage
                     {
                         // check to see if this is a method from the Object Type, such as ToString().
                         cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, out foundElement, out sysFoundElement);
-                        if (! cTemp.IsEmpty())
+                        if (!cTemp.IsEmpty())
                         {
                             cType = cTemp;
                         }
@@ -2615,17 +2597,17 @@ namespace XSharpLanguage
                     if (currentPos == 0)
                     {
                         // Search in Parameters
-                        element = currentMember.Parameters.Find(x => StringEquals(x.Name,currentToken));
+                        element = currentMember.Parameters.Find(x => StringEquals(x.Name, currentToken));
                         if (element == null)
                         {
                             // then Locals
-                            element = currentMember.Locals.Find(x => StringEquals(x.Name,currentToken));
+                            element = currentMember.Locals.Find(x => StringEquals(x.Name, currentToken));
                             if (element == null)
                             {
                                 // We can have a Property/Field of the current CompletionType
                                 if (!cType.IsEmpty())
                                 {
-                                    cType  = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
+                                    cType = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
                                 }
                             }
                         }
@@ -2713,7 +2695,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.Property) || (x.Kind == Kind.Access) || (x.Kind == Kind.Assign))
                     {
-                        return StringEquals(x.Name,currentToken);
+                        return StringEquals(x.Name, currentToken);
                     }
                     return false;
                 });
@@ -2730,7 +2712,7 @@ namespace XSharpLanguage
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchPropertyTypeIn(new CompletionType( cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
+                        return SearchPropertyTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
                     }
                     else if (cType.XType.ParentName != null)
                     {
@@ -2763,7 +2745,7 @@ namespace XSharpLanguage
                 Type declType = null;
                 foreach (var member in members)
                 {
-                    if (StringEquals(member.Name,currentToken))
+                    if (StringEquals(member.Name, currentToken))
                     {
                         PropertyInfo prop = member as PropertyInfo;
                         declType = prop.PropertyType;
@@ -2811,7 +2793,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.ClassVar))
                     {
-                        return StringEquals(x.Name,currentToken);
+                        return StringEquals(x.Name, currentToken);
                     }
                     return false;
                 });
@@ -2900,7 +2882,7 @@ namespace XSharpLanguage
         /// <returns>The CompletionType that the Method will return (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement, out MemberInfo systemElement )
+        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement, out MemberInfo systemElement)
         {
             foundElement = null;
             systemElement = null;
@@ -2911,7 +2893,7 @@ namespace XSharpLanguage
                 {
                     if ((x.Kind == Kind.Method))
                     {
-                        return StringEquals(x.Name,currentToken);
+                        return StringEquals(x.Name, currentToken);
                     }
                     return false;
                 });
@@ -2973,7 +2955,7 @@ namespace XSharpLanguage
                 {
                     if (member.MemberType == MemberTypes.Method)
                     {
-                        if (StringEquals(member.Name,currentToken))
+                        if (StringEquals(member.Name, currentToken))
                         {
                             method = member as MethodInfo;
                             declType = method.ReturnType;
@@ -3055,7 +3037,7 @@ namespace XSharpLanguage
                     {
                         prev = null;
                     }
-                } while ((prev != null) && ( String.IsNullOrWhiteSpace( prev.Text)) );
+                } while ((prev != null) && (String.IsNullOrWhiteSpace(prev.Text)));
             }
             return prev;
         }

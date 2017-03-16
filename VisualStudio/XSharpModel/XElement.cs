@@ -84,16 +84,19 @@ namespace XSharpModel
                 {
                     parentName = thisName.Substring(0, thisName.LastIndexOf(".") + 1) + parentName;
                 }
-                var tmp = File.Project.LookupFullName(parentName, true);
-                if (tmp == null)
+                if (File != null)
                 {
-                    tmp = File.Project.Lookup(parentName, true);
-                }
-                if (tmp != null)
-                {
-                    _parent = tmp;
-                    // Ensure whole tree is resolved.
-                    _parent.ForceComplete();
+                    var tmp = File.Project.LookupFullName(parentName, true);
+                    if (tmp == null)
+                    {
+                        tmp = File.Project.Lookup(parentName, true);
+                    }
+                    if (tmp != null)
+                    {
+                        _parent = tmp;
+                        // Ensure whole tree is resolved.
+                        _parent.ForceComplete();
+                    }
                 }
             }
         }
@@ -153,7 +156,16 @@ namespace XSharpModel
                 return this._interval;
             }
         }
-
+        public List<String> FileUsings
+        {
+            get
+            {
+                if (_File == null)
+                    return new List<String>();
+                else
+                    return _File.Usings;
+            }
+        }
         public XFile File
         {
             get

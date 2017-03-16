@@ -1206,14 +1206,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 text = "";
                                 for (int i = 1; i < tokens.Count; i++)
                                 {
-                                    text += tokens[i].Text + " ";
+                                    text += tokens[i].Text;
                                     writeToPPO(tokens[i]);
                                 }
                                 text = text.Trim();
                             }
                             else
                             {
-                                text = "Empty warning clause";
+                                if (nextType == XSharpLexer.PP_ERROR)
+                                    text = "Empty error clause";
+                                else
+                                    text = "Empty warning clause";
+
                             }
                             if (ln.SourceSymbol != null)
                                 ln = ln.SourceSymbol;

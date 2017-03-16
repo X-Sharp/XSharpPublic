@@ -36,7 +36,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             UsualDate,
             Shift,
             PSZCompare,
-            SymbolCompare
+            SymbolCompare,
+            LogicCompare
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
@@ -200,6 +201,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
+        private BoundExpression BindVOLogicCompare(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
+                ref BoundExpression left, ref BoundExpression right)
+        {
+            // Convert logic compare to integer compare where TRUE = 1 and FALSE = 0
+            var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
+            var lit0 = new BoundLiteral(node, ConstantValue.Create(0), intType);
+            var lit1 = new BoundLiteral(node, ConstantValue.Create(1), intType);
+            left = new BoundConditionalOperator(node, left, lit1, lit0, null, intType);
+            right = new BoundConditionalOperator(node, right, lit1, lit0, null, intType);
+            return null;
+        }
 
         private BoundExpression BindVOSingleEqualsUsual(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
              BoundExpression left, BoundExpression right)
@@ -338,6 +350,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindVOPszCompare(node, diagnostics, ref left, ref right);
                 case VOOperatorType.SymbolCompare:
                     return BindVOSymbolCompare(node, diagnostics, ref left, ref right);
+                case VOOperatorType.LogicCompare:
+                    return BindVOLogicCompare(node, diagnostics, ref left, ref right);
+
             }
             return null;
         }
@@ -457,6 +472,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 // Convert to String.Compare or __StringCompare. Decide later
                                 opType = VOOperatorType.CompareString;
                             }
+                        }
+                        if (leftType == Compilation.GetSpecialType(SpecialType.System_Boolean) &&
+                            rightType == Compilation.GetSpecialType(SpecialType.System_Boolean))
+                        {
+                            opType = VOOperatorType.LogicCompare;
                         }
                         break;
                     case XSharpParser.MINUS:

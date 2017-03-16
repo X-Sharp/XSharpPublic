@@ -336,30 +336,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return fileAsTrivia;
         }
 
-        private SkippedTokensTriviaSyntax ParserErrorsAsTrivia(IEnumerable<ParseErrorData> parseErrors, IDictionary<string,SourceText> includes)
+        private SkippedTokensTriviaSyntax ParserErrorsAsTrivia(List<ParseErrorData> parseErrors, IDictionary<string,SourceText> includes)
         {
-            var builder = new SyntaxListBuilder(1+includes.Count);
+            // create one syntax token per errors
+            // and one syntax token for the main file
+            // these tokens will get as many errors as needed.
             var textNode = SyntaxFactory.BadToken(null, _text.ToString(), null);
-            Dictionary<string, SyntaxToken> incNodes = new Dictionary<string, SyntaxToken>(includes.Count);
-            foreach (var inc in includes)
-            {
-                var incNode = SyntaxFactory.BadToken(null, inc.Value.ToString(), null);
-                incNodes[inc.Key] = incNode;
-            }
+            var builder = new SyntaxListBuilder(parseErrors.Count+1);
             if (!parseErrors.IsEmpty())
             {
                 foreach (var e in parseErrors)
                 {
                     if (e.Node != null)
                     {
-                        SyntaxToken node;
-                        if (!string.IsNullOrEmpty(e.Node.SourceFileName) && incNodes.TryGetValue(e.Node.SourceFileName,out node))
-                            incNodes[e.Node.SourceFileName] = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
+                        var key = e.Node.SourceFileName;
+                        var diag = new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args);
+                        if (includes.ContainsKey(key))
+                        {
+                            var inc = includes[key];
+                            var incNode = SyntaxFactory.BadToken(null, inc.ToString(), null);
+                            incNode = incNode.WithAdditionalDiagnostics(diag);
+                            incNode.XNode = e.Node;
+                            builder.Add(incNode);
+                        }
                         else
-                            textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
+                        {
+                            textNode = textNode.WithAdditionalDiagnostics(diag);
+                        }
                     }
                     else
+                    {
                         textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Code, e.Args));
+                    }
                 }
             }
             else
@@ -367,13 +375,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
             }
             builder.Add(textNode);
-            foreach (var inc in incNodes)
-            {
-                var t = new XSharpToken(XSharpLexer.WS);
-                t.SourceFileName = inc.Key;
-                inc.Value.XNode = new ErrorNodeImpl(t);
-                builder.Add(inc.Value);
-            }
             return _syntaxFactory.SkippedTokensTrivia(builder.ToList<SyntaxToken>());
         }
 

@@ -189,7 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool _preprocessorOutput = false;
         System.IO.Stream _ppoStream;
 
-        internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>();
+        internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>(CaseInsensitiveComparison.Comparer);
 
         public int MaxIncludeDepth { get; set; } = 16;
 
@@ -885,7 +885,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                         if (! IncludedFiles.ContainsKey(nfp))
+                        {
                             IncludedFiles.Add(nfp, text);
+                        }
                         break;
                     }
                 }
@@ -936,10 +938,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // now parse the stuff and insert in the cache
                 //Debug.WriteLine("Uncached file {0} ", nfp);
                 var stream = new AntlrInputStream(text.ToString());
+                stream.name = nfp;
                 var lexer = new XSharpLexer(stream);
                 lexer.TokenFactory = XSharpTokenFactory.Default;
                 var tokens = new CommonTokenStream(lexer);
-                stream.name = nfp;
                 tokens.Fill();
                 InsertStream(nfp, tokens);
                 foreach (var e in lexer.LexErrors)
@@ -1268,6 +1270,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.PP_REGION:
                         if (IsActiveElseSkip())
                             SkipToEol();
+                        break;
+                    case XSharpLexer.UDCSEP:
+                        // UDC separator on a line of its own
+                        {
+                            var ln = Lt();
+                            Consume();
+                            writeToPPO(Lt(), PPOPrefix + ln.Text);
+                           _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Unexpected UDC separator character found"));
+                            ReadLine();
+                        }
                         break;
                     default:
                         var t = Lt();

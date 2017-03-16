@@ -1217,7 +1217,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!range.Empty )
             {
                 // No special handling for List markers. Everything is copied including commas etc.
-                for (int i = range.Start; i <= range.End; i++)
+                for (int i = range.Start; i <= range.End && i < tokens.Count; i++)
                 {
                     var token = tokens[i];
                     result.Add(token);
@@ -1597,13 +1597,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             int body = start;
             int count = tokens.Count;
-            if (isStartOfCodeBlock(start, tokens, ref body))    // found start of codeblock, body now points to the last PIPE
+            if (isStartOfCodeBlock(start, tokens, ref body))    // found start of codeblock, body now points to character following the closing PIPE
             {
                 int nested = 1;
-                body = body + 1;
                 while (body < count && nested >= 1)
                 {
-                    if (isStartOfCodeBlock(body, tokens, ref body)) // nested codeblock , body now points to the last PIPE of nested block
+                    if (isStartOfCodeBlock(body, tokens, ref body)) // nested codeblock , body now points to the character following the closing PIPE
                     {
                         nested += 1;
                     }

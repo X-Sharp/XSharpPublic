@@ -397,6 +397,9 @@ namespace XSharpModel
                     case Kind.VOStruct:
                         imgG = StandardGlyphGroup.GlyphGroupValueType;
                         break;
+                    case Kind.Keyword:
+                        imgG = StandardGlyphGroup.GlyphKeyword;
+                        break;
                 }
                 return imgG;
             }
@@ -501,7 +504,8 @@ namespace XSharpModel
         VODLL,
         VOStruct,
         Union,
-        EnumMember
+        EnumMember,
+        Keyword
     }
 
     /// <summary>

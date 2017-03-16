@@ -295,12 +295,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (left.EndsWith("n", StringComparison.OrdinalIgnoreCase))
             {
                 if (string.Compare(left, 0, right, 0, left.Length - 1, StringComparison.OrdinalIgnoreCase) == 0 )
-                    return true;
+                {
+                    // exp1 and expn
+                    if (left.Length == right.Length  && right.EndsWith("1"))
+                        return true;
+                    // exp and expn
+                    if (left.Length == right.Length + 1)
+                        return true;
+                }
+                    
             }
             if (right.EndsWith("n", StringComparison.OrdinalIgnoreCase))
             {
                 if (string.Compare(left, 0, right, 0, right.Length - 1, StringComparison.OrdinalIgnoreCase) == 0 )
-                    return true;
+                    // exp1 and expn
+                    if (right.Length == left.Length && left.EndsWith("1"))
+                        return true;
+                    // exp and expn
+                    if (right.Length == left.Length + 1)
+                        return true;
             }
             return false;
         }

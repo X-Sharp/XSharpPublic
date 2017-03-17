@@ -15,14 +15,12 @@ TEST 1 OPTION #option
 TEST 2016.12.29 OPTION 2017.03.17
 
 TEST iif(TRUE,TRUE,FALSE) option iif(FALSE,TRUE,FALSE)
-TEST {1,2,3}
-TEST {1,2,3} option {{1,2,3},{4,5,6}}
 
 // error XS9002: Parser: unexpected input 'TEST':
-/*TEST TRUE
+TEST TRUE
 TEST .T.
 TEST .F.
 TEST 1 OPTION .f.
 TEST .t. OPTION .f.
-*/
+
 RETURN

@@ -285,7 +285,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (token.IsPrefix() || token.IsBinary())
                 return (nextToken.IsPrimary());
             if (nextToken.IsBinary() || nextToken.NeedsLeft() || nextToken.IsPostFix())
-                return (token.IsPrimary());
+                return (token.IsPrimary() ||token.IsClose());
 
             return false;
         }

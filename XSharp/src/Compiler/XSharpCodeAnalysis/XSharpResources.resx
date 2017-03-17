@@ -4430,6 +4430,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /lb[+|-]                       Allow late binding
  /norun[+|-]                    Do not link to any default runtime
  /ns:&lt;string&gt;                   Default Namespace
+ /s[+-]                         Syntax Check only (will not produce an assembly output)
  /ovf[+|-]                      Integer overflow exceptions (mapped to /checked)
  /vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
  /vo2[+|-]                      Initialize Strings

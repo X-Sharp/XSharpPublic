@@ -46,6 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoStdDef { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
+        public bool SyntaxCheck { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
@@ -105,6 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 NoStdDef = opt.NoStdDef;
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
+                SyntaxCheck = opt.SyntaxCheck;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
@@ -151,6 +153,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             IncludePaths = opt.IncludePaths;
             ShowDefs = opt.ShowDefs;
             ShowIncludes = opt.ShowIncludes;
+            SyntaxCheck = opt.SyntaxCheck;
             NoStdDef = opt.NoStdDef;
             PreprocessorOutput = opt.PreprocessorOutput;
             Verbose = opt.Verbose;

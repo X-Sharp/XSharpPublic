@@ -213,7 +213,7 @@ namespace XSharpLanguage
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XElement foundElement;
             MemberInfo dummyElement;
-            cType = XSharpTokenTools.RetrieveType(tokenList, member, null, out foundElement, out dummyElement);
+            cType = XSharpTokenTools.RetrieveType(_fileName, tokenList, member, null, out foundElement, out dummyElement);
             switch (typedChar)
             {
                 case '.':
@@ -2116,16 +2116,24 @@ namespace XSharpLanguage
         /// <param name="foundElement"></param>
         /// <param name="sysFoundElement"></param>
         /// <returns></returns>
-        public static CompletionType RetrieveType(List<string> tokenList, XTypeMember currentMember, IToken stopToken, out XElement foundElement, out MemberInfo sysFoundElement)
+        public static CompletionType RetrieveType(string fileName, List<string> tokenList, XTypeMember currentMember, IToken stopToken, out XElement foundElement, out MemberInfo sysFoundElement)
         {
             foundElement = null;
             sysFoundElement = null;
             if (currentMember == null)
             {
+                // try to find the first member in the file
+                var file = XSharpModel.XSolution.FindFile(fileName);
+                if (file != null)
+                    currentMember = file.FirstMember();
+                if (currentMember == null)
+                {
 #if TRACE
-                System.Diagnostics.Debug.WriteLine(String.Format("Retrieve current Type : Member cannot be null."));
+                    System.Diagnostics.Debug.WriteLine(String.Format("Retrieve current Type : Member cannot be null."));
 #endif
-                return null;
+                    return null;
+                }
+
             }
             // we have to walk the tokenList, searching for the current Type
             // As we have separators every even token, we will walk by step 2

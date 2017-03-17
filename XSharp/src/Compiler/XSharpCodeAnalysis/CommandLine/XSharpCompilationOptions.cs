@@ -59,6 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
+        public bool SyntaxCheck { get; internal set; } = false;
         public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;
         public bool Vo2 { get; internal set; } = false;

@@ -334,6 +334,7 @@ namespace Microsoft.CodeAnalysis
                 return Failed;
             }
 
+
             var touchedFilesLogger = (Arguments.TouchedFilesPath != null) ? new TouchedFileLogger() : null;
 
             Compilation compilation = CreateCompilation(consoleOutput, touchedFilesLogger, errorLogger);
@@ -342,7 +343,6 @@ namespace Microsoft.CodeAnalysis
                 return Failed;
             }
 
-
             var diagnostics = new List<DiagnosticInfo>();
             var analyzers = ResolveAnalyzersFromArguments(diagnostics, MessageProvider, touchedFilesLogger);
             var additionalTextFiles = ResolveAdditionalFilesFromArguments(diagnostics, MessageProvider, touchedFilesLogger);
@@ -350,6 +350,7 @@ namespace Microsoft.CodeAnalysis
             {
                 return Failed;
             }
+
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -383,6 +384,13 @@ namespace Microsoft.CodeAnalysis
                     return Failed;
                 }
 
+#if XSHARP
+                var parseOptions = Arguments.ParseOptions as CSharp.CSharpParseOptions;
+                if (parseOptions.SyntaxCheck)
+                {
+                    return Failed;
+                }
+#endif                        
                 EmitResult emitResult;
 
                 // NOTE: as native compiler does, we generate the documentation file

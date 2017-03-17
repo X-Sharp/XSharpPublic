@@ -253,7 +253,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
             }
 
-            if (parser.NumberOfSyntaxErrors != 0 || 
+            if ( parser.NumberOfSyntaxErrors != 0 || 
                 (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
@@ -344,7 +344,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private SkippedTokensTriviaSyntax ParserErrorsAsTrivia(List<ParseErrorData> parseErrors, IDictionary<string,SourceText> includes)
         {
-            // create one syntax token per errors
+            // create one syntax token per error
             // and one syntax token for the main file
             // these tokens will get as many errors as needed.
             var textNode = SyntaxFactory.BadToken(null, _text.ToString(), null);
@@ -378,7 +378,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
+                if (! _options.SyntaxCheck)
+                {
+                    textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
+                }
             }
             builder.Add(textNode);
             return _syntaxFactory.SkippedTokensTrivia(builder.ToList<SyntaxToken>());

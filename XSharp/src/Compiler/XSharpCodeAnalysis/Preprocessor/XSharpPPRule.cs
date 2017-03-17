@@ -1523,13 +1523,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (braceLevel > 0)
                 {
                     if (token.Type == openBrace)
+                    {
                         braceLevel += 1;
+                    }
                     else if (token.Type == closeBrace)
+                    {
                         braceLevel -= 1;
+                    }
                     if (braceLevel == 0)
                     {
-                        current++;
-                        break;
+                        // the expression could be something like
+                        // Foo()+Bar()
+                        // So continue normally
+                        lastToken = token;
                     }
                 }
                 else if (token.Type == XSharpLexer.COMMA)

@@ -265,6 +265,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.INTERPOLATED_STRING_CONST:
+                case XSharpParser.INCOMPLETE_STRING_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, StringValue(token.Text), SyntaxFactory.WS);
                     break;
                 case XSharpParser.ESCAPED_STRING_CONST:
@@ -993,6 +994,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.ESCAPED_STRING_CONST:
                 case XSharpParser.INTERPOLATED_STRING_CONST:
+                case XSharpParser.INCOMPLETE_STRING_CONST:
                     return true;
                 default:
                     return false;
@@ -1141,6 +1143,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CHAR_CONST:
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.ESCAPED_STRING_CONST:
+                case XSharpParser.INCOMPLETE_STRING_CONST:
                     r = SyntaxKind.StringLiteralExpression;
                     break;
                 case XSharpParser.INTERPOLATED_STRING_CONST:
@@ -1538,6 +1541,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpParser.STRING_CONST:
                     case XSharpParser.ESCAPED_STRING_CONST:
                     case XSharpParser.INTERPOLATED_STRING_CONST:
+                    case XSharpParser.INCOMPLETE_STRING_CONST:
                         return true;
                     default:
                         break;

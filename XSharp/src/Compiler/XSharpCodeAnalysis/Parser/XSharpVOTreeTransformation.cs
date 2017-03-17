@@ -1545,8 +1545,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   tryBlock,
                   catchClause,
                   finallyClause);
-            outerTry = CheckForMissingKeyword(context.e, outerTry, "END SEQUENCE");
-
             context.Put(outerTry);
             _pool.Free(stmts);
 

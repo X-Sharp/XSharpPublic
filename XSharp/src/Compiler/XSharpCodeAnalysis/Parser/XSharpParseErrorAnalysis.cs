@@ -13,265 +13,276 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using Roslyn.Utilities;
-using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Collections.Generic;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal class XSharpParseErrorAnalysis : XSharpBaseListener
     {
         private XSharpParser _parser;
+        private List<ParseErrorData> _parseErrors;
 
-        public XSharpParseErrorAnalysis(XSharpParser parser)
+        private void checkMissingToken(IToken l, IToken r, ParserRuleContext context)
         {
-            _parser = parser;
+            if (l != null && r == null)
+            {
+                ErrorCode err = ErrorCode.ERR_SyntaxError;
+                object par = null;
+                switch (l.Type)
+                {
+                    case XSharpLexer.LPAREN:
+                        err = ErrorCode.ERR_CloseParenExpected;
+                        break;
+                    case XSharpLexer.LCURLY:
+                        err = ErrorCode.ERR_RbraceExpected;
+                        break;
+                    case XSharpLexer.LBRKT:
+                        err = ErrorCode.ERR_SyntaxError;
+                        par = ']';
+                        break;
+                }
+                IToken anchor = context.Stop;
+                if (anchor == null)
+                    anchor = l;
+                ParseErrorData errdata;
+                if (par != null)
+                    errdata = new ParseErrorData(anchor, err, par);
+                else
+                    errdata = new ParseErrorData(anchor, err);
+                _parseErrors.Add(errdata);
+            }
         }
 
-        internal void CheckMissingToken(ref IToken t, int tId, string tText = "")
+        private void checkMissingKeyword(IToken endToken, ParserRuleContext context, string msg)
         {
-            if (t == null)
+            if (endToken == null)
             {
-                t = _parser.TokenFactory.Create(XSharpParser.ID, "");
+                var err = ErrorCode.ERR_SyntaxError;
+                IToken anchor = context.Stop;
+                if (anchor == null)
+                    anchor = context.Start;
+                var errdata = new ParseErrorData(anchor, err, msg);
+                _parseErrors.Add(errdata);
             }
+            return ;
+        }
+
+        public XSharpParseErrorAnalysis(XSharpParser parser, List<ParseErrorData> parseErrors)
+        {
+            _parser = parser;
+            _parseErrors = parseErrors;
         }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
             if (node.Symbol.TokenIndex == -1)
             {
-                node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
+                _parseErrors.Add(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
             }
-            else
-            {
-                //node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
-            }
-        }
-
-        public override void VisitTerminal(ITerminalNode node)
-        {
         }
 
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
             if (context.exception != null)
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, context));
-        }
-
-        public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
-        {
-        }
-
-        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
-        {
-        }
-
-        public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)
-        {
-            if (context.Type == null)
-            {
-/*                var t = new XSharpParser.SimpleDatatypeContext(new XSharpParser.DatatypeContext(context, 0));
-                t.TypeName = new XSharpParser.TypeNameContext(t, 0);
-                t.AddChild(t.TypeName);
-                t.TypeName.NativeType = new XSharpParser.NativeTypeContext(t, 0);
-                t.TypeName.AddChild(t.TypeName.NativeType);
-                t.TypeName.NativeType.Token = _parser.TokenFactory.Create(XSharpParser.VOID, "");
-                t.TypeName.NativeType.AddChild(t.TypeName.NativeType.Token);
-                context.Type = t;
-                context.AddChild(t);*/
-                context.Type = new XSharpParser.DatatypeContext(context, 0);
-                context.Type.Put(SyntaxFactory.PredefinedType(SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword)));
-                //context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, context));
-            }
-            if (context.StmtBlk == null)
-            {
-                context.StmtBlk = new XSharpParser.StatementBlockContext(context, 0);
-                context.AddChild(context.StmtBlk);
-            }
-        }
-
-        public override void ExitProcedure([NotNull] XSharpParser.ProcedureContext context)
-        {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, context));
         }
 
         public override void ExitParameterList([NotNull] XSharpParser.ParameterListContext context)
         {
-        }
-
-        public override void ExitParameter([NotNull] XSharpParser.ParameterContext context)
-        {
-        }
-
-        public override void ExitStatementBlock([NotNull] XSharpParser.StatementBlockContext context)
-        {
-        }
-
-        public override void ExitReturnStmt([NotNull] XSharpParser.ReturnStmtContext context)
-        {
-        }
-
-        public override void ExitExpressionStmt([NotNull] XSharpParser.ExpressionStmtContext context)
-        {
-        }
-
-        //public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
-        //{
-        //}
-
-        //public override void ExitPostfixExpression([NotNull] XSharpParser.PostfixExpressionContext context)
-        //{
-        //}
-
-        public override void ExitPrefixExpression([NotNull] XSharpParser.PrefixExpressionContext context)
-        {
-        }
-
-        //public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
-        //{
-        //}
-
-        public override void ExitAssignmentExpression([NotNull] XSharpParser.AssignmentExpressionContext context)
-        {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitMethodCall([NotNull] XSharpParser.MethodCallContext context)
         {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitCtorCall([NotNull] XSharpParser.CtorCallContext context)
         {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitArrayAccess([NotNull] XSharpParser.ArrayAccessContext context)
         {
-        }
-
-        public override void ExitNameExpression([NotNull] XSharpParser.NameExpressionContext context)
-        {
-        }
-
-        //public override void ExitTypeExpression([NotNull] XSharpParser.TypeExpressionContext context)
-        //{
-        //}
-
-        public override void ExitIifExpression([NotNull] XSharpParser.IifExpressionContext context)
-        {
-        }
-
-        public override void ExitParenExpression([NotNull] XSharpParser.ParenExpressionContext context)
-        {
-        }
-
-        public override void ExitTypeCast([NotNull] XSharpParser.TypeCastContext context)
-        {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitSizeOfExpression([NotNull] XSharpParser.SizeOfExpressionContext context)
         {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitTypeOfExpression([NotNull] XSharpParser.TypeOfExpressionContext context)
         {
-        }
-
-        public override void ExitArgumentList([NotNull] XSharpParser.ArgumentListContext context)
-        {
-        }
-
-        public override void ExitNamedArgument([NotNull] XSharpParser.NamedArgumentContext context)
-        {
-        }
-
-        public override void ExitQualifiedName([NotNull] XSharpParser.QualifiedNameContext context)
-        {
-        }
-
-        public override void ExitSimpleName([NotNull] XSharpParser.SimpleNameContext context)
-        {
-        }
-
-        public override void ExitGenericArgumentList([NotNull] XSharpParser.GenericArgumentListContext context)
-        {
-        }
-
-        public override void ExitIdentifierName([NotNull] XSharpParser.IdentifierNameContext context)
-        {
-        }
-
-        public override void ExitPtrDatatype([NotNull] XSharpParser.PtrDatatypeContext context)
-        {
-        }
-
-        public override void ExitArrayDatatype([NotNull] XSharpParser.ArrayDatatypeContext context)
-        {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitArrayRank([NotNull] XSharpParser.ArrayRankContext context)
         {
-        }
-
-        public override void ExitSimpleDatatype([NotNull] XSharpParser.SimpleDatatypeContext context)
-        {
-        }
-
-        public override void ExitTypeName([NotNull] XSharpParser.TypeNameContext context)
-        {
-        }
-
-        public override void ExitLiteralExpression([NotNull] XSharpParser.LiteralExpressionContext context)
-        {
-        }
-
-        public override void ExitLiteralArrayExpression([NotNull] XSharpParser.LiteralArrayExpressionContext context)
-        {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitIif([NotNull] XSharpParser.IifContext context)
         {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitLiteralArray([NotNull] XSharpParser.LiteralArrayContext context)
         {
-        }
-
-        public override void ExitCodeblockExpression([NotNull] XSharpParser.CodeblockExpressionContext context)
-        {
+            checkMissingToken(context.l, context.r, context);
         }
 
         public override void ExitCodeblock([NotNull] XSharpParser.CodeblockContext context)
         {
+            checkMissingToken(context.l, context.r, context);
         }
 
-        public override void ExitCodeblockParamList([NotNull] XSharpParser.CodeblockParamListContext context)
+        public override void ExitVostructmember([NotNull] XSharpParser.VostructmemberContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitPropertyParameterList([NotNull] XSharpParser.PropertyParameterListContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitClsctor([NotNull] XSharpParser.ClsctorContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitClsdtor([NotNull] XSharpParser.ClsdtorContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitAttributeBlock([NotNull] XSharpParser.AttributeBlockContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitAttribute([NotNull] XSharpParser.AttributeContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitGlobalAttributes([NotNull] XSharpParser.GlobalAttributesContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitLocalvar([NotNull] XSharpParser.LocalvarContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void EnterDelegateCtorCall([NotNull] XSharpParser.DelegateCtorCallContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void EnterCtorCall([NotNull] XSharpParser.CtorCallContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitCheckedExpression([NotNull] XSharpParser.CheckedExpressionContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitDefaultExpression([NotNull] XSharpParser.DefaultExpressionContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitVoConversionExpression([NotNull] XSharpParser.VoConversionExpressionContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitVoCastExpression([NotNull] XSharpParser.VoCastExpressionContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitVoCastPtrExpression([NotNull] XSharpParser.VoCastPtrExpressionContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitIntrinsicExpression([NotNull] XSharpParser.IntrinsicExpressionContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitAliasedField([NotNull] XSharpParser.AliasedFieldContext context)
         {
         }
-
-        public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
+        public override void ExitAliasedExpr([NotNull] XSharpParser.AliasedExprContext context)
         {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitMacro([NotNull] XSharpParser.MacroContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitBoundMethodCall([NotNull] XSharpParser.BoundMethodCallContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitBoundArrayAccess([NotNull] XSharpParser.BoundArrayAccessContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitBindArrayAccess([NotNull] XSharpParser.BindArrayAccessContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitObjectinitializer([NotNull] XSharpParser.ObjectinitializerContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitCollectioninitializer([NotNull] XSharpParser.CollectioninitializerContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitAnonType([NotNull] XSharpParser.AnonTypeContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
         }
 
-        public override void ExitIdentifier([NotNull] XSharpParser.IdentifierContext context)
+        // Check for missing end keywords for statement blocks
+        public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)
         {
-            CheckMissingToken(ref context.Token, XSharpParser.ID, "");
+            checkMissingKeyword(context.e, context, "END[DO]");
+        }
+        public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
+        {
+            checkMissingKeyword(context.e, context, "NEXT");
+        }
+        public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
+        {
+            checkMissingKeyword(context.e, context, "NEXT");
+        }
+        public override void ExitIfStmt([NotNull] XSharpParser.IfStmtContext context)
+        {
+            checkMissingKeyword(context.e, context, "END[IF]");
+        }
+        public override void ExitCaseStmt([NotNull] XSharpParser.CaseStmtContext context)
+        {
+            checkMissingKeyword(context.CaseStmt?.Start, context, "CASE or OTHERWISE");
+            checkMissingKeyword(context.e, context, "END[CASE]");
+        }
+        public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
+        {
+            checkMissingKeyword(context.e, context, "END [TRY]");
+        }
+        public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)
+        {
+             checkMissingKeyword(context.e, context, "END [SWITCH]");
+        }
+        public override void ExitSeqStmt([NotNull] XSharpParser.SeqStmtContext context)
+        {
+            checkMissingKeyword(context.e, context, "END SEQUENCE");
         }
 
-        public override void ExitNativeType([NotNull] XSharpParser.NativeTypeContext context)
+        public override void ExitBlockStmt([NotNull] XSharpParser.BlockStmtContext context)
         {
+            checkMissingKeyword(context.e, context, "END [" + context.Key.Text + "]");
         }
-
     }
 }

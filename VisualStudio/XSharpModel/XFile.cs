@@ -203,6 +203,17 @@ namespace XSharpModel
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
         }
+        public XTypeMember FirstMember()
+        {
+            foreach (var type in TypeList.Values)
+            {
+                foreach (var member in type.Members)
+                {
+                    return member;
+                }
+            }
+            return null;
+        }
     }
 
 }

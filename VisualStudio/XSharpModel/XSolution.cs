@@ -61,10 +61,14 @@ namespace XSharpModel
         public static XFile FindFile(string fileName)
         {
             XFile file = null;
-            foreach (KeyValuePair<string, XProject> project in xProjects)
+            foreach (var prj in xProjects.Values)
             {
-                XProject prj = project.Value;
-                file = prj.Find( fileName );
+                file = prj.FindFullPath(fileName);
+                if (file != null)
+                {
+                    break;
+                }
+                file = prj.Find( System.IO.Path.GetFileName(fileName) );
                 if ( file != null)
                 {
                     break;

@@ -92,7 +92,7 @@ namespace XSharp.Project
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
             MemberInfo systemElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, stopToken, out gotoElement, out systemElement);
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, stopToken, out gotoElement, out systemElement);
             //
             //
             if ( (gotoElement != null) || (systemElement != null) )

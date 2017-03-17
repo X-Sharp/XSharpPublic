@@ -235,7 +235,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parseErrors.Add(e);
             }
 
-            //#if DEBUG
+            // check for parser errors, such as missing tokens
+            // This adds items to the parseErrors list for missing
+            // tokens and missing keywords
+            var errchecker = new XSharpParseErrorAnalysis(parser,parseErrors);
+            walker.Walk(errchecker, tree);
+            //
+
 
             XSharpTreeTransformation treeTransform;
             if (_options.IsDialectVO)

@@ -99,11 +99,21 @@ namespace XSharp.Project.Editors.BraceMatching
             }
 
             //get the current char and the previous char
-            char currentText = currentChar.GetChar();
-            SnapshotPoint lastChar = currentChar == 0 ? currentChar : currentChar - 1; //if currentChar is 0 (beginning of buffer), don't move it back
-            char lastText = lastChar.GetChar();
+            char currentText = '\0';
+            char lastText = '\0';
             SnapshotSpan pairSpan = new SnapshotSpan();
+            SnapshotPoint lastChar = new SnapshotPoint();
+            try
+            {
+                currentText = currentChar.GetChar();
+                lastChar = currentChar == 0 ? currentChar : currentChar - 1; //if currentChar is 0 (beginning of buffer), don't move it back
+                lastText = lastChar.GetChar();
 
+            }
+            catch (Exception)
+            {
+
+            }
             if (m_braceList.ContainsKey(currentText))   //the key is the open brace
             {
                 char closeChar;

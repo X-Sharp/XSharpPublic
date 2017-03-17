@@ -110,8 +110,6 @@ ASSIGN_OP,ASSIGN_ADD,ASSIGN_SUB,ASSIGN_EXP,ASSIGN_MUL,ASSIGN_DIV,
 ASSIGN_MOD,ASSIGN_BITAND,ASSIGN_BITOR,ASSIGN_LSHIFT,ASSIGN_RSHIFT,
 ASSIGN_XOR,
 
-// Logics
-FALSE_CONST,TRUE_CONST,
 
 // Operators
 LOGIC_AND,LOGIC_OR,LOGIC_NOT,LOGIC_XOR,
@@ -122,8 +120,10 @@ LPAREN,RPAREN,LCURLY,RCURLY,LBRKT,RBRKT,COLON,COMMA,PIPE,AMP,ADDROF,ALIAS,DOT,CO
 LAST_OPERATOR,
 
 FIRST_CONSTANT,
+// Logics
+FALSE_CONST,TRUE_CONST,
 // Consts
-HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRING_CONST,ESCAPED_STRING_CONST,INTERPOLATED_STRING_CONST,
+HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRING_CONST,ESCAPED_STRING_CONST,INTERPOLATED_STRING_CONST,INCOMPLETE_STRING_CONST,
 
 LAST_CONSTANT,
 
@@ -199,6 +199,15 @@ INTERPOLATED_STRING_CONST:
 ESCAPED_STRING_CONST
 				: E '"' ESCAPED_STRING_CHARACTER* '"'			// Escaped double quoted string
 				;
+
+// The next rule is used to match incomplete strings and allows to show a proper error message 
+INCOMPLETE_STRING_CONST	: '"'		NOT_DOUBLE					// Double quoted string with  missing end of string
+						| '\''		NOT_SINGLE					// Single quoted string with  missing end of string
+						| I	'"'		NOT_DOUBLE					// interpolated string with  missing end of string
+						| I E  '"'	ESCAPED_STRING_CHARACTER*	// interpolated escaped string with  missing end of string
+						| E I? '"'	ESCAPED_STRING_CHARACTER*	// escaped or interpolated string with  missing end of string
+						;
+
 
 // When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character
 LINE_CONT		:   SEMI WHITESPACE  ('/' '/' '/'?  NOT_NEW_LINE)?			NEW_LINE     ->channel(HIDDEN)

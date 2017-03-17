@@ -1927,6 +1927,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.STRING_CONST:
                     case XP.ESCAPED_STRING_CONST:
                     case XP.INTERPOLATED_STRING_CONST:
+                    case XP.INCOMPLETE_STRING_CONST:
                         type = stringType;
                         break;
                     case XP.NIL:
@@ -6457,7 +6458,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxToken.WithValue(SyntaxKind.StringLiteralToken, replacement, replacement)));
                 }
                 else
+                {
                     context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+                    if (context.Token.Type == XP.INCOMPLETE_STRING_CONST)
+                    {
+                        var litExpr = context.Get<LiteralExpressionSyntax>();
+                        var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_UnterminatedStringLit);
+                        context.Put(litExpr.WithAdditionalDiagnostics(diag));
+                    }
+                }
             }
         }
 

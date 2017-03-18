@@ -1,15 +1,12 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.Commands;
 using Microsoft.CodeAnalysis.Editor.Host;
 using Microsoft.CodeAnalysis.Editor.SymbolMapping;
 using Microsoft.CodeAnalysis.FindSymbols;
-using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Notification;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
@@ -36,7 +33,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CallHierarchy
 
         private void AddRootNode(ViewCallHierarchyCommandArgs args)
         {
-            _waitIndicator.Wait(EditorFeaturesResources.CallHierarchy, EditorFeaturesResources.ComputingCallHierarchyInformation, allowCancel: true, action: waitcontext =>
+            _waitIndicator.Wait(EditorFeaturesResources.Call_Hierarchy, EditorFeaturesResources.Computing_Call_Hierarchy_Information, allowCancel: true, action: waitcontext =>
                 {
                     var cancellationToken = waitcontext.CancellationToken;
                     var document = args.SubjectBuffer.CurrentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
@@ -49,7 +46,8 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CallHierarchy
                     var semanticModel = document.GetSemanticModelAsync(waitcontext.CancellationToken).WaitAndGetResult(cancellationToken);
 
                     var caretPosition = args.TextView.Caret.Position.BufferPosition.Position;
-                    var symbolUnderCaret = SymbolFinder.FindSymbolAtPosition(semanticModel, caretPosition, workspace, cancellationToken);
+                    var symbolUnderCaret = SymbolFinder.FindSymbolAtPositionAsync(semanticModel, caretPosition, workspace, cancellationToken)
+                        .WaitAndGetResult(cancellationToken);
 
                     if (symbolUnderCaret != null)
                     {
@@ -69,7 +67,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CallHierarchy
                     else
                     {
                         var notificationService = document.Project.Solution.Workspace.Services.GetService<INotificationService>();
-                        notificationService.SendNotification(EditorFeaturesResources.CursorMustBeOnAMemberName, severity: NotificationSeverity.Information);
+                        notificationService.SendNotification(EditorFeaturesResources.Cursor_must_be_on_a_member_name, severity: NotificationSeverity.Information);
                     }
                 });
         }

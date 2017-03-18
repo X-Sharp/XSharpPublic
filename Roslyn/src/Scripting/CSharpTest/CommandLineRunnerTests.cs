@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,47 +12,90 @@ using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Microsoft.CodeAnalysis.Scripting.Test;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
+using Roslyn.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.CSharp.Scripting.UnitTests
 {
+    using static TestCompilationFactory;
+
     public class CommandLineRunnerTests : TestBase
     {
-        private static readonly string CompilerVersion =
+        private static readonly string s_compilerVersion =
             typeof(CSharpInteractiveCompiler).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 
         // default csi.rsp
-        private static readonly string[] DefaultArgs = new[]
+        private static readonly string[] s_defaultArgs = new[]
         {
-            "/r:System;System.Core;Microsoft.CSharp",
+            "/r:" + string.Join(";", GetReferences()),
             "/u:System;System.IO;System.Collections.Generic;System.Diagnostics;System.Dynamic;System.Linq;System.Linq.Expressions;System.Text;System.Threading.Tasks",
         };
 
+        private static IEnumerable<string> GetReferences()
+        {
+            if (GacFileResolver.IsAvailable)
+            {
+                // keep in sync with list in csi.rsp
+                yield return "System";
+                yield return "System.Core";
+                yield return "Microsoft.CSharp";
+                yield return "System.ValueTuple.dll";
+            }
+            else
+            {
+                // keep in sync with list in core csi.rsp
+                yield return "System.Collections";
+                yield return "System.Collections.Concurrent";
+                yield return "System.Console";
+                yield return "System.Diagnostics.Debug";
+                yield return "System.Diagnostics.Process";
+                yield return "System.Diagnostics.StackTrace";
+                yield return "System.Globalization";
+                yield return "System.IO";
+                yield return "System.IO.FileSystem";
+                yield return "System.IO.FileSystem.Primitives";
+                yield return "System.Reflection";
+                yield return "System.Reflection.Extensions";
+                yield return "System.Reflection.Primitives";
+                yield return "System.Runtime";
+                yield return "System.Runtime.InteropServices";
+                yield return "System.Text.Encoding";
+                yield return "System.Text.Encoding.CodePages";
+                yield return "System.Text.Encoding.Extensions";
+                yield return "System.Text.RegularExpressions";
+                yield return "System.Threading";
+                yield return "System.Threading.Tasks";
+                yield return "System.Threading.Tasks.Parallel";
+                yield return "System.Threading.Thread";
+                yield return "System.Linq";
+                yield return "System.Linq.Expressions";
+                yield return "System.Runtime.Numerics";
+                yield return "System.Dynamic.Runtime";
+                yield return "System.ValueTuple";
+                yield return "Microsoft.CSharp";
+            }
+        }
+
         private static CommandLineRunner CreateRunner(
             string[] args = null,
-            string input = "", 
+            string input = "",
             string responseFile = null,
             string workingDirectory = null)
         {
             var io = new TestConsoleIO(input);
+            var buildPaths = new BuildPaths(
+                clientDir: AppContext.BaseDirectory,
+                workingDir: workingDirectory ?? AppContext.BaseDirectory,
+                sdkDir: null,
+                tempDir: Path.GetTempPath());
 
             var compiler = new CSharpInteractiveCompiler(
                 responseFile,
-                workingDirectory ?? AppContext.BaseDirectory,
-                null,
-                args ?? DefaultArgs,
+                buildPaths,
+                args?.Where(a => a != null).ToArray() ?? s_defaultArgs,
                 new NotImplementedAnalyzerLoader());
 
             return new CommandLineRunner(io, compiler, CSharpScriptCompiler.Instance, CSharpObjectFormatter.Instance);
-        }
-
-        private static Compilation CreateLibrary(string assemblyName, string source)
-        {
-            return CSharpCompilation.Create(
-                assemblyName,
-                new[] { SyntaxFactory.ParseSyntaxTree(source) },
-                new[] { MscorlibRef },
-                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         }
 
         [Fact]
@@ -69,7 +113,7 @@ select x * x
             runner.RunInteractive();
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences(
-$@"Microsoft (R) Visual C# Interactive Compiler version {CompilerVersion}
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -85,6 +129,69 @@ Type ""#help"" for more information.
 . select x * x
 Enumerable.WhereSelectArrayIterator<int, int> {{ 9, 16, 25 }}
 > ", runner.Console.Out.ToString());
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+                @"(1,19): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.",
+                runner.Console.Error.ToString());
+        }
+
+        [Fact]
+        [WorkItem(7133, "http://github.com/dotnet/roslyn/issues/7133")]
+        public void TestDisplayResultsWithCurrentUICulture()
+        {
+            var runner = CreateRunner(input:
+@"using System.Globalization;
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(""en-GB"")
+Math.PI
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(""de-DE"")
+Math.PI
+");
+            runner.RunInteractive();
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Type ""#help"" for more information.
+> using System.Globalization;
+> CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(""en-GB"")
+[en-GB]
+> Math.PI
+3.1415926535897931
+> CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(""de-DE"")
+[de-DE]
+> Math.PI
+3,1415926535897931
+>", runner.Console.Out.ToString());
+
+            // Tests that DefaultThreadCurrentUICulture is respected and not DefaultThreadCurrentCulture.
+            runner = CreateRunner(input:
+@"using System.Globalization;
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(""en-GB"")
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(""en-GB"")
+Math.PI
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(""de-DE"")
+Math.PI
+");
+            runner.RunInteractive();
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Type ""#help"" for more information.
+> using System.Globalization;
+> CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(""en-GB"")
+[en-GB]
+> CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(""en-GB"")
+[en-GB]
+> Math.PI
+3.1415926535897931
+> CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(""de-DE"")
+[de-DE]
+> Math.PI
+3.1415926535897931
+>", runner.Console.Out.ToString());
         }
 
         [Fact]
@@ -97,7 +204,7 @@ Print(2)
             runner.RunInteractive();
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences(
-$@"Microsoft (R) Visual C# Interactive Compiler version {CompilerVersion}
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -105,6 +212,22 @@ Type ""#help"" for more information.
 1
 > Print(2)
 2
+> ", runner.Console.Out.ToString());
+        }
+
+        [Fact]
+        public void Tuples()
+        {
+            var runner = CreateRunner(input: "(1,2)");
+            runner.RunInteractive();
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Type ""#help"" for more information.
+> (1,2)
+[(1, 2)]
 > ", runner.Console.Out.ToString());
         }
 
@@ -119,7 +242,7 @@ div(10, 0)
             Assert.Equal(0, runner.RunInteractive());
 
             Assert.Equal(
-$@"Microsoft (R) Visual C# Interactive Compiler version {CompilerVersion}
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -128,11 +251,46 @@ Type ""#help"" for more information.
 5
 > div(10, 0)
 «Red»
-Attempted to divide by zero.
-«DarkRed»
-  + Submission#0.div(Int32 a, Int32 b)
+{new System.DivideByZeroException().Message}
+  + Submission#0.div(int, int)
 «Gray»
 > ", runner.Console.Out.ToString());
+
+            Assert.Equal(
+$@"{new System.DivideByZeroException().Message}
+  + Submission#0.div(int, int)
+", runner.Console.Error.ToString());
+        }
+
+        [Fact]
+        public void ExceptionInGeneric()
+        {
+            var runner = CreateRunner(input:
+@"static class C<T> { public static int div<U>(int a, int b) => a/b; }
+C<string>.div<bool>(10, 2)
+C<string>.div<bool>(10, 0)
+");
+            Assert.Equal(0, runner.RunInteractive());
+
+            Assert.Equal(
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Type ""#help"" for more information.
+> static class C<T> {{ public static int div<U>(int a, int b) => a/b; }}
+> C<string>.div<bool>(10, 2)
+5
+> C<string>.div<bool>(10, 0)
+«Red»
+{new System.DivideByZeroException().Message}
+  + Submission#0.C<T>.div<U>(int, int)
+«Gray»
+> ", runner.Console.Out.ToString());
+
+            Assert.Equal(
+$@"{new System.DivideByZeroException().Message}
+  + Submission#0.C<T>.div<U>(int, int)
+", runner.Console.Error.ToString());
         }
 
         [Fact]
@@ -145,7 +303,7 @@ Attempted to divide by zero.
             runner.RunInteractive();
 
             Assert.Equal(
-$@"Microsoft (R) Visual C# Interactive Compiler version {CompilerVersion}
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -163,12 +321,12 @@ Type ""#help"" for more information.
 
             runner.RunInteractive();
 
-            AssertEx.AssertEqualToleratingWhitespaceDifferences(
-                $@"error CS2001: Source file '{Path.Combine(AppContext.BaseDirectory, "@arg1")}' could not be found.", 
-                runner.Console.Out.ToString());
+            var error = $@"error CS2001: Source file '{Path.Combine(AppContext.BaseDirectory, "@arg1")}' could not be found.";
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(error, runner.Console.Out.ToString());
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(error, runner.Console.Error.ToString());
         }
 
-        [Fact]
+        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
         public void Args_InteractiveWithScript1()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -201,7 +359,7 @@ $@"""@arg1""
 > ", runner.Console.Out.ToString());
         }
 
-        [Fact]
+        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
         public void Args_Script1()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -209,7 +367,7 @@ $@"""@arg1""
             var runner = CreateRunner(
                 args: new[] { script.Path, "arg1", "arg2", "arg3" });
 
-            Assert.Equal(0, runner.RunInteractive());
+            Assert.True(runner.RunInteractive() == 0, userMessage: runner.Console.Error.ToString());
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences($@"
 ""arg1""
@@ -218,7 +376,7 @@ $@"""@arg1""
 ", runner.Console.Out.ToString());
         }
 
-        [Fact]
+        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
         public void Args_Script2()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -226,7 +384,7 @@ $@"""@arg1""
             var runner = CreateRunner(
                 args: new[] { script.Path, "@arg1", "@arg2", "@arg3" });
 
-            Assert.Equal(0, runner.RunInteractive());
+            Assert.True(runner.RunInteractive() == 0, userMessage: runner.Console.Error.ToString());
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences($@"
 ""@arg1""
@@ -235,7 +393,7 @@ $@"""@arg1""
 ", runner.Console.Out.ToString());
         }
 
-        [Fact]
+        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
         public void Args_Script3()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -254,7 +412,7 @@ $@"""@arg1""
                 args: new[] { $"@{rsp.Path}", "/arg5", "--", "/arg7" },
                 input: "foreach (var arg in Args) Print(arg);");
 
-            Assert.Equal(0, runner.RunInteractive());
+            Assert.True(runner.RunInteractive() == 0, userMessage: runner.Console.Error.ToString());
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences($@"
 ""--""
@@ -311,9 +469,9 @@ $@"""@arg1""
 
             Assert.Equal(1, runner.RunInteractive());
 
-            AssertEx.AssertEqualToleratingWhitespaceDifferences($@"
-error CS2001: Source file '{Path.Combine(AppContext.BaseDirectory, "a + b")}' could not be found.
-", runner.Console.Out.ToString());
+            var error = $@"error CS2001: Source file '{Path.Combine(AppContext.BaseDirectory, "a + b")}' could not be found.";
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(error, runner.Console.Out.ToString());
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(error, runner.Console.Error.ToString());
         }
 
         [Fact]
@@ -324,7 +482,7 @@ error CS2001: Source file '{Path.Combine(AppContext.BaseDirectory, "a + b")}' co
             Assert.Equal(0, runner.RunInteractive());
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences(
-$@"Microsoft (R) Visual C# Interactive Compiler version {CompilerVersion}
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Usage: csi [option] ... [script-file.csx] [script-argument] ...
@@ -333,6 +491,7 @@ Executes script-file.csx if specified, otherwise launches an interactive REPL (R
 
 Options:
   /help                          Display this usage message (alternative form: /?)
+  /version                       Display the version and exit
   /i                             Drop to REPL after executing the specified script.
   /r:<file>                      Reference metadata from the specified assembly file (alternative form: /reference)
   /r:<file list>                 Reference metadata from the specified assembly files (alternative form: /reference)
@@ -345,17 +504,42 @@ Options:
         }
 
         [Fact]
+        public void Version()
+        {
+            var runner = CreateRunner(new[] { "/version" });
+            Assert.Equal(0, runner.RunInteractive());
+            AssertEx.AssertEqualToleratingWhitespaceDifferences($@"{s_compilerVersion}", runner.Console.Out.ToString());
+
+            runner = CreateRunner(new[] { "/version", "/help" });
+            Assert.Equal(0, runner.RunInteractive());
+            AssertEx.AssertEqualToleratingWhitespaceDifferences($@"{s_compilerVersion}", runner.Console.Out.ToString());
+
+            runner = CreateRunner(new[] { "/version", "/r:somefile" });
+            Assert.Equal(0, runner.RunInteractive());
+            AssertEx.AssertEqualToleratingWhitespaceDifferences($@"{s_compilerVersion}", runner.Console.Out.ToString());
+
+            runner = CreateRunner(new[] { "/version", "/nologo" });
+            Assert.Equal(0, runner.RunInteractive());
+            AssertEx.AssertEqualToleratingWhitespaceDifferences($@"{s_compilerVersion}", runner.Console.Out.ToString());
+        }
+
+        [Fact]
         public void Script_BadUsings()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("WriteLine(42);");
 
-            var runner = CreateRunner(new[] { "/u:System.Console;Foo.Bar", script.Path });
+            var runner = CreateRunner(new[]
+            {
+                GacFileResolver.IsAvailable ? null : "/r:System.Console",
+                "/u:System.Console;Alpha.Beta",
+                script.Path
+            });
 
             Assert.Equal(1, runner.RunInteractive());
 
-            AssertEx.AssertEqualToleratingWhitespaceDifferences(@"
-error CS0246: The type or namespace name 'Foo' could not be found (are you missing a using directive or an assembly reference?)
-", runner.Console.Out.ToString());
+            const string error = @"error CS0246: The type or namespace name 'Alpha' could not be found (are you missing a using directive or an assembly reference?)";
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(error, runner.Console.Out.ToString());
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(error, runner.Console.Error.ToString());
         }
 
         [Fact]
@@ -366,7 +550,7 @@ error CS0246: The type or namespace name 'Foo' could not be found (are you missi
             runner.RunInteractive();
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences(
-$@"Microsoft (R) Visual C# Interactive Compiler version {CompilerVersion}
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -375,6 +559,28 @@ Type ""#help"" for more information.
 (1,8): error CS0234: The type or namespace name 'CodeAnalysis' does not exist in the namespace 'Microsoft' (are you missing an assembly reference?)
 «Gray»
 > ", runner.Console.Out.ToString());
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+                "(1,8): error CS0234: The type or namespace name 'CodeAnalysis' does not exist in the namespace 'Microsoft' (are you missing an assembly reference?)",
+                runner.Console.Error.ToString());
+        }
+
+        [Fact]
+        public void RelativePath()
+        {
+            using (var directory = new DisposableDirectory(Temp))
+            {
+                const string scriptName = "c.csx";
+                var script = directory.CreateFile(scriptName).WriteAllText("Print(3);");
+                var scriptPath = PathUtilities.CombinePathsUnchecked(PathUtilities.GetFileName(directory.Path), scriptName);
+                var workingDirectory = PathUtilities.GetDirectoryName(directory.Path);
+                Assert.False(PathUtilities.IsAbsolute(scriptPath));
+                var runner = CreateRunner(
+                    args: new[] { scriptPath },
+                    workingDirectory: workingDirectory);
+                runner.RunInteractive();
+                AssertEx.AssertEqualToleratingWhitespaceDifferences("3", runner.Console.Out.ToString());
+            }
         }
 
         [Fact]
@@ -422,16 +628,16 @@ Print(new C4());
 ");
 
             var dir1 = Temp.CreateDirectory();
-            dir1.CreateFile("1.dll").WriteAllBytes(CreateLibrary("1", "public class C1 {}").EmitToArray());
-            
+            dir1.CreateFile("1.dll").WriteAllBytes(CreateCSharpCompilationWithCorlib("public class C1 {}", "1").EmitToArray());
+
             var dir2 = Temp.CreateDirectory();
-            dir2.CreateFile("2.dll").WriteAllBytes(CreateLibrary("2", "public class C2 {}").EmitToArray());
+            dir2.CreateFile("2.dll").WriteAllBytes(CreateCSharpCompilationWithCorlib("public class C2 {}", "2").EmitToArray());
 
             var dir3 = Temp.CreateDirectory();
-            dir3.CreateFile("3.dll").WriteAllBytes(CreateLibrary("3", "public class C3 {}").EmitToArray());
+            dir3.CreateFile("3.dll").WriteAllBytes(CreateCSharpCompilationWithCorlib("public class C3 {}", "3").EmitToArray());
 
             var dir4 = Temp.CreateDirectory();
-            dir4.CreateFile("4.dll").WriteAllBytes(CreateLibrary("4", "public class C4 {}").EmitToArray());
+            dir4.CreateFile("4.dll").WriteAllBytes(CreateCSharpCompilationWithCorlib("public class C4 {}", "4").EmitToArray());
 
             var runner = CreateRunner(new[] { "/r:4.dll", $"/lib:{dir1.Path}", $"/libpath:{dir2.Path}", $"/libpaths:{dir3.Path};{dir4.Path}", main.Path });
 
@@ -445,13 +651,13 @@ C4 { }
 ", runner.Console.Out.ToString());
         }
 
-        [Fact(Skip = "https://github.com/dotnet/roslyn/issues/6523")]
+        [Fact]
         public void SourceSearchPaths_Change1()
         {
             var dir = Temp.CreateDirectory();
             var main = dir.CreateFile("a.csx").WriteAllText("int X = 1;");
 
-            var runner = CreateRunner(input: 
+            var runner = CreateRunner(input:
 $@"SourcePaths
 #load ""a.csx""
 SourcePaths.Add(@""{dir.Path}"")
@@ -462,7 +668,7 @@ X
             runner.RunInteractive();
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences($@"
-Microsoft (R) Visual C# Interactive Compiler version 42.42.42.42
+Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -478,9 +684,13 @@ SearchPaths {{ }}
 1
 > 
 ", runner.Console.Out.ToString());
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+                @"(1,7): error CS1504: Source file 'a.csx' could not be opened -- Could not find file.",
+                runner.Console.Error.ToString());
         }
 
-        [Fact(Skip = "https://github.com/dotnet/roslyn/issues/6523")]
+        [Fact]
         public void ReferenceSearchPaths_Change1()
         {
             var dir = Temp.CreateDirectory();
@@ -497,7 +707,7 @@ new C()
             runner.RunInteractive();
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences($@"
-Microsoft (R) Visual C# Interactive Compiler version 42.42.42.42
+Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -513,6 +723,10 @@ SearchPaths {{ }}
 C {{ }}
 > 
 ", runner.Console.Out.ToString());
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+                @"(1,1): error CS0006: Metadata file 'C.dll' could not be found",
+                runner.Console.Error.ToString());
         }
 
         [Fact]
@@ -560,7 +774,7 @@ C {{ }}
             var init = Temp.CreateFile(extension: ".csx").WriteAllText(@"
 int X = 1;
 ");
-            var runner = CreateRunner(new[] { "/i", init.Path }, input: 
+            var runner = CreateRunner(new[] { "/i", init.Path }, input:
 @"X");
 
             runner.RunInteractive();
@@ -593,6 +807,10 @@ int X = 1;
 C {{ }}
 > 
 ", runner.Console.Out.ToString());
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+                $@"{init.Path}(2,3): error CS1002: ; expected",
+                runner.Console.Error.ToString());
         }
 
         [Fact]
@@ -604,7 +822,7 @@ C {{ }}
             runner.RunInteractive();
 
             Assert.Equal(
-$@"Microsoft (R) Visual C# Interactive Compiler version {CompilerVersion}
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -614,6 +832,7 @@ Keyboard shortcuts:
   Escape        Clear the current submission.
   UpArrow       Replace the current submission with a previous submission.
   DownArrow     Replace the current submission with a subsequent submission (after having previously navigated backwards).
+  Ctrl-C        Exit the REPL.
 REPL commands:
   #help         Display help on available commands and key bindings.
 Script directives:
@@ -629,28 +848,28 @@ Script directives:
             string lib1Name = "Lib1_" + Guid.NewGuid();
             string lib2Name = "Lib2_" + Guid.NewGuid();
 
-            var libBase1 = TestCompilationFactory.CreateCompilation(@"
+            var libBase1 = TestCompilationFactory.CreateCSharpCompilation(@"
 public class LibBase
 {
     public readonly int X = 1;
 }
 ", new[] { TestReferences.NetFx.v4_0_30319.mscorlib }, libBaseName);
 
-            var libBase2 = TestCompilationFactory.CreateCompilation(@"
+            var libBase2 = TestCompilationFactory.CreateCSharpCompilation(@"
 public class LibBase
 {
     public readonly int X = 2;
 }
 ", new[] { TestReferences.NetFx.v4_0_30319.mscorlib }, libBaseName);
 
-            var lib1 = TestCompilationFactory.CreateCompilation(@"
+            var lib1 = TestCompilationFactory.CreateCSharpCompilation(@"
 public class Lib1
 {
     public LibBase libBase = new LibBase();
 }
 ", new MetadataReference[] { TestReferences.NetFx.v4_0_30319.mscorlib, libBase1.ToMetadataReference() }, lib1Name);
 
-            var lib2 = TestCompilationFactory.CreateCompilation(@"
+            var lib2 = TestCompilationFactory.CreateCSharpCompilation(@"
 public class Lib2
 {
     public LibBase libBase = new LibBase();
@@ -680,7 +899,7 @@ var l2 = new Lib2();
             runner.RunInteractive();
 
             AssertEx.AssertEqualToleratingWhitespaceDifferences(
-$@"Microsoft (R) Visual C# Interactive Compiler version {CompilerVersion}
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Type ""#help"" for more information.
@@ -692,6 +911,39 @@ Type ""#help"" for more information.
 Assembly '{libBaseName}, Version=0.0.0.0' has already been loaded from '{fileBase1.Path}'. A different assembly with the same name and version can't be loaded: '{fileBase2.Path}'.
 «Gray»
 > ", runner.Console.Out.ToString());
+        }
+
+        [Fact]
+        [WorkItem(6580, "https://github.com/dotnet/roslyn/issues/6580")]
+        public void PreservingDeclarationsOnException()
+        {
+            var runner = CreateRunner(input:
+@"int i = 100;
+int j = 20; throw new System.Exception(""Bang!""); int k = 3;
+i + j + k
+");
+            runner.RunInteractive();
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+$@"Microsoft (R) Visual C# Interactive Compiler version {s_compilerVersion}
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Type ""#help"" for more information.
+> int i = 100;
+> int j = 20; throw new System.Exception(""Bang!""); int k = 3;
+«Yellow»
+(1,58): warning CS0162: Unreachable code detected
+«Red»
+Bang!
+«Gray»
+> i + j + k
+120
+> ", runner.Console.Out.ToString());
+
+            AssertEx.AssertEqualToleratingWhitespaceDifferences(
+@"(1,58): warning CS0162: Unreachable code detected
+Bang!",
+                runner.Console.Error.ToString());
         }
     }
 }

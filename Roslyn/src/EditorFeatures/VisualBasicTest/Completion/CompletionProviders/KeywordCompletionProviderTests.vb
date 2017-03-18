@@ -12,36 +12,36 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Completion.Complet
             MyBase.New(workspaceFixture)
         End Sub
 
-        Friend Overrides Function CreateCompletionProvider() As CompletionListProvider
+        Friend Overrides Function CreateCompletionProvider() As CompletionProvider
             Return New KeywordCompletionProvider()
         End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub IsCommitCharacterTest()
-            VerifyCommonCommitCharacters("$$", textTypedSoFar:="")
-        End Sub
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function IsCommitCharacterTest() As Task
+            Await VerifyCommonCommitCharactersAsync("$$", textTypedSoFar:="C")
+        End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub IsTextualTriggerCharacterTest()
-            TestCommonIsTextualTriggerCharacter()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function IsTextualTriggerCharacterTest() As Task
+            Await TestCommonIsTextualTriggerCharacterAsync()
 
-            VerifyTextualTriggerCharacter("foo$$(", shouldTriggerWithTriggerOnLettersEnabled:=True, shouldTriggerWithTriggerOnLettersDisabled:=True)
-        End Sub
+            Await VerifyTextualTriggerCharacterAsync("foo$$(", shouldTriggerWithTriggerOnLettersEnabled:=True, shouldTriggerWithTriggerOnLettersDisabled:=True)
+        End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub SendEnterThroughToEditorTest()
-            VerifySendEnterThroughToEditor("$$", "Class", expected:=True)
-        End Sub
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function SendEnterThroughToEditorTest() As Task
+            Await VerifySendEnterThroughToEditorAsync("$$", "Class", expected:=True)
+        End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub InEmptyFile()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function InEmptyFile() As Task
 
             Dim markup = "$$"
-            VerifyAnyItemExists(markup)
-        End Sub
+            Await VerifyAnyItemExistsAsync(markup)
+        End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub NotInInactiveCode()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestNotInInactiveCode() As Task
             Dim code = <Text>
 Class C
     Sub Main(args As String())
@@ -52,11 +52,11 @@ Class C
 End Class
 </Text>.Value
 
-            VerifyNoItemsExist(code)
-        End Sub
+            Await VerifyNoItemsExistAsync(code)
+        End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub NotInString()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestNotInString() As Task
             Dim code = <Text>
 Class C
     Sub Main(args As String())
@@ -65,12 +65,12 @@ Class C
 End Class
 </Text>.Value
 
-            VerifyNoItemsExist(code)
-        End Sub
+            Await VerifyNoItemsExistAsync(code)
+        End Function
 
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub NotInUnterminatedString()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestNotInUnterminatedString() As Task
             Dim code = <Text>
 Class C
     Sub Main(args As String())
@@ -79,11 +79,11 @@ Class C
 End Class
 </Text>.Value
 
-            VerifyNoItemsExist(code)
-        End Sub
+            Await VerifyNoItemsExistAsync(code)
+        End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub NotInSingleLineComment()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestNotInSingleLineComment() As Task
             Dim code = <Text>
 Class C
     Sub Main(args As String())
@@ -92,12 +92,12 @@ Class C
 End Class
 </Text>.Value
 
-            VerifyNoItemsExist(code)
-        End Sub
+            Await VerifyNoItemsExistAsync(code)
+        End Function
 
-        <WorkItem(968256)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub UnionOfKeywordsFromBothFiles()
+        <WorkItem(968256, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/968256")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestUnionOfKeywordsFromBothFiles() As Task
             Dim markup = <Workspace>
                              <Project Language="Visual Basic" CommonReferences="true" AssemblyName="Proj1" PreprocessorSymbols="FOO=true">
                                  <Document FilePath="CurrentDocument.vb"><![CDATA[
@@ -119,13 +119,13 @@ End Class]]>
                              </Project>
                          </Workspace>.ToString().NormalizeLineEndings()
 
-            VerifyItemInLinkedFiles(markup, "Public", Nothing)
-            VerifyItemInLinkedFiles(markup, "For", Nothing)
-        End Sub
+            Await VerifyItemInLinkedFilesAsync(markup, "Public", Nothing)
+            Await VerifyItemInLinkedFilesAsync(markup, "For", Nothing)
+        End Function
 
         <WorkItem(1736, "https://github.com/dotnet/roslyn/issues/1736")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub NotInInteger()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestNotInInteger() As Task
             Dim code = <Text>
 Class C
     Sub Main(args As String())
@@ -134,12 +134,12 @@ Class C
 End Class
 </Text>.Value
 
-            VerifyNoItemsExist(code)
-        End Sub
+            Await VerifyNoItemsExistAsync(code)
+        End Function
 
         <WorkItem(1736, "https://github.com/dotnet/roslyn/issues/1736")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub NotInDecimal()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestNotInDecimal() As Task
             Dim code = <Text>
 Class C
     Sub Main(args As String())
@@ -148,12 +148,12 @@ Class C
 End Class
 </Text>.Value
 
-            VerifyNoItemsExist(code)
-        End Sub
+            Await VerifyNoItemsExistAsync(code)
+        End Function
 
         <WorkItem(1736, "https://github.com/dotnet/roslyn/issues/1736")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub NotInFloat()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestNotInFloat() As Task
             Dim code = <Text>
 Class C
     Sub Main(args As String())
@@ -162,12 +162,12 @@ Class C
 End Class
 </Text>.Value
 
-            VerifyNoItemsExist(code)
-        End Sub
+            Await VerifyNoItemsExistAsync(code)
+        End Function
 
         <WorkItem(1736, "https://github.com/dotnet/roslyn/issues/1736")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub NotInDate()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function TestNotInDate() As Task
             Dim code = <Text>
 Class C
     Sub Main(args As String())
@@ -176,12 +176,12 @@ Class C
 End Class
 </Text>.Value
 
-            VerifyNoItemsExist(code)
-        End Sub
+            Await VerifyNoItemsExistAsync(code)
+        End Function
 
         <WorkItem(4167, "https://github.com/dotnet/roslyn/issues/4167")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
-        Public Sub ImplementsAfterSub()
+        <Fact(), Trait(Traits.Feature, Traits.Features.KeywordRecommending)>
+        Public Async Function ImplementsAfterSub() As Task
             Dim code = "
 Interface I
 End Interface
@@ -194,7 +194,7 @@ Class C
 End Class
 "
 
-            VerifyItemExists(code, "Implements")
-        End Sub
+            Await VerifyItemExistsAsync(code, "Implements")
+        End Function
     End Class
 End Namespace

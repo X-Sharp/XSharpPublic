@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using System.Linq;
 using Microsoft.CodeAnalysis.Editor.Commands;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
 using Microsoft.VisualStudio.Text;
@@ -37,8 +36,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
             var caretPoint = view.GetCaretPoint(subjectBuffer);
             if (caretPoint.HasValue)
             {
-                SnapshotSpan span;
-                if (_renameService.ActiveSession.TryGetContainingEditableSpan(caretPoint.Value, out span))
+                if (_renameService.ActiveSession.TryGetContainingEditableSpan(caretPoint.Value, out var span))
                 {
                     if (view.Selection.Start.Position != span.Start.Position ||
                         view.Selection.End.Position != span.End.Position)

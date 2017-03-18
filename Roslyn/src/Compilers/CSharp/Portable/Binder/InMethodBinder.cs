@@ -16,12 +16,10 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     internal sealed class InMethodBinder : LocalScopeBinder
     {
-        private readonly MultiDictionary<string, ParameterSymbol> _parameterMap;
+        private MultiDictionary<string, ParameterSymbol> _lazyParameterMap;
         private readonly MethodSymbol _methodSymbol;
-        private SmallDictionary<string, Symbol> _definitionMap;
+        private SmallDictionary<string, Symbol> _lazyDefinitionMap;
         private IteratorInfo _iteratorInfo;
-
-        private static readonly HashSet<string> s_emptySet = new HashSet<string>();
 
         private class IteratorInfo
         {
@@ -41,38 +39,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             : base(enclosing)
         {
             Debug.Assert((object)owner != null);
-
             _methodSymbol = owner;
-
-            var parameters = owner.Parameters;
-            if (!parameters.IsEmpty)
-            {
-                RecordDefinition(parameters);
 #if XSHARP
                 _parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, CaseInsensitiveComparison.Comparer);
 #else
-                _parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, EqualityComparer<string>.Default);
 #endif
-                foreach (var parameter in parameters)
-                {
-                    _parameterMap.Add(parameter.Name, parameter);
-                }
-            }
-
-            var typeParameters = owner.TypeParameters;
-
-            if (!typeParameters.IsDefaultOrEmpty)
-            {
-                RecordDefinition(typeParameters);
-            }
         }
 
-        private void RecordDefinition<T>(ImmutableArray<T> definitions) where T : Symbol
+        private static void RecordDefinition<T>(SmallDictionary<string, Symbol> declarationMap, ImmutableArray<T> definitions) where T : Symbol
         {
 #if XSHARP
             var declarationMap = _definitionMap ?? (_definitionMap = new SmallDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer));
 #else
-            var declarationMap = _definitionMap ?? (_definitionMap = new SmallDictionary<string, Symbol>());
 #endif
             foreach (Symbol s in definitions)
             {
@@ -84,6 +62,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         protected override SourceLocalSymbol LookupLocal(SyntaxToken nameToken)
+        {
+            return null;
+        }
+
+        protected override LocalFunctionSymbol LookupLocalFunction(SyntaxToken nameToken)
         {
             return null;
         }
@@ -146,6 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal override TypeSymbol GetIteratorElementType(YieldStatementSyntax node, DiagnosticBag diagnostics)
         {
+            RefKind refKind = _methodSymbol.RefKind;
             TypeSymbol returnType = _methodSymbol.ReturnType;
 
             if (!this.IsDirectlyInIterator)
@@ -156,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // and deduce an iterator element type from the return type.  If we didn't do this, the 
                 // TypeInfo.ConvertedType of the yield statement would always be an error type.  However, we will 
                 // not mutate any state (i.e. we won't store the result).
-                return GetIteratorElementTypeFromReturnType(returnType, node, diagnostics) ?? CreateErrorType();
+                return GetIteratorElementTypeFromReturnType(refKind, returnType, node, diagnostics) ?? CreateErrorType();
             }
 
             if (_iteratorInfo == IteratorInfo.Empty)
@@ -164,11 +148,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 TypeSymbol elementType = null;
                 DiagnosticBag elementTypeDiagnostics = DiagnosticBag.GetInstance();
 
-                elementType = GetIteratorElementTypeFromReturnType(returnType, node, elementTypeDiagnostics);
+                elementType = GetIteratorElementTypeFromReturnType(refKind, returnType, node, elementTypeDiagnostics);
 
                 if ((object)elementType == null)
                 {
-                    Error(elementTypeDiagnostics, ErrorCode.ERR_BadIteratorReturn, _methodSymbol.Locations[0], _methodSymbol, returnType);
+                    if (refKind != RefKind.None)
+                    {
+                        Error(elementTypeDiagnostics, ErrorCode.ERR_BadIteratorReturnRef, _methodSymbol.Locations[0], _methodSymbol);
+                    }
+                    else
+                    {
+                        Error(elementTypeDiagnostics, ErrorCode.ERR_BadIteratorReturn, _methodSymbol.Locations[0], _methodSymbol, returnType);
+                    }
                     elementType = CreateErrorType();
                 }
 
@@ -187,9 +178,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _iteratorInfo.ElementType;
         }
 
-        private TypeSymbol GetIteratorElementTypeFromReturnType(TypeSymbol returnType, CSharpSyntaxNode errorLocationNode, DiagnosticBag diagnostics)
+        private TypeSymbol GetIteratorElementTypeFromReturnType(RefKind refKind, TypeSymbol returnType, CSharpSyntaxNode errorLocationNode, DiagnosticBag diagnostics)
         {
-            if (returnType.Kind == SymbolKind.NamedType)
+            if (refKind == RefKind.None && returnType.Kind == SymbolKind.NamedType)
             {
                 switch (returnType.OriginalDefinition.SpecialType)
                 {
@@ -211,13 +202,26 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(result.IsClear);
 
-            if (_parameterMap == null || (options & LookupOptions.NamespaceAliasesOnly) != 0)
+            if (_methodSymbol.ParameterCount == 0 || (options & LookupOptions.NamespaceAliasesOnly) != 0)
             {
                 return;
             }
 
+            var parameterMap = _lazyParameterMap;
+            if (parameterMap == null)
+            {
+                var parameters = _methodSymbol.Parameters;
+                parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, EqualityComparer<string>.Default);
+                foreach (var parameter in parameters)
+                {
+                    parameterMap.Add(parameter.Name, parameter);
+                }
+
+                _lazyParameterMap = parameterMap;
+            }
+
 #if XSHARP
-            foreach (var parameterSymbol in _parameterMap[name])
+            foreach (var parameterSymbol in parameterMap[name])
             {
                 if ((options & LookupOptions.MustBeInvocableIfMember) == 0 || parameterSymbol.Type.TypeKind == TypeKind.Delegate)
                 {
@@ -249,7 +253,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static bool ReportConflictWithParameter(Symbol parameter, Symbol newSymbol, string name, Location newLocation, DiagnosticBag diagnostics)
         {
             var oldLocation = parameter.Locations[0];
-            Debug.Assert(oldLocation != newLocation || oldLocation == Location.None, "same nonempty location refers to different symbols?");
+#if PATTERNS_FIXED
+            Debug.Assert(oldLocation != newLocation || oldLocation == Location.None || newLocation.SourceTree?.GetRoot().ContainsDiagnostics == true,
+                "same nonempty location refers to different symbols?");
+#else
+            if (oldLocation == newLocation) return false;
+#endif
             SymbolKind parameterKind = parameter.Kind;
 
             // Quirk of the way we represent lambda parameters.                
@@ -262,7 +271,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (parameterKind == SymbolKind.Parameter)
             {
-                if (newSymbolKind == SymbolKind.Parameter || newSymbolKind == SymbolKind.Local)
+                if (newSymbolKind == SymbolKind.Parameter || newSymbolKind == SymbolKind.Local ||
+                    (newSymbolKind == SymbolKind.Method &&
+                     ((MethodSymbol)newSymbol).MethodKind == MethodKind.LocalFunction))
                 {
                     // A local or parameter named '{0}' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter
                     diagnostics.Add(ErrorCode.ERR_LocalIllegallyOverrides, newLocation, name);
@@ -279,9 +290,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (parameterKind == SymbolKind.TypeParameter)
             {
-                if (newSymbolKind == SymbolKind.Parameter || newSymbolKind == SymbolKind.Local)
+                if (newSymbolKind == SymbolKind.Parameter || newSymbolKind == SymbolKind.Local ||
+                    (newSymbolKind == SymbolKind.Method && 
+                     ((MethodSymbol)newSymbol).MethodKind == MethodKind.LocalFunction))
                 {
-                    // CS0412: 'X': a parameter or local variable cannot have the same name as a method type parameter
+                    // CS0412: '{0}': a parameter, local variable, or local function cannot have the same name as a method type parameter
                     diagnostics.Add(ErrorCode.ERR_LocalSameNameAsTypeParam, newLocation, name);
                     return true;
                 }
@@ -290,13 +303,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // Type parameter declaration name conflicts are detected elsewhere
                     return false;
-                }
-
-                if (newSymbolKind == SymbolKind.Parameter || newSymbolKind == SymbolKind.Local)
-                {
-                    // CS0412: 'X': a parameter or local variable cannot have the same name as a method type parameter
-                    diagnostics.Add(ErrorCode.ERR_LocalSameNameAsTypeParam, newLocation, name);
-                    return true;
                 }
 
                 if (newSymbolKind == SymbolKind.RangeVariable)
@@ -315,8 +321,28 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal override bool EnsureSingleDefinition(Symbol symbol, string name, Location location, DiagnosticBag diagnostics)
         {
             Symbol existingDeclaration;
-            var map = _definitionMap;
-            if (map != null && map.TryGetValue(name, out existingDeclaration))
+
+
+            var parameters = _methodSymbol.Parameters;
+            var typeParameters = _methodSymbol.TypeParameters;
+
+            if (parameters.IsEmpty && typeParameters.IsEmpty)
+            {
+                return false;
+            }
+
+            var map = _lazyDefinitionMap;
+
+            if (map == null)
+            {
+                map = new SmallDictionary<string, Symbol>();
+                RecordDefinition(map, parameters);
+                RecordDefinition(map, typeParameters);
+
+                _lazyDefinitionMap = map;
+            }
+
+            if (map.TryGetValue(name, out existingDeclaration))
             {
                 return ReportConflictWithParameter(existingDeclaration, symbol, name, location, diagnostics);
             }

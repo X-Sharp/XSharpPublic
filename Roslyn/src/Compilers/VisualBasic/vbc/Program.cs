@@ -1,29 +1,21 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using Microsoft.CodeAnalysis.BuildTasks;
+using Microsoft.CodeAnalysis.CommandLine;
 using Roslyn.Utilities;
-
-using static Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants;
+using System;
 
 namespace Microsoft.CodeAnalysis.VisualBasic.CommandLine
 {
     public class Program
     {
-        public static int Main(string[] args) 
-            => Main(args, SpecializedCollections.EmptyArray<string>());
+        public static int Main(string[] args)
+            => Main(args, Array.Empty<string>());
 
         public static int Main(string[] args, string[] extraArgs)
-            => BuildClient.RunWithConsoleOutput(
-                BuildClient.GetCommandLineArgs(args).Concat(extraArgs),
-                clientDir: AppDomain.CurrentDomain.BaseDirectory,
-                workingDir: Directory.GetCurrentDirectory(),
-                sdkDir: RuntimeEnvironment.GetRuntimeDirectory(),
-                analyzerLoader: new SimpleAnalyzerAssemblyLoader(),
-                language: RequestLanguage.VisualBasicCompile,
-                fallbackCompiler: Vbc.Run);
+            => DesktopBuildClient.Run(args, extraArgs, RequestLanguage.VisualBasicCompile, Vbc.Run, new DesktopAnalyzerAssemblyLoader());
+
+        public static int Run(string[] args, string clientDir, string workingDir, string sdkDir, string tempDir, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)
+            => Vbc.Run(args, new BuildPaths(clientDir: clientDir, workingDir: workingDir, sdkDir: sdkDir, tempDir: tempDir), textWriter, analyzerLoader);
     }
 }

@@ -63,7 +63,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
             {
                 AssertIsForeground();
 
-                if (!_buffer.GetOption(InternalFeatureOnOffOptions.RenameTracking))
+                if (!_buffer.GetFeatureOnOffOption(InternalFeatureOnOffOptions.RenameTracking))
                 {
                     // When disabled, ignore all text buffer changes and do not trigger retagging
                     return;
@@ -78,7 +78,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
                     //    continue that session.
                     // 3. Otherwise, we're starting a new tracking session. Find and track the span of
                     //    the relevant word in the foreground, and use a task to figure out whether the
-                    //    original word was a renamable identifier or not.
+                    //    original word was a renameable identifier or not.
 
                     if (e.Changes.Count != 1 || ShouldClearTrackingSession(e.Changes.Single()))
                     {
@@ -127,8 +127,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
             private bool ShouldClearTrackingSession(ITextChange change)
             {
                 AssertIsForeground();
-                ISyntaxFactsService syntaxFactsService;
-                if (!TryGetSyntaxFactsService(out syntaxFactsService))
+                if (!TryGetSyntaxFactsService(out var syntaxFactsService))
                 {
                     return true;
                 }
@@ -159,9 +158,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
 
                 var change = eventArgs.Changes.Single();
                 var beforeText = eventArgs.Before.AsText();
-
-                ISyntaxFactsService syntaxFactsService;
-                if (!TryGetSyntaxFactsService(out syntaxFactsService))
+                if (!TryGetSyntaxFactsService(out var syntaxFactsService))
                 {
                     return;
                 }
@@ -232,7 +229,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
 
                         _diagnosticAnalyzerService?.Reanalyze(
                             document.Project.Solution.Workspace,
-                            documentIds: SpecializedCollections.SingletonEnumerable(document.Id));
+                            documentIds: SpecializedCollections.SingletonEnumerable(document.Id), highPriority: true);
                     }
 
                     // Disallow the existing TrackingSession from triggering IdentifierFound.
@@ -272,9 +269,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
                     return false;
                 }
 
-                ISyntaxFactsService syntaxFactsService;
-                IRenameTrackingLanguageHeuristicsService languageHeuristicsService;
-                return TryGetSyntaxFactsService(out syntaxFactsService) && TryGetLanguageHeuristicsService(out languageHeuristicsService) &&
+                return TryGetSyntaxFactsService(out var syntaxFactsService) && TryGetLanguageHeuristicsService(out var languageHeuristicsService) &&
                     trackingSession.CanInvokeRename(syntaxFactsService, languageHeuristicsService, isSmartTagCheck, waitForResult, cancellationToken);
             }
 
@@ -294,8 +289,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
                         return SpecializedCollections.EmptyEnumerable<Diagnostic>();
                     }
 
-                    TrackingSession trackingSession;
-                    if (CanInvokeRename(out trackingSession, waitForResult: true, cancellationToken: cancellationToken))
+                    if (CanInvokeRename(out var trackingSession, waitForResult: true, cancellationToken: cancellationToken))
                     {
                         SnapshotSpan snapshotSpan = trackingSession.TrackingSpan.GetSpan(Buffer.CurrentSnapshot);
                         var textSpan = snapshotSpan.Span.ToTextSpan();

@@ -1,17 +1,17 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports System.Collections.Immutable
 Imports System.Threading
 Imports Microsoft.CodeAnalysis.CodeGeneration
-Imports Microsoft.CodeAnalysis.DocumentationCommentFormatting
+Imports Microsoft.CodeAnalysis.DocumentationComments
 Imports Microsoft.CodeAnalysis.Formatting
 Imports Microsoft.CodeAnalysis.Formatting.Rules
 Imports Microsoft.CodeAnalysis.Host
-Imports Microsoft.CodeAnalysis.LanguageServices
 Imports Microsoft.CodeAnalysis.MetadataAsSource
 Imports Microsoft.CodeAnalysis.Options
 Imports Microsoft.CodeAnalysis.Simplification
 Imports Microsoft.CodeAnalysis.VisualBasic
-Imports Microsoft.CodeAnalysis.VisualBasic.DocumentationCommentFormatting
+Imports Microsoft.CodeAnalysis.VisualBasic.DocumentationComments
 Imports Microsoft.CodeAnalysis.VisualBasic.Simplification
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
@@ -64,10 +64,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.MetadataAsSource
             Return _memberSeparationRule.Concat(Formatter.GetDefaultFormattingRules(document))
         End Function
 
-        Protected Overrides Iterator Function GetReducers() As IEnumerable(Of AbstractReducer)
-            Yield New VisualBasicNameReducer
-            Yield New VisualBasicEscapingReducer
-            Yield New VisualBasicParenthesesReducer
+        Protected Overrides Function GetReducers() As ImmutableArray(Of AbstractReducer)
+            Return ImmutableArray.Create(Of AbstractReducer)(
+                New VisualBasicNameReducer(),
+                New VisualBasicEscapingReducer(),
+                New VisualBasicParenthesesReducer())
         End Function
 
         Private Class FormattingRule

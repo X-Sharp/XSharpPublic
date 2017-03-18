@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.CSharp.KeywordHighlighting.KeywordHighlighters;
 using Roslyn.Test.Utilities;
 using Xunit;
@@ -13,148 +14,170 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.KeywordHighlighting
             return new ConditionalPreprocessorHighlighter();
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample1_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample1_1()
         {
-            Test(
-@"class C {
-    void M() {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+
+
         #define Debug
 #undef Trace
-class PurchaseTransaction
-{
-    void Commit() {
-        {|Cursor:[|#if|]|} Debug
+    class PurchaseTransaction
+    {
+        void Commit()
+        {
+{|Cursor:[|#if|]|} Debug
             CheckConsistency();
-            #if Trace
+#if Trace
                 WriteToLog(this.ToString());
-            #else
-                Exit();
-            #endif
-        [|#endif|]
-        CommitHelper();
+#else
+            Exit();
+#endif
+[|#endif|]
+            CommitHelper();
+        }
     }
 }
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample1_2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample1_2()
         {
-            Test(
-        @"class C {
-    void M() {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+
+
         #define Debug
 #undef Trace
-class PurchaseTransaction
-{
-    void Commit() {
-        [|#if|] Debug
+    class PurchaseTransaction
+    {
+        void Commit()
+        {
+[|#if|] Debug
             CheckConsistency();
-            #if Trace
+#if Trace
                 WriteToLog(this.ToString());
-            #else
-                Exit();
-            #endif
-        {|Cursor:[|#endif|]|}
-        CommitHelper();
+#else
+            Exit();
+#endif
+{|Cursor:[|#endif|]|}
+            CommitHelper();
+        }
     }
 }
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_1()
         {
-            Test(
-        @"class C {
-    void M() {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+
+
         #define Debug
 #undef Trace
-class PurchaseTransaction
-{
-    void Commit() {
-        #if Debug
+    class PurchaseTransaction
+    {
+        void Commit()
+        {
+#if Debug
             CheckConsistency();
-            {|Cursor:[|#if|]|} Trace
+{|Cursor:[|#if|]|} Trace
                 WriteToLog(this.ToString());
-            [|#else|]
-                Exit();
-            [|#endif|]
-        #endif
-        CommitHelper();
+[|#else|]
+            Exit();
+[|#endif|]
+#endif
+            CommitHelper();
+        }
     }
 }
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_2()
         {
-            Test(
-        @"class C {
-    void M() {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+
+
         #define Debug
 #undef Trace
-class PurchaseTransaction
-{
-    void Commit() {
-        #if Debug
+    class PurchaseTransaction
+    {
+        void Commit()
+        {
+#if Debug
             CheckConsistency();
-            [|#if|] Trace
+[|#if|] Trace
                 WriteToLog(this.ToString());
-            {|Cursor:[|#else|]|}
-                Exit();
-            [|#endif|]
-        #endif
-        CommitHelper();
+{|Cursor:[|#else|]|}
+            Exit();
+[|#endif|]
+#endif
+            CommitHelper();
+        }
     }
 }
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_3()
         {
-            Test(
-        @"class C {
-    void M() {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+
+
         #define Debug
 #undef Trace
-class PurchaseTransaction
-{
-    void Commit() {
-        #if Debug
+    class PurchaseTransaction
+    {
+        void Commit()
+        {
+#if Debug
             CheckConsistency();
-            [|#if|] Trace
+[|#if|] Trace
                 WriteToLog(this.ToString());
-            [|#else|]
-                Exit();
-            {|Cursor:[|#endif|]|}
-        #endif
-        CommitHelper();
+[|#else|]
+            Exit();
+{|Cursor:[|#endif|]|}
+#endif
+            CommitHelper();
+        }
     }
 }
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample4_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample4_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        #define Foo1
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+#define Foo1
 #define Foo2
 
 {|Cursor:[|#if|]|} Foo1
@@ -165,17 +188,18 @@ class PurchaseTransaction
 
 [|#endif|]
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample4_2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample4_2()
         {
-            Test(
-        @"class C {
-    void M() {
-        #define Foo1
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+#define Foo1
 #define Foo2
 
 [|#if|] Foo1
@@ -186,17 +210,18 @@ class PurchaseTransaction
 
 [|#endif|]
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample4_3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample4_3()
         {
-            Test(
-        @"class C {
-    void M() {
-        #define Foo1
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+#define Foo1
 #define Foo2
 
 [|#if|] Foo1
@@ -207,17 +232,18 @@ class PurchaseTransaction
 
 [|#endif|]
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample4_4()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample4_4()
         {
-            Test(
-        @"class C {
-    void M() {
-        #define Foo1
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+#define Foo1
 #define Foo2
 
 [|#if|] Foo1
@@ -228,8 +254,7 @@ class PurchaseTransaction
 
 {|Cursor:[|#endif|]|}
     }
-}
-");
+}");
         }
     }
 }

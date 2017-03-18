@@ -324,7 +324,7 @@ class C
                 Diagnostic(ErrorCode.WRN_UnreferencedEvent, "d2").WithArguments("A.d2")
             });
 
-            var verifier = CompileAndVerifyOnWin8Only(
+            var verifier = this.CompileAndVerifyOnWin8Only(
                 src,
                 additionalRefs: new[] {
                     MscorlibRef_v4_0_30316_17626,
@@ -2485,7 +2485,7 @@ public class abcdef{
     }
 } ";
 
-            var cv = CompileAndVerifyOnWin8Only(text);
+            var cv = this.CompileAndVerifyOnWin8Only(text);
 
             cv.VerifyIL("abcdef.foo()", @"
 {
@@ -2545,7 +2545,7 @@ public class abcdef{
                                 }
                             } ";
 
-            var cv = CompileAndVerifyOnWin8Only(text);
+            var cv = this.CompileAndVerifyOnWin8Only(text);
 
             var ExpectedIl =
 @"
@@ -2609,7 +2609,7 @@ public class abcdef{
     }
 }";
 
-            var cv = CompileAndVerifyOnWin8Only(text);
+            var cv = this.CompileAndVerifyOnWin8Only(text);
 
             cv.VerifyIL("abcdef.foo()", @"
 {
@@ -3113,7 +3113,7 @@ class C : INormal, IWinRT
             }
         }
 
-        [WorkItem(547321, "DevDiv")]
+        [WorkItem(547321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547321")]
         [Fact(Skip = "547321")]
         public void ERR_MixingWinRTEventWithRegular_BaseTypeImplementsInterface()
         {
@@ -3425,7 +3425,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
         }
 
         [Fact]
-        [WorkItem(1055825)]
+        [WorkItem(1055825, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1055825")]
         public void AssociatedField()
         {
             var ilSource = @"

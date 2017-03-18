@@ -3,6 +3,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel.InternalElements;
 using Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel.Interop;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Interop;
@@ -39,11 +40,11 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel.Colle
             // Retrieving the parts is potentially very expensive because it can force multiple FileCodeModels to be instantiated.
             // Here, we cache the result to avoid having to perform these calculations each time GetParts() is called.
             // This *could* be an issue because it means that a PartialTypeCollection will not necessarily reflect the
-            // current state of the user's code. However, because a new PartialTypeCollection is created everytime the Parts
+            // current state of the user's code. However, because a new PartialTypeCollection is created every time the Parts
             // property is accessed on CodeClass, CodeStruct or CodeInterface, consumers would hit this behavior rarely.
             if (_parts == null)
             {
-                var partsBuilder = ImmutableArray.CreateBuilder<EnvDTE.CodeElement>();
+                var partsBuilder = ArrayBuilder<EnvDTE.CodeElement>.GetInstance();
 
                 var solution = this.Workspace.CurrentSolution;
                 var symbol = ParentType.LookupSymbol();
@@ -67,7 +68,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel.Colle
                     }
                 }
 
-                _parts = partsBuilder.ToImmutable();
+                _parts = partsBuilder.ToImmutableAndFree();
             }
 
             return _parts;

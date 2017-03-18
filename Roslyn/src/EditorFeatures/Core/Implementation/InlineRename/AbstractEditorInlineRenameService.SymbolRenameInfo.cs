@@ -2,15 +2,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
+using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Rename;
-using Microsoft.CodeAnalysis.Rename.ConflictEngine;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
@@ -43,15 +41,17 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
             public bool CanRename { get; }
             public string LocalizedErrorMessage { get; }
             public TextSpan TriggerSpan { get; }
-            public ISymbol RenameSymbol { get; }
+            public SymbolAndProjectId RenameSymbolAndProjectId { get; }
             public bool HasOverloads { get; }
             public bool ForceRenameOverloads { get; }
+
+            public ISymbol RenameSymbol => RenameSymbolAndProjectId.Symbol;
 
             public SymbolInlineRenameInfo(
                 IEnumerable<IRefactorNotifyService> refactorNotifyServices,
                 Document document,
                 TextSpan triggerSpan,
-                ISymbol renameSymbol,
+                SymbolAndProjectId renameSymbolAndProjectId,
                 bool forceRenameOverloads,
                 CancellationToken cancellationToken)
             {
@@ -59,9 +59,9 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
 
                 _refactorNotifyServices = refactorNotifyServices;
                 _document = document;
-                this.RenameSymbol = renameSymbol;
+                this.RenameSymbolAndProjectId = renameSymbolAndProjectId;
 
-                this.HasOverloads = RenameLocations.GetOverloadedSymbols(this.RenameSymbol).Any();
+                this.HasOverloads = RenameLocations.GetOverloadedSymbols(this.RenameSymbolAndProjectId).Any();
                 this.ForceRenameOverloads = forceRenameOverloads;
 
                 _isRenamingAttributePrefix = CanRenameAttributePrefix(document, triggerSpan, cancellationToken);
@@ -216,7 +216,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
                         // If this is the first call, then just start finding the initial set of rename
                         // locations.
                         _underlyingFindRenameLocationsTask = RenameLocations.FindAsync(
-                            this.RenameSymbol, _document.Project.Solution, optionSet, cancellationToken);
+                            this.RenameSymbolAndProjectId, _document.Project.Solution, optionSet, cancellationToken);
                         renameTask = _underlyingFindRenameLocationsTask;
 
                         // null out the option set.  We don't need it anymore, and this will ensure

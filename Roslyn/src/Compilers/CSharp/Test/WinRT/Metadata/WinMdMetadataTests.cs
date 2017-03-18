@@ -18,6 +18,7 @@ using Roslyn.Test.Utilities;
 
 
 using Xunit;
+using Microsoft.CodeAnalysis.CSharp.UnitTests.CodeGen;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -201,12 +202,12 @@ public class C
         Console.WriteLine(result);
     }
 }";
-            var verifier = CompileAndVerifyOnWin8Only(source,
+            var verifier = this.CompileAndVerifyOnWin8Only(source,
                 expectedOutput: "10\r\n0");
             verifier.VerifyDiagnostics();
         }
 
-        [Fact, WorkItem(1169511, "DevDiv")]
+        [Fact, WorkItem(1169511, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1169511")]
         public void WinMdAssemblyQualifiedType()
         {
             var source =

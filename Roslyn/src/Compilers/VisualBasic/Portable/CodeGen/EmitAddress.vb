@@ -1,5 +1,6 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports System.Reflection.Metadata
 Imports Microsoft.CodeAnalysis.CodeGen
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 
@@ -111,6 +112,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
 
                 Case BoundKind.PseudoVariable
                     EmitPseudoVariableAddress(DirectCast(expression, BoundPseudoVariable))
+
+                Case BoundKind.Call
+                    Dim [call] = DirectCast(expression, BoundCall)
+                    Debug.Assert([call].Method.ReturnsByRef)
+                    EmitCallExpression([call], UseKind.UsedAsAddress)
 
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(kind)
@@ -230,8 +236,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                     Dim local = DirectCast(expression, BoundLocal).LocalSymbol
                     Return Not IsStackLocal(local) OrElse local.IsByRef
 
+                Case BoundKind.Call
+                    Dim method = DirectCast(expression, BoundCall).Method
+                    Return method.ReturnsByRef
+
                 Case BoundKind.Dup
-                    ' For a dupped locals we assume that if the dup 
+                    ' For a dupped local we assume that if the dup 
                     ' is created for byref local it does have home
                     Return DirectCast(expression, BoundDup).IsReference
 
@@ -244,7 +254,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
         End Function
 
         ''' <summary>
-        ''' Special HasHome for fields. Fields have homes when they are writeable.
+        ''' Special HasHome for fields. Fields have homes when they are writable.
         ''' </summary>
         Private Function HasHome(fieldAccess As BoundFieldAccess) As Boolean
             Dim field = fieldAccess.FieldSymbol
@@ -272,7 +282,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
         End Function
 
         ''' <summary>
-        ''' Checks if it is allowed to take a writeable reference to expression according to VB rules.
+        ''' Checks if it is allowed to take a writable reference to expression according to VB rules.
         ''' </summary>
         Private Function AllowedToTakeRef(expression As BoundExpression, addressKind As AddressKind) As Boolean
 
@@ -305,7 +315,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                         Return True
 
                     Case BoundKind.Dup
-                        ' If this is a Dub of ByRef local we can use the address directly 
+                        ' If this is a Dup of ByRef local we can use the address directly 
                         Return DirectCast(expression, BoundDup).IsReference
 
                     Case BoundKind.MeReference, BoundKind.MyClassReference
@@ -320,7 +330,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
         End Function
 
         ''' <summary>
-        ''' Checks if it is allowed to take a writeable reference to expression according to VB rules.
+        ''' Checks if it is allowed to take a writable reference to expression according to VB rules.
         ''' </summary>
         Private Function AllowedToTakeRef(boundLocal As BoundLocal, addressKind As AddressKind) As Boolean
             Debug.Assert(addressKind <> CodeGenerator.AddressKind.Immutable, "immutable address is always ok")
@@ -421,7 +431,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
             End If
         End Function
 
-        Private Sub EmitStaticFieldAddress(field As FieldSymbol, syntaxNode As VisualBasicSyntaxNode)
+        Private Sub EmitStaticFieldAddress(field As FieldSymbol, syntaxNode As SyntaxNode)
             _builder.EmitOpCode(ILOpCode.Ldsflda)
             EmitSymbolToken(field, syntaxNode)
         End Sub

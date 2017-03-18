@@ -10,135 +10,135 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New MethodDeclarationHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample1_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample1_1() As Task
+            Await TestAsync(<Text>
 Public Class C1
     WithEvents x As Raiser
     {|Cursor:[|Sub|]|} E1Handler() [|Handles|] x.E1
         'Do Nothing
     [|End Sub|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample1_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample1_2() As Task
+            Await TestAsync(<Text>
 Public Class C1
     WithEvents x As Raiser
     [|Sub|] E1Handler() {|Cursor:[|Handles|]|} x.E1
         'Do Nothing
     [|End Sub|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample1_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample1_3() As Task
+            Await TestAsync(<Text>
 Public Class C1
     WithEvents x As Raiser
     [|Sub|] E1Handler() [|Handles|] x.E1
         'Do Nothing
     {|Cursor:[|End Sub|]|}
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample2_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample2_1() As Task
+            Await TestAsync(<Text>
 Public Class C1
     {|Cursor:[|Public Shared Sub|]|} Foo()
         [|Exit Sub|]
     [|End Sub|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample2_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample2_2() As Task
+            Await TestAsync(<Text>
 Public Class C1
     [|Public Shared Sub|] Foo()
         {|Cursor:[|Exit Sub|]|}
     [|End Sub|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample2_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample2_3() As Task
+            Await TestAsync(<Text>
 Public Class C1
     [|Public Shared Sub|] Foo()
         [|Exit Sub|]
     {|Cursor:[|End Sub|]|}
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample3_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample3_1() As Task
+            Await TestAsync(<Text>
 Public Class C1
     Implements IDisposable
     {|Cursor:[|Public Sub|]|} Dispose() [|Implements|] IDisposable.Dispose
         'Do Nothing
     [|End Sub|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample3_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample3_2() As Task
+            Await TestAsync(<Text>
 Public Class C1
     Implements IDisposable
     [|Public Sub|] Dispose() {|Cursor:[|Implements|]|} IDisposable.Dispose
         'Do Nothing
     [|End Sub|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample3_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample3_3() As Task
+            Await TestAsync(<Text>
 Public Class C1
     Implements IDisposable
     [|Public Sub|] Dispose() [|Implements|] IDisposable.Dispose
         'Do Nothing
     {|Cursor:[|End Sub|]|}
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample4_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample4_1() As Task
+            Await TestAsync(<Text>
 Public Class C1
     {|Cursor:[|Public Overrides Function|]|} ToString() As String
         [|Return|] Nothing
     [|End Function|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample4_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample4_2() As Task
+            Await TestAsync(<Text>
 Public Class C1
     [|Public Overrides Function|] ToString() As String
         {|Cursor:[|Return|]|} Nothing
     [|End Function|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethodExample4_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethodExample4_3() As Task
+            Await TestAsync(<Text>
 Public Class C1
     [|Public Overrides Function|] ToString() As String
         [|Return|] Nothing
     {|Cursor:[|End Function|]|}
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_AsyncExample1_1()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_AsyncExample1_1() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -165,11 +165,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_AsyncExample1_2()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_AsyncExample1_2() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -196,11 +196,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_AsyncExample1_3()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_AsyncExample1_3() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -227,11 +227,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_AsyncExample1_4()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_AsyncExample1_4() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -258,11 +258,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_AsyncExample1_5()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_AsyncExample1_5() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -289,11 +289,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_AsyncExample1_6()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_AsyncExample1_6() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -320,11 +320,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_Async_NestedAwaits1()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_Async_NestedAwaits1() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -336,11 +336,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_Async_NestedAwaits2()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_Async_NestedAwaits2() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -352,11 +352,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_Async_NestedAwaits3()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_Async_NestedAwaits3() As Task
+            Await TestAsync(
 <Text>
 Imports System.Threading.Tasks
 
@@ -368,11 +368,11 @@ Class AsyncExample
 End Class
 
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_IteratorExample1_1()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_IteratorExample1_1() As Task
+            Await TestAsync(
 <Text>
 {|Cursor:[|Iterator Function|]|} Test() As IEnumerable(Of Integer)
 
@@ -394,11 +394,11 @@ End Class
     Next
 [|End Function|]
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_IteratorExample1_2()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_IteratorExample1_2() As Task
+            Await TestAsync(
 <Text>
 [|Iterator Function|] Test() As IEnumerable(Of Integer)
 
@@ -420,11 +420,11 @@ End Class
     Next
 [|End Function|]
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_IteratorExample1_3()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_IteratorExample1_3() As Task
+            Await TestAsync(
 <Text>
 [|Iterator Function|] Test() As IEnumerable(Of Integer)
 
@@ -446,11 +446,11 @@ End Class
     Next
 [|End Function|]
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_IteratorExample1_4()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_IteratorExample1_4() As Task
+            Await TestAsync(
 <Text>
 [|Iterator Function|] Test() As IEnumerable(Of Integer)
 
@@ -472,11 +472,11 @@ End Class
     Next
 [|End Function|]
 </Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestMethod_IteratorExample1_5()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestMethod_IteratorExample1_5() As Task
+            Await TestAsync(
 <Text>
 [|Iterator Function|] Test() As IEnumerable(Of Integer)
 
@@ -498,7 +498,7 @@ End Class
     Next
 {|Cursor:[|End Function|]|}
 </Text>)
-        End Sub
+        End Function
 
     End Class
 End Namespace

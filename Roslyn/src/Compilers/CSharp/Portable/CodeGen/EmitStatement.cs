@@ -5,11 +5,10 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using Microsoft.CodeAnalysis.CodeGen;
-using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 
@@ -23,6 +22,10 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
             {
                 case BoundKind.Block:
                     EmitBlock((BoundBlock)statement);
+                    break;
+
+                case BoundKind.Scope:
+                    EmitScope((BoundScope)statement);
                     break;
 
                 case BoundKind.SequencePoint:
@@ -141,20 +144,24 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
 
         private void EmitThrowStatement(BoundThrowStatement node)
         {
-            BoundExpression expr = node.ExpressionOpt;
-            if (expr != null)
-            {
-                this.EmitExpression(expr, true);
+            EmitThrow(node.ExpressionOpt);
+        }
 
-                var exprType = expr.Type;
+        private void EmitThrow(BoundExpression thrown)
+        {
+            if (thrown != null)
+            {
+                this.EmitExpression(thrown, true);
+
+                var exprType = thrown.Type;
                 // Expression type will be null for "throw null;".
-                if (((object)exprType != null) && (exprType.TypeKind == TypeKind.TypeParameter))
+                if (exprType?.TypeKind == TypeKind.TypeParameter)
                 {
-                    this.EmitBox(exprType, expr.Syntax);
+                    this.EmitBox(exprType, thrown.Syntax);
                 }
             }
 
-            _builder.EmitThrow(isRethrow: expr == null);
+            _builder.EmitThrow(isRethrow: thrown == null);
         }
 
         private void EmitConditionalGoto(BoundConditionalGoto boundConditionalGoto)
@@ -363,7 +370,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
 
         private void EmitCondBranchCore(BoundExpression condition, ref object dest, bool sense)
         {
-oneMoreTime:
+        oneMoreTime:
 
             ILOpCode ilcode;
 
@@ -606,10 +613,7 @@ oneMoreTime:
                 }
             }
 
-            foreach (var statement in block.Statements)
-            {
-                EmitStatement(statement);
-            }
+            EmitStatements(block.Statements);
 
             if (_indirectReturnState == IndirectReturnState.Needed &&
                 IsLastBlockInMethod(block))
@@ -626,6 +630,36 @@ oneMoreTime:
 
                 _builder.CloseLocalScope();
             }
+        }
+
+        private void EmitStatements(ImmutableArray<BoundStatement> statements)
+        {
+            foreach (var statement in statements)
+            {
+                EmitStatement(statement);
+            }
+        }
+
+        private void EmitScope(BoundScope block)
+        {
+            Debug.Assert(!block.Locals.IsEmpty);
+
+            _builder.OpenLocalScope();
+
+            foreach (var local in block.Locals)
+            {
+                Debug.Assert(local.Name != null);
+                Debug.Assert(local.SynthesizedKind == SynthesizedLocalKind.UserDefined &&
+                    local.ScopeDesignatorOpt?.Kind() == SyntaxKind.SwitchSection);
+                if (!local.IsConst && !IsStackLocal(local))
+                {
+                    _builder.AddLocalToScope(_builder.LocalSlotManager.GetLocal(local));
+                }
+            }
+
+            EmitStatements(block.Statements);
+
+            _builder.CloseLocalScope();
         }
 
         private void EmitStateMachineScope(BoundStateMachineScope scope)
@@ -676,8 +710,14 @@ oneMoreTime:
         private void EmitReturnStatement(BoundReturnStatement boundReturnStatement)
         {
             var expressionOpt = boundReturnStatement.ExpressionOpt;
-
-            this.EmitExpression(expressionOpt, used: true);
+            if (boundReturnStatement.RefKind == RefKind.None)
+            {
+                this.EmitExpression(expressionOpt, true);
+            }
+            else
+            {
+                this.EmitAddress(expressionOpt, AddressKind.Writeable);
+            }
 
             if (ShouldUseIndirectReturn())
             {
@@ -717,13 +757,7 @@ oneMoreTime:
                     {
                         // Ensure the return type has been translated. (Necessary
                         // for cases of untranslated anonymous types.)
-                        var returnType = expressionOpt.Type;
-                        var byRefType = returnType as ByRefReturnErrorTypeSymbol;
-                        if ((object)byRefType != null)
-                        {
-                            returnType = byRefType.ReferencedType;
-                        }
-                        _module.Translate(returnType, boundReturnStatement.Syntax, _diagnostics);
+                        _module.Translate(expressionOpt.Type, boundReturnStatement.Syntax, _diagnostics);
                     }
                     _builder.EmitRet(expressionOpt == null);
                 }
@@ -922,11 +956,11 @@ oneMoreTime:
                 _builder.MarkLabel(typeCheckPassedLabel);
             }
 
-            if ((object)catchBlock.LocalOpt != null)
+            foreach (var local in catchBlock.Locals)
             {
-                var declaringReferences = catchBlock.LocalOpt.DeclaringSyntaxReferences;
+                var declaringReferences = local.DeclaringSyntaxReferences;
                 var localSyntax = !declaringReferences.IsEmpty ? (CSharpSyntaxNode)declaringReferences[0].GetSyntax() : catchBlock.Syntax;
-                DefineLocal(catchBlock.LocalOpt, localSyntax);
+                DefineLocal(local, localSyntax);
             }
 
             var exceptionSourceOpt = catchBlock.ExceptionSourceOpt;
@@ -1022,14 +1056,20 @@ oneMoreTime:
 
         private void EmitSwitchStatement(BoundSwitchStatement switchStatement)
         {
+            var preambleOpt = switchStatement.LoweredPreambleOpt;
+            if (preambleOpt != null)
+            {
+                EmitStatement(preambleOpt);
+            }
+
             // Switch expression must have a valid switch governing type
-            Debug.Assert((object)switchStatement.BoundExpression.Type != null);
-            Debug.Assert(switchStatement.BoundExpression.Type.IsValidSwitchGoverningType());
+            Debug.Assert((object)switchStatement.Expression.Type != null);
+            Debug.Assert(switchStatement.Expression.Type.IsValidV6SwitchGoverningType());
 
             // We must have rewritten nullable switch expression into non-nullable constructs.
-            Debug.Assert(!switchStatement.BoundExpression.Type.IsNullableType());
+            Debug.Assert(!switchStatement.Expression.Type.IsNullableType());
 
-            BoundExpression expression = switchStatement.BoundExpression;
+            BoundExpression expression = switchStatement.Expression;
             ImmutableArray<BoundSwitchSection> switchSections = switchStatement.SwitchSections;
             GeneratedLabelSymbol breakLabel = switchStatement.BreakLabel;
             LabelSymbol constantTargetOpt = switchStatement.ConstantTargetOpt;
@@ -1066,24 +1106,34 @@ oneMoreTime:
             EmitSwitchBody(switchStatement.InnerLocals, switchSections, breakLabel, switchStatement.Syntax);
         }
 
-        private static KeyValuePair<ConstantValue, object>[] GetSwitchCaseLabels(ImmutableArray<BoundSwitchSection> sections, ref LabelSymbol fallThroughLabel)
+        private KeyValuePair<ConstantValue, object>[] GetSwitchCaseLabels(ImmutableArray<BoundSwitchSection> sections, ref LabelSymbol fallThroughLabel)
         {
             var labelsBuilder = ArrayBuilder<KeyValuePair<ConstantValue, object>>.GetInstance();
             foreach (var section in sections)
             {
-                foreach (BoundSwitchLabel boundLabel in section.BoundSwitchLabels)
+                // all labels in a section are labeling the same region of code, 
+                // so we could use just the first one for a better codegen
+                object firstLabelInSection = null;
+
+                foreach (BoundSwitchLabel boundLabel in section.SwitchLabels)
                 {
-                    var label = (SourceLabelSymbol)boundLabel.Label;
-                    if (label.IdentifierNodeOrToken.Kind() == SyntaxKind.DefaultSwitchLabel)
+                    var label = boundLabel.Label;
+                    if (boundLabel.ConstantValueOpt == null)
                     {
                         fallThroughLabel = label;
                     }
                     else
                     {
-                        Debug.Assert(label.SwitchCaseLabelConstant != null
-                            && SwitchConstantValueHelper.IsValidSwitchCaseLabelConstant(label.SwitchCaseLabelConstant));
+                        var value = boundLabel.ConstantValueOpt;
+                        Debug.Assert(value != null
+                            && SwitchConstantValueHelper.IsValidSwitchCaseLabelConstant(value));
 
-                        labelsBuilder.Add(new KeyValuePair<ConstantValue, object>(label.SwitchCaseLabelConstant, label));
+                        if (firstLabelInSection == null)
+                        {
+                            firstLabelInSection = label;
+                        }
+
+                        labelsBuilder.Add(new KeyValuePair<ConstantValue, object>(value, firstLabelInSection));
                     }
                 }
             }
@@ -1105,7 +1155,7 @@ oneMoreTime:
         {
             Debug.Assert(expression.ConstantValue == null);
             Debug.Assert((object)expression.Type != null &&
-                expression.Type.IsValidSwitchGoverningType());
+                expression.Type.IsValidV6SwitchGoverningType());
             Debug.Assert(switchCaseLabels.Length > 0);
 
             Debug.Assert(switchCaseLabels != null);
@@ -1183,7 +1233,7 @@ oneMoreTime:
             KeyValuePair<ConstantValue, object>[] switchCaseLabels,
             LabelSymbol fallThroughLabel,
             LocalOrParameter key,
-            CSharpSyntaxNode syntaxNode)
+            SyntaxNode syntaxNode)
         {
             LocalDefinition keyHash = null;
 
@@ -1318,7 +1368,7 @@ oneMoreTime:
             ImmutableArray<LocalSymbol> locals,
             ImmutableArray<BoundSwitchSection> switchSections,
             GeneratedLabelSymbol breakLabel,
-            CSharpSyntaxNode syntaxNode)
+            SyntaxNode syntaxNode)
         {
             var hasLocals = !locals.IsEmpty;
 
@@ -1347,7 +1397,7 @@ oneMoreTime:
 
         private void EmitSwitchSection(BoundSwitchSection switchSection)
         {
-            foreach (var boundSwitchLabel in switchSection.BoundSwitchLabels)
+            foreach (var boundSwitchLabel in switchSection.SwitchLabels)
             {
                 _builder.MarkLabel(boundSwitchLabel.Label);
             }
@@ -1372,22 +1422,25 @@ oneMoreTime:
             return _builder.LocalSlotManager.GetLocal(symbol);
         }
 
-        private LocalDefinition DefineLocal(LocalSymbol local, CSharpSyntaxNode syntaxNode)
+        private LocalDefinition DefineLocal(LocalSymbol local, SyntaxNode syntaxNode)
         {
-            var transformFlags = default(ImmutableArray<TypedConstant>);
-            bool hasDynamic = local.Type.ContainsDynamic();
-            var isDynamicSourceLocal = hasDynamic && !local.IsCompilerGenerated;
-            if (isDynamicSourceLocal)
-            {
-                NamedTypeSymbol booleanType = _module.Compilation.GetSpecialType(SpecialType.System_Boolean);
-                transformFlags = CSharpCompilation.DynamicTransformsEncoder.Encode(local.Type, booleanType, 0, RefKind.None);
-            }
+            var dynamicTransformFlags = !local.IsCompilerGenerated && local.Type.ContainsDynamic() ?
+                CSharpCompilation.DynamicTransformsEncoder.Encode(local.Type, _module.Compilation.GetSpecialType(SpecialType.System_Boolean), 0, RefKind.None) :
+                ImmutableArray<TypedConstant>.Empty;
+            var tupleElementNames = !local.IsCompilerGenerated && local.Type.ContainsTupleNames() ?
+                CSharpCompilation.TupleNamesEncoder.Encode(local.Type, _module.Compilation.GetSpecialType(SpecialType.System_String)) :
+                ImmutableArray<TypedConstant>.Empty;
 
             if (local.IsConst)
             {
                 Debug.Assert(local.HasConstantValue);
                 MetadataConstant compileTimeValue = _module.CreateConstant(local.Type, local.ConstantValue, syntaxNode, _diagnostics);
-                LocalConstantDefinition localConstantDef = new LocalConstantDefinition(local.Name, local.Locations.FirstOrDefault() ?? Location.None, compileTimeValue, isDynamicSourceLocal, transformFlags);
+                LocalConstantDefinition localConstantDef = new LocalConstantDefinition(
+                    local.Name,
+                    local.Locations.FirstOrDefault() ?? Location.None,
+                    compileTimeValue,
+                    dynamicTransformFlags: dynamicTransformFlags,
+                    tupleElementNames: tupleElementNames);
                 _builder.AddLocalConstantToScope(localConstantDef);
                 return null;
             }
@@ -1437,12 +1490,14 @@ oneMoreTime:
                 id: localId,
                 pdbAttributes: local.SynthesizedKind.PdbAttributes(),
                 constraints: constraints,
-                isDynamic: isDynamicSourceLocal,
-                dynamicTransformFlags: transformFlags,
+                dynamicTransformFlags: dynamicTransformFlags,
+                tupleElementNames: tupleElementNames,
                 isSlotReusable: local.SynthesizedKind.IsSlotReusable(_ilEmitStyle != ILEmitStyle.Release));
 
             // If named, add it to the local debug scope.
-            if (localDef.Name != null)
+            if (localDef.Name != null &&
+                !(local.SynthesizedKind == SynthesizedLocalKind.UserDefined &&
+                    local.ScopeDesignatorOpt?.Kind() == SyntaxKind.SwitchSection)) // Visibility scope of such locals is represented by BoundScope node.
             {
                 _builder.AddLocalToScope(localDef);
             }
@@ -1467,7 +1522,10 @@ oneMoreTime:
             // only user-defined locals should be named during lowering:
             Debug.Assert((local.Name == null) == (localKind != SynthesizedLocalKind.UserDefined));
 
-            if (!localKind.IsLongLived())
+            // Generating debug names for instrumentation payloads should be allowed, as described in https://github.com/dotnet/roslyn/issues/11024.
+            // For now, skip naming locals generated by instrumentation as they might not have a local syntax offset.
+            // Locals generated by instrumentation might exist in methods which do not contain a body (auto property initializers).
+            if (!localKind.IsLongLived() || localKind == SynthesizedLocalKind.InstrumentationPayload)
             {
                 return null;
             }
@@ -1508,11 +1566,11 @@ oneMoreTime:
         /// <summary>
         /// Allocates a temp without identity.
         /// </summary>
-        private LocalDefinition AllocateTemp(TypeSymbol type, SyntaxNode syntaxNode)
+        private LocalDefinition AllocateTemp(TypeSymbol type, SyntaxNode syntaxNode, LocalSlotConstraints slotConstraints = LocalSlotConstraints.None)
         {
             return _builder.LocalSlotManager.AllocateSlot(
                 _module.Translate(type, syntaxNode, _diagnostics),
-                LocalSlotConstraints.None);
+                slotConstraints);
         }
 
         /// <summary>
@@ -1563,11 +1621,12 @@ oneMoreTime:
             public override BoundNode VisitSwitchStatement(BoundSwitchStatement node)
             {
                 var breakLabelClone = GetLabelClone(node.BreakLabel);
+                var preambleOpt = (BoundStatement)this.Visit(node.LoweredPreambleOpt);
 
                 // expressions do not contain labels or branches
-                BoundExpression boundExpression = node.BoundExpression;
+                BoundExpression boundExpression = node.Expression;
                 ImmutableArray<BoundSwitchSection> switchSections = (ImmutableArray<BoundSwitchSection>)this.VisitList(node.SwitchSections);
-                return node.Update(boundExpression, node.ConstantTargetOpt, node.InnerLocals, switchSections, breakLabelClone, node.StringEquality);
+                return node.Update(preambleOpt, boundExpression, node.ConstantTargetOpt, node.InnerLocals, node.InnerLocalFunctions, switchSections, breakLabelClone, node.StringEquality);
             }
 
             public override BoundNode VisitSwitchLabel(BoundSwitchLabel node)
@@ -1576,7 +1635,7 @@ oneMoreTime:
 
                 // expressions do not contain labels or branches
                 BoundExpression expressionOpt = node.ExpressionOpt;
-                return node.Update(labelClone, expressionOpt);
+                return node.Update(labelClone, expressionOpt, node.ConstantValueOpt);
             }
 
             public override BoundNode VisitGotoStatement(BoundGotoStatement node)

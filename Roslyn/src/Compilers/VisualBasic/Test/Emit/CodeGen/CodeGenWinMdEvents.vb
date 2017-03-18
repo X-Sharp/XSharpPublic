@@ -2,6 +2,7 @@
 
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Test.Utilities
+Imports Microsoft.CodeAnalysis.Test.Utilities.CodeRuntime
 Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Roslyn.Test.Utilities
 
@@ -454,7 +455,7 @@ End Class
         ''' <remarks>
         ''' I'm assuming this is why the final dev11 impl uses GetOrCreateEventRegistrationTokenTable.
         ''' </remarks>
-        <Fact(), WorkItem(1003209)>
+        <Fact(), WorkItem(1003209, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1003209")>
         Public Sub FieldLikeEventSerialization()
 
             Dim source1 =
@@ -926,7 +927,7 @@ End Class
         End Sub
 
         ' Field-like and custom events are not treated differently.
-        <Fact(), WorkItem(1003209)>
+        <Fact(), WorkItem(1003209, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1003209")>
         Public Sub HandlesClauses_EventKinds()
 
             Dim source =

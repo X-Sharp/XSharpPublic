@@ -60,6 +60,7 @@ namespace Microsoft.CodeAnalysis.Internal.Log
 
         CommandHandler_GetCommandState,
         CommandHandler_ExecuteHandlers,
+        CommandHandler_FormatCommand,
 
         Workspace_SourceText_GetChangeRanges,
         Workspace_Recoverable_RecoverRootAsync,
@@ -317,5 +318,49 @@ namespace Microsoft.CodeAnalysis.Internal.Log
         CodefixInfobar_EnableAndIgnoreFutureErrors,
         CodefixInfobar_LeaveDisabled,
         CodefixInfobar_ErrorIgnored,
+
+        Refactoring_NamingStyle,
+
+        // Caches
+        SymbolTreeInfo_ExceptionInCacheRead,
+        SpellChecker_ExceptionInCacheRead,
+        BKTree_ExceptionInCacheRead,
+        IntellisenseBuild_Failed,
+
+        // Generic performance measurement action IDs
+        MeasurePerformance_StartAction,
+        MeasurePerformance_StopAction,
+
+        RemoteHostClientService_AddGlobalAssetsAsync,
+        RemoteHostClientService_RemoveGlobalAssets,
+        RemoteHostClientService_Enabled,
+        ServiceHubRemoteHostClient_CreateAsync,
+        SolutionSynchronizationServiceFactory_CreatePinnedRemotableDataScopeAsync,
+        PinnedRemotableDataScope_GetRemotableData,
+        Serializer_CreateChecksum,
+        Serializer_Serialize,
+        Serializer_Deserialize,
+        CodeAnalysisService_CalculateDiagnosticsAsync,
+        CodeAnalysisService_SerializeDiagnosticResultAsync,
+        AssetStorage_CleanAssets,
+        AssetService_GetAssetAsync,
+        SnapshotService_RequestAssetAsync,
+        CompilationService_GetCompilationAsync,
+        RemoteHostService_Synchronize,
+        AssetStorage_TryGetAsset,
+        AssetService_SynchronizeAssetsAsync,
+        AssetService_SynchronizeSolutionAssetsAsync,
+        CodeAnalysisService_GetReferenceCountAsync,
+        CodeAnalysisService_FindReferenceLocationsAsync,
+        CodeAnalysisService_FindReferenceMethodsAsync,
+        CodeAnalysisService_GetFullyQualifiedName,
+        SolutionChecksumUpdater_SynchronizePrimaryWorkspace,
+        SolutionState_ComputeChecksumsAsync,
+        ProjectState_ComputeChecksumsAsync,
+        DocumentState_ComputeChecksumsAsync,
+        JsonRpcSession_RequestAssetAsync,
+        SolutionSynchronizationService_GetRemotableData,
+        AssetService_SynchronizeProjectAssetsAsync,
+        FileTextLoader_FileLengthThresholdExceeded,
     }
 }

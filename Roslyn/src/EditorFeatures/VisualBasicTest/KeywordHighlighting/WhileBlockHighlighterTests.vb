@@ -10,9 +10,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New WhileBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestWhileBlock1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestWhileBlock1() As Task
+            Await TestAsync(<Text>
 Class C
 Sub M()
 {|Cursor:[|While|]|} True
@@ -24,11 +24,11 @@ Sub M()
 [|End While|]
 End Sub
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestWhileBlock2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestWhileBlock2() As Task
+            Await TestAsync(<Text>
 Class C
 Sub M()
 [|While|] True
@@ -40,11 +40,11 @@ Sub M()
 [|End While|]
 End Sub
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestWhileBlock3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestWhileBlock3() As Task
+            Await TestAsync(<Text>
 Class C
 Sub M()
 [|While|] True
@@ -56,11 +56,11 @@ Sub M()
 [|End While|]
 End Sub
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestWhileBlock4()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestWhileBlock4() As Task
+            Await TestAsync(<Text>
 Class C
 Sub M()
 [|While|] True
@@ -72,6 +72,6 @@ Sub M()
 {|Cursor:[|End While|]|}
 End Sub
 End Class</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

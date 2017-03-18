@@ -16,10 +16,10 @@ namespace Microsoft.CodeAnalysis.CodeFixes.Suppression
             private readonly bool _forFixMultipleContext;
 
             public static PragmaWarningCodeAction Create(
-                    SuppressionTargetInfo suppressionTargetInfo,
-                    Document document,
-                    Diagnostic diagnostic,
-                    AbstractSuppressionCodeFixProvider fixer)
+                SuppressionTargetInfo suppressionTargetInfo,
+                Document document,
+                Diagnostic diagnostic,
+                AbstractSuppressionCodeFixProvider fixer)
             {
                 // We need to normalize the leading trivia on start token to account for
                 // the trailing trivia on its previous token (and similarly normalize trailing trivia for end token).
@@ -34,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CodeFixes.Suppression
                 Diagnostic diagnostic,
                 AbstractSuppressionCodeFixProvider fixer,
                 bool forFixMultipleContext = false)
-                : base(fixer, title: FeaturesResources.SuppressWithPragma)
+                : base(fixer, title: FeaturesResources.in_Source)
             {
                 _suppressionTargetInfo = suppressionTargetInfo;
                 _document = document;
@@ -45,7 +45,6 @@ namespace Microsoft.CodeAnalysis.CodeFixes.Suppression
             public PragmaWarningCodeAction CloneForFixMultipleContext()
             {
                 return new PragmaWarningCodeAction(_suppressionTargetInfo, _document, _diagnostic, Fixer, forFixMultipleContext: true);
-
             }
             protected override string DiagnosticIdForEquivalenceKey =>
                 _forFixMultipleContext ? string.Empty : _diagnostic.Id;
@@ -61,17 +60,27 @@ namespace Microsoft.CodeAnalysis.CodeFixes.Suppression
                     _document,
                     _diagnostic.Location.SourceSpan,
                     _suppressionTargetInfo,
-                    (startToken, currentDiagnosticSpan) => includeStartTokenChange ? PragmaHelpers.GetNewStartTokenWithAddedPragma(startToken, currentDiagnosticSpan, _diagnostic, Fixer, FormatNode) : startToken,
-                    (endToken, currentDiagnosticSpan) => includeEndTokenChange ? PragmaHelpers.GetNewEndTokenWithAddedPragma(endToken, currentDiagnosticSpan, _diagnostic, Fixer, FormatNode) : endToken,
+                    async (startToken, currentDiagnosticSpan) =>
+                    {
+                        return includeStartTokenChange
+                            ? await PragmaHelpers.GetNewStartTokenWithAddedPragmaAsync(startToken, currentDiagnosticSpan, _diagnostic, Fixer, FormatNodeAsync).ConfigureAwait(false)
+                            : startToken;
+                    },
+                    async (endToken, currentDiagnosticSpan) =>
+                    {
+                        return includeEndTokenChange
+                            ? await PragmaHelpers.GetNewEndTokenWithAddedPragmaAsync(endToken, currentDiagnosticSpan, _diagnostic, Fixer, FormatNodeAsync).ConfigureAwait(false)
+                            : endToken;
+                    },
                     cancellationToken).ConfigureAwait(false);
             }
 
             public SyntaxToken StartToken_TestOnly => _suppressionTargetInfo.StartToken;
             public SyntaxToken EndToken_TestOnly => _suppressionTargetInfo.EndToken;
 
-            private SyntaxNode FormatNode(SyntaxNode node)
+            private Task<SyntaxNode> FormatNodeAsync(SyntaxNode node)
             {
-                return Formatter.Format(node, _document.Project.Solution.Workspace);
+                return Formatter.FormatAsync(node, _document.Project.Solution.Workspace);
             }
         }
     }

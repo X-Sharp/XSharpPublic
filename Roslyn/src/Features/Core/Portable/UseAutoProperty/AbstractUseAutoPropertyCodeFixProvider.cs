@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.FindSymbols;
+using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.CodeAnalysis.Formatting.Rules;
 using Microsoft.CodeAnalysis.Rename;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Roslyn.Utilities;
@@ -23,32 +27,36 @@ namespace Microsoft.CodeAnalysis.UseAutoProperty
         where TConstructorDeclaration : SyntaxNode
         where TExpression : SyntaxNode
     {
-        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(
-            AbstractUseAutoPropertyAnalyzer<TPropertyDeclaration, TFieldDeclaration, TVariableDeclarator, TExpression>.UseAutoProperty);
+        protected static SyntaxAnnotation SpecializedFormattingAnnotation = new SyntaxAnnotation();
+
+        public sealed override ImmutableArray<string> FixableDiagnosticIds 
+            => ImmutableArray.Create(IDEDiagnosticIds.UseAutoPropertyDiagnosticId);
 
         public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
         protected abstract SyntaxNode GetNodeToRemove(TVariableDeclarator declarator);
 
+        protected abstract IEnumerable<IFormattingRule> GetFormattingRules(Document document);
+
         protected abstract Task<SyntaxNode> UpdatePropertyAsync(
-            Project project, Compilation compilation, IFieldSymbol fieldSymbol, IPropertySymbol propertySymbol,
+            Document propertyDocument, Compilation compilation, IFieldSymbol fieldSymbol, IPropertySymbol propertySymbol,
             TPropertyDeclaration propertyDeclaration, bool isWrittenOutsideConstructor, CancellationToken cancellationToken);
 
         public sealed override Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             foreach (var diagnostic in context.Diagnostics)
             {
-                var equivalenceKey = diagnostic.Properties["SymbolEquivalenceKey"];
+                var equivalenceKey = diagnostic.Properties[Constants.SymbolEquivalenceKey];
 
                 context.RegisterCodeFix(
                     new UseAutoPropertyCodeAction(
-                        FeaturesResources.UseAutoProperty,
+                        FeaturesResources.Use_auto_property,
                         c => ProcessResult(context, diagnostic, c),
                         equivalenceKey),
                     diagnostic);
             }
 
-            return Task.FromResult(false);
+            return SpecializedTasks.EmptyTask;
         }
 
         private async Task<Solution> ProcessResult(CodeFixContext context, Diagnostic diagnostic, CancellationToken cancellationToken)
@@ -72,11 +80,13 @@ namespace Microsoft.CodeAnalysis.UseAutoProperty
             var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
 
             var solution = context.Document.Project.Solution;
-            var fieldLocations = await Renamer.GetRenameLocationsAsync(solution, fieldSymbol, solution.Workspace.Options, cancellationToken).ConfigureAwait(false);
+            var fieldLocations = await Renamer.GetRenameLocationsAsync(
+                solution, SymbolAndProjectId.Create(fieldSymbol, fieldDocument.Project.Id), 
+                solution.Options, cancellationToken).ConfigureAwait(false);
 
             // First, create the updated property we want to replace the old property with
             var isWrittenToOutsideOfConstructor = IsWrittenToOutsideOfConstructorOrProperty(fieldSymbol, fieldLocations, property, cancellationToken);
-            var updatedProperty = await UpdatePropertyAsync(project, compilation, fieldSymbol, propertySymbol, property,
+            var updatedProperty = await UpdatePropertyAsync(propertyDocument, compilation, fieldSymbol, propertySymbol, property,
                 isWrittenToOutsideOfConstructor, cancellationToken).ConfigureAwait(false);
 
             // Now, rename all usages of the field to point at the property.  Except don't actually 
@@ -106,6 +116,7 @@ namespace Microsoft.CodeAnalysis.UseAutoProperty
             var nodeToRemove = GetNodeToRemove(declarator);
 
             const SyntaxRemoveOptions options = SyntaxRemoveOptions.KeepUnbalancedDirectives | SyntaxRemoveOptions.AddElasticMarker;
+
             if (fieldDocument == propertyDocument)
             {
                 // Same file.  Have to do this in a slightly complicated fashion.
@@ -115,8 +126,11 @@ namespace Microsoft.CodeAnalysis.UseAutoProperty
                 editor.RemoveNode(nodeToRemove, options);
                 editor.ReplaceNode(property, updatedProperty);
 
+                var newRoot = editor.GetChangedRoot();
+                newRoot = await FormatAsync(newRoot, fieldDocument, cancellationToken).ConfigureAwait(false);
+
                 return solution.WithDocumentSyntaxRoot(
-                    fieldDocument.Id, editor.GetChangedRoot());
+                    fieldDocument.Id, newRoot);
             }
             else
             {
@@ -127,11 +141,25 @@ namespace Microsoft.CodeAnalysis.UseAutoProperty
                 var newFieldTreeRoot = fieldTreeRoot.RemoveNode(nodeToRemove, options);
                 var newPropertyTreeRoot = propertyTreeRoot.ReplaceNode(property, updatedProperty);
 
+                newFieldTreeRoot = await FormatAsync(newFieldTreeRoot, fieldDocument, cancellationToken).ConfigureAwait(false);
+                newPropertyTreeRoot = await FormatAsync(newPropertyTreeRoot, propertyDocument, cancellationToken).ConfigureAwait(false);
+
                 updatedSolution = solution.WithDocumentSyntaxRoot(fieldDocument.Id, newFieldTreeRoot);
                 updatedSolution = updatedSolution.WithDocumentSyntaxRoot(propertyDocument.Id, newPropertyTreeRoot);
 
                 return updatedSolution;
             }
+        }
+
+        private async Task<SyntaxNode> FormatAsync(SyntaxNode newRoot, Document document, CancellationToken cancellationToken)
+        {
+            var formattingRules = GetFormattingRules(document);
+            if (formattingRules == null)
+            {
+                return newRoot;
+            }
+
+            return await Formatter.FormatAsync(newRoot, SpecializedFormattingAnnotation, document.Project.Solution.Workspace, options: null, rules: formattingRules, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         private static bool IsWrittenToOutsideOfConstructorOrProperty(

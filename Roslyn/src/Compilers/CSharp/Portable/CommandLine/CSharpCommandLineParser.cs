@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
@@ -46,11 +47,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             List<Diagnostic> diagnostics = new List<Diagnostic>();
             List<string> flattenedArgs = new List<string>();
             List<string> scriptArgs = IsScriptRunner ? new List<string>() : null;
-            FlattenArgs(args, diagnostics, flattenedArgs, scriptArgs, baseDirectory);
+            List<string> responsePaths = IsScriptRunner ? new List<string>() : null;
+            FlattenArgs(args, diagnostics, flattenedArgs, scriptArgs, baseDirectory, responsePaths);
 
             string appConfigPath = null;
             bool displayLogo = true;
             bool displayHelp = false;
+            bool displayVersion = false;
             bool optimize = false;
             bool checkOverflow = false;
             bool allowUnsafe = false;
@@ -60,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DebugInformationFormat debugInformationFormat = DebugInformationFormat.Pdb;
             bool debugPlus = false;
             string pdbPath = null;
-            bool noStdLib = false;
+            bool noStdLib = IsScriptRunner; // don't add mscorlib from sdk dir when running scripts
             string outputDirectory = baseDirectory;
             ImmutableArray<KeyValuePair<string, string>> pathMap = ImmutableArray<KeyValuePair<string, string>>.Empty;
             string outputFileName = null;
@@ -70,7 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool utf8output = false;
             OutputKind outputKind = OutputKind.ConsoleApplication;
             SubsystemVersion subsystemVersion = SubsystemVersion.None;
-            LanguageVersion languageVersion = CSharpParseOptions.Default.LanguageVersion;
+            LanguageVersion languageVersion = LanguageVersion.Default;
             string mainTypeName = null;
             string win32ManifestFile = null;
             string win32ResourceFile = null;
@@ -85,7 +88,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             List<ResourceDescription> managedResources = new List<ResourceDescription>();
             List<CommandLineSourceFile> sourceFiles = new List<CommandLineSourceFile>();
             List<CommandLineSourceFile> additionalFiles = new List<CommandLineSourceFile>();
+            List<CommandLineSourceFile> embeddedFiles = new List<CommandLineSourceFile>();
             bool sourceFilesSpecified = false;
+            bool embedAllSourceFiles = false;
             bool resourcesOrModulesSpecified = false;
             Encoding codepage = null;
             var checksumAlgorithm = SourceHashAlgorithm.Sha1;
@@ -109,11 +114,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             string runtimeMetadataVersion = null;
             bool errorEndLocation = false;
             bool reportAnalyzer = false;
+            ArrayBuilder<InstrumentationKind> instrumentationKinds = ArrayBuilder<InstrumentationKind>.GetInstance();
             CultureInfo preferredUILang = null;
             string touchedFilesPath = null;
-            var sqmSessionGuid = Guid.Empty;
             bool optionsEnded = false;
             bool interactiveMode = false;
+            bool publicSign = false;
+            string sourceLink = null;
             #if XSHARP
             this.ResetXSharpCommandlineOptions();
             #endif
@@ -165,6 +172,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case "?":
                     case "help":
                         displayHelp = true;
+                        continue;
+
+                    case "version":
+                        displayVersion = true;
                         continue;
 
                     case "r":
@@ -255,6 +266,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             continue;
 
                         case "codepage":
+                            value = RemoveQuotesAndSlashes(value);
                             if (value == null)
                             {
                                 AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, "<text>", name);
@@ -305,17 +317,39 @@ namespace Microsoft.CodeAnalysis.CSharp
                             checkOverflow = false;
                             continue;
 
+                        case "instrument":
+                            value = RemoveQuotesAndSlashes(value);
+                            if (string.IsNullOrEmpty(value))
+                            {
+                                AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, "<text>", name);
+                            }
+                            else
+                            {
+                                foreach (InstrumentationKind instrumentationKind in ParseInstrumentationKinds(value, diagnostics))
+                                {
+                                    if (!instrumentationKinds.Contains(instrumentationKind))
+                                    {
+                                        instrumentationKinds.Add(instrumentationKind);
+                                    }
+                                }
+                            }
+
+                            continue;
+
                         case "noconfig":
                             // It is already handled (see CommonCommandLineCompiler.cs).
                             continue;
 
                         case "sqmsessionguid":
+                            // The use of SQM is deprecated in the compiler but we still support the parsing of the option for
+                            // back compat reasons.
                             if (value == null)
                             {
                                 AddDiagnostic(diagnostics, ErrorCode.ERR_MissingGuidForOption, "<text>", name);
                             }
                             else
                             {
+                                Guid sqmSessionGuid;
                                 if (!Guid.TryParse(value, out sqmSessionGuid))
                                 {
                                     AddDiagnostic(diagnostics, ErrorCode.ERR_InvalidFormatForGuidForOption, value, name);
@@ -415,6 +449,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             continue;
 
                         case "platform":
+                            value = RemoveQuotesAndSlashes(value);
                             if (string.IsNullOrEmpty(value))
                             {
                                 AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, "<string>", arg);
@@ -541,10 +576,23 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             continue;
 
+                        case "sourcelink":
+                            value = RemoveQuotesAndSlashes(value);
+                            if (string.IsNullOrEmpty(value))
+                            {
+                                AddDiagnostic(diagnostics, ErrorCode.ERR_NoFileSpec, arg);
+                            }
+                            else
+                            {
+                                sourceLink = ParseGenericPathToFile(value, diagnostics, baseDirectory);
+                            }
+                            continue;
+
                         case "debug":
                             emitPdb = true;
 
                             // unused, parsed for backward compat only
+                            value = RemoveQuotesAndSlashes(value);
                             if (value != null)
                             {
                                 if (value.IsEmpty())
@@ -552,10 +600,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), name);
                                     continue;
                                 }
-                                switch (value.ToLower()) {
+                                switch (value.ToLower())
+                                {
                                     case "full":
                                     case "pdbonly":
-                                        debugInformationFormat = DebugInformationFormat.Pdb;
+                                        debugInformationFormat = PathUtilities.IsUnixLikePlatform ? DebugInformationFormat.PortablePdb : DebugInformationFormat.Pdb;
                                         break;
                                     case "portable":
                                         debugInformationFormat = DebugInformationFormat.PortablePdb;
@@ -701,6 +750,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         case "w":
                         case "warn":
+                            value = RemoveQuotesAndSlashes(value);
                             if (value == null)
                             {
                                 AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsNumber, name);
@@ -756,11 +806,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                             continue;
 
                         case "langversion":
+                            value = RemoveQuotesAndSlashes(value);
                             if (string.IsNullOrEmpty(value))
                             {
                                 AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), "/langversion:");
                             }
-                            else if (!TryParseLanguageVersion(value, CSharpParseOptions.Default.LanguageVersion, out languageVersion))
+                            else if (!TryParseLanguageVersion(value, out languageVersion))
                             {
                                 AddDiagnostic(diagnostics, ErrorCode.ERR_BadCompatMode, value);
                             }
@@ -783,6 +834,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
 
                             delaySignSetting = false;
+                            continue;
+
+                        case "publicsign":
+                        case "publicsign+":
+                            if (value != null)
+                            {
+                                break;
+                            }
+
+                            publicSign = true;
+                            continue;
+
+                        case "publicsign-":
+                            if (value != null)
+                            {
+                                break;
+                            }
+
+                            publicSign = false;
                             continue;
 
                         case "keyfile":
@@ -965,6 +1035,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             continue;
 
                         case "pdb":
+                            value = RemoveQuotesAndSlashes(value);
                             if (string.IsNullOrEmpty(value))
                             {
                                 AddDiagnostic(diagnostics, ErrorCode.ERR_NoFileSpec, arg);
@@ -1047,7 +1118,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 continue;
                             }
 
-                            additionalFiles.AddRange(ParseAdditionalFileArgument(value, baseDirectory, diagnostics));
+                            additionalFiles.AddRange(ParseSeparatedFileArgument(value, baseDirectory, diagnostics));
+                            continue;
+
+                        case "embed":
+                            if (string.IsNullOrEmpty(value))
+                            {
+                                embedAllSourceFiles = true;
+                                continue;
+                            }
+                            
+                            embeddedFiles.AddRange(ParseSeparatedFileArgument(value, baseDirectory, diagnostics));
                             continue;
                     }
                 }
@@ -1091,7 +1172,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ParseAndResolveReferencePaths(null, additionalReferenceDirectories, baseDirectory, libPaths, MessageID.IDS_LIB_ENV, diagnostics);
             }
 
-            ImmutableArray<string> referencePaths = BuildSearchPaths(sdkDirectory, libPaths);
+            ImmutableArray<string> referencePaths = BuildSearchPaths(sdkDirectory, libPaths, responsePaths);
 
             ValidateWin32Settings(win32ResourceFile, win32IconFile, win32ManifestFile, outputKind, diagnostics);
 #if XSHARP
@@ -1105,7 +1186,36 @@ namespace Microsoft.CodeAnalysis.CSharp
                 keyFileSearchPaths.Add(outputDirectory);
             }
 
-            var parsedFeatures = CompilerOptionParseUtilities.ParseFeatures(features);
+            // Public sign doesn't use the legacy search path settings
+            if (publicSign && !string.IsNullOrWhiteSpace(keyFileSetting))
+            {
+                keyFileSetting = ParseGenericPathToFile(keyFileSetting, diagnostics, baseDirectory);
+            }
+
+            if (sourceLink != null)
+            {
+                if (!emitPdb || !debugInformationFormat.IsPortable())
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_SourceLinkRequiresPortablePdb);
+                }
+            }
+            
+            if (embedAllSourceFiles)
+            {
+                embeddedFiles.AddRange(sourceFiles);
+            }
+
+            if (embeddedFiles.Count > 0)
+            {
+                // Restricted to portable PDBs for now, but the IsPortable condition should be removed
+                // and the error message adjusted accordingly when native PDB support is added.
+                if (!emitPdb || !debugInformationFormat.IsPortable())
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CannotEmbedWithoutPdb);
+                }
+            }
+
+            var parsedFeatures = ParseFeatures(features);
 
             string compilationName;
             GetCompilationAndModuleNames(diagnostics, outputKind, sourceFiles, sourceFilesSpecified, moduleAssemblyName, ref outputFileName, ref moduleName, out compilationName);
@@ -1144,7 +1254,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 generalDiagnosticOption: generalDiagnosticOption,
                 warningLevel: warningLevel,
                 specificDiagnosticOptions: diagnosticOptions,
-                reportSuppressedDiagnostics: reportSuppressedDiagnostics
+                reportSuppressedDiagnostics: reportSuppressedDiagnostics,
+                publicSign: publicSign
             );
 
             if (debugPlus)
@@ -1162,7 +1273,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 highEntropyVirtualAddressSpace: highEntropyVA,
                 fileAlignment: fileAlignment,
                 subsystemVersion: subsystemVersion,
-                runtimeMetadataVersion: runtimeMetadataVersion
+                runtimeMetadataVersion: runtimeMetadataVersion,
+                instrumentationKinds: instrumentationKinds.ToImmutableAndFree()
             );
 
             // add option incompatibility errors if any
@@ -1187,6 +1299,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 OutputFileName = outputFileName,
                 PdbPath = pdbPath,
                 EmitPdb = emitPdb,
+                SourceLink = sourceLink,
                 OutputDirectory = outputDirectory,
                 DocumentationPath = documentationPath,
                 ErrorLogPath = errorLogPath,
@@ -1206,6 +1319,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 NoWin32Manifest = noWin32Manifest,
                 DisplayLogo = displayLogo,
                 DisplayHelp = displayHelp,
+                DisplayVersion = displayVersion,
                 ManifestResources = managedResources.AsImmutable(),
                 CompilationOptions = options,
                 ParseOptions = IsScriptRunner ? scriptParseOptions : parseOptions,
@@ -1215,8 +1329,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 PrintFullPaths = printFullPaths,
                 ShouldIncludeErrorEndLocation = errorEndLocation,
                 PreferredUILang = preferredUILang,
-                SqmSessionGuid = sqmSessionGuid,
-                ReportAnalyzer = reportAnalyzer
+                ReportAnalyzer = reportAnalyzer,
+                EmbeddedFiles = embeddedFiles.AsImmutable()
             };
 #if XSHARP
             parseOptions.SetOptions(cla);
@@ -1242,7 +1356,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     AddDiagnostic(diagnostics, ErrorCode.WRN_InvalidSearchPathDir, path, origin.Localize(), MessageID.IDS_DirectoryHasInvalidPath.Localize());
                 }
-                else if (!PortableShim.Directory.Exists(resolvedPath))
+                else if (!Directory.Exists(resolvedPath))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.WRN_InvalidSearchPathDir, path, origin.Localize(), MessageID.IDS_DirectoryDoesNotExist.Localize());
                 }
@@ -1346,7 +1460,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        private static ImmutableArray<string> BuildSearchPaths(string sdkDirectoryOpt, List<string> libPaths)
+        private ImmutableArray<string> BuildSearchPaths(string sdkDirectoryOpt, List<string> libPaths, List<string> responsePathsOpt)
         {
             var builder = ArrayBuilder<string>.GetInstance();
 
@@ -1363,6 +1477,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // libpath
             builder.AddRange(libPaths);
+
+            // csi adds paths of the response file(s) to the search paths, so that we can initialize the script environment
+            // with references relative to csi.exe (e.g. System.ValueTuple.dll).
+            if (responsePathsOpt != null)
+            {
+                Debug.Assert(IsScriptRunner);
+                builder.AddRange(responsePathsOpt);
+            }
 
             return builder.ToImmutableAndFree();
         }
@@ -1465,7 +1587,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        private IEnumerable<CommandLineAnalyzerReference> ParseAnalyzers(string arg, string value, List<Diagnostic> diagnostics)
+        private static IEnumerable<CommandLineAnalyzerReference> ParseAnalyzers(string arg, string value, List<Diagnostic> diagnostics)
         {
             if (value == null)
             {
@@ -1486,7 +1608,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        private IEnumerable<CommandLineReference> ParseAssemblyReferences(string arg, string value, IList<Diagnostic> diagnostics, bool embedInteropTypes)
+        private static IEnumerable<CommandLineReference> ParseAssemblyReferences(string arg, string value, IList<Diagnostic> diagnostics, bool embedInteropTypes)
         {
             if (value == null)
             {
@@ -1577,6 +1699,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+        private static IEnumerable<InstrumentationKind> ParseInstrumentationKinds(string value, IList<Diagnostic> diagnostics)
+        {
+            string[] kinds = value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var kind in kinds)
+            {
+                switch (kind.ToLower())
+                {
+                    case "testcoverage":
+                        yield return InstrumentationKind.TestCoverage;
+                        break;
+
+                    default:
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_InvalidInstrumentationKind, kind);
+                        break;
+                }
+            }
+        }
+
         internal static ResourceDescription ParseResourceDescription(
             string arg,
             string resourceDescriptor,
@@ -1637,16 +1777,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                                             {
                                                 // Use FileShare.ReadWrite because the file could be opened by the current process.
                                                 // For example, it is an XML doc file produced by the build.
-                                                return PortableShim.FileStream.Create(fullPath, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite);
+                                                return new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                                             };
             return new ResourceDescription(resourceName, fileName, dataProvider, isPublic, embedded, checkArgs: false);
         }
 
-        private static bool TryParseLanguageVersion(string str, LanguageVersion defaultVersion, out LanguageVersion version)
+        private static bool TryParseLanguageVersion(string str, out LanguageVersion version)
         {
             if (str == null)
             {
-                version = defaultVersion;
+                version = LanguageVersion.Default;
                 return true;
             }
 
@@ -1660,18 +1800,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                     version = LanguageVersion.CSharp2;
                     return true;
 
+                case "7":
+                    version = LanguageVersion.CSharp7;
+                    return true;
+
                 case "default":
-                    version = defaultVersion;
+                    version = LanguageVersion.Default;
+                    return true;
+
+                case "latest":
+                    version = LanguageVersion.Latest;
                     return true;
 
                 default:
+                    // We are likely to introduce minor version numbers after C# 7, thus breaking the
+                    // one-to-one correspondence between the integers and the corresponding
+                    // LanguageVersion enum values. But for compatibility we continue to accept any
+                    // integral value parsed by int.TryParse for its corresponding LanguageVersion enum
+                    // value for language version C# 6 and earlier (e.g. leading zeros are allowed)
                     int versionNumber;
-                    if (int.TryParse(str, NumberStyles.None, CultureInfo.InvariantCulture, out versionNumber) && ((LanguageVersion)versionNumber).IsValid())
+                    if (int.TryParse(str, NumberStyles.None, CultureInfo.InvariantCulture, out versionNumber) &&
+                        versionNumber <= 6 &&
+                        ((LanguageVersion)versionNumber).IsValid())
                     {
                         version = (LanguageVersion)versionNumber;
                         return true;
                     }
-                    version = defaultVersion;
+
+                    version = LanguageVersion.Default;
                     return false;
             }
         }
@@ -1721,11 +1877,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         private static void UnimplementedSwitch(IList<Diagnostic> diagnostics, string switchName)
         {
             AddDiagnostic(diagnostics, ErrorCode.WRN_UnimplementedCommandLineSwitch, "/" + switchName);
-        }
-
-        private static void UnimplementedSwitchValue(IList<Diagnostic> diagnostics, string switchName, string value)
-        {
-            AddDiagnostic(diagnostics, ErrorCode.WRN_UnimplementedCommandLineSwitch, "/" + switchName + ":" + value);
         }
 
         internal override void GenerateErrorForNoFilesFoundInRecurse(string path, IList<Diagnostic> diagnostics)

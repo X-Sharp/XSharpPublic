@@ -1,9 +1,9 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using Microsoft.CodeAnalysis.CodeGeneration;
-using Microsoft.CodeAnalysis.CSharp.CodeRefactorings.GenerateDefaultConstructors;
-using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
-using Microsoft.CodeAnalysis.Text;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CodeRefactorings;
+using Microsoft.CodeAnalysis.CodeRefactorings.GenerateDefaultConstructors;
+using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
 
@@ -11,137 +11,568 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.CodeRefactorings.Genera
 {
     public class GenerateDefaultConstructorsTests : AbstractCSharpCodeActionTest
     {
-        protected override object CreateCodeRefactoringProvider(Workspace workspace)
+        protected override CodeRefactoringProvider CreateCodeRefactoringProvider(Workspace workspace)
         {
             return new GenerateDefaultConstructorsCodeRefactoringProvider();
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestProtectedBase()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestProtectedBase()
         {
-            Test(
-@"class C : [||]B { } class B { protected B(int x) { } }",
-@"class C : B { protected C(int x) : base(x) { } } class B { protected B(int x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    protected B(int x)
+    {
+    }
+}",
+@"class C : B
+{
+    protected C(int x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    protected B(int x)
+    {
+    }
+}",
 index: 0);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestPublicBase()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestPublicBase()
         {
-            Test(
-@"class C : [||]B { } class B { public B(int x) { } }",
-@"class C : B { public C(int x) : base(x) { } } class B { public B(int x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    public B(int x)
+    {
+    }
+}",
+@"class C : B
+{
+    public C(int x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    public B(int x)
+    {
+    }
+}",
 index: 0);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestInternalBase()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestInternalBase()
         {
-            Test(
-@"class C : [||]B { } class B { internal B(int x) { } }",
-@"class C : B { internal C(int x) : base(x) { } } class B { internal B(int x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+}",
+@"class C : B
+{
+    internal C(int x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+}",
 index: 0);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestPrivateBase()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestPrivateBase()
         {
-            TestMissing(
-@"class C : [||]B { } class B { private B(int x) { } }");
+            await TestMissingAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    private B(int x)
+    {
+    }
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestRefOutParams()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestRefOutParams()
         {
-            Test(
-@"class C : [||]B { } class B { internal B(ref int x, out string s, params bool[] b) { } }",
-@"class C : B { internal C(ref int x, out string s, params bool[] b) : base(ref x, out s, b) { } } class B { internal B(ref int x, out string s, params bool[] b) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    internal B(ref int x, out string s, params bool[] b)
+    {
+    }
+}",
+@"class C : B
+{
+    internal C(ref int x, out string s, params bool[] b) : base(ref x, out s, b)
+    {
+    }
+}
+
+class B
+{
+    internal B(ref int x, out string s, params bool[] b)
+    {
+    }
+}",
 index: 0);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestFix1()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestFix1()
         {
-            Test(
-@"class C : [||]B { } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
-@"class C : B { internal C(int x) : base(x) { } } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
+@"class C : B
+{
+    internal C(int x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
 index: 0);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestFix2()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestFix2()
         {
-            Test(
-@"class C : [||]B { } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
-@"class C : B { protected C(string x) : base(x) { } } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
+@"class C : B
+{
+    protected C(string x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
 index: 1);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestRefactoring1()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestRefactoring1()
         {
-            Test(
-@"class C : [||]B { } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
-@"class C : B { public C(bool x) : base(x) { } } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
+@"class C : B
+{
+    public C(bool x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
 index: 2);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestFixAll1()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestFixAll1()
         {
-            Test(
-@"class C : [||]B { } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
-@"class C : B { public C(bool x) : base(x) { } protected C(string x) : base(x) { } internal C(int x) : base(x) { } } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
+@"class C : B
+{
+    public C(bool x) : base(x)
+    {
+    }
+
+    protected C(string x) : base(x)
+    {
+    }
+
+    internal C(int x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
 index: 3);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestFixAll2()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestFixAll2()
         {
-            Test(
-@"class C : [||]B { public C(bool x) { } } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
-@"class C : B { public C(bool x) { } protected C(string x) : base(x) { } internal C(int x) : base(x) { } } class B { internal B(int x) { } protected B(string x) { } public B(bool x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+    public C(bool x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
+@"class C : B
+{
+    public C(bool x)
+    {
+    }
+
+    protected C(string x) : base(x)
+    {
+    }
+
+    internal C(int x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+
+    protected B(string x)
+    {
+    }
+
+    public B(bool x)
+    {
+    }
+}",
 index: 2);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestMissing1()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestFixAll_WithTuples()
         {
-            TestMissing(
-@"class C : [||]B { public C(int x) { } } class B { internal B(int x) { } }");
+            await TestAsync(
+@"class C : [||]B
+{
+    public C((bool, bool) x)
+    {
+    }
+}
+
+class B
+{
+    internal B((int, int) x)
+    {
+    }
+
+    protected B((string, string) x)
+    {
+    }
+
+    public B((bool, bool) x)
+    {
+    }
+}",
+@"class C : B
+{
+    public C((bool, bool) x)
+    {
+    }
+
+    protected C((string, string) x) : base(x)
+    {
+    }
+
+    internal C((int, int) x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    internal B((int, int) x)
+    {
+    }
+
+    protected B((string, string) x)
+    {
+    }
+
+    public B((bool, bool) x)
+    {
+    }
+}",
+index: 2);
         }
 
-        [WorkItem(889349)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestDefaultConstructorGeneration_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestMissing1()
         {
-            Test(
-@"class C : [||]B { public C(int y) { } } class B { internal B(int x) { } }",
-@"class C : B { public C(int y) { } internal C(int x) : base(x) { } } class B { internal B(int x) { } }");
+            await TestMissingAsync(
+@"class C : [||]B
+{
+    public C(int x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+}");
         }
 
-        [WorkItem(889349)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestDefaultConstructorGeneration_2()
+        [WorkItem(889349, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/889349")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestDefaultConstructorGeneration_1()
         {
-            Test(
-@"class C : [||]B { private C(int y) { } } class B { internal B(int x) { } }",
-@"class C : B { internal C(int x) : base(x) { } private C(int y) { } } class B { internal B(int x) { } }");
+            await TestAsync(
+@"class C : [||]B
+{
+    public C(int y)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+}",
+@"class C : B
+{
+    public C(int y)
+    {
+    }
+
+    internal C(int x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestFixCount1()
+        [WorkItem(889349, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/889349")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestDefaultConstructorGeneration_2()
         {
-            TestActionCount(
-@"class C : [||]B { } class B { public B(int x) { } }",
+            await TestAsync(
+@"class C : [||]B
+{
+    private C(int y)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+}",
+@"class C : B
+{
+    internal C(int x) : base(x)
+    {
+    }
+
+    private C(int y)
+    {
+    }
+}
+
+class B
+{
+    internal B(int x)
+    {
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestFixCount1()
+        {
+            await TestActionCountAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    public B(int x)
+    {
+    }
+}",
 count: 1);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        [WorkItem(544070)]
-        public void TestException1()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        [WorkItem(544070, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544070")]
+        public async Task TestException1()
         {
-            Test(
+            await TestAsync(
 @"using System;
 class Program : Excep[||]tion
 {
@@ -171,31 +602,226 @@ index: 3,
 compareTokens: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestException2()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestException2()
         {
-            Test(
-@"using System ; using System . Collections . Generic ; using System . Linq ; class Program : [||]Exception { public Program ( ) { } static void Main ( string [ ] args ) { } } ",
-@"using System ; using System . Collections . Generic ; using System . Linq ; using System . Runtime . Serialization; class Program : Exception { public Program ( ) { } public Program ( string message ) : base ( message ) { } public Program ( string message , Exception innerException ) : base ( message , innerException ) { } protected Program (SerializationInfo info , StreamingContext context ) : base ( info , context ) { } static void Main ( string [ ] args ) { } } ",
+            await TestAsync(
+@"using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program : [||]Exception
+{
+    public Program()
+    {
+    }
+
+    static void Main(string[] args)
+    {
+    }
+}",
+@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+
+class Program : Exception
+{
+    public Program()
+    {
+    }
+
+    public Program(string message) : base(message)
+    {
+    }
+
+    public Program(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    protected Program(SerializationInfo info, StreamingContext context) : base(info, context)
+    {
+    }
+
+    static void Main(string[] args)
+    {
+    }
+}",
 index: 3);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestException3()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestException3()
         {
-            Test(
-@"using System ; using System . Collections . Generic ; using System . Linq ; class Program : [||]Exception { public Program ( string message ) : base ( message ) { } public Program ( string message , Exception innerException ) : base ( message , innerException ) { } protected Program ( System . Runtime . Serialization . SerializationInfo info , System . Runtime . Serialization . StreamingContext context ) : base ( info , context ) { } static void Main ( string [ ] args ) { } } ",
-@"using System ; using System . Collections . Generic ; using System . Linq ; class Program : Exception { public Program ( ) { } public Program ( string message ) : base ( message ) { } public Program ( string message , Exception innerException ) : base ( message , innerException ) { } protected Program ( System . Runtime . Serialization . SerializationInfo info , System . Runtime . Serialization . StreamingContext context ) : base ( info , context ) { } static void Main ( string [ ] args ) { } } ",
+            await TestAsync(
+@"using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program : [||]Exception
+{
+    public Program(string message) : base(message)
+    {
+    }
+
+    public Program(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    protected Program(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
+    {
+    }
+
+    static void Main(string[] args)
+    {
+    }
+}",
+@"using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program : Exception
+{
+    public Program()
+    {
+    }
+
+    public Program(string message) : base(message)
+    {
+    }
+
+    public Program(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    protected Program(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
+    {
+    }
+
+    static void Main(string[] args)
+    {
+    }
+}",
 index: 0);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
-        public void TestException4()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors)]
+        public async Task TestException4()
         {
-            Test(
-@"using System ; using System . Collections . Generic ; using System . Linq ; class Program : [||]Exception { public Program ( string message , Exception innerException ) : base ( message , innerException ) { } protected Program ( System . Runtime . Serialization . SerializationInfo info , System . Runtime . Serialization . StreamingContext context ) : base ( info , context ) { } static void Main ( string [ ] args ) { } } ",
-@"using System ; using System . Collections . Generic ; using System . Linq ; class Program : Exception { public Program ( ) { } public Program ( ) { } public Program ( string message ) : base ( message ) { } public Program ( string message , Exception innerException ) : base ( message , innerException ) { } protected Program ( System . Runtime . Serialization . SerializationInfo info , System . Runtime . Serialization . StreamingContext context ) : base ( info , context ) { } static void Main ( string [ ] args ) { } } ",
+            await TestAsync(
+@"using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program : [||]Exception
+{
+    public Program(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    protected Program(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
+    {
+    }
+
+    static void Main(string[] args)
+    {
+    }
+}",
+@"using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program : Exception
+{
+    public Program()
+    {
+    }
+
+    public Program()
+    {
+    }
+
+    public Program(string message) : base(message)
+    {
+    }
+
+    public Program(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    protected Program(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
+    {
+    }
+
+    static void Main(string[] args)
+    {
+    }
+}",
 index: 2);
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors), Test.Utilities.CompilerTrait(Test.Utilities.CompilerFeature.Tuples)]
+        public async Task Tuple()
+        {
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    public B((int, string) x)
+    {
+    }
+}",
+@"class C : B
+{
+    public C((int, string) x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    public B((int, string) x)
+    {
+    }
+}",
+index: 0,
+parseOptions: TestOptions.Regular,
+withScriptOption: true);
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateDefaultConstructors), Test.Utilities.CompilerTrait(Test.Utilities.CompilerFeature.Tuples)]
+        public async Task TupleWithNames()
+        {
+            await TestAsync(
+@"class C : [||]B
+{
+}
+
+class B
+{
+    public B((int a, string b) x)
+    {
+    }
+}",
+@"class C : B
+{
+    public C((int a, string b) x) : base(x)
+    {
+    }
+}
+
+class B
+{
+    public B((int a, string b) x)
+    {
+    }
+}",
+index: 0,
+parseOptions: TestOptions.Regular,
+withScriptOption: true);
         }
     }
 }

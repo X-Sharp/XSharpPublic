@@ -1,11 +1,9 @@
 ﻿{
-  "dependencies": {
-    "System.Collections.Immutable": "1.1.37"
-  },
+  "dependencies": { },
   "frameworks": {
-    "net452": {}
+    "net46": {}
   },
   "runtimes": {
-    "win7-anycpu": {}
+    "win7": {}
   }
 }

@@ -676,7 +676,7 @@ class C
                 );
         }
 
-        [Fact, WorkItem(1027568, "DevDiv"), WorkItem(528573, "DevDiv")]
+        [Fact, WorkItem(1027568, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1027568"), WorkItem(528573, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/528573")]
         public void MissingCompareExchange_02()
         {
             var source =
@@ -748,7 +748,7 @@ class C
 ");
         }
 
-        [Fact, WorkItem(1027568, "DevDiv"), WorkItem(528573, "DevDiv")]
+        [Fact, WorkItem(1027568, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1027568"), WorkItem(528573, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/528573")]
         public void MissingCompareExchange_03()
         {
             var source =
@@ -816,6 +816,44 @@ struct C
   IL_000d:  castclass  ""E1""
   IL_0012:  stfld      ""E1 C.e""
   IL_0017:  ret
+}
+");
+        }
+
+        [Fact, WorkItem(14438, "https://github.com/dotnet/roslyn/issues/14438")]
+        [CompilerTrait(CompilerFeature.ExpressionBody)]
+        public void ExpressionBodedEvent()
+        {
+            var source = @"
+class C
+{
+    public int x;
+    public event System.Action E
+    {
+        add => x = 1;
+        remove => x = 0;
+    }
+}";
+            var compilation = CreateCompilationWithMscorlib(source, options: TestOptions.DebugDll);
+            var verifier = CompileAndVerify(compilation);
+            verifier.VerifyIL("C.E.add", @"
+{
+  // Code size        8 (0x8)
+  .maxstack  2
+  IL_0000:  ldarg.0
+  IL_0001:  ldc.i4.1
+  IL_0002:  stfld      ""int C.x""
+  IL_0007:  ret
+}
+");
+            verifier.VerifyIL("C.E.remove", @"
+{
+  // Code size        8 (0x8)
+  .maxstack  2
+  IL_0000:  ldarg.0
+  IL_0001:  ldc.i4.0
+  IL_0002:  stfld      ""int C.x""
+  IL_0007:  ret
 }
 ");
         }

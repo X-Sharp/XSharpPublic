@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-#pragma warning disable 436 // The type 'RelativePathResolver' comflicts with imported type
+#pragma warning disable 436 // The type 'RelativePathResolver' conflicts with imported type
 
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using Roslyn.Utilities;
+using System.IO;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -45,10 +46,10 @@ namespace Microsoft.CodeAnalysis
         {
             Debug.Assert(fullPath != null);
             Debug.Assert(PathUtilities.IsAbsolute(fullPath));
-            return PortableShim.File.Exists(fullPath);
+            return File.Exists(fullPath);
         }
 
-        public RelativePathResolver WithSearchPaths(ImmutableArray<string> searchPaths) => 
+        public RelativePathResolver WithSearchPaths(ImmutableArray<string> searchPaths) =>
             new RelativePathResolver(searchPaths, BaseDirectory);
 
         public RelativePathResolver WithBaseDirectory(string baseDirectory) =>

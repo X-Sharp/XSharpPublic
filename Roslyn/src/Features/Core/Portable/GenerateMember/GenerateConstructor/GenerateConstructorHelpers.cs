@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.LanguageServices;
@@ -29,7 +28,7 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateConstructor
                 //
                 // Note: if we get either of these cases, we ensure that we can at least convert 
                 // the parameter types we have to the constructor parameter types.  This way we
-                // don't accidently think we delegate to a constructor in an abstract base class
+                // don't accidentally think we delegate to a constructor in an abstract base class
                 // when the parameter types don't match.
                 if (symbolInfo.CandidateReason == CandidateReason.Inaccessible ||
                     (symbolInfo.CandidateReason == CandidateReason.NotCreatable && containingType.IsAbstract))
@@ -57,7 +56,7 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateConstructor
                 return false;
             }
 
-            if (parameterTypes.Count < method.Parameters.Length)
+            if (parameterTypes.Count != method.Parameters.Length)
             {
                 return false;
             }

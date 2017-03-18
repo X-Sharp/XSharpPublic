@@ -3,6 +3,7 @@
 // References\Debugger\v2.0\Microsoft.VisualStudio.Debugger.Engine.dll
 
 #endregion
+
 using Microsoft.CodeAnalysis.ExpressionEvaluator;
 using Microsoft.VisualStudio.Debugger.Symbols;
 using System;
@@ -36,6 +37,8 @@ namespace Microsoft.VisualStudio.Debugger.Clr
         {
             get { return _runtimeInstance; }
         }
+
+        public DkmProcess Process => _runtimeInstance.Process;
 
         public DkmClrType ResolveTypeName(string typeName, ReadOnlyCollection<DkmClrType> typeArguments)
         {

@@ -18,20 +18,20 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeFixes.GenerateEnumMember
     [ExtensionOrder(After = PredefinedCodeFixProviderNames.GenerateConstructor)]
     internal class GenerateEnumMemberCodeFixProvider : AbstractGenerateMemberCodeFixProvider
     {
-        private const string CS0117 = "CS0117"; // error CS0117: 'Color' does not contain a definition for 'Red'
+        private const string CS0117 = nameof(CS0117); // error CS0117: 'Color' does not contain a definition for 'Red'
 
         public override ImmutableArray<string> FixableDiagnosticIds
         {
             get { return ImmutableArray.Create(CS0117); }
         }
 
-        protected override Task<IEnumerable<CodeAction>> GetCodeActionsAsync(Document document, SyntaxNode node, CancellationToken cancellationToken)
+        protected override Task<ImmutableArray<CodeAction>> GetCodeActionsAsync(Document document, SyntaxNode node, CancellationToken cancellationToken)
         {
             var service = document.GetLanguageService<IGenerateEnumMemberService>();
             return service.GenerateEnumMemberAsync(document, node, cancellationToken);
         }
 
-        protected override bool IsCandidate(SyntaxNode node)
+        protected override bool IsCandidate(SyntaxNode node, SyntaxToken token, Diagnostic diagnostic)
         {
             return node is IdentifierNameSyntax;
         }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.CodeFixes.HideBase;
@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using System;
 using Xunit;
 using Roslyn.Test.Utilities;
+using System.Threading.Tasks;
 
 namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Diagnostics.HideBase
 {
@@ -17,13 +18,14 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Diagnostics.HideBase
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddNew)]
-        public void TestAddNewToProperty()
+        public async Task TestAddNewToProperty()
         {
-            Test(
+            await TestAsync(
 @"class Application
 {
     public static Application Current { get; }
 }
+
 class App : Application
 {
     [|public static App Current|] { get; set; }
@@ -32,6 +34,7 @@ class App : Application
 {
     public static Application Current { get; }
 }
+
 class App : Application
 {
     public static new App Current { get; set; }
@@ -39,15 +42,16 @@ class App : Application
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddNew)]
-        public void TestAddNewToMethod()
+        public async Task TestAddNewToMethod()
         {
-            Test(
+            await TestAsync(
 @"class Application
 {
     public static void Method()
     {
     }
 }
+
 class App : Application
 {
     [|public static void Method()
@@ -60,6 +64,7 @@ class App : Application
     {
     }
 }
+
 class App : Application
 {
     public static new void Method()
@@ -68,14 +73,15 @@ class App : Application
 }");
         }
 
-        [Fact,Trait(Traits.Feature,Traits.Features.CodeActionsAddNew)]
-        public void TestAddNewToMember()
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddNew)]
+        public async Task TestAddNewToMember()
         {
-            Test(
+            await TestAsync(
 @"class Application
 {
     public string Test;
 }
+
 class App : Application
 {
     [|public int Test;|]
@@ -84,6 +90,7 @@ class App : Application
 {
     public string Test;
 }
+
 class App : Application
 {
     public new int Test;

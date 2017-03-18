@@ -1,11 +1,10 @@
 {
-  "supports": {
-    "net46.app": {},
-    "dnxcore50.app": {}
+  "dependencies": {
+    "Microsoft.CSharp": "4.3.0",
+    "System.Dynamic.Runtime": "4.3.0"
   },
-  "dependencies": {},
   "frameworks": {
-    "dotnet": {
+    "netstandard1.3": {
       "imports": "portable-net452"
     }
   }

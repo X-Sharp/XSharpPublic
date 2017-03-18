@@ -291,13 +291,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Utilities
         public static bool AreTwoTokensOnSameLine(SyntaxToken token1, SyntaxToken token2)
         {
             var tree = token1.SyntaxTree;
-            var text = default(SourceText);
-            if (tree != null && tree.TryGetText(out text))
+            if (tree != null && tree.TryGetText(out var text))
             {
-                var line1 = text.Lines.IndexOf(token1.Span.End);
-                var line2 = text.Lines.IndexOf(token2.SpanStart);
-
-                return line1 == line2;
+                return text.AreOnSameLine(token1, token2);
             }
 
             return CommonFormattingHelpers.GetTextBetween(token1, token2).ContainsLineBreak();
@@ -356,12 +352,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Utilities
                 node.Kind() == SyntaxKind.WhileStatement ||
                 node.Kind() == SyntaxKind.ForStatement ||
                 node.Kind() == SyntaxKind.ForEachStatement ||
+                node.Kind() == SyntaxKind.ForEachVariableStatement ||
                 node.Kind() == SyntaxKind.UsingStatement ||
                 node.Kind() == SyntaxKind.DoStatement ||
                 node.Kind() == SyntaxKind.TryStatement ||
                 node.Kind() == SyntaxKind.CatchClause ||
                 node.Kind() == SyntaxKind.FinallyClause ||
-                node.Kind() == SyntaxKind.LabeledStatement;
+                node.Kind() == SyntaxKind.LabeledStatement ||
+                node.Kind() == SyntaxKind.LockStatement ||
+                node.Kind() == SyntaxKind.FixedStatement;
         }
 
         private static SyntaxNode GetTopContainingNode(SyntaxNode node)

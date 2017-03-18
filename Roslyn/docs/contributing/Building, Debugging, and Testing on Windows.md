@@ -1,7 +1,29 @@
 # Required Software
 
-1. [Visual Studio 2015 with Update 1](http://go.microsoft.com/fwlink/?LinkId=691129). _You need Update 1_.
-2. Visual Studio 2015 Extensibility Tools. If you already installed Visual Studio, choose "Modify" from the Programs and Features control panel, and check "Visual Studio Extensibility".
+1. [Visual Studio 2015 with Update 3](http://go.microsoft.com/fwlink/?LinkId=691129).
+2. Visual Studio 2015 Extensibility Tools.
+ 
+    If you already installed Visual Studio, the Extensibility Tools can be added as follows: 
+    - Open Control Panel -> Programs and Features
+    - Select the entry for your installation of Microsoft Visual Studio. Depending on your version, it may appear as follows:
+        - Microsoft Visual Studio Community 2015 with Update 3
+        - Microsoft Visual Studio Professional 2015
+        - Microsoft Visual Studio Enterprise 2015
+    - Press the 'Change' button
+    - In the resulting window, press the 'Modify' button
+    - Check the "Visual Studio Extensibility Tools Update 3" item and press the 'Next' button
+    - Press the 'Update' button
+3. Install the [RC insider VSIX](https://dotnet.myget.org/F/roslyn/vsix/eb2680f2-4e63-44a8-adf6-2e667d9f689c-2.0.0.6110410.vsix).
+
+  - If you need to uninstall this or another version of this VSIX, you must:
+    
+    - Close all instances of VS
+    -	delete %LocalAppdata%\Microsoft\VisualStudio\14.0\ (Note, this will delete all your extensions, not just the Roslyn VSIX)
+    - run `devenv /updateconfiguration` from a developer command prompt
+
+
+
+NOTE: You can also use a [Visual Studio "15" Preview](https://www.visualstudio.com/news/releasenotes/vs15-relnotes). The publicly available version of Visual Studio "15" Preview 4 is a work in progress, and as such, does not fully support developing against the Roslyn solution. If you use Preview 4 with the Roslyn solution, you will see issues that prevent the setup project from building and stop the setup VSIX from getting deployed to the RoslynDev hive even when the build does succeed. As such, we recommend remaining on Visual Studio "15" Preview 3 if you are developing against the Roslyn solution. 
 
 # Getting the Code
 
@@ -18,7 +40,7 @@ Tests cannot be run via Test Explorer due to some Visual Studio limitations.
 
 1. Run the "Developer Command Prompt for VS2015" from your start menu.
 2. Navigate to the directory of your Git clone.
-3. Run `msbuild /v:m /m BuildAndTest.proj` in the command prompt.
+3. Run `msbuild /v:m /m /nodereuse:false BuildAndTest.proj` in the command prompt.
 
 To debug through tests, you can right click the test project that contains your
 tests and choose **Set as Startup Project**. Then press F5. This will run the
@@ -45,7 +67,8 @@ you're working on a particular area, you probably want to set the appropriate
 project as your startup project to ensure the right things are built and
 deployed.
 
-- **VisualStudioSetup**: this project builds Roslyn.VisualStudio.Setup.vsix. It
+- **VisualStudioSetup**: this project can be found inside the VisualStudio folder
+  from the Solution Explorer, and builds Roslyn.VisualStudio.Setup.vsix. It
   contains the core language services that provide C# and VB editing. It also
   contains the copy of the compiler that is used to drive IntelliSense and
   semantic analysis in Visual Studio. Although this is the copy of the compiler
@@ -53,7 +76,8 @@ deployed.
   compiler used to actually produce your final .exe or .dll when you do a
   build. If you're working on fixing an IDE bug, this is the project you want
   to use.
-- **CompilerExtension**: this project builds Roslyn.Compilers.Extension.vsix.
+- **CompilerExtension**: this project can be found inside the Compilers folder
+  from the Solution Explorer, and builds Roslyn.Compilers.Extension.vsix.
   This deploys a copy of the command line compilers that are used to do actual
   builds in the IDE. It only affects builds triggered from the Visual Studio
   experimental instance it's installed into, so it won't affect your regular
@@ -62,19 +86,12 @@ deployed.
   language features, you may wish to consider building both the
   CompilerExtension and VisualStudioSetup projects to ensure the real build and
   live analysis are synchronized.
-- **ExpressionEvaluatorPackage**: this project builds ExpressionEvaluatorPackage.vsix.
-  This deploys the expression evaluator and
+- **ExpressionEvaluatorPackage**: this project can be found inside the
+  ExpressionEvaluator\Setup folder from the Solution Explorer, and builds
+  ExpressionEvaluatorPackage.vsix. This deploys the expression evaluator and
   result providers, the components that are used by the debugger to parse and
   evaluate C# and VB expressions in the Watch window, Immediate window, and
   more. These components are only used when debugging.
-- **VisualStudioInteractiveWindow**: this project builds Microsoft.VisualStudio.VsInteractiveWindow.vsix.
-  This includes the "base" interactive window experience that is shared by
-  Roslyn, Python, and other languages. This code is core support only and
-  doesn't include any language-specific logic.
-- **VisualStudioInteractiveSetup**: this project builds Roslyn.VisualStudio.Setup.Interactive.vsix.
-  It deploys the Roslyn (i.e. C# and VB) specific parts of the interactive
-  window. If you're working on the interactive experience, this is the project
-  you want to use as your startup project.
 
 The experimental instance used by Roslyn is an entirely separate instance of
 Visual Studio with it's own settings and installed extensions. It's also, by
@@ -91,6 +108,12 @@ Updates to indicate you're running your experimental version. You can uninstall
 your version and go back to the originally installed version by choosing your
 version and clicking Uninstall.
 
+If you made changes to a Roslyn compiler and want to build any projects with it, you can either
+use the Visual Studio hive where your **CompilerExtension** is installed, or from
+command line, run msbuild with `/p:BootstrapBuildPath=YourBootstrapBuildPath`.
+`YourBootstrapBuildPath` could be any directory on your machine so long as it had
+csc and vbc inside it. You can check the cibuild.cmd and see how it is used.
+
 # Contributing
 
-Please see [Contributing Code](https://github.com/dotnet/wiki/Contributing-Code) for details on contributing changes back to the code.
+Please see [Contributing Code](https://github.com/dotnet/roslyn/wiki/Contributing-Code) for details on contributing changes back to the code.

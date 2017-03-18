@@ -1,9 +1,9 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-Imports System.ComponentModel.Composition.Hosting
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.SignatureHelp
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
-Imports Microsoft.CodeAnalysis.Editor.VisualBasic.SignatureHelp
+Imports Microsoft.CodeAnalysis.SignatureHelp
+Imports Microsoft.CodeAnalysis.VisualBasic.SignatureHelp
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.SignatureHelp
     Public Class RaiseEventStatementSignatureHelpProviderTests
@@ -19,8 +19,8 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.SignatureHelp
 
 #Region "Regular tests"
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
-        Public Sub TestRaiseEvent()
+        <Fact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        Public Async Function TestRaiseEvent() As Task
             Dim markup = <a><![CDATA[
 Class C
     Event E(i As Integer, s As String)
@@ -35,11 +35,11 @@ End Class
                 New SignatureHelpTestItem("C.E(i As Integer, s As String)", String.Empty, String.Empty, currentParameterIndex:=0)
             }
 
-            Test(markup, expectedOrderedItems)
-        End Sub
+            Await TestAsync(markup, expectedOrderedItems)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
-        Public Sub TestRaiseEvent_NoDerivedEvents()
+        <Fact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        Public Async Function TestRaiseEvent_NoDerivedEvents() As Task
             Dim markup = <a><![CDATA[
 Class B
     Event E1(i As Integer, s As String)
@@ -58,12 +58,12 @@ End Class
 
             Dim expectedOrderedItems As New List(Of SignatureHelpTestItem)
 
-            Test(markup, expectedOrderedItems)
-        End Sub
+            Await TestAsync(markup, expectedOrderedItems)
+        End Function
 
-        <WorkItem(543558)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
-        Public Sub TestRaiseEvent_Shared()
+        <WorkItem(543558, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543558")>
+        <Fact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        Public Async Function TestRaiseEvent_Shared() As Task
             Dim markup = <a><![CDATA[
 Class C
     Shared Event E(i As Integer, s As String)
@@ -78,11 +78,11 @@ End Class
                 New SignatureHelpTestItem("C.E(i As Integer, s As String)", String.Empty, String.Empty, currentParameterIndex:=0)
             }
 
-            Test(markup, expectedOrderedItems)
-        End Sub
+            Await TestAsync(markup, expectedOrderedItems)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
-        Public Sub TestRaiseEvent_NoInstanceInSharedContext()
+        <Fact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        Public Async Function TestRaiseEvent_NoInstanceInSharedContext() As Task
             Dim markup = <a><![CDATA[
 Class C
     Event E(i As Integer, s As String)
@@ -95,8 +95,8 @@ End Class
 
             Dim expectedOrderedItems As New List(Of SignatureHelpTestItem)
 
-            Test(markup, expectedOrderedItems)
-        End Sub
+            Await TestAsync(markup, expectedOrderedItems)
+        End Function
 
 #End Region
 

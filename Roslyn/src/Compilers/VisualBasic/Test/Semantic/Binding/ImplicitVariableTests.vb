@@ -52,8 +52,8 @@ Hello, world
             compilation.VerifyDiagnostics()
         End Sub
 
-        <WorkItem(547017, "DevDiv")>
-        <WorkItem(547018, "DevDiv")>
+        <WorkItem(547017, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547017")>
+        <WorkItem(547018, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547018")>
         <Fact>
         Public Sub SimpleImplicitDeclaration2()
             Dim compilation = CompileAndVerify(
@@ -724,7 +724,7 @@ BC42104: Variable 'r' is used before it has been assigned a value. A null refere
 ]]></expected>)
         End Sub
 
-        <WorkItem(542455, "DevDiv")>
+        <WorkItem(542455, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542455")>
         <Fact>
         Public Sub VariableAcrossIfParts()
             CompilationUtils.CreateCompilationWithMscorlibAndVBRuntime(
@@ -751,7 +751,7 @@ End Module]]>
             Diagnostic(ERRID.WRN_DefAsgUseNullRef, "x").WithArguments("x"))
         End Sub
 
-        <WorkItem(542455, "DevDiv")>
+        <WorkItem(542455, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542455")>
         <Fact>
         Public Sub VariableAcrossIfParts2()
             CompilationUtils.CreateCompilationWithMscorlibAndVBRuntime(
@@ -779,7 +779,7 @@ End Module]]>
             Diagnostic(ERRID.WRN_DefAsgUseNullRef, "z").WithArguments("z"))
         End Sub
 
-        <WorkItem(542530, "DevDiv")>
+        <WorkItem(542530, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542530")>
         <Fact>
         Public Sub LambdaBindingOrder()
             Dim compilation = CompileAndVerify(
@@ -881,7 +881,7 @@ done
 
 #Region "BindExpression Tests"
 
-        <Fact(), WorkItem(546396, "DevDiv")>
+        <Fact(), WorkItem(546396, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546396")>
         Public Sub SpeculativeBindImplicitVariableAsLeftHandSideOfOfAssignment()
             VerifyImplicitDeclarationBindExpression(<![CDATA[
                 'BIND
@@ -891,7 +891,7 @@ done
             symbolKind:=SymbolKind.Local)
         End Sub
 
-        <Fact(), WorkItem(546396, "DevDiv")>
+        <Fact(), WorkItem(546396, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546396")>
         Public Sub SpeculativeBindImplicitVariableAsMethodArgument()
             VerifyImplicitDeclarationBindExpression(<![CDATA[
                 'BIND
@@ -991,7 +991,7 @@ done
             expected:={"x"})
         End Sub
 
-        <WorkItem(1036381, "DevDiv")>
+        <WorkItem(1036381, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1036381")>
         <Fact>
         Public Sub Bug1036381_01()
             Dim source =
@@ -1033,7 +1033,7 @@ End Module
             Assert.NotEqual(l1, l2)
         End Sub
 
-        <WorkItem(1036381, "DevDiv")>
+        <WorkItem(1036381, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1036381")>
         <Fact>
         Public Sub Bug1036381_02()
             Dim source =
@@ -1074,6 +1074,144 @@ End Module
             Assert.Equal(SymbolKind.Local, l1.Kind)
 
             Assert.NotEqual(l1, l2)
+        End Sub
+
+#End Region
+
+#Region "Tuples"
+
+        <WorkItem(14292, "https://github.com/dotnet/roslyn/issues/14292")>
+        <Fact>
+        Public Sub NotDeclaredTupleDeconstructionsAreConsideredObjects_ExplicitOff()
+            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
+            <compilation><file name="a.vb">
+Option Explicit Off
+Module TestModule
+    Sub Main()
+        Dim tuple = (member1, member2)
+        System.Console.WriteLine(tuple) 'BIND1:"tuple"
+    End Sub
+End Module
+            </file></compilation>,
+            additionalRefs:={ValueTupleRef, SystemRuntimeFacadeRef},
+            options:=New VisualBasicCompilationOptions(OutputKind.ConsoleApplication))
+
+            CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+    <![CDATA[
+BC42104: Variable 'member1' is used before it has been assigned a value. A null reference exception could result at runtime.
+        Dim tuple = (member1, member2)
+                     ~~~~~~~
+BC42104: Variable 'member2' is used before it has been assigned a value. A null reference exception could result at runtime.
+        Dim tuple = (member1, member2)
+                              ~~~~~~~
+]]></expected>)
+
+            Dim model = GetSemanticModel(compilation, "a.vb")
+
+            Dim tupleSyntax = CompilationUtils.FindBindingText(Of IdentifierNameSyntax)(compilation, "a.vb", 1)
+            Dim tupleSymbolInfo = model.GetSymbolInfo(tupleSyntax)
+            Assert.NotNull(tupleSymbolInfo.Symbol)
+
+            Dim tupleSymbol = TryCast(tupleSymbolInfo.Symbol, LocalSymbol)
+            Assert.NotNull(tupleSymbol)
+            Assert.Equal("tuple", tupleSymbol.Name)
+            Assert.Equal(2, tupleSymbol.Type.TupleElementTypes.Length)
+            Assert.Equal("Object", tupleSymbol.Type.TupleElementTypes(0).Name)
+            Assert.Equal("Object", tupleSymbol.Type.TupleElementTypes(1).Name)
+        End Sub
+
+        <WorkItem(14292, "https://github.com/dotnet/roslyn/issues/14292")>
+        <Fact>
+        Public Sub NotDeclaredTupleDeconstructionsProduceErrors_ExplicitOn()
+            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
+            <compilation><file name="a.vb">
+Option Explicit On
+Module TestModule
+    Sub Main()
+        Dim tuple = (member1, member2)
+        System.Console.WriteLine(tuple)
+    End Sub
+End Module
+            </file></compilation>,
+            additionalRefs:={ValueTupleRef, SystemRuntimeFacadeRef},
+            options:=New VisualBasicCompilationOptions(OutputKind.ConsoleApplication))
+
+            CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+    <![CDATA[
+BC30451: 'member1' is not declared. It may be inaccessible due to its protection level.
+        Dim tuple = (member1, member2)
+                     ~~~~~~~
+BC30451: 'member2' is not declared. It may be inaccessible due to its protection level.
+        Dim tuple = (member1, member2)
+                              ~~~~~~~
+]]></expected>)
+        End Sub
+
+        <WorkItem(14292, "https://github.com/dotnet/roslyn/issues/14292")>
+        <Fact>
+        Public Sub DeclaringImplicitlyDeclaredTupleArgumentsAgainInSameScopeErrorsOut()
+            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
+            <compilation><file name="a.vb">
+Option Explicit Off
+Module TestModule
+    Sub Main()
+        Dim tuple = (notDeclaredYet, 0)
+        Dim notDeclaredYet = 0
+    End Sub
+End Module
+            </file></compilation>,
+            additionalRefs:={ValueTupleRef, SystemRuntimeFacadeRef},
+            options:=New VisualBasicCompilationOptions(OutputKind.ConsoleApplication))
+
+            CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+    <![CDATA[
+BC32000: Local variable 'notDeclaredYet' cannot be referred to before it is declared.
+        Dim tuple = (notDeclaredYet, 0)
+                     ~~~~~~~~~~~~~~
+]]></expected>)
+        End Sub
+
+        <WorkItem(14292, "https://github.com/dotnet/roslyn/issues/14292")>
+        <Fact>
+        Public Sub DeclaringImplicitlyDeclaredTupleArgumentsAgainInAnotherScopeErrorsOut()
+            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
+            <compilation><file name="a.vb">
+Option Explicit Off
+Module TestModule
+    Sub Main()
+        Dim tuple As (Integer, Integer)
+        If False Then
+            tuple = (notDefinedYet1, notDefinedYet2)
+        End If
+        Dim notDefinedYet2 = 0
+    End Sub
+End Module
+            </file></compilation>,
+            additionalRefs:={ValueTupleRef, SystemRuntimeFacadeRef},
+            options:=New VisualBasicCompilationOptions(OutputKind.ConsoleApplication))
+
+            CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+    <![CDATA[
+BC42104: Variable 'notDefinedYet1' is used before it has been assigned a value. A null reference exception could result at runtime.
+            tuple = (notDefinedYet1, notDefinedYet2)
+                     ~~~~~~~~~~~~~~
+BC32000: Local variable 'notDefinedYet2' cannot be referred to before it is declared.
+            tuple = (notDefinedYet1, notDefinedYet2)
+                                     ~~~~~~~~~~~~~~
+]]></expected>)
+        End Sub
+
+        <WorkItem(14292, "https://github.com/dotnet/roslyn/issues/14292")>
+        <Fact>
+        Public Sub TupleArgumentsAreNotConsideredAsImplicitVariables()
+            VerifyImplicitDeclarationLookupSymbols(<![CDATA[
+                Dim tuple = (a: a, b: 0) 'BIND:"a"
+            ]]>,
+            expected:={"a"}) ' No "b" there
         End Sub
 
 #End Region

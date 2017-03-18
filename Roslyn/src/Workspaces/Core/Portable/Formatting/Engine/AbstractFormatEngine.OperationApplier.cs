@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Formatting.Rules;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Text;
@@ -64,10 +62,7 @@ namespace Microsoft.CodeAnalysis.Formatting
                 var indentation = _context.GetBaseIndentation(_tokenStream.GetToken(pairIndex + 1));
 
                 var previousToken = _tokenStream.GetToken(pairIndex);
-
-                bool multipleLines;
-                int tokenLength;
-                _tokenStream.GetTokenLength(previousToken, out tokenLength, out multipleLines);
+                _tokenStream.GetTokenLength(previousToken, out var tokenLength, out var multipleLines);
 
                 // get end column of previous token
                 var endColumnOfPreviousToken = multipleLines ? tokenLength : _tokenStream.GetCurrentColumn(previousToken) + tokenLength;
@@ -79,7 +74,7 @@ namespace Microsoft.CodeAnalysis.Formatting
                     return true;
                 }
 
-                // delegate to normal singleline space applier
+                // delegate to normal single-line space applier
                 return ApplySpaceIfSingleLine(operation, pairIndex);
             }
 
@@ -487,7 +482,7 @@ namespace Microsoft.CodeAnalysis.Formatting
                 Dictionary<SyntaxToken, int> previousChangesMap,
                 CancellationToken cancellationToken)
             {
-                // if baseToken is not in the stream, then it is guaranteeded to be not moved.
+                // if baseToken is not in the stream, then it is guaranteed to be not moved.
                 var tokenWithIndex = baseToken;
                 if (tokenWithIndex.IndexInStream < 0)
                 {

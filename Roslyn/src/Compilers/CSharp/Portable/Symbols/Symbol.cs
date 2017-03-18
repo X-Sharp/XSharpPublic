@@ -438,6 +438,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         switch (method.MethodKind)
                         {
                             case MethodKind.Ordinary:
+                            case MethodKind.LocalFunction:
                             case MethodKind.ReducedExtension:
                                 break;
                             case MethodKind.Destructor:
@@ -464,6 +465,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SymbolKind.Assembly:
                     case SymbolKind.DynamicType:
                     case SymbolKind.NetModule:
+                    case SymbolKind.Discard:
                         return false;
 
                     default:
@@ -496,6 +498,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     switch (method.MethodKind)
                     {
                         case MethodKind.Ordinary:
+                        case MethodKind.LocalFunction:
                         case MethodKind.DelegateInvoke:
                         case MethodKind.Destructor: // See comment in CanBeReferencedByName.
                             return true;
@@ -914,6 +917,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool DeriveUseSiteDiagnosticFromParameter(ref DiagnosticInfo result, ParameterSymbol param)
         {
             return DeriveUseSiteDiagnosticFromType(ref result, param.Type) ||
+                   DeriveUseSiteDiagnosticFromCustomModifiers(ref result, param.RefCustomModifiers) ||
                    DeriveUseSiteDiagnosticFromCustomModifiers(ref result, param.CustomModifiers);
         }
 
@@ -937,7 +941,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var modifierType = (NamedTypeSymbol)modifier.Modifier;
 
                 // Unbound generic type is valid as a modifier, let's not report any use site diagnostics because of that.
-                if (modifierType.IsUnboundGenericType )
+                if (modifierType.IsUnboundGenericType)
                 {
                     modifierType = modifierType.OriginalDefinition;
                 }
@@ -982,6 +986,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (var parameter in parameters)
             {
                 if (parameter.Type.GetUnificationUseSiteDiagnosticRecursive(ref result, owner, ref checkedTypes) ||
+                    GetUnificationUseSiteDiagnosticRecursive(ref result, parameter.RefCustomModifiers, owner, ref checkedTypes) ||
                     GetUnificationUseSiteDiagnosticRecursive(ref result, parameter.CustomModifiers, owner, ref checkedTypes))
                 {
                     return true;

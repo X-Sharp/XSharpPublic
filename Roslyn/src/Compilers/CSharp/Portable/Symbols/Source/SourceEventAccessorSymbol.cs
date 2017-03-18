@@ -111,6 +111,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
+        internal override RefKind RefKind
+        {
+            get { return RefKind.None; }
+        }
+
         public sealed override TypeSymbol ReturnType
         {
             get
@@ -122,6 +127,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
 
         public sealed override ImmutableArray<CustomModifier> ReturnTypeCustomModifiers
+        {
+            get
+            {
+                return ImmutableArray<CustomModifier>.Empty; // Same as base, but this is clear and explicit.
+            }
+        }
+
+        public sealed override ImmutableArray<CustomModifier> RefCustomModifiers
         {
             get
             {

@@ -153,7 +153,7 @@
     </Node>
 
     <!--
-    Represens an operation that is special in both IL and Expression trees -
+    Represents an operation that is special in both IL and Expression trees -
     getting length of a one-dimensional 0-based array (vector)
   
     This node should not be produced in initial binding since it is not a part of 
@@ -247,6 +247,52 @@
         <Field Name="NamespaceSymbol" Type="NamespaceSymbol"/>
     </Node>
 
+    <!-- Represents the raw metadata token index value for a method definition.
+         Used by dynamic instrumentation to index into tables or arrays of per-method information. -->
+    <Node Name="BoundMethodDefIndex" Base="BoundExpression">
+        <!-- Non-null type is required for this node kind -->
+        <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+        <Field Name="Method" Type="MethodSymbol"/>
+    </Node>
+
+    <!-- Represents the maximum raw metadata token index value for any method definition in the current module. -->
+    <Node Name="BoundMaximumMethodDefIndex" Base="BoundExpression">
+        <!-- Non-null type is required for this node kind -->
+        <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+    </Node>
+
+    <!-- Represents the dynamic analysis instrumentation payload array for the analysis kind in the current module.
+         Implemented as a reference to a field of PrivateImplementationDetails, which has no language-level symbol. -->
+    <Node Name="BoundInstrumentationPayloadRoot" Base="BoundExpression">
+        <Field Name="AnalysisKind" Type="Integer"/>
+        <!-- Non-null type is required for this node kind -->
+        <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+        <Field Name="IsLValue" PropertyOverrides="true" Type="Boolean"/>
+    </Node>
+
+    <!-- Represents the GUID that is the current module's MVID.
+         Implemented as a reference to PrivateImplementationDetails.MVID, which has no language-level symbol. -->
+    <Node Name="BoundModuleVersionId" Base="BoundExpression">
+        <!-- Non-null type is required for this node kind -->
+        <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+        <Field Name="IsLValue" PropertyOverrides="true" Type="Boolean"/>
+    </Node>
+
+    <!-- Represents a string encoding of the GUID that is the current module's MVID.
+         Implemented as a reference to a string constant that is backpatched after the MVID is computed. -->
+    <Node Name="BoundModuleVersionIdString" Base="BoundExpression">
+        <!-- Non-null type is required for this node kind -->
+        <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+    </Node>
+
+    <!-- Represents the index in the documents table of the source document containing a method definition.
+         Used by dynamic instrumentation to identify the source document containing a method. -->
+    <Node Name="BoundSourceDocumentIndex" Base="BoundExpression">
+        <!-- Non-null type is required for this node kind -->
+        <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+        <Field Name="Document" Type="Cci.DebugSourceDocument"/>
+    </Node>
+    
     <Node Name="BoundUnaryOperator" Base="BoundExpression" HasValidate="true">
         <!-- Type is required for this node type; may not be null -->
         <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
@@ -406,20 +452,24 @@
         <Field Name="ExplicitCastInCode" Type="Boolean"/>
         <Field Name="ConstantValueOpt" PropertyOverrides="true" Type="ConstantValue" Null="allow"/>
 
-        <!-- Constructor symbol may only be not-null for conversion from Nothing to a ValueType.
-             In this case we check if the ValueType has parameterless constructor and if it is accessible.
-             If we find such a constructor, we store the symbol in bound node to be used
-             in emit phase. If ConstructorOpt in Nothing, 'initobj' will be used for ValueType construction.
-          -->
-        <Field Name="ConstructorOpt" Type="MethodSymbol" Null="allow"/>
-
-        <!-- If this is a lambda conversion which requires a stub, additional lambda 
-             representing the stub is stored here -->
-        <Field Name="RelaxationLambdaOpt" Type="BoundLambda" Null="allow" />
-        <!-- The placeholder of a captured receiver for the relaxation lambda -->
-        <Field Name="RelaxationReceiverPlaceholderOpt" Type="BoundRValuePlaceholder" Null="allow" />
+        <Field Name="ExtendedInfoOpt" Type="BoundExtendedConversionInfo" Null="allow"/>
     </Node>
 
+    <AbstractNode Name="BoundExtendedConversionInfo" Base="BoundNode"/>
+  
+    <!-- Captures information about relaxation lambda necessary for a conversion -->
+    <Node Name="BoundRelaxationLambda" Base="BoundExtendedConversionInfo">
+        <Field Name="Lambda" Type="BoundLambda" Null="disallow" />
+        <!-- The placeholder of a captured receiver for the relaxation lambda -->
+        <Field Name="ReceiverPlaceholderOpt" Type="BoundRValuePlaceholder" Null="allow" />
+    </Node>
+
+    <!-- Used when source is not a tuple literal -->
+    <Node Name="BoundConvertedTupleElements" Base="BoundExtendedConversionInfo" HasValidate="true">
+        <Field Name="ElementPlaceholders" Type="ImmutableArray(Of BoundRValuePlaceholder)" Null="disallow" />
+        <Field Name="ConvertedElements" Type="ImmutableArray(Of BoundExpression)" Null="disallow" />
+    </Node>
+  
     <!-- This node is created to represent a user-defined conversion operator call 
          It is used in place of BoundConversion.Operand and the initial operand of 
          the conversion is an argument (possibly converted) of the underlying call expression,
@@ -587,6 +637,7 @@
         <Field Name="Arguments" Type="ImmutableArray(Of BoundExpression)"/>
 
         <Field Name="ConstantValueOpt" PropertyOverrides="true" Type="ConstantValue" Null="allow"/>
+        <Field Name="IsLValue" PropertyOverrides="true" Type="Boolean"/>
 
         <!-- Suppress GetObjectValue call injection for arguments of this method call -->
         <Field Name="SuppressObjectClone" Type="Boolean"/>
@@ -653,6 +704,54 @@
     <Field Name="Type" Type="TypeSymbol" Override="true" Null="allow"/>
     <Field Name="Binder" Type="Binder" Null="disallow"/>
     <Field Name="MemberAccess" Type="BoundLateMemberAccess" Null="disallow"/>
+  </Node>
+
+  <!-- 
+  Tuple literals can exist in two forms - literal and converted literal.
+  This is the base node for both forms.
+  -->
+  <AbstractNode Name="BoundTupleExpression" Base="BoundExpression">
+    <Field Name="Arguments" Type="ImmutableArray(Of BoundExpression)"/>
+  </AbstractNode>
+
+  <!-- 
+  Tuple literals can convert to the target type.
+  Once converted to a target type, they cannot be target-typed again. 
+  The tuple literal is one which has not been converted to a target type.
+  -->
+  <Node Name="BoundTupleLiteral" Base="BoundTupleExpression">
+    <!-- 
+    It is possible for a tuple to not have a type in a literal form
+    Ex: 
+     (a: 1, b: (c: 1, d: null))  does not have a natural type, because "null" does not have one
+    -->
+    <Field Name="Type" Type="TypeSymbol" Override="true" Null="allow"/>
+    <!-- 
+    InferredType is the type of the literal if there is no target type available.
+    Inferred type is a tuple type that combines default types of arguments.
+    
+    Important thing to note:
+    1) InferredType is generally available even if the literal otherwise has no type 
+       For example   (Nothing, Nothing)   has no type, but has InferredType (Object, Object)
+    2) Sometimes InferredType is not available.
+       For example   (AddressOf Main, AddressOf Main) has no InferredType because 
+       AddressOf Main has no default type
+    -->    
+    <Field Name="InferredType" Type="TupleTypeSymbol" Null="allow"/>
+    <Field Name="ArgumentNamesOpt" Type="ImmutableArray(Of String)" Null="allow"/>
+  </Node>
+
+  <!-- 
+  Tuple literals can convert to the target type.
+  Once converted to a target type, they cannot be target-typed again. 
+  The Converted tuple literal is one which has been already converted to a target type.
+  Converted tuple literal always has a type.
+  -->
+  <Node Name="BoundConvertedTupleLiteral" Base="BoundTupleExpression">
+    <!-- Converted tuple must have a type -->
+    <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+    <!-- Natural type is preserved for the purpose of semantic model. Can be null -->
+    <Field Name="NaturalTypeOpt" Type="TypeSymbol" Null="allow"/>
   </Node>
   
   <AbstractNode Name="BoundObjectCreationExpressionBase" Base="BoundExpression" HasValidate="true">
@@ -842,10 +941,11 @@
 
         <Field Name="AccessKind" Type="PropertyAccessKind"/>           
       
-        <!-- autoproperty could be writeable even when having no setter 
+        <!-- autoproperty could be writable even when having no setter 
              when in a corresponding constructor or initializer -->
         <Field Name="IsWriteable" Type="Boolean"/>
-      
+        <Field Name="IsLValue" PropertyOverrides="true" Type="Boolean"/>
+
         <Field Name="ReceiverOpt" Type="BoundExpression" Null="allow"/>
         <Field Name="Arguments" Type="ImmutableArray(Of BoundExpression)"/>
     </Node>
@@ -937,23 +1037,42 @@
   Bound node that represents a field or property initialization.
   It's used to capture the relationship between a symbol and its initialization value.  
   -->
-    <Node Name="BoundFieldOrPropertyInitializer" Base="BoundInitializer">
-      <!-- List of symbols that get initialized by this initializer. Typically it's one symbol, but there might
-           be more for a AsNew declaration with multiple variable names, e.g.
-           Class C1
-              Public Field1, Field2 As New TypeName() = Expression
-           End Class
-      -->
-      <Field Name="InitializedSymbols" Type="ImmutableArray(Of Symbol)" Null="disallow" />
+  <AbstractNode Name="BoundFieldOrPropertyInitializer" Base="BoundInitializer">
+    <!-- In case the field or property initializer only initializes one symbol,
+         the MemberAccessExpressionOpt field is the left side of the assignment operator
+         to which the initializer will be rewritten.-->
+    <Field Name="MemberAccessExpressionOpt" Type="BoundExpression" Null="allow" />
+    <!-- The expression representing the initial value -->
+    <Field Name="InitialValue" Type="BoundExpression" Null="disallow"/>
+  </AbstractNode>
 
-      <!-- In case the field or property initializer only initializes one symbol,
-           the MemberAccessExpressionOpt field is the left side of the assignment operator
-           to which the initializer will be rewritten.-->
-      <Field Name="MemberAccessExpressionOpt" Type="BoundExpression" Null="allow" />
-      
-      <!-- the expression representing the initial value -->
-      <Field Name="InitialValue" Type="BoundExpression" Null="disallow"/>
-    </Node>
+  <!-- Bound node that represents a field initialization. --> 
+  <Node Name="BoundFieldInitializer" Base="BoundFieldOrPropertyInitializer">
+    <!-- List of fields that get initialized by this initializer. Typically it's one symbol, but there might
+         be more for an AsNew declaration with multiple variable names, e.g.
+         Class C1
+            Public Field1, Field2 As New TypeName() = Expression
+         End Class
+    -->
+    <Field Name="InitializedFields" Type="ImmutableArray(Of FieldSymbol)" Null="disallow" />
+  </Node>
+
+  <!-- Bound node that represents a property initialization. -->
+  <Node Name="BoundPropertyInitializer" Base="BoundFieldOrPropertyInitializer">
+    <!-- Properties that get initialized by this initializer. -->
+    <Field Name="InitializedProperties" Type="ImmutableArray(Of PropertySymbol)" Null="disallow" />
+  </Node>
+    
+  <!--
+  Bound node that represents the binding of an "= Value" construct in a parameter declaration.
+  Appears only in bound trees generated by a SemanticModel.
+  -->
+  <Node Name="BoundParameterEqualsValue" Base="BoundNode">
+    <!-- Parameter receiving the value. -->
+    <Field Name="Parameter" Type="ParameterSymbol" Null="disallow"/>
+    <!-- Expression representing the value. -->
+    <Field Name="Value" Type="BoundExpression" Null="disallow"/>
+  </Node>
 
   <!--
   Bound node that represents a global statement.
@@ -1127,7 +1246,7 @@
       <Field Name="TryBlock" Type="BoundBlock"/>
       <Field Name="CatchBlocks" Type="ImmutableArray(Of BoundCatchBlock)"/>
       <Field Name="FinallyBlockOpt" Type="BoundBlock" Null="allow"/>
-      <!-- Exit label is optional because synthetic trys (foreach and using) do not need it. -->
+      <!-- Exit label is optional because synthetic try's (foreach and using) do not need it. -->
       <Field Name="ExitLabelOpt" Type="LabelSymbol" Null="allow"/>
     </Node>
 
@@ -1144,7 +1263,7 @@
       <!-- 
       Refers to the location where the exception object is stored. Usually that's a bound local.
       But it might also be a BoundSequence, whose last expression refers to the location
-      and the sideeffects initialize the storage (e.g. if the catch identitifer is lifted 
+      and the sideeffects initialize the storage (e.g. if the catch identifier is lifted 
       into a closure the sideeffects initialize the closure).
       
       The type of this expression is the type that we are catching.
@@ -1651,7 +1770,7 @@
   </Node>
 
   <!-- A special synthetic node created in LocalRewriter and used as a filter expression 
-       for an "On Error" catch block. CodeGen hadles this node specially.
+       for an "On Error" catch block. CodeGen handles this node specially.
   -->
   <Node Name="BoundUnstructuredExceptionHandlingCatchFilter" Base="BoundExpression" HasValidate="true">
     <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
@@ -1660,7 +1779,7 @@
   </Node>
 
   <!-- A special synthetic node created in LocalRewriter to represent "On Error" switch, 
-       CodeGen hadles this node specially. 
+       CodeGen handles this node specially. 
   -->
   <Node Name="BoundUnstructuredExceptionOnErrorSwitch" Base="BoundStatement" HasValidate="true">
     <Field Name="Value" Type="BoundExpression" Null="disallow"/>
@@ -1668,7 +1787,7 @@
   </Node>
 
   <!-- A special synthetic node created in LocalRewriter to represent "Resume" switch, 
-       CodeGen hadles this node specially. 
+       CodeGen handles this node specially. 
   -->
   <Node Name="BoundUnstructuredExceptionResumeSwitch" Base="BoundStatement" HasValidate="true">
     <Field Name="ResumeTargetTemporary" Type="BoundLocal" Null="disallow"/>
@@ -1694,7 +1813,7 @@
   <!-- Normal sequence nodes can't be used for await expressions, because await
        expression side-effects include control flow.
        
-       These nodes are only temporarily created in asynch rewriting pass and never leave it. 
+       These nodes are only temporarily created in async rewriting pass and never leave it. 
        They should never be used by or visible to anything other than the async rewriter.
   -->
   <Node Name="BoundSpillSequence" Base="BoundExpression" HasValidate="true">

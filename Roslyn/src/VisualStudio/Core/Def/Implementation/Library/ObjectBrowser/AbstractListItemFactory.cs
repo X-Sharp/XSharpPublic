@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -266,7 +266,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Library.ObjectB
             var parentProjectItem = parentListItem as ProjectListItem;
             if (parentProjectItem != null)
             {
-                builder.Add(new FolderListItem(parentListItem.ProjectId, ServicesVSResources.Library_ProjectReferences));
+                builder.Add(new FolderListItem(parentListItem.ProjectId, ServicesVSResources.Project_References));
             }
 
             var parentTypeItem = parentListItem as TypeListItem;
@@ -291,7 +291,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Library.ObjectB
 
                 if (addBaseTypes)
                 {
-                    builder.Add(new FolderListItem(parentListItem.ProjectId, ServicesVSResources.Library_BaseTypes));
+                    builder.Add(new FolderListItem(parentListItem.ProjectId, ServicesVSResources.Base_Types));
                 }
             }
 
@@ -626,28 +626,20 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Library.ObjectB
                         assemblyIdentitySet = new HashSet<AssemblyIdentity>();
                     }
 
-                    var compilation = project.GetCompilationAsync(cancellationToken).WaitAndGetResult(cancellationToken);
-
-                    foreach (var reference in compilation.References)
+                    foreach (var reference in project.MetadataReferences)
                     {
-                        if (reference is CompilationReference)
+                        var portableExecutableReference = reference as PortableExecutableReference;
+                        if (portableExecutableReference != null)
                         {
-                            continue;
-                        }
+                            var assemblyIdentity = AssemblyIdentityUtils.TryGetAssemblyIdentity(portableExecutableReference.FilePath);
+                            if (assemblyIdentity != null && !assemblyIdentitySet.Contains(assemblyIdentity))
+                            {
+                                assemblyIdentitySet.Add(assemblyIdentity);
 
-                        var assemblySymbol = compilation.GetAssemblyOrModuleSymbol(reference) as IAssemblySymbol;
-                        if (assemblySymbol == null)
-                        {
-                            continue;
+                                var referenceListItem = new ReferenceListItem(projectId, assemblyIdentity.Name, reference);
+                                referenceListItemBuilder.Add(referenceListItem);
+                            }
                         }
-
-                        if (assemblyIdentitySet.Contains(assemblySymbol.Identity))
-                        {
-                            continue;
-                        }
-
-                        assemblyIdentitySet.Add(assemblySymbol.Identity);
-                        referenceListItemBuilder.Add(new ReferenceListItem(projectId, assemblySymbol.Name, reference));
                     }
                 }
             }
@@ -668,7 +660,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Library.ObjectB
                 return ImmutableArray<ObjectListItem>.Empty;
             }
 
-            var builder = ImmutableArray.CreateBuilder<ObjectListItem>();
+            var builder = ArrayBuilder<ObjectListItem>.GetInstance();
 
             foreach (var reference in compilation.References)
             {
@@ -680,7 +672,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Library.ObjectB
                 }
             }
 
-            return builder.ToImmutable();
+            return builder.ToImmutableAndFree();
         }
 
         private ImmutableArray<INamedTypeSymbol> GetAccessibleTypes(INamespaceSymbol namespaceSymbol, Compilation compilation)

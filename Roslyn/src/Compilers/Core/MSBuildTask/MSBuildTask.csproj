@@ -1,35 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Label="Settings">
-    <Import Project="..\..\..\..\build\Targets\VSL.Settings.targets" />
-  </ImportGroup>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\..\build\Targets\Settings.props" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D874349C-8BB3-4BDC-8535-2D52CCCA1198}</ProjectGuid>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ProjectGuid>{7AD4FE65-9A30-41A6-8004-AA8F89BCB7F3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.CodeAnalysis.BuildTasks</RootNamespace>
     <AssemblyName>Microsoft.Build.Tasks.CodeAnalysis</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
-  <ItemGroup>
-    <Reference Include="Microsoft.Build.Framework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\MSBuild\v14.0\Microsoft.Build.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Build.Tasks.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\MSBuild\v14.0\Microsoft.Build.Tasks.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Build.Utilities.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\MSBuild\v14.0\Microsoft.Build.Utilities.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
     <None Include="Microsoft.CSharp.Core.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -38,19 +26,36 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="project.json" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\VBCSCompiler\BuildProtocol.cs">
-      <Link>BuildProtocol.cs</Link>
+    <Compile Include="..\..\Shared\BuildServerConnection.cs">
+      <Link>BuildServerConnection.cs</Link>
     </Compile>
-    <Compile Include="..\VBCSCompiler\CompilerServerLogger.cs">
-      <Link>CompilerServerLogger.cs</Link>
+    <Compile Include="..\Portable\CorLightup.cs">
+      <Link>CorLightup.cs</Link>
     </Compile>
-    <Compile Include="..\..\Helpers\ConsoleUtil.cs">
-      <Link>ConsoleUtil.cs</Link>
+    <Compile Include="..\Portable\InternalUtilities\CommandLineUtilities.cs">
+      <Link>CommandLineUtilities.cs</Link>
     </Compile>
-    <Compile Include="BuildClient.cs" />
+    <Compile Include="..\Portable\InternalUtilities\CompilerOptionParseUtilities.cs">
+      <Link>CompilerOptionParseUtilities.cs</Link>
+    </Compile>
+    <Compile Include="..\Portable\InternalUtilities\IReadOnlySet.cs">
+      <Link>IReadOnlySet.cs</Link>
+    </Compile>
+    <Compile Include="..\Portable\InternalUtilities\PlatformInformation.cs">
+      <Link>PlatformInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\Portable\InternalUtilities\ReflectionUtilities.cs">
+      <Link>ReflectionUtilities.cs</Link>
+    </Compile>
+    <Compile Include="..\Portable\InternalUtilities\UnicodeCharacterUtilities.cs">
+      <Link>UnicodeCharacterUtilities.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyResolution.cs" />
     <Compile Include="CanonicalError.cs" />
+    <Compile Include="ValidateBootstrap.cs" />
     <Compile Include="CommandLineBuilderExtension.cs" />
     <Compile Include="Csc.cs" />
     <Compile Include="Csi.cs" />
@@ -59,11 +64,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ErrorString.resx</DependentUpon>
     </Compile>
+    <Compile Include="ICompilerOptionsHostObject.cs" />
     <Compile Include="ICscHostObject5.cs" />
     <Compile Include="InteractiveCompiler.cs" />
     <Compile Include="IVbcHostObject6.cs" />
     <Compile Include="ManagedCompiler.cs" />
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="PropertyDictionary.cs" />
     <Compile Include="RCWForCurrentContext.cs" />
     <Compile Include="Utilities.cs" />
@@ -75,17 +80,6 @@
       <LastGenOutput>ErrorString.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\CSharp\Portable\CSharpCodeAnalysis.csproj">
-      <Project>{b501a547-c911-4a05-ac6e-274a50dff30e}</Project>
-      <Name>CSharpCodeAnalysis</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Portable\CodeAnalysis.csproj">
-      <Project>{1ee8cad3-55f9-4d91-96b2-084641da9a6c}</Project>
-      <Name>CodeAnalysis</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ImportGroup Label="Targets">
-    <Import Project="..\..\..\..\build\Targets\VSL.Imports.targets" />
-  </ImportGroup>
+  <Import Project="..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\build\Targets\Imports.targets" />
 </Project>

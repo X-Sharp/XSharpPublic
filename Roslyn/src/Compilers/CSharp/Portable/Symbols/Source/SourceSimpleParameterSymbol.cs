@@ -53,6 +53,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return ImmutableArray<CustomModifier>.Empty; }
         }
 
+        public override ImmutableArray<CustomModifier> RefCustomModifiers
+        {
+            get { return ImmutableArray<CustomModifier>.Empty; }
+        }
+
         internal override SyntaxReference SyntaxReference
         {
             get { return null; }
@@ -113,7 +118,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return default(SyntaxList<AttributeListSyntax>); }
         }
 
-        internal override CustomAttributesBag<CSharpAttributeData> GetAttributesBag()
+        internal override CustomAttributesBag<CSharpAttributeData> GetAttributesBag(DiagnosticBag diagnosticsOpt)
         {
             state.NotePartComplete(CompletionPart.Attributes);
             return CustomAttributesBag<CSharpAttributeData>.Empty;

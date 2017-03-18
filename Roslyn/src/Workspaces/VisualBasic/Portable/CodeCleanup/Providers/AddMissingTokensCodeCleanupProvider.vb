@@ -2,6 +2,7 @@
 
 Imports System.Composition
 Imports System.Threading
+Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -18,8 +19,8 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
             End Get
         End Property
 
-        Protected Overrides Function GetRewriter(document As Document, root As SyntaxNode, spans As IEnumerable(Of TextSpan), workspace As Workspace, cancellationToken As CancellationToken) As AbstractTokensCodeCleanupProvider.Rewriter
-            Return New AddMissingTokensRewriter(document, spans, cancellationToken)
+        Protected Overrides Async Function GetRewriterAsync(document As Document, root As SyntaxNode, spans As IEnumerable(Of TextSpan), workspace As Workspace, cancellationToken As CancellationToken) As Task(Of Rewriter)
+            Return Await AddMissingTokensRewriter.CreateAsync(document, spans, cancellationToken).ConfigureAwait(False)
         End Function
 
         Private Class AddMissingTokensRewriter
@@ -30,29 +31,21 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
 
             Private _model As SemanticModel = Nothing
 
-            Public Sub New(document As Document, spans As IEnumerable(Of TextSpan), cancellationToken As CancellationToken)
+            Private Sub New(document As Document, semanticModel As SemanticModel, spans As IEnumerable(Of TextSpan), modifiedSpan As TextSpan, cancellationToken As CancellationToken)
                 MyBase.New(spans, cancellationToken)
 
                 Me._document = document
-                Me._modifiedSpan = spans.Collapse()
+                Me._modifiedSpan = modifiedSpan
+                Me._model = semanticModel
             End Sub
 
-            Private ReadOnly Property SemanticModel As SemanticModel
-                Get
-                    If _document Is Nothing Then
-                        Return Nothing
-                    End If
+            Public Shared Async Function CreateAsync(document As Document, spans As IEnumerable(Of TextSpan), cancellationToken As CancellationToken) As Task(Of AddMissingTokensRewriter)
+                Dim modifiedSpan = spans.Collapse()
+                Dim semanticModel = If(document Is Nothing, Nothing,
+                    Await document.GetSemanticModelForSpanAsync(modifiedSpan, cancellationToken).ConfigureAwait(False))
 
-                    If _model Is Nothing Then
-                        ' don't want to create semantic model when it is not needed. so get it synchronously when needed
-                        ' most of cases, this will run on UI thread, so it shouldn't matter
-                        _model = _document.GetSemanticModelForSpanAsync(_modifiedSpan, Me._cancellationToken).WaitAndGetResult(Me._cancellationToken)
-                    End If
-
-                    Contract.Requires(_model IsNot Nothing)
-                    Return _model
-                End Get
-            End Property
+                Return New AddMissingTokensRewriter(document, semanticModel, spans, modifiedSpan, cancellationToken)
+            End Function
 
             Public Overrides Function Visit(node As SyntaxNode) As SyntaxNode
                 If TypeOf node Is ExpressionSyntax Then
@@ -89,6 +82,7 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
 
                 ' can't/don't try to transform member access to invocation
                 If TypeOf name.Parent Is MemberAccessExpressionSyntax OrElse
+                   TypeOf name.Parent Is TupleElementSyntax OrElse
                    name.CheckParent(Of AttributeSyntax)(Function(p) p.Name Is name) OrElse
                    name.CheckParent(Of ImplementsClauseSyntax)(Function(p) p.InterfaceMembers.Any(Function(i) i Is name)) OrElse
                    name.CheckParent(Of UnaryExpressionSyntax)(Function(p) p.Kind = SyntaxKind.AddressOfExpression AndAlso p.Operand Is name) OrElse
@@ -119,20 +113,21 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
             End Function
 
             Private Function IsMethodSymbol(expression As ExpressionSyntax) As Boolean
-                If Me.SemanticModel Is Nothing Then
+                If Me._model Is Nothing Then
                     Return False
                 End If
 
-                Dim symbols = Me.SemanticModel.GetSymbolInfo(expression, _cancellationToken).GetAllSymbols()
-                Return symbols.Any() AndAlso symbols.All(Function(s) s.TypeSwitch(Function(m As IMethodSymbol) m.MethodKind = MethodKind.Ordinary))
+                Dim symbols = Me._model.GetSymbolInfo(expression, _cancellationToken).GetAllSymbols()
+                Return symbols.Any() AndAlso symbols.All(
+                    Function(s) (TryCast(s, IMethodSymbol)?.MethodKind).GetValueOrDefault() = MethodKind.Ordinary)
             End Function
 
             Private Function IsDelegateType(expression As ExpressionSyntax) As Boolean
-                If Me.SemanticModel Is Nothing Then
+                If Me._model Is Nothing Then
                     Return False
                 End If
 
-                Dim type = Me.SemanticModel.GetTypeInfo(expression, _cancellationToken).Type
+                Dim type = Me._model.GetTypeInfo(expression, _cancellationToken).Type
                 Return type.IsDelegateType
             End Function
 
@@ -157,30 +152,6 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
                         node, newNode, Function(n) n.Expression.Span.Length > 0, Function(n) n.ArgumentList, Function(n) n.WithArgumentList(SyntaxFactory.ArgumentList()), semanticChecker)
             End Function
 
-            Public Overrides Function VisitObjectCreationExpression(node As ObjectCreationExpressionSyntax) As SyntaxNode
-                Dim newNode = MyBase.VisitObjectCreationExpression(node)
-
-                If node.CheckParent(Of AsNewClauseSyntax)(Function(p) p.NewExpression Is node) Then
-                    Return newNode
-                End If
-
-                If node.Type Is Nothing OrElse
-                   node.Type.TypeSwitch(Function(n As GenericNameSyntax)
-                                            Return n.TypeArgumentList Is Nothing OrElse
-                                                   n.TypeArgumentList.CloseParenToken.IsMissing OrElse
-                                                   n.TypeArgumentList.CloseParenToken.Kind = SyntaxKind.None
-                                        End Function) Then
-                    Return newNode
-                End If
-
-                ' we have two different bugs - bug # 12388 and bug # 12588 - that want two distinct and contradicting behaviors for this case.
-                ' for now, I will make it to follow dev11 behavior.
-                ' commented out to stop auto inserting behavior
-                ' Return AddParenthesesTransform(node, newNode, Function(n) n.ArgumentList, Function(n) n.WithArgumentList(Syntax.ArgumentList()))
-
-                Return newNode
-            End Function
-
             Public Overrides Function VisitRaiseEventStatement(node As RaiseEventStatementSyntax) As SyntaxNode
                 Return AddParenthesesTransform(
                     node, MyBase.VisitRaiseEventStatement(node), Function(n) Not n.Name.IsMissing, Function(n) n.ArgumentList, Function(n) n.WithArgumentList(SyntaxFactory.ArgumentList()))
@@ -188,7 +159,7 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
 
             Public Overrides Function VisitMethodStatement(node As MethodStatementSyntax) As SyntaxNode
                 Dim rewrittenMethod = DirectCast(AddParameterListTransform(node, MyBase.VisitMethodStatement(node), Function(n) Not n.Identifier.IsMissing), MethodStatementSyntax)
-                Return AsyncOrIteratorFunctionReturnTypeFixer.RewriteMethodStatement(rewrittenMethod, Me.SemanticModel, node, Me._cancellationToken)
+                Return AsyncOrIteratorFunctionReturnTypeFixer.RewriteMethodStatement(rewrittenMethod, Me._model, node, Me._cancellationToken)
             End Function
 
             Public Overrides Function VisitSubNewStatement(node As SubNewStatementSyntax) As SyntaxNode
@@ -241,7 +212,7 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
 
             Public Overrides Function VisitLambdaHeader(node As LambdaHeaderSyntax) As SyntaxNode
                 Dim rewrittenLambdaHeader = DirectCast(MyBase.VisitLambdaHeader(node), LambdaHeaderSyntax)
-                rewrittenLambdaHeader = AsyncOrIteratorFunctionReturnTypeFixer.RewriteLambdaHeader(rewrittenLambdaHeader, Me.SemanticModel, node, Me._cancellationToken)
+                rewrittenLambdaHeader = AsyncOrIteratorFunctionReturnTypeFixer.RewriteLambdaHeader(rewrittenLambdaHeader, Me._model, node, Me._cancellationToken)
                 Return AddParameterListTransform(node, rewrittenLambdaHeader, Function(n) True)
             End Function
 
@@ -263,7 +234,7 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
                 ' If previousToken has trailing WhitespaceTrivia, strip off the trailing WhitespaceTrivia from the lastToken.
                 Dim lastTrailingTrivia = lastToken.TrailingTrivia
                 If prevTrailingTrivia.Any(SyntaxKind.WhitespaceTrivia) Then
-                    lastTrailingTrivia = lastTrailingTrivia.WithoutLeadingWhitespace()
+                    lastTrailingTrivia = lastTrailingTrivia.WithoutLeadingWhitespaceOrEndOfLine()
                 End If
 
                 ' get the trivia and attach it to the last token
@@ -550,13 +521,18 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
 
             Private Function ProcessOmittedToken(originalToken As SyntaxToken, token As SyntaxToken, parent As SyntaxNode) As SyntaxToken
                 ' multiline if statement with missing then keyword case
-                If parent.TypeSwitch(Function(p As IfStatementSyntax) Exist(p.Condition) AndAlso p.ThenKeyword = originalToken) Then
-                    Return If(parent.GetAncestor(Of MultiLineIfBlockSyntax)() IsNot Nothing, CreateOmittedToken(token, SyntaxKind.ThenKeyword), token)
-                ElseIf parent.TypeSwitch(Function(p As IfDirectiveTriviaSyntax) p.ThenKeyword = originalToken) Then
+                If TypeOf parent Is IfStatementSyntax Then
+                    Dim ifStatement = DirectCast(parent, IfStatementSyntax)
+                    If Exist(ifStatement.Condition) AndAlso ifStatement.ThenKeyword = originalToken Then
+                        Return If(parent.GetAncestor(Of MultiLineIfBlockSyntax)() IsNot Nothing, CreateOmittedToken(token, SyntaxKind.ThenKeyword), token)
+                    End If
+                End If
+
+                If TryCast(parent, IfDirectiveTriviaSyntax)?.ThenKeyword = originalToken Then
                     Return CreateOmittedToken(token, SyntaxKind.ThenKeyword)
-                ElseIf parent.TypeSwitch(Function(p As ElseIfStatementSyntax) p.ThenKeyword = originalToken) Then
+                ElseIf TryCast(parent, ElseIfStatementSyntax)?.ThenKeyword = originalToken Then
                     Return If(parent.GetAncestor(Of ElseIfBlockSyntax)() IsNot Nothing, CreateOmittedToken(token, SyntaxKind.ThenKeyword), token)
-                ElseIf parent.TypeSwitch(Function(p As OptionStatementSyntax) p.ValueKeyword = originalToken) Then
+                ElseIf TryCast(parent, OptionStatementSyntax)?.ValueKeyword = originalToken Then
                     Return CreateOmittedToken(token, SyntaxKind.OnKeyword)
                 End If
 
@@ -622,11 +598,11 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
 
             Private Function ProcessMissingToken(originalToken As SyntaxToken, token As SyntaxToken) As SyntaxToken
                 ' auto insert missing "Of" keyword in type argument list
-                If originalToken.Parent.TypeSwitch(Function(p As TypeArgumentListSyntax) p.OfKeyword = originalToken) Then
+                If TryCast(originalToken.Parent, TypeArgumentListSyntax)?.OfKeyword = originalToken Then
                     Return CreateMissingToken(token)
-                ElseIf originalToken.Parent.TypeSwitch(Function(p As TypeParameterListSyntax) p.OfKeyword = originalToken) Then
+                ElseIf TryCast(originalToken.Parent, TypeParameterListSyntax)?.OfKeyword = originalToken Then
                     Return CreateMissingToken(token)
-                ElseIf originalToken.Parent.TypeSwitch(Function(p As ContinueStatementSyntax) p.BlockKeyword = originalToken) Then
+                ElseIf TryCast(originalToken.Parent, ContinueStatementSyntax)?.BlockKeyword = originalToken Then
                     Return CreateMissingToken(token)
                 End If
 

@@ -9,6 +9,8 @@ Imports Microsoft.VisualStudio.LanguageServices.Implementation
 Imports Microsoft.Win32
 Imports Roslyn.Test.Utilities
 
+Imports System.FormattableString
+
 Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
     Public Class AnalyzerDependencyCheckerTests
         Inherits TestBase
@@ -17,7 +19,8 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
         Private Shared ReadOnly Property MSBuildDirectory As String
             Get
                 If s_msbuildDirectory Is Nothing Then
-                    Dim key = Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0", False)
+                    Dim vsVersion = If(Environment.GetEnvironmentVariable("VisualStudioVersion"), "14.0")
+                    Dim key = Registry.LocalMachine.OpenSubKey(Invariant($"SOFTWARE\Microsoft\MSBuild\ToolsVersions\{vsVersion}"), False)
 
                     If key IsNot Nothing Then
                         Dim toolsPath = key.GetValue("MSBuildToolsPath")
@@ -31,7 +34,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
             End Get
         End Property
 
-        Private Shared s_CSharpCompilerExecutable As String = Path.Combine(MSBuildDirectory, "csc.exe")
+        Private Shared s_CSharpCompilerExecutable As String = If(MSBuildDirectory IsNot Nothing, Path.Combine(MSBuildDirectory, "csc.exe"), Nothing)
         Private Shared s_mscorlibDisplayName As String = "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
 
         Private Shared Function GetIgnorableAssemblyLists() As IEnumerable(Of IIgnorableAssemblyList)
@@ -41,7 +44,8 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
             Return {New IgnorableAssemblyIdentityList({mscorlib})}
         End Function
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest1()
             ' Dependency Graph:
             '   A
@@ -57,7 +61,8 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
 
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest2()
             ' Dependency graph:
             '   A --> B
@@ -84,7 +89,8 @@ public class A
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest3()
             ' Dependency graph:
             '   A --> B
@@ -118,7 +124,8 @@ public class A
 
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest4()
             ' Dependency graph:
             '   A --> B
@@ -158,7 +165,8 @@ public class C
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest5()
             ' Dependency graph:
             '   Directory 1:
@@ -200,7 +208,8 @@ public class C
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest6()
             ' Dependency graph:
             ' A -
@@ -241,7 +250,8 @@ public class B
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest7()
             ' Dependency graph:
             '   Directory 1:
@@ -282,7 +292,8 @@ public class B
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest8()
             ' Dependency graph:
             '   Directory 1:
@@ -342,7 +353,8 @@ public class C
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest9()
             ' Dependency graph:
             '   Directory 1:
@@ -412,7 +424,8 @@ public class D
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest10()
             ' Dependency graph:
             '   Directory 1:
@@ -492,7 +505,8 @@ public class E
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest11()
             ' Dependency graph:
             '   Directory 1:
@@ -543,7 +557,8 @@ public class B
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest12()
             ' Dependency graph:
             '   Directory 1:
@@ -600,7 +615,8 @@ public class B
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest13()
             ' Dependency graph:
             '   Directory 1:
@@ -658,7 +674,8 @@ public class B
             End Using
         End Sub
 
-        <WpfFact, WorkItem(1064914)>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
+        <WorkItem(1064914, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064914")>
         Public Sub ConflictsTest14()
             ' Dependency graph:
             '   Directory 1:
@@ -729,8 +746,8 @@ public class D
                 Assert.Equal(expected:=3, actual:=results.Conflicts.Length)
             End Using
         End Sub
-
-        <WpfFact>
+ 
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
         Public Sub MissingTest1()
             ' Dependency Graph:
             '   A
@@ -745,7 +762,7 @@ public class D
             End Using
         End Sub
 
-        <WpfFact>
+        <Fact(Skip:= "https://github.com/dotnet/roslyn/issues/16301")>
         Public Sub MissingTest2()
             ' Dependency graph:
             '   A --> B*
@@ -777,7 +794,7 @@ public class A
             End Using
         End Sub
 
-        <WpfFact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
+        <Fact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
         Public Sub IgnorableAssemblyIdentityList_IncludesItem()
             Dim mscorlib1 As AssemblyIdentity = Nothing
             AssemblyIdentity.TryParseDisplayName(s_mscorlibDisplayName, mscorlib1)
@@ -790,7 +807,7 @@ public class A
             Assert.True(ignorableAssemblyList.Includes(mscorlib2))
         End Sub
 
-        <WpfFact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
+        <Fact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
         Public Sub IgnorableAssemblyIdentityList_DoesNotIncludeItem()
             Dim mscorlib As AssemblyIdentity = Nothing
             AssemblyIdentity.TryParseDisplayName(s_mscorlibDisplayName, mscorlib)
@@ -803,7 +820,7 @@ public class A
             Assert.False(ignorableAssemblyList.Includes(alpha))
         End Sub
 
-        <WpfFact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
+        <Fact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
         Public Sub IgnorableAssemblyNamePrefixList_IncludesItem_Prefix()
             Dim ignorableAssemblyList = New IgnorableAssemblyNamePrefixList("Alpha")
 
@@ -813,7 +830,7 @@ public class A
             Assert.True(ignorableAssemblyList.Includes(alphaBeta))
         End Sub
 
-        <WpfFact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
+        <Fact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
         Public Sub IgnorableAssemblyNamePrefixList_IncludesItem_WholeName()
             Dim ignorableAssemblyList = New IgnorableAssemblyNamePrefixList("Alpha")
 
@@ -823,7 +840,7 @@ public class A
             Assert.True(ignorableAssemblyList.Includes(alpha))
         End Sub
 
-        <WpfFact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
+        <Fact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
         Public Sub IgnorableAssemblyNamePrefixList_DoesNotIncludeItem()
             Dim ignorableAssemblyList = New IgnorableAssemblyNamePrefixList("Beta")
 
@@ -833,7 +850,7 @@ public class A
             Assert.False(ignorableAssemblyList.Includes(alpha))
         End Sub
 
-        <WpfFact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
+        <Fact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
         Public Sub IgnorableAssemblyNameList_IncludesItem_Prefix()
             Dim ignorableAssemblyList = New IgnorableAssemblyNameList(ImmutableHashSet.Create("Alpha"))
 
@@ -843,7 +860,7 @@ public class A
             Assert.False(ignorableAssemblyList.Includes(alphaBeta))
         End Sub
 
-        <WpfFact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
+        <Fact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
         Public Sub IgnorableAssemblyNameList_IncludesItem_WholeName()
             Dim ignorableAssemblyList = New IgnorableAssemblyNameList(ImmutableHashSet.Create("Alpha"))
 
@@ -866,7 +883,7 @@ public class A
             Assert.True(ignorableAssemblyList.Includes(alpha))
         End Sub
 
-        <WpfFact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
+        <Fact, WorkItem(3020, "https://github.com/dotnet/roslyn/issues/3020")>
         Public Sub IgnorableAssemblyNameList_DoesNotIncludeItem()
             Dim ignorableAssemblyList = New IgnorableAssemblyNameList(ImmutableHashSet.Create("Beta"))
 

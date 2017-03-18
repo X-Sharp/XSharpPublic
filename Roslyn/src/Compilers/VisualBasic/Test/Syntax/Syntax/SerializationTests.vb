@@ -13,15 +13,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
     Public Class SerializationTests
 
-        Private Sub RoundTrip(text As String)
+        Private Sub RoundTrip(text As String, Optional expectRecursive As Boolean = True)
             Dim tree = VisualBasicSyntaxTree.ParseText(text)
             Dim root = tree.GetRoot()
 
             Dim stream = New MemoryStream()
             root.SerializeTo(stream)
 
-            stream.Position = 0
+            stream.Position = 2
+            Assert.Equal(expectRecursive, Roslyn.Utilities.StreamObjectReader.IsRecursive(stream))
 
+            stream.Position = 0
             Dim droot = VisualBasicSyntaxNode.DeserializeFrom(stream)
             Dim dtext = droot.ToFullString()
 
@@ -218,7 +220,7 @@ End Class
         End Sub
 
         <ConditionalFact(GetType(x86))>
-        <WorkItem(530374, "DevDiv")>
+        <WorkItem(530374, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530374")>
         Public Sub RoundtripSerializeDeepExpression()
             Dim text = <Foo><![CDATA[
 Module Module15
@@ -239,8 +241,8 @@ Module Module15
         x = EnumChildWindows(hw, d, 5)
         'This should always be true, I would think
         If intCounter < 10 Then
-		intcounter = 10
-        End If        
+            intcounter = 10
+        End If
     End Sub
     'Callback function for EnumWindows
     Function EnumChildProc(ByVal hw As Integer, ByVal lp As Integer) As Integer
@@ -421,11 +423,11 @@ Module Module15
 End Module
 ]]>
                        </Foo>.Value
-            RoundTrip(text)
+            RoundTrip(text, expectRecursive:=False)
         End Sub
 
         <Fact>
-        <WorkItem(530374, "DevDiv")>
+        <WorkItem(530374, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530374")>
         Public Sub RoundtripSerializeDeepExpression2()
             Dim text = <Foo><![CDATA[
 Module GroupJoin2
@@ -439,7 +441,7 @@ End Module
         End Sub
 
         <Fact>
-        <WorkItem(1038237)>
+        <WorkItem(1038237, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1038237")>
         Public Sub RoundTripPragmaDirective()
             Dim text = <Foo><![CDATA[
 #Disable Warning BC40000

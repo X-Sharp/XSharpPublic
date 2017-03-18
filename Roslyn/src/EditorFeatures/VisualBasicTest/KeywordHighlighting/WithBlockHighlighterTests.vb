@@ -10,9 +10,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New WithBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestWithBlock1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestWithBlock1() As Task
+            Await TestAsync(<Text>
 Class C
 Sub M()
 {|Cursor:[|With|]|} y
@@ -21,11 +21,11 @@ Console.WriteLine(.x)
 [|End With|]
 End Sub
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestWithBlock2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestWithBlock2() As Task
+            Await TestAsync(<Text>
 Class C
 Sub M()
 [|With|] y
@@ -34,6 +34,6 @@ Console.WriteLine(.x)
 {|Cursor:[|End With|]|}
 End Sub
 End Class</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

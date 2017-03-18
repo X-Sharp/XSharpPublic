@@ -124,6 +124,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         End Property
 
         ''' <summary>
+        ''' If this symbol represents a metadata module returns the underlying <see cref="ModuleMetadata"/>.
+        ''' 
+        ''' Otherwise, this returns <code>nothing</code>.
+        ''' </summary>
+        Public MustOverride Function GetMetadata() As ModuleMetadata Implements IModuleSymbol.GetMetadata
+
+        ''' <summary>
         ''' Returns an array of assembly identities for assemblies referenced by this module.
         ''' Items at the same position from GetReferencedAssemblies and from GetReferencedAssemblySymbols 
         ''' should correspond to each other.
@@ -153,6 +160,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' The array and its content is provided by ReferenceManager and must not be modified.
         ''' </summary>
         Friend MustOverride Function GetReferencedAssemblySymbols() As ImmutableArray(Of AssemblySymbol) ' TODO: Remove this method and make ReferencedAssemblySymbols property abstract instead.
+
+        Friend Function GetReferencedAssemblySymbol(referencedAssemblyIndex As Integer) As AssemblySymbol
+            Dim referencedAssemblies = GetReferencedAssemblySymbols()
+            If referencedAssemblyIndex < referencedAssemblies.Length Then
+                Return referencedAssemblies(referencedAssemblyIndex)
+            End If
+
+            ' This module must be a corlib where the original metadata contains assembly
+            ' references (see https://github.com/dotnet/roslyn/issues/13275).
+            Dim assembly = ContainingAssembly
+            If assembly IsNot assembly.CorLibrary Then
+                Throw New ArgumentOutOfRangeException(NameOf(referencedAssemblyIndex))
+            End If
+
+            Return Nothing
+        End Function
 
         ''' <summary>
         ''' A helper method for ReferenceManager to set assembly identities for assemblies

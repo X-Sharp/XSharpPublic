@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.GenerateType;
 using Roslyn.Test.Utilities;
@@ -15,7 +12,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Diagnostics.GenerateTyp
     {
         #region SameProject
         #region SameProject_SameFile 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeDefaultValues()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -39,10 +36,10 @@ expected: @"class Program
 class Foo
 {
 }",
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInsideNamespace()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -73,10 +70,10 @@ namespace A
     {
     }
 }",
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInsideQualifiedNamespace()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -105,10 +102,10 @@ namespace A.B
     {
     }
 }",
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithinQualifiedNestedNamespace()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -143,10 +140,10 @@ namespace A.B
         }
     }
 }",
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithinNestedQualifiedNamespace()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -181,10 +178,10 @@ namespace A
         }
     }
 }",
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithConstructorMembers()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -216,10 +213,10 @@ class Foo
         this.baz = baz;
     }
 }",
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithBaseTypes()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -245,10 +242,10 @@ class Program
 class Foo : List<int>
 {
 }",
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithPublicInterface()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -285,10 +282,10 @@ namespace A
 }",
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithInternalStruct()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -325,10 +322,10 @@ namespace A
 }",
 accessibility: Accessibility.Internal,
 typeKind: TypeKind.Struct,
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithDefaultEnum()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -365,11 +362,11 @@ namespace A
 }",
 accessibility: Accessibility.NotApplicable,
 typeKind: TypeKind.Enum,
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithDefaultEnum_DefaultNamespace()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -401,11 +398,11 @@ namespace ConsoleApplication
 defaultNamespace: "ConsoleApplication",
 accessibility: Accessibility.NotApplicable,
 typeKind: TypeKind.Enum,
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithDefaultEnum_DefaultNamespace_NotSimpleName()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -443,13 +440,13 @@ namespace A
 defaultNamespace: "ConsoleApplication",
 accessibility: Accessibility.NotApplicable,
 typeKind: TypeKind.Enum,
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
         #endregion
 
         // Working is very similar to the adding to the same file
         #region SameProject_ExistingFile
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInExistingEmptyFile()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -484,11 +481,11 @@ isLine: false,
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
-existingFilename: "Test2.cs").ConfigureAwait(true);
+existingFilename: "Test2.cs");
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInExistingEmptyFile_Usings_Folders()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -530,11 +527,11 @@ class Program
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
-existingFilename: "Test2.cs").ConfigureAwait(true);
+existingFilename: "Test2.cs");
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInExistingEmptyFile_Usings_DefaultNamespace()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -577,11 +574,11 @@ class Program
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
-existingFilename: "Test2.cs").ConfigureAwait(true);
+existingFilename: "Test2.cs");
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInExistingEmptyFile_Usings_Folders_DefaultNamespace()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -624,11 +621,11 @@ class Program
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
-existingFilename: "Test2.cs").ConfigureAwait(true);
+existingFilename: "Test2.cs");
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInExistingEmptyFile_NoUsings_Folders_NotSimpleName()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -664,7 +661,7 @@ checkIfUsingsNotIncluded: true,
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
-existingFilename: "Test2.cs").ConfigureAwait(true);
+existingFilename: "Test2.cs");
         }
         #endregion
 
@@ -702,10 +699,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileFolderContainers: Array.Empty<string>(),
-newFileName: "Test2.cs").ConfigureAwait(true);
+newFileName: "Test2.cs");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_UsingsNotNeeded_InNewFile_InFolder()
         {
@@ -743,10 +740,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileFolderContainers: new string[] { "outer", "inner" },
-newFileName: "Test2.cs").ConfigureAwait(true);
+newFileName: "Test2.cs");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_UsingsNeeded_InNewFile_InFolder()
         {
@@ -787,10 +784,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileFolderContainers: new string[] { "outer", "inner" },
-newFileName: "Test2.cs").ConfigureAwait(true);
+newFileName: "Test2.cs");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_UsingsNotNeeded_InNewFile_InFolder_NotSimpleName()
         {
@@ -825,10 +822,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileFolderContainers: new string[] { "outer", "inner" },
-newFileName: "Test2.cs").ConfigureAwait(true);
+newFileName: "Test2.cs");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_UsingsNeeded_InNewFile_InFolder_DefaultNamespace()
         {
@@ -870,10 +867,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileFolderContainers: new string[] { "outer", "inner" },
-newFileName: "Test2.cs").ConfigureAwait(true);
+newFileName: "Test2.cs");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_UsingsNotNeeded_InNewFile_InFolder_DefaultNamespace()
         {
@@ -919,10 +916,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileFolderContainers: new string[] { "outer" },
-newFileName: "Test2.cs").ConfigureAwait(true);
+newFileName: "Test2.cs");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_UsingsNotNeeded_InNewFile_InFolder_DefaultNamespace_NotSimpleName()
         {
@@ -970,10 +967,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileFolderContainers: new string[] { "outer" },
-newFileName: "Test2.cs").ConfigureAwait(true);
+newFileName: "Test2.cs");
         }
 
-        [WorkItem(898452)]
+        [WorkItem(898452, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/898452")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_InValidFolderNameNotMadeNamespace()
         {
@@ -1028,7 +1025,7 @@ typeKind: TypeKind.Interface,
 isNewFile: true,
 areFoldersValidIdentifiers: false,
 newFileFolderContainers: new string[] { "123", "456" },
-newFileName: "Test2.cs").ConfigureAwait(true);
+newFileName: "Test2.cs");
         }
 
         #endregion
@@ -1036,7 +1033,7 @@ newFileName: "Test2.cs").ConfigureAwait(true);
         #endregion
         #region SameLanguageDifferentProject
         #region SameLanguageDifferentProject_ExistingFile
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoSameLanguageDifferentProjectEmptyFile()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1073,11 +1070,11 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
 existingFilename: "Test2.cs",
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoSameLanguageDifferentProjectExistingFile()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1124,11 +1121,11 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
 existingFilename: "Test2.cs",
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoSameLanguageDifferentProjectExistingFile_Usings_Folders()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1185,7 +1182,7 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
 existingFilename: "Test2.cs",
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
         #endregion
@@ -1226,10 +1223,10 @@ typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileName: "Test2.cs",
 newFileFolderContainers: Array.Empty<string>(),
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoSameLanguageDifferentProjectNewFile_Folders_Usings()
         {
@@ -1273,10 +1270,10 @@ typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileName: "Test2.cs",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoSameLanguageDifferentProjectNewFile_Folders_NoUsings_NotSimpleName()
         {
@@ -1314,10 +1311,10 @@ typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileName: "Test2.cs",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoSameLanguageDifferentProjectNewFile_Folders_Usings_DefaultNamespace()
         {
@@ -1362,10 +1359,10 @@ typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileName: "Test2.cs",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoSameLanguageDifferentProjectNewFile_Folders_NoUsings_NotSimpleName_DefaultNamespace()
         {
@@ -1404,7 +1401,7 @@ typeKind: TypeKind.Interface,
 isNewFile: true,
 newFileName: "Test2.cs",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
         #endregion
         #endregion
@@ -1444,10 +1441,10 @@ typeKind: TypeKind.Class,
 isNewFile: true,
 newFileName: "Test2.vb",
 newFileFolderContainers: Array.Empty<string>(),
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageNewFile_Folders_Usings()
         {
@@ -1490,10 +1487,10 @@ typeKind: TypeKind.Class,
 isNewFile: true,
 newFileName: "Test2.vb",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageNewFile_Folders_NoUsings_NotSimpleName()
         {
@@ -1530,10 +1527,10 @@ typeKind: TypeKind.Class,
 isNewFile: true,
 newFileName: "Test2.vb",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageNewFile_Folders_Usings_RootNamespace()
         {
@@ -1577,10 +1574,10 @@ typeKind: TypeKind.Class,
 isNewFile: true,
 newFileName: "Test2.vb",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageNewFile_Folders_NoUsings_NotSimpleName_RootNamespace()
         {
@@ -1618,10 +1615,10 @@ typeKind: TypeKind.Class,
 isNewFile: true,
 newFileName: "Test2.vb",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageNewFile_Folders_NoUsings_NotSimpleName_RootNamespace_ProjectReference()
         {
@@ -1665,10 +1662,10 @@ typeKind: TypeKind.Class,
 isNewFile: true,
 newFileName: "Test3.vb",
 newFileFolderContainers: new string[] { "outer", "inner" },
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(858826)]
+        [WorkItem(858826, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/858826")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageNewFileAdjustFileExtension()
         {
@@ -1704,11 +1701,11 @@ typeKind: TypeKind.Class,
 isNewFile: true,
 newFileName: "Test2.vb",
 newFileFolderContainers: Array.Empty<string>(),
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageExistingEmptyFile()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1745,11 +1742,11 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
 existingFilename: "Test2.vb",
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(850101)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(850101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/850101")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageExistingEmptyFile_Usings_Folder()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1792,10 +1789,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
 existingFilename: "Test2.vb",
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageExistingNonEmptyFile()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1837,10 +1834,10 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
 existingFilename: "Test2.vb",
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeIntoDifferentLanguageExistingNonEmptyTargetFile()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1889,11 +1886,11 @@ accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
 existingFilename: "Test2.vb",
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(861362)]
-        [WorkItem(869593)]
+        [WorkItem(861362, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861362")]
+        [WorkItem(869593, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/869593")]
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateModuleFromCSharpToVisualBasicInTypeContext()
         {
@@ -1930,14 +1927,14 @@ isNewFile: true,
 newFileName: "Test2.vb",
 newFileFolderContainers: Array.Empty<string>(),
 projectName: "Assembly2",
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Module)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Module));
         }
 
         #endregion
         #region Bugfix 
-        [WorkItem(861462)]
-        [WorkItem(873066)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861462, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861462")]
+        [WorkItem(873066, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/873066")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithProperAccessibilityAndTypeKind_1()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1957,11 +1954,11 @@ public class D
 }",
 accessibility: Accessibility.Public,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.BaseList, false)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.BaseList, false));
         }
 
-        [WorkItem(861462)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861462, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861462")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithProperAccessibilityAndTypeKind_2()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -1980,11 +1977,11 @@ public interface DDD
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.Interface, false)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.Interface, false));
         }
 
-        [WorkItem(861462)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861462, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861462")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithProperAccessibilityAndTypeKind_3()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2003,11 +2000,11 @@ public interface DDD
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Interface,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.Interface, false)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.Interface, false));
         }
 
-        [WorkItem(861362)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861362, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861362")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInMemberAccessExpression()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2034,11 +2031,11 @@ public class A
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.MemberAccessWithNamespace)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.MemberAccessWithNamespace));
         }
 
-        [WorkItem(861362)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861362, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861362")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInMemberAccessExpressionInNamespace()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2072,11 +2069,11 @@ namespace A
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.MemberAccessWithNamespace)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.MemberAccessWithNamespace));
         }
 
-        [WorkItem(861600)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861600, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861600")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithoutEnumForGenericsInMemberAccess()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2111,11 +2108,11 @@ public class Foo<T>
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure));
         }
 
-        [WorkItem(861600)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861600, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861600")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithoutEnumForGenericsInNameContext()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2150,11 +2147,11 @@ public class Foo<T>
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Interface | TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Interface | TypeKindOptions.Delegate));
         }
 
-        [WorkItem(861600)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861600, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861600")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInMemberAccessWithNSForModule()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2188,11 +2185,11 @@ namespace Foo
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.MemberAccessWithNamespace)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.MemberAccessWithNamespace));
         }
 
-        [WorkItem(861600)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861600, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861600")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInMemberAccessWithGlobalNSForModule()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2219,11 +2216,11 @@ public class Bar
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.MemberAccessWithNamespace)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.MemberAccessWithNamespace));
         }
 
-        [WorkItem(861600)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(861600, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/861600")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeInMemberAccessWithoutNS()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2240,12 +2237,12 @@ namespace Bar
 }",
 languageName: LanguageNames.CSharp,
 typeName: "Bar",
-isMissing: true).ConfigureAwait(true);
+isMissing: true);
         }
 
-        [WorkItem(876202)]
-        [WorkItem(883531)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(876202, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/876202")]
+        [WorkItem(883531, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/883531")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_NoParameterLessConstructorForStruct()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2272,11 +2269,11 @@ public struct Bar
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Structure,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure, false)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure, false));
         }
         #endregion
         #region Delegates
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_ObjectCreationExpression_MethodGroup()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2308,10 +2305,10 @@ public delegate void MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_ObjectCreationExpression_MethodGroup_Generics()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2343,10 +2340,10 @@ public delegate void MyD<T>();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_ObjectCreationExpression_Delegate()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2376,10 +2373,10 @@ public delegate object MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_ObjectCreationExpression_Action()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2409,10 +2406,10 @@ public delegate void MyD(int obj);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_ObjectCreationExpression_Func()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2442,10 +2439,10 @@ public delegate int MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_ObjectCreationExpression_ParenLambda()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2471,10 +2468,10 @@ public delegate int MyD(int n);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_ObjectCreationExpression_SimpleLambda()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2500,11 +2497,11 @@ public delegate void MyD(object n);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Delegate));
         }
 
-        [WorkItem(872935)]
-        [WpfFact(Skip = "872935"), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(872935, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/872935")]
+        [Fact(Skip = "872935"), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_ObjectCreationExpression_SimpleLambdaEmpty()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2530,10 +2527,10 @@ public delegate void MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_VarDecl_MethodGroup()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2565,10 +2562,10 @@ public delegate void MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_VarDecl_Delegate()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2600,10 +2597,10 @@ public delegate object MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_VarDecl_Action()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2633,10 +2630,10 @@ public delegate void MyD(int arg1, int arg2, int arg3);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_VarDecl_Func()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2666,10 +2663,10 @@ public delegate int MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_VarDecl_ParenLambda()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2696,10 +2693,10 @@ public delegate int MyD(int n);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_VarDecl_SimpleLambda()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2725,10 +2722,10 @@ public delegate void MyD(object n);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_Cast_MethodGroup()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2760,10 +2757,10 @@ public delegate void MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_Cast_Delegate()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2795,10 +2792,10 @@ public delegate object MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_Cast_Action()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2828,10 +2825,10 @@ public delegate void MyD(int arg1, int arg2, int arg3);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_Cast_Func()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2861,10 +2858,10 @@ public delegate int MyD();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_Cast_ParenLambda()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2891,10 +2888,10 @@ public delegate int MyD(int n);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_Cast_SimpleLambda()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2920,7 +2917,7 @@ public delegate void MyD(object n);
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.AllOptions));
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
@@ -2957,11 +2954,11 @@ typeKind: TypeKind.Delegate,
 isNewFile: true,
 newFileName: "Test2.vb",
 newFileFolderContainers: Array.Empty<string>(),
-projectName: "Assembly2").ConfigureAwait(true);
+projectName: "Assembly2");
         }
 
-        [WorkItem(860210)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [WorkItem(860210, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/860210")]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_NoInfo()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -2986,11 +2983,11 @@ public delegate void MyD<T>();
 ",
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
-isNewFile: false).ConfigureAwait(true);
+isNewFile: false);
         }
         #endregion 
         #region Dev12Filtering
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_NoEnum_InvocationExpression_0()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3017,10 +3014,10 @@ public class B
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertTypeKindAbsent: new[] { TypeKindOptions.Enum }).ConfigureAwait(true);
+assertTypeKindAbsent: new[] { TypeKindOptions.Enum });
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateDelegateType_NoEnum_InvocationExpression_1()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3054,10 +3051,10 @@ namespace A
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertTypeKindAbsent: new[] { TypeKindOptions.Enum }).ConfigureAwait(true);
+assertTypeKindAbsent: new[] { TypeKindOptions.Enum });
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_TypeConstraint_1()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3091,10 +3088,10 @@ public class Bar
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.BaseList)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.BaseList));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_TypeConstraint_2()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3134,10 +3131,10 @@ public class Bar
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.BaseList)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.BaseList));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_TypeConstraint_3()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3183,10 +3180,10 @@ public class Bar
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.BaseList)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.BaseList));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithProperAccessibilityWithNesting_1()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3212,10 +3209,10 @@ public class D
 }",
 accessibility: Accessibility.Public,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.BaseList, false)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.BaseList, false));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithProperAccessibilityWithNesting_2()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3241,10 +3238,10 @@ public class D
 }",
 accessibility: Accessibility.Public,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.BaseList, false)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.BaseList, false));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateTypeWithProperAccessibilityWithNesting_3()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3276,10 +3273,10 @@ public class D
 }",
 accessibility: Accessibility.Public,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.BaseList, false)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.BaseList, false));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_Event_1()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3309,10 +3306,10 @@ public delegate void foo();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_Event_2()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3334,10 +3331,10 @@ public delegate void foo();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_Event_3()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3369,10 +3366,10 @@ namespace NS
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_Event_4()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3396,10 +3393,10 @@ namespace NS
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_Event_5()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3437,10 +3434,10 @@ namespace NS
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Module)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Module));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_Event_6()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3470,10 +3467,10 @@ namespace NS
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Class,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Module)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(false, TypeKindOptions.Class | TypeKindOptions.Structure | TypeKindOptions.Module));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_Event_7()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3503,10 +3500,10 @@ public delegate void foo();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.Delegate));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
+        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateType)]
         public async Task GenerateType_Event_8()
         {
             await TestWithMockedGenerateTypeDialog(
@@ -3542,7 +3539,7 @@ public delegate void foo();
 accessibility: Accessibility.Public,
 typeKind: TypeKind.Delegate,
 isNewFile: false,
-assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.Delegate)).ConfigureAwait(true);
+assertGenerateTypeDialogOptions: new GenerateTypeDialogOptions(true, TypeKindOptions.Delegate));
         }
         #endregion
     }

@@ -59,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     EventSymbol overriddenEvent = this.OverriddenEvent;
                     if ((object)overriddenEvent != null)
                     {
-                        CopyEventCustomModifiers(overriddenEvent, ref _type);
+                        CopyEventCustomModifiers(overriddenEvent, ref _type, ContainingAssembly);
                     }
 #if XSHARP
                     else if (this.IsVirtual)
@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             else if ((object)explicitlyImplementedEvent != null)
             {
-                CopyEventCustomModifiers(explicitlyImplementedEvent, ref _type);
+                CopyEventCustomModifiers(explicitlyImplementedEvent, ref _type, ContainingAssembly);
             }
 
             AccessorDeclarationSyntax addSyntax = null;

@@ -4,12 +4,11 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
-
+using Roslyn.Utilities;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Tasks.Hosting;
 using Microsoft.Build.Utilities;
-using Microsoft.CodeAnalysis.CompilerServer;
-using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CommandLine;
 
 namespace Microsoft.CodeAnalysis.BuildTasks
 {
@@ -154,9 +153,6 @@ namespace Microsoft.CodeAnalysis.BuildTasks
 
         #region Tool Members
 
-        internal override BuildProtocolConstants.RequestLanguage Language
-            => BuildProtocolConstants.RequestLanguage.CSharpCompile;
-
         private static readonly string[] s_separators = { "\r\n" };
 
         internal override void LogMessages(string output, MessageImportance messageImportance)
@@ -181,26 +177,6 @@ namespace Microsoft.CodeAnalysis.BuildTasks
             {
                 return "csc.exe";
             }
-        }
-
-        /// <summary>
-        /// Return the path to the tool to execute.
-        /// </summary>
-        protected override string GenerateFullPathToTool()
-        {
-            string pathToTool = ToolLocationHelper.GetPathToBuildToolsFile(ToolName, ToolLocationHelper.CurrentToolsVersion);
-
-            if (null == pathToTool)
-            {
-                pathToTool = ToolLocationHelper.GetPathToDotNetFrameworkFile(ToolName, TargetDotNetFrameworkVersion.VersionLatest);
-
-                if (null == pathToTool)
-                {
-                    Log.LogErrorWithCodeFromResources("General_FrameworksFileNotFound", ToolName, ToolLocationHelper.GetDotNetFrameworkVersionFolderPrefix(TargetDotNetFrameworkVersion.VersionLatest));
-                }
-            }
-
-            return pathToTool;
         }
 
         /// <summary>
@@ -281,6 +257,8 @@ namespace Microsoft.CodeAnalysis.BuildTasks
         }
 
         #endregion
+
+        internal override RequestLanguage Language => RequestLanguage.CSharpCompile;
 
         /// <summary>
         /// The C# compiler (starting with Whidbey) supports assembly aliasing for references.
@@ -413,7 +391,7 @@ namespace Microsoft.CodeAnalysis.BuildTasks
             // add them to the outgoing string.
             foreach (string singleIdentifier in allIdentifiers)
             {
-                if (SyntaxFacts.IsValidIdentifier(singleIdentifier))
+                if (UnicodeCharacterUtilities.IsValidIdentifier(singleIdentifier))
                 {
                     // Separate them with a semicolon if there's something already in
                     // the outgoing string.
@@ -485,16 +463,9 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                     CheckHostObjectSupport(param = nameof(Analyzers), analyzerHostObject.SetAnalyzers(Analyzers));
                 }
             }
-            catch (Exception e) when (!Utilities.IsCriticalException(e))
+            catch (Exception e)
             {
-                if (HostCompilerSupportsAllParameters)
-                {
-                    // If the host compiler doesn't support everything we need, we're going to end up 
-                    // shelling out to the command-line compiler anyway.  That means the command-line
-                    // compiler will log the error.  So here, we only log the error if we would've
-                    // tried to use the host compiler.
-                    Log.LogErrorWithCodeFromResources("General_CouldNotSetHostObjectParameter", param, e.Message);
-                }
+                Log.LogErrorWithCodeFromResources("General_CouldNotSetHostObjectParameter", param, e.Message);
                 return false;
             }
 
@@ -607,6 +578,8 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                     }
                 }
 
+                InitializeHostObjectSupportForNewSwitches(cscHostObject, ref param);
+
                 // If we have been given a property value that the host compiler doesn't support
                 // then we need to state that we are falling back to the command line compiler.
                 // Null is supported because it means that option should be omitted, and compiler default used - obviously always valid.
@@ -617,16 +590,9 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                     CheckHostObjectSupport(nameof(PreferredUILang), resultFromHostObjectSetOperation: false);
                 }
             }
-            catch (Exception e) when (!Utilities.IsCriticalException(e))
+            catch (Exception e)
             {
-                if (HostCompilerSupportsAllParameters)
-                {
-                    // If the host compiler doesn't support everything we need, we're going to end up 
-                    // shelling out to the command-line compiler anyway.  That means the command-line
-                    // compiler will log the error.  So here, we only log the error if we would've
-                    // tried to use the host compiler.
-                    Log.LogErrorWithCodeFromResources("General_CouldNotSetHostObjectParameter", param, e.Message);
-                }
+                Log.LogErrorWithCodeFromResources("General_CouldNotSetHostObjectParameter", param, e.Message);
                 return false;
             }
             finally
@@ -703,23 +669,41 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                                 HostObjectInitializationStatus.NoActionReturnFailure;
                         }
 
-                        // Roslyn does not support compiling through the host object
+                        if (!this.HostCompilerSupportsAllParameters)
+                        {
+                            // Since the host compiler has refused to take on the responsibility for this compilation,
+                            // we're about to shell out to the command-line compiler to handle it.  If some of the
+                            // references don't exist on disk, we know the command-line compiler will fail, so save
+                            // the trouble, and just throw a consistent error ourselves.  This allows us to give
+                            // more information than the compiler would, and also make things consistent across
+                            // Vbc / Csc / etc.  Actually, the real reason is bug 275726 (ddsuites\src\vs\env\vsproject\refs\ptp3).
+                            // This suite behaves differently in localized builds than on English builds because 
+                            // VBC.EXE doesn't localize the word "error" when they emit errors and so we can't scan for it.
+                            if (!CheckAllReferencesExistOnDisk())
+                            {
+                                return HostObjectInitializationStatus.NoActionReturnFailure;
+                            }
 
-                        // Since the host compiler has refused to take on the responsibility for this compilation,
-                        // we're about to shell out to the command-line compiler to handle it.  If some of the
-                        // references don't exist on disk, we know the command-line compiler will fail, so save
-                        // the trouble, and just throw a consistent error ourselves.  This allows us to give
-                        // more information than the compiler would, and also make things consistent across
-                        // Vbc / Csc / etc.  Actually, the real reason is bug 275726 (ddsuites\src\vs\env\vsproject\refs\ptp3).
-                        // This suite behaves differently in localized builds than on English builds because 
-                        // VBC.EXE doesn't localize the word "error" when they emit errors and so we can't scan for it.
-                        if (!CheckAllReferencesExistOnDisk())
+                            // The host compiler doesn't support some of the switches/parameters
+                            // being passed to it.  Therefore, we resort to using the command-line compiler
+                            // in this case.
+                            UsedCommandLineTool = true;
+                            return HostObjectInitializationStatus.UseAlternateToolToExecute;
+                        }
+
+                        // Ok, by now we validated that the host object supports the necessary switches
+                        // and parameters.  Last thing to check is whether the host object is up to date,
+                        // and in that case, we will inform the caller that no further action is necessary.
+                        if (hostObjectSuccessfullyInitialized)
+                        {
+                            return cscHostObject.IsUpToDate() ?
+                                HostObjectInitializationStatus.NoActionReturnSuccess :
+                                HostObjectInitializationStatus.UseHostObjectToExecute;
+                        }
+                        else
                         {
                             return HostObjectInitializationStatus.NoActionReturnFailure;
                         }
-
-                        UsedCommandLineTool = true;
-                        return HostObjectInitializationStatus.UseAlternateToolToExecute;
                     }
                     else
                     {

@@ -240,7 +240,7 @@ Public Class ParseStatements
             ]]>)
     End Sub
 
-    <WorkItem(538594, "DevDiv")>
+    <WorkItem(538594, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/538594")>
     <Fact>
     Public Sub ParseOnErrorGoto()
         ParseAndVerify(<![CDATA[
@@ -341,7 +341,7 @@ Public Class ParseStatements
         ]]>)
     End Sub
 
-    <WorkItem(539194, "DevDiv")>
+    <WorkItem(539194, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539194")>
     <Fact>
     Public Sub ParseSingleLineIfThenWithColon()
         ' Foo should be a call statement and not a label
@@ -375,15 +375,13 @@ Module M
   End Sub
 End Module
         ]]>,
-            <errors>
-                <error id="30205" message="End of statement expected." start="40" end="56"/>
-                <error id="30205" message="End of statement expected." start="57" end="58"/>
-                <error id="36005" message="'ElseIf' must be preceded by a matching 'If' or 'ElseIf'."/>
-                <error id="30205" message="End of statement expected." start="93" end="99"/>
-            </errors>)
+            Diagnostic(ERRID.ERR_ExpectedEOS, "ElseIf True Then").WithLocation(4, 18),
+            Diagnostic(ERRID.ERR_ExpectedEOS, "x").WithLocation(4, 35),
+            Diagnostic(ERRID.ERR_ExpectedEOS, "elseIf").WithLocation(5, 24)
+            )
     End Sub
 
-    <WorkItem(539204, "DevDiv")>
+    <WorkItem(539204, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539204")>
     <Fact>
     Public Sub ParseColonLineCont()
         ' 2nd Else and ElseIf are dangling in the line ifs
@@ -407,7 +405,7 @@ End Module
         Diagnostic(ERRID.ERR_LineContWithCommentOrNoPrecSpace, "_"))
     End Sub
 
-    <WorkItem(539204, "DevDiv")>
+    <WorkItem(539204, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539204")>
     <Fact>
     Public Sub ParseSingleLineIfThenExtraElse()
         ' 2nd Else and ElseIf are dangling in the line ifs
@@ -422,13 +420,12 @@ Module M
 End Module
         ]]>,
         <errors>
-            <error id="30086" message="'Else' must be preceded by a matching 'If' or 'ElseIf'." start="84" end="88"/>
-            <error id="30205" message="End of statement expected."/>
+            <error id="30205" message="End of statement expected." start="84" end="88"/>
             <error id="36005" message="'ElseIf' must be preceded by a matching 'If' or 'ElseIf'." start="152" end="176"/>
         </errors>)
     End Sub
 
-    <WorkItem(539205, "DevDiv")>
+    <WorkItem(539205, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539205")>
     <Fact>
     Public Sub ParseSingleLineIfWithNestedSingleLineIf()
         ' This is a valid nested line if in a line if
@@ -495,7 +492,7 @@ End Module
         </errors>)
     End Sub
 
-    <WorkItem(539207, "DevDiv")>
+    <WorkItem(539207, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539207")>
     <Fact>
     Public Sub ParseSingleLineIfWithNestedDoLoop1()
         ' This is a single line if that contains an invalid do .. loop 
@@ -545,7 +542,7 @@ End Module
     End Sub
 
 
-    <WorkItem(539209, "DevDiv")>
+    <WorkItem(539209, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539209")>
     <Fact>
     Public Sub ParseSingleLineSubWithSingleLineIfFollowedByColonComma()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -558,7 +555,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(539210, "DevDiv")>
+    <WorkItem(539210, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539210")>
     <Fact>
     Public Sub ParseSingleLineIfFollowedByColonNewLine()
         ' Per Dev10 the second WriteLine should NOT be part of
@@ -600,7 +597,7 @@ End Module
 
     End Sub
 
-    <WorkItem(539211, "DevDiv")>
+    <WorkItem(539211, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539211")>
     <Fact>
     Public Sub ParseSingleLineSubWithSingleLineIfFollowedByComma()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -613,7 +610,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(539211, "DevDiv")>
+    <WorkItem(539211, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539211")>
     <Fact>
     Public Sub ParseSingleLineSubWithSingleLineIfFollowedByParen()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -626,7 +623,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(530904, "DevDiv")>
+    <WorkItem(530904, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530904")>
     <Fact>
     Public Sub SingleLineLambdaComma()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -647,7 +644,7 @@ End Module
 </errors>)
     End Sub
 
-    <WorkItem(539212, "DevDiv")>
+    <WorkItem(539212, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539212")>
     <Fact>
     Public Sub ParseSingleLineSubWithSingleLineIfWithAnotherSingleLineSub()
         ' The second single line sub is within a var declaration after the end statement in the then clause!
@@ -661,7 +658,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(539212, "DevDiv")>
+    <WorkItem(539212, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539212")>
     <Fact>
     Public Sub ParseSingleLineSubWithIncompleteSingleLineIf()
         ' Dev10 reports single line if must contain one statement.
@@ -674,7 +671,7 @@ End Module
 ]]>, Diagnostic(ERRID.ERR_ExpectedEndIf, "If True Then"))
     End Sub
 
-    <WorkItem(539212, "DevDiv")>
+    <WorkItem(539212, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539212")>
     <Fact>
     Public Sub ParseSubLambdaWithIncompleteSingleLineIf()
         ' The single line if actually gets parsed as a block if in both dev10 and roslyn
@@ -729,7 +726,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(538606, "DevDiv")>
+    <WorkItem(538606, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/538606")>
     <Fact>
     Public Sub LabelFollowedByMethodInvocation()
         ParseAndVerify(<![CDATA[
@@ -744,7 +741,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(541358, "DevDiv")>
+    <WorkItem(541358, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541358")>
     <Fact>
     Public Sub LabelRelatedToBug8037()
         ParseAndVerify(<![CDATA[
@@ -831,7 +828,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(542623, "DevDiv")>
+    <WorkItem(542623, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542623")>
     <Fact>
     Public Sub ParseMidIdentifier1()
         ParseAndVerify(<![CDATA[
@@ -852,7 +849,7 @@ End Module
         )
     End Sub
 
-    <WorkItem(542623, "DevDiv")>
+    <WorkItem(542623, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542623")>
     <Fact>
     Public Sub ParseMidIdentifier2()
         ParseAndVerify(<![CDATA[
@@ -1169,7 +1166,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(536076, "DevDiv")>
+    <WorkItem(536076, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/536076")>
     <Fact>
     Public Sub ParseQueryFromNullableRangeVariable()
         ParseAndVerify(<![CDATA[
@@ -1290,7 +1287,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(531540, "DevDiv")>
+    <WorkItem(531540, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531540")>
     <Fact>
     Public Sub SelectCaseInLambda()
         ParseAndVerify(<![CDATA[
@@ -1310,7 +1307,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(530633, "DevDiv")>
+    <WorkItem(530633, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530633")>
     <Fact>
     Public Sub SubImplements()
         ParseAndVerify(<![CDATA[
@@ -1502,7 +1499,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(546693, "DevDiv")>
+    <WorkItem(546693, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546693")>
     <Fact()>
     Public Sub ParseLambdaSingleLineIfWithColonElseIfInsideIfBlock_1()
         ParseAndVerify(<![CDATA[
@@ -1521,7 +1518,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(546693, "DevDiv")>
+    <WorkItem(546693, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546693")>
     <Fact()>
     Public Sub ParseLambdaSingleLineIfWithColonElseIfInsideIfBlock_2()
         ParseAndVerify(<![CDATA[
@@ -1586,7 +1583,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(530940, "DevDiv")>
+    <WorkItem(530940, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530940")>
     <Fact()>
     Public Sub ParseSingleLineIfColon()
         ParseAndVerify(<![CDATA[
@@ -1646,7 +1643,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(601004, "DevDiv")>
+    <WorkItem(601004, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/601004")>
     <Fact()>
     Public Sub ParseSingleLineIfEmptyElse()
         ParseAndVerify(<![CDATA[
@@ -1678,7 +1675,7 @@ End Module
     ''' <summary>
     ''' EmptyStatement following colon.
     ''' </summary>
-    <WorkItem(530966, "DevDiv")>
+    <WorkItem(530966, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530966")>
     <Fact()>
     Public Sub ParseEmptyStatementFollowingColon()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -1754,7 +1751,7 @@ End Module
             SyntaxKind.EndOfFileToken)
     End Sub
 
-    <WorkItem(531486, "DevDiv")>
+    <WorkItem(531486, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531486")>
     <Fact()>
     Public Sub ParseSingleLineIfElse()
         ParseAndVerify(<![CDATA[
@@ -1769,7 +1766,7 @@ End Module
 </errors>)
     End Sub
 
-    <WorkItem(546910, "DevDiv")>
+    <WorkItem(546910, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546910")>
     <Fact()>
     Public Sub ParseMultiLineIfLambdaWithStatementColonElse()
         ParseAndVerify(<![CDATA[
@@ -1786,7 +1783,7 @@ End Module
 </errors>)
     End Sub
 
-    <WorkItem(546910, "DevDiv")>
+    <WorkItem(546910, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546910")>
     <Fact()>
     Public Sub ParseSingleLineIfLambdaWithStatementColonElse()
         ParseAndVerify(<![CDATA[
@@ -2004,7 +2001,7 @@ End Module
         Assert.Equal(SyntaxKind.ForBlock, statement.Kind)
     End Sub
 
-    <WorkItem(537169, "DevDiv")>
+    <WorkItem(537169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/537169")>
     <Fact>
     Public Sub ParseGettypeNextString()
         ParseAndVerify(<![CDATA[Next.foo(GetType(Func(Of A))), "")]]>,
@@ -2012,7 +2009,7 @@ End Module
             Diagnostic(ERRID.ERR_ExtraNextVariable, ".foo(GetType(Func(Of A)))"))
     End Sub
 
-    <WorkItem(538515, "DevDiv")>
+    <WorkItem(538515, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/538515")>
     <Fact>
     Public Sub IncParseAGPower17()
         Dim code As String = (<![CDATA[
@@ -2063,7 +2060,7 @@ End Namespace
         ParseAndVerify(code)
     End Sub
 
-    <WorkItem(539055, "DevDiv")>
+    <WorkItem(539055, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539055")>
     <Fact>
     Public Sub ParseReturnFollowedByComma()
         ParseAndVerify(<![CDATA[
@@ -2073,7 +2070,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(538443, "DevDiv")>
+    <WorkItem(538443, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/538443")>
     <Fact>
     Public Sub ParseMultiIfThenElseOnOneLine()
         ParseAndVerify(<![CDATA[
@@ -2090,7 +2087,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(538440, "DevDiv")>
+    <WorkItem(538440, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/538440")>
     <Fact>
     Public Sub ParseSingleIfElseTerminatedByColon()
         Dim t = ParseAndVerify(<![CDATA[ 
@@ -2128,7 +2125,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(538481, "DevDiv")>
+    <WorkItem(538481, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/538481")>
     <Fact>
     Public Sub ParseLineContAtEnd()
         Dim t = ParseAndVerify(<![CDATA[
@@ -2234,7 +2231,7 @@ End Module
         Assert.IsType(Of LocalDeclarationStatementSyntax)(ifBlock.Statements(0))
 
     End Sub
-    <WorkItem(540669, "DevDiv")>
+    <WorkItem(540669, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540669")>
     <Fact>
     Public Sub SingleLineIfNotTerminateByEmptyStatement()
 
@@ -2267,7 +2264,7 @@ End Module
 
     End Sub
 
-    <WorkItem(540844, "DevDiv")>
+    <WorkItem(540844, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540844")>
     <Fact>
     Public Sub TestForEachAfterOffset()
         Const prefix As String = "GARBAGE"
@@ -2301,7 +2298,7 @@ End Module
 
     End Sub
 
-    <WorkItem(543248, "DevDiv")>
+    <WorkItem(543248, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543248")>
     <Fact()>
     Public Sub ParseBadCollectionRangeVariableDeclaration1()
 
@@ -2317,7 +2314,7 @@ End Module
                           Diagnostic(ERRID.ERR_ExpectedIn, ""))
     End Sub
 
-    <WorkItem(543364, "DevDiv")>
+    <WorkItem(543364, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543364")>
     <Fact()>
     Public Sub ParseLabelAfterElse()
 
@@ -2332,7 +2329,7 @@ End Module
     End Module]]>, Diagnostic(ERRID.ERR_Syntax, "100"))
     End Sub
 
-    <WorkItem(544224, "DevDiv")>
+    <WorkItem(544224, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544224")>
     <Fact()>
     Public Sub ParsePartialSingleLineIfStatement()
         Dim stmt = SyntaxFactory.ParseExecutableStatement("If True")
@@ -2360,7 +2357,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(536260, "DevDiv")>
+    <WorkItem(536260, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/536260")>
     <Fact()>
     Public Sub BC30012ERR_LbExpectedEndIf()
         ParseAndVerify(<![CDATA[
@@ -2376,7 +2373,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(527095, "DevDiv")>
+    <WorkItem(527095, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/527095")>
     <Fact()>
     Public Sub BC30016ERR_InvOutsideProc_Label()
         ParseAndVerify(<![CDATA[
@@ -2616,10 +2613,7 @@ End Module]]>,
                     End If
                 End Sub
             End Module
-        ]]>,
-        <errors>
-            <error id="30198"/>
-        </errors>)
+        ]]>)
     End Sub
 
     <WorkItem(884863, "DevDiv/Personal")>
@@ -3076,7 +3070,7 @@ End Module]]>,
             </errors>)
     End Sub
 
-    <WorkItem(527019, "DevDiv")>
+    <WorkItem(527019, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/527019")>
     <Fact()>
     Public Sub BC31427ERR_BadCCExpression_ParseErrorMismatchExpectedEOSVSBadCCExpressionExpected()
         ParseAndVerify(<![CDATA[
@@ -3091,7 +3085,7 @@ End Module]]>,
             </errors>)
     End Sub
 
-    <WorkItem(536271, "DevDiv")>
+    <WorkItem(536271, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/536271")>
     <Fact()>
     Public Sub BC32020ERR_ExpectedAssignmentOperator()
         ParseAndVerify(<![CDATA[
@@ -3256,7 +3250,7 @@ End Module]]>,
         </errors>)
     End Sub
 
-    <WorkItem(527028, "DevDiv")>
+    <WorkItem(527028, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/527028")>
     <Fact()>
     Public Sub BC36631ERR_ExpectedJoin()
         ParseAndVerify(<![CDATA[
@@ -3432,7 +3426,7 @@ End Module
             Diagnostic(ERRID.ERR_InvalidEndProperty, "End Property"))
     End Sub
 
-    <WorkItem(536268, "DevDiv")>
+    <WorkItem(536268, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/536268")>
     <Fact()>
     Public Sub ParseExpectedXmlNameAndIllegalChar()
         ParseAndVerify(<![CDATA[
@@ -3447,7 +3441,7 @@ End Module
                  Diagnostic(ERRID.ERR_IllegalXmlWhiteSpace, "                                    "))
     End Sub
 
-    <WorkItem(536270, "DevDiv")>
+    <WorkItem(536270, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/536270")>
     <Fact()>
     Public Sub ParseExpectedXmlnsAndExpectedEQAndExpectedXmlName()
         ParseAndVerify(<![CDATA[
@@ -3520,7 +3514,7 @@ End Module
         </errors>)
     End Sub
 
-    <WorkItem(545166, "DevDiv")>
+    <WorkItem(545166, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545166")>
     <WorkItem(894062, "DevDiv/Personal")>
     <Fact()>
     Public Sub BC30287ERR_ExpectedDot_ParseVariant()
@@ -3683,7 +3677,7 @@ End Namespace
         </errors>)
     End Sub
 
-    <WorkItem(539208, "DevDiv")>
+    <WorkItem(539208, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539208")>
     <Fact()>
     Public Sub BC32005ERR_BogusWithinLineIf_2()
         ParseAndVerify(<![CDATA[
@@ -3742,7 +3736,7 @@ End Namespace
         Diagnostic(ERRID.ERR_InvInsideEnum, "300:"))
     End Sub
 
-    <WorkItem(539182, "DevDiv")>
+    <WorkItem(539182, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539182")>
     <Fact()>
     Public Sub ParseEmptyStatementWithBadToken()
         ' There should only be one error reported
@@ -3761,7 +3755,7 @@ End Namespace
              </errors>)
     End Sub
 
-    <WorkItem(539515, "DevDiv")>
+    <WorkItem(539515, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539515")>
     <Fact()>
     Public Sub ParseNestedSingleLineIfFollowedByEndIf()
         ' Report error for mismatched END IF.  
@@ -3777,7 +3771,7 @@ End Namespace
 
     End Sub
 
-    <WorkItem(539515, "DevDiv")>
+    <WorkItem(539515, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539515")>
     <Fact()>
     Public Sub ParseSingleLineWithNestedMultiLineIf()
         ' Report error for mismatched END IF.
@@ -3959,7 +3953,7 @@ End Namespace
              Diagnostic(ERRID.ERR_ExpectedIdentifier, "").WithLocation(40, 26))
     End Sub
 
-    <WorkItem(542066, "DevDiv")>
+    <WorkItem(542066, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542066")>
     <Fact()>
     Public Sub Bug9035()
         ParseAndVerify(<![CDATA[
@@ -4091,7 +4085,7 @@ End Namespace
             Diagnostic(ERRID.ERR_EndSyncLockNoSyncLock, "end synclock"))
     End Sub
 
-    <WorkItem(543724, "DevDiv")>
+    <WorkItem(543724, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543724")>
     <Fact()>
     Public Sub ElseIfStatementOutsideMethodBody()
         ParseAndVerify(<![CDATA[
@@ -4103,7 +4097,7 @@ End Class
         Diagnostic(ERRID.ERR_ExpectedExpression, ""))
     End Sub
 
-    <WorkItem(544495, "DevDiv")>
+    <WorkItem(544495, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544495")>
     <Fact>
     Public Sub CatchFinallyStatementOutsideMethodBody()
         ParseAndVerify(<![CDATA[
@@ -4113,7 +4107,7 @@ End Class
         Diagnostic(ERRID.ERR_ExecutableAsDeclaration, "Finally"))
     End Sub
 
-    <WorkItem(544519, "DevDiv")>
+    <WorkItem(544519, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544519")>
     <Fact>
     Public Sub TryStatementOutsideMethodBody()
         ParseAndVerify(<![CDATA[
@@ -4131,7 +4125,7 @@ End Module
 
 #End Region
 
-    <WorkItem(545543, "DevDiv")>
+    <WorkItem(545543, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545543")>
     <Fact>
     Public Sub ParseInvalidUseOfBlockWithinSingleLineLambda()
         Dim compilationDef =
@@ -4153,7 +4147,7 @@ End Module
                                        Diagnostic(ERRID.ERR_NameNotDeclared1, "j").WithArguments("j"))
     End Sub
 
-    <WorkItem(545543, "DevDiv")>
+    <WorkItem(545543, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545543")>
     <ConditionalFact(GetType(WindowsOnly))>
     Public Sub ParseValidUseOfBlockWithinMultiLineLambda()
         Dim compilationDef =
@@ -4181,7 +4175,7 @@ End Module
         Assert.Equal(1, NodeFound.Count)
     End Sub
 
-    <WorkItem(545543, "DevDiv")>
+    <WorkItem(545543, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545543")>
     <ConditionalFact(GetType(WindowsOnly))>
     Public Sub ParseValidUseOfNonBlockWithinSingleLineLambda()
         Dim compilationDef =
@@ -4211,7 +4205,7 @@ End Module
         Assert.Equal(1, NodeFound1.Count)
     End Sub
 
-    <WorkItem(545543, "DevDiv")>
+    <WorkItem(545543, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545543")>
     <ConditionalFact(GetType(WindowsOnly))>
     Public Sub ParseValidUseOfBlockWithinSingleLineLambda()
         'Subtle Variation with Single line Statement Lambda and a Block Construct
@@ -4241,7 +4235,7 @@ End Module
         Assert.Equal(1, NodeFound1.Count)
     End Sub
 
-    <WorkItem(530516, "DevDiv")>
+    <WorkItem(530516, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530516")>
     <Fact()>
     Public Sub Bug530516()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -4388,7 +4382,7 @@ End Class
         Assert.True(identifierToken.IsMissing)
     End Sub
 
-    <WorkItem(546688, "DevDiv")>
+    <WorkItem(546688, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546688")>
     <Fact()>
     Public Sub Bug16568_If()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -4476,7 +4470,7 @@ End Module
         </errors>)
     End Sub
 
-    <WorkItem(546688, "DevDiv")>
+    <WorkItem(546688, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546688")>
     <Fact()>
     Public Sub Bug16568_Else()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -4564,7 +4558,7 @@ End Module
         </errors>)
     End Sub
 
-    <WorkItem(546734, "DevDiv")>
+    <WorkItem(546734, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546734")>
     <Fact()>
     Public Sub Bug16688()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -4696,7 +4690,7 @@ End Class
         Assert.Equal(token.ToFullString(), "    Exit ")
     End Sub
 
-    <WorkItem(531059, "DevDiv")>
+    <WorkItem(531059, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531059")>
     <Fact()>
     Public Sub ParseSingleLineLambdaInSingleLineIf()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -4737,7 +4731,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(547060, "DevDiv")>
+    <WorkItem(547060, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547060")>
     <Fact()>
     Public Sub ParseSingleLineLambdaInSingleLineIf01()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -4760,7 +4754,7 @@ End Module
         ]]>)
     End Sub
 
-    <WorkItem(578144, "DevDiv")>
+    <WorkItem(578144, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/578144")>
     <Fact()>
     Public Sub ParseStatementLambdaOnSingleLineLambdaWithColon()
         Dim tree = ParseAndVerify(<![CDATA[
@@ -4774,7 +4768,7 @@ End Module
             Diagnostic(ERRID.ERR_InvalidEndSub, "End Sub"))
     End Sub
 
-    <WorkItem(531086, "DevDiv")>
+    <WorkItem(531086, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531086")>
     <Fact()>
     Public Sub Bug17550()
         ParseAndVerify("<!--" + vbCrLf,
@@ -4795,7 +4789,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(531102, "DevDiv")>
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
     <Fact()>
     Public Sub Bug17574_XmlAttributeAccess()
         ParseAndVerify(<![CDATA[
@@ -5186,7 +5180,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(531102, "DevDiv")>
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
     <Fact()>
     Public Sub Bug17574_XmlElementAccess()
         ParseAndVerify(<![CDATA[
@@ -5342,7 +5336,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(531102, "DevDiv")>
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
     <Fact()>
     Public Sub Bug17574_XmlDescendantAccess()
         ParseAndVerify(<![CDATA[
@@ -5522,7 +5516,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(531102, "DevDiv")>
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
     <Fact()>
     Public Sub Bug17574_Comment()
         ParseAndVerify(<![CDATA[
@@ -5584,7 +5578,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(531102, "DevDiv")>
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
     <Fact()>
     Public Sub Bug17574_Other()
         ParseAndVerify(<![CDATA[
@@ -5634,7 +5628,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(531480, "DevDiv")>
+    <WorkItem(531480, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531480")>
     <Fact>
     Public Sub ImplicitLineContinuationAfterQuery()
         ParseAndVerify(<![CDATA[
@@ -5743,7 +5737,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(531632, "DevDiv")>
+    <WorkItem(531632, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531632")>
     <Fact()>
     Public Sub ColonTerminatorFollowingXmlAttributeAccess()
         ParseAndVerify(<![CDATA[
@@ -5756,7 +5750,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(547195, "DevDiv")>
+    <WorkItem(547195, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547195")>
     <Fact()>
     Public Sub ColonFollowingImplicitContinuation()
         ParseAndVerify(<![CDATA[
@@ -5826,7 +5820,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(547305, "DevDiv")>
+    <WorkItem(547305, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547305")>
     <Fact()>
     Public Sub Bug547305()
         ParseAndVerify(<![CDATA[
@@ -5905,7 +5899,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(552836, "DevDiv")>
+    <WorkItem(552836, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/552836")>
     <Fact()>
     Public Sub MoreNextVariablesThanBlockContexts()
         ParseAndVerify(<![CDATA[
@@ -5941,7 +5935,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(553962, "DevDiv")>
+    <WorkItem(553962, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/553962")>
     <Fact()>
     Public Sub Bug553962()
         ParseAndVerify(<![CDATA[
@@ -6093,8 +6087,8 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(553962, "DevDiv")>
-    <WorkItem(571807, "DevDiv")>
+    <WorkItem(553962, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/553962")>
+    <WorkItem(571807, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/571807")>
     <Fact()>
     Public Sub Bug571807()
         ParseAndVerify(<![CDATA[
@@ -6131,7 +6125,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(570756, "DevDiv")>
+    <WorkItem(570756, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/570756")>
     <Fact()>
     Public Sub FullWidthKeywords()
         Dim source = <![CDATA[
@@ -6142,8 +6136,8 @@ End Module
         ParseAndVerify(source)
     End Sub
 
-    <WorkItem(588122, "DevDiv")>
-    <WorkItem(587130, "DevDiv")>
+    <WorkItem(588122, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/588122")>
+    <WorkItem(587130, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/587130")>
     <Fact()>
     Public Sub FullWidthKeywords001()
         Dim source = <![CDATA[
@@ -6160,7 +6154,7 @@ End Module
         ParseAndVerify(source)
     End Sub
 
-    <WorkItem(571529, "DevDiv")>
+    <WorkItem(571529, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/571529")>
     <Fact()>
     Public Sub Bug571529()
         ParseAndVerify(<![CDATA[
@@ -6173,7 +6167,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(581662, "DevDiv")>
+    <WorkItem(581662, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/581662")>
     <Fact()>
     Public Sub BlankLinesFollowingUnderscore()
         ParseAndVerify(<![CDATA[
@@ -6242,7 +6236,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(608214, "DevDiv")>
+    <WorkItem(608214, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608214")>
     <Fact()>
     Public Sub Bug608214()
         ParseAndVerify(<![CDATA[
@@ -6288,18 +6282,16 @@ End Module
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
-        If True Then 5 Else 5
+        If True Then 5 Else 6
     End Sub
 End Module
 ]]>,
-            <errors>
-                <error id="30035" message="Syntax error."/>
-                <error id="30035" message="Syntax error."/>
-            </errors>)
+            Diagnostic(ERRID.ERR_Syntax, "5").WithLocation(4, 22)
+            )
     End Sub
 
-    <WorkItem(608214, "DevDiv")>
-    <WorkItem(610345, "DevDiv")>
+    <WorkItem(608214, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608214")>
+    <WorkItem(610345, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/610345")>
     <Fact()>
     Public Sub Bug608214_2()
         ParseAndVerify(<![CDATA[
@@ -6351,7 +6343,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(608225, "DevDiv")>
+    <WorkItem(608225, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/608225")>
     <Fact()>
     Public Sub Bug608225()
         ParseAndVerify(<![CDATA[
@@ -6484,7 +6476,7 @@ End Module
     ''' <summary>
     ''' Line continuation trivia should include the underscore only.
     ''' </summary>
-    <WorkItem(581662, "DevDiv")>
+    <WorkItem(581662, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/581662")>
     <Fact()>
     Public Sub LineContinuationTrivia()
         Dim source = <![CDATA[
@@ -6537,7 +6529,7 @@ End Module
     ''' <summary>
     ''' Each colon should be a separate trivia node.
     ''' </summary>
-    <WorkItem(612584, "DevDiv")>
+    <WorkItem(612584, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/612584")>
     <Fact()>
     Public Sub ConsecutiveColonsTrivia()
         Dim source = <![CDATA[
@@ -6633,7 +6625,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(619627, "DevDiv")>
+    <WorkItem(619627, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/619627")>
     <Fact()>
     Public Sub OuterEndWithinMultiLineLambda()
         ParseAndVerify(<![CDATA[
@@ -6771,7 +6763,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(620546, "DevDiv")>
+    <WorkItem(620546, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/620546")>
     <Fact()>
     Public Sub NestedMultiLineBlocksInSingleLineIf()
         ParseAndVerify(<![CDATA[
@@ -6879,9 +6871,8 @@ Module M
     End Sub
 End Module
 ]]>,
-            <errors>
-                <error id="30086" message="'Else' must be preceded by a matching 'If' or 'ElseIf'."/>
-            </errors>)
+            Diagnostic(ERRID.ERR_ExpectedEOS, "Else").WithLocation(4, 60))
+
         ParseAndVerify(<![CDATA[
 Module M
     Dim x = Sub() If True Then Else Dim y = Sub() If False Then Else Else
@@ -7003,7 +6994,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(622712, "DevDiv")>
+    <WorkItem(622712, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/622712")>
     <Fact()>
     Public Sub ColonTerminatorWithTrailingTrivia()
         ParseAndVerify(<![CDATA[
@@ -7029,7 +7020,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(623023, "DevDiv")>
+    <WorkItem(623023, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/623023")>
     <Fact()>
     Public Sub SingleLineIfWithinNestedSingleLineBlocks()
         ParseAndVerify(<![CDATA[
@@ -7162,7 +7153,7 @@ End Module
     ''' scanner if the colons are on the same line vs.
     ''' separate lines with line continuations.
     ''' </summary>
-    <WorkItem(634703, "DevDiv")>
+    <WorkItem(634703, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/634703")>
     <Fact>
     Public Sub MultipleColons()
         CheckMethodStatementsAndTrivia(<![CDATA[
@@ -7346,7 +7337,7 @@ End Module
 ]]>)
     End Sub
 
-    <WorkItem(638187, "DevDiv")>
+    <WorkItem(638187, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/638187")>
     <Fact()>
     Public Sub IsNextStatementInsideLambda()
         ParseAndVerify(<![CDATA[
@@ -7506,7 +7497,7 @@ End Module
     ''' Currently, any statement on the same line as
     ''' the invalid label is ignored.
     ''' </summary>
-    <WorkItem(642558, "DevDiv")>
+    <WorkItem(642558, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/642558")>
     <Fact()>
     Public Sub ErrorInStatementFollowingInvalidLabel()
         ParseAndVerify(<![CDATA[
@@ -7564,7 +7555,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(640520, "DevDiv")>
+    <WorkItem(640520, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/640520")>
     <Fact()>
     Public Sub Bug640520()
         ParseAndVerify(<![CDATA[
@@ -7605,7 +7596,7 @@ End Class
             </errors>)
     End Sub
 
-    <WorkItem(648998, "DevDiv")>
+    <WorkItem(648998, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/648998")>
     <Fact()>
     Public Sub Bug648998()
         ParseAndVerify(<![CDATA[
@@ -7657,7 +7648,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(649162, "DevDiv")>
+    <WorkItem(649162, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/649162")>
     <Fact()>
     Public Sub Bug649162()
         ParseAndVerify(<![CDATA[
@@ -7680,7 +7671,7 @@ Imports <xmlns:=''>, Imports <xmlns::=''>, Imports <xmlns==''>
             </errors>)
     End Sub
 
-    <WorkItem(650318, "DevDiv")>
+    <WorkItem(650318, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/650318")>
     <Fact()>
     Public Sub Bug650318()
         ParseAndVerify(<![CDATA[
@@ -7735,7 +7726,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(671115, "DevDiv")>
+    <WorkItem(671115, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/671115")>
     <Fact()>
     Public Sub IsNewLine()
         Dim sourceFormat = "Module M{0}    Dim x = 1 'Comment{0}End Module{0}"
@@ -7746,7 +7737,7 @@ End Module
         ParseAndVerify(String.Format(sourceFormat, PARAGRAPH_SEPARATOR))
     End Sub
 
-    <WorkItem(674590, "DevDiv")>
+    <WorkItem(674590, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/674590")>
     <Fact()>
     Public Sub Bug674590()
         ParseAndVerify(<![CDATA[
@@ -7829,7 +7820,7 @@ End Class
             </errors>)
     End Sub
 
-    <WorkItem(684860, "DevDiv")>
+    <WorkItem(684860, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/684860")>
     <Fact()>
     Public Sub Bug684860_SkippedTokens()
         Const n = 100000
@@ -7856,7 +7847,7 @@ End Class
         Assert.True((tokens2.Length - tokens1.Length) > n)
     End Sub
 
-    <WorkItem(684860, "DevDiv")>
+    <WorkItem(684860, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/684860")>
     <Fact()>
     Public Sub Bug684860_XmlText()
         Const n = 100000
@@ -7894,7 +7885,7 @@ End Class
         End Sub
     End Class
 
-    <WorkItem(685268, "DevDiv")>
+    <WorkItem(685268, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/685268")>
     <Fact()>
     Public Sub Bug685268()
         ParseAndVerify(<![CDATA[
@@ -7912,7 +7903,7 @@ End Module
             </errors>)
     End Sub
 
-    <WorkItem(685474, "DevDiv")>
+    <WorkItem(685474, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/685474")>
     <Fact()>
     Public Sub Bug685474()
         ParseAndVerify(<![CDATA[
@@ -7942,7 +7933,7 @@ b
             </errors>)
     End Sub
 
-    <WorkItem(697117, "DevDiv")>
+    <WorkItem(697117, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/697117")>
     <Fact()>
     Public Sub Bug697117()
         ParseAndVerify(<![CDATA[
@@ -8141,9 +8132,7 @@ Class C
     Dim x = Sub() If True Then Else Implements I
 End Class
 ]]>,
-            <errors>
-                <error id="30205"/>
-            </errors>)
+            Diagnostic(ERRID.ERR_InvInsideProc, "Implements I").WithLocation(3, 37))
         ParseAndVerify(<![CDATA[
 Class C
     Dim x = Sub()
@@ -8284,9 +8273,7 @@ Class C
     Dim x = Sub() If True Then Else <A> Property P
 End Class
 ]]>,
-            <errors>
-                <error id="30201"/>
-            </errors>)
+            Diagnostic(ERRID.ERR_InvInsideEndsProc, "<A> Property P").WithLocation(3, 37))
         ParseAndVerify(<![CDATA[
 Class C
     Dim x = Sub()
@@ -8302,7 +8289,7 @@ End Class
             </errors>)
     End Sub
 
-    <WorkItem(716242, "DevDiv")>
+    <WorkItem(716242, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/716242")>
     <Fact()>
     Public Sub Bug716242()
         ParseAndVerify(<![CDATA[
@@ -8387,7 +8374,7 @@ End Class
         Next
     End Sub
 
-    <WorkItem(539515, "DevDiv")>
+    <WorkItem(539515, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539515")>
     <Fact()>
     Public Sub ParseIllegaLineCont()
         ParseAndVerify(
@@ -8402,7 +8389,7 @@ End Module
 )
     End Sub
 
-    <WorkItem(539515, "DevDiv")>
+    <WorkItem(539515, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539515")>
     <Fact()>
     Public Sub ParseIllegaLineCont_1()
         ParseAndVerify(
@@ -8417,5 +8404,722 @@ End Module
 ]]>,
     Diagnostic(ERRID.ERR_LineContWithCommentOrNoPrecSpace, "_").WithLocation(6, 1)
 )
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_01()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test1(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then r = "null" System.Console.WriteLine(1)
+
+        If val Is Nothing Then r = Function() "null" System.Console.WriteLine(2)
+
+        If val Is Nothing Then r = "+" Else r = "-" System.Console.WriteLine(3)
+
+        If val Is Nothing Then r = "+" Else r = Function() "-" System.Console.WriteLine(4)
+
+        If val Is Nothing Then : System.Console.WriteLine(5)
+    End Sub
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+        If val Is Nothing Then r = "null" System.Console.WriteLine(1)
+                                          ~~~~~~
+BC30205: End of statement expected.
+        If val Is Nothing Then r = Function() "null" System.Console.WriteLine(2)
+                                                     ~~~~~~
+BC30205: End of statement expected.
+        If val Is Nothing Then r = "+" Else r = "-" System.Console.WriteLine(3)
+                                                    ~~~~~~
+BC30205: End of statement expected.
+        If val Is Nothing Then r = "+" Else r = Function() "-" System.Console.WriteLine(4)
+                                                               ~~~~~~
+BC30081: 'If' must end with a matching 'End If'.
+        If val Is Nothing Then : System.Console.WriteLine(5)
+        ~~~~~~~~~~~~~~~~~~~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_02()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test2(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then r = "+" Else : System.Console.WriteLine(6)
+
+        r = Sub() If val Is Nothing Then r = "null" System.Console.WriteLine(7)
+
+        r = Sub() If val Is Nothing Then r = "+" Else r = "-" System.Console.WriteLine(8)
+
+        r = Sub() If val Is Nothing Then r = "null" : System.Console.WriteLine(9)
+
+        r = Sub() If val Is Nothing Then r = "+" Else r = "-" : System.Console.WriteLine(10)
+
+        If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(11)
+
+        If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(12) Else
+
+        If val Is Nothing Then r = Function() "+" Else r = "-" System.Console.WriteLine(13)
+
+        If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(14) Else
+    End Sub
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+        r = Sub() If val Is Nothing Then r = "null" System.Console.WriteLine(7)
+                                                    ~~~~~~
+BC30205: End of statement expected.
+        r = Sub() If val Is Nothing Then r = "+" Else r = "-" System.Console.WriteLine(8)
+                                                              ~~~~~~
+BC30205: End of statement expected.
+        If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(12) Else
+                                                                                                             ~~~~
+BC30205: End of statement expected.
+        If val Is Nothing Then r = Function() "+" Else r = "-" System.Console.WriteLine(13)
+                                                               ~~~~~~
+BC30205: End of statement expected.
+        If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(14) Else
+                                                                                                                       ~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_03()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test3(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(15) Else
+        End If
+    End Sub
+
+    Sub Test4(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(16) Else
+        End If
+    End Sub
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(15) Else
+                                                                                                                 ~~~~
+BC30205: End of statement expected.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(16) Else
+                                                                                                                           ~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_04()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test5(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(17) : Else
+        End If
+
+        If val Is Nothing Then
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(18) : Else
+        End If
+
+        If val Is Nothing Then
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(19) 
+        Else
+        End If
+
+        If val Is Nothing Then
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(20) 
+        Else
+        End If
+    End Sub
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30086: 'Else' must be preceded by a matching 'If' or 'ElseIf'.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(17) : Else
+                                                                                                                   ~~~~
+BC36918: Single-line statement lambdas must include exactly one statement.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(18) : Else
+                                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+BC30086: 'Else' must be preceded by a matching 'If' or 'ElseIf'.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(18) : Else
+                                                                                                                             ~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_05()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test3(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+        ElseIf val Is Nothing Then
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(15) Else
+        End If
+    End Sub
+
+    Sub Test4(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+        ElseIf val Is Nothing Then
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(16) Else
+        End If
+    End Sub
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(15) Else
+                                                                                                                 ~~~~
+BC30205: End of statement expected.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(16) Else
+                                                                                                                           ~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_06()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test3(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+        Else
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(15) Else
+        End If
+    End Sub
+
+    Sub Test4(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+        Else
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(16) Else
+        End If
+    End Sub
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(15) Else
+                                                                                                                 ~~~~
+BC30205: End of statement expected.
+            If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(16) Else
+                                                                                                                           ~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_07()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test1(val As Object)
+        Dim r As Object
+
+        r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(1) Else
+    End Sub
+
+    Sub Test2(val As Object)
+        Dim r As Object
+
+        r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(2) Else
+    End Sub
+
+    Sub Test3(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(3) Else
+        End If
+    End Sub
+
+    Sub Test4(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(4) Else
+        End If
+    End Sub
+
+    Sub Test5(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(5) : Else
+        End If
+    End Sub
+
+    Sub Test6(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(6) : Else
+        End If
+    End Sub
+
+    Sub Test7(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(7)  
+        Else
+        End If
+    End Sub
+
+    Sub Test8(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(8) 
+        Else
+        End If
+    End Sub
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+        r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(1) Else
+                                                                                                                      ~~~~
+BC30205: End of statement expected.
+        r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(2) Else
+                                                                                                                                ~~~~
+BC30205: End of statement expected.
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(3) Else
+                                                                                                                          ~~~~
+BC30205: End of statement expected.
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(4) Else
+                                                                                                                                    ~~~~
+BC30086: 'Else' must be preceded by a matching 'If' or 'ElseIf'.
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(5) : Else
+                                                                                                                            ~~~~
+BC36918: Single-line statement lambdas must include exactly one statement.
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(6) : Else
+                                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+BC30086: 'Else' must be preceded by a matching 'If' or 'ElseIf'.
+            r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(6) : Else
+                                                                                                                                      ~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_08()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test1(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else System.Console.WriteLine(1) Else System.Console.WriteLine(1)
+
+        If val Is Nothing Then r = Sub() If val Is Nothing Then If val Is Nothing Then r = "+" Else r = "-" Else r = Sub() System.Console.WriteLine(2) Else System.Console.WriteLine(2)
+
+        If val Is Nothing Then r = Sub() r = "-" Else System.Console.WriteLine(3)
+    End Sub
+
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_09()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test1(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then r = Sub() System.Console.WriteLine(1) ,
+
+        If val Is Nothing Then r = Sub() If val Is Nothing Then System.Console.WriteLine(2) ,
+
+        If val Is Nothing Then r = Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(3) ,
+
+        r = Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(4) ,
+
+        r = Sub() r = Sub()
+                          If val Is Nothing Then r = "+" Else System.Console.WriteLine(5) ,
+                      End Sub
+
+        r = Function() Function()
+                           If val Is Nothing Then r = "+" Else System.Console.WriteLine(6) ,
+                           return 0
+                       End Function
+
+        r = Sub() r = Sub()
+                          If val Is Nothing Then System.Console.WriteLine(7) ,
+                      End Sub
+    End Sub
+
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+        If val Is Nothing Then r = Sub() System.Console.WriteLine(1) ,
+                                                                     ~
+BC30205: End of statement expected.
+        If val Is Nothing Then r = Sub() If val Is Nothing Then System.Console.WriteLine(2) ,
+                                                                                            ~
+BC30205: End of statement expected.
+        If val Is Nothing Then r = Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(3) ,
+                                                                                                         ~
+BC30205: End of statement expected.
+        r = Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(4) ,
+                                                                                  ~
+BC30205: End of statement expected.
+                          If val Is Nothing Then r = "+" Else System.Console.WriteLine(5) ,
+                                                                                          ~
+BC30205: End of statement expected.
+                           If val Is Nothing Then r = "+" Else System.Console.WriteLine(6) ,
+                                                                                           ~
+BC30205: End of statement expected.
+                          If val Is Nothing Then System.Console.WriteLine(7) ,
+                                                                             ~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_10()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test1(val As Object)
+        Dim r As Object
+
+        If val Is Nothing Then r = Sub() System.Console.WriteLine(1) System.Console.WriteLine(1)
+
+        If val Is Nothing Then r = Sub() If val Is Nothing Then System.Console.WriteLine(2) System.Console.WriteLine(2)
+
+        If val Is Nothing Then r = Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(3) System.Console.WriteLine(3)
+
+        r = Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(4) System.Console.WriteLine(4)
+
+        r = Sub() r = Sub()
+                          If val Is Nothing Then r = "+" Else System.Console.WriteLine(5) System.Console.WriteLine(5)
+                      End Sub
+
+        r = Function() Function()
+                           If val Is Nothing Then r = "+" Else System.Console.WriteLine(6) System.Console.WriteLine(6)
+                           return 0
+                       End Function
+
+        r = Sub() r = Sub()
+                          If val Is Nothing Then System.Console.WriteLine(7) System.Console.WriteLine(7)
+                      End Sub
+    End Sub
+
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+        If val Is Nothing Then r = Sub() System.Console.WriteLine(1) System.Console.WriteLine(1)
+                                                                     ~~~~~~
+BC30205: End of statement expected.
+        If val Is Nothing Then r = Sub() If val Is Nothing Then System.Console.WriteLine(2) System.Console.WriteLine(2)
+                                                                                            ~~~~~~
+BC30205: End of statement expected.
+        If val Is Nothing Then r = Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(3) System.Console.WriteLine(3)
+                                                                                                         ~~~~~~
+BC30205: End of statement expected.
+        r = Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(4) System.Console.WriteLine(4)
+                                                                                  ~~~~~~
+BC30205: End of statement expected.
+                          If val Is Nothing Then r = "+" Else System.Console.WriteLine(5) System.Console.WriteLine(5)
+                                                                                          ~~~~~~
+BC30205: End of statement expected.
+                           If val Is Nothing Then r = "+" Else System.Console.WriteLine(6) System.Console.WriteLine(6)
+                                                                                           ~~~~~~
+BC30205: End of statement expected.
+                          If val Is Nothing Then System.Console.WriteLine(7) System.Console.WriteLine(7)
+                                                                             ~~~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_11()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test1(val As Object)
+        Dim r As Object
+
+        r = Function() Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(1) Else System.Console.WriteLine(1)
+
+        If val Is Nothing Then r = Function() Sub() If val Is Nothing Then r = "-" Else System.Console.WriteLine(2) Else System.Console.WriteLine(2)
+
+        If val Is Nothing Then If val Is Nothing Then If val Is Nothing Then If val Is Nothing Then r = "3" Else Else Else Else System.Console.WriteLine(3)
+    End Sub
+
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30205: End of statement expected.
+        r = Function() Sub() If val Is Nothing Then r = "+" Else System.Console.WriteLine(1) Else System.Console.WriteLine(1)
+                                                                                             ~~~~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_12()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Main()
+	Dim d = Test1()()
+        d(Nothing)
+        d(d)
+
+        Test2(Nothing)
+        Test2(d)
+
+        d = test3()
+        d(Nothing)
+        d(d)
+    End Sub
+
+    Function Test1() As System.Func(Of System.Action(Of Object))
+        Dim r As System.Func(Of System.Action(Of Object))
+
+        r = Function() Sub(val As Object)
+                           If val Is Nothing Then System.Console.WriteLine("Then") Else Equals ("Else")
+                       End Sub
+
+        return r
+    End Function
+
+    Sub Equals(x as String)
+	System.Console.WriteLine(x)
+    End Sub
+
+    Sub Test2(val As Object)
+        If val Is Nothing Then System.Console.WriteLine("Then 2") Else Equals ("Else 2")
+    End Sub
+
+    Function Test3() As System.Action(Of Object)
+        Dim r As System.Action(Of Object)
+
+        r = Sub(val As Object) If val Is Nothing Then System.Console.WriteLine("Then 3") Else Equals ("Else 3")
+
+        return r
+    End Function
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseExe)
+
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+</expected>)
+
+        CompileAndVerify(compilation, expectedOutput:=
+"Then
+Else
+Then 2
+Else 2
+Then 3
+Else 3")
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_13()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Test1()
+        Dim d1 = Function(val1) If val1 Is Nothing Then Return 1, b1 = 0
+
+        Dim d2 = Function(val2) If (val2 Is Nothing) Then Return 2, b2 = 0
+    End Sub
+
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30199: '(' expected.
+        Dim d1 = Function(val1) If val1 Is Nothing Then Return 1, b1 = 0
+                                   ~
+BC33104: 'If' operator requires either two or three operands.
+        Dim d2 = Function(val2) If (val2 Is Nothing) Then Return 2, b2 = 0
+                                                   ~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_14()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+
+    Sub Main()
+        Dim d1 = Function(val1) If val1 Is Nothing Then Return 1 Else Return 2, b1 = 3
+
+        Dim d2 = Function(val2) If (val2 Is Nothing) Then Return 3 Else Return 4, b2 = 5
+    End Sub
+
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30199: '(' expected.
+        Dim d1 = Function(val1) If val1 Is Nothing Then Return 1 Else Return 2, b1 = 3
+                                   ~
+BC33104: 'If' operator requires either two or three operands.
+        Dim d2 = Function(val2) If (val2 Is Nothing) Then Return 3 Else Return 4, b2 = 5
+                                                   ~
+</expected>)
+    End Sub
+
+    <Fact>
+    <WorkItem(14761, "https://github.com/dotnet/roslyn/issues/14761")>
+    Public Sub ParseLineIfFollwedByAnotherStatement_15()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+Module Module1
+    Function Test1(val1) As System.Func(Of Object)
+        If val1 Is Nothing Then Return Function(val2) If val2 Is Nothing Then Return 1 Else Return 2 Else Return Nothing
+    End Function
+
+    Function Test2(val1) As System.Func(Of Object)
+        If val1 Is Nothing Then Return Function(val2) If (val2 Is Nothing) Then Return 1 Else Return 2 Else Return Nothing
+    End Function
+End Module
+    </file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC30199: '(' expected.
+        If val1 Is Nothing Then Return Function(val2) If val2 Is Nothing Then Return 1 Else Return 2 Else Return Nothing
+                                                         ~
+BC42105: Function 'Test1' doesn't return a value on all code paths. A null reference exception could occur at run time when the result is used.
+    End Function
+    ~~~~~~~~~~~~
+BC33104: 'If' operator requires either two or three operands.
+        If val1 Is Nothing Then Return Function(val2) If (val2 Is Nothing) Then Return 1 Else Return 2 Else Return Nothing
+                                                                         ~
+BC42105: Function 'Test2' doesn't return a value on all code paths. A null reference exception could occur at run time when the result is used.
+    End Function
+    ~~~~~~~~~~~~
+</expected>)
     End Sub
 End Class

@@ -1,13 +1,8 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Collections.Immutable
-Imports System.Runtime.InteropServices
-Imports System.Text.RegularExpressions
-Imports Microsoft.CodeAnalysis.Collections
-Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
-Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -148,7 +143,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Friend Function BindObjectCreationExpression(
-            syntax As VisualBasicSyntaxNode,
+            syntax As SyntaxNode,
             type As TypeSymbol,
             arguments As ImmutableArray(Of BoundExpression),
             diagnostics As DiagnosticBag) As BoundExpression
@@ -164,7 +159,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 callerInfoOpt:=Nothing)
         End Function
 
-        Private Function MergeBoundChildNodesWithObjectInitializerForBadNode(
+        Private Shared Function MergeBoundChildNodesWithObjectInitializerForBadNode(
             boundArguments As ImmutableArray(Of BoundExpression),
             objectInitializerExpression As BoundObjectInitializerExpressionBase
         ) As ImmutableArray(Of BoundNode)
@@ -178,10 +173,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Function BindObjectCreationExpression(
-            typeNode As VisualBasicSyntaxNode,
+            typeNode As SyntaxNode,
             argumentListOpt As ArgumentListSyntax,
             type0 As TypeSymbol,
-            node As VisualBasicSyntaxNode,
+            node As SyntaxNode,
             boundArguments As ImmutableArray(Of BoundExpression),
             argumentNames As ImmutableArray(Of String),
             objectInitializerExpressionOpt As BoundObjectInitializerExpressionBase,
@@ -493,14 +488,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             End If
 
-            Debug.Assert(resultExpression.Type.IsSameTypeIgnoringCustomModifiers(type0))
+            Debug.Assert(resultExpression.Type.IsSameTypeIgnoringAll(type0))
             Debug.Assert(LookupResult.WorseResultKind(resultKind, resultExpression.ResultKind) = resultExpression.ResultKind)
 
             Return resultExpression
         End Function
 
         Private Function BindNoPiaObjectCreationExpression(
-            node As VisualBasicSyntaxNode,
+            node As SyntaxNode,
             [interface] As TypeSymbol,
             coClass As NamedTypeSymbol,
             boundArguments As ImmutableArray(Of BoundExpression),
@@ -628,7 +623,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' The temporary diagnostic bag is needed to collect diagnostics until it is known that the accessed symbol
             ' is a field or property, and if so, if it is shared or not.
             ' The temporary error messages should only be shown if binding the member access itself failed, or the bound
-            ' member access is usable for the initialization (non shared, writeable field or property).
+            ' member access is usable for the initialization (non shared, writable field or property).
             ' Otherwise more specific diagnostics will be shown .
             Dim memberBindingDiagnostics = DiagnosticBag.GetInstance
 
@@ -646,7 +641,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 If Not fieldName.HasErrors Then
 
                     ' no need to use the memberInitializerBinder here, because there is no MemberAccessExpression 
-                    target = BindMemberAccess(fieldName, variableOrTempPlaceholder, fieldName, False, False, memberBindingDiagnostics)
+                    target = BindMemberAccess(fieldName, variableOrTempPlaceholder, fieldName, False, memberBindingDiagnostics)
                     diagnostics.AddRange(memberBindingDiagnostics)
 
                     Dim identifierName As String = fieldName.Identifier.ValueText

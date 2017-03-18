@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Roslyn.Utilities;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Threading;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -104,27 +103,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // May not be the case if there are error types.
                     if ((object)containingAssembly0 != null && (object)containingAssembly1 != null)
                     {
+                        // Use the assembly identities rather than locations. Note that the
+                        // assembly identities may be identical as well. (For instance, the
+                        // symbols are type arguments to the same generic type, and the type
+                        // arguments have the same string representation. The assembly
+                        // identities will refer to the generic types, not the type arguments.)
                         location0 = containingAssembly0.Identity.ToString();
                         location1 = containingAssembly1.Identity.ToString();
-
-                        // Even if the friendly locations produced by GetLocationString aren't
-                        // distinct, the containing assembly identities should be.
-                        Debug.Assert(location0 != location1);
                     }
                 }
 
-                if (location0 != null)
+                if (location0 != location1)
                 {
-                    description0 = $"{description0} [{location0}]";
-                }
-
-                if (location1 != null)
-                {
-                    description1 = $"{description1} [{location1}]";
+                    if (location0 != null)
+                    {
+                        description0 = $"{description0} [{location0}]";
+                    }
+                    if (location1 != null)
+                    {
+                        description1 = $"{description1} [{location1}]";
+                    }
                 }
             }
-
-            Debug.Assert(description0 != description1);
 
             if (!_lazyDescriptions.IsDefault) return;
 
@@ -151,7 +151,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-
 
         private static string GetLocationString(Compilation compilation, Symbol unwrappedSymbol)
         {
@@ -198,7 +197,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _lazyDescriptions[index];
         }
 
-        private class Description : IMessageSerializable
+        private sealed class Description : IMessageSerializable
         {
             private readonly SymbolDistinguisher _distinguisher;
             private readonly int _index;
@@ -207,6 +206,30 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 _distinguisher = distinguisher;
                 _index = index;
+            }
+
+            private Symbol GetSymbol()
+            {
+                return (_index == 0) ? _distinguisher._symbol0 : _distinguisher._symbol1;
+            }
+
+            public override bool Equals(object obj)
+            {
+                var other = obj as Description;
+                return other != null &&
+                    _distinguisher._compilation == other._distinguisher._compilation &&
+                    GetSymbol() == other.GetSymbol();
+            }
+
+            public override int GetHashCode()
+            {
+                int result = GetSymbol().GetHashCode();
+                var compilation = _distinguisher._compilation;
+                if (compilation != null)
+                {
+                    result = Hash.Combine(result, compilation.GetHashCode());
+                }
+                return result;
             }
 
             public override string ToString()

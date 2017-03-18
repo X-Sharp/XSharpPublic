@@ -12,6 +12,7 @@ Imports System.Xml.Linq
 Imports Xunit
 Imports System.Reflection.Metadata
 Imports Microsoft.CodeAnalysis.Emit
+Imports System.Collections.Immutable
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -1297,7 +1298,7 @@ End Class
 
                                                            Dim signatureHeader As SignatureHeader = Nothing
                                                            Dim mrEx As BadImageFormatException = Nothing
-                                                           Dim paramInfo = New MetadataDecoder(DirectCast([module], PEModuleSymbol), itest17).GetSignatureForMethod(gapMethodDef, signatureHeader, mrEx)
+                                                           Dim paramInfo = New MetadataDecoder(DirectCast([module], PEModuleSymbol), itest17).GetSignatureForMethod(gapMethodDef, signatureHeader:=signatureHeader, metadataException:=mrEx)
                                                            Assert.Null(mrEx)
                                                            Assert.Equal(CByte(SignatureCallingConvention.Default) Or CByte(SignatureAttributes.Instance), signatureHeader.RawValue)
                                                            Assert.Equal(1, paramInfo.Length)
@@ -2138,7 +2139,7 @@ End Class
             AssertTheseDiagnostics(verifier, (<errors/>))
         End Sub
 
-        <WorkItem(837420, "DevDiv")>
+        <WorkItem(837420, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/837420")>
         <Fact()>
         Public Sub BC31556ERR_SourceInterfaceMustBeInterface()
             Dim sources0 = <compilation>
@@ -3750,7 +3751,7 @@ End Class
 ]]></file>
                            </compilation>
             Dim errors = <errors>
-BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it has a generic type parameter that is an embedded interop type.
+BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it has a generic type argument that is an embedded interop type.
 </errors>
 
             Dim piaCompilation1 = CreateCompilationWithMscorlib(pia1)
@@ -3812,7 +3813,7 @@ End Class
 ]]></file>
                            </compilation>
             Dim errors = <errors>
-BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it has a generic type parameter that is an embedded interop type.
+BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it has a generic type argument that is an embedded interop type.
         o.M2()
         ~~~~~~
 </errors>
@@ -3944,7 +3945,7 @@ End Class
 ]]></file>
                            </compilation>
             Dim errors = <errors>
-BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it has a generic type parameter that is an embedded interop type.
+BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it has a generic type argument that is an embedded interop type.
 </errors>
 
             Dim piaCompilation1 = CreateCompilationWithMscorlib(pia1)
@@ -3976,6 +3977,89 @@ BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it
                 consumer,
                 references:={MetadataReference.CreateFromImage(piaCompilation2.EmitToArray())})
             CompileAndVerify(compilation4)
+        End Sub
+
+        <Fact>
+        Public Sub ErrorType_Tuple()
+            Dim pia1 = <compilation>
+                           <file name="a.vb"><![CDATA[
+Imports System
+Imports System.Runtime.InteropServices
+Imports System.Runtime.CompilerServices
+
+<Assembly: ImportedFromTypeLib("GeneralPIA1.dll")>
+<Assembly: Guid("f9c2d51d-4f44-45f0-9eda-c9d599b58257")>
+
+<ComImport>
+<Guid("f9c2d51d-4f44-45f0-9eda-c9d599b58279")>
+Public Interface ITest33
+End Interface
+]]></file>
+                       </compilation>
+            Dim piaCompilation1 = CreateCompilationWithMscorlib(pia1, options:=TestOptions.ReleaseDll)
+            CompileAndVerify(piaCompilation1)
+
+            Dim pia2 = <compilation>
+                           <file name="a.vb"><![CDATA[
+Imports System
+Imports System.Runtime.InteropServices
+Imports System.Runtime.CompilerServices
+Imports System.Collections.Generic
+
+<assembly: ImportedFromTypeLib("GeneralPIA2.dll")>
+<assembly: Guid("f9c2d51d-4f44-45f0-9eda-c9d599b58290")>
+
+<ComImport>
+<Guid("f9c2d51d-4f44-45f0-9eda-c9d599b58280")>
+Public Interface ITest34
+    Function M() As List(Of (ITest33, ITest33))
+End Interface
+]]></file>
+                       </compilation>
+            Dim piaCompilation2 = CreateCompilationWithMscorlib(
+                pia2, options:=TestOptions.ReleaseDll,
+                references:={piaCompilation1.EmitToImageReference(embedInteropTypes:=True), ValueTupleRef, SystemRuntimeFacadeRef})
+            CompileAndVerify(piaCompilation2)
+
+            Dim consumer = <compilation>
+                               <file name="a.vb"><![CDATA[
+Imports System
+Imports System.Collections.Generic
+
+Public MustInherit Class UsePia5
+    Implements ITest34
+End Class
+            ]]></file>
+                           </compilation>
+            Dim expected = <errors>
+BC36924: Type 'List(Of ValueTuple(Of ITest33, ITest33))' cannot be used across assembly boundaries because it has a generic type argument that is an embedded interop type.
+    Implements ITest34
+               ~~~~~~~
+                           </errors>
+
+            Dim compilation1 = CreateCompilationWithMscorlibAndReferences(
+                consumer, options:=TestOptions.ReleaseDll,
+                references:={piaCompilation2.ToMetadataReference(embedInteropTypes:=True), piaCompilation1.ToMetadataReference(), ValueTupleRef, SystemRuntimeFacadeRef})
+            VerifyEmitDiagnostics(compilation1, expected)
+            VerifyEmitMetadataOnlyDiagnostics(compilation1, expected)
+
+            Dim compilation2 = CreateCompilationWithMscorlibAndReferences(
+                consumer, options:=TestOptions.ReleaseDll,
+                references:={piaCompilation2.EmitToImageReference(embedInteropTypes:=True), piaCompilation1.ToMetadataReference(), ValueTupleRef, SystemRuntimeFacadeRef})
+            VerifyEmitDiagnostics(compilation2, expected)
+            VerifyEmitMetadataOnlyDiagnostics(compilation2, expected)
+
+            Dim compilation3 = CreateCompilationWithMscorlibAndReferences(
+                consumer, options:=TestOptions.ReleaseDll,
+                references:={piaCompilation2.ToMetadataReference(), piaCompilation1.ToMetadataReference(), ValueTupleRef, SystemRuntimeFacadeRef})
+            VerifyEmitDiagnostics(compilation3, expected)
+            VerifyEmitMetadataOnlyDiagnostics(compilation3, expected)
+
+            Dim compilation4 = CreateCompilationWithMscorlibAndReferences(
+                consumer, options:=TestOptions.ReleaseDll,
+                references:={piaCompilation2.EmitToImageReference(), piaCompilation1.ToMetadataReference(), ValueTupleRef, SystemRuntimeFacadeRef})
+            VerifyEmitDiagnostics(compilation4, expected)
+            VerifyEmitMetadataOnlyDiagnostics(compilation4, expected)
         End Sub
 
         <Fact()>
@@ -4016,7 +4100,7 @@ End Class
 ]]></file>
                            </compilation>
             Dim errors = <errors>
-BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it has a generic type parameter that is an embedded interop type.
+BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it has a generic type argument that is an embedded interop type.
         o.M2()
         ~~~~~~
 </errors>
@@ -4052,7 +4136,7 @@ BC36924: Type 'List(Of I1)' cannot be used across assembly boundaries because it
             CompileAndVerify(compilation4, verify:=False)
         End Sub
 
-        <Fact(), WorkItem(673546, "DevDiv")>
+        <Fact(), WorkItem(673546, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/673546")>
         Public Sub MissingComAwareEventInfo()
             Dim sources0 = <compilation name="0">
                                <file name="a.vb"><![CDATA[
@@ -4253,6 +4337,78 @@ BC35000: Requested operation is not available because the runtime library functi
                                                 End Sub).VerifyDiagnostics()
         End Sub
 
+
+        <Fact, WorkItem(8088, "https://github.com/dotnet/roslyn/issues/8088")>
+        Public Sub ParametersWithoutNames()
+            Dim sources =
+<compilation>
+    <file name="a.vb">
+Public Class Program
+    Sub M(x As I1) 
+        x.M1(1, 2, 3)
+    End Sub
+
+    Sub M1(value As Integer) 
+    End Sub
+
+    Sub M2(Param As Integer) 
+    End Sub
+End Class
+    </file>
+</compilation>
+
+            Dim compilation = CreateCompilationWithMscorlibAndReferences(sources,
+                                                                         {
+                                                                            AssemblyMetadata.CreateFromImage(TestResources.SymbolsTests.NoPia.ParametersWithoutNames).
+                                                                                GetReference(display:="ParametersWithoutNames.dll", embedInteropTypes:=True)
+                                                                         },
+                                                                         options:=TestOptions.ReleaseDll)
+
+
+            AssertParametersWithoutNames(compilation.GlobalNamespace.GetMember(Of NamedTypeSymbol)("I1").GetMember(Of MethodSymbol)("M1").Parameters, False)
+
+            CompileAndVerify(compilation,
+                             symbolValidator:=
+                                Sub([module] As ModuleSymbol)
+                                    DirectCast([module], PEModuleSymbol).Module.PretendThereArentNoPiaLocalTypes()
+                                    AssertParametersWithoutNames([module].GlobalNamespace.GetMember(Of NamedTypeSymbol)("I1").GetMember(Of MethodSymbol)("M1").Parameters, True)
+
+                                    Dim p As PEParameterSymbol
+                                    p = DirectCast([module].GlobalNamespace.GetMember(Of NamedTypeSymbol)("Program").GetMember(Of MethodSymbol)("M").Parameters(0), PEParameterSymbol)
+                                    Assert.Equal("x", DirectCast([module], PEModuleSymbol).Module.GetParamNameOrThrow(p.Handle))
+                                    Assert.Equal("x", p.Name)
+                                    Assert.Equal("x", p.MetadataName)
+                                    p = DirectCast([module].GlobalNamespace.GetMember(Of NamedTypeSymbol)("Program").GetMember(Of MethodSymbol)("M1").Parameters(0), PEParameterSymbol)
+                                    Assert.Equal("value", DirectCast([module], PEModuleSymbol).Module.GetParamNameOrThrow(p.Handle))
+                                    Assert.Equal("value", p.Name)
+                                    Assert.Equal("value", p.MetadataName)
+                                    p = DirectCast([module].GlobalNamespace.GetMember(Of NamedTypeSymbol)("Program").GetMember(Of MethodSymbol)("M2").Parameters(0), PEParameterSymbol)
+                                    Assert.Equal("Param", DirectCast([module], PEModuleSymbol).Module.GetParamNameOrThrow(p.Handle))
+                                    Assert.Equal("Param", p.Name)
+                                    Assert.Equal("Param", p.MetadataName)
+                                End Sub).VerifyDiagnostics()
+        End Sub
+
+        Private Shared Sub AssertParametersWithoutNames(parameters As ImmutableArray(Of ParameterSymbol), isEmbedded As Boolean)
+            Assert.True(DirectCast(parameters(0), PEParameterSymbol).Handle.IsNil)
+
+            Dim p1 = DirectCast(parameters(1), PEParameterSymbol)
+            Assert.True(p1.IsMetadataOptional)
+            Assert.False(p1.Handle.IsNil)
+            Assert.True(DirectCast(p1.ContainingModule, PEModuleSymbol).Module.MetadataReader.GetParameter(p1.Handle).Name.IsNil)
+
+            Dim p2 = DirectCast(parameters(2), PEParameterSymbol)
+            If isEmbedded Then
+                Assert.True(p2.Handle.IsNil)
+            Else
+                Assert.True(DirectCast(p2.ContainingModule, PEModuleSymbol).Module.MetadataReader.GetParameter(p2.Handle).Name.IsNil)
+            End If
+
+            For Each p In parameters
+                Assert.Equal("Param", p.Name)
+                Assert.Equal("", p.MetadataName)
+            Next
+        End Sub
     End Class
 
 End Namespace

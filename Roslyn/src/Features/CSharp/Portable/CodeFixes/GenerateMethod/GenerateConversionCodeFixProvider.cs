@@ -19,15 +19,15 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeFixes.GenerateMethod
     [ExtensionOrder(After = PredefinedCodeFixProviderNames.GenerateEnumMember)]
     internal class GenerateConversionCodeFixProvider : AbstractGenerateMemberCodeFixProvider
     {
-        private const string CS0029 = "CS0029"; // error CS0029: Cannot implicitly convert type 'type' to 'type'
-        private const string CS0030 = "CS0030"; // error CS0030: Cannot convert type 'type' to 'type'
+        private const string CS0029 = nameof(CS0029); // error CS0029: Cannot implicitly convert type 'type' to 'type'
+        private const string CS0030 = nameof(CS0030); // error CS0030: Cannot convert type 'type' to 'type'
 
         public override ImmutableArray<string> FixableDiagnosticIds
         {
             get { return ImmutableArray.Create(CS0029, CS0030); }
         }
 
-        protected override bool IsCandidate(SyntaxNode node)
+        protected override bool IsCandidate(SyntaxNode node, SyntaxToken token, Diagnostic diagnostic)
         {
             return node.IsKind(SyntaxKind.IdentifierName) ||
                    node.IsKind(SyntaxKind.MethodDeclaration) ||
@@ -55,7 +55,8 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeFixes.GenerateMethod
             return node;
         }
 
-        protected override Task<IEnumerable<CodeAction>> GetCodeActionsAsync(Document document, SyntaxNode node, CancellationToken cancellationToken)
+        protected override Task<ImmutableArray<CodeAction>> GetCodeActionsAsync(
+            Document document, SyntaxNode node, CancellationToken cancellationToken)
         {
             var service = document.GetLanguageService<IGenerateConversionService>();
             return service.GenerateConversionAsync(document, node, cancellationToken);

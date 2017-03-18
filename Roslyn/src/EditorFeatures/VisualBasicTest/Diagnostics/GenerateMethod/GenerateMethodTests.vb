@@ -1,6 +1,5 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-Option Strict Off
 Imports Microsoft.CodeAnalysis.CodeFixes
 Imports Microsoft.CodeAnalysis.VisualBasic.CodeFixes.GenerateMethod
 Imports Microsoft.CodeAnalysis.Diagnostics
@@ -13,333 +12,937 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Diagnostics.Genera
             Return New Tuple(Of DiagnosticAnalyzer, CodeFixProvider)(Nothing, New GenerateParameterizedMemberCodeFixProvider())
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInvocationIntoSameType()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo() \n End Sub \n Private Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Class"))
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInvocationIntoSameType() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo()
+    End Sub
+    Private Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        <WorkItem(11518, "https://github.com/dotnet/roslyn/issues/11518")>
+        Public Async Function TestNameMatchesNamespaceName() As Task
+            Await TestAsync(
+"Namespace N
+    Module Module1
+        Sub Main()
+            [|N|]()
+        End Sub
+    End Module
+End Namespace",
+"
+Imports System
+
+Namespace N
+    Module Module1
+        Sub Main()
+            N()
         End Sub
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInvocationOffOfMe()
-            Test(
-NewLines("Class C \n Sub M() \n Me.[|Foo|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Me.Foo() \n End Sub \n Private Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Class"))
+        Private Sub N()
+            Throw New NotImplementedException()
         End Sub
+    End Module
+End Namespace")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInvocationOffOfType()
-            Test(
-NewLines("Class C \n Sub M() \n C.[|Foo|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n C.Foo() \n End Sub \n Private Shared Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInvocationOffOfMe() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        Me.[|Foo|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Me.Foo()
+    End Sub
+    Private Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInvocationValueExpressionArg()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo|](0) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo(0) \n End Sub \n Private Sub Foo(v As Integer) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInvocationOffOfType() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        C.[|Foo|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        C.Foo()
+    End Sub
+    Private Shared Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInvocationMultipleValueExpressionArg()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo|](0, 0) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo(0, 0) \n End Sub \n Private Sub Foo(v1 As Integer, v2 As Integer) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInvocationValueExpressionArg() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo|](0)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo(0)
+    End Sub
+    Private Sub Foo(v As Integer)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInvocationValueArg()
-            Test(
-NewLines("Class C \n Sub M(i As Integer) \n [|Foo|](i) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(i As Integer) \n Foo(i) \n End Sub \n Private Sub Foo(i As Integer) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInvocationMultipleValueExpressionArg() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo|](0, 0)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo(0, 0)
+    End Sub
+    Private Sub Foo(v1 As Integer, v2 As Integer)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestSimpleInvocationNamedValueArg()
-            Test(
-NewLines("Class C \n Sub M(i As Integer) \n [|Foo|](bar:= i) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(i As Integer) \n Foo(bar:= i) \n End Sub \n Private Sub Foo(bar As Integer) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInvocationValueArg() As Task
+            Await TestAsync(
+"Class C
+    Sub M(i As Integer)
+        [|Foo|](i)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(i As Integer)
+        Foo(i)
+    End Sub
+    Private Sub Foo(i As Integer)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateAfterMethod()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo|]() \n End Sub \n Sub NextMethod() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo() \n End Sub \n Private Sub Foo() \n Throw New NotImplementedException() \n End Sub \n Sub NextMethod() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestSimpleInvocationNamedValueArg() As Task
+            Await TestAsync(
+"Class C
+    Sub M(i As Integer)
+        [|Foo|](bar:=i)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(i As Integer)
+        Foo(bar:=i)
+    End Sub
+    Private Sub Foo(bar As Integer)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInterfaceNaming()
-            Test(
-NewLines("Class C \n Sub M(i As Integer) \n [|Foo|](NextMethod()) \n End Sub \n Function NextMethod() As IFoo \n End Function \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(i As Integer) \n Foo(NextMethod()) \n End Sub \n Private Sub Foo(foo As IFoo) \n Throw New NotImplementedException() \n End Sub \n Function NextMethod() As IFoo \n End Function \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateAfterMethod() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo|]()
+    End Sub
+    Sub NextMethod()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo()
+    End Sub
+    Private Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+    Sub NextMethod()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestFuncArg0()
-            Test(
-NewLines("Class C \n Sub M(i As Integer) \n [|Foo|](NextMethod) \n End Sub \n Function NextMethod() As String \n End Function \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(i As Integer) \n Foo(NextMethod) \n End Sub \n Private Sub Foo(nextMethod As String) \n Throw New NotImplementedException() \n End Sub \n Function NextMethod() As String \n End Function \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInterfaceNaming() As Task
+            Await TestAsync(
+"Class C
+    Sub M(i As Integer)
+        [|Foo|](NextMethod())
+    End Sub
+    Function NextMethod() As IFoo
+    End Function
+End Class",
+"Imports System
+Class C
+    Sub M(i As Integer)
+        Foo(NextMethod())
+    End Sub
+    Private Sub Foo(foo As IFoo)
+        Throw New NotImplementedException()
+    End Sub
+    Function NextMethod() As IFoo
+    End Function
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestFuncArg1()
-            Test(
-NewLines("Class C \n Sub M(i As Integer) \n [|Foo|](NextMethod) \n End Sub \n Function NextMethod(i As Integer) As String \n End Function \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(i As Integer) \n Foo(NextMethod) \n End Sub \n Private Sub Foo(nextMethod As Func(Of Integer, String)) \n Throw New NotImplementedException() \n End Sub \n Function NextMethod(i As Integer) As String \n End Function \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestFuncArg0() As Task
+            Await TestAsync(
+"Class C
+    Sub M(i As Integer)
+        [|Foo|](NextMethod)
+    End Sub
+    Function NextMethod() As String
+    End Function
+End Class",
+"Imports System
+Class C
+    Sub M(i As Integer)
+        Foo(NextMethod)
+    End Sub
+    Private Sub Foo(nextMethod As String)
+        Throw New NotImplementedException()
+    End Sub
+    Function NextMethod() As String
+    End Function
+End Class")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestFuncArg1() As Task
+            Await TestAsync(
+"Class C
+    Sub M(i As Integer)
+        [|Foo|](NextMethod)
+    End Sub
+    Function NextMethod(i As Integer) As String
+    End Function
+End Class",
+"Imports System
+Class C
+    Sub M(i As Integer)
+        Foo(NextMethod)
+    End Sub
+    Private Sub Foo(nextMethod As Func(Of Integer, String))
+        Throw New NotImplementedException()
+    End Sub
+    Function NextMethod(i As Integer) As String
+    End Function
+End Class")
+        End Function
 
         <WpfFact(Skip:="528229"), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestAddressOf1()
-            Test(
-NewLines("Class C \n Sub M(i As Integer) \n [|Foo|](AddressOf NextMethod) \n End Sub \n Function NextMethod(i As Integer) As String \n End Function \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(i As Integer) \n Foo(AddressOf NextMethod) \n End Sub \n Private Sub Foo(nextMethod As Global.System.Func(Of Integer, String)) \n Throw New NotImplementedException() \n End Sub \n Function NextMethod(i As Integer) As String \n End Function \n End Class"))
-        End Sub
+        Public Async Function TestAddressOf1() As Task
+            Await TestAsync(
+"Class C
+    Sub M(i As Integer)
+        [|Foo|](AddressOf NextMethod)
+    End Sub
+    Function NextMethod(i As Integer) As String
+    End Function
+End Class",
+"Imports System
+Class C
+    Sub M(i As Integer)
+        Foo(AddressOf NextMethod)
+    End Sub
+    Private Sub Foo(nextMethod As Global.System.Func(Of Integer, String))
+        Throw New NotImplementedException()
+    End Sub
+    Function NextMethod(i As Integer) As String
+    End Function
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestActionArg()
-            Test(
-NewLines("Class C \n Sub M(i As Integer) \n [|Foo|](NextMethod) End Sub \n Sub NextMethod() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(i As Integer) \n Foo(NextMethod) \n End Sub \n Private Sub Foo(nextMethod As Object) \n Throw New NotImplementedException() \n End Sub \n Sub NextMethod() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestActionArg() As Task
+            Await TestAsync(
+"Class C
+    Sub M(i As Integer)
+        [|Foo|](NextMethod) End Sub 
+ Sub NextMethod()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(i As Integer)
+        Foo(NextMethod)
+    End Sub
+    Private Sub Foo(nextMethod As Object)
+        Throw New NotImplementedException()
+    End Sub
+    Sub NextMethod()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestActionArg1()
-            Test(
-NewLines("Class C \n Sub M(i As Integer) \n [|Foo|](NextMethod) \n End Sub \n Sub NextMethod(i As Integer) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(i As Integer) \n Foo(NextMethod) \n End Sub \n Private Sub Foo(nextMethod As Action(Of Integer)) \n Throw New NotImplementedException() \n End Sub \n Sub NextMethod(i As Integer) \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestActionArg1() As Task
+            Await TestAsync(
+"Class C
+    Sub M(i As Integer)
+        [|Foo|](NextMethod)
+    End Sub
+    Sub NextMethod(i As Integer)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(i As Integer)
+        Foo(NextMethod)
+    End Sub
+    Private Sub Foo(nextMethod As Action(Of Integer))
+        Throw New NotImplementedException()
+    End Sub
+    Sub NextMethod(i As Integer)
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeInference()
-            Test(
-NewLines("Class C \n Sub M() \n If [|Foo|]() \n End If \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n If Foo() \n End If \n End Sub \n Private Function Foo() As Boolean \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeInference() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        If [|Foo|]()
+        End If
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        If Foo()
+        End If
+    End Sub
+    Private Function Foo() As Boolean
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestMemberAccessArgumentName()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo|](Me.Bar) \n End Sub \n Dim Bar As Integer \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo(Me.Bar) \n End Sub \n Private Sub Foo(bar As Integer) \n Throw New NotImplementedException() \n End Sub \n Dim Bar As Integer \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestMemberAccessArgumentName() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo|](Me.Bar)
+    End Sub
+    Dim Bar As Integer
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo(Me.Bar)
+    End Sub
+    Private Sub Foo(bar As Integer)
+        Throw New NotImplementedException()
+    End Sub
+    Dim Bar As Integer
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestParenthesizedArgumentName()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo|]((Bar)) \n End Sub \n Dim Bar As Integer \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo((Bar)) \n End Sub \n Private Sub Foo(bar As Integer) \n Throw New NotImplementedException() \n End Sub \n Dim Bar As Integer \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestParenthesizedArgumentName() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo|]((Bar))
+    End Sub
+    Dim Bar As Integer
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo((Bar))
+    End Sub
+    Private Sub Foo(bar As Integer)
+        Throw New NotImplementedException()
+    End Sub
+    Dim Bar As Integer
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestCastedArgumentName()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo|](DirectCast(Me.Baz, Bar)) \n End Sub \n End Class \n Class Bar \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo(DirectCast(Me.Baz, Bar)) \n End Sub \n Private Sub Foo(baz As Bar) \n Throw New NotImplementedException() \n End Sub \n End Class \n Class Bar \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestCastedArgumentName() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo|](DirectCast(Me.Baz, Bar))
+    End Sub
+End Class
+Class Bar
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo(DirectCast(Me.Baz, Bar))
+    End Sub
+    Private Sub Foo(baz As Bar)
+        Throw New NotImplementedException()
+    End Sub
+End Class
+Class Bar
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDuplicateNames()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo|](DirectCast(Me.Baz, Bar), Me.Baz) \n End Sub \n Dim Baz As Integer \n End Class \n Class Bar \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo(DirectCast(Me.Baz, Bar), Me.Baz) \n End Sub \n Private Sub Foo(baz1 As Bar, baz2 As Integer) \n Throw New NotImplementedException() \n End Sub \n Dim Baz As Integer \n End Class \n Class Bar \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDuplicateNames() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo|](DirectCast(Me.Baz, Bar), Me.Baz)
+    End Sub
+    Dim Baz As Integer
+End Class
+Class Bar
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo(DirectCast(Me.Baz, Bar), Me.Baz)
+    End Sub
+    Private Sub Foo(baz1 As Bar, baz2 As Integer)
+        Throw New NotImplementedException()
+    End Sub
+    Dim Baz As Integer
+End Class
+Class Bar
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenericArgs1()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo(Of Integer)|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo(Of Integer)() \n End Sub \n Private Sub Foo(Of T)() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenericArgs1() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo(Of Integer)|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo(Of Integer)()
+    End Sub
+    Private Sub Foo(Of T)()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenericArgs2()
-            Test(
-NewLines("Class C \n Sub M() \n [|Foo(Of Integer, String)|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo(Of Integer, String)() \n End Sub \n Private Sub Foo(Of T1,T2)() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenericArgs2() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|Foo(Of Integer, String)|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo(Of Integer, String)()
+    End Sub
+    Private Sub Foo(Of T1, T2)()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539984)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenericArgsFromMethod()
-            Test(
-NewLines("Class C \n Sub M(Of X,Y)(x As X, y As Y) \n [|Foo|](x) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(Of X,Y)(x As X, y As Y) \n Foo(x) \n End Sub \n Private Sub Foo(Of X)(x1 As X) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539984, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539984")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenericArgsFromMethod() As Task
+            Await TestAsync(
+"Class C
+    Sub M(Of X, Y)(x As X, y As Y)
+        [|Foo|](x)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(Of X, Y)(x As X, y As Y)
+        Foo(x)
+    End Sub
+    Private Sub Foo(Of X)(x1 As X)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenericArgThatIsTypeParameter()
-            Test(
-NewLines("Class C \n Sub M(Of X)(y1 As X(), x1 As System.Func(Of X)) \n [|Foo(Of X)|](y1, x1) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(Of X)(y1 As X(), x1 As System.Func(Of X)) \n Foo(Of X)(y1, x1) \n End Sub \n Private Sub Foo(Of X)(y1() As X, x1 As Func(Of X)) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenericArgThatIsTypeParameter() As Task
+            Await TestAsync(
+"Class C
+    Sub M(Of X)(y1 As X(), x1 As System.Func(Of X))
+        [|Foo(Of X)|](y1, x1)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(Of X)(y1 As X(), x1 As System.Func(Of X))
+        Foo(Of X)(y1, x1)
+    End Sub
+    Private Sub Foo(Of X)(y1() As X, x1 As Func(Of X))
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestMultipleGenericArgsThatAreTypeParameters()
-            Test(
-NewLines("Class C \n Sub M(Of X, Y)(y1 As Y(), x1 As System.Func(Of X)) \n [|Foo(Of X, Y)|](y1, x1) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(Of X, Y)(y1 As Y(), x1 As System.Func(Of X)) \n Foo(Of X, Y)(y1, x1) \n End Sub \n Private Sub Foo(Of X, Y)(y1() As Y, x1 As Func(Of X)) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestMultipleGenericArgsThatAreTypeParameters() As Task
+            Await TestAsync(
+"Class C
+    Sub M(Of X, Y)(y1 As Y(), x1 As System.Func(Of X))
+        [|Foo(Of X, Y)|](y1, x1)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(Of X, Y)(y1 As Y(), x1 As System.Func(Of X))
+        Foo(Of X, Y)(y1, x1)
+    End Sub
+    Private Sub Foo(Of X, Y)(y1() As Y, x1 As Func(Of X))
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539984)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestMultipleGenericArgsFromMethod()
-            Test(
-NewLines("Class C \n Sub M(Of X, Y)(x As X, y As Y) \n [|Foo|](x, y) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(Of X, Y)(x As X, y As Y) \n Foo(x, y) \n End Sub \n Private Sub Foo(Of X, Y)(x1 As X, y1 As Y) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539984, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539984")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestMultipleGenericArgsFromMethod() As Task
+            Await TestAsync(
+"Class C
+    Sub M(Of X, Y)(x As X, y As Y)
+        [|Foo|](x, y)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(Of X, Y)(x As X, y As Y)
+        Foo(x, y)
+    End Sub
+    Private Sub Foo(Of X, Y)(x1 As X, y1 As Y)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539984)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestMultipleGenericArgsFromMethod2()
-            Test(
-NewLines("Class C \n Sub M(Of X, Y)(y As Y(), x As System.Func(Of X)) \n [|Foo|](y, x) \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(Of X, Y)(y As Y(), x As System.Func(Of X)) \n Foo(y, x) \n End Sub \n Private Sub Foo(Of Y, X)(y1() As Y, x1 As Func(Of X)) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539984, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539984")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestMultipleGenericArgsFromMethod2() As Task
+            Await TestAsync(
+"Class C
+    Sub M(Of X, Y)(y As Y(), x As System.Func(Of X))
+        [|Foo|](y, x)
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M(Of X, Y)(y As Y(), x As System.Func(Of X))
+        Foo(y, x)
+    End Sub
+    Private Sub Foo(Of Y, X)(y1() As Y, x1 As Func(Of X))
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateIntoOuterThroughInstance()
-            Test(
-NewLines("Class Outer \n Class C \n Sub M(o As Outer) \n o.[|Foo|]() \n End Sub \n End Class \n End Class"),
-NewLines("Imports System \n Class Outer \n Class C \n Sub M(o As Outer) \n o.Foo() \n End Sub \n End Class \n Private Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Class"))
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateIntoOuterThroughInstance() As Task
+            Await TestAsync(
+"Class Outer
+    Class C
+        Sub M(o As Outer)
+            o.[|Foo|]()
         End Sub
+    End Class
+End Class",
+"Imports System
+Class Outer
+    Class C
+        Sub M(o As Outer)
+            o.Foo()
+        End Sub
+    End Class
+    Private Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateIntoOuterThroughClass()
-            Test(
-NewLines("Class Outer \n Class C \n Sub M(o As Outer) \n Outer.[|Foo|]() \n End Sub \n End Class \n End Class"),
-NewLines("Imports System \n Class Outer \n Class C \n Sub M(o As Outer) \n Outer.Foo() \n End Sub \n End Class Private Shared Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Class"),
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateIntoOuterThroughClass() As Task
+            Await TestAsync(
+"Class Outer
+    Class C
+        Sub M(o As Outer)
+            Outer.[|Foo|]()
+        End Sub
+    End Class
+End Class",
+"Imports System
+Class Outer
+    Class C
+        Sub M(o As Outer)
+            Outer.Foo()
+        End Sub
+    End Class Private Shared Sub Foo() 
+ Throw New NotImplementedException()
+    End Sub
+End Class",
 index:=0)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateIntoSiblingThroughInstance()
-            Test(
-NewLines("Class C \n Sub M(s As Sibling) \n s.[|Foo|]() \n End Sub \n End Class \n Class Sibling \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(s As Sibling) \n s.Foo() \n End Sub \n End Class \n Class Sibling \n Friend Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateIntoSiblingThroughInstance() As Task
+            Await TestAsync(
+"Class C
+    Sub M(s As Sibling)
+        s.[|Foo|]()
+    End Sub
+End Class
+Class Sibling
+End Class",
+"Imports System
+Class C
+    Sub M(s As Sibling)
+        s.Foo()
+    End Sub
+End Class
+Class Sibling
+    Friend Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateIntoSiblingThroughClass()
-            Test(
-NewLines("Class C \n Sub M(s As Sibling) \n [|Sibling.Foo|]() \n End Sub \n End Class \n Class Sibling \n End Class"),
-NewLines("Imports System \n Class C \n Sub M(s As Sibling) \n Sibling.Foo() \n End Sub \n End Class \n Class Sibling \n Friend Shared Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateIntoSiblingThroughClass() As Task
+            Await TestAsync(
+"Class C
+    Sub M(s As Sibling)
+        [|Sibling.Foo|]()
+    End Sub
+End Class
+Class Sibling
+End Class",
+"Imports System
+Class C
+    Sub M(s As Sibling)
+        Sibling.Foo()
+    End Sub
+End Class
+Class Sibling
+    Friend Shared Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateIntoInterfaceThroughInstance()
-            Test(
-NewLines("Class C \n Sub M(s As ISibling) \n s.[|Foo|]() \n End Sub \n End Class \n Interface ISibling \n End Interface"),
-NewLines("Class C \n Sub M(s As ISibling) \n s.Foo() \n End Sub \n End Class \n Interface ISibling \n Sub Foo() \n End Interface"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateIntoInterfaceThroughInstance() As Task
+            Await TestAsync(
+"Class C
+    Sub M(s As ISibling)
+        s.[|Foo|]()
+    End Sub
+End Class
+Interface ISibling
+End Interface",
+"Class C
+    Sub M(s As ISibling)
+        s.Foo()
+    End Sub
+End Class
+Interface ISibling
+    Sub Foo()
+End Interface")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateAbstractIntoSameType()
-            Test(
-NewLines("MustInherit Class C \n Sub M() \n [|Foo|]() \n End Sub \n End Class"),
-NewLines("MustInherit Class C \n Sub M() \n Foo() \n End Sub \n Friend MustOverride Sub Foo() \n End Class"),
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateAbstractIntoSameType() As Task
+            Await TestAsync(
+"MustInherit Class C
+    Sub M()
+        [|Foo|]()
+    End Sub
+End Class",
+"MustInherit Class C
+    Sub M()
+        Foo()
+    End Sub
+    Friend MustOverride Sub Foo()
+End Class",
 index:=1)
-        End Sub
+        End Function
 
-        <WorkItem(539297)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateIntoModule()
-            Test(
-NewLines("Module Class C \n Sub M() \n [|Foo|]() \n End Sub \n End Module"),
-NewLines("Imports System \n Module Class C \n Sub M() \n Foo() \n End Sub \n Private Sub Foo() \n Throw New NotImplementedException() End Sub \n End Module"))
-        End Sub
+        <WorkItem(539297, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539297")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateIntoModule() As Task
+            Await TestAsync(
+"Module Class C 
+ Sub M()
+        [|Foo|]()
+    End Sub
+End Module",
+"Imports System
+Module Class C 
+ Sub M()
+        Foo()
+    End Sub
+    Private Sub Foo()
+        Throw New NotImplementedException() End Sub 
+ End Module")
+        End Function
 
-        <WorkItem(539506)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInference1()
-            Test(
-NewLines("Class C \n Sub M() \n Do While [|Foo|]() \n Loop \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Do While Foo() \n Loop \n End Sub \n Private Function Foo() As Boolean \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(539506, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539506")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInference1() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        Do While [|Foo|]()
+        Loop
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Do While Foo()
+        Loop
+    End Sub
+    Private Function Foo() As Boolean
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(539505)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestEscaping1()
-            Test(
-NewLines("Class C \n Sub M() \n [|[Sub]|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n [Sub]() \n End Sub \n Private Sub [Sub]() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539505, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539505")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestEscaping1() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|[Sub]|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        [Sub]()
+    End Sub
+    Private Sub [Sub]()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539504)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestExplicitCall()
-            Test(
-NewLines("Class C \n Sub M() \n Call [|S|] \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Call S \n End Sub \n Private Sub S() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539504, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539504")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestExplicitCall() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        Call [|S|]
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Call S
+    End Sub
+    Private Sub S()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539504)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestImplicitCall()
-            Test(
-NewLines("Class C \n Sub M() \n [|S|] \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n S \n End Sub \n Private Sub S() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539504, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539504")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestImplicitCall() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|S|]
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        S
+    End Sub
+    Private Sub S()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539537)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestArrayAccess1()
-            TestMissing(NewLines("Class C \n Sub M(x As Integer()) \n Foo([|x|](4)) \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539537, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539537")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestArrayAccess1() As Task
+            Await TestMissingAsync("Class C
+    Sub M(x As Integer())
+        Foo([|x|](4))
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539560)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeCharacterInteger()
-            Test(
-NewLines("Class C \n Sub M() \n [|S%|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n S%() \n End Sub \n Private Function S() As Integer \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(539560, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539560")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeCharacterInteger() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|S%|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        S%()
+    End Sub
+    Private Function S() As Integer
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(539560)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeCharacterLong()
-            Test(
-NewLines("Class C \n Sub M() \n [|S&|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n S&() \n End Sub \n Private Function S() As Long \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(539560, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539560")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeCharacterLong() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|S&|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        S&()
+    End Sub
+    Private Function S() As Long
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(539560)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeCharacterDecimal()
-            Test(
-NewLines("Class C \n Sub M() \n [|S@|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n S@() \n End Sub \n Private Function S() As Decimal \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(539560, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539560")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeCharacterDecimal() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|S@|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        S@()
+    End Sub
+    Private Function S() As Decimal
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(539560)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeCharacterSingle()
-            Test(
-NewLines("Class C \n Sub M() \n [|S!|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n S!() \n End Sub \n Private Function S() As Single \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(539560, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539560")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeCharacterSingle() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|S!|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        S!()
+    End Sub
+    Private Function S() As Single
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(539560)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeCharacterDouble()
-            Test(
-NewLines("Class C \n Sub M() \n [|S#|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n S#() \n End Sub \n Private Function S() As Double \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(539560, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539560")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeCharacterDouble() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|S#|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        S#()
+    End Sub
+    Private Function S() As Double
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(539560)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeCharacterString()
-            Test(
-NewLines("Class C \n Sub M() \n [|S$|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n S$() \n End Sub \n Private Function S() As String \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(539560, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539560")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeCharacterString() As Task
+            Await TestAsync(
+"Class C
+    Sub M()
+        [|S$|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        S$()
+    End Sub
+    Private Function S() As String
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(539283)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestNewLines()
-            Test(
+        <WorkItem(539283, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539283")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestNewLines() As Task
+            Await TestAsync(
                 <text>Public Class C
     Sub M()
         [|Foo|]()
@@ -357,12 +960,12 @@ Public Class C
     End Sub
 End Class</text>.Value.Replace(vbLf, vbCrLf),
 compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(539283)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestNewLines2()
-            Test(
+        <WorkItem(539283, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539283")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestNewLines2() As Task
+            Await TestAsync(
                 <text>Public Class C
     Sub M()
         D.[|Foo|]()
@@ -385,134 +988,333 @@ Public Class D
     End Sub
 End Class</text>.Value.Replace(vbLf, vbCrLf),
 compareTokens:=False)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestArgumentTypeVoid()
-            Test(
-NewLines("Imports System \n Module Program \n Sub Main() \n Dim v As Void \n [|Foo|](v) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main() \n Dim v As Void \n Foo(v) \n End Sub \n Private Sub Foo(v As Object) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestArgumentTypeVoid() As Task
+            Await TestAsync(
+"Imports System
+Module Program
+    Sub Main()
+        Dim v As Void
+        [|Foo|](v)
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main()
+        Dim v As Void
+        Foo(v)
+    End Sub
+    Private Sub Foo(v As Object)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateFromImplementsClause()
-            Test(
-NewLines("Class Program \n Implements IFoo \n Public Function Bip(i As Integer) As String Implements [|IFoo.Snarf|] \n End Function \n End Class \n Interface IFoo \n End Interface"),
-NewLines("Class Program \n Implements IFoo \n Public Function Bip(i As Integer) As String Implements IFoo.Snarf \n End Function \n End Class \n Interface IFoo \n Function Snarf(i As Integer) As String \n End Interface"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateFromImplementsClause() As Task
+            Await TestAsync(
+"Class Program
+    Implements IFoo
+    Public Function Bip(i As Integer) As String Implements [|IFoo.Snarf|]
+    End Function
+End Class
+Interface IFoo
+End Interface",
+"Class Program
+    Implements IFoo
+    Public Function Bip(i As Integer) As String Implements IFoo.Snarf
+    End Function
+End Class
+Interface IFoo
+    Function Snarf(i As Integer) As String
+End Interface")
+        End Function
 
-        <WorkItem(537929)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInScript1()
-            Test(
-NewLines("Imports System \n Shared Sub Main ( args As String() ) \n [|Foo|] ( ) \n End Sub"),
-NewLines("Imports System \n Shared Sub Main ( args As String() ) \n Foo ( ) \n End Sub \n Private Shared Sub Foo() \n Throw New NotImplementedException() \n End Sub"),
+        <WorkItem(537929, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/537929")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInScript1() As Task
+            Await TestAsync(
+"Imports System
+Shared Sub Main(args As String())
+    [|Foo|]()
+End Sub",
+"Imports System
+Shared Sub Main(args As String())
+    Foo()
+End Sub
+Private Shared Sub Foo()
+    Throw New NotImplementedException()
+End Sub",
             parseOptions:=GetScriptOptions())
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInTopLevelImplicitClass1()
-            Test(
-NewLines("Imports System \n Shared Sub Main ( args As String() ) \n [|Foo|] ( ) \n End Sub"),
-NewLines("Imports System \n Shared Sub Main ( args As String() ) \n Foo ( ) \n End Sub \n Private Shared Sub Foo() \n Throw New NotImplementedException() \n End Sub"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInTopLevelImplicitClass1() As Task
+            Await TestAsync(
+"Imports System
+Shared Sub Main(args As String())
+    [|Foo|]()
+End Sub",
+"Imports System
+Shared Sub Main(args As String())
+    Foo()
+End Sub
+Private Shared Sub Foo()
+    Throw New NotImplementedException()
+End Sub")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInNamespaceImplicitClass1()
-            Test(
-NewLines("Imports System \n Namespace N \n Shared Sub Main ( args As String() ) \n [|Foo|] ( ) \n End Sub \n End Namespace"),
-NewLines("Imports System \n Namespace N \n Shared Sub Main ( args As String() ) \n Foo ( ) \n End Sub \n Private Shared Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Namespace"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInNamespaceImplicitClass1() As Task
+            Await TestAsync(
+"Imports System
+Namespace N
+    Shared Sub Main(args As String())
+        [|Foo|]()
+    End Sub
+End Namespace",
+"Imports System
+Namespace N
+    Shared Sub Main(args As String())
+        Foo()
+    End Sub
+    Private Shared Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+End Namespace")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInNamespaceImplicitClass_FieldInitializer()
-            Test(
-NewLines("Imports System \n Namespace N \n Dim a As Integer = [|Foo|]() \n End Namespace"),
-NewLines("Imports System \n Namespace N \n Dim a As Integer = Foo() \n Private Function Foo() As Integer \n Throw New NotImplementedException() \n End Function \n End Namespace"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInNamespaceImplicitClass_FieldInitializer() As Task
+            Await TestAsync(
+"Imports System
+Namespace N
+    Dim a As Integer = [|Foo|]()
+End Namespace",
+"Imports System
+Namespace N
+    Dim a As Integer = Foo()
+    Private Function Foo() As Integer
+        Throw New NotImplementedException()
+    End Function
+End Namespace")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestClashesWithMethod1()
-            TestMissing(
-NewLines("Class Program \n Implements IFoo \n Public Function Blah() As String Implements [|IFoo.Blah|] \n End Function \n End Class \n Interface IFoo \n Sub Blah() \n End Interface"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestClashesWithMethod1() As Task
+            Await TestMissingAsync(
+"Class Program
+    Implements IFoo
+    Public Function Blah() As String Implements [|IFoo.Blah|]
+    End Function
+End Class
+Interface IFoo
+    Sub Blah()
+End Interface")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestClashesWithMethod2()
-            TestMissing(
-NewLines("Class Program \n Implements IFoo \n Public Function Blah() As String Implements [|IFoo.Blah|] \n End Function \n End Class \n Interface IFoo \n Sub Blah() \n End Interface"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestClashesWithMethod2() As Task
+            Await TestMissingAsync(
+"Class Program
+    Implements IFoo
+    Public Function Blah() As String Implements [|IFoo.Blah|]
+    End Function
+End Class
+Interface IFoo
+    Sub Blah()
+End Interface")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestClashesWithMethod3()
-            Test(
-NewLines("Class C \n Implements IFoo \n Sub Snarf() Implements [|IFoo.Blah|] \n End Sub \n End Class \n Interface IFoo \n Sub Blah(ByRef i As Integer) \n End Interface"),
-NewLines("Class C \n Implements IFoo \n Sub Snarf() Implements IFoo.Blah \n End Sub \n End Class \n Interface IFoo \n Sub Blah(ByRef i As Integer) \n Sub Blah() \n End Interface"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestClashesWithMethod3() As Task
+            Await TestAsync(
+"Class C
+    Implements IFoo
+    Sub Snarf() Implements [|IFoo.Blah|]
+    End Sub
+End Class
+Interface IFoo
+    Sub Blah(ByRef i As Integer)
+End Interface",
+"Class C
+    Implements IFoo
+    Sub Snarf() Implements IFoo.Blah
+    End Sub
+End Class
+Interface IFoo
+    Sub Blah(ByRef i As Integer)
+    Sub Blah()
+End Interface")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestClashesWithMethod4()
-            Test(
-NewLines("Class C \n Implements IFoo \n Sub Snarf(i As String) Implements [|IFoo.Blah|] \n End Sub \n End Class \n Interface IFoo \n Sub Blah(ByRef i As Integer) \n End Interface"),
-NewLines("Class C \n Implements IFoo \n Sub Snarf(i As String) Implements IFoo.Blah \n End Sub \n End Class \n Interface IFoo \n Sub Blah(ByRef i As Integer) \n Sub Blah(i As String) \n End Interface"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestClashesWithMethod4() As Task
+            Await TestAsync(
+"Class C
+    Implements IFoo
+    Sub Snarf(i As String) Implements [|IFoo.Blah|]
+    End Sub
+End Class
+Interface IFoo
+    Sub Blah(ByRef i As Integer)
+End Interface",
+"Class C
+    Implements IFoo
+    Sub Snarf(i As String) Implements IFoo.Blah
+    End Sub
+End Class
+Interface IFoo
+    Sub Blah(ByRef i As Integer)
+    Sub Blah(i As String)
+End Interface")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestClashesWithMethod5()
-            Test(
-NewLines("Class C \n Implements IFoo \n Sub Blah(i As Integer) Implements [|IFoo.Snarf|] \n End Sub \n End Class \n Friend Interface IFoo \n Sub Snarf(i As String) \n End Interface"),
-NewLines("Class C \n Implements IFoo \n Sub Blah(i As Integer) Implements IFoo.Snarf \n End Sub \n End Class \n Friend Interface IFoo \n Sub Snarf(i As String) \n Sub Snarf(i As Integer) \n End Interface"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestClashesWithMethod5() As Task
+            Await TestAsync(
+"Class C
+    Implements IFoo
+    Sub Blah(i As Integer) Implements [|IFoo.Snarf|]
+    End Sub
+End Class
+Friend Interface IFoo
+    Sub Snarf(i As String)
+End Interface",
+"Class C
+    Implements IFoo
+    Sub Blah(i As Integer) Implements IFoo.Snarf
+    End Sub
+End Class
+Friend Interface IFoo
+    Sub Snarf(i As String)
+    Sub Snarf(i As Integer)
+End Interface")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestClashesWithMethod6()
-            Test(
-NewLines("Class C \n Implements IFoo \n Sub Blah(i As Integer, s As String) Implements [|IFoo.Snarf|] \n End Sub \n End Class \n Friend Interface IFoo \n Sub Snarf(i As Integer, b As Boolean) \n End Interface"),
-NewLines("Class C \n Implements IFoo \n Sub Blah(i As Integer, s As String) Implements IFoo.Snarf \n End Sub \n End Class \n Friend Interface IFoo \n Sub Snarf(i As Integer, b As Boolean) \n Sub Snarf(i As Integer, s As String) \n End Interface"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestClashesWithMethod6() As Task
+            Await TestAsync(
+"Class C
+    Implements IFoo
+    Sub Blah(i As Integer, s As String) Implements [|IFoo.Snarf|]
+    End Sub
+End Class
+Friend Interface IFoo
+    Sub Snarf(i As Integer, b As Boolean)
+End Interface",
+"Class C
+    Implements IFoo
+    Sub Blah(i As Integer, s As String) Implements IFoo.Snarf
+    End Sub
+End Class
+Friend Interface IFoo
+    Sub Snarf(i As Integer, b As Boolean)
+    Sub Snarf(i As Integer, s As String)
+End Interface")
+        End Function
 
-        <WorkItem(539708)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestNoStaticGenerationIntoInterface()
-            TestMissing(
-NewLines("Interface IFoo \n End Interface \n Class Program \n Sub Main \n IFoo.[|Bar|] \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539708, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539708")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestNoStaticGenerationIntoInterface() As Task
+            Await TestMissingAsync(
+"Interface IFoo
+End Interface
+Class Program
+    Sub Main
+        IFoo.[|Bar|]
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539821)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestEscapeParametername()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n Dim [string] As String = ""hello"" \n [|[Me]|]([string]) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n Dim [string] As String = ""hello"" \n [Me]([string]) \n End Sub \n Private Sub [Me]([string] As String) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(539821, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539821")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestEscapeParametername() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        Dim [string] As String = ""hello"" 
+ [|[Me]|]([string])
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(args As String())
+        Dim [string] As String = ""hello"" 
+ [Me]([string])
+    End Sub
+    Private Sub [Me]([string] As String)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(539810)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDoNotUseUnavailableTypeParameter()
-            Test(
-NewLines("Class Test \n Sub M(Of T)(x As T) \n [|Foo(Of Integer)|](x) \n End Sub \n End Class"),
-NewLines("Imports System \n Class Test \n Sub M(Of T)(x As T) \n Foo(Of Integer)(x) \n End Sub \n Private Sub Foo(Of T)(x As T) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539810, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539810")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDoNotUseUnavailableTypeParameter() As Task
+            Await TestAsync(
+"Class Test
+    Sub M(Of T)(x As T)
+        [|Foo(Of Integer)|](x)
+    End Sub
+End Class",
+"Imports System
+Class Test
+    Sub M(Of T)(x As T)
+        Foo(Of Integer)(x)
+    End Sub
+    Private Sub Foo(Of T)(x As T)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539808)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDoNotUseTypeParametersFromContainingType()
-            Test(
-NewLines("Class Test(Of T) \n Sub M() \n [|Method(Of T)|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class Test(Of T) \n Sub M() \n Method(Of T)() \n End Sub \n Private Sub Method(Of T1)() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(539808, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539808")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDoNotUseTypeParametersFromContainingType() As Task
+            Await TestAsync(
+"Class Test(Of T)
+    Sub M()
+        [|Method(Of T)|]()
+    End Sub
+End Class",
+"Imports System
+Class Test(Of T)
+    Sub M()
+        Method(Of T)()
+    End Sub
+    Private Sub Method(Of T1)()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestNameSimplification1()
-            Test(
-NewLines("Imports System \n Class C \n Sub M() \n [|Foo|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Sub M() \n Foo() \n End Sub \n Private Sub Foo() \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestNameSimplification1() As Task
+            Await TestAsync(
+"Imports System
+Class C
+    Sub M()
+        [|Foo|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Sub M()
+        Foo()
+    End Sub
+    Private Sub Foo()
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(539809)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestFormattingOfMembers()
-            Test(
+        <WorkItem(539809, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539809")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestFormattingOfMembers() As Task
+            Await TestAsync(
 <Text>Class Test
     Private id As Integer
 
@@ -540,104 +1342,236 @@ Class Test
 End Class
 </Text>.Value.Replace(vbLf, vbCrLf),
 compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(540013)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInAddressOfExpression1()
-            Test(
-NewLines("Delegate Sub D(x As Integer) \n Class C \n Public Sub Foo() \n Dim x As D = New D(AddressOf [|Method|]) \n End Sub \n End Class"),
-NewLines("Imports System \n Delegate Sub D(x As Integer) \n Class C \n Public Sub Foo() \n Dim x As D = New D(AddressOf Method) \n End Sub \n Private Sub Method(x As Integer) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(540013, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540013")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInAddressOfExpression1() As Task
+            Await TestAsync(
+"Delegate Sub D(x As Integer)
+Class C
+    Public Sub Foo()
+        Dim x As D = New D(AddressOf [|Method|])
+    End Sub
+End Class",
+"Imports System
+Delegate Sub D(x As Integer)
+Class C
+    Public Sub Foo()
+        Dim x As D = New D(AddressOf Method)
+    End Sub
+    Private Sub Method(x As Integer)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(527986)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestNotOfferedForInferredGenericMethodArgs()
-            TestMissing(
-NewLines("Class Foo(Of T) \n Sub Main(Of T, X)(k As Foo(Of T)) \n [|Bar|](k) \n End Sub \n Private Sub Bar(Of T)(k As Foo(Of T)) \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(527986, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/527986")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestNotOfferedForInferredGenericMethodArgs() As Task
+            Await TestMissingAsync(
+"Class Foo(Of T)
+    Sub Main(Of T, X)(k As Foo(Of T))
+        [|Bar|](k)
+    End Sub
+    Private Sub Bar(Of T)(k As Foo(Of T))
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(540740)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDelegateInAsClause()
-            Test(
-NewLines("Delegate Sub D(x As Integer) \n Class C \n Private Sub M() \n Dim d As New D(AddressOf [|Test|]) \n End Sub \n End Class"),
-NewLines("Imports System \n Delegate Sub D(x As Integer) \n Class C \n Private Sub M() \n Dim d As New D(AddressOf Test) \n End Sub \n Private Sub Test(x As Integer) \n Throw New NotImplementedException() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(540740, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540740")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDelegateInAsClause() As Task
+            Await TestAsync(
+"Delegate Sub D(x As Integer)
+Class C
+    Private Sub M()
+        Dim d As New D(AddressOf [|Test|])
+    End Sub
+End Class",
+"Imports System
+Delegate Sub D(x As Integer)
+Class C
+    Private Sub M()
+        Dim d As New D(AddressOf Test)
+    End Sub
+    Private Sub Test(x As Integer)
+        Throw New NotImplementedException()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(541405)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestMissingOnImplementedInterfaceMethod()
-            TestMissing(
-NewLines("Class C(Of U) \n Implements ITest \n Public Sub Method(x As U) Implements [|ITest.Method|] \n End Sub \n End Class \n Friend Interface ITest \n Sub Method(x As Object) \n End Interface"))
-        End Sub
+        <WorkItem(541405, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541405")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestMissingOnImplementedInterfaceMethod() As Task
+            Await TestMissingAsync(
+"Class C(Of U)
+    Implements ITest
+    Public Sub Method(x As U) Implements [|ITest.Method|]
+    End Sub
+End Class
+Friend Interface ITest
+    Sub Method(x As Object)
+End Interface")
+        End Function
 
-        <WorkItem(542098)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestNotOnConstructorInitializer()
-            TestMissing(
-NewLines("Class C \n Sub New \n Me.[|New|](1) \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(542098, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542098")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestNotOnConstructorInitializer() As Task
+            Await TestMissingAsync(
+"Class C
+    Sub New
+        Me.[|New|](1)
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(542838)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestMultipleImportsAdded()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n For Each v As Integer In [|HERE|]() : Next \n End Sub \n End Module"),
-NewLines("Imports System \n Imports System.Collections.Generic \n Module Program \n Sub Main(args As String()) \n For Each v As Integer In HERE() : Next \n End Sub \n Private Function HERE() As IEnumerable(Of Integer) \n Throw New NotImplementedException() \n End Function \n End Module"))
-        End Sub
+        <WorkItem(542838, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542838")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestMultipleImportsAdded() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        For Each v As Integer In [|HERE|]() : Next
+    End Sub
+End Module",
+"Imports System
+Imports System.Collections.Generic
+Module Program
+    Sub Main(args As String())
+        For Each v As Integer In HERE() : Next
+    End Sub
+    Private Function HERE() As IEnumerable(Of Integer)
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
-        <WorkItem(543007)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestCompilationMemberImports()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n For Each v As Integer In [|HERE|]() : Next \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n For Each v As Integer In HERE() : Next \n End Sub \n Private Function HERE() As IEnumerable(Of Integer) \n Throw New NotImplementedException() \n End Function \n End Module"),
+        <WorkItem(543007, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543007")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestCompilationMemberImports() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        For Each v As Integer In [|HERE|]() : Next
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        For Each v As Integer In HERE() : Next
+    End Sub
+    Private Function HERE() As IEnumerable(Of Integer)
+        Throw New NotImplementedException()
+    End Function
+End Module",
 parseOptions:=Nothing,
 compilationOptions:=New VisualBasicCompilationOptions(OutputKind.ConsoleApplication).WithGlobalImports(GlobalImport.Parse("System"), GlobalImport.Parse("System.Collections.Generic")))
-        End Sub
+        End Function
 
-        <WorkItem(531301)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestForEachWithNoControlVariableType()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n For Each v In [|HERE|] : Next \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n For Each v In HERE : Next \n End Sub \n Private Function HERE() As IEnumerable(Of Object) \n Throw New NotImplementedException() \n End Function \n End Module"),
+        <WorkItem(531301, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531301")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestForEachWithNoControlVariableType() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        For Each v In [|HERE|] : Next
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        For Each v In HERE : Next
+    End Sub
+    Private Function HERE() As IEnumerable(Of Object)
+        Throw New NotImplementedException()
+    End Function
+End Module",
 parseOptions:=Nothing,
 compilationOptions:=New VisualBasicCompilationOptions(OutputKind.ConsoleApplication).WithGlobalImports(GlobalImport.Parse("System"), GlobalImport.Parse("System.Collections.Generic")))
-        End Sub
+        End Function
 
-        <WorkItem(531301)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestElseIfStatement()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n If x Then \n ElseIf [|HERE|] Then \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n If x Then \n ElseIf HERE Then \n End If \n End Sub \n Private Function HERE() As Boolean \n Throw New NotImplementedException() \n End Function \n End Module"),
+        <WorkItem(531301, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531301")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestElseIfStatement() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        If x Then
+        ElseIf [|HERE|] Then
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        If x Then
+        ElseIf HERE Then
+        End If
+    End Sub
+    Private Function HERE() As Boolean
+        Throw New NotImplementedException()
+    End Function
+End Module",
 parseOptions:=Nothing,
 compilationOptions:=New VisualBasicCompilationOptions(OutputKind.ConsoleApplication).WithGlobalImports(GlobalImport.Parse("System")))
-        End Sub
+        End Function
 
-        <WorkItem(531301)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestForStatement()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n For x As Integer = 1 To [|HERE|] \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n For x As Integer = 1 To HERE \n End Sub \n Private Function HERE() As Integer \n Throw New NotImplementedException() \n End Function \n End Module"),
+        <WorkItem(531301, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531301")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestForStatement() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        For x As Integer = 1 To [|HERE|]
+ End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        For x As Integer = 1 To HERE
+ End Sub
+    Private Function HERE() As Integer
+        Throw New NotImplementedException()
+    End Function
+End Module",
 parseOptions:=Nothing,
 compilationOptions:=New VisualBasicCompilationOptions(OutputKind.ConsoleApplication).WithGlobalImports(GlobalImport.Parse("System")))
-        End Sub
+        End Function
 
-        <WorkItem(543216)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestArrayOfAnonymousTypes()
-            Test(
-NewLines("Imports System.Collections.Generic \n Imports System.Linq \n Module Program \n Sub Main(args As String()) \n Dim product = New With {Key .Name = """", Key .Price = 0} \n Dim products = ToList(product) \n [|HERE|](products) \n End Sub \n Function ToList(Of T)(a As T) As IEnumerable(Of T) \n Return Nothing \n End Function \n End Module"),
-NewLines("Imports System \n Imports System.Collections.Generic \n Imports System.Linq \n Module Program \n Sub Main(args As String()) \n Dim product = New With {Key .Name = """", Key .Price = 0} \n Dim products = ToList(product) \n HERE(products) \n End Sub \n Private Sub HERE(products As IEnumerable(Of Object)) \n Throw New NotImplementedException() \n End Sub \n Function ToList(Of T)(a As T) As IEnumerable(Of T) \n Return Nothing \n End Function \n End Module"))
-        End Sub
+        <WorkItem(543216, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543216")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestArrayOfAnonymousTypes() As Task
+            Await TestAsync(
+"Imports System.Collections.Generic
+Imports System.Linq
+Module Program
+    Sub Main(args As String())
+        Dim product = New With {Key .Name = """", Key .Price = 0}
+        Dim products = ToList(product)
+        [|HERE|](products)
+    End Sub
+    Function ToList(Of T)(a As T) As IEnumerable(Of T)
+        Return Nothing
+    End Function
+End Module",
+"Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Module Program
+    Sub Main(args As String())
+        Dim product = New With {Key .Name = """", Key .Price = 0}
+        Dim products = ToList(product)
+        HERE(products)
+    End Sub
+    Private Sub HERE(products As IEnumerable(Of Object))
+        Throw New NotImplementedException()
+    End Sub
+    Function ToList(Of T)(a As T) As IEnumerable(Of T)
+        Return Nothing
+    End Function
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestMissingOnHiddenType()
-            TestMissing(
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestMissingOnHiddenType() As Task
+            Await TestMissingAsync(
 <text>
 #externalsource("file", num)
 class C
@@ -650,11 +1584,11 @@ end class
 class D
 EndClass
 </text>.Value)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDoNotGenerateIntoHiddenRegion1_NoImports()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDoNotGenerateIntoHiddenRegion1_NoImports() As Task
+            Await TestAsync(
 <text>
 #ExternalSource ("file", num)
 Class C
@@ -677,11 +1611,11 @@ Class C
     End Sub
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDoNotGenerateIntoHiddenRegion1_WithImports()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDoNotGenerateIntoHiddenRegion1_WithImports() As Task
+            Await TestAsync(
 <text>
 #ExternalSource ("file", num)
 Imports System.Threading
@@ -713,11 +1647,11 @@ Class C
     End Sub
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDoNotGenerateIntoHiddenRegion2()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDoNotGenerateIntoHiddenRegion2() As Task
+            Await TestAsync(
 <text>
 #ExternalSource ("file", num)
 Class C
@@ -750,11 +1684,11 @@ Class C
 End Class
 #End ExternalSource
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestDoNotGenerateIntoHiddenRegion3()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestDoNotGenerateIntoHiddenRegion3() As Task
+            Await TestAsync(
 <text>
 #ExternalSource ("file", num)
 Class C
@@ -793,145 +1727,379 @@ Class C
 End Class
 #End ExternalSource
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestAddressOfInference1()
-            Test(
-NewLines("Imports System \n Module Program \n Sub Main(ByVal args As String()) \n Dim v As Func(Of String) = Nothing \n Dim a1 = If(False, v, AddressOf [|TestMethod|]) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(ByVal args As String()) \n Dim v As Func(Of String) = Nothing \n Dim a1 = If(False, v, AddressOf TestMethod) \n End Sub \n Private Function TestMethod() As String \n Throw New NotImplementedException() \n End Function \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestAddressOfInference1() As Task
+            Await TestAsync(
+"Imports System
+Module Program
+    Sub Main(ByVal args As String())
+        Dim v As Func(Of String) = Nothing
+        Dim a1 = If(False, v, AddressOf [|TestMethod|])
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(ByVal args As String())
+        Dim v As Func(Of String) = Nothing
+        Dim a1 = If(False, v, AddressOf TestMethod)
+    End Sub
+    Private Function TestMethod() As String
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
-        <WorkItem(544641)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestClassStatementTerminators1()
-            Test(
-NewLines("Class C : End Class \n Class B \n Sub Foo() \n C.[|Bar|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Class C \n Friend Shared Sub Bar() \n Throw New NotImplementedException() \n End Sub \n End Class \n Class B \n Sub Foo() \n C.Bar() \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(544641, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544641")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestClassStatementTerminators1() As Task
+            Await TestAsync(
+"Class C : End Class
+Class B
+    Sub Foo()
+        C.[|Bar|]()
+    End Sub
+End Class",
+"Imports System
+Class C
+    Friend Shared Sub Bar()
+        Throw New NotImplementedException()
+    End Sub
+End Class
+Class B
+    Sub Foo()
+        C.Bar()
+    End Sub
+End Class")
+        End Function
 
-        <WorkItem(546037)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestOmittedArguments1()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n [|foo|](,,) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n foo(,,) \n End Sub \n Private Sub foo(Optional p1 As Object = Nothing, Optional p2 As Object = Nothing, Optional p3 As Object = Nothing) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(546037, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546037")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestOmittedArguments1() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        [|foo|](,,)
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(args As String())
+        foo(,,)
+    End Sub
+    Private Sub foo(Optional p1 As Object = Nothing, Optional p2 As Object = Nothing, Optional p3 As Object = Nothing)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(546037)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestOmittedArguments2()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n [|foo|](1,,) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n foo(1,,) \n End Sub \n Private Sub foo(v As Integer, Optional p1 As Object = Nothing, Optional p2 As Object = Nothing) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(546037, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546037")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestOmittedArguments2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        [|foo|](1,,)
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(args As String())
+        foo(1,,)
+    End Sub
+    Private Sub foo(v As Integer, Optional p1 As Object = Nothing, Optional p2 As Object = Nothing)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(546037)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestOmittedArguments3()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n [|foo|](,1,) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n foo(,1,) \n End Sub \n Private Sub foo(Optional p1 As Object = Nothing, Optional v As Integer = Nothing, Optional p2 As Object = Nothing) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(546037, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546037")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestOmittedArguments3() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        [|foo|](, 1,)
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(args As String())
+        foo(, 1,)
+    End Sub
+    Private Sub foo(Optional p1 As Object = Nothing, Optional v As Integer = Nothing, Optional p2 As Object = Nothing)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(546037)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestOmittedArguments4()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n [|foo|](,,1) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n foo(,,1) \n End Sub \n Private Sub foo(Optional p1 As Object = Nothing, Optional p2 As Object = Nothing, Optional v As Integer = Nothing) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(546037, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546037")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestOmittedArguments4() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        [|foo|](,, 1)
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(args As String())
+        foo(,, 1)
+    End Sub
+    Private Sub foo(Optional p1 As Object = Nothing, Optional p2 As Object = Nothing, Optional v As Integer = Nothing)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(546037)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestOmittedArguments5()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n [|foo|](1,, 1) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n foo(1,, 1) \n End Sub \n Private Sub foo(v1 As Integer, Optional p As Object = Nothing, Optional v2 As Integer = Nothing) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(546037, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546037")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestOmittedArguments5() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        [|foo|](1,, 1)
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(args As String())
+        foo(1,, 1)
+    End Sub
+    Private Sub foo(v1 As Integer, Optional p As Object = Nothing, Optional v2 As Integer = Nothing)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(546037)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestOmittedArguments6()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n [|foo|](1, 1, ) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n foo(1, 1, ) \n End Sub \n Private Sub foo(v1 As Integer, v2 As Integer, Optional p As Object = Nothing) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(546037, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546037")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestOmittedArguments6() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        [|foo|](1, 1, )
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(args As String())
+        foo(1, 1, )
+    End Sub
+    Private Sub foo(v1 As Integer, v2 As Integer, Optional p As Object = Nothing)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(546683)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestNotOnMissingMethodName()
-            TestMissing(NewLines("Class C \n Sub M() \n Me.[||] \n End Sub \n End Class"))
-        End Sub
+        <WorkItem(546683, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546683")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestNotOnMissingMethodName() As Task
+            Await TestMissingAsync("Class C
+    Sub M()
+        Me.[||] 
+ End Sub
+End Class")
+        End Function
 
-        <WorkItem(546684)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateFromEventHandler()
-            Test(
-NewLines("Module Module1 \n Sub Main() \n Dim c1 As New Class1 \n AddHandler c1.AnEvent, AddressOf [|EventHandler1|] \n End Sub \n Public Class Class1 \n Public Event AnEvent() \n End Class \n End Module"),
-NewLines("Imports System \n Module Module1 \n Sub Main() \n Dim c1 As New Class1 \n AddHandler c1.AnEvent, AddressOf EventHandler1 \n End Sub \n Private Sub EventHandler1() \n Throw New NotImplementedException() \n End Sub \n Public Class Class1 \n Public Event AnEvent() \n End Class \n End Module"))
-        End Sub
+        <WorkItem(546684, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546684")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateFromEventHandler() As Task
+            Await TestAsync(
+"Module Module1
+    Sub Main()
+        Dim c1 As New Class1
+        AddHandler c1.AnEvent, AddressOf [|EventHandler1|]
+    End Sub
+    Public Class Class1
+        Public Event AnEvent()
+    End Class
+End Module",
+"Imports System
+Module Module1
+    Sub Main()
+        Dim c1 As New Class1
+        AddHandler c1.AnEvent, AddressOf EventHandler1
+    End Sub
+    Private Sub EventHandler1()
+        Throw New NotImplementedException()
+    End Sub
+    Public Class Class1
+        Public Event AnEvent()
+    End Class
+End Module")
+        End Function
 
-        <WorkItem(530814)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestCapturedMethodTypeParameterThroughLambda()
-            Test(
-NewLines("Imports System \n Imports System.Collections.Generic \n Module M \n Sub Foo(Of T, S)(x As List(Of T), y As List(Of S)) \n [|Bar|](x, Function() y) ' Generate Bar \n End Sub \n End Module"),
-NewLines("Imports System \n Imports System.Collections.Generic \n Module M \n Sub Foo(Of T, S)(x As List(Of T), y As List(Of S)) \n Bar(x, Function() y) ' Generate Bar \n End Sub \n Private Sub Bar(Of T, S)(x As List(Of T), p As Func(Of List(Of S))) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(530814, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530814")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestCapturedMethodTypeParameterThroughLambda() As Task
+            Await TestAsync(
+"Imports System
+Imports System.Collections.Generic
+Module M
+    Sub Foo(Of T, S)(x As List(Of T), y As List(Of S))
+        [|Bar|](x, Function() y) ' Generate Bar 
+    End Sub
+End Module",
+"Imports System
+Imports System.Collections.Generic
+Module M
+    Sub Foo(Of T, S)(x As List(Of T), y As List(Of S))
+        Bar(x, Function() y) ' Generate Bar 
+    End Sub
+    Private Sub Bar(Of T, S)(x As List(Of T), p As Func(Of List(Of S)))
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeParameterAndParameterConflict1()
-            Test(
-NewLines("Imports System \n Class C(Of T) \n Sub Foo(x As T) \n M.[|Bar|](T:=x) \n End Sub \n End Class \n  \n Module M \n End Module"),
-NewLines("Imports System \n Class C(Of T) \n Sub Foo(x As T) \n M.Bar(T:=x) \n End Sub \n End Class \n  \n Module M \n Friend Sub Bar(Of T1)(T As T1) \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeParameterAndParameterConflict1() As Task
+            Await TestAsync(
+"Imports System
+Class C(Of T)
+    Sub Foo(x As T)
+        M.[|Bar|](T:=x)
+    End Sub
+End Class
 
-        <WorkItem(530968)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestTypeParameterAndParameterConflict2()
-            Test(
-NewLines("Imports System \n Class C(Of T) \n Sub Foo(x As T) \n M.[|Bar|](t:=x) ' Generate Bar \n End Sub \n End Class \n  \n Module M \n End Module"),
-NewLines("Imports System \n Class C(Of T) \n Sub Foo(x As T) \n M.Bar(t:=x) ' Generate Bar \n End Sub \n End Class \n  \n Module M \n Friend Sub Bar(Of T1)(t As T1) \n End Sub \n End Module"))
-        End Sub
+Module M
+End Module",
+"Imports System
+Class C(Of T)
+    Sub Foo(x As T)
+        M.Bar(T:=x)
+    End Sub
+End Class
 
-        <WorkItem(546850)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestCollectionInitializer1()
-            Test(
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n [|Bar|](1, {1}) \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main(args As String()) \n Bar(1, {1}) \n End Sub \n Private Sub Bar(v As Integer, p() As Integer) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+Module M
+    Friend Sub Bar(Of T1)(T As T1)
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(546925)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestCollectionInitializer2()
-            Test(
-NewLines("Imports System \n Module M \n Sub Main() \n [|Foo|]({{1}}) \n End Sub \n End Module"),
-NewLines("Imports System \n Module M \n Sub Main() \n Foo({{1}}) \n End Sub \n Private Sub Foo(p(,) As Integer) \n Throw New NotImplementedException() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(530968, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530968")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestTypeParameterAndParameterConflict2() As Task
+            Await TestAsync(
+"Imports System
+Class C(Of T)
+    Sub Foo(x As T)
+        M.[|Bar|](t:=x) ' Generate Bar 
+    End Sub
+End Class
 
-        <WorkItem(530818)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestParameterizedProperty1()
-            Test(
-NewLines("Imports System \n Module Program \n Sub Main() \n [|Prop|](1) = 2 \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main() \n Prop(1) = 2 \n End Sub \n Private Function Prop(v As Integer) As Integer \n Throw New NotImplementedException() \n End Function \n End Module"))
-        End Sub
+Module M
+End Module",
+"Imports System
+Class C(Of T)
+    Sub Foo(x As T)
+        M.Bar(t:=x) ' Generate Bar 
+    End Sub
+End Class
 
-        <WorkItem(530818)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestParameterizedProperty2()
-            Test(
-NewLines("Imports System \n Module Program \n Sub Main() \n [|Prop|](1) = 2 \n End Sub \n End Module"),
-NewLines("Imports System \n Module Program \n Sub Main() \n Prop(1) = 2 \n End Sub \n Private Property Prop(v As Integer) As Integer \n Get \n Throw New NotImplementedException() \n End Get \n Set(value As Integer) \n Throw New NotImplementedException() \n End Set \n End Property \n End Module"),
+Module M
+    Friend Sub Bar(Of T1)(t As T1)
+    End Sub
+End Module")
+        End Function
+
+        <WorkItem(546850, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546850")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestCollectionInitializer1() As Task
+            Await TestAsync(
+"Imports System
+Module Program
+    Sub Main(args As String())
+        [|Bar|](1, {1})
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main(args As String())
+        Bar(1, {1})
+    End Sub
+    Private Sub Bar(v As Integer, p() As Integer)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
+
+        <WorkItem(546925, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546925")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestCollectionInitializer2() As Task
+            Await TestAsync(
+"Imports System
+Module M
+    Sub Main()
+        [|Foo|]({{1}})
+    End Sub
+End Module",
+"Imports System
+Module M
+    Sub Main()
+        Foo({{1}})
+    End Sub
+    Private Sub Foo(p(,) As Integer)
+        Throw New NotImplementedException()
+    End Sub
+End Module")
+        End Function
+
+        <WorkItem(530818, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530818")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestParameterizedProperty1() As Task
+            Await TestAsync(
+"Imports System
+Module Program
+    Sub Main()
+        [|Prop|](1) = 2
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main()
+        Prop(1) = 2
+    End Sub
+    Private Function Prop(v As Integer) As Integer
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
+
+        <WorkItem(530818, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530818")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestParameterizedProperty2() As Task
+            Await TestAsync(
+"Imports System
+Module Program
+    Sub Main()
+        [|Prop|](1) = 2
+    End Sub
+End Module",
+"Imports System
+Module Program
+    Sub Main()
+        Prop(1) = 2
+    End Sub
+    Private Property Prop(v As Integer) As Integer
+        Get
+            Throw New NotImplementedException()
+        End Get
+        Set(value As Integer)
+            Throw New NotImplementedException()
+        End Set
+    End Property
+End Module",
 index:=1)
-        End Sub
+        End Function
 
-        <WorkItem(907612)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodWithLambda_1()
-            Test(
+        <WorkItem(907612, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/907612")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodWithLambda_1() As Task
+            Await TestAsync(
 <text>
 Imports System
 
@@ -964,12 +2132,12 @@ Module Program
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(907612)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodWithLambda_2()
-            Test(
+        <WorkItem(907612, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/907612")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodWithLambda_2() As Task
+            Await TestAsync(
 <text>
 Imports System
 
@@ -1002,12 +2170,12 @@ Module Program
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(907612)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodWithLambda_3()
-            Test(
+        <WorkItem(907612, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/907612")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodWithLambda_3() As Task
+            Await TestAsync(
 <text>
 Imports System
 
@@ -1040,12 +2208,12 @@ Module Program
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(889349)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodForDifferentParameterName()
-            Test(
+        <WorkItem(889349, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/889349")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodForDifferentParameterName() As Task
+            Await TestAsync(
 <text>
 Class Program
     Sub M()
@@ -1074,12 +2242,12 @@ Class Program
     End Sub
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(769760)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodForSameNamedButGenericUsage_1()
-            Test(
+        <WorkItem(769760, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/769760")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodForSameNamedButGenericUsage_1() As Task
+            Await TestAsync(
 <text>
 Class Program
     Sub Main(args As String())
@@ -1110,12 +2278,12 @@ Class Program
     End Sub
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(769760)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodForSameNamedButGenericUsage_2()
-            Test(
+        <WorkItem(769760, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/769760")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodForSameNamedButGenericUsage_2() As Task
+            Await TestAsync(
 <text>Imports System
 Class Program
     Sub Main(args As String())
@@ -1152,12 +2320,12 @@ Class Program
     End Sub
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(935731)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodForAwaitWithoutParenthesis()
-            Test(
+        <WorkItem(935731, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/935731")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodForAwaitWithoutParenthesis() As Task
+            Await TestAsync(
 <text>Module Module1
     Async Sub Method_ASub()
         Dim x = [|Await Foo|]
@@ -1177,12 +2345,12 @@ Module Module1
     End Function
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodTooManyArgs1()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodTooManyArgs1() As Task
+            Await TestAsync(
 <text>Module M1
     Sub Main()
         [|test("CC", 15, 45)|]
@@ -1206,12 +2374,12 @@ Module M1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodNamespaceNotExpression1()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodNamespaceNotExpression1() As Task
+            Await TestAsync(
 <text>Imports System
 Module M1
     Sub Foo()
@@ -1230,12 +2398,12 @@ Module M1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodNoArgumentCountOverloadCandidates1()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodNoArgumentCountOverloadCandidates1() As Task
+            Await TestAsync(
 <text>Module Module1
     Class C0
         Public whichOne As String
@@ -1282,12 +2450,12 @@ Module Module1
 
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodFunctionResultCannotBeIndexed1()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodFunctionResultCannotBeIndexed1() As Task
+            Await TestAsync(
 <text>Imports Microsoft.VisualBasic.FileSystem
 Module M1
     Sub foo()
@@ -1309,12 +2477,12 @@ Module M1
     End Function
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodNoCallableOverloadCandidates2()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodNoCallableOverloadCandidates2() As Task
+            Await TestAsync(
 <text>Class M1
     Sub sub1(Of U, V)(ByVal p1 As U, ByVal p2 As V)
     End Sub
@@ -1336,17 +2504,17 @@ Class M1
         sub1(Of Integer, String)(New Integer() {1, 2, 3}, New String() {"a", "b"})
     End Sub
 
-    Private Sub sub1(Of T1, T2)(v1() As Integer, v2() As String)
+    Private Sub sub1(Of T1, T2)(v1() As T1, v2() As T2)
         Throw New NotImplementedException()
     End Sub
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodNoNonNarrowingOverloadCandidates2()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodNoNonNarrowingOverloadCandidates2() As Task
+            Await TestAsync(
 <text>Module Module1
     Class C0(Of T)
         Public whichOne As String
@@ -1433,12 +2601,12 @@ Module Module1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodNoNonNarrowingOverloadCandidates3()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodNoNonNarrowingOverloadCandidates3() As Task
+            Await TestAsync(
 <text>Module Module1
     Class C0(Of T)
         Sub Foo(ByVal t1 As T)
@@ -1503,12 +2671,12 @@ Module Module1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodNoNonNarrowingOverloadCandidates4()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodNoNonNarrowingOverloadCandidates4() As Task
+            Await TestAsync(
 <text>Module Module1
     Class C0(Of T)
         Public whichOne As String
@@ -1575,12 +2743,12 @@ Module Module1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodArgumentNarrowing()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodArgumentNarrowing() As Task
+            Await TestAsync(
 <text>Option Strict Off
 Module Module1
     Class sample7C1(Of X)
@@ -1643,12 +2811,12 @@ Module Module1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodArgumentNarrowing2()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodArgumentNarrowing2() As Task
+            Await TestAsync(
 <text>Option Strict Off
 Module Module1
     Class sample7C1(Of X)
@@ -1711,12 +2879,12 @@ Module Module1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodArgumentNarrowing3()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodArgumentNarrowing3() As Task
+            Await TestAsync(
 <text>Option Strict Off
 Module Module1
     Class sample7C1(Of X)
@@ -1779,12 +2947,12 @@ Module Module1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(939941)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodNoMostSpecificOverload2()
-            Test(
+        <WorkItem(939941, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/939941")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodNoMostSpecificOverload2() As Task
+            Await TestAsync(
 <text>Module Module1
     Class C0(Of T)
         Sub Foo(ByVal t1 As T)
@@ -1839,12 +3007,12 @@ Module Module1
     End Sub
 End Module
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-        End Sub
+        End Function
 
-        <WorkItem(1032176)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodInsideNameOf()
-            Test(
+        <WorkItem(1032176, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1032176")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodInsideNameOf() As Task
+            Await TestAsync(
 <text>
 Imports System
 
@@ -1867,12 +3035,12 @@ Class C
     End Function
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
-        End Sub
+        End Function
 
-        <WorkItem(1032176)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodInsideNameOf2()
-            Test(
+        <WorkItem(1032176, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1032176")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodInsideNameOf2() As Task
+            Await TestAsync(
 <text>
 Imports System
 
@@ -1905,11 +3073,11 @@ Namespace Z
     End Class
 End Namespace
 </text>.Value.Replace(vbLf, vbCrLf))
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodWithNameOfArgument()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodWithNameOfArgument() As Task
+            Await TestAsync(
 <text>
 Class C
     Sub M()
@@ -1930,11 +3098,11 @@ Class C
     End Sub
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodWithLambdaAndNameOfArgument()
-            Test(
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodWithLambdaAndNameOfArgument() As Task
+            Await TestAsync(
 <text>
 Class C
     Sub M()
@@ -1955,249 +3123,851 @@ Class C
     End Sub
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
-        End Sub
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As C = a?[|.B|] \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As C = a?.B \n End Sub \n Private Function B() As C \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As C = a?[|.B|]
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As C = a?.B
+    End Sub
+    Private Function B() As C
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis2()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x = a?[|.B|] \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x = a?.B \n End Sub \n Private Function B() As Object \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis2() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x = a?[|.B|]
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x = a?.B
+    End Sub
+    Private Function B() As Object
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis3()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?[|.B|] \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?.B \n End Sub \n Private Function B() As Integer \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis3() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?[|.B|]
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?.B
+    End Sub
+    Private Function B() As Integer
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis4()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As C? = a?[|.B|] \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As C? = a?.B \n End Sub \n Private Function B() As C \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis4() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As C? = a?[|.B|]
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As C? = a?.B
+    End Sub
+    Private Function B() As C
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis5()
-            Test(
-NewLines("Option Strict On \n Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?[|.B.Z|] \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n End Class \n End Class"),
-NewLines("Option Strict On \n Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?.B.Z \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n Friend Function Z() As Integer \n Throw New NotImplementedException() \n End Function \n End Class \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis5() As Task
+            Await TestAsync(
+"Option Strict On
+Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?[|.B.Z|]
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+    End Class
+End Class",
+"Option Strict On
+Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?.B.Z
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+        Friend Function Z() As Integer
+            Throw New NotImplementedException()
+        End Function
+    End Class
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis6()
-            Test(
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer = a?[|.B.Z|] \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n End Class \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer = a?.B.Z \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n Friend Function Z() As Integer \n Throw New NotImplementedException() \n End Function \n End Class \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis6() As Task
+            Await TestAsync(
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer = a?[|.B.Z|]
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+    End Class
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer = a?.B.Z
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+        Friend Function Z() As Integer
+            Throw New NotImplementedException()
+        End Function
+    End Class
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis7()
-            Test(
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x = a?[|.B.Z|] \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n End Class \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x = a?.B.Z \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n Friend Function Z() As Object \n Throw New NotImplementedException() \n End Function \n End Class \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis7() As Task
+            Await TestAsync(
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x = a?[|.B.Z|]
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+    End Class
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x = a?.B.Z
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+        Friend Function Z() As Object
+            Throw New NotImplementedException()
+        End Function
+    End Class
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis8()
-            Test(
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As C = a?[|.B.Z|] \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n End Class \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As C = a?.B.Z \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n Friend Function Z() As C \n Throw New NotImplementedException() \n End Function \n End Class \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis8() As Task
+            Await TestAsync(
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As C = a?[|.B.Z|]
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+    End Class
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As C = a?.B.Z
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+        Friend Function Z() As C
+            Throw New NotImplementedException()
+        End Function
+    End Class
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis9()
-            Test(
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer = a?[|.B.Z|] \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n End Class \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer = a?.B.Z \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n Friend Function Z() As Integer \n Throw New NotImplementedException() \n End Function \n End Class \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis9() As Task
+            Await TestAsync(
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer = a?[|.B.Z|]
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+    End Class
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer = a?.B.Z
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+        Friend Function Z() As Integer
+            Throw New NotImplementedException()
+        End Function
+    End Class
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis10()
-            Test(
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?[|.B.Z|] \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n End Class \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?.B.Z \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n Friend Function Z() As Integer \n Throw New NotImplementedException() \n End Function \n End Class \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis10() As Task
+            Await TestAsync(
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?[|.B.Z|]
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+    End Class
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?.B.Z
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+        Friend Function Z() As Integer
+            Throw New NotImplementedException()
+        End Function
+    End Class
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccessNoParenthesis11()
-            Test(
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x = a?[|.B.Z|] \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n End Class \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x = a?.B.Z \n End Sub \n Private Function B() As D \n Throw New NotImplementedException() \n End Function \n Private Class D \n Friend Function Z() As Object \n Throw New NotImplementedException() \n End Function \n End Class \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccessNoParenthesis11() As Task
+            Await TestAsync(
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x = a?[|.B.Z|]
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+    End Class
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x = a?.B.Z
+    End Sub
+    Private Function B() As D
+        Throw New NotImplementedException()
+    End Function
+    Private Class D
+        Friend Function Z() As Object
+            Throw New NotImplementedException()
+        End Function
+    End Class
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccess()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As C = a?[|.B|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As C = a?.B() \n End Sub \n Private Function B() As C \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccess() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As C = a?[|.B|]()
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As C = a?.B()
+    End Sub
+    Private Function B() As C
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccess2()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x = a?[|.B|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x = a?.B() \n End Sub \n Private Function B() As Object \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccess2() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x = a?[|.B|]()
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x = a?.B()
+    End Sub
+    Private Function B() As Object
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccess3()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?[|.B|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?.B() \n End Sub \n Private Function B() As Integer \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccess3() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?[|.B|]()
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?.B()
+    End Sub
+    Private Function B() As Integer
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalAccess4()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As C? = a?[|.B|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As C? = a?.B() \n End Sub \n Private Function B() As C \n Throw New NotImplementedException() \n End Function \n End Class"))
-        End Sub
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalAccess4() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As C? = a?[|.B|]()
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As C? = a?.B()
+    End Sub
+    Private Function B() As C
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
-        Public Sub TestGeneratePropertyConditionalAccess()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As C = a?[|.B|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As C = a?.B() \n End Sub \n Private ReadOnly Property B As C \n Get \n Throw New NotImplementedException() \n End Get \n End Property \n End Class"),
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
+        Public Async Function TestGeneratePropertyConditionalAccess() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As C = a?[|.B|]()
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As C = a?.B()
+    End Sub
+    Private ReadOnly Property B As C
+        Get
+            Throw New NotImplementedException()
+        End Get
+    End Property
+End Class",
 index:=1)
-        End Sub
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
-        Public Sub TestGeneratePropertyConditionalAccess2()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x = a?[|.B|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x = a?.B() \n End Sub \n Private ReadOnly Property B As Object \n Get \n Throw New NotImplementedException() \n End Get \n End Property \n End Class"),
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
+        Public Async Function TestGeneratePropertyConditionalAccess2() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x = a?[|.B|]()
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x = a?.B()
+    End Sub
+    Private ReadOnly Property B As Object
+        Get
+            Throw New NotImplementedException()
+        End Get
+    End Property
+End Class",
 index:=1)
-        End Sub
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
-        Public Sub TestGeneratePropertyConditionalAccess3()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?[|.B|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As Integer? = a?.B() \n End Sub \n Private ReadOnly Property B As Integer \n Get \n Throw New NotImplementedException() \n End Get \n End Property \n End Class"),
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
+        Public Async Function TestGeneratePropertyConditionalAccess3() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?[|.B|]()
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As Integer? = a?.B()
+    End Sub
+    Private ReadOnly Property B As Integer
+        Get
+            Throw New NotImplementedException()
+        End Get
+    End Property
+End Class",
 index:=1)
-        End Sub
+        End Function
 
-        <WorkItem(1064815)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
-        Public Sub TestGeneratePropertyConditionalAccess4()
-            Test(
-NewLines("Public Class C \n Sub Main(a As C) \n Dim x As C? = a?[|.B|]() \n End Sub \n End Class"),
-NewLines("Imports System \n Public Class C \n Sub Main(a As C) \n Dim x As C? = a?.B() \n End Sub \n Private ReadOnly Property B As C \n Get \n Throw New NotImplementedException() \n End Get \n End Property \n End Class"),
+        <WorkItem(1064815, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1064815")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
+        Public Async Function TestGeneratePropertyConditionalAccess4() As Task
+            Await TestAsync(
+"Public Class C
+    Sub Main(a As C)
+        Dim x As C? = a?[|.B|]()
+    End Sub
+End Class",
+"Imports System
+Public Class C
+    Sub Main(a As C)
+        Dim x As C? = a?.B()
+    End Sub
+    Private ReadOnly Property B As C
+        Get
+            Throw New NotImplementedException()
+        End Get
+    End Property
+End Class",
 index:=1)
-        End Sub
+        End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalInPropertyInitializer()
-            Test(
-NewLines("Module Program \n Property a As Integer = [|y|] \n End Module"),
-NewLines("Imports System\n\nModule Program\nProperty a As Integer = y\n\nPrivate Function y() As Integer\nThrow New NotImplementedException()\nEnd Function\nEnd Module"))
-        End Sub
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalInPropertyInitializer() As Task
+            Await TestAsync(
+"Module Program
+    Property a As Integer = [|y|]
+End Module",
+"Imports System
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConditionalInPropertyInitializer2()
-            Test(
-NewLines("Module Program \n Property a As Integer = [|y|]() \n End Module"),
-NewLines("Imports System\n\nModule Program\nProperty a As Integer = y()\n\n Private Function y() As Integer\nThrow New NotImplementedException()\nEnd Function\nEnd Module"))
-        End Sub
+Module Program
+    Property a As Integer = y
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodTypeOf()
-            Test(
-NewLines("Module C \n Sub Test() \n If TypeOf [|B|] Is String Then \n End If \n End Sub \n End Module"),
-NewLines("Imports System \n Module C \n Sub Test() \n If TypeOf B Is String Then \n End If \n End Sub \n Private Function B() As String \n Throw New NotImplementedException() \n End Function \n End Module"))
-        End Sub
+    Private Function y() As Integer
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodTypeOf2()
-            Test(
-NewLines("Module C \n Sub Test() \n If TypeOf [|B|]() Is String Then \n End If \n End Sub \n End Module"),
-NewLines("Imports System \n Module C \n Sub Test() \n If TypeOf B() Is String Then \n End If \n End Sub \n Private Function B() As String \n Throw New NotImplementedException() \n End Function \n End Module"))
-        End Sub
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConditionalInPropertyInitializer2() As Task
+            Await TestAsync(
+"Module Program
+    Property a As Integer = [|y|]()
+End Module",
+"Imports System
+
+Module Program
+    Property a As Integer = y()
+
+    Private Function y() As Integer
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
+
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodTypeOf() As Task
+            Await TestAsync(
+"Module C
+    Sub Test()
+        If TypeOf [|B|] Is String Then
+        End If
+    End Sub
+End Module",
+"Imports System
+Module C
+    Sub Test()
+        If TypeOf B Is String Then
+        End If
+    End Sub
+    Private Function B() As String
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
+
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodTypeOf2() As Task
+            Await TestAsync(
+"Module C
+    Sub Test()
+        If TypeOf [|B|]() Is String Then
+        End If
+    End Sub
+End Module",
+"Imports System
+Module C
+    Sub Test()
+        If TypeOf B() Is String Then
+        End If
+    End Sub
+    Private Function B() As String
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
         <WorkItem(643, "https://github.com/dotnet/roslyn/issues/643")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodConfigureAwaitFalse()
-            Test(
-NewLines("Imports System \n Imports System.Collections.Generic \n Imports System.Linq \n Module Program \n Async Sub Main(args As String()) \n Dim x As Boolean = Await [|Foo|]().ConfigureAwait(False) \n End Sub \n End Module"),
-NewLines("Imports System\nImports System.Collections.Generic\nImports System.Linq\nImports System.Threading.Tasks\n\nModule Program\n    Async Sub Main(args As String())\n        Dim x As Boolean = Await Foo().ConfigureAwait(False)\n    End Sub\n\n    Private Function Foo() As Task(Of Boolean)\n        Throw New NotImplementedException()\n    End Function\nEnd Module"))
-        End Sub
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodConfigureAwaitFalse() As Task
+            Await TestAsync(
+"Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Module Program
+    Async Sub Main(args As String())
+        Dim x As Boolean = Await [|Foo|]().ConfigureAwait(False)
+    End Sub
+End Module",
+"Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Imports System.Threading.Tasks
+
+Module Program
+    Async Sub Main(args As String())
+        Dim x As Boolean = Await Foo().ConfigureAwait(False)
+    End Sub
+
+    Private Function Foo() As Task(Of Boolean)
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
         <WorkItem(643, "https://github.com/dotnet/roslyn/issues/643")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
-        Public Sub TestGeneratePropertyConfigureAwaitFalse()
-            Test(
-NewLines("Imports System \n Imports System.Collections.Generic \n Imports System.Linq \n Module Program \n Async Sub Main(args As String()) \n Dim x As Boolean = Await [|Foo|]().ConfigureAwait(False) \n End Sub \n End Module"),
-NewLines("Imports System\nImports System.Collections.Generic\nImports System.Linq\nImports System.Threading.Tasks\n\nModule Program\n    Async Sub Main(args As String())\n        Dim x As Boolean = Await Foo().ConfigureAwait(False)\n    End Sub\n\n    Private ReadOnly Property Foo As Task(Of Boolean)\n        Get\n            Throw New NotImplementedException()\n        End Get\n    End Property\nEnd Module"),
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateVariable)>
+        Public Async Function TestGeneratePropertyConfigureAwaitFalse() As Task
+            Await TestAsync(
+"Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Module Program
+    Async Sub Main(args As String())
+        Dim x As Boolean = Await [|Foo|]().ConfigureAwait(False)
+    End Sub
+End Module",
+"Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Imports System.Threading.Tasks
+
+Module Program
+    Async Sub Main(args As String())
+        Dim x As Boolean = Await Foo().ConfigureAwait(False)
+    End Sub
+
+    Private ReadOnly Property Foo As Task(Of Boolean)
+        Get
+            Throw New NotImplementedException()
+        End Get
+    End Property
+End Module",
 index:=1)
-        End Sub
+        End Function
 
         <WorkItem(643, "https://github.com/dotnet/roslyn/issues/643")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodWithMethodChaining()
-            Test(
-NewLines("Imports System \n Imports System.Linq \n Module M \n Async Sub T() \n Dim x As Boolean = Await [|F|]().ContinueWith(Function(a) True).ContinueWith(Function(a) False) \n End Sub \n End Module"),
-NewLines("Imports System\nImports System.Linq\nImports System.Threading.Tasks\n\nModule M\n    Async Sub T()\n        Dim x As Boolean = Await F().ContinueWith(Function(a) True).ContinueWith(Function(a) False)\n    End Sub\n\n    Private Function F() As Task(Of Boolean)\n        Throw New NotImplementedException()\n    End Function\nEnd Module"))
-        End Sub
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodWithMethodChaining() As Task
+            Await TestAsync(
+"Imports System 
+Imports System.Linq 
+Module M 
+    Async Sub T() 
+        Dim x As Boolean = Await [|F|]().ConfigureAwait(False)
+    End Sub 
+End Module",
+"Imports System 
+Imports System.Linq 
+Imports System.Threading.Tasks
+Module M 
+    Async Sub T() 
+        Dim x As Boolean = Await F().ConfigureAwait(False)
+    End Sub 
+    Private Function F() As Task(Of Boolean)
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
-        <WorkItem(643, "https://github.com/dotnet/roslyn/issues/643")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodWithMethodChaining2()
-            Test(
-NewLines("Imports System \n Imports System.Linq \n Module M \n Async Sub T() \n Dim x As Boolean = Await [|F|]().ContinueWith(Function(a) True).ContinueWith(Function(a) False) \n End Sub \n End Module"),
-NewLines("Imports System\nImports System.Linq\nImports System.Threading.Tasks\n\nModule M\n    Async Sub T()\n        Dim x As Boolean = Await F().ContinueWith(Function(a) True).ContinueWith(Function(a) False)\n    End Sub\n\n    Private ReadOnly Property F As Task(Of Boolean)\n        Get\n            Throw New NotImplementedException()\n        End Get\n    End Property\nEnd Module"),
-index:=1)
-        End Sub
+        <WorkItem(1130960, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1130960")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodInTypeOfIsNot() As Task
+            Await TestAsync(
+"Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Module Program
+    Sub M()
+        If TypeOf [|Prop|] IsNot TypeOfIsNotDerived Then
+        End If
+    End Sub
+End Module",
+"Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Module Program
+    Sub M()
+        If TypeOf Prop IsNot TypeOfIsNotDerived Then
+        End If
+    End Sub
+    Private Function Prop() As TypeOfIsNotDerived
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
-        <WorkItem(1130960)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestGenerateMethodInTypeOfIsNot()
-            Test(
-NewLines("Imports System \n Imports System.Collections.Generic \n Imports System.Linq \n Module Program \n Sub M() \n If TypeOf [|Prop|] IsNot TypeOfIsNotDerived Then \n End If \n End Sub \n End Module"),
-NewLines("Imports System \n Imports System.Collections.Generic \n Imports System.Linq \n Module Program \n Sub M() \n If TypeOf Prop IsNot TypeOfIsNotDerived Then \n End If \n End Sub \n Private Function Prop() As TypeOfIsNotDerived \n Throw New NotImplementedException() \n End Function \n End Module"))
-        End Sub
+        <WorkItem(529480, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529480")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInCollectionInitializers1() As Task
+            Await TestAsync(
+"Imports System
+Imports System.Collections.Generic
+Module Program
+    Sub M()
+        Dim x = New List(Of Integer) From {[|T|]()}
+    End Sub
+End Module",
+"Imports System
+Imports System.Collections.Generic
+Module Program
+    Sub M()
+        Dim x = New List(Of Integer) From {T()}
+    End Sub
+    Private Function T() As Integer
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
-        <WorkItem(529480)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInCollectionInitializers1()
-            Test(
-NewLines("Imports System \n Imports System.Collections.Generic \n Module Program \n Sub M() \n Dim x = New List ( Of Integer ) From { [|T|]() } \n End Sub \n End Module"),
-NewLines("Imports System \n Imports System.Collections.Generic \n Module Program \n Sub M() \n Dim x = New List ( Of Integer ) From { T() } \n End Sub \n Private Function T() As Integer \n Throw New NotImplementedException() \n End Function \n End Module"))
-        End Sub
+        <WorkItem(529480, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529480")>
+        <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestInCollectionInitializers2() As Task
+            Await TestAsync(
+"Imports System
+Imports System.Collections.Generic
+Module Program
+    Sub M()
+        Dim x = New Dictionary(Of Integer, Boolean) From {{1, [|T|]()}}
+    End Sub
+End Module",
+"Imports System
+Imports System.Collections.Generic
+Module Program
+    Sub M()
+        Dim x = New Dictionary(Of Integer, Boolean) From {{1, T()}}
+    End Sub
+    Private Function T() As Boolean
+        Throw New NotImplementedException()
+    End Function
+End Module")
+        End Function
 
-        <WorkItem(529480)>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-        Public Sub TestInCollectionInitializers2()
-            Test(
-NewLines("Imports System \n Imports System.Collections.Generic \n Module Program \n Sub M() \n Dim x = New Dictionary ( Of Integer , Boolean ) From { { 1, [|T|]() } } \n End Sub \n End Module"),
-NewLines("Imports System \n Imports System.Collections.Generic \n Module Program \n Sub M() \n Dim x = New Dictionary ( Of Integer , Boolean ) From { { 1, T() } } \n End Sub \n Private Function T() As Boolean \n Throw New NotImplementedException() \n End Function \n End Module"))
-        End Sub
+        <WorkItem(10004, "https://github.com/dotnet/roslyn/issues/10004")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodWithMultipleOfSameGenericType() As Task
+            Await TestAsync(
+<text>
+Namespace TestClasses
+    Public Class C
+    End Class
+
+    Module Ex
+        Public Function M(Of T As C)(a As T) As T
+            Return [|a.Test(Of T, T)()|]
+        End Function
+    End Module
+End Namespace
+</text>.Value.Replace(vbLf, vbCrLf),
+<text>
+Namespace TestClasses
+    Public Class C
+        Friend Function Test(Of T1 As C, T2 As C)() As T2
+        End Function
+    End Class
+
+    Module Ex
+        Public Function M(Of T As C)(a As T) As T
+            Return a.Test(Of T, T)()
+        End Function
+    End Module
+End Namespace
+</text>.Value.Replace(vbLf, vbCrLf))
+        End Function
+
+        <WorkItem(11461, "https://github.com/dotnet/roslyn/issues/11461")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function TestGenerateMethodOffOfExistingProperty() As Task
+            Await TestAsync(
+<text>
+Imports System
+
+Public NotInheritable Class Repository
+    Shared ReadOnly Property agreementtype As AgreementType
+        Get
+        End Get
+    End Property
+End Class
+
+Public Class Agreementtype
+End Class
+
+Class C
+    Shared Sub TestError()
+        [|Repository.AgreementType.NewFunction|]("", "")
+    End Sub
+End Class
+</text>.Value.Replace(vbLf, vbCrLf),
+<text>
+Imports System
+
+Public NotInheritable Class Repository
+    Shared ReadOnly Property agreementtype As AgreementType
+        Get
+        End Get
+    End Property
+End Class
+
+Public Class Agreementtype
+    Friend Sub NewFunction(v1 As String, v2 As String)
+        Throw New NotImplementedException()
+    End Sub
+End Class
+
+Class C
+    Shared Sub TestError()
+        Repository.AgreementType.NewFunction("", "")
+    End Sub
+End Class</text>.Value.Replace(vbLf, vbCrLf))
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function MethodWithTuple() As Task
+            Await TestAsync(
+"Class Program
+    Private Shared Async Sub Main(args As String())
+        Dim d As (Integer, String) = [|NewMethod|]((1, ""hello""))
+    End Sub
+End Class",
+"Imports System
+
+Class Program
+    Private Shared Async Sub Main(args As String())
+        Dim d As (Integer, String) = NewMethod((1, ""hello""))
+    End Sub
+
+    Private Shared Function NewMethod(p As (Integer, String)) As (Integer, String)
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function MethodWithTupleWithNames() As Task
+            Await TestAsync(
+"Class Program
+    Private Shared Async Sub Main(args As String())
+        Dim d As (a As Integer, b As String) = [|NewMethod|]((c:=1, d:=""hello""))
+    End Sub
+End Class",
+"Imports System
+
+Class Program
+    Private Shared Async Sub Main(args As String())
+        Dim d As (a As Integer, b As String) = NewMethod((c:=1, d:=""hello""))
+    End Sub
+
+    Private Shared Function NewMethod(p As (c As Integer, d As String)) As (a As Integer, b As String)
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+        Public Async Function MethodWithTupleWithOneName() As Task
+            Await TestAsync(
+"Class Program
+    Private Shared Async Sub Main(args As String())
+        Dim d As (a As Integer, String) = [|NewMethod|]((c:=1, ""hello""))
+    End Sub
+End Class",
+"Imports System
+
+Class Program
+    Private Shared Async Sub Main(args As String())
+        Dim d As (a As Integer, String) = NewMethod((c:=1, ""hello""))
+    End Sub
+
+    Private Shared Function NewMethod(p As (c As Integer, String)) As (a As Integer, String)
+        Throw New NotImplementedException()
+    End Function
+End Class")
+        End Function
 
         Public Class GenerateConversionTests
             Inherits AbstractVisualBasicDiagnosticProviderBasedUserDiagnosticTest
@@ -2206,10 +3976,10 @@ NewLines("Imports System \n Imports System.Collections.Generic \n Module Program
                 Return New Tuple(Of DiagnosticAnalyzer, CodeFixProvider)(Nothing, New GenerateConversionCodeFixProvider())
             End Function
 
-            <WorkItem(774321)>
-            <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-            Public Sub TestGenerateExplicitConversionGenericClass()
-                Test(
+            <WorkItem(774321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774321")>
+            <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+            Public Async Function TestGenerateExplicitConversionGenericClass() As Task
+                Await TestAsync(
     <text>Class Program
     Private Shared Sub Main(args As String())
         Dim a As C(Of Integer) = CType([|1|], C(Of Integer))
@@ -2233,12 +4003,12 @@ Class C(Of T)
     End Operator
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-            End Sub
+            End Function
 
-            <WorkItem(774321)>
-            <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-            Public Sub TestGenerateExplicitConversionClass()
-                Test(
+            <WorkItem(774321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774321")>
+            <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+            Public Async Function TestGenerateExplicitConversionClass() As Task
+                Await TestAsync(
     <text>Class Program
     Private Shared Sub Main(args As String())
         Dim a As C = CType([|1|], C)
@@ -2262,12 +4032,12 @@ Class C
     End Operator
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-            End Sub
+            End Function
 
-            <WorkItem(774321)>
-            <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-            Public Sub TestGenerateExplicitConversionAwaitExpression()
-                Test(
+            <WorkItem(774321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774321")>
+            <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+            Public Async Function TestGenerateExplicitConversionAwaitExpression() As Task
+                Await TestAsync(
     <text>Imports System
 Imports System.Threading.Tasks
 
@@ -2297,12 +4067,12 @@ Class C
     End Operator
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-            End Sub
+            End Function
 
-            <WorkItem(774321)>
-            <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-            Public Sub TestGenerateImplicitConversionTargetTypeNotInSource()
-                Test(
+            <WorkItem(774321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774321")>
+            <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+            Public Async Function TestGenerateImplicitConversionTargetTypeNotInSource() As Task
+                Await TestAsync(
     <text>Imports System
 Imports System.Threading.Tasks
 
@@ -2343,12 +4113,12 @@ Class Digit
     End Operator
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-            End Sub
+            End Function
 
-            <WorkItem(774321)>
-            <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-            Public Sub TestGenerateImplicitConversionGenericClass()
-                Test(
+            <WorkItem(774321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774321")>
+            <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+            Public Async Function TestGenerateImplicitConversionGenericClass() As Task
+                Await TestAsync(
     <text>Class Program
     Private Shared Sub Main(args As String())
         Dim a As C(Of Integer) = [|1|]
@@ -2372,12 +4142,12 @@ Class C(Of T)
     End Operator
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-            End Sub
+            End Function
 
-            <WorkItem(774321)>
-            <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-            Public Sub TestGenerateImplicitConversionClass()
-                Test(
+            <WorkItem(774321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774321")>
+            <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+            Public Async Function TestGenerateImplicitConversionClass() As Task
+                Await TestAsync(
     <text>Class Program
     Private Shared Sub Main(args As String())
         Dim a As C = [|1|]
@@ -2401,12 +4171,12 @@ Class C
     End Operator
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-            End Sub
+            End Function
 
-            <WorkItem(774321)>
-            <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-            Public Sub TestGenerateImplicitConversionAwaitExpression()
-                Test(
+            <WorkItem(774321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774321")>
+            <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+            Public Async Function TestGenerateImplicitConversionAwaitExpression() As Task
+                Await TestAsync(
     <text>Imports System
 Imports System.Threading.Tasks
 
@@ -2436,12 +4206,12 @@ Class C
     End Operator
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-            End Sub
+            End Function
 
-            <WorkItem(774321)>
-            <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
-            Public Sub TestGenerateExplicitConversionTargetTypeNotInSource()
-                Test(
+            <WorkItem(774321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/774321")>
+            <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsGenerateMethod)>
+            Public Async Function TestGenerateExplicitConversionTargetTypeNotInSource() As Task
+                Await TestAsync(
     <text>Imports System
 Imports System.Threading.Tasks
 
@@ -2482,7 +4252,7 @@ Class Digit
     End Operator
 End Class
 </text>.Value.Replace(vbLf, vbCrLf), compareTokens:=False)
-            End Sub
+            End Function
 
         End Class
     End Class

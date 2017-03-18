@@ -5,19 +5,19 @@ Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.ChangeSignature
     Partial Public Class ChangeSignatureTests
         <WpfFact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
-        Public Sub ReorderMethodParameters_InvokeOnClassName_ShouldFail()
+        Public Async Function TestReorderMethodParameters_InvokeOnClassName_ShouldFail() As Task
             Dim markup = <Text><![CDATA[
 Class C$$
     Sub M()
     End Sub
 End Class]]></Text>.NormalizedValue()
 
-            TestChangeSignatureViaCommand(LanguageNames.VisualBasic, markup, expectedSuccess:=False, expectedErrorText:=FeaturesResources.YouCanOnlyChangeTheSignatureOfAConstructorIndexerMethodOrDelegate)
-        End Sub
+            Await TestChangeSignatureViaCommandAsync(LanguageNames.VisualBasic, markup, expectedSuccess:=False, expectedErrorText:=FeaturesResources.You_can_only_change_the_signature_of_a_constructor_indexer_method_or_delegate)
+        End Function
 
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
-        Public Sub ReorderMethodParameters_InvokeOnField_ShouldFail()
+        Public Async Function TestReorderMethodParameters_InvokeOnField_ShouldFail() As Task
             Dim markup = <Text><![CDATA[
 Class C
     Dim t$$ = 7
@@ -26,22 +26,22 @@ Class C
     End Sub
 End Class]]></Text>.NormalizedValue()
 
-            TestChangeSignatureViaCommand(LanguageNames.VisualBasic, markup, expectedSuccess:=False, expectedErrorText:=FeaturesResources.YouCanOnlyChangeTheSignatureOfAConstructorIndexerMethodOrDelegate)
-        End Sub
+            Await TestChangeSignatureViaCommandAsync(LanguageNames.VisualBasic, markup, expectedSuccess:=False, expectedErrorText:=FeaturesResources.You_can_only_change_the_signature_of_a_constructor_indexer_method_or_delegate)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
-        Public Sub ReorderMethodParameters_InsufficientParameters_None()
+        Public Async Function TestReorderMethodParameters_InsufficientParameters_None() As Task
             Dim markup = <Text><![CDATA[
 Class C
     Sub $$M()
     End Sub
 End Class]]></Text>.NormalizedValue()
 
-            TestChangeSignatureViaCommand(LanguageNames.VisualBasic, markup, expectedSuccess:=False, expectedErrorText:=FeaturesResources.ThisSignatureDoesNotContainParametersThatCanBeChanged)
-        End Sub
+            Await TestChangeSignatureViaCommandAsync(LanguageNames.VisualBasic, markup, expectedSuccess:=False, expectedErrorText:=FeaturesResources.This_signature_does_not_contain_parameters_that_can_be_changed)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
-        Public Sub ReorderMethodParameters_InvokeOnOperator_ShouldFail()
+        Public Async Function TestReorderMethodParameters_InvokeOnOperator_ShouldFail() As Task
             Dim markup = <Text><![CDATA[
 Class C
     Public Shared $$Operator +(c1 As C, c2 As C)
@@ -49,7 +49,7 @@ Class C
     End Operator
 End Class]]></Text>.NormalizedValue()
 
-            TestChangeSignatureViaCommand(LanguageNames.VisualBasic, markup, expectedSuccess:=False, expectedErrorText:=FeaturesResources.YouCanOnlyChangeTheSignatureOfAConstructorIndexerMethodOrDelegate)
-        End Sub
+            Await TestChangeSignatureViaCommandAsync(LanguageNames.VisualBasic, markup, expectedSuccess:=False, expectedErrorText:=FeaturesResources.You_can_only_change_the_signature_of_a_constructor_indexer_method_or_delegate)
+        End Function
     End Class
 End Namespace

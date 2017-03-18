@@ -16,6 +16,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
         End Function
 
         <Extension()>
+        Public Function IsParentKind(node As SyntaxNode, kind1 As SyntaxKind, kind2 As SyntaxKind) As Boolean
+            Return node IsNot Nothing AndAlso
+                   IsKind(node.Parent, kind1, kind2)
+        End Function
+
+        <Extension()>
+        Public Function IsParentKind(node As SyntaxNode, kind1 As SyntaxKind, kind2 As SyntaxKind, kind3 As SyntaxKind) As Boolean
+            Return node IsNot Nothing AndAlso
+                   IsKind(node.Parent, kind1, kind2, kind3)
+        End Function
+
+        <Extension()>
         Public Function IsKind(node As SyntaxNode, kind1 As SyntaxKind, kind2 As SyntaxKind) As Boolean
             If node Is Nothing Then
                 Return False
@@ -220,25 +232,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
                    lambda.Kind = SyntaxKind.MultiLineFunctionLambdaExpression
         End Function
 
-        <Extension()>
-        Friend Function WithPrependedLeadingTrivia(Of T As SyntaxNode)(node As T, ParamArray trivia As SyntaxTrivia()) As T
-            Return node.WithPrependedLeadingTrivia(DirectCast(trivia, IEnumerable(Of SyntaxTrivia)))
-        End Function
-
-        <Extension()>
-        Friend Function WithPrependedLeadingTrivia(Of T As SyntaxNode)(node As T, trivia As IEnumerable(Of SyntaxTrivia)) As T
-            Return DirectCast(node.WithLeadingTrivia(trivia.Concat(node.GetLeadingTrivia())), T)
-        End Function
-
-        <Extension()>
-        Friend Function WithAppendedTrailingTrivia(Of T As SyntaxNode)(node As T, ParamArray trivia As SyntaxTrivia()) As T
-            Return node.WithAppendedTrailingTrivia(DirectCast(trivia, IEnumerable(Of SyntaxTrivia)))
-        End Function
-
-        <Extension()>
-        Friend Function WithAppendedTrailingTrivia(Of T As SyntaxNode)(node As T, trivia As IEnumerable(Of SyntaxTrivia)) As T
-            Return DirectCast(node.WithTrailingTrivia(node.GetTrailingTrivia().Concat(trivia)), T)
-        End Function
 
         <Extension()>
         Friend Function GetTypeCharacterString(type As TypeCharacter) As String
@@ -272,12 +265,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
         End Function
 
         <Extension()>
-        Public Function ConvertToSingleLine(Of TNode As SyntaxNode)(node As TNode) As TNode
+        Public Function ConvertToSingleLine(Of TNode As SyntaxNode)(node As TNode, Optional useElasticTrivia As Boolean = False) As TNode
             If node Is Nothing Then
                 Return node
             End If
 
-            Dim rewriter = New SingleLineRewriter()
+            Dim rewriter = New SingleLineRewriter(useElasticTrivia)
             Return DirectCast(rewriter.Visit(node), TNode)
         End Function
 
@@ -507,10 +500,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
 
             ' Rules for stripping trivia: 
             ' 1) If there is a pp directive, then it (and all preceding trivia) *must* be stripped.
-            '    This rule supercedes all other rules.
+            '    This rule supersedes all other rules.
             ' 2) If there is a doc comment, it cannot be stripped.  Even if there is a doc comment,
             '    followed by 5 new lines, then the doc comment still must stay with the node.  This
-            '    rule does *not* supercede rule 1.
+            '    rule does *not* supersede rule 1.
             ' 3) Single line comments in a group (i.e. with no blank lines between them) belong to
             '    the node *iff* there is no blank line between it and the following trivia.
 
@@ -525,7 +518,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
             Next
 
             If ppIndex <> -1 Then
-                ' We have a pp directive.  it (and all all previous trivia) must be stripped.
+                ' We have a pp directive.  it (and all previous trivia) must be stripped.
                 leadingTriviaToStrip = New List(Of SyntaxTrivia)(leadingTrivia.Take(ppIndex + 1))
                 leadingTriviaToKeep = New List(Of SyntaxTrivia)(leadingTrivia.Skip(ppIndex + 1))
             Else
@@ -657,46 +650,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
         End Function
 
         ''' <summary>
-        ''' If the position is inside of token, return that token; otherwise, return the token to right.
-        ''' </summary>
-        <Extension()>
-        Public Function FindTokenOnRightOfPosition(
-            root As SyntaxNode,
-            position As Integer,
-            Optional includeSkipped As Boolean = True,
-            Optional includeDirectives As Boolean = False,
-            Optional includeDocumentationComments As Boolean = False) As SyntaxToken
-
-            Dim skippedTokenFinder As Func(Of SyntaxTriviaList, Integer, SyntaxToken) = Nothing
-
-            skippedTokenFinder =
-                If(includeSkipped, s_findSkippedTokenForward, CType(Nothing, Func(Of SyntaxTriviaList, Integer, SyntaxToken)))
-
-            Return FindTokenHelper.FindTokenOnRightOfPosition(Of CompilationUnitSyntax)(
-                    root, position, skippedTokenFinder, includeSkipped, includeDirectives, includeDocumentationComments)
-        End Function
-
-        ''' <summary>
-        ''' If the position is inside of token, return that token; otherwise, return the token to left. 
-        ''' </summary>
-        <Extension()>
-        Public Function FindTokenOnLeftOfPosition(
-            root As SyntaxNode,
-            position As Integer,
-            Optional includeSkipped As Boolean = True,
-            Optional includeDirectives As Boolean = False,
-            Optional includeDocumentationComments As Boolean = False) As SyntaxToken
-
-            Dim skippedTokenFinder As Func(Of SyntaxTriviaList, Integer, SyntaxToken) = Nothing
-
-            skippedTokenFinder =
-                If(includeSkipped, s_findSkippedTokenBackward, CType(Nothing, Func(Of SyntaxTriviaList, Integer, SyntaxToken)))
-
-            Return FindTokenHelper.FindTokenOnLeftOfPosition(Of CompilationUnitSyntax)(
-                    root, position, skippedTokenFinder, includeSkipped, includeDirectives, includeDocumentationComments)
-        End Function
-
-        ''' <summary>
         ''' Returns child node or token that contains given position.
         ''' </summary>
         ''' <remarks>
@@ -723,27 +676,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
 
             Debug.Assert(Not self.FullSpan.Contains(position), "Position is valid. How could we not find a child?")
             Throw New ArgumentOutOfRangeException(NameOf(position))
-        End Function
-
-
-        ''' <summary>
-        ''' Look inside a trivia list for a skipped token that contains the given position.
-        ''' </summary>
-        Private ReadOnly s_findSkippedTokenForward As Func(Of SyntaxTriviaList, Integer, SyntaxToken) =
-            Function(l, p) FindTokenHelper.FindSkippedTokenForward(GetSkippedTokens(l), p)
-
-        ''' <summary>
-        ''' Look inside a trivia list for a skipped token that contains the given position.
-        ''' </summary>
-        Private ReadOnly s_findSkippedTokenBackward As Func(Of SyntaxTriviaList, Integer, SyntaxToken) =
-            Function(l, p) FindTokenHelper.FindSkippedTokenBackward(GetSkippedTokens(l), p)
-
-        ''' <summary>
-        ''' get skipped tokens from the trivia list
-        ''' </summary>
-        Private Function GetSkippedTokens(list As SyntaxTriviaList) As IEnumerable(Of SyntaxToken)
-            Return list.Where(Function(t) t.RawKind = SyntaxKind.SkippedTokensTrivia) _
-                       .SelectMany(Function(t) DirectCast(t.GetStructure(), SkippedTokensTriviaSyntax).Tokens)
         End Function
 
         <Extension()>
@@ -923,35 +855,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
         End Function
 
         <Extension()>
-        Public Function GetBraces(node As SyntaxNode) As ValueTuple(Of SyntaxToken, SyntaxToken)
+        Public Function GetBraces(node As SyntaxNode) As (openBrace As SyntaxToken, closeBrace As SyntaxToken)
             Return node.TypeSwitch(
-                Function(n As TypeParameterMultipleConstraintClauseSyntax) ValueTuple.Create(n.OpenBraceToken, n.CloseBraceToken),
-                Function(n As ObjectMemberInitializerSyntax) ValueTuple.Create(n.OpenBraceToken, n.CloseBraceToken),
-                Function(n As CollectionInitializerSyntax) ValueTuple.Create(n.OpenBraceToken, n.CloseBraceToken),
-                Function(n As SyntaxNode) CType(Nothing, ValueTuple(Of SyntaxToken, SyntaxToken)))
+                Function(n As TypeParameterMultipleConstraintClauseSyntax) (n.OpenBraceToken, n.CloseBraceToken),
+                Function(n As ObjectMemberInitializerSyntax) (n.OpenBraceToken, n.CloseBraceToken),
+                Function(n As CollectionInitializerSyntax) (n.OpenBraceToken, n.CloseBraceToken),
+                Function(n As SyntaxNode) CType(Nothing, (SyntaxToken, SyntaxToken)))
         End Function
 
         <Extension()>
         Public Function GetParentheses(node As SyntaxNode) As ValueTuple(Of SyntaxToken, SyntaxToken)
             Return node.TypeSwitch(
-                Function(n As TypeParameterListSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As ParameterListSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As ArrayRankSpecifierSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As ParenthesizedExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As GetTypeExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As GetXmlNamespaceExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As CTypeExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As DirectCastExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As TryCastExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As PredefinedCastExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As BinaryConditionalExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As TernaryConditionalExpressionSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As ArgumentListSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As FunctionAggregationSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As TypeArgumentListSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As ExternalSourceDirectiveTriviaSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As ExternalChecksumDirectiveTriviaSyntax) ValueTuple.Create(n.OpenParenToken, n.CloseParenToken),
-                Function(n As SyntaxNode) CType(Nothing, ValueTuple(Of SyntaxToken, SyntaxToken)))
+                Function(n As TypeParameterListSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As ParameterListSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As ArrayRankSpecifierSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As ParenthesizedExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As GetTypeExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As GetXmlNamespaceExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As CTypeExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As DirectCastExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As TryCastExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As PredefinedCastExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As BinaryConditionalExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As TernaryConditionalExpressionSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As ArgumentListSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As FunctionAggregationSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As TypeArgumentListSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As ExternalSourceDirectiveTriviaSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As ExternalChecksumDirectiveTriviaSyntax) (n.OpenParenToken, n.CloseParenToken),
+                Function(n As SyntaxNode) CType(Nothing, (SyntaxToken, SyntaxToken)))
         End Function
 
         <Extension>

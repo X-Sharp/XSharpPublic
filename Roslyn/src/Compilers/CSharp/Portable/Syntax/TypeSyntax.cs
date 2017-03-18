@@ -8,11 +8,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         {
             get
             {
-                var ts = this.Green as InternalSyntax.IdentifierNameSyntax;
 #if XSHARP
+                var ts = this.Green as InternalSyntax.IdentifierNameSyntax;
                 return ts != null && ts.Identifier.ToString() == XSharpSpecialNames.ImpliedTypeName;
 #else
-                return ts != null && ts.Identifier.ToString() == "var";
+                return ((InternalSyntax.TypeSyntax)this.Green).IsVar;
 #endif
             }
         }

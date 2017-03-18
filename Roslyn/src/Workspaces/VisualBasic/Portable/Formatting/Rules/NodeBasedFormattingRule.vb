@@ -2,6 +2,7 @@
 
 Imports System.Composition
 Imports Microsoft.CodeAnalysis
+Imports Microsoft.CodeAnalysis.Formatting
 Imports Microsoft.CodeAnalysis.Formatting.Rules
 Imports Microsoft.CodeAnalysis.Options
 Imports Microsoft.CodeAnalysis.Text
@@ -499,7 +500,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Formatting
                 Return node.GetLastToken(includeZeroWidth:=True)
             End If
 
-            ' get all enclosing forblock statements
+            ' get all enclosing for block statements
             Dim forBlocks = nextStatement.GetAncestors(Of ForOrForEachBlockSyntax)()
 
             ' get count of the for blocks

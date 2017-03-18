@@ -9,8 +9,7 @@ Imports Microsoft.VisualStudio.Composition
 
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.NavigationBar
     Public Class NavigationBarControllerTests
-        Friend ReadOnly ExportProvider As ExportProvider = MinimalTestExportProvider.CreateExportProvider(
-            TestExportProvider.EntireAssemblyCatalogWithCSharpAndVisualBasic.WithPart(GetType(NavigationBarWaiter)))
+        Friend ReadOnly ExportProvider As ExportProvider = MinimalTestExportProvider.CreateExportProvider(TestExportProvider.EntireAssemblyCatalogWithCSharpAndVisualBasic.WithPart(GetType(NavigationBarWaiter)).WithPart(GetType(WorkspaceWaiter)))
 
         <[Shared]>
         <Export(GetType(IAsynchronousOperationListener))>
@@ -21,9 +20,18 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.NavigationBar
             Inherits AsynchronousOperationListener
         End Class
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar), WorkItem(544957)>
-        Public Sub DoNotRecomputeAfterFullRecompute()
-            Using workspace = TestWorkspaceFactory.CreateWorkspace(
+        <[Shared]>
+        <Export(GetType(IAsynchronousOperationListener))>
+        <Export(GetType(IAsynchronousOperationWaiter))>
+        <Export(GetType(NavigationBarWaiter))>
+        <Feature(FeatureAttribute.Workspace)>
+        Private Class WorkspaceWaiter
+            Inherits AsynchronousOperationListener
+        End Class
+
+        <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar), WorkItem(544957, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544957")>
+        Public Async Function TestDoNotRecomputeAfterFullRecompute() As Task
+            Using workspace = Await TestWorkspace.CreateAsync(
                 <Workspace>
                     <Project Language="C#" CommonReferences="true">
                         <Document>class C { }</Document>
@@ -52,11 +60,11 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.NavigationBar
 
                 Assert.False(presentItemsCalled, "The presenter should not have been called a second time.")
             End Using
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar), WorkItem(544957)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar), WorkItem(544957, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544957")>
         Public Async Function ProjectionBuffersWork() As Task
-            Using workspace = TestWorkspaceFactory.CreateWorkspace(
+            Using workspace = Await TestWorkspace.CreateAsync(
                 <Workspace>
                     <Project Language="C#" CommonReferences="true">
                         <Document>{|Document:class C { $$ }|}</Document>
@@ -78,15 +86,15 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.NavigationBar
                 Dim controller = controllerFactory.CreateController(mockPresenter, subjectDocument.TextBuffer)
 
                 Dim waiters = workspace.ExportProvider.GetExportedValues(Of IAsynchronousOperationWaiter)
-                Await waiters.WaitAllAsync().ConfigureAwait(True)
+                Await waiters.WaitAllAsync()
 
                 Assert.True(presentItemsCalled)
             End Using
         End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar)>
-        Public Sub TestNavigationBarInCSharpLinkedFiles()
-            Using workspace = TestWorkspaceFactory.CreateWorkspace(
+        Public Async Function TestNavigationBarInCSharpLinkedFiles() As Task
+            Using workspace = Await TestWorkspace.CreateAsync(
                 <Workspace>
                     <Project Language="C#" CommonReferences="true" AssemblyName="CSProj" PreprocessorSymbols="Proj1">
                         <Document FilePath="C.cs">
@@ -139,11 +147,11 @@ class C
                 Assert.Equal("M2(int x)", memberName)
                 Assert.Equal(projectGlyph, Glyph.CSharpProject)
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar)>
-        Public Sub TestNavigationBarInVisualBasicLinkedFiles()
-            Using workspace = TestWorkspaceFactory.CreateWorkspace(
+        Public Async Function TestNavigationBarInVisualBasicLinkedFiles() As Task
+            Using workspace = Await TestWorkspace.CreateAsync(
                 <Workspace>
                     <Project Language="Visual Basic" CommonReferences="true" AssemblyName="VBProj" PreprocessorSymbols="Proj1=True">
                         <Document FilePath="C.vb">
@@ -199,11 +207,11 @@ End Class
                 Assert.DoesNotContain("M1", memberNames)
                 Assert.Equal(projectGlyph, Glyph.BasicProject)
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar)>
-        Public Sub TestProjectItemsAreSortedCSharp()
-            Using workspace = TestWorkspaceFactory.CreateWorkspace(
+        Public Async Function TestProjectItemsAreSortedCSharp() As Task
+            Using workspace = Await TestWorkspace.CreateAsync(
                 <Workspace>
                     <Project Language="C#" CommonReferences="true" AssemblyName="BProj">
                         <Document FilePath="C.cs">
@@ -242,11 +250,11 @@ class C
                 mockPresenter.RaiseDropDownFocused()
                 Assert.True(actualProjectNames.SequenceEqual(expectedProjectNames))
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar)>
-        Public Sub TestProjectItemsAreSortedVisualBasic()
-            Using workspace = TestWorkspaceFactory.CreateWorkspace(
+        Public Async Function TestProjectItemsAreSortedVisualBasic() As Task
+            Using workspace = Await TestWorkspace.CreateAsync(
                 <Workspace>
                     <Project Language="Visual Basic" CommonReferences="true" AssemblyName="VBProj">
                         <Document FilePath="C.vb">
@@ -281,11 +289,11 @@ End Class
                 mockPresenter.RaiseDropDownFocused()
                 Assert.True(actualProjectNames.SequenceEqual(expectedProjectNames))
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.NavigationBar)>
         Public Async Function TestNavigationBarRefreshesAfterProjectRename() As Task
-            Using workspace = TestWorkspaceFactory.CreateWorkspace(
+            Using workspace = Await TestWorkspace.CreateAsync(
                 <Workspace>
                     <Project Language="Visual Basic" CommonReferences="true" AssemblyName="VBProj">
                         <Document FilePath="C.vb">
@@ -318,9 +326,9 @@ End Class
 
                 workspace.OnProjectNameChanged(workspace.Projects.Single().Id, "VBProj2", "VBProj2.vbproj")
 
-                Await workspace.ExportProvider.GetExports(Of IAsynchronousOperationWaiter, FeatureMetadata)().Where(Function(l) l.Metadata.FeatureName = FeatureAttribute.Workspace).Single().Value.CreateWaitTask().ConfigureAwait(True)
-                Await workspace.ExportProvider.GetExports(Of IAsynchronousOperationWaiter, FeatureMetadata)().Where(Function(l) l.Metadata.FeatureName = FeatureAttribute.NavigationBar).Single().Value.CreateWaitTask().ConfigureAwait(True)
-                Await workspace.ExportProvider.GetExportedValues(Of IAsynchronousOperationWaiter).WaitAllAsync().ConfigureAwait(True)
+                Await workspace.ExportProvider.GetExports(Of IAsynchronousOperationWaiter, FeatureMetadata)().Where(Function(l) l.Metadata.FeatureName = FeatureAttribute.Workspace).Single().Value.CreateWaitTask()
+                Await workspace.ExportProvider.GetExports(Of IAsynchronousOperationWaiter, FeatureMetadata)().Where(Function(l) l.Metadata.FeatureName = FeatureAttribute.NavigationBar).Single().Value.CreateWaitTask()
+                Await workspace.ExportProvider.GetExportedValues(Of IAsynchronousOperationWaiter).WaitAllAsync()
                 Assert.Equal("VBProj2", projectName)
             End Using
         End Function

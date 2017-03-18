@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslyn.Utilities;
@@ -19,13 +18,8 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
         internal const string RenameFromPropertyKey = "RenameFrom";
         internal const string RenameToPropertyKey = "RenameTo";
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        {
-            get
-            {
-                return ImmutableArray.Create(DiagnosticDescriptor);
-            }
-        }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(DiagnosticDescriptor);
+        public bool OpenFileOnly(Workspace workspace) => true;
 
         public override void Initialize(AnalysisContext context)
         {
@@ -43,8 +37,6 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
         }
 
         public DiagnosticAnalyzerCategory GetAnalyzerCategory()
-        {
-            return DiagnosticAnalyzerCategory.SyntaxAnalysis;
-        }
+            => DiagnosticAnalyzerCategory.SyntaxAnalysis;
     }
 }

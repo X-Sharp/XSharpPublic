@@ -10,34 +10,34 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New OperatorDeclarationHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestOperatorExample1_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestOperatorExample1_1() As Task
+            Await TestAsync(<Text>
 Class C
 {|Cursor:[|Public Shared Operator|]|} +(v As Complex) As Complex
     [|Return|] v
 [|End Operator|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestOperatorExample1_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestOperatorExample1_2() As Task
+            Await TestAsync(<Text>
 Class C
 [|Public Shared Operator|] +(v As Complex) As Complex
     {|Cursor:[|Return|]|} v
 [|End Operator|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestOperatorExample1_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestOperatorExample1_3() As Task
+            Await TestAsync(<Text>
 Class C
 [|Public Shared Operator|] +(v As Complex) As Complex
     [|Return|] v
 {|Cursor:[|End Operator|]|}
 End Class</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

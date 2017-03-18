@@ -22,23 +22,23 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Diagnostics.Suppre
             Return TestOptions.Script
         End Function
 
-        Protected Overrides Function CreateWorkspaceFromFile(
+        Protected Overrides Function CreateWorkspaceFromFileAsync(
             definition As String,
             parseOptions As ParseOptions,
             compilationOptions As CompilationOptions
-        ) As TestWorkspace
+        ) As Task(Of TestWorkspace)
 
-            Return VisualBasicWorkspaceFactory.CreateWorkspaceFromFile(
+            Return TestWorkspace.CreateVisualBasicAsync(
                 definition,
                 DirectCast(parseOptions, ParseOptions),
                 If(DirectCast(compilationOptions, CompilationOptions), New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary)))
         End Function
 
-        Friend Overloads Sub Test(initial As XElement, expected As XCData, Optional isLine As Boolean = True, Optional isAddedDocument As Boolean = False)
+        Friend Overloads Async Function TestAsync(initial As XElement, expected As XCData, Optional isLine As Boolean = True, Optional isAddedDocument As Boolean = False) As Task
             Dim initialMarkup = initial.ToString()
             Dim expectedMarkup = expected.Value
-            Test(initialMarkup, expectedMarkup, isLine, isAddedDocument)
-        End Sub
+            Await TestAsync(initialMarkup, expectedMarkup, isLine, isAddedDocument)
+        End Function
 
         Protected Overrides Function GetLanguage() As String
             Return LanguageNames.VisualBasic
@@ -59,9 +59,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Diagnostics.Suppre
                     Return Tuple.Create(Of DiagnosticAnalyzer, ISuppressionFixProvider)(Nothing, New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestPragmaWarningDirective()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestPragmaWarningDirective() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -79,7 +79,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -92,12 +92,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestMultilineStatementPragmaWarningDirective1()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestMultilineStatementPragmaWarningDirective1() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -117,7 +117,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -131,12 +131,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestMultilineStatementPragmaWarningDirective2()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestMultilineStatementPragmaWarningDirective2() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -160,7 +160,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -176,12 +176,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestMultilineStatementPragmaWarningDirective3()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestMultilineStatementPragmaWarningDirective3() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -205,7 +205,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -221,12 +221,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestMultilineStatementPragmaWarningDirective4()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestMultilineStatementPragmaWarningDirective4() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -246,7 +246,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -260,12 +260,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestMultilineStatementPragmaWarningDirective5()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestMultilineStatementPragmaWarningDirective5() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -285,7 +285,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -299,12 +299,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestMultilineStatementPragmaWarningDirective6()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestMultilineStatementPragmaWarningDirective6() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -326,7 +326,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -341,12 +341,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestMultilineStatementPragmaWarningDirective7()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestMultilineStatementPragmaWarningDirective7() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -368,7 +368,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -383,12 +383,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestPragmaWarningDirectiveWithExistingTrivia()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestPragmaWarningDirectiveWithExistingTrivia() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -410,7 +410,7 @@ Class C
     End Sub
 End Class"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -425,12 +425,12 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(970129)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionAroundSingleToken()
+                <WorkItem(970129, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/970129")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionAroundSingleToken() As Task
                     Dim source = <![CDATA[
 Imports System
 <Obsolete>
@@ -456,7 +456,7 @@ Module Module1
     End Sub
 End Module"
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -473,12 +473,12 @@ Module Module1
     End Sub
 End Module]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
 
-                <WorkItem(1066576)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestPragmaWarningDirectiveAroundTrivia1()
+                <WorkItem(1066576, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1066576")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestPragmaWarningDirectiveAroundTrivia1() As Task
                     Dim source = <![CDATA[
 Class C
 
@@ -503,7 +503,7 @@ Class C
 End Class]]>
 
                     Dim enableDocCommentProcessing = VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose)
-                    Test(source.Value, expected.Value, enableDocCommentProcessing)
+                    Await TestAsync(source.Value, expected.Value, enableDocCommentProcessing)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -519,34 +519,34 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value, enableDocCommentProcessing)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value, enableDocCommentProcessing)
+                End Function
 
-                <WorkItem(1066576)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestPragmaWarningDirectiveAroundTrivia2()
+                <WorkItem(1066576, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1066576")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestPragmaWarningDirectiveAroundTrivia2() As Task
                     Dim source = <![CDATA['''[|<summary></summary>|]]]>
                     Dim expected = <![CDATA[#Disable Warning BC42312
   '''<summary></summary>
 #Enable Warning BC42312]]>
 
-                    Test(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
-                End Sub
+                    Await TestAsync(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
+                End Function
 
-                <WorkItem(1066576)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestPragmaWarningDirectiveAroundTrivia3()
+                <WorkItem(1066576, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1066576")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestPragmaWarningDirectiveAroundTrivia3() As Task
                     Dim source = <![CDATA[   '''[|<summary></summary>|]   ]]>
                     Dim expected = <![CDATA[#Disable Warning BC42312
   '''<summary></summary>   
 #Enable Warning BC42312]]>
 
-                    Test(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
-                End Sub
+                    Await TestAsync(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
+                End Function
 
-                <WorkItem(1066576)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestPragmaWarningDirectiveAroundTrivia4()
+                <WorkItem(1066576, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1066576")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestPragmaWarningDirectiveAroundTrivia4() As Task
                     Dim source = <![CDATA[
 
 '''<summary><see [|cref="abc"|]/></summary>
@@ -562,12 +562,12 @@ Class C : End Class
 
 ]]>
 
-                    Test(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
-                End Sub
+                    Await TestAsync(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
+                End Function
 
-                <WorkItem(1066576)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestPragmaWarningDirectiveAroundTrivia5()
+                <WorkItem(1066576, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1066576")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestPragmaWarningDirectiveAroundTrivia5() As Task
                     Dim source = <![CDATA[class C1 : End Class
 '''<summary><see [|cref="abc"|]/></summary>
 Class C2 : End Class
@@ -579,12 +579,12 @@ Class C2 : End Class
 #Enable Warning BC42309
 Class C3 : End Class]]>
 
-                    Test(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
-                End Sub
+                    Await TestAsync(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
+                End Function
 
-                <WorkItem(1066576)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestPragmaWarningDirectiveAroundTrivia6()
+                <WorkItem(1066576, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1066576")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestPragmaWarningDirectiveAroundTrivia6() As Task
                     Dim source = <![CDATA[class C1 : End Class
 Class C2 : End Class [|'''|]
 Class C3 : End Class]]>
@@ -595,8 +595,8 @@ Class C2 : End Class '''
 
 Class C3 : End Class]]>
 
-                    Test(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
-                End Sub
+                    Await TestAsync(source.Value, expected.Value, VisualBasicParseOptions.Default.WithDocumentationMode(DocumentationMode.Diagnose))
+                End Function
             End Class
 
             Public Class UserHiddenDiagnosticSuppressionTests
@@ -605,8 +605,8 @@ Class C3 : End Class]]>
                     Return New Tuple(Of DiagnosticAnalyzer, ISuppressionFixProvider)(New VisualBasicSimplifyTypeNamesDiagnosticAnalyzer(), New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestHiddenDiagnosticCannotBeSuppressed()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestHiddenDiagnosticCannotBeSuppressed() As Task
                     Dim source = <![CDATA[
 Imports System
 Class C
@@ -616,8 +616,8 @@ Class C
     End Sub
 End Class]]>
 
-                    TestMissing(source.Value)
-                End Sub
+                    Await TestMissingAsync(source.Value)
+                End Function
             End Class
 
             Public Class UserInfoDiagnosticSuppressionTests
@@ -648,10 +648,10 @@ End Class]]>
                     Return New Tuple(Of DiagnosticAnalyzer, ISuppressionFixProvider)(New UserDiagnosticAnalyzer(), New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestInfoDiagnosticSuppressed()
+
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestInfoDiagnosticSuppressed() As Task
 
                     Dim source = <![CDATA[
 Imports System
@@ -670,7 +670,7 @@ Class C
     End Sub
 End Class]]>
 
-                    Test(source.Value, expected.Value)
+                    Await TestAsync(source.Value, expected.Value)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -683,8 +683,8 @@ Imports System
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
             End Class
 
             Public Class DiagnosticWithBadIdSuppressionTests
@@ -722,10 +722,9 @@ End Class]]>
                     Return New Tuple(Of DiagnosticAnalyzer, ISuppressionFixProvider)(New UserDiagnosticAnalyzer(), New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestDiagnosticWithBadIdSuppressed()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestDiagnosticWithBadIdSuppressed() As Task
 
                     ' Diagnostics with bad/invalid ID are not reported.
                     Dim source = <![CDATA[
@@ -736,8 +735,8 @@ Imports System
     End Sub
 End Class]]>
 
-                    TestMissing(source.Value)
-                End Sub
+                    Await TestMissingAsync(source.Value)
+                End Function
             End Class
 
             Public Class UserWarningDiagnosticWithNameMatchingKeywordSuppressionTests
@@ -767,9 +766,9 @@ End Class]]>
                     Return New Tuple(Of DiagnosticAnalyzer, ISuppressionFixProvider)(New UserDiagnosticAnalyzer(), New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestWarningDiagnosticWithNameMatchingKeywordSuppressed()
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestWarningDiagnosticWithNameMatchingKeywordSuppressed() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -787,7 +786,7 @@ Class C
     End Sub
 End Class]]>
 
-                    Test(source.Value, expected.Value)
+                    Await TestAsync(source.Value, expected.Value)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -800,8 +799,8 @@ Imports System
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
             End Class
 
             Public Class UserErrorDiagnosticSuppressionTests
@@ -831,8 +830,8 @@ End Class]]>
                     Return New Tuple(Of DiagnosticAnalyzer, ISuppressionFixProvider)(New UserDiagnosticAnalyzer(), New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestErrorDiagnosticCanBeSuppressed()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestErrorDiagnosticCanBeSuppressed() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -850,7 +849,7 @@ Class C
     End Sub
 End Class]]>
 
-                    Test(source.Value, expected.Value)
+                    Await TestAsync(source.Value, expected.Value)
 
                     ' Also verify that the added directive does indeed suppress the diagnostic.
                     Dim fixedSource = <![CDATA[
@@ -863,8 +862,8 @@ Imports System
     End Sub
 End Class]]>
 
-                    TestMissing(fixedSource.Value)
-                End Sub
+                    Await TestMissingAsync(fixedSource.Value)
+                End Function
             End Class
         End Class
 
@@ -886,10 +885,10 @@ End Class]]>
                     Return Tuple.Create(Of DiagnosticAnalyzer, ISuppressionFixProvider)(Nothing, New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                
-                <WorkItem(730770)>
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestCompilerDiagnosticsCannotBeSuppressed()
+
+                <WorkItem(730770, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/730770")>
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestCompilerDiagnosticsCannotBeSuppressed() As Task
 
                     Dim source = <![CDATA[
 Class Class1
@@ -898,8 +897,8 @@ Class Class1
     End Sub
 End Class]]>
 
-                    TestActionCount(source.Value, 1)
-                End Sub
+                    Await TestActionCountAsync(source.Value, 1)
+                End Function
             End Class
 
             Public Class UserHiddenDiagnosticSuppressionTests
@@ -908,8 +907,8 @@ End Class]]>
                     Return New Tuple(Of DiagnosticAnalyzer, ISuppressionFixProvider)(New VisualBasicSimplifyTypeNamesDiagnosticAnalyzer(), New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestHiddenDiagnosticsCannotBeSuppressed()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestHiddenDiagnosticsCannotBeSuppressed() As Task
                     Dim source = <![CDATA[
 Imports System
 Class Class1
@@ -918,8 +917,8 @@ Class Class1
     End Sub
 End Class]]>
 
-                    TestMissing(source.Value)
-                End Sub
+                    Await TestMissingAsync(source.Value)
+                End Function
             End Class
 
             Public Class UserInfoDiagnosticSuppressionTests
@@ -978,8 +977,8 @@ End Class]]>
                     Return New Tuple(Of DiagnosticAnalyzer, ISuppressionFixProvider)(New UserDiagnosticAnalyzer(), New VisualBasicSuppressionCodeFixProvider())
                 End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnSimpleType()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnSimpleType() As Task
                     Dim source = <![CDATA[
 Imports System
 [|Class Class1|]
@@ -993,16 +992,16 @@ End Class]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:Class1"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:Class1"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:Class1"")>
+<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:Class1"")>
 
 [|Class Class1|]
     Sub Method()
@@ -1010,11 +1009,11 @@ Imports System
     End Sub
 End Class"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnNamespace()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnNamespace() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1031,16 +1030,16 @@ End Namespace]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""namespace"", Target:=""~N:N"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""namespace"", Target:=""~N:N"")>
 "
 
-                    Test(source.Value, expected, index:=1)
+                    Await TestAsync(source.Value, expected, index:=1)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""namespace"", Target:=""~N:N"")>
+<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""namespace"", Target:=""~N:N"")>
 
 [|Namespace N|]
     Class Class1
@@ -1050,11 +1049,11 @@ Imports System
     End Class
 End Namespace"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnTypeInsideNamespace()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnTypeInsideNamespace() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1073,16 +1072,16 @@ End Namespace]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:N1.N2.Class1"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:N1.N2.Class1"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:N1.N2.Class1"")>
+<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:N1.N2.Class1"")>
 
 Namespace N1
     Namespace N2
@@ -1094,11 +1093,11 @@ Namespace N1
     End Namespace
 End Namespace"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnNestedType()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnNestedType() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1117,16 +1116,16 @@ End Namespace]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:N.Generic`1.Class1"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:N.Generic`1.Class1"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:N.Generic`1.Class1"")>
+<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:N.Generic`1.Class1"")>
 
 Namespace N
     Class Generic(Of T)
@@ -1138,11 +1137,11 @@ Namespace N
     End Class
 End Namespace"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnMethod()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnMethod() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1161,16 +1160,16 @@ End Namespace]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method"")>
+<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method"")>
 
 Namespace N
     Class Generic(Of T)
@@ -1182,11 +1181,11 @@ Namespace N
     End Class
 End Namespace"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnOverloadedMethod()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnOverloadedMethod() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1209,16 +1208,16 @@ End Namespace]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method(System.Int32,System.Int32@)"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method(System.Int32,System.Int32@)"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method(System.Int32,System.Int32@)"")>
+<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method(System.Int32,System.Int32@)"")>
 
 Namespace N
     Class Generic(Of T)
@@ -1234,11 +1233,11 @@ Namespace N
     End Class
 End Namespace"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnGenericMethod()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnGenericMethod() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1261,16 +1260,16 @@ End Namespace]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method``1(``0,System.Int32@)"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method``1(``0,System.Int32@)"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method``1(``0,System.Int32@)"")>
+<Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~M:N.Generic`1.Class1.Method``1(``0,System.Int32@)"")>
 
 Namespace N
     Class Generic(Of T)
@@ -1286,11 +1285,11 @@ Namespace N
     End Class
 End Namespace"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnProperty()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnProperty() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1311,16 +1310,16 @@ End Namespace]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~P:N.Generic.C.P"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~P:N.Generic.C.P"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~P:N.Generic.C.P"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~P:N.Generic.C.P"")>
 
 Namespace N
 	Class Generic
@@ -1334,11 +1333,11 @@ Namespace N
 	End Class
 End Namespace"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnField()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnField() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1351,26 +1350,26 @@ End Class]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~F:C.F"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~F:C.F"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~F:C.F"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~F:C.F"")>
 
 Class C
 	[|Private ReadOnly F As Integer|]
 End Class"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionOnEvent()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionOnEvent() As Task
                     Dim source = <![CDATA[
 Imports System
 
@@ -1407,16 +1406,16 @@ End Class]]>
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~E:C.SampleEvent"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~E:C.SampleEvent"")>
 "
 
-                    Test(source.Value, expected)
+                    Await TestAsync(source.Value, expected)
 
                     ' Also verify that the added attribute does indeed suppress the diagnostic.
                     Dim fixedSource = $"
 Imports System
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""member"", Target:=""~E:C.SampleEvent"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""member"", Target:=""~E:C.SampleEvent"")>
 
 Public Class SampleEventArgs
 	Public Sub New(s As String)
@@ -1446,11 +1445,11 @@ Class C
 	End Event
 End Class"
 
-                    TestMissing(fixedSource)
-                End Sub
+                    Await TestMissingAsync(fixedSource)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionWithExistingGlobalSuppressionsDocument()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionWithExistingGlobalSuppressionsDocument() As Task
                     Dim source =
                     <Workspace>
                         <Project Language="Visual Basic" CommonReferences="true">
@@ -1482,14 +1481,14 @@ End Class]]>
 ' a specific target and scoped to a namespace, type, member, etc.
 
 <Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""<Pending>"", Scope:=""type"", Target:=""Class1"")>
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:Class2"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:Class2"")>
 "
 
-                    Test(source.ToString(), expected)
-                End Sub
+                    Await TestAsync(source.ToString(), expected)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionWithExistingGlobalSuppressionsDocument2()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionWithExistingGlobalSuppressionsDocument2() As Task
                     ' Own custom file named GlobalSuppressions.cs
                     Dim source =
                     <Workspace>
@@ -1518,14 +1517,14 @@ End Class
 ' Project-level suppressions either have no target or are given 
 ' a specific target and scoped to a namespace, type, member, etc.
 
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:Class2"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:Class2"")>
 "
 
-                    Test(source.ToString(), expected)
-                End Sub
+                    Await TestAsync(source.ToString(), expected)
+                End Function
 
-                <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
-                Public Sub TestSuppressionWithExistingGlobalSuppressionsDocument3()
+                <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsSuppression)>
+                Public Async Function TestSuppressionWithExistingGlobalSuppressionsDocument3() As Task
                     ' Own custom file named GlobalSuppressions.vb + existing GlobalSuppressions2.vb with global suppressions
                     Dim source =
                     <Workspace>
@@ -1564,11 +1563,11 @@ End Class
 ' a specific target and scoped to a namespace, type, member, etc.
 
 <Assembly: Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""<Pending>"", Scope:=""type"", Target:=""Class1"")>
-<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.SuppressionPendingJustification}"", Scope:=""type"", Target:=""~T:Class2"")>
+<Assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(""InfoDiagnostic"", ""InfoDiagnostic:InfoDiagnostic"", Justification:=""{FeaturesResources.Pending}"", Scope:=""type"", Target:=""~T:Class2"")>
 "
 
-                    Test(source.ToString(), expected)
-                End Sub
+                    Await TestAsync(source.ToString(), expected)
+                End Function
             End Class
         End Class
 #End Region

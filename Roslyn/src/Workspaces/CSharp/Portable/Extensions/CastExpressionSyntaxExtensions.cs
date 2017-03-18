@@ -111,8 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
                 return conversion;
             }
 
-            bool discarded;
-            var speculatedExpressionOuterType = GetOuterCastType(speculatedExpression, speculationAnalyzer.SpeculativeSemanticModel, out discarded) ?? typeInfo.ConvertedType;
+            var speculatedExpressionOuterType = GetOuterCastType(speculatedExpression, speculationAnalyzer.SpeculativeSemanticModel, out var discarded) ?? typeInfo.ConvertedType;
             if (speculatedExpressionOuterType == null)
             {
                 return default(Conversion);
@@ -277,6 +276,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
             return false;
         }
 
+        private static bool IsDynamicAssignment(ExpressionSyntax castExpression, SemanticModel semanticModel, CancellationToken cancellationToken)
+        {
+            if (castExpression.IsRightSideOfAnyAssignExpression())
+            {
+                var assignmentExpression = (AssignmentExpressionSyntax)castExpression.Parent;
+                var assignmentType = semanticModel.GetTypeInfo(assignmentExpression.Left, cancellationToken).Type;
+
+                return assignmentType?.Kind == SymbolKind.DynamicType;
+            }
+
+            return false;
+        }
+
         public static bool IsUnnecessaryCast(this CastExpressionSyntax cast, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             var speculationAnalyzer = new SpeculationAnalyzer(cast,
@@ -307,10 +319,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
             // 1. Dynamic Expressions
             // 2. If there is any other argument which is dynamic
             // 3. Dynamic Invocation
+            // 4. Assignment to dynamic
             if ((expressionType != null &&
                 (expressionType.IsErrorType() ||
                  expressionType.Kind == SymbolKind.DynamicType)) ||
-                IsDynamicInvocation(cast, semanticModel, cancellationToken))
+                IsDynamicInvocation(cast, semanticModel, cancellationToken) ||
+                IsDynamicAssignment(cast, semanticModel, cancellationToken))
             {
                 return false;
             }
@@ -339,9 +353,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
             }
 
             var expressionToCastType = semanticModel.ClassifyConversion(cast.SpanStart, cast.Expression, castType, isExplicitInSource: true);
-
-            bool parentIsOrAsExpression;
-            var outerType = GetOuterCastType(cast, semanticModel, out parentIsOrAsExpression) ?? castTypeInfo.ConvertedType;
+            var outerType = GetOuterCastType(cast, semanticModel, out var parentIsOrAsExpression) ?? castTypeInfo.ConvertedType;
 
             // Simple case: If the conversion from the inner expression to the cast type is identity,
             // the cast can be removed.
@@ -351,8 +363,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
                 // Cast removal causes warning CS0252 (Possible unintended reference comparison).
                 //      object x = string.Intern("Hi!");
                 //      (object)x == "Hi!"
-                ExpressionSyntax other;
-                if (IsRequiredCastForReferenceEqualityComparison(outerType, cast, semanticModel, out other))
+                if (IsRequiredCastForReferenceEqualityComparison(outerType, cast, semanticModel, out var other))
                 {
                     var otherToOuterType = semanticModel.ClassifyConversion(other, outerType);
                     if (otherToOuterType.IsImplicit && otherToOuterType.IsReference)
@@ -366,6 +377,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
             else if (expressionToCastType.IsExplicit && expressionToCastType.IsReference)
             {
                 // Explicit reference conversions can cause an exception or data loss, hence can never be removed.
+                return false;
+            }
+            else if (expressionToCastType.IsExplicit && expressionToCastType.IsUnboxing)
+            {
+                // Unboxing conversions can cause a null ref exception, hence can never be removed.
                 return false;
             }
             else if (expressionToCastType.IsExplicit && expressionToCastType.IsNumeric)
@@ -420,15 +436,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
                 {
                     return false;
                 }
-
                 // Required explicit cast for reference comparison.
                 // Cast removal causes warning CS0252 (Possible unintended reference comparison).
                 //      object x = string.Intern("Hi!");
                 //      x == (object)"Hi!"
-                ExpressionSyntax other;
                 if (expressionToCastType.IsImplicit && expressionToCastType.IsReference &&
                     castToOuterType.IsIdentity &&
-                    IsRequiredCastForReferenceEqualityComparison(outerType, cast, semanticModel, out other))
+                    IsRequiredCastForReferenceEqualityComparison(outerType, cast, semanticModel, out var other))
                 {
                     return false;
                 }

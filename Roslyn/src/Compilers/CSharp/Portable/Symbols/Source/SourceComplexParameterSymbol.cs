@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private CustomAttributesBag<CSharpAttributeData> _lazyCustomAttributesBag;
         private ThreeState _lazyHasOptionalAttribute;
-        private ConstantValue _lazyDefaultSyntaxValue;
+        protected ConstantValue _lazyDefaultSyntaxValue;
 
         internal SourceComplexParameterSymbol(
             Symbol owner,
@@ -67,6 +67,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
             _lazyDefaultSyntaxValue = defaultSyntaxValue;
+        }
+
+        protected virtual Binder ParameterBinder
+        {
+            get { return null; }
         }
 
         internal override SyntaxReference SyntaxReference
@@ -196,7 +201,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (_lazyDefaultSyntaxValue == ConstantValue.Unset)
                 {
                     var diagnostics = DiagnosticBag.GetInstance();
-                    if (Interlocked.CompareExchange(ref _lazyDefaultSyntaxValue, MakeDefaultExpression(diagnostics), ConstantValue.Unset) == ConstantValue.Unset)
+                    if (Interlocked.CompareExchange(ref _lazyDefaultSyntaxValue, MakeDefaultExpression(diagnostics, ParameterBinder), ConstantValue.Unset) == ConstantValue.Unset)
                     {
                         AddDeclarationDiagnostics(diagnostics);
                     }
@@ -208,7 +213,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        private ConstantValue MakeDefaultExpression(DiagnosticBag diagnostics)
+        // If binder is null, then get it from the compilation. Otherwise use the provided binder.
+        // Don't always get it from the compilation because we might be in a speculative context (local function parameter),
+        // in which case the declaring compilation is the wrong one.
+        protected ConstantValue MakeDefaultExpression(DiagnosticBag diagnostics, Binder binder)
         {
             var parameterSyntax = this.CSharpSyntaxNode;
             if (parameterSyntax == null)
@@ -222,13 +230,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return ConstantValue.NotAvailable;
             }
 
-            var syntaxTree = _syntaxRef.SyntaxTree;
-            var compilation = this.DeclaringCompilation;
-            var binderFactory = compilation.GetBinderFactory(syntaxTree);
-            var binder = binderFactory.GetBinder(defaultSyntax);
+            if (binder == null)
+            {
+                var syntaxTree = _syntaxRef.SyntaxTree;
+                var compilation = this.DeclaringCompilation;
+                var binderFactory = compilation.GetBinderFactory(syntaxTree);
+                binder = binderFactory.GetBinder(defaultSyntax);
+            }
+
+            Binder binderForDefault = binder.GetBinder(defaultSyntax);
+            if (binderForDefault == null)
+            {
+                binderForDefault = binder.CreateBinderForParameterDefaultValue(this, defaultSyntax);
+            }
+            Debug.Assert(binderForDefault.InParameterDefaultValue);
+            Debug.Assert(binderForDefault.ContainingMemberOrLambda == ContainingSymbol);
 
             BoundExpression valueBeforeConversion;
-            var convertedExpression = binder.CreateBinderForParameterDefaultValue(this, defaultSyntax).BindParameterDefaultValue(defaultSyntax, parameterType, diagnostics, out valueBeforeConversion);
+            var convertedExpression = binderForDefault.BindParameterDefaultValue(defaultSyntax, parameterType, diagnostics, out valueBeforeConversion);
 
             bool hasErrors = ParameterHelpers.ReportDefaultParameterErrors(binder, ContainingSymbol, parameterSyntax, this, valueBeforeConversion, diagnostics);
             if (hasErrors)
@@ -382,12 +401,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// <remarks>
         /// Forces binding and decoding of attributes.
         /// </remarks>
-        internal CommonParameterWellKnownAttributeData GetDecodedWellKnownAttributeData()
+        internal CommonParameterWellKnownAttributeData GetDecodedWellKnownAttributeData(DiagnosticBag diagnosticsOpt = null)
         {
             var attributesBag = _lazyCustomAttributesBag;
             if (attributesBag == null || !attributesBag.IsDecodedWellKnownAttributeDataComputed)
             {
-                attributesBag = this.GetAttributesBag();
+                attributesBag = this.GetAttributesBag(diagnosticsOpt);
             }
 
             return (CommonParameterWellKnownAttributeData)attributesBag.DecodedWellKnownAttributeData;
@@ -399,12 +418,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// <remarks>
         /// Forces binding and decoding of attributes.
         /// </remarks>
-        internal ParameterEarlyWellKnownAttributeData GetEarlyDecodedWellKnownAttributeData()
+        internal ParameterEarlyWellKnownAttributeData GetEarlyDecodedWellKnownAttributeData(DiagnosticBag diagnosticsOpt = null)
         {
             var attributesBag = _lazyCustomAttributesBag;
             if (attributesBag == null || !attributesBag.IsEarlyDecodedWellKnownAttributeDataComputed)
             {
-                attributesBag = this.GetAttributesBag();
+                attributesBag = this.GetAttributesBag(diagnosticsOpt);
             }
 
             return (ParameterEarlyWellKnownAttributeData)attributesBag.EarlyDecodedWellKnownAttributeData;
@@ -416,7 +435,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// <remarks>
         /// Forces binding and decoding of attributes.
         /// </remarks>
-        internal sealed override CustomAttributesBag<CSharpAttributeData> GetAttributesBag()
+        internal sealed override CustomAttributesBag<CSharpAttributeData> GetAttributesBag(DiagnosticBag diagnosticsOpt)
         {
             if (_lazyCustomAttributesBag == null || !_lazyCustomAttributesBag.IsSealed)
             {
@@ -428,13 +447,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 bool bagCreatedOnThisThread;
                 if ((object)copyFrom != null)
                 {
-                    var attributesBag = copyFrom.GetAttributesBag();
+                    var attributesBag = copyFrom.GetAttributesBag(diagnosticsOpt);
                     bagCreatedOnThisThread = Interlocked.CompareExchange(ref _lazyCustomAttributesBag, attributesBag, null) == null;
                 }
                 else
                 {
                     var attributeSyntax = this.GetAttributeDeclarations();
-                    bagCreatedOnThisThread = LoadAndValidateAttributes(attributeSyntax, ref _lazyCustomAttributesBag);
+                    bagCreatedOnThisThread = LoadAndValidateAttributes(attributeSyntax, ref _lazyCustomAttributesBag, addToDiagnostics: diagnosticsOpt, binderOpt: ParameterBinder);
                 }
 
                 if (bagCreatedOnThisThread)
@@ -612,6 +631,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // DynamicAttribute should not be set explicitly.
                 arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitDynamicAttr, arguments.AttributeSyntaxOpt.Location);
             }
+            else if (attribute.IsTargetAttribute(this, AttributeDescription.TupleElementNamesAttribute))
+            {
+                arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitTupleElementNamesAttribute, arguments.AttributeSyntaxOpt.Location);
+            }
         }
 
 
@@ -638,12 +661,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// </summary>
         private void VerifyParamDefaultValueMatchesAttributeIfAny(ConstantValue value, CSharpSyntaxNode syntax, DiagnosticBag diagnostics)
         {
-            var data = GetEarlyDecodedWellKnownAttributeData();
+            var data = GetEarlyDecodedWellKnownAttributeData(diagnostics);
             if (data != null)
             {
                 var attrValue = data.DefaultParameterValue;
-                if (!attrValue.IsBad &&
-                    (attrValue != ConstantValue.Unset) &&
+                if ((attrValue != ConstantValue.Unset) &&
                     (value != attrValue))
                 {
                     // CS8017: The parameter has multiple distinct default values.
@@ -733,7 +755,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     return ConstantValue.Bad;
                 }
             }
-            else if (!compilation.Conversions.ClassifyConversion((TypeSymbol)arg.Type, this.Type, ref useSiteDiagnostics).Kind.IsImplicitConversion())
+            else if (!compilation.Conversions.ClassifyConversionFromType((TypeSymbol)arg.Type, this.Type, ref useSiteDiagnostics).Kind.IsImplicitConversion())
             {
                 // error CS1908: The type of the argument to the DefaultParameterValue attribute must match the parameter type
                 if (diagnose)
@@ -1024,11 +1046,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override ushort CountOfCustomModifiersPrecedingByRef
+        public override ImmutableArray<CustomModifier> RefCustomModifiers
         {
             get
             {
-                return 0;
+                return ImmutableArray<CustomModifier>.Empty;
             }
         }
 
@@ -1044,7 +1066,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal sealed class SourceComplexParameterSymbolWithCustomModifiers : SourceComplexParameterSymbol
     {
         private readonly ImmutableArray<CustomModifier> _customModifiers;
-        private readonly ushort _countOfCustomModifiersPrecedingByRef;
+        private readonly ImmutableArray<CustomModifier> _refCustomModifiers;
 
         internal SourceComplexParameterSymbolWithCustomModifiers(
             Symbol owner,
@@ -1052,7 +1074,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             TypeSymbol parameterType,
             RefKind refKind,
             ImmutableArray<CustomModifier> customModifiers,
-            ushort countOfCustomModifiersPrecedingByRef,
+            ImmutableArray<CustomModifier> refCustomModifiers,
             string name,
             ImmutableArray<Location> locations,
             SyntaxReference syntaxRef,
@@ -1061,13 +1083,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             bool isExtensionMethodThis)
             : base(owner, ordinal, parameterType, refKind, name, locations, syntaxRef, defaultSyntaxValue, isParams, isExtensionMethodThis)
         {
-            Debug.Assert(!customModifiers.IsDefaultOrEmpty);
+            Debug.Assert(!customModifiers.IsEmpty || !refCustomModifiers.IsEmpty);
 
             _customModifiers = customModifiers;
-            _countOfCustomModifiersPrecedingByRef = countOfCustomModifiersPrecedingByRef;
+            _refCustomModifiers = refCustomModifiers;
 
-            Debug.Assert(refKind != RefKind.None || _countOfCustomModifiersPrecedingByRef == 0);
-            Debug.Assert(_countOfCustomModifiersPrecedingByRef <= _customModifiers.Length);
+            Debug.Assert(refKind != RefKind.None || _refCustomModifiers.IsEmpty);
         }
 
         public override ImmutableArray<CustomModifier> CustomModifiers
@@ -1078,11 +1099,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override ushort CountOfCustomModifiersPrecedingByRef
+        public override ImmutableArray<CustomModifier> RefCustomModifiers
         {
             get
             {
-                return _countOfCustomModifiersPrecedingByRef;
+                return _refCustomModifiers;
             }
         }
     }

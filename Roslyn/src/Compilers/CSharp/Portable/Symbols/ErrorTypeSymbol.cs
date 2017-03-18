@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Roslyn.Utilities;
 using System;
 using System.Collections.Generic;
@@ -130,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// no members with this name, returns an empty ImmutableArray. Never returns Null.</returns>
         public override ImmutableArray<Symbol> GetMembers(string name)
         {
-            return ImmutableArray<Symbol>.Empty;
+            return GetMembers().WhereAsArray(m => m.Name == name);
         }
 
         internal sealed override IEnumerable<FieldSymbol> GetFieldsToEmit()
@@ -284,12 +285,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
+        public override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
         {
-            get
-            {
-                return CreateEmptyTypeArgumentsCustomModifiers();
-            }
+            return GetEmptyTypeArgumentCustomModifiers(ordinal);
         }
 
         /// <summary>
@@ -604,18 +602,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             base((ErrorTypeSymbol)constructedFrom.OriginalDefinition)
         {
             _constructedFrom = constructedFrom;
-            bool hasTypeArgumentsCustomModifiers = false;
-            _typeArguments = typeArguments.SelectAsArray(a =>
-                                                            {
-                                                                if (!a.CustomModifiers.IsDefaultOrEmpty)
-                                                                {
-                                                                    hasTypeArgumentsCustomModifiers = true;
-                                                                }
-
-                                                                return a.Type;
-                                                            });
-
-            _hasTypeArgumentsCustomModifiers = hasTypeArgumentsCustomModifiers;
+            _typeArguments = typeArguments.ToTypes(out _hasTypeArgumentsCustomModifiers);
             _map = new TypeMap(constructedFrom.ContainingType, constructedFrom.OriginalDefinition.TypeParameters, typeArguments);
         }
 
@@ -637,17 +624,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
+        public override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
         {
-            get
+            if (_hasTypeArgumentsCustomModifiers)
             {
-                if (_hasTypeArgumentsCustomModifiers)
-                {
-                    return _map.GetTypeArgumentsCustomModifiersFor(_constructedFrom.OriginalDefinition);
-                }
-
-                return CreateEmptyTypeArgumentsCustomModifiers();
+                return _map.GetTypeArgumentsCustomModifiersFor(_constructedFrom.OriginalDefinition.TypeParameters[ordinal]);
             }
+
+            return GetEmptyTypeArgumentCustomModifiers(ordinal);
         }
 
         public override NamedTypeSymbol ConstructedFrom
@@ -697,12 +681,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
+        public override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
         {
-            get
-            {
-                return CreateEmptyTypeArgumentsCustomModifiers();
-            }
+            return GetEmptyTypeArgumentCustomModifiers(ordinal);
         }
 
         public override NamedTypeSymbol ConstructedFrom

@@ -7,9 +7,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Roslyn.Test.Utilities
 Imports Xunit
 
-#Disable Warning RS0003 ' Do not directly await a Task
-
-Namespace Microsoft.CodeAnalysis.Scripting.VisualBasic.UnitTests
+Namespace Microsoft.CodeAnalysis.VisualBasic.Scripting.UnitTests
 
     Public Class InteractiveSessionTests
         Inherits TestBase
@@ -112,4 +110,5 @@ Dim d = Function () As Integer
             Assert.Equal("True False True", script.EvaluateAsync().Result)
         End Sub
     End Class
+
 End Namespace

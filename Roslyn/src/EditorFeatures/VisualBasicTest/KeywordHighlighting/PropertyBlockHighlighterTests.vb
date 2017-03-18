@@ -10,9 +10,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New PropertyBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertySample1_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertySample1_1() As Task
+            Await TestAsync(<Text>
 Class C
 {|Cursor:[|Public Property|]|} Foo As Integer [|Implements|] IFoo.Foo
     Get
@@ -23,11 +23,11 @@ Class C
     End Set
 [|End Property|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertySample1_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertySample1_2() As Task
+            Await TestAsync(<Text>
 Class C
 [|Public Property|] Foo As Integer {|Cursor:[|Implements|]|} IFoo.Foo
     Get
@@ -38,11 +38,11 @@ Class C
     End Set
 [|End Property|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestPropertySample1_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestPropertySample1_3() As Task
+            Await TestAsync(<Text>
 Class C
 [|Public Property|] Foo As Integer [|Implements|] IFoo.Foo
     Get
@@ -53,6 +53,6 @@ Class C
     End Set
 {|Cursor:[|End Property|]|}
 End Class</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

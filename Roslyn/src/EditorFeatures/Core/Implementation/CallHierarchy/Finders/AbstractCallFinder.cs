@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.FindSymbols;
-using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Shared.TestHooks;
 using Microsoft.VisualStudio.Language.CallHierarchy;
 using Roslyn.Utilities;
@@ -57,7 +56,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CallHierarchy.Finders
 
         public void StartSearch(CallHierarchySearchScope searchScope, ICallHierarchySearchCallback callback)
         {
-            Task.Run(async () => await SearchAsync(callback, searchScope, _cancellationSource.Token).ConfigureAwait(false), _cancellationSource.Token);
+            Task.Run(() => SearchAsync(callback, searchScope, _cancellationSource.Token), _cancellationSource.Token);
         }
 
         private async Task SearchAsync(ICallHierarchySearchCallback callback, CallHierarchySearchScope scope, CancellationToken cancellationToken)

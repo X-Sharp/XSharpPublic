@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
 using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
@@ -122,7 +121,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.EventHookup
                         },
                         _cancellationTokenSource.Token,
                         TaskContinuationOptions.OnlyOnRanToCompletion,
-                        ForegroundThreadAffinitizedObject.DefaultForegroundThreadData.TaskScheduler);
+                        ForegroundThreadAffinitizedObject.CurrentForegroundThreadData.TaskScheduler);
 
                     continuedTask.CompletesAsyncOperation(asyncToken);
                 }

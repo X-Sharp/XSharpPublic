@@ -8,7 +8,7 @@ using Microsoft.DiaSymReader;
 using Roslyn.Utilities;
 using Xunit;
 
-namespace Microsoft.CodeAnalysis.ExpressionEvaluator
+namespace Microsoft.CodeAnalysis.ExpressionEvaluator.UnitTests
 {
     internal sealed class MockSymUnmanagedReader : ISymUnmanagedReader, ISymUnmanagedReader2, ISymUnmanagedReader3
     {
@@ -17,6 +17,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
         public MockSymUnmanagedReader(ImmutableDictionary<int, MethodDebugInfoBytes> methodDebugInfoMap)
         {
             _methodDebugInfoMap = methodDebugInfoMap;
+        }
+
+        public int GetMethod(int methodToken, out ISymUnmanagedMethod method)
+        {
+            return GetMethodByVersion(methodToken, 1, out method);
         }
 
         public int GetMethodByVersion(int methodToken, int version, out ISymUnmanagedMethod retVal)
@@ -72,11 +77,6 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
         }
 
         public int GetUserEntryPoint(out int methodToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetMethod(int methodToken, out ISymUnmanagedMethod method)
         {
             throw new NotImplementedException();
         }

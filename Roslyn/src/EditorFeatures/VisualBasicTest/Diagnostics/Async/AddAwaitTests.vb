@@ -3,22 +3,33 @@
 Imports Microsoft.CodeAnalysis.CodeFixes
 Imports Microsoft.CodeAnalysis.Diagnostics
 Imports Microsoft.CodeAnalysis.VisualBasic.CodeFixes.Async
-Imports Roslyn.Test.Utilities
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Diagnostics.Async
     Public Class AddAwaitTests
         Inherits AbstractVisualBasicDiagnosticProviderBasedUserDiagnosticTest
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TaskNotAwaited()
-            Test(
-                NewLines("Imports System \n Imports System.Threading.Tasks \n Module Program \n Async Sub MySub() \n [|Task.Delay(3)|] \n End Sub \n End Module"),
-                NewLines("Imports System \n Imports System.Threading.Tasks \n Module Program \n Async Sub MySub() \n Await Task.Delay(3) \n End Sub \n End Module"),
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
+        Public Async Function TaskNotAwaited() As Task
+            Await TestAsync(
+"Imports System
+Imports System.Threading.Tasks
+Module Program
+    Async Sub MySub()
+        [|Task.Delay(3)|]
+    End Sub
+End Module",
+"Imports System
+Imports System.Threading.Tasks
+Module Program
+    Async Sub MySub()
+        Await Task.Delay(3)
+    End Sub
+End Module",
 )
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TaskNotAwaited_WithLeadingTrivia()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
+        Public Async Function TestTaskNotAwaited_WithLeadingTrivia() As Task
             Dim initial =
 <File>
 Imports System
@@ -43,11 +54,11 @@ Module Program
     End Sub
 End Module
 </File>
-            Test(initial, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(initial, expected, compareTokens:=False)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub BadAsyncReturnOperand1()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
+        Public Async Function TestBadAsyncReturnOperand1() As Task
             Dim initial =
 <File>
 Imports System
@@ -82,11 +93,11 @@ Module Program
     End Function
 End Module
 </File>
-            Test(initial, expected)
-        End Sub
+            Await TestAsync(initial, expected)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub FunctionNotAwaited()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
+        Public Async Function TestFunctionNotAwaited() As Task
             Dim initial =
 <File>
 Imports System
@@ -122,11 +133,11 @@ Module Program
 End Module
 </File>
 
-            Test(initial, expected)
-        End Sub
+            Await TestAsync(initial, expected)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub FunctionNotAwaited_WithLeadingTrivia()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
+        Public Async Function TestFunctionNotAwaited_WithLeadingTrivia() As Task
             Dim initial =
 <File>
 Imports System
@@ -166,11 +177,11 @@ Module Program
 End Module
 </File>
 
-            Test(initial, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(initial, expected, compareTokens:=False)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub SubLambdaNotAwaited()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
+        Public Async Function TestSubLambdaNotAwaited() As Task
             Dim initial =
 <File>
 Imports System
@@ -202,11 +213,11 @@ Module Program
 End Module
 </File>
 
-            Test(initial, expected)
-        End Sub
+            Await TestAsync(initial, expected)
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub FunctionLambdaNotAwaited()
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
+        Public Async Function TestFunctionLambdaNotAwaited() As Task
             Dim initial =
 <File>
 Imports System
@@ -240,77 +251,221 @@ Module Program
 End Module
 </File>
 
-            Test(initial, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(initial, expected, compareTokens:=False)
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestAddAwaitOnAssignment()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module Program \n Async Function MyTestMethod1Async() As Task \n Dim myInt As Integer = [|MyIntMethodAsync()|] \n End Function \n Private Function MyIntMethodAsync() As Task(Of Integer) \n Return Task.FromResult(1) \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module Program \n Async Function MyTestMethod1Async() As Task \n Dim myInt As Integer = Await MyIntMethodAsync() \n End Function \n Private Function MyIntMethodAsync() As Task(Of Integer) \n Return Task.FromResult(1) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestAddAwaitOnAssignment() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module Program
+    Async Function MyTestMethod1Async() As Task
+        Dim myInt As Integer = [|MyIntMethodAsync()|]
+    End Function
+    Private Function MyIntMethodAsync() As Task(Of Integer)
+        Return Task.FromResult(1)
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module Program
+    Async Function MyTestMethod1Async() As Task
+        Dim myInt As Integer = Await MyIntMethodAsync()
+    End Function
+    Private Function MyIntMethodAsync() As Task(Of Integer)
+        Return Task.FromResult(1)
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestAddAwaitOnAssignment2()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module Program \n Async Function MyTestMethod1Async() As Task \n Dim myInt As Long = [|MyIntMethodAsync()|] \n End Function \n Private Function MyIntMethodAsync() As Task(Of Integer) \n Return Task.FromResult(1) \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module Program \n Async Function MyTestMethod1Async() As Task \n Dim myInt As Long = Await MyIntMethodAsync() \n End Function \n Private Function MyIntMethodAsync() As Task(Of Integer) \n Return Task.FromResult(1) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestAddAwaitOnAssignment2() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module Program
+    Async Function MyTestMethod1Async() As Task
+        Dim myInt As Long = [|MyIntMethodAsync()|]
+    End Function
+    Private Function MyIntMethodAsync() As Task(Of Integer)
+        Return Task.FromResult(1)
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module Program
+    Async Function MyTestMethod1Async() As Task
+        Dim myInt As Long = Await MyIntMethodAsync()
+    End Function
+    Private Function MyIntMethodAsync() As Task(Of Integer)
+        Return Task.FromResult(1)
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestAddAwaitOnAssignment3()
-            TestMissing(
-NewLines("Imports System.Threading.Tasks \n Module Program \n Sub MyTestMethod1Async() \n Dim myInt As Long = MyInt[||]MethodAsync() \n End Sub \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestAddAwaitOnAssignment3() As Task
+            Await TestMissingAsync(
+"Imports System.Threading.Tasks
+Module Program
+    Sub MyTestMethod1Async()
+        Dim myInt As Long = MyInt[||]MethodAsync()
+    End Sub
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestAddAwaitOnAssignment4()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module Program \n Async Function MyTestMethod1Async() As Task \n Dim myInt As Long = [|MyIntMethodAsync()|] \n End Function \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module Program \n Async Function MyTestMethod1Async() As Task \n Dim myInt As Long = Await MyIntMethodAsync() \n End Function \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestAddAwaitOnAssignment4() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module Program
+    Async Function MyTestMethod1Async() As Task
+        Dim myInt As Long = [|MyIntMethodAsync()|]
+    End Function
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module Program
+    Async Function MyTestMethod1Async() As Task
+        Dim myInt As Long = Await MyIntMethodAsync()
+    End Function
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestAddAwaitOnAssignment5()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module Program \n Sub MyTestMethod1Async() \n Dim lambda = Async Sub() \n Dim myInt As Long = [|MyIntMethodAsync()|] \n End Sub \n End Sub \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module Program \n Sub MyTestMethod1Async() \n Dim lambda = Async Sub() \n Dim myInt As Long = Await MyIntMethodAsync() \n End Sub \n End Sub \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestAddAwaitOnAssignment5() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module Program
+    Sub MyTestMethod1Async()
+        Dim lambda = Async Sub()
+                         Dim myInt As Long = [|MyIntMethodAsync()|]
+                     End Sub
+    End Sub
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module Program
+    Sub MyTestMethod1Async()
+        Dim lambda = Async Sub()
+                         Dim myInt As Long = Await MyIntMethodAsync()
+                     End Sub
+    End Sub
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestAddAwaitOnAssignment6()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module Program \n Sub MyTestMethod1Async() \n Dim lambda = Async Function() As Task \n Dim myInt As Long = [|MyIntMethodAsync()|] \n End Function \n End Sub \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module Program \n Sub MyTestMethod1Async() \n Dim lambda = Async Function() As Task \n Dim myInt As Long = Await MyIntMethodAsync() \n End Function \n End Sub \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestAddAwaitOnAssignment6() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module Program
+    Sub MyTestMethod1Async()
+        Dim lambda = Async Function() As Task
+                         Dim myInt As Long = [|MyIntMethodAsync()|]
+                     End Function
+    End Sub
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module Program
+    Sub MyTestMethod1Async()
+        Dim lambda = Async Function() As Task
+                         Dim myInt As Long = Await MyIntMethodAsync()
+                     End Function
+    End Sub
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestAddAwaitOnAssignment7()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module Program \n Sub MyTestMethod1Async() \n Dim myInt As Long \n Dim lambda = Async Sub() myInt = [|MyIntMethodAsync()|] \n End Sub \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module Program \n Sub MyTestMethod1Async() \n Dim myInt As Long \n Dim lambda = Async Sub() myInt = Await MyIntMethodAsync() \n End Sub \n Private Function MyIntMethodAsync() As Task(Of Object) \n Return Task.FromResult(New Object()) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestAddAwaitOnAssignment7() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module Program
+    Sub MyTestMethod1Async()
+        Dim myInt As Long
+        Dim lambda = Async Sub() myInt = [|MyIntMethodAsync()|]
+    End Sub
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module Program
+    Sub MyTestMethod1Async()
+        Dim myInt As Long
+        Dim lambda = Async Sub() myInt = Await MyIntMethodAsync()
+    End Sub
+    Private Function MyIntMethodAsync() As Task(Of Object)
+        Return Task.FromResult(New Object())
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestTernaryOperator()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module M \n Async Function A() As Task(Of Integer) \n Return [|If(True, Task.FromResult(0), Task.FromResult(1))|] \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module M \n Async Function A() As Task(Of Integer) \n Return Await If(True, Task.FromResult(0), Task.FromResult(1)) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestTernaryOperator() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module M
+    Async Function A() As Task(Of Integer)
+        Return [|If(True, Task.FromResult(0), Task.FromResult(1))|]
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module M
+    Async Function A() As Task(Of Integer)
+        Return Await If(True, Task.FromResult(0), Task.FromResult(1))
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestTernaryOperator2()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module M \n Async Function A() As Task(Of Integer) \n Return [|If(Nothing, Task.FromResult(1))|] \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module M \n Async Function A() As Task(Of Integer) \n Return Await If(Nothing, Task.FromResult(1)) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestTernaryOperator2() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module M
+    Async Function A() As Task(Of Integer)
+        Return [|If(Nothing, Task.FromResult(1))|]
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module M
+    Async Function A() As Task(Of Integer)
+        Return Await If(Nothing, Task.FromResult(1))
+    End Function
+End Module")
+        End Function
 
         <Fact(), Trait(Traits.Feature, Traits.Features.CodeActionsAddAwait)>
-        Public Sub TestCastExpression()
-            Test(
-NewLines("Imports System.Threading.Tasks \n Module M \n Async Function A() As Task(Of Integer) \n Return [|TryCast(Nothing, Task(Of Integer))|] \n End Function \n End Module"),
-NewLines("Imports System.Threading.Tasks \n Module M \n Async Function A() As Task(Of Integer) \n Return Await TryCast(Nothing, Task(Of Integer)) \n End Function \n End Module"))
-        End Sub
+        Public Async Function TestCastExpression() As Task
+            Await TestAsync(
+"Imports System.Threading.Tasks
+Module M
+    Async Function A() As Task(Of Integer)
+        Return [|TryCast(Nothing, Task(Of Integer))|]
+    End Function
+End Module",
+"Imports System.Threading.Tasks
+Module M
+    Async Function A() As Task(Of Integer)
+        Return Await TryCast(Nothing, Task(Of Integer))
+    End Function
+End Module")
+        End Function
 
         Friend Overrides Function CreateDiagnosticProviderAndFixer(workspace As Workspace) As Tuple(Of DiagnosticAnalyzer, CodeFixProvider)
             Return Tuple.Create(Of DiagnosticAnalyzer, CodeFixProvider)(

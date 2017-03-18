@@ -1,12 +1,9 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
-using Microsoft.CodeAnalysis.Shared.TestHooks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
@@ -15,6 +12,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
 {
     [Export(typeof(IWpfTextViewConnectionListener))]
     [ContentType(ContentTypeNames.RoslynContentType)]
+    [ContentType(ContentTypeNames.XamlContentType)]
     [TextViewRole(PredefinedTextViewRoles.Interactive)]
     internal class DashboardAdornmentProvider : IWpfTextViewConnectionListener
     {
@@ -55,8 +53,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
                 return;
             }
 
-            DashboardAdornmentManager manager;
-            if (textView.Properties.TryGetProperty(typeof(DashboardAdornmentManager), out manager))
+            if (textView.Properties.TryGetProperty(typeof(DashboardAdornmentManager), out DashboardAdornmentManager manager))
             {
                 manager.Dispose();
                 textView.Properties.RemoveProperty(typeof(DashboardAdornmentManager));

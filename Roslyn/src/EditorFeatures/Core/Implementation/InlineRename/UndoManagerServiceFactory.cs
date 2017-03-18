@@ -1,19 +1,13 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Editor;
-using Microsoft.CodeAnalysis.Editor.Implementation.InlineRename;
-using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 using Roslyn.Utilities;
 
@@ -51,8 +45,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
             public void CreateStartRenameUndoTransaction(Workspace workspace, ITextBuffer subjectBuffer, InlineRenameSession inlineRenameSession)
             {
                 var textUndoHistoryService = workspace.Services.GetService<ITextUndoHistoryWorkspaceService>();
-                ITextUndoHistory undoHistory;
-                Contract.ThrowIfFalse(textUndoHistoryService.TryGetTextUndoHistory(workspace, subjectBuffer, out undoHistory));
+                Contract.ThrowIfFalse(textUndoHistoryService.TryGetTextUndoHistory(workspace, subjectBuffer, out var undoHistory));
                 UndoManagers[subjectBuffer] = new BufferUndoState() { TextUndoHistory = undoHistory };
                 CreateStartRenameUndoTransaction(subjectBuffer);
             }
@@ -62,7 +55,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
                 var undoHistory = this.UndoManagers[subjectBuffer].TextUndoHistory;
 
                 // Create an undo transaction to mark the starting point of the rename session in this buffer
-                using (var undoTransaction = undoHistory.CreateTransaction(EditorFeaturesResources.StartRename))
+                using (var undoTransaction = undoHistory.CreateTransaction(EditorFeaturesResources.Start_Rename))
                 {
                     undoTransaction.Complete();
                     this.UndoManagers[subjectBuffer].StartRenameSessionUndoTransaction = undoTransaction;
@@ -84,7 +77,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
                     undoHistory.Undo(1);
                 }
 
-                using (var undoTransaction = undoHistory.CreateTransaction(EditorFeaturesResources.StartRename))
+                using (var undoTransaction = undoHistory.CreateTransaction(EditorFeaturesResources.Start_Rename))
                 {
                     applyEdit();
                     undoTransaction.Complete();
@@ -99,8 +92,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
 
             protected override void UndoTemporaryEdits(ITextBuffer subjectBuffer, bool disconnect, bool undoConflictResolution)
             {
-                BufferUndoState bufferUndoState;
-                if (!this.UndoManagers.TryGetValue(subjectBuffer, out bufferUndoState))
+                if (!this.UndoManagers.TryGetValue(subjectBuffer, out var bufferUndoState))
                 {
                     return;
                 }

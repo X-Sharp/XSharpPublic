@@ -19,7 +19,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
     ''' </summary>
     ''' <remarks>
     ''' When derived class contains "Handles" methods that refer to a 
-    ''' WithEvents property in a base class, derived calss needs to add a 
+    ''' WithEvents property in a base class, derived class needs to add a 
     ''' synthetic override for the base WithEvent property. 
     ''' We need the override so that we could inject code sequences that 
     ''' remove old handlers and add new handlers when something is assigned 
@@ -194,6 +194,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             End Get
         End Property
 
+        Public Overrides ReadOnly Property ReturnsByRef As Boolean
+            Get
+                Return _baseProperty.ReturnsByRef
+            End Get
+        End Property
+
         Public Overrides ReadOnly Property Type As TypeSymbol
             Get
                 Return _baseProperty.Type
@@ -203,6 +209,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         Public Overrides ReadOnly Property TypeCustomModifiers As ImmutableArray(Of CustomModifier)
             Get
                 Return _baseProperty.TypeCustomModifiers
+            End Get
+        End Property
+
+        Public Overrides ReadOnly Property RefCustomModifiers As ImmutableArray(Of CustomModifier)
+            Get
+                Return _baseProperty.RefCustomModifiers
             End Get
         End Property
 

@@ -35,12 +35,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
+        public override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
         {
-            get
-            {
-                return CreateEmptyTypeArgumentsCustomModifiers();
-            }
+            return GetEmptyTypeArgumentCustomModifiers(ordinal);
         }
 
         public override NamedTypeSymbol ConstructedFrom
@@ -64,17 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                    originalDefinition: constructedFrom.OriginalDefinition,
                    constructedFrom: constructedFrom, unbound: unbound)
         {
-            bool hasTypeArgumentsCustomModifiers = false;
-            _typeArguments = typeArguments.SelectAsArray(a => 
-                                                            {
-                                                                if (!a.CustomModifiers.IsDefaultOrEmpty)
-                                                                {
-                                                                    hasTypeArgumentsCustomModifiers = true;
-                                                                }
-
-                                                                return a.Type;
-                                                            });
-            _hasTypeArgumentsCustomModifiers = hasTypeArgumentsCustomModifiers;
+            _typeArguments = typeArguments.ToTypes(out _hasTypeArgumentsCustomModifiers);
             _constructedFrom = constructedFrom;
 
             Debug.Assert(constructedFrom.Arity == typeArguments.Length);
@@ -105,17 +92,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
+        public override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
         {
-            get
+            if (_hasTypeArgumentsCustomModifiers)
             {
-                if (_hasTypeArgumentsCustomModifiers)
-                {
-                    return TypeSubstitution.GetTypeArgumentsCustomModifiersFor(_constructedFrom.OriginalDefinition);
-                }
-
-                return CreateEmptyTypeArgumentsCustomModifiers();
+                return TypeSubstitution.GetTypeArgumentsCustomModifiersFor(_constructedFrom.OriginalDefinition.TypeParameters[ordinal]);
             }
+
+            return GetEmptyTypeArgumentCustomModifiers(ordinal);
         }
 
         internal static bool TypeParametersMatchTypeArguments(ImmutableArray<TypeParameterSymbol> typeParameters, ImmutableArray<TypeWithModifiers> typeArguments)
@@ -145,9 +129,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             if (_hasTypeArgumentsCustomModifiers)
             {
-                foreach (var modifiers in this.TypeArgumentsCustomModifiers)
+                for (int i = 0; i < this.Arity; i++)
                 {
-                    if (GetUnificationUseSiteDiagnosticRecursive(ref result, modifiers, owner, ref checkedTypes))
+                    if (GetUnificationUseSiteDiagnosticRecursive(ref result, this.GetTypeArgumentCustomModifiers(i), owner, ref checkedTypes))
                     {
                         return true;
                     }

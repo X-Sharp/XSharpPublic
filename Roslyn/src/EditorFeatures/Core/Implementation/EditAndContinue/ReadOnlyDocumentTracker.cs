@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.EditAndContinue;
 using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
-using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
 {
@@ -85,17 +84,11 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
         private bool IsRegionReadOnly(DocumentId documentId, bool isEdit)
         {
             AssertIsForeground();
-
-            SessionReadOnlyReason sessionReason;
-            ProjectReadOnlyReason projectReason;
-            bool isReadOnly = _encService.IsProjectReadOnly(documentId.ProjectId, out sessionReason, out projectReason);
+            bool isReadOnly = _encService.IsProjectReadOnly(documentId.ProjectId, out var sessionReason, out var projectReason);
 
             if (isEdit && isReadOnly)
             {
-                if (_onReadOnlyDocumentEditAttempt != null)
-                {
-                    _onReadOnlyDocumentEditAttempt(documentId, sessionReason, projectReason);
-                }
+                _onReadOnlyDocumentEditAttempt?.Invoke(documentId, sessionReason, projectReason);
             }
 
             return isReadOnly;
@@ -132,8 +125,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
         private static ITextBuffer GetTextBuffer(Workspace workspace, DocumentId documentId)
         {
             var doc = workspace.CurrentSolution.GetDocument(documentId);
-            SourceText text;
-            doc.TryGetText(out text);
+            doc.TryGetText(out var text);
             var snapshot = text.FindCorrespondingEditorTextSnapshot();
             return snapshot.TextBuffer;
         }

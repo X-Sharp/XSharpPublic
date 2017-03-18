@@ -1,12 +1,10 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.Commands;
 using Microsoft.CodeAnalysis.Editor.Host;
 using Microsoft.CodeAnalysis.Editor.Shared;
@@ -15,7 +13,6 @@ using Microsoft.CodeAnalysis.LanguageServices;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Outlining;
 using Roslyn.Utilities;
 
@@ -70,7 +67,8 @@ namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
             int? targetPosition = null;
             var waitResult = _waitIndicator.Wait(EditorFeaturesResources.Navigating, allowCancel: true, action: waitContext =>
             {
-                targetPosition = GetTargetPosition(document, caretPoint.Value.Position, args.Direction == NavigateDirection.Down, waitContext.CancellationToken);
+                var task = GetTargetPositionAsync(document, caretPoint.Value.Position, args.Direction == NavigateDirection.Down, waitContext.CancellationToken);
+                targetPosition = task.WaitAndGetResult(waitContext.CancellationToken);
             });
 
             if (waitResult == WaitIndicatorResult.Canceled || targetPosition == null)
@@ -84,7 +82,7 @@ namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
         /// <summary>
         /// Internal for testing purposes.
         /// </summary>
-        internal static int? GetTargetPosition(Document document, int caretPosition, bool next, CancellationToken cancellationToken)
+        internal static async Task<int?> GetTargetPositionAsync(Document document, int caretPosition, bool next, CancellationToken cancellationToken)
         {
             var syntaxFactsService = document.GetLanguageService<ISyntaxFactsService>();
             if (syntaxFactsService == null)
@@ -92,15 +90,15 @@ namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
                 return null;
             }
 
-            var root = document.GetSyntaxRootAsync(cancellationToken).WaitAndGetResult(cancellationToken);
+            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(true);
             var members = syntaxFactsService.GetMethodLevelMembers(root);
             if (members.Count == 0)
             {
                 return null;
             }
 
-            var spans = members.Select(m => m.Span).ToArray();
-            var index = Array.BinarySearch(spans, new TextSpan(caretPosition, 0), PositionToTextSpanComparer.Instance);
+            var starts = members.Select(m => MemberStart(m)).ToArray();
+            var index = Array.BinarySearch(starts, caretPosition);
             if (index >= 0)
             {
                 // We're actually contained in a member, go to the next or previous.
@@ -123,32 +121,13 @@ namespace Microsoft.CodeAnalysis.Editor.CommandHandlers
                 index = members.Count - 1;
             }
 
-            // TODO: Better position within the node (e.g. attributes?)
-            return members[index].Span.Start;
+            return MemberStart(members[index]);
         }
 
-        /// <summary>
-        /// A custom comparer that returns true if two <see cref="TextSpan"/>'s intersect, and otherwise
-        /// compares by <see cref="TextSpan.Start"/>.
-        /// </summary>
-        private class PositionToTextSpanComparer : IComparer
+        private static int MemberStart(SyntaxNode node)
         {
-            public static IComparer Instance { get; } = new PositionToTextSpanComparer();
-
-            private PositionToTextSpanComparer() { }
-
-            int IComparer.Compare(object x, object y)
-            {
-                var left = (TextSpan)x;
-                var right = (TextSpan)y;
-
-                if (left.IntersectsWith(right))
-                {
-                    return 0;
-                }
-
-                return left.Start - right.Start;
-            }
+            // TODO: Better position within the node (e.g. attributes?)
+            return node.SpanStart;
         }
     }
 }

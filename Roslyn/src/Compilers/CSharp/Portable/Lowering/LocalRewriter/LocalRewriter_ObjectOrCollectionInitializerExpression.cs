@@ -283,7 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 // Rewrite simple assignment to field/property.
                                 var rewrittenRight = VisitExpression(assignment.Right);
-                                result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, assignment.Type, used: false));
+                                result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, RefKind.None, assignment.Type, used: false));
                                 return;
                             }
                         }
@@ -324,7 +324,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             // Rewrite simple assignment to field/property.
                             var rewrittenRight = VisitExpression(assignment.Right);
-                            result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, assignment.Type, used: false));
+                            result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, RefKind.None, assignment.Type, used: false));
                             return;
                         }
 
@@ -357,7 +357,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             // Rewrite as simple assignment.
                             var rewrittenRight = VisitExpression(assignment.Right);
-                            result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, assignment.Type, used: false));
+                            result.Add(MakeStaticAssignmentOperator(assignment.Syntax, rewrittenAccess, rewrittenRight, RefKind.None, assignment.Type, used: false));
                             return;
                         }
 
@@ -419,7 +419,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var memberSymbol = rewrittenLeft.MemberSymbol;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-            Debug.Assert(memberSymbol != null && _compilation.Conversions.ClassifyConversion(rewrittenReceiver.Type, memberSymbol.ContainingType, ref useSiteDiagnostics).IsImplicit);
+            Debug.Assert(memberSymbol != null && _compilation.Conversions.ClassifyConversionFromType(rewrittenReceiver.Type, memberSymbol.ContainingType, ref useSiteDiagnostics).IsImplicit);
             // It is possible there are use site diagnostics from the above, but none that we need report as we aren't generating code for the conversion
 
             switch (memberSymbol.Kind)

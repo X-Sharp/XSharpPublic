@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Scripting
 {
@@ -19,10 +21,49 @@ namespace Microsoft.CodeAnalysis.Scripting
     {
         public static ScriptOptions Default { get; } = new ScriptOptions(
             filePath: "",
-            references: ImmutableArray<MetadataReference>.Empty,
+            references: GetDefaultMetadataReferences(),
             namespaces: ImmutableArray<string>.Empty,
             metadataResolver: RuntimeMetadataReferenceResolver.Default,
             sourceResolver: SourceFileResolver.Default);
+
+        private static ImmutableArray<MetadataReference> GetDefaultMetadataReferences()
+        {
+            if (GacFileResolver.IsAvailable)
+            {
+                return ImmutableArray<MetadataReference>.Empty;
+            }
+
+            // Provide similar surface to mscorlib (netstandard 2.0).
+            // These references are resolved lazily. Keep in sync with list in core csi.rsp.
+            var files = new[]
+            {
+                "System.Collections",
+                "System.Collections.Concurrent",
+                "System.Console",
+                "System.Diagnostics.Debug",
+                "System.Diagnostics.Process",
+                "System.Diagnostics.StackTrace",
+                "System.Globalization",
+                "System.IO",
+                "System.IO.FileSystem",
+                "System.IO.FileSystem.Primitives",
+                "System.Reflection",
+                "System.Reflection.Extensions",
+                "System.Reflection.Primitives",
+                "System.Runtime",
+                "System.Runtime.InteropServices",
+                "System.Text.Encoding",
+                "System.Text.Encoding.CodePages",
+                "System.Text.Encoding.Extensions",
+                "System.Text.RegularExpressions",
+                "System.Threading",
+                "System.Threading.Tasks",
+                "System.Threading.Tasks.Parallel",
+                "System.Threading.Thread",
+            };
+
+            return ImmutableArray.CreateRange(files.Select(CreateUnresolvedReference));
+        }
 
         /// <summary>
         /// An array of <see cref="MetadataReference"/>s to be added to the script.
@@ -75,7 +116,7 @@ namespace Microsoft.CodeAnalysis.Scripting
             SourceResolver = sourceResolver;
         }
 
-        private ScriptOptions(ScriptOptions other) 
+        private ScriptOptions(ScriptOptions other)
             : this(filePath: other.FilePath,
                    references: other.MetadataReferences,
                    namespaces: other.Imports,
@@ -85,7 +126,7 @@ namespace Microsoft.CodeAnalysis.Scripting
         }
 
         // a reference to an assembly should by default be equivalent to #r, which applies recursive global alias:
-        private static readonly MetadataReferenceProperties AssemblyReferenceProperties = 
+        private static readonly MetadataReferenceProperties s_assemblyReferenceProperties =
             MetadataReferenceProperties.Assembly.WithRecursiveAliases(true);
 
         /// <summary>
@@ -95,7 +136,7 @@ namespace Microsoft.CodeAnalysis.Scripting
             (FilePath == filePath) ? this : new ScriptOptions(this) { FilePath = filePath ?? "" };
 
         private static MetadataReference CreateUnresolvedReference(string reference) =>
-            new UnresolvedMetadataReference(reference, AssemblyReferenceProperties);
+            new UnresolvedMetadataReference(reference, s_assemblyReferenceProperties);
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with the references changed.
@@ -109,7 +150,7 @@ namespace Microsoft.CodeAnalysis.Scripting
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="references"/> is null or contains a null reference.</exception>
         public ScriptOptions WithReferences(IEnumerable<MetadataReference> references) =>
-            WithReferences(ToImmutableArrayChecked(references, nameof(references))); 
+            WithReferences(ToImmutableArrayChecked(references, nameof(references)));
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with the references changed.
@@ -128,7 +169,7 @@ namespace Microsoft.CodeAnalysis.Scripting
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with references added.
         /// </summary>
-        public ScriptOptions AddReferences(params MetadataReference[] references) => 
+        public ScriptOptions AddReferences(params MetadataReference[] references) =>
             AddReferences((IEnumerable<MetadataReference>)references);
 
         /// <summary>
@@ -136,7 +177,7 @@ namespace Microsoft.CodeAnalysis.Scripting
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="references"/> is null or contains a null reference.</exception>
         /// <exception cref="NotSupportedException">Specified assembly is not supported (e.g. it's a dynamic assembly).</exception>
-        public ScriptOptions WithReferences(IEnumerable<Assembly> references) => 
+        public ScriptOptions WithReferences(IEnumerable<Assembly> references) =>
             WithReferences(SelectChecked(references, nameof(references), CreateReferenceFromAssembly));
 
         /// <summary>
@@ -144,7 +185,7 @@ namespace Microsoft.CodeAnalysis.Scripting
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="references"/> is null or contains a null reference.</exception>
         /// <exception cref="NotSupportedException">Specified assembly is not supported (e.g. it's a dynamic assembly).</exception>
-        public ScriptOptions WithReferences(params Assembly[] references) => 
+        public ScriptOptions WithReferences(params Assembly[] references) =>
             WithReferences((IEnumerable<Assembly>)references);
 
         /// <summary>
@@ -157,7 +198,7 @@ namespace Microsoft.CodeAnalysis.Scripting
 
         private static MetadataReference CreateReferenceFromAssembly(Assembly assembly)
         {
-            return MetadataReference.CreateFromAssemblyInternal(assembly, AssemblyReferenceProperties);
+            return MetadataReference.CreateFromAssemblyInternal(assembly, s_assemblyReferenceProperties);
         }
 
         /// <summary>
@@ -165,34 +206,34 @@ namespace Microsoft.CodeAnalysis.Scripting
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="references"/> is null or contains a null reference.</exception>
         /// <exception cref="NotSupportedException">Specified assembly is not supported (e.g. it's a dynamic assembly).</exception>
-        public ScriptOptions AddReferences(params Assembly[] references) => 
+        public ScriptOptions AddReferences(params Assembly[] references) =>
             AddReferences((IEnumerable<Assembly>)references);
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with the references changed.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="references"/> is null or contains a null reference.</exception>
-        public ScriptOptions WithReferences(IEnumerable<string> references) => 
+        public ScriptOptions WithReferences(IEnumerable<string> references) =>
             WithReferences(SelectChecked(references, nameof(references), CreateUnresolvedReference));
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with the references changed.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="references"/> is null or contains a null reference.</exception>
-        public ScriptOptions WithReferences(params string[] references) => 
+        public ScriptOptions WithReferences(params string[] references) =>
             WithReferences((IEnumerable<string>)references);
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with references added.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="references"/> is null or contains a null reference.</exception>
-        public ScriptOptions AddReferences(IEnumerable<string> references) => 
+        public ScriptOptions AddReferences(IEnumerable<string> references) =>
             AddReferences(SelectChecked(references, nameof(references), CreateUnresolvedReference));
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with references added.
         /// </summary>
-        public ScriptOptions AddReferences(params string[] references) => 
+        public ScriptOptions AddReferences(params string[] references) =>
             AddReferences((IEnumerable<string>)references);
 
         /// <summary>
@@ -218,28 +259,28 @@ namespace Microsoft.CodeAnalysis.Scripting
         /// Creates a new <see cref="ScriptOptions"/> with the <see cref="Imports"/> changed.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="imports"/> is null or contains a null reference.</exception>
-        public ScriptOptions WithImports(IEnumerable<string> imports) => 
+        public ScriptOptions WithImports(IEnumerable<string> imports) =>
             WithImports(ToImmutableArrayChecked(imports, nameof(imports)));
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with the <see cref="Imports"/> changed.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="imports"/> is null or contains a null reference.</exception>
-        public ScriptOptions WithImports(params string[] imports) => 
+        public ScriptOptions WithImports(params string[] imports) =>
             WithImports((IEnumerable<string>)imports);
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with <see cref="Imports"/> added.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="imports"/> is null or contains a null reference.</exception>
-        public ScriptOptions AddImports(IEnumerable<string> imports) => 
+        public ScriptOptions AddImports(IEnumerable<string> imports) =>
             WithImports(ConcatChecked(Imports, imports, nameof(imports)));
 
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with <see cref="Imports"/> added.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="imports"/> is null or contains a null reference.</exception>
-        public ScriptOptions AddImports(params string[] imports) => 
+        public ScriptOptions AddImports(params string[] imports) =>
             AddImports((IEnumerable<string>)imports);
     }
 }

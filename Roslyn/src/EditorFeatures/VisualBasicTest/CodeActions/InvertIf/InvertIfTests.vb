@@ -1,428 +1,1071 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Option Strict Off
-
+Imports Microsoft.CodeAnalysis.CodeRefactorings
 Imports Microsoft.CodeAnalysis.VisualBasic.CodeRefactorings.InvertIf
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.CodeRefactorings.InvertIf
     Public Class InvertIfTests
         Inherits AbstractVisualBasicCodeActionTest
 
-        Protected Overrides Function CreateCodeRefactoringProvider(workspace As Workspace) As Object
+        Protected Overrides Function CreateCodeRefactoringProvider(workspace As Workspace) As CodeRefactoringProvider
             Return New InvertIfCodeRefactoringProvider()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestSingleLineIdentifier()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestSingleLineIdentifier() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMultiLineIdentifier()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n a() \n Else \n b() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a Then \n b() \n Else \n a() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMultiLineIdentifier() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+            a()
+        Else
+            b()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a Then
+            b()
+        Else
+            a()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestCall()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a.Foo() Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a.Foo() Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestCall() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a.Foo() Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a.Foo() Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestNotIdentifier()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If Not a Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestNotIdentifier() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If Not a Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestTrueLiteral()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If True Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If False Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestTrueLiteral() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If True Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If False Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestFalseLiteral()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If False Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If True Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestFalseLiteral() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If False Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If True Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestEquals()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a = b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a <> b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestEquals() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a = b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a <> b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestNotEquals()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a <> b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a = b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestNotEquals() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a <> b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a = b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestLessThan()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a < b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a >= b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestLessThan() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a < b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a >= b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestLessThanOrEqual()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a <= b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a > b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestLessThanOrEqual() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a <= b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a > b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestGreaterThan()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a > b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a <= b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestGreaterThan() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a > b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a <= b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestGreaterThanOrEqual()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a >= b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a < b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestGreaterThanOrEqual() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a >= b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a < b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestIs()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a Is b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a IsNot b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestIs() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a Is b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a IsNot b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestIsNot()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a IsNot b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a Is b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestIsNot() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a IsNot b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a Is b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestOr()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a Or b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a And Not b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestOr() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a Or b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a And Not b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestAnd()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a And b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a Or Not b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestAnd() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a And b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a Or Not b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestOrElse()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a OrElse b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a AndAlso Not b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestOrElse() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a OrElse b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a AndAlso Not b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestAndAlso()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a AndAlso b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a OrElse Not b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestAndAlso() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a AndAlso b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a OrElse Not b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestOr2()
-            Test(
-NewLines("Module Program \n Sub Main() \n I[||]f Not a Or Not b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a And b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestOr2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        I[||]f Not a Or Not b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a And b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestOrElse2()
-            Test(
-NewLines("Module Program \n Sub Main() \n I[||]f Not a OrElse Not b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a AndAlso b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestOrElse2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        I[||]f Not a OrElse Not b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a AndAlso b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestAnd2()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If Not a And Not b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a Or b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestAnd2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If Not a And Not b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a Or b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestAndAlso2()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If Not a AndAlso Not b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a OrElse b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestAndAlso2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If Not a AndAlso Not b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a OrElse b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestXor()
-            Test(
-NewLines("Module Program \n Sub Main() \n I[||]f a Xor b Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not (a Xor b) Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestXor() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        I[||]f a Xor b Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not (a Xor b) Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(545411)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestXor2()
-            Test(
-NewLines("Module Program \n Sub Main() \n I[||]f Not (a Xor b) Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a Xor b Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(545411, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545411")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestXor2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        I[||]f Not (a Xor b) Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a Xor b Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestNested()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If (((a = b) AndAlso (c <> d)) OrElse ((e < f) AndAlso (Not g))) Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If (a <> b OrElse c = d) AndAlso (e >= f OrElse g) Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestNested() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If (((a = b) AndAlso (c <> d)) OrElse ((e < f) AndAlso (Not g))) Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If (a <> b OrElse c = d) AndAlso (e >= f OrElse g) Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestElseIf()
-            Test(
-NewLines("Module Program \n Sub Main() \n If a Then \n a() \n [||]ElseIf b Then \n b() \n Else \n c() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a Then \n a() \n ElseIf Not b Then \n c() \n Else \n b() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestElseIf() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        If a Then
+            a()
+        [||]ElseIf b Then
+            b()
+        Else
+            c()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a Then
+            a()
+        ElseIf Not b Then
+            c()
+        Else
+            b()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestKeepElseIfKeyword()
-            Test(
-NewLines("Module Program \n Sub Main() \n If a Then \n a() \n [||]ElseIf b Then \n b() \n Else \n c() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If a Then \n a() \n ElseIf Not b Then \n c() \n Else \n b() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestKeepElseIfKeyword() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        If a Then
+            a()
+        [||]ElseIf b Then
+            b()
+        Else
+            c()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If a Then
+            a()
+        ElseIf Not b Then
+            c()
+        Else
+            b()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnIfElseIfElse()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n I[||]f a Then \n a() \n Else If b Then \n b() \n Else \n c() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnIfElseIfElse() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        I[||]f a Then
+            a()
+        Else If b Then
+            b()
+        Else
+            c()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnNonEmptySpan()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n [|If a Then \n a() \n Else \n b() \n End If|] \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnNonEmptySpan() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        [|If a Then
+            a()
+        Else
+            b()
+        End If|]
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestDoesNotOverlapHiddenPosition1()
-            Test(
-NewLines("Module Program \n Sub Main() \n #End ExternalSource \n foo() \n #ExternalSource File.vb 1 \n [||]If a Then \n a() \n Else \n b() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n #End ExternalSource \n foo() \n #ExternalSource File.vb 1 \n If Not a Then \n b() \n Else \n a() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestDoesNotOverlapHiddenPosition1() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+#End ExternalSource
+        foo()
+#ExternalSource File.vb 1 
+        [||]If a Then
+            a()
+        Else
+            b()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+#End ExternalSource
+        foo()
+#ExternalSource File.vb 1 
+        If Not a Then
+            b()
+        Else
+            a()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestDoesNotOverlapHiddenPosition2()
-            Test(
-NewLines("Module Program \n Sub Main() \n #ExternalSource File.vb 1 \n [||]If a Then \n a() \n Else \n b() \n End If \n #End ExternalSource \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n #ExternalSource File.vb 1 \n If Not a Then \n b() \n Else \n a() \n End If \n #End ExternalSource \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestDoesNotOverlapHiddenPosition2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+#ExternalSource File.vb 1 
+        [||]If a Then
+            a()
+        Else
+            b()
+        End If
+#End ExternalSource
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+#ExternalSource File.vb 1 
+        If Not a Then
+            b()
+        Else
+            a()
+        End If
+#End ExternalSource
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529624)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnOverlapsHiddenPosition1()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n #ExternalSource File.vb 1 \n a() \n #End ExternalSource \n Else \n b() \n End If \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529624, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529624")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnOverlapsHiddenPosition1() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+#ExternalSource File.vb 1 
+            a()
+#End ExternalSource
+        Else
+            b()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529624)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnOverlapsHiddenPosition2()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n If a Then \n a() \n [||]Else If b Then \n #ExternalSource File.vb 1 \n b() \n #End ExternalSource \n Else \n c() \n End If \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529624, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529624")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnOverlapsHiddenPosition2() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        If a Then
+            a()
+        [||]Else If b Then
+#ExternalSource File.vb 1 
+            b()
+#End ExternalSource
+        Else
+            c()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnOverlapsHiddenPosition3()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n a() \n #ExternalSource File.vb 1 \n Else If b Then \n b() \n #End ExternalSource \n Else \n c() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnOverlapsHiddenPosition3() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+            a()
+#ExternalSource File.vb 1 
+        Else If b Then
+            b()
+#End ExternalSource
+        Else
+            c()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529624)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnOverlapsHiddenPosition4()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n a() \n Else \n #ExternalSource File.vb 1 \n b() \n #End ExternalSource \n End If \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529624, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529624")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnOverlapsHiddenPosition4() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+            a()
+        Else
+#ExternalSource File.vb 1 
+            b()
+#End ExternalSource
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529624)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnOverlapsHiddenPosition5()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n #ExternalSource File.vb 1 \n a() \n Else \n b() \n #End ExternalSource \n End If \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529624, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529624")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnOverlapsHiddenPosition5() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+#ExternalSource File.vb 1 
+            a()
+        Else
+            b()
+#End ExternalSource
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529624)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnOverlapsHiddenPosition6()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n a() \n #ExternalSource File.vb 1 \n Else \n #End ExternalSource \n b() \n End If \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529624, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529624")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnOverlapsHiddenPosition6() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+            a()
+#ExternalSource File.vb 1 
+        Else
+#End ExternalSource
+            b()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMissingOnNonEmptyTextSpan()
-            TestMissing(
-NewLines("Module Program \n Sub Main() \n [|If a Th|]en a() Else b() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMissingOnNonEmptyTextSpan() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main()
+        [|If a Th|]en a() Else b()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMultipleStatementsSingleLineIfStatement()
-            Test(
-NewLines("Module Program \n Sub Main() \n If[||] a Then a() : b() Else c() : d() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a Then c() : d() Else a() : b() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMultipleStatementsSingleLineIfStatement() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        If[||] a Then a() : b() Else c() : d()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a Then c() : d() Else a() : b()
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestMultipleStatementsMultiLineIfBlock()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n foo() \n bar() \n Else \n you() \n too() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a Then \n you() \n too() \n Else \n foo() \n bar() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestMultipleStatementsMultiLineIfBlock() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+            foo()
+            bar()
+        Else
+            you()
+            too()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a Then
+            you()
+            too()
+        Else
+            foo()
+            bar()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestTriviaAfterSingleLineIfStatement()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a Then a() Else b() ' I will stay put \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a Then b() Else a() ' I will stay put \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestTriviaAfterSingleLineIfStatement() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then a() Else b() ' I will stay put 
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a Then b() Else a() ' I will stay put 
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestTriviaAfterMultiLineIfBlock()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n a() \n Else \n b() \n End If ' I will stay put \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a Then \n b() \n Else \n a() \n End If ' I will stay put \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestTriviaAfterMultiLineIfBlock() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+            a()
+        Else
+            b()
+        End If ' I will stay put 
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a Then
+            b()
+        Else
+            a()
+        End If ' I will stay put 
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestParenthesizeForLogicalExpressionPrecedence()
-            Test(
-NewLines("Sub Main() \n I[||]f a AndAlso b Or c Then a() Else b() \n End Sub \n End Module"),
-NewLines("Sub Main() \n If (Not a OrElse Not b) And Not c Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestParenthesizeForLogicalExpressionPrecedence() As Task
+            Await TestAsync(
+"Sub Main()
+    I[||]f a AndAlso b Or c Then a() Else b()
+End Sub
+End Module",
+"Sub Main()
+    If (Not a OrElse Not b) And Not c Then b() Else a()
+End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestKeepExplicitLineContinuationTrivia()
-            Test(
-NewLines("Module Program \n Sub Main() \n I[||]f a And b _ \n Or c Then \n a() \n Else \n b() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If (Not a Or Not b) _ \n And Not c Then \n b() \n Else \n a() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestKeepExplicitLineContinuationTrivia() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        I[||]f a And b _
+        Or c Then
+            a()
+        Else
+            b()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If (Not a Or Not b) _
+        And Not c Then
+            b()
+        Else
+            a()
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestKeepTriviaInStatementsInMultiLineIfBlock()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If a Then \n a() \n \n Else \n b() \n \n \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If Not a Then \n b() \n \n \n Else \n a() \n \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestKeepTriviaInStatementsInMultiLineIfBlock() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If a Then
+            a()
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestParenthesizeComparisonOperands()
-            Test(
-NewLines("Module Program \n Sub Main() \n [||]If 0 <= <x/>.GetHashCode Then a() Else b() \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n If 0 > (<x/>.GetHashCode) Then b() Else a() \n End Sub \n End Module"))
-        End Sub
+        Else
+            b()
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestSimplifyToLengthEqualsZero()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x As String \n [||]If x.Length > 0 Then \n GreaterThanZero() \n Else \n EqualsZero() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x As String \n If x.Length = 0 Then \n EqualsZero() \n Else \n GreaterThanZero() \n End If \n End Sub \n End Module"))
-        End Sub
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestSimplifyToLengthEqualsZero2()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x() As String \n [||]If x.Length > 0 Then \n GreaterThanZero() \n Else \n EqualsZero() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x() As String \n If x.Length = 0 Then \n EqualsZero() \n Else \n GreaterThanZero() \n End If \n End Sub \n End Module"))
-        End Sub
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If Not a Then
+            b()
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestSimplifyToLengthEqualsZero4()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x() As String \n [||]If x.Length > 0x0 Then \n GreaterThanZero() \n Else \n EqualsZero() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x() As String \n If x.Length = 0x0 Then \n EqualsZero() \n Else \n GreaterThanZero() \n End If \n End Sub \n End Module"))
-        End Sub
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestSimplifyToLengthEqualsZero5()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x As String \n [||]If 0 < x.Length Then \n GreaterThanZero() \n Else \n EqualsZero() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x As String \n If 0 = x.Length Then \n EqualsZero() \n Else \n GreaterThanZero() \n End If \n End Sub \n End Module"))
-        End Sub
+        Else
+            a()
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestDoesNotSimplifyToLengthEqualsZero()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x As String \n [||]If x.Length >= 0 Then \n a() \n Else \n b() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x As String \n If x.Length < 0 Then \n b() \n Else \n a() \n End If \n End Sub \n End Module"))
-        End Sub
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TestDoesNotSimplifyToLengthEqualsZero2()
-            Test(
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x As String \n [||]If x.Length > 0.0 Then \n a() \n Else \n b() \n End If \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main(args As String()) \n Dim x As String \n If x.Length <= 0.0 Then \n b() \n Else \n a() \n End If \n End Sub \n End Module"))
-        End Sub
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestParenthesizeComparisonOperands() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        [||]If 0 <= <x/>.GetHashCode Then a() Else b()
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        If 0 > (<x/>.GetHashCode) Then b() Else a()
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529748)>
-        <WorkItem(530593)>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestSimplifyToLengthEqualsZero() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        Dim x As String
+        [||]If x.Length > 0 Then
+            GreaterThanZero()
+        Else
+            EqualsZero()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        Dim x As String
+        If x.Length = 0 Then
+            EqualsZero()
+        Else
+            GreaterThanZero()
+        End If
+    End Sub
+End Module")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestSimplifyToLengthEqualsZero2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        Dim x() As String
+        [||]If x.Length > 0 Then
+            GreaterThanZero()
+        Else
+            EqualsZero()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        Dim x() As String
+        If x.Length = 0 Then
+            EqualsZero()
+        Else
+            GreaterThanZero()
+        End If
+    End Sub
+End Module")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestSimplifyToLengthEqualsZero4() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        Dim x() As String
+        [||]If x.Length > 0x0 Then 
+ GreaterThanZero()
+        Else
+            EqualsZero()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        Dim x() As String
+        If x.Length = 0x0 Then 
+ EqualsZero()
+        Else
+            GreaterThanZero()
+        End If
+    End Sub
+End Module")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestSimplifyToLengthEqualsZero5() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        Dim x As String
+        [||]If 0 < x.Length Then
+            GreaterThanZero()
+        Else
+            EqualsZero()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        Dim x As String
+        If 0 = x.Length Then
+            EqualsZero()
+        Else
+            GreaterThanZero()
+        End If
+    End Sub
+End Module")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestDoesNotSimplifyToLengthEqualsZero() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        Dim x As String
+        [||]If x.Length >= 0 Then
+            a()
+        Else
+            b()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        Dim x As String
+        If x.Length < 0 Then
+            b()
+        Else
+            a()
+        End If
+    End Sub
+End Module")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestDoesNotSimplifyToLengthEqualsZero2() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main(args As String())
+        Dim x As String
+        [||]If x.Length > 0.0 Then
+            a()
+        Else
+            b()
+        End If
+    End Sub
+End Module",
+"Module Program
+    Sub Main(args As String())
+        Dim x As String
+        If x.Length <= 0.0 Then
+            b()
+        Else
+            a()
+        End If
+    End Sub
+End Module")
+        End Function
+
+        <WorkItem(529748, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529748")>
+        <WorkItem(530593, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530593")>
         <WpfFact(Skip:="Bug 530593"), Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub ColonAfterSingleLineIfWithEmptyElse()
-            Test(
-NewLines("Module Program \n Sub Main() \n ' Invert If \n I[||]f False Then Return Else : Console.WriteLine(1) \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n ' Invert If \n If True Then  Else Return \n Console.WriteLine(1) \n End Sub \n End Module"))
-        End Sub
+        Public Async Function TestColonAfterSingleLineIfWithEmptyElse() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        ' Invert If 
+        I[||]f False Then Return Else : Console.WriteLine(1)
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        ' Invert If 
+        If True Then Else Return
+        Console.WriteLine(1)
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529749)>
-        <WorkItem(530593)>
+        <WorkItem(529749, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529749")>
+        <WorkItem(530593, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530593")>
         <WpfFact(Skip:="Bug 530593"), Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub NestedSingleLineIfs()
-            Test(
-NewLines("Module Program \n Sub Main() \n ' Invert the 1st If \n I[||]f True Then Console.WriteLine(1) Else If True Then Return \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n ' Invert the 1st If \n If False Then If True Then Return Else : Else Console.WriteLine(1) \n End Sub \n End Module"))
-        End Sub
+        Public Async Function TestNestedSingleLineIfs() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        ' Invert the 1st If 
+        I[||]f True Then Console.WriteLine(1) Else If True Then Return
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        ' Invert the 1st If 
+        If False Then If True Then Return Else : Else Console.WriteLine(1)
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529747)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub TryToParenthesizeAwkwardSyntaxInsideSingleLineLambda()
-            Test(
-NewLines("Module Program \n Sub Main() \n ' Invert If \n Dim x = Sub() I[||]f True Then Dim y Else Console.WriteLine(), z = 1 \n End Sub \n End Module"),
-NewLines("Module Program \n Sub Main() \n ' Invert If \n Dim x = (Sub() If False Then Console.WriteLine() Else Dim y), z = 1 \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529747, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529747")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestTryToParenthesizeAwkwardSyntaxInsideSingleLineLambda() As Task
+            Await TestAsync(
+"Module Program
+    Sub Main()
+        ' Invert If 
+        Dim x = Sub() I[||]f True Then Dim y Else Console.WriteLine(), z = 1
+    End Sub
+End Module",
+"Module Program
+    Sub Main()
+        ' Invert If 
+        Dim x = (Sub() If False Then Console.WriteLine() Else Dim y), z = 1
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529756)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub OnlyOnIfOfSingleLineIf()
-            TestMissing(
-NewLines("Module Program \n Sub Main(args As String()) \n If True [||] Then Return Else Console.WriteLine(""a"")\n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529756, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529756")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestOnlyOnIfOfSingleLineIf() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main(args As String())
+        If True [||]Then Return Else Console.WriteLine(""a"")
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529756)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub OnlyOnElseIf()
-            TestMissing(
-NewLines("Module Program \n Sub Main(args As String()) \n If False Then \n Return \n ElseIf True [||] Then \n Console.WriteLine(""b"") \n Else \n Console.WriteLine(""a"") \n End If \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529756, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529756")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestOnlyOnElseIf() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main(args As String())
+        If False Then
+            Return
+        ElseIf True [||]Then
+            Console.WriteLine(""b"")
+        Else
+            Console.WriteLine(""a"")
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(529756)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub OnlyOnIfOfMultiLine()
-            TestMissing(
-NewLines("Module Program \n Sub Main(args As String()) \n If [||]False Then \n Return \n Else \n Console.WriteLine(""a"") \n End If \n End Sub \n End Module"))
-        End Sub
+        <WorkItem(529756, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529756")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestOnlyOnIfOfMultiLine() As Task
+            Await TestMissingAsync(
+"Module Program
+    Sub Main(args As String())
+        If [||]False Then
+            Return
+        Else
+            Console.WriteLine(""a"")
+        End If
+    End Sub
+End Module")
+        End Function
 
-        <WorkItem(531101)>
+        <WorkItem(531101, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531101")>
         <WpfFact(Skip:="531101"), Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub ImplicitLineContinuationBeforeClosingParenIsRemoved()
+        Public Async Function TestImplicitLineContinuationBeforeClosingParenIsRemoved() As Task
             Dim markup =
 <MethodBody>
 [||]If (True OrElse True
@@ -438,12 +1081,12 @@ Else
 End If
 </MethodBody>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(529746)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub EscapeKeywordsIfNeeded1()
+        <WorkItem(529746, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529746")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestEscapeKeywordsIfNeeded1() As Task
             Dim markup =
 <File>
 Imports System.Linq
@@ -470,12 +1113,12 @@ Module Program
 End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(531471)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub EscapeKeywordsIfNeeded2()
+        <WorkItem(531471, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531471")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestEscapeKeywordsIfNeeded2() As Task
             Dim markup =
 <File>
 Imports System.Linq
@@ -502,12 +1145,12 @@ Module Program
 End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(531471)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub EscapeKeywordsIfNeeded3()
+        <WorkItem(531471, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531471")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestEscapeKeywordsIfNeeded3() As Task
             Dim markup =
 <File>
 Imports System.Linq
@@ -534,12 +1177,12 @@ Module Program
 End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(531472)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub EscapeKeywordsIfNeeded4()
+        <WorkItem(531472, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531472")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestEscapeKeywordsIfNeeded4() As Task
             Dim markup =
 <File>
 Imports System.Linq
@@ -562,12 +1205,12 @@ Module Program
 End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(531475)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub EscapeKeywordsIfNeeded5()
+        <WorkItem(531475, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531475")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestEscapeKeywordsIfNeeded5() As Task
             Dim markup =
 <File>
 Imports System.Linq
@@ -594,12 +1237,12 @@ Module Program
 End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(545700)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub AddEmptyArgumentListIfNeeded()
+        <WorkItem(545700, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545700")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestAddEmptyArgumentListIfNeeded() As Task
             Dim markup =
 <File>
 Module A
@@ -626,12 +1269,12 @@ Module A
 End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(531474)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub DoNotRemoveTypeCharactersDuringComplexification()
+        <WorkItem(531474, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531474")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestDoNotRemoveTypeCharactersDuringComplexification() As Task
             Dim markup =
 <File>
     Module Program
@@ -666,12 +1309,12 @@ End Module
     End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(530758)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub ParenthesizeToKeepParseTheSame1()
+        <WorkItem(530758, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530758")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestParenthesizeToKeepParseTheSame1() As Task
             Dim markup =
 <File>
 Module Program
@@ -690,12 +1333,12 @@ Module Program
 End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
-        <WorkItem(607862)>
-        <WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
-        Public Sub ParenthesizeToKeepParseTheSame2()
+        <WorkItem(607862, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/607862")>
+        <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsInvertIf)>
+        Public Async Function TestParenthesizeToKeepParseTheSame2() As Task
             Dim markup =
 <File>
 Module Program
@@ -719,8 +1362,8 @@ Module Program
 End Module
 </File>
 
-            Test(markup, expected, compareTokens:=False)
-        End Sub
+            Await TestAsync(markup, expected, compareTokens:=False)
+        End Function
 
     End Class
 End Namespace

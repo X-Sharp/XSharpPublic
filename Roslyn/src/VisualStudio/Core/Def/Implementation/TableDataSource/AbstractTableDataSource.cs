@@ -47,9 +47,31 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TableDataSource
 
         public abstract string Identifier { get; }
 
+        public void RefreshAllFactories()
+        {
+            ImmutableArray<SubscriptionWithoutLock> snapshot;
+            List<TableEntriesFactory<TData>> factories;
+            lock (_gate)
+            {
+                snapshot = _subscriptions;
+                factories = _map.Values.ToList();
+            }
+
+            // let table manager know that we want to refresh factories.
+            for (var i = 0; i < snapshot.Length; i++)
+            {
+                foreach (var factory in factories)
+                {
+                    factory.OnRefreshed();
+
+                    snapshot[i].AddOrUpdate(factory, newFactory: false);
+                }
+            }
+        }
+
         public void Refresh(TableEntriesFactory<TData> factory)
         {
-            var snapshot = this._subscriptions;
+            var snapshot = _subscriptions;
 
             for (var i = 0; i < snapshot.Length; i++)
             {
@@ -59,6 +81,11 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TableDataSource
 
         public void Shutdown()
         {
+            // editor team wants us to update snapshot versions before
+            // removing factories on shutdown.
+            RefreshAllFactories();
+
+            // and then remove all factories.
             ImmutableArray<SubscriptionWithoutLock> snapshot;
 
             lock (_gate)
@@ -104,12 +131,10 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TableDataSource
             // adding it back
             bool newFactory = false;
             ImmutableArray<SubscriptionWithoutLock> snapshot;
-            TableEntriesFactory<TData> factory;
-
             lock (_gate)
             {
                 snapshot = _subscriptions;
-                GetOrCreateFactory_NoLock(data, out factory, out newFactory);
+                GetOrCreateFactory_NoLock(data, out var factory, out newFactory);
 
                 factory.OnDataAddedOrChanged(data);
 
@@ -135,8 +160,6 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TableDataSource
         private void OnDataRemoved_NoLock(object data)
         {
             ImmutableArray<SubscriptionWithoutLock> snapshot;
-            TableEntriesFactory<TData> factory;
-
             var key = TryGetAggregateKey(data);
             if (key == null)
             {
@@ -145,7 +168,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TableDataSource
             }
 
             snapshot = _subscriptions;
-            if (!_map.TryGetValue(key, out factory))
+            if (!_map.TryGetValue(key, out var factory))
             {
                 // never reported about this before
                 return;
@@ -214,29 +237,6 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TableDataSource
             }
         }
 
-        protected void RefreshAllFactories()
-        {
-            ImmutableArray<SubscriptionWithoutLock> snapshot;
-            List<TableEntriesFactory<TData>> factories;
-
-            lock (_gate)
-            {
-                snapshot = _subscriptions;
-                factories = _map.Values.ToList();
-            }
-
-            // let table manager know that we want to refresh factories.
-            for (var i = 0; i < snapshot.Length; i++)
-            {
-                foreach (var factory in factories)
-                {
-                    factory.OnRefreshed();
-
-                    snapshot[i].AddOrUpdate(factory, newFactory: false);
-                }
-            }
-        }
-
         protected void AddAggregateKey(object data, object aggregateKey)
         {
             _aggregateKeyMap.Add(GetItemKey(data), aggregateKey);
@@ -244,9 +244,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TableDataSource
 
         protected object TryGetAggregateKey(object data)
         {
-            object aggregateKey;
             var key = GetItemKey(data);
-            if (_aggregateKeyMap.TryGetValue(key, out aggregateKey))
+            if (_aggregateKeyMap.TryGetValue(key, out var aggregateKey))
             {
                 return aggregateKey;
             }

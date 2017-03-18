@@ -8,7 +8,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.ChangeSignature
         Inherits AbstractChangeSignatureTests
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
-        Public Sub TestAllSignatureChanges_1This_3Regular_2Default()
+        Public Async Function TestAllSignatureChanges_1This_3Regular_2Default() As Task
             Dim markup = <Text><![CDATA[
 Option Strict On
 
@@ -46,11 +46,11 @@ Module Program
 End Module
 ]]></Text>.NormalizedValue()
             Dim signaturePartCounts = {1, 3, 2, 0}
-            TestAllSignatureChanges(LanguageNames.VisualBasic, markup, signaturePartCounts)
-        End Sub
+            Await TestAllSignatureChangesAsync(LanguageNames.VisualBasic, markup, signaturePartCounts)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
-        Public Sub TestAllSignatureChanges_1This_3Regular_1ParamArray()
+        Public Async Function TestAllSignatureChanges_1This_3Regular_1ParamArray() As Task
             Dim markup = <Text><![CDATA[
 Option Strict On
 
@@ -71,11 +71,11 @@ Module Program
 End Module
 ]]></Text>.NormalizedValue()
             Dim signaturePartCounts = {1, 3, 0, 1}
-            TestAllSignatureChanges(LanguageNames.VisualBasic, markup, signaturePartCounts)
-        End Sub
+            Await TestAllSignatureChangesAsync(LanguageNames.VisualBasic, markup, signaturePartCounts)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
-        Public Sub TestAllSignatureChanges_Delegate_3()
+        Public Async Function TestAllSignatureChanges_Delegate_3() As Task
             Dim markup = <Text><![CDATA[
 Option Strict On
 
@@ -134,7 +134,7 @@ Class C
 End Class
 ]]></Text>.NormalizedValue()
             Dim signaturePartCounts = {0, 3, 0, 0}
-            TestAllSignatureChanges(LanguageNames.VisualBasic, markup, signaturePartCounts)
-        End Sub
+            Await TestAllSignatureChangesAsync(LanguageNames.VisualBasic, markup, signaturePartCounts)
+        End Function
     End Class
 End Namespace

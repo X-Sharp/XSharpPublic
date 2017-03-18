@@ -2383,7 +2383,7 @@ BC30487: Operator '-' is not defined for type 'M1.S1?'.
 </expected>)
         End Sub
 
-        <WorkItem(545765, "DevDiv")>
+        <WorkItem(545765, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545765")>
         <Fact>
         Public Sub Bug14415()
             Dim compilationDef =
@@ -2443,7 +2443,7 @@ h And a = nothing
 
         End Sub
 
-        <WorkItem(545765, "DevDiv")>
+        <WorkItem(545765, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545765")>
         <Fact>
         Public Sub Bug14415_2()
             Dim compilationDef =
@@ -2513,7 +2513,7 @@ a And h = 0
 
         End Sub
 
-        <WorkItem(546782, "DevDiv")>
+        <WorkItem(546782, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546782")>
         <Fact>
         Public Sub Bug16815()
             Dim compilationDef =
@@ -2544,6 +2544,93 @@ End Module
 1.00:00:00
 ]]>)
 
+        End Sub
+
+        <WorkItem(14688, "https://github.com/dotnet/roslyn/issues/14688")>
+        <Fact>
+        Public Sub OperatorsWithDefaultParameters_WithoutValue()
+            Dim compilationDef =
+<compilation name="OperatorsWithDefaultValuesAreNotBound">
+    <file name="a.vb"><![CDATA[
+Public Class TestType
+    Public Shared Operator Not(Optional x As TestType) As Boolean 'BIND1:"TestType"
+        Return True
+    End Operator
+End Class
+    ]]></file>
+</compilation>
+
+            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef)
+            Dim model = GetSemanticModel(compilation, "a.vb")
+
+            Dim typeSyntax = CompilationUtils.FindBindingText(Of IdentifierNameSyntax)(compilation, "a.vb", 1)
+            Dim typeSymbolInfo = model.GetSymbolInfo(typeSyntax)
+            Assert.NotNull(typeSymbolInfo.Symbol)
+            Dim typeSymbol = TryCast(typeSymbolInfo.Symbol, NamedTypeSymbol)
+            Assert.NotNull(typeSymbol)
+            Assert.Equal("TestType", typeSymbol.Name)
+
+            CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC33010: 'operator' parameters cannot be declared 'Optional'.
+    Public Shared Operator Not(Optional x As TestType) As Boolean 'BIND1:"TestType"
+                               ~~~~~~~~
+BC30201: Expression expected.
+    Public Shared Operator Not(Optional x As TestType) As Boolean 'BIND1:"TestType"
+                                                     ~
+BC30812: Optional parameters must specify a default value.
+    Public Shared Operator Not(Optional x As TestType) As Boolean 'BIND1:"TestType"
+                                                     ~
+</expected>)
+        End Sub
+
+        <WorkItem(14688, "https://github.com/dotnet/roslyn/issues/14688")>
+        <Fact>
+        Public Sub OperatorsWithDefaultParameters_WithValue()
+            Dim compilationDef =
+<compilation name="OperatorsWithDefaultValuesAreNotBound">
+    <file name="a.vb"><![CDATA[
+Public Class TestType
+    Dim Property1 As TestType
+    Public Shared Operator Not(Optional x As TestType = Property1) As Boolean 'BIND1:"TestType" 'BIND2:"= Property1"
+        Return False
+    End Operator
+End Class
+    ]]></file>
+</compilation>
+
+            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(compilationDef)
+            Dim model = GetSemanticModel(compilation, "a.vb")
+
+            Dim typeSyntax = CompilationUtils.FindBindingText(Of IdentifierNameSyntax)(compilation, "a.vb", 1)
+            Dim typeSymbolInfo = model.GetSymbolInfo(typeSyntax)
+            Assert.NotNull(typeSymbolInfo.Symbol)
+            Dim typeSymbol = TryCast(typeSymbolInfo.Symbol, NamedTypeSymbol)
+            Assert.NotNull(typeSymbol)
+            Assert.Equal("TestType", typeSymbol.Name)
+
+            Dim equalsSyntax = CompilationUtils.FindBindingText(Of EqualsValueSyntax)(compilation, "a.vb", 2)
+            Assert.NotNull(equalsSyntax.EqualsToken)
+            Assert.Equal("=", equalsSyntax.EqualsToken.Value)
+
+            Assert.NotNull(equalsSyntax.Value)
+            Dim valueSyntax = TryCast(equalsSyntax.Value, IdentifierNameSyntax)
+            Assert.NotNull(valueSyntax)
+            Dim valueSymbolInfo = model.GetSymbolInfo(valueSyntax)
+            Assert.NotNull(valueSymbolInfo.Symbol)
+            Dim valueSymbol = TryCast(valueSymbolInfo.Symbol, SourceMemberFieldSymbol)
+            Assert.NotNull(valueSymbol)
+            Assert.Equal("Property1", valueSymbol.Name)
+            Assert.NotNull(valueSymbol.Type)
+            Assert.Equal("TestType", valueSymbol.Type.Name)
+
+
+            CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected>
+BC33010: 'operator' parameters cannot be declared 'Optional'.
+    Public Shared Operator Not(Optional x As TestType = Property1) As Boolean 'BIND1:"TestType" 'BIND2:"= Property1"
+                               ~~~~~~~~
+</expected>)
         End Sub
 
     End Class

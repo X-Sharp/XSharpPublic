@@ -301,7 +301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return Hash.Combine(MetadataName, Hash.Combine(_containingModule, Hash.Combine(_namespaceName, arity)));
             }
 
-            internal override bool Equals(TypeSymbol t2, bool ignoreCustomModifiersAndArraySizesAndLowerBounds, bool ignoreDynamic)
+            internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
             {
                 if (ReferenceEquals(this, t2))
                 {
@@ -309,7 +309,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 // if ignoring dynamic, then treat dynamic the same as the type 'object'
-                if (ignoreDynamic &&
+                if ((comparison & TypeCompareKind.IgnoreDynamic) != 0 &&
                     (object)t2 != null &&
                     t2.TypeKind == TypeKind.Dynamic &&
                     this.SpecialType == Microsoft.CodeAnalysis.SpecialType.System_Object)
@@ -347,6 +347,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
             public TopLevelWithCustomErrorInfo(ModuleSymbol module, ref MetadataTypeName emittedName, DiagnosticInfo errorInfo, SpecialType typeId)
+                : base(module, ref emittedName, typeId)
+            {
+                Debug.Assert(errorInfo != null);
+                _errorInfo = errorInfo;
+            }
+
+            public TopLevelWithCustomErrorInfo(ModuleSymbol module, ref MetadataTypeName emittedName, DiagnosticInfo errorInfo, WellKnownType typeId)
                 : base(module, ref emittedName, typeId)
             {
                 Debug.Assert(errorInfo != null);
@@ -412,7 +419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return Hash.Combine(_containingType, Hash.Combine(MetadataName, arity));
             }
 
-            internal override bool Equals(TypeSymbol t2, bool ignoreCustomModifiersAndArraySizesAndLowerBounds, bool ignoreDynamic)
+            internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
             {
                 if (ReferenceEquals(this, t2))
                 {
@@ -423,11 +430,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 return (object)other != null && string.Equals(MetadataName, other.MetadataName, StringComparison.OrdinalIgnoreCase) &&
                     arity == other.arity &&
-                    _containingType.Equals(other._containingType, ignoreCustomModifiersAndArraySizesAndLowerBounds, ignoreDynamic);
+                    _containingType.Equals(other._containingType, comparison);
 #else
                 return (object)other != null && string.Equals(MetadataName, other.MetadataName, StringComparison.Ordinal) &&
                     arity == other.arity &&
-                    _containingType.Equals(other._containingType, ignoreCustomModifiersAndArraySizesAndLowerBounds, ignoreDynamic);
+                    _containingType.Equals(other._containingType, comparison);
 #endif
             }
         }

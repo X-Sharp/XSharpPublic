@@ -566,7 +566,7 @@ class Query
             Assert.Equal("ThenBy", oinfo1.Symbol.Name);
         }
 
-        [WorkItem(541774, "DevDiv")]
+        [WorkItem(541774, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541774")]
         [Fact]
         public void MultipleFromClauseIdentifierInExprNotInContext()
         {
@@ -580,13 +580,13 @@ class Program
                  select n1;
     }
 }";
-            CreateCompilationWithMscorlibAndSystemCore(csSource, parseOptions: TestOptions.Regular).VerifyDiagnostics(
+            CreateCompilationWithMscorlibAndSystemCore(csSource).VerifyDiagnostics(
             // (6,29): error CS0103: The name 'nums' does not exist in the current context
                 Diagnostic(ErrorCode.ERR_NameNotInContext, "nums").WithArguments("nums")
                 );
         }
 
-        [WorkItem(541906, "DevDiv")]
+        [WorkItem(541906, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541906")]
         [Fact]
         public void NullLiteralFollowingJoinInQuery()
         {
@@ -600,7 +600,7 @@ class Program
         var query = from int i in new int[]{ 1 } join null on true equals true select i; //CS1031
     }
 }";
-            CreateCompilationWithMscorlibAndSystemCore(csSource, parseOptions: TestOptions.Regular).VerifyDiagnostics(
+            CreateCompilationWithMscorlibAndSystemCore(csSource).VerifyDiagnostics(
                 // (8,55): error CS1031: Type expected
                 //         var query = from int i in new int[]{ 1 } join null on true equals true select i; //CS1031
                 Diagnostic(ErrorCode.ERR_TypeExpected, "null"),
@@ -613,7 +613,7 @@ class Program
                 );
         }
 
-        [WorkItem(541779, "DevDiv")]
+        [WorkItem(541779, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541779")]
         [Fact]
         public void MultipleFromClauseQueryExpr()
         {
@@ -643,7 +643,7 @@ class Program
             CompileAndVerify(csSource, additionalRefs: new[] { LinqAssemblyRef }, expectedOutput: "3 3 4 4");
         }
 
-        [WorkItem(541782, "DevDiv")]
+        [WorkItem(541782, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541782")]
         [Fact]
         public void FromSelectQueryExprOnArraysWithTypeImplicit()
         {
@@ -671,7 +671,7 @@ class Program
         }
 
 
-        [WorkItem(541788, "DevDiv")]
+        [WorkItem(541788, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541788")]
         [Fact]
         public void JoinClauseTest()
         {
@@ -700,7 +700,7 @@ class Program
             CompileAndVerify(csSource, additionalRefs: new[] { LinqAssemblyRef }, expectedOutput: "1 2 3");
         }
 
-        [WorkItem(541789, "DevDiv")]
+        [WorkItem(541789, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541789")]
         [WorkItem(9229, "DevDiv_Projects/Roslyn")]
         [Fact]
         public void WhereClauseTest()
@@ -731,7 +731,7 @@ class Program
             CompileAndVerify(csSource, additionalRefs: new[] { LinqAssemblyRef }, expectedOutput: "3 4");
         }
 
-        [WorkItem(541942, "DevDiv")]
+        [WorkItem(541942, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541942")]
         [Fact]
         public void WhereDefinedInType()
         {
@@ -857,7 +857,7 @@ public class Test2
             Assert.Equal("System.Int32 System.Int32.op_Addition(System.Int32 left, System.Int32 right)", info2.Symbol.ToTestDisplayString());
         }
 
-        [WorkItem(541806, "DevDiv")]
+        [WorkItem(541806, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541806")]
         [Fact]
         public void GetDeclaredSymbolForQueryContinuation()
         {
@@ -885,7 +885,7 @@ public class Test2
             Assert.Equal(SymbolKind.RangeVariable, symbol.Kind);
         }
 
-        [WorkItem(541899, "DevDiv")]
+        [WorkItem(541899, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541899")]
         [Fact]
         public void ComputeQueryVariableType()
         {
@@ -909,7 +909,7 @@ public class Test2
             Assert.Equal(SpecialType.System_Int32, info.Type.SpecialType);
         }
 
-        [WorkItem(541893, "DevDiv")]
+        [WorkItem(541893, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541893")]
         [Fact]
         public void GetDeclaredSymbolForJoinIntoClause()
         {
@@ -939,8 +939,8 @@ static class Test
             Assert.Equal("? x8", symbol.ToTestDisplayString());
         }
 
-        [WorkItem(541982, "DevDiv")]
-        [WorkItem(543494, "DevDiv")]
+        [WorkItem(541982, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541982")]
+        [WorkItem(543494, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543494")]
         [Fact()]
         public void GetDeclaredSymbolAddAccessorDeclIncompleteQuery()
         {
@@ -968,7 +968,7 @@ public class QueryExpressionTest
             Assert.True(symbols.All(s => ReferenceEquals(s, null)));
         }
 
-        [WorkItem(542235, "DevDiv")]
+        [WorkItem(542235, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542235")]
         [Fact]
         public void TwoFromClauseFollowedBySelectClause()
         {
@@ -1008,7 +1008,7 @@ class Test
             Assert.Equal(CandidateReason.None, symbolInfoForSelect.CandidateReason);
         }
 
-        [WorkItem(528747, "DevDiv")]
+        [WorkItem(528747, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/528747")]
         [Fact]
         public void SemanticInfoForOrderingClauses()
         {
@@ -1042,7 +1042,7 @@ public class QueryExpressionTest
             Assert.Equal(3, count);
         }
 
-        [WorkItem(542266, "DevDiv")]
+        [WorkItem(542266, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542266")]
         [Fact]
         public void FromOrderBySelectQueryTranslation()
         {
@@ -1095,7 +1095,7 @@ class Program
             Assert.Null(symbolInfoForSelect.Symbol);
         }
 
-        [WorkItem(528756, "DevDiv")]
+        [WorkItem(528756, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/528756")]
         [Fact]
         public void FromWhereSelectTranslation()
         {
@@ -1133,7 +1133,7 @@ class Program
                 Diagnostic(ErrorCode.ERR_QueryNoProviderStandard, "System.Linq.Enumerable.Range(4, 5).Where(n => n > 10)").WithArguments("System.Collections.Generic.IEnumerable<int>", "Select"));
         }
 
-        [WorkItem(528760, "DevDiv")]
+        [WorkItem(528760, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/528760")]
         [Fact]
         public void FromJoinSelectTranslation()
         {
@@ -1159,8 +1159,8 @@ class Program
             Assert.Null(symbolInfoForSelect.Symbol);
         }
 
-        [WorkItem(528761, "DevDiv")]
-        [WorkItem(544585, "DevDiv")]
+        [WorkItem(528761, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/528761")]
+        [WorkItem(544585, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544585")]
         [Fact]
         public void OrderingSyntaxWithOverloadResolutionFailure()
         {
@@ -1194,7 +1194,7 @@ class Program
             Assert.Null(symbolInfoForOrdering.Symbol);
         }
 
-        [WorkItem(542292, "DevDiv")]
+        [WorkItem(542292, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542292")]
         [Fact]
         public void EmitIncompleteQueryWithSyntaxErrors()
         {
@@ -1216,7 +1216,7 @@ class Program
             }
         }
 
-        [WorkItem(542294, "DevDiv")]
+        [WorkItem(542294, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542294")]
         [Fact]
         public void EmitQueryWithBindErrors()
         {
@@ -1238,7 +1238,7 @@ class Program
             }
         }
 
-        [WorkItem(542372, "DevDiv")]
+        [WorkItem(542372, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542372")]
         [Fact]
         public void BindToIncompleteSelectManyDecl()
         {
@@ -1273,7 +1273,7 @@ class C<T>
             Assert.NotEmpty(diags);
         }
 
-        [WorkItem(542419, "DevDiv")]
+        [WorkItem(542419, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542419")]
         [Fact]
         public void BindIdentifierInWhereErrorTolerance()
         {
@@ -1299,7 +1299,7 @@ class Program
             Assert.NotEmpty(diags);
         }
 
-        [WorkItem(542460, "DevDiv")]
+        [WorkItem(542460, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542460")]
         [Fact]
         public void QueryWithMultipleParseErrorsAndScriptParseOption()
         {
@@ -1327,7 +1327,7 @@ public class QueryExpressionTest
             Assert.Null(symbolInfo.Symbol);
         }
 
-        [WorkItem(542496, "DevDiv")]
+        [WorkItem(542496, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542496")]
         [Fact]
         public void QueryExpressionInFieldInitReferencingAnotherFieldWithScriptParseOption()
         {
@@ -1353,7 +1353,7 @@ class P
             Assert.Null(symbolInfo.Symbol);
         }
 
-        [WorkItem(542559, "DevDiv")]
+        [WorkItem(542559, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542559")]
         [Fact]
         public void StaticTypeInFromClause()
         {
@@ -1380,7 +1380,7 @@ class C
                 );
         }
 
-        [WorkItem(542560, "DevDiv")]
+        [WorkItem(542560, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542560")]
         [Fact]
         public void MethodGroupInFromClause()
         {
@@ -1404,7 +1404,7 @@ class Program
                 );
         }
 
-        [WorkItem(542558, "DevDiv")]
+        [WorkItem(542558, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542558")]
         [Fact]
         public void SelectFromType01()
         {
@@ -1437,7 +1437,7 @@ class C
             Assert.Equal("Select", infoSelect.Symbol.Name);
         }
 
-        [WorkItem(542558, "DevDiv")]
+        [WorkItem(542558, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542558")]
         [Fact]
         public void SelectFromType02()
         {
@@ -1470,7 +1470,7 @@ class C
             Assert.Equal("Select", infoSelect.Symbol.Name);
         }
 
-        [WorkItem(542624, "DevDiv")]
+        [WorkItem(542624, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542624")]
         [Fact]
         public void QueryColorColor()
         {
@@ -1509,7 +1509,7 @@ class Program
             );
         }
 
-        [WorkItem(542704, "DevDiv")]
+        [WorkItem(542704, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542704")]
         [Fact]
         public void QueryOnSourceWithGroupByMethod()
         {
@@ -1592,7 +1592,7 @@ public class QueryExpressionTest
             Assert.NotEmpty(compilation.GetDiagnostics());
         }
 
-        [WorkItem(543787, "DevDiv")]
+        [WorkItem(543787, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543787")]
         [ClrOnlyFact]
         public void GetSymbolInfoOfSelectNodeWhenTypeOfRangeVariableIsErrorType()
         {
@@ -1623,7 +1623,7 @@ class Test
             Assert.Equal(SymbolKind.ErrorType, typeInfo.Type.Kind);
         }
 
-        [WorkItem(543790, "DevDiv")]
+        [WorkItem(543790, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543790")]
         [Fact]
         public void GetQueryClauseInfoForQueryWithSyntaxErrors()
         {
@@ -1648,7 +1648,7 @@ class Test
             Assert.NotNull(queryInfo);
         }
 
-        [WorkItem(545797, "DevDiv")]
+        [WorkItem(545797, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545797")]
         [Fact]
         public void QueryOnNull()
         {
@@ -1674,7 +1674,7 @@ static class C
                 );
         }
 
-        [WorkItem(545797, "DevDiv")]
+        [WorkItem(545797, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545797")]
         [Fact]
         public void QueryOnLambda()
         {
@@ -1700,7 +1700,7 @@ static class C
                 );
         }
 
-        [WorkItem(545444, "DevDiv")]
+        [WorkItem(545444, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545444")]
         [Fact]
         public void RefOmittedOnComCall()
         {
@@ -1784,7 +1784,7 @@ class Test1
         }
 
 
-        [WorkItem(529350, "DevDiv")]
+        [WorkItem(529350, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529350")]
         [Fact]
         public void BindLambdaBodyWhenError()
         {
@@ -2092,6 +2092,377 @@ class Program
                 // (26,20): error CS8016: Transparent identifier member access failed for field 'x' of 'int'.  Does the data being queried implement the query pattern?
                 //             select x.ToString();
                 Diagnostic(ErrorCode.ERR_UnsupportedTransparentIdentifierAccess, "x").WithArguments("x", "int")
+                );
+        }
+
+        [Fact]
+        [WorkItem(204561, "https://devdiv.visualstudio.com/DefaultCollection/DevDiv/_workitems?id=204561&_a=edit")]
+        public void Bug204561_01()
+        {
+            string sourceCode =
+@"
+class C
+{
+    public static void Main()
+    {
+        var x01 = from a in Test select a + 1;
+    }
+}
+
+public class Test
+{
+}
+
+public static class TestExtensions
+{
+    public static Test Select<T>(this Test x, System.Func<int, T> selector)
+    {
+        return null;
+    }
+}
+";
+            var compilation = CreateCompilationWithMscorlibAndSystemCore(sourceCode);
+                
+            compilation.VerifyDiagnostics(
+                // (6,34): error CS1936: Could not find an implementation of the query pattern for source type 'Test'.  'Select' not found.
+                //         var x01 = from a in Test select a + 1;
+                Diagnostic(ErrorCode.ERR_QueryNoProvider, "select a + 1").WithArguments("Test", "Select").WithLocation(6, 34)
+                );
+        }
+
+        [Fact]
+        [WorkItem(204561, "https://devdiv.visualstudio.com/DefaultCollection/DevDiv/_workitems?id=204561&_a=edit")]
+        public void Bug204561_02()
+        {
+            string sourceCode =
+@"
+class C
+{
+    public static void Main()
+    {
+        var y02 = from a in Test select a + 1;
+        var x02 = from a in Test where a > 0 select a + 1;
+    }
+}
+
+class Test
+{
+    public static Test Select<T>(System.Func<int, T> selector)
+    {
+        return null;
+    }
+}
+
+static class TestExtensions
+{
+    public static Test Where(this Test x, System.Func<int, bool> filter)
+    {
+        return null;
+    }
+}";
+            var compilation = CreateCompilationWithMscorlibAndSystemCore(sourceCode);
+
+            compilation.VerifyDiagnostics(
+                // (7,34): error CS1936: Could not find an implementation of the query pattern for source type 'Test'.  'Where' not found.
+                //         var x02 = from a in Test where a > 0 select a + 1;
+                Diagnostic(ErrorCode.ERR_QueryNoProvider, "where a > 0").WithArguments("Test", "Where").WithLocation(7, 34),
+                // (7,46): error CS0176: Member 'Test.Select<int>(Func<int, int>)' cannot be accessed with an instance reference; qualify it with a type name instead
+                //         var x02 = from a in Test where a > 0 select a + 1;
+                Diagnostic(ErrorCode.ERR_ObjectProhibited, "select a + 1").WithArguments("Test.Select<int>(System.Func<int, int>)").WithLocation(7, 46)
+                );
+        }
+        
+        [Fact]
+        [WorkItem(204561, "https://devdiv.visualstudio.com/DefaultCollection/DevDiv/_workitems?id=204561&_a=edit")]
+        public void Bug204561_03()
+        {
+            string sourceCode =
+@"
+class C
+{
+    public static void Main()
+    {
+        var y03 = from a in Test select a + 1;
+        var x03 = from a in Test where a > 0 select a + 1;
+    }
+}
+
+class Test
+{
+}
+
+static class TestExtensions
+{
+    public static Test Select<T>(this Test x, System.Func<int, T> selector)
+    {
+        return null;
+    }
+
+    public static Test Where(this Test x, System.Func<int, bool> filter)
+    {
+        return null;
+    }
+}";
+            var compilation = CreateCompilationWithMscorlibAndSystemCore(sourceCode);
+
+            compilation.VerifyDiagnostics(
+                // (6,34): error CS1936: Could not find an implementation of the query pattern for source type 'Test'.  'Select' not found.
+                //         var y03 = from a in Test select a + 1;
+                Diagnostic(ErrorCode.ERR_QueryNoProvider, "select a + 1").WithArguments("Test", "Select").WithLocation(6, 34),
+                // (7,34): error CS1936: Could not find an implementation of the query pattern for source type 'Test'.  'Where' not found.
+                //         var x03 = from a in Test where a > 0 select a + 1;
+                Diagnostic(ErrorCode.ERR_QueryNoProvider, "where a > 0").WithArguments("Test", "Where").WithLocation(7, 34)
+                );
+        }
+
+        [Fact]
+        [WorkItem(204561, "https://devdiv.visualstudio.com/DefaultCollection/DevDiv/_workitems?id=204561&_a=edit")]
+        public void Bug204561_04()
+        {
+            string sourceCode =
+@"
+class C
+{
+    public static void Main()
+    {
+        var x04 = from a in Test select a + 1;
+    }
+}
+
+class Test
+{
+    public static Test Select<T>(System.Func<int, T> selector)
+    {
+        System.Console.WriteLine(""Select"");
+        return null;
+    }
+}";
+            var compilation = CreateCompilationWithMscorlibAndSystemCore(sourceCode, options: TestOptions.DebugExe);
+
+            CompileAndVerify(compilation, expectedOutput: "Select");
+        }
+
+        [WorkItem(15910, "https://github.com/dotnet/roslyn/issues/15910")]
+        [Fact]
+        public void ExpressionVariablesInQueryClause_01()
+        {
+            var csSource = @"
+using System.Linq;
+
+class Program
+{
+    public static void Main(string[] args)
+    {
+        var a = new[] { 1, 2, 3, 4 };
+        var za = from x in M(a, out var q1) select x; // ok
+        var zc = from x in a from y in M(a, out var z) select x; // error 1
+        var zd = from x in a from int y in M(a, out var z) select x; // error 2
+        var ze = from x in a from y in M(a, out var z) where true select x; // error 3
+        var zf = from x in a from int y in M(a, out var z) where true select x; // error 4
+        var zg = from x in a let y = M(a, out var z) select x; // error 5
+        var zh = from x in a where M(x, out var z) == 1 select x; // error 6
+        var zi = from x in a join y in M(a, out var q2) on x equals y select x; // ok
+        var zj = from x in a join y in a on M(x, out var z) equals y select x; // error 7
+        var zk = from x in a join y in a on x equals M(y, out var z) select x; // error 8
+        var zl = from x in a orderby M(x, out var z) select x; // error 9
+        var zm = from x in a orderby x, M(x, out var z) select x; // error 10
+        var zn = from x in a group M(x, out var z) by x; // error 11
+        var zo = from x in a group x by M(x, out var z); // error 12
+    }
+    public static T M<T>(T x, out T z) => z = x;
+}";
+            CreateCompilationWithMscorlibAndSystemCore(csSource).VerifyDiagnostics(
+                // (10,53): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zc = from x in a from y in M(a, out var z) select x; // error 1
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(10, 53),
+                // (11,57): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zd = from x in a from int y in M(a, out var z) select x; // error 2
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(11, 57),
+                // (12,53): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var ze = from x in a from y in M(a, out var z) where true select x; // error 3
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(12, 53),
+                // (13,57): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zf = from x in a from int y in M(a, out var z) where true select x; // error 4
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(13, 57),
+                // (14,51): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zg = from x in a let y = M(a, out var z) select x; // error 5
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(14, 51),
+                // (15,49): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zh = from x in a where M(x, out var z) == 1 select x; // error 6
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(15, 49),
+                // (17,58): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zj = from x in a join y in a on M(x, out var z) equals y select x; // error 7
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(17, 58),
+                // (18,67): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zk = from x in a join y in a on x equals M(y, out var z) select x; // error 8
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(18, 67),
+                // (19,51): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zl = from x in a orderby M(x, out var z) select x; // error 9
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(19, 51),
+                // (20,54): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zm = from x in a orderby x, M(x, out var z) select x; // error 10
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(20, 54),
+                // (21,49): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zn = from x in a group M(x, out var z) by x; // error 11
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(21, 49),
+                // (22,54): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zo = from x in a group x by M(x, out var z); // error 12
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(22, 54)
+                );
+        }
+
+        [WorkItem(15910, "https://github.com/dotnet/roslyn/issues/15910")]
+        [Fact]
+        public void ExpressionVariablesInQueryClause_02()
+        {
+            var csSource = @"
+using System.Linq;
+
+class Program
+{
+    public static void Main(string[] args)
+    {
+        var a = new[] { 1, 2, 3, 4 };
+        var za = from x in M(a, a is var q1) select x; // ok
+        var zc = from x in a from y in M(a, a is var z) select x; // error 1
+        var zd = from x in a from int y in M(a, a is var z) select x; // error 2
+        var ze = from x in a from y in M(a, a is var z) where true select x; // error 3
+        var zf = from x in a from int y in M(a, a is var z) where true select x; // error 4
+        var zg = from x in a let y = M(a, a is var z) select x; // error 5
+        var zh = from x in a where M(x, x is var z) == 1 select x; // error 6
+        var zi = from x in a join y in M(a, a is var q2) on x equals y select x; // ok
+        var zj = from x in a join y in a on M(x, x is var z) equals y select x; // error 7
+        var zk = from x in a join y in a on x equals M(y, y is var z) select x; // error 8
+        var zl = from x in a orderby M(x, x is var z) select x; // error 9
+        var zm = from x in a orderby x, M(x, x is var z) select x; // error 10
+        var zn = from x in a group M(x, x is var z) by x; // error 11
+        var zo = from x in a group x by M(x, x is var z); // error 12
+    }
+    public static T M<T>(T x, bool b) => x;
+}";
+            CreateCompilationWithMscorlibAndSystemCore(csSource).VerifyDiagnostics(
+                // (10,54): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zc = from x in a from y in M(a, a is var z) select x; // error 1
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(10, 54),
+                // (11,58): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zd = from x in a from int y in M(a, a is var z) select x; // error 2
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(11, 58),
+                // (12,54): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var ze = from x in a from y in M(a, a is var z) where true select x; // error 3
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(12, 54),
+                // (13,58): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zf = from x in a from int y in M(a, a is var z) where true select x; // error 4
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(13, 58),
+                // (14,52): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zg = from x in a let y = M(a, a is var z) select x; // error 5
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(14, 52),
+                // (15,50): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zh = from x in a where M(x, x is var z) == 1 select x; // error 6
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(15, 50),
+                // (17,59): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zj = from x in a join y in a on M(x, x is var z) equals y select x; // error 7
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(17, 59),
+                // (18,68): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zk = from x in a join y in a on x equals M(y, y is var z) select x; // error 8
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(18, 68),
+                // (19,52): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zl = from x in a orderby M(x, x is var z) select x; // error 9
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(19, 52),
+                // (20,55): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zm = from x in a orderby x, M(x, x is var z) select x; // error 10
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(20, 55),
+                // (21,50): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zn = from x in a group M(x, x is var z) by x; // error 11
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(21, 50),
+                // (22,55): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zo = from x in a group x by M(x, x is var z); // error 12
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(22, 55)
+                );
+        }
+
+        [WorkItem(15910, "https://github.com/dotnet/roslyn/issues/15910")]
+        [Fact]
+        public void ExpressionVariablesInQueryClause_03()
+        {
+            var csSource = @"
+using System.Linq;
+
+class Program
+{
+    public static void Main(string[] args)
+    {
+        var a = new[] { (1, 2), (3, 4) };
+        var za = from x in M(a, (int qa, int wa) = a[0]) select x; // scoping ok
+        var zc = from x in a from y in M(a, (int z, int w) = x) select x; // error 1
+        var zd = from x in a from int y in M(a, (int z, int w) = x) select x; // error 2
+        var ze = from x in a from y in M(a, (int z, int w) = x) where true select x; // error 3
+        var zf = from x in a from int y in M(a, (int z, int w) = x) where true select x; // error 4
+        var zg = from x in a let y = M(x, (int z, int w) = x) select x; // error 5
+        var zh = from x in a where M(x, (int z, int w) = x).Item1 == 1 select x; // error 6
+        var zi = from x in a join y in M(a, (int qi, int wi) = a[0]) on x equals y select x; // scoping ok
+        var zj = from x in a join y in a on M(x, (int z, int w) = x) equals y select x; // error 7
+        var zk = from x in a join y in a on x equals M(y, (int z, int w) = y) select x; // error 8
+        var zl = from x in a orderby M(x, (int z, int w) = x) select x; // error 9
+        var zm = from x in a orderby x, M(x, (int z, int w) = x) select x; // error 10
+        var zn = from x in a group M(x, (int z, int w) = x) by x; // error 11
+        var zo = from x in a group x by M(x, (int z, int w) = x); // error 12
+    }
+    public static T M<T>(T x, (int, int) z) => x;
+}
+namespace System
+{
+    public struct ValueTuple<T1, T2>
+    {
+        public T1 Item1;
+        public T2 Item2;
+        public ValueTuple(T1 item1, T2 item2)
+        {
+            this.Item1 = item1;
+            this.Item2 = item2;
+        }
+    }
+}
+";
+            CreateCompilationWithMscorlibAndSystemCore(csSource)
+                .GetDiagnostics()
+                .Where(d => d.Code != (int)ErrorCode.ERR_DeclarationExpressionNotPermitted)
+                .Verify(
+                // (10,50): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zc = from x in a from y in M(a, (int z, int w) = x) select x; // error 1
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(10, 50),
+                // (11,54): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zd = from x in a from int y in M(a, (int z, int w) = x) select x; // error 2
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(11, 54),
+                // (12,50): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var ze = from x in a from y in M(a, (int z, int w) = x) where true select x; // error 3
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(12, 50),
+                // (13,54): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zf = from x in a from int y in M(a, (int z, int w) = x) where true select x; // error 4
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(13, 54),
+                // (14,48): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zg = from x in a let y = M(x, (int z, int w) = x) select x; // error 5
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(14, 48),
+                // (15,46): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zh = from x in a where M(x, (int z, int w) = x).Item1 == 1 select x; // error 6
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(15, 46),
+                // (17,55): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zj = from x in a join y in a on M(x, (int z, int w) = x) equals y select x; // error 7
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(17, 55),
+                // (18,64): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zk = from x in a join y in a on x equals M(y, (int z, int w) = y) select x; // error 8
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(18, 64),
+                // (19,48): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zl = from x in a orderby M(x, (int z, int w) = x) select x; // error 9
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(19, 48),
+                // (20,51): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zm = from x in a orderby x, M(x, (int z, int w) = x) select x; // error 10
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(20, 51),
+                // (21,46): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zn = from x in a group M(x, (int z, int w) = x) by x; // error 11
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(21, 46),
+                // (22,51): error CS8201: Out variable and pattern variable declarations are not allowed within a query clause.
+                //         var zo = from x in a group x by M(x, (int z, int w) = x); // error 12
+                Diagnostic(ErrorCode.ERR_ExpressionVariableInQueryClause, "z").WithLocation(22, 51)
                 );
         }
     }

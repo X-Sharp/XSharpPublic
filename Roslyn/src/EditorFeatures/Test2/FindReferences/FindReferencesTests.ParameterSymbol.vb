@@ -1,9 +1,11 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports System.Threading.Tasks
+
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.FindReferences
     Partial Public Class FindReferencesTests
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestParameterInMethod1()
+        Public Async Function TestParameterInMethod1() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -18,11 +20,11 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.FindReferences
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestParameterInMethod2()
+        Public Async Function TestParameterInMethod2() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -42,11 +44,11 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.FindReferences
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestParameterInMethod3()
+        Public Async Function TestParameterInMethod3() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -66,11 +68,11 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.FindReferences
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestParameterCaseSensitivity1()
+        Public Async Function TestParameterCaseSensitivity1() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -86,11 +88,11 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.FindReferences
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestParameterCaseSensitivity2()
+        Public Async Function TestParameterCaseSensitivity2() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -104,12 +106,12 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.FindReferences
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(542475)>
+        <WorkItem(542475, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542475")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestPartialParameter1()
+        Public Async Function TestPartialParameter1() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -125,12 +127,12 @@ partial class program
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(542475)>
+        <WorkItem(542475, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542475")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestPartialParameter2()
+        Public Async Function TestPartialParameter2() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -146,13 +148,13 @@ partial class program
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
 #Region "FAR on partial methods"
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestParameter_CSharpWithSignaturesMatchFARParameterOnDefDecl()
+        Public Async Function TestParameter_CSharpWithSignaturesMatchFARParameterOnDefDecl() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -168,34 +170,35 @@ partial class program
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestParameter_VBWithSignaturesMatchFARParameterOnDefDecl()
+        Public Async Function TestParameter_VBWithSignaturesMatchFARParameterOnDefDecl() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
         <Document>
         Class C                
-           partial sub PM(x as Integer, y as Integer)
+           partial sub PM({|Definition:x|} as Integer, y as Integer)
               
            End Sub
-           partial sub PM({|Definition:x|} as Integer, y as Integer)
+
+           sub PM({|Definition:x|} as Integer, y as Integer)
                 Dim y as Integer = [|$$x|];;
            End Sub
         End Class
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
 #End Region
 
-        <WorkItem(543276)>
+        <WorkItem(543276, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543276")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestAnonymousFunctionParameter1()
+        Public Async Function TestAnonymousFunctionParameter1() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -213,12 +216,12 @@ End Module
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(624310)>
+        <WorkItem(624310, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/624310")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestAnonymousFunctionParameter3()
+        Public Async Function TestAnonymousFunctionParameter3() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -233,12 +236,12 @@ End Module
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(624310)>
+        <WorkItem(624310, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/624310")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestAnonymousFunctionParameter4()
+        Public Async Function TestAnonymousFunctionParameter4() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -252,12 +255,12 @@ class Program
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(543276)>
+        <WorkItem(543276, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543276")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestAnonymousFunctionParameter2()
+        Public Async Function TestAnonymousFunctionParameter2() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -275,12 +278,12 @@ End Module
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(529688)>
+        <WorkItem(529688, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529688")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestAnonymousFunctionParameter5()
+        Public Async Function TestAnonymousFunctionParameter5() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -295,12 +298,12 @@ End Module
         </Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545654)>
+        <WorkItem(545654, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545654")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestReducedExtensionNamedParameter1()
+        Public Async Function TestReducedExtensionNamedParameter1() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -324,12 +327,12 @@ End Module
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545654)>
+        <WorkItem(545654, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545654")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub TestReducedExtensionNamedParameter2()
+        Public Async Function TestReducedExtensionNamedParameter2() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -353,12 +356,12 @@ End Module
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545618)>
+        <WorkItem(545618, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545618")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub CSharp_TestAnonymousMethodParameter1()
+        Public Async Function TestCSharp_TestAnonymousMethodParameter1() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -376,12 +379,12 @@ class X
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545618)>
+        <WorkItem(545618, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545618")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub CSharp_TestAnonymousMethodParameter2()
+        Public Async Function TestCSharp_TestAnonymousMethodParameter2() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -399,12 +402,12 @@ class X
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545618)>
+        <WorkItem(545618, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545618")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub CSharp_TestAnonymousMethodParameter3()
+        Public Async Function TestCSharp_TestAnonymousMethodParameter3() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -422,12 +425,12 @@ class X
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545618)>
+        <WorkItem(545618, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545618")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub CSharp_TestAnonymousMethodParameter4()
+        Public Async Function TestCSharp_TestAnonymousMethodParameter4() As Task
             Dim input =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
@@ -445,12 +448,12 @@ class X
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545618)>
+        <WorkItem(545618, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545618")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub VB_TestAnonymousMethodParameter1()
+        Public Async Function TestVB_TestAnonymousMethodParameter1() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -466,12 +469,12 @@ end class
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545618)>
+        <WorkItem(545618, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545618")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub VB_TestAnonymousMethodParameter2()
+        Public Async Function TestVB_TestAnonymousMethodParameter2() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -487,12 +490,12 @@ end class
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545618)>
+        <WorkItem(545618, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545618")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub VB_TestAnonymousMethodParameter3()
+        Public Async Function TestVB_TestAnonymousMethodParameter3() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -508,12 +511,12 @@ end class
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
 
-        <WorkItem(545618)>
+        <WorkItem(545618, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545618")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.FindReferences)>
-        Public Sub VB_TestAnonymousMethodParameter4()
+        Public Async Function TestVB_TestAnonymousMethodParameter4() As Task
             Dim input =
 <Workspace>
     <Project Language="Visual Basic" CommonReferences="true">
@@ -529,7 +532,7 @@ end class
         ]]></Document>
     </Project>
 </Workspace>
-            Test(input)
-        End Sub
+            Await TestAPIAndFeature(input)
+        End Function
     End Class
 End Namespace

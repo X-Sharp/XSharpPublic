@@ -2,6 +2,10 @@
 
 // obviously most of the following code snippets should result to compiler errors
 // but currently the compiler crashes with them
+
+
+DEFINE testdefine := }{1,2,3} // <- compiler crash
+
 FUNCTION Start() AS VOID
 TestClass2{}:Test()
 
@@ -50,3 +54,9 @@ CONSTRUCTOR()
 RETURN
 END CLASS
 
+
+CLASS TestClass5
+	METHOD Test() AS VOID
+		SELF:Test())  // <- compiler crash
+	RETURN
+END CLASS

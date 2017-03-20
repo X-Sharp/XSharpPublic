@@ -1734,7 +1734,6 @@ namespace Microsoft.Cci
                 managedResourceDataBuilder,
                 out Blob mvidFixup, 
                 out Blob mvidStringFixup);
-        }
 
             var typeSystemRowCounts = metadata.GetRowCounts();
             PopulateEncTables(typeSystemRowCounts);

@@ -131,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     var field = def as Cci.IFieldDefinition;
                     if (field != null)
                     {
-                        return this.VisitTypeMembers(otherContainer, field, GetFields, (a, b) => s_nameComparer.Equals(a.Name, b.Name));
+                        return VisitTypeMembers(otherContainer, field, GetFields, (a, b) => s_nameComparer.Equals(a.Name, b.Name));
                     }
                 }
 
@@ -383,7 +383,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     var otherModule = otherAssembly.Modules[i];
 
                     // use case sensitive comparison -- modules whose names differ in casing are considered distinct:
-                    if (s_nameComparer.Ordinal.Equals(otherModule.Name, module.Name))
+                    if (s_nameComparer.Equals(otherModule.Name, module.Name))
                     {
                         return otherModule;
                     }

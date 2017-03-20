@@ -229,7 +229,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 #else
-            foreach (var parameterSymbol in _parameterMap[name])
+            foreach (var parameterSymbol in parameterMap[name])
             {
                 result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
             }

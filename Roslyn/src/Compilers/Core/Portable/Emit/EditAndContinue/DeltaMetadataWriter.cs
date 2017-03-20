@@ -130,7 +130,7 @@ namespace Microsoft.CodeAnalysis.Emit
             return ImmutableArray.Create(sizes);
         }
 
-        internal EmitBaseline GetDelta(EmitBaseline baseline, Compilation compilation, Guid encId, Microsoft.Cci.MetadataSizes metadataSizes)
+        internal EmitBaseline GetDelta(EmitBaseline baseline, Compilation compilation, Guid encId, MetadataSizes metadataSizes)
         {
             var moduleBuilder = (CommonPEModuleBuilder)this.module;
 

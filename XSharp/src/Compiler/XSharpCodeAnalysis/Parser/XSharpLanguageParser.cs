@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal partial class XSharpLanguageParser : SyntaxParser
     {
-        private readonly String _fileName;
+        private readonly string _fileName;
         private readonly SourceText _text;
         private readonly CSharpParseOptions _options;
         private readonly SyntaxListPool _pool = new SyntaxListPool(); // Don't need to reset this.
@@ -356,8 +356,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (e.Node != null)
                     {
                         var key = e.Node.SourceFileName;
-                        var diag = new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args);
-                        if (includes.ContainsKey(key))
+                        int pos = e.Node.Position;
+                        int len = e.Node.FullWidth;
+                        if (len <= 0 || pos <= 0)
+                        {
+                            if (e.Node.Parent != null)
+                            {
+                                pos = e.Node.Parent.Position;
+                                len = e.Node.Parent.FullWidth;
+                            }
+                            if (pos <= 0)
+                                pos = 1;
+                            if (len <= 0)
+                                len = 1;
+                        }
+                        var diag = new SyntaxDiagnosticInfo(pos, len, e.Code, e.Args);
+                        if (key != null && includes.ContainsKey(key))
                         {
                             var inc = includes[key];
                             var incNode = SyntaxFactory.BadToken(null, inc.ToString(), null);

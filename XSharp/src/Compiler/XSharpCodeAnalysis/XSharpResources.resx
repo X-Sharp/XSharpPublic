@@ -4717,12 +4717,6 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_PreProcessorError" xml:space="preserve">
     <value>Pre-processor: {0}</value>
   </data>
-  <data name="ERR_UserError" xml:space="preserve">
-    <value>Error directive: {0}</value>
-  </data>
-  <data name="WRN_UserWarning" xml:space="preserve">
-    <value>Warning directive: {0}</value>
-  </data>
   <data name="ERR_UntypedArrayNotAvailableInDialect" xml:space="preserve">
     <value>Untyped arrays are not available in the selected dialect '{0}'</value>
   </data>

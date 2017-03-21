@@ -169,18 +169,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (dstType == SpecialType.System_Char)
             {
-                if (srcType == SpecialType.System_String)
-                {
-                    // Literal Char_consts are no longer there
-                    // Convert literal string with length 1 to char_const when needed
-
-                    if (sourceExpression.ConstantValue != null &&
-                        sourceExpression.ConstantValue.StringValue.Length == 1)
-                    {
-                        // Not really boxed, but we handle the real conversion in LocalRewriter.UnBoxXSharpType
-                        return Conversion.Boxing;
-                    }
-                }
                 if (srcType == SpecialType.System_UInt16)
                 {
                     return Conversion.Identity;

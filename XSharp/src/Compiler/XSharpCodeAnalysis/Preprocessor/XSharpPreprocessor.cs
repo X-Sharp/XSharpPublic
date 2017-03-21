@@ -1222,9 +1222,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.SourceSymbol != null)
                                 ln = ln.SourceSymbol;
                             if (nextType == XSharpLexer.PP_WARNING)
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.WRN_UserWarning, text));
+                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.WRN_WarningDirective, text));
                             else
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_UserError, text));
+                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ErrorDirective, text));
                             lastToken = ln;
                         }
                         break;

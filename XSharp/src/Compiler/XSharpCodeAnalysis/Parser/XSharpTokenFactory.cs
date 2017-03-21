@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpToken t = new XSharpToken(source, type, channel, start, stop);
             t.Line = line;
             t.Column = charPositionInLine;
-            t.SourceFileName = source.Item1.SourceName;
+            //t.SourceFileName = source.Item1.SourceName;
             if (text != null)
             {
                 t.Text = text;

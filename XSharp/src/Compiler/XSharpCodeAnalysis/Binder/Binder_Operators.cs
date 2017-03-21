@@ -375,29 +375,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             TypeSymbol leftType = left.Type;
             TypeSymbol rightType = right.Type;
-            // check for string - char comparison
-            if ((leftType?.SpecialType == SpecialType.System_String) && left.Kind == BoundKind.Literal && rightType?.SpecialType == SpecialType.System_Char)
-            {
-                BoundLiteral lit = left as BoundLiteral;
-                var value = lit.ConstantValue;
-                if (value.IsString && value.StringValue.Length == 1)
-                {
-                    value = ConstantValue.Create(value.StringValue[0]);
-                    left = lit.Update(value, rightType);
-                    return opType;
-                }
-            }
-            else if ((rightType?.SpecialType == SpecialType.System_String) && right.Kind == BoundKind.Literal && leftType?.SpecialType == SpecialType.System_Char)
-            {
-                BoundLiteral lit = right as BoundLiteral;
-                var value = lit.ConstantValue;
-                if (value.IsString && value.StringValue.Length == 1)
-                {
-                    value = ConstantValue.Create(value.StringValue[0]);
-                    right = lit.Update(value, leftType);
-                    return opType;
-                }
-            }
 
             if (Compilation.Options.IsDialectVO)
             {

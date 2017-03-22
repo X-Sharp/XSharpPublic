@@ -388,7 +388,7 @@ namespace Microsoft.CodeAnalysis
                 var parseOptions = Arguments.ParseOptions as CSharp.CSharpParseOptions;
                 if (parseOptions.SyntaxCheck)
                 {
-                    return Failed;
+                    return Succeeded;
                 }
 #endif                        
                 EmitResult emitResult;

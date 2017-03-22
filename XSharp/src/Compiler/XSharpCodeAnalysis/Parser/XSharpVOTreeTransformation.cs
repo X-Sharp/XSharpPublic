@@ -555,7 +555,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName+"." + XSharpSpecialNames.AppInit)));
             }
-            if (context.Type.GetText().ToLower() != "void")
+            if (context.Type != null && context.Type.GetText().ToLower() != "void")
             {
                 newbody.Add(GenerateLocalDecl(XSharpSpecialNames.ReturnName, context.Type.Get<TypeSyntax>()));
                 needsExtraReturn = true;

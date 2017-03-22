@@ -32,6 +32,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser
@@ -191,9 +192,17 @@ namespace Antlr4.Runtime {
             {
                 iBpStart = start.StartIndex;
                 if (end.StopIndex >= start.StartIndex)
-                    iBPLength = end.StopIndex - start.StartIndex+1;
+                {
+                    iBPLength = end.StopIndex - start.StartIndex + 1;
+                }
+                else if (end.StartIndex >= start.StartIndex)
+                {
+                    iBPLength = end.StartIndex - start.StartIndex + 1;
+                }
                 else
+                {
                     iBPLength = 1;
+                }
             }
 
         }
@@ -204,8 +213,10 @@ namespace Antlr4.Runtime {
 			{
 	            if (next.StartIndex > this.Start.StartIndex)
 	                iBPLength = next.StartIndex - this.Start.StartIndex ;
-	            else
-	                iBPLength = 1;
+	            else if (next.StopIndex > this.Start.StartIndex)
+                    iBPLength = next.StopIndex - this.Start.StartIndex;
+                else
+                    iBPLength = 1;
 	            if (iBPLength < 0)
 	                iBPLength = 1;
 			}
@@ -217,14 +228,50 @@ namespace Antlr4.Runtime {
             SetSequencePoint(Start, Stop);
         }
 
-        public void SetSequencePoint(ParserRuleContext context)
+        public void SetSequencePoint(ParserRuleContext end)
         {
-            if (context != null)
+            if (end is XP.EosContext)
             {
-                if (context.Stop != null)
-                    SetSequencePoint(context.Start, context.Stop);
+                SetSequencePoint(this.Start, end.Start);
+                return;
+            }
+            else if (end != null )
+            {
+                if (end.Stop != null )
+                {
+                    SetSequencePoint(this.Start, end.Stop);
+                    return;
+                }
                 else
-                    SetSequencePoint(context.Start, context.Start);
+                {
+                    SetSequencePoint(this.Start, end.Start);
+                    return;
+                }
+            }
+            if (this.Stop != null)
+            {
+                SetSequencePoint(this.Start, this.Stop);
+                return;
+            }
+            else
+            {
+                var last = this.Start;
+                foreach (var child in children)
+                {
+                    var c = child as ParserRuleContext;
+                    if (c != null)
+                    {
+                        if (c.Stop != null && c.Stop.StopIndex > last.StopIndex)
+                        {
+                            last = c.Stop;
+                        }
+                        else if (c.Start.StopIndex > last.StopIndex)
+                        { 
+                                last = c.Start;
+                        }
+                    }
+                }
+                SetSequencePoint(this.Start, last);
             }
         }
         internal string ParentName

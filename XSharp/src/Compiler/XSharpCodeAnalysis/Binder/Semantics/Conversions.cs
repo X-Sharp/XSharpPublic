@@ -366,7 +366,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (destination.IsPointerType())
                 {
-                    // Not really boxed, but we handle this in LocalRewriter.UnBoxVOType
+                    // Not really boxed, but we handle this in LocalRewriter.UnBoxXSharpType
                     return Conversion.Boxing;
                 }
             }

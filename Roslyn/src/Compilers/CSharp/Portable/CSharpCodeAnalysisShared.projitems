@@ -32,8 +32,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_Lookup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_NameConflicts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_Operators.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_Patterns.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_Query.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_QueryErrors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_Deconstruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_Statements.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_Symbols.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Binder_Unsafe.cs" />
@@ -50,7 +52,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ConstantFieldsInProgressBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ContextualAttributeBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\EarlyWellKnownAttributeBinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\EmbeddedStatementBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ExecutableCodeBinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\ExpressionListVariableBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ExtensionMethodScope.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\FixedStatementBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ForEachEnumeratorInfo.cs" />
@@ -58,7 +62,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ForLoopBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\HostObjectModeBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ImplicitlyTypedFieldBinder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Binder\ImplicitlyTypedLocalBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ImportChain.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Imports.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\InContainerBinder.cs" />
@@ -76,7 +79,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Binder\MethodGroupResolution.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\NameofBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\NamespaceOrTypeAndUsingDirective.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\ExpressionVariableFinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\ScriptLocalScopeBinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\ExpressionVariableBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Semantics\AccessCheck.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Semantics\BestTypeInferrer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Semantics\Conversions\BestIndex.cs" />
@@ -122,6 +127,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Binder\SingleLookupResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\SwitchBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\SimpleLocalScopeBinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\PatternSwitchBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\TypeofBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\UsingStatementBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\WhileBinder.cs" />
@@ -145,9 +151,18 @@
     <Compile Include="$(MSBuildThisFileDirectory)BoundTree\BoundTreeVisitors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BoundTree\BoundTreeWalker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BoundTree\Constructors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BoundTree\DecisionTree.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BoundTree\DecisionTreeBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BoundTree\Expression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BoundTree\DeconstructionVariablePendingInference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BoundTree\BoundDiscardExpression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BoundTree\OutVariablePendingInference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BoundTree\OutDeconstructVarPendingInference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BoundTree\PseudoVariableExpressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BoundTree\Formatting.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BoundTree\NoOpStatementFlavor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BoundTree\Statement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\SubsumptionDiagnosticBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BoundTree\UnboundLambda.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGen\CodeGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGen\EmitAddress.cs" />
@@ -202,6 +217,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CSharpExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CSharpFileSystemExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CSharpParseOptions.cs" />
+
     <Compile Include="$(MSBuildThisFileDirectory)Declarations\Declaration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Declarations\DeclarationKind.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Declarations\DeclarationModifiers.cs" />
@@ -221,6 +237,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)DocumentationComments\PEDocumentationCommentUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocumentationComments\SourceDocumentationCommentUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\EditAndContinue\CSharpDefinitionMap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Emitter\EditAndContinue\CSharpLambdaSyntaxFacts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\EditAndContinue\EmitHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\EditAndContinue\PEDeltaAssemblyBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\EditAndContinue\CSharpSymbolMatcher.cs" />
@@ -242,10 +259,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\NamedTypeReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\NamedTypeSymbolAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\NamespaceSymbolAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\ParameterSymbolAdapter.cs" />
-    <!--<Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\ParameterSymbolAdapter.cs">
-      <SubType>Code</SubType>
-    </Compile>-->
+
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\ParameterTypeInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\PEAssemblyBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\PEModuleBuilder.cs" />
@@ -258,6 +272,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\SpecializedMethodReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\SpecializedNestedTypeReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\SymbolAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\SynthesizedPrivateImplementationDetailsStaticConstructor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\TypeMemberReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\TypeParameterSymbolAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\NoPia\EmbeddedEvent.cs" />
@@ -288,6 +303,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\ControlFlowPass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\CSharpDataFlowAnalysis.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\DataFlowPass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\DataFlowPass.LocalFunctions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\DataFlowPass.VariableIdentifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\DataFlowsInWalker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\DataFlowsOutWalker.cs" />
@@ -297,12 +313,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\FlowAnalysisPass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\PreciseAbstractFlowPass.AbstractLocalState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\PreciseAbstractFlowPass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\PreciseAbstractFlowPass_Switch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\ReadWriteWalker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\RegionAnalysisContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\RegionReachableWalker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\UnassignedAddressTakenVariablesWalker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\UnassignedVariablesWalker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FlowAnalysis\VariablesDeclaredWalker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LanguageVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\AsyncRewriter\AsyncConstructor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\AsyncRewriter\AsyncExceptionHandlerRewriter.cs" />
@@ -315,6 +333,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\DiagnosticsPass_Warnings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\InitializerRewriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\Instrumentation\CompoundInstrumenter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\Instrumentation\DebugInfoInjector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\Instrumentation\DebugInfoInjector_SequencePoints.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\Instrumentation\DynamicAnalysisInjector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\Instrumentation\Instrumenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\IteratorRewriter\IteratorConstructor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\IteratorRewriter\IteratorFinallyMethodSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\IteratorRewriter\IteratorMethodToStateMachineRewriter.IteratorFinallyFrame.cs" />
@@ -329,6 +352,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LambdaRewriter\LambdaRewriter.Analysis.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LambdaRewriter\LambdaRewriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LambdaRewriter\LambdaFrame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\LambdaRewriter\LambdaRewriter.LocalFunctionReferenceRewriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\LambdaRewriter\PartiallyLoweredLocalFunctionReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LambdaRewriter\SynthesizedLambdaMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\DynamicSiteContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter.cs" />
@@ -345,6 +370,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_ConditionalOperator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_ContinueStatement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_Conversion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_DeconstructionAssignmentOperator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_DelegateCreationExpression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_DoStatement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_Event.cs" />
@@ -359,6 +385,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_IndexerAccess.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_IsOperator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_LabeledStatement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_PatternSwitchStatement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_TupleCreationExpression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_Literal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_LocalDeclaration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_LockStatement.cs" />
@@ -366,12 +394,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_NullCoalescingOperator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_ObjectCreationExpression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_ObjectOrCollectionInitializerExpression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_Patterns.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_PointerElementAccess.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_PreviousSubmissionReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_PropertyAccess.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_Query.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_ReturnStatement.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_SequencePoints.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_StackAlloc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_StringConcat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lowering\LocalRewriter\LocalRewriter_StringInterpolation.cs" />
@@ -408,6 +436,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Parser\Directives.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\DocumentationCommentParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\DocumentationCommentXmlTokens.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Parser\LanguageParser_Patterns.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\LanguageParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\LanguageParser_InterpolatedString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\Lexer.cs" />
@@ -416,7 +445,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Parser\QuickScanner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\SlidingTextWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\SyntaxFactoryContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Parser\SyntaxListPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\SyntaxParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\SyntaxParser.ResetPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SymbolDisplay\ObjectDisplay.cs" />
@@ -446,6 +474,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\AnonymousTypes\SynthesizedSymbols\AnonymousType.TemplateSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\AnonymousTypes\SynthesizedSymbols\AnonymousType.ToStringMethodSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\AnonymousTypes\SynthesizedSymbols\AnonymousType.TypeParameterSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\DiscardSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Metadata\PE\TupleTypeDecoder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\GlobalExpressionVariable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Tuples\TupleEventSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Tuples\TupleFieldSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Tuples\TupleMethodSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Tuples\TupleParameterSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Tuples\TupleErrorFieldSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Tuples\TuplePropertySymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Tuples\TupleTypeSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\ArrayTypeSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\AssemblySymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Attributes\AttributeData.cs" />
@@ -456,7 +494,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Attributes\WellKnownAttributeData\PropertyEarlyWellKnownAttributeData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Attributes\WellKnownAttributeData\TypeWellKnownAttributeData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\BaseTypeAnalysis.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Symbols\ByRefReturnErrorTypeSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Compilation_WellKnownMembers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\CompletionPart.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\ConstantValueUtils.cs" />
@@ -556,6 +593,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\ImplicitNamedTypeSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\IndexedTypeParameterSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\LambdaSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\LocalFunctionSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\ModifierUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\ParameterHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\SourceAssemblySymbol.cs" />
@@ -591,6 +629,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\SourcePropertyAccessorSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\SourcePropertySymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\SourceSimpleParameterSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\SourceStrictComplexParameterSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\SourceTypeParameterSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\SourceUserDefinedConversionSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\Source\SourceUserDefinedOperatorSymbol.cs" />
@@ -657,13 +696,19 @@
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\UnboundGenericType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\UnsupportedMetadataTypeSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Symbols\VarianceSafety.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Symbols\WrappedParameterSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Wrapped\WrappedParameterSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Wrapped\WrappedNamedTypeSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Wrapped\WrappedEventSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Wrapped\WrappedFieldSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Wrapped\WrappedMethodSymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Wrapped\WrappedPropertySymbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Wrapped\WrappedTypeParameterSymbol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\AliasedQualifiedNameSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\ArrayRankSpecifierSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\AttributeSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\AttributeTargetSpecifierSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\BaseSyntaxNodeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\CompilationUnitSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\ConstructorDeclarationSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\CSharpLineDirectiveMap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\CSharpPragmaWarningStateMap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\CSharpSyntaxNode.cs" />
@@ -674,37 +719,22 @@
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\CSharpSyntaxWalker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\DeclarationStatementSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\DelegateDeclarationSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\DestructorDeclarationSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\DirectiveTriviaSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\ExpressionStatementSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\GenericNameSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\BinaryExpressionSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\CSharpSyntaxTree.DebuggerSyntaxTree.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\IdentifierNameSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\CSharpSyntaxNodeCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\TypeSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\PropertyDeclarationSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\ChildSyntaxList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\ChildSyntaxList.Enumerator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\ChildSyntaxList.Reversed.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\ChildSyntaxList.Reversed.Enumerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\DirectiveTriviaSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\IdentifierNameSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SeparatedSyntaxList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SeparatedSyntaxListBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\StructuredTriviaSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\Syntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxDiagnosticInfoList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxLastTokenReplacer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxList.WithLotsOfChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxList.WithManyChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxList.WithThreeChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxList.WithTwoChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxList`.Enumerator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxList`1.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxListBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxListBuilder`1.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxListBuilderExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxNode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxNodeCache.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxRewriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\CSharpSyntaxNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\CSharpSyntaxRewriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxToken.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxToken.MissingTokenWithTrivia.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxToken.SyntaxIdentifier.cs" />
@@ -716,7 +746,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxToken.SyntaxTokenWithTrivia.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxFirstTokenReplacer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxTrivia.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\SyntaxVisitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\CSharpSyntaxVisitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\AnonymousMethodExpressionSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\LookupPosition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\IndexerDeclarationSyntax.cs" />
@@ -727,37 +757,24 @@
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\ParameterListSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\ParameterSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\QualifiedNameSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SeparatedSyntaxListBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SimpleNameSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SimpleSyntaxReference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SkippedTokensTriviaSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\StructuredTriviaSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxEquivalence.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\LambdaUtilities.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxKindExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxNormalizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxKind.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxKindEqualityComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxKindFacts.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxList.SeparatedWithManyChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxList.WithManyChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxList.WithManyWeakChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxList.WithThreeChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxList.WithTwoChildren.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxListBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxListBuilder`1.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxListBuilderExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxNavigator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxNodeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxFacts.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxNodeOrTokenListBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxNodeRemover.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxReplacer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxTokenListBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxTreeDiagnosticEnumerator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxTriviaFunctions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Syntax\SyntaxTriviaListBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\TypeDeclarationSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\TypeSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\XmlNameAttributeElementKind.cs" />
@@ -765,6 +782,18 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\FirstAmongEqualsSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\FunctionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TypeSymbolExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--
+	<Compile Include="$(MSBuildThisFileDirectory)CSharpResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CSharpResources.resx</DependentUpon>
+    </Compile>
+	-->
+    <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\ParameterSymbolAdapter.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\CSharpSyntaxTree.Dummy.cs" />

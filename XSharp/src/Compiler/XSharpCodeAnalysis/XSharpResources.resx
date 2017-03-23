@@ -4447,6 +4447,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /vo13[+|-]                     Compatible String Comparisons
  /vo14[+|-]                     Use Float Literals
  /vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
+ /vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
 
                         - PREPROCESOR -
 

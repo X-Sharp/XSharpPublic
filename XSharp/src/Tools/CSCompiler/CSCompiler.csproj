@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Label="Settings">
-    <Import Project="..\..\..\..\Roslyn\build\Targets\VSL.Settings.targets" />
-  </ImportGroup>
+  <Import Project="..\..\..\..\..\Roslyn\build\Targets\Settings.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -15,7 +13,7 @@
     <AssemblyName>CSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
@@ -42,36 +40,46 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\AbstractAnalyzerAssemblyLoader.cs">
-      <Link>AbstractAnalyzerAssemblyLoader.cs</Link>
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\BuildClient.cs">
+      <Link>BuildClient.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\AnalyzerAssemblyLoadUtils.cs">
-      <Link>AnalyzerAssemblyLoadUtils.cs</Link>
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\BuildServerConnection.cs">
+      <Link>BuildServerConnection.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\ShadowCopyAnalyzerAssemblyLoader.cs">
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\DesktopAnalyzerAssemblyLoader.cs">
+      <Link>DesktopAnalyzerAssemblyLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\DesktopBuildClient.cs">
+      <Link>DesktopBuildClient.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\ExitingTraceListener.cs">
+      <Link>ExitingTraceListener.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\ShadowCopyAnalyzerAssemblyLoader.cs">
       <Link>ShadowCopyAnalyzerAssemblyLoader.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\AnalyzerConsistencyChecker.cs" />
     <Compile Include="Assembly.cs" />
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\DesktopCompilerServerHost.cs" />
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\DesktopBuildServerController.cs" />
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\NamedPipeClientConnection.cs" />
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\VBCSCompiler.cs" />
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\MemoryHelper.cs" />
+    <Compile Include="VBCodeAnalysisDummy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="project.json" />
   </ItemGroup>
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems" Label="Shared" />
-  <ImportGroup Label="Targets">
-    <Import Project="..\..\..\..\Roslyn\build\Targets\VSL.Imports.targets" />
-  </ImportGroup>
+  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\Roslyn\src\Compilers\Server\ServerShared\ServerShared.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\..\Roslyn\build\Targets\Imports.targets" />
 </Project>

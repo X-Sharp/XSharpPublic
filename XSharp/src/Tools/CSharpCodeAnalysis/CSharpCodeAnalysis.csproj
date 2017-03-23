@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Label="Settings">
-    <Import Project="..\..\..\..\Roslyn\build\Targets\VSL.Settings.targets" />
-  </ImportGroup>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\..\..\Roslyn\build\Targets\Settings.props" />
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
@@ -16,17 +14,17 @@
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\clr-core\</OutDir>
+    <SyntaxDefinition>$(MSBuildThisFileDirectory)..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
     <CSharpSyntaxGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\CSharpSyntaxGenerator.exe</CSharpSyntaxGeneratorToolPath>
     <BoundTreeGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\BoundTreeGenerator.exe</BoundTreeGeneratorToolPath>
     <CSharpErrorFactsGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\CSharpErrorFactsGenerator.exe</CSharpErrorFactsGeneratorToolPath>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
+    <!-- <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2D}</Project>
       <Name>CSharpSyntaxGenerator</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -39,6 +37,11 @@
     <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj">
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2E}</Project>
       <Name>CSharpErrorFactsGenerator</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference> -->
+    <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\DeployCompilerGeneratorToolsRuntime\DeployCompilerGeneratorToolsRuntime.csproj">
+      <Project>{6da08f12-32f2-4dd9-bbad-982eb71a2c9b}</Project>
+      <Name>DeployCompilerGeneratorToolsRuntime</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
@@ -98,17 +101,11 @@
     </BoundTreeDefinition>
     <Compile Include="$(IntermediateOutputPath)BoundNodes.xml.Generated.cs" />
     <Compile Include="$(IntermediateOutputPath)ErrorFacts.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Generated.cs" />
+    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Syntax.Generated.cs" />
+    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Main.Generated.cs" />
+    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Internal.Generated.cs" />
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
     <ErrorCode Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
-    <SyntaxDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml">
-      <SubType>Designer</SubType>
-    </SyntaxDefinition>
-    <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CSharpResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -120,26 +117,16 @@
     <Compile Include="Assembly.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="project.json" />
   </ItemGroup>
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\SharedCollections\SharedCollections.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems" Label="Shared" />
   <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />
-  <ImportGroup Label="Targets">
-    <Import Project="..\..\..\..\Roslyn\build\Targets\VSL.Imports.targets" />
-  </ImportGroup>
+  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\Roslyn\src\Dependencies\CodeAnalysis.Metadata\Microsoft.CodeAnalysis.Metadata.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\Roslyn\src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\..\Roslyn\build\Targets\Imports.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

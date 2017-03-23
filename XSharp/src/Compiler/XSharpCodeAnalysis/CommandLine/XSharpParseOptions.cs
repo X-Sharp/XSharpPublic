@@ -53,6 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOAllowMissingReturns { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
         public bool VOClipperIntegerDivisions { get; private set; }
+        public bool VOClipperConstructors{ get; private set; }
 
         public bool VOFloatConstants { get; private set; }
         public bool VoInitAxitMethods { get; private set; }
@@ -60,7 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOClipperCallingConvention { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOImplicitCastsAndConversions { get; private set; }
-        public bool VOInitializeVariables { get; private set; } = false;
         public bool VOPreprocessorBehaviour { get; private set; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo13 => VOStringComparisons;
         public bool vo14 => VOFloatConstants;
         public bool vo15 => VOUntypedAllowed;
-        public bool vo16 => VOInitializeVariables;
+        public bool vo16 => VOClipperConstructors;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -125,7 +125,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOStringComparisons = opt.Vo13;
                 VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
-                //VOInitializeVariables = opt.Vo16;
+                VOClipperConstructors = opt.Vo16;
+
                 VulcanAssemblies = opt.VulcanAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -173,7 +174,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOStringComparisons = opt.VOStringComparisons; // vo13
             VOFloatConstants = opt.VOFloatConstants; // vo14
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
-            //VOInitializeVariables = opt.VOInitializeVariables; // vo16
+            VOClipperConstructors = opt.VOClipperConstructors; // vo16
             VulcanAssemblies = opt.VulcanAssemblies;
             Overflow = opt.Overflow;
             ConsoleOutput = opt.ConsoleOutput;

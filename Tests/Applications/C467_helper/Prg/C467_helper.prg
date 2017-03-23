@@ -1,0 +1,1 @@
+DEFINE WM_USER := 1024

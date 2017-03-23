@@ -238,10 +238,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Vo15 = positive;
                     options.ExplicitVO15 = true;
                     break;
-                //case "vo16":    // VO Initialize variables
-                //    options.Vo16 = positive;
-                //    options.ExplicitVO16 = true;
-                //    break;
+                case "vo16":    // VO Add Clipper CC Missing constructors
+                    options.Vo16 = positive;
+                    break;
                 case "wx":       // disable warning
                     name = "warnaserror+";
                     handled = false;

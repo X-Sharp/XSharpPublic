@@ -28,7 +28,7 @@ using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal partial class XSharpLanguageParser : SyntaxParser
@@ -408,6 +408,137 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // original failure.
             return AddError(AddLeadingSkippedSyntax(node, FileAsTrivia(_text)), position, 0, ErrorCode.ERR_InsufficientStack);
         }
+
+
+        internal static SyntaxTree ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
+        {
+            if (trees.Length > 0)
+            {
+                var tree = trees[0];
+                var lp = new XSharpLanguageParser(tree.FilePath, null, options,null, null);
+                return lp.processTrees(trees, options);
+            }
+            return null;
+        }
+
+
+        private SyntaxTree processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
+        {
+            // this method gives us the ability to check all the generated syntax trees,
+            // add generated constructors to partial classes when none of the parts has a constructor
+            // merge accesses and assigns from different source files into one property etc.
+            if (!parseoptions.VOClipperConstructors)
+                return null;
+            var partialClasses = new Dictionary<string, List<XP.Class_Context>>();
+            foreach (var tree in trees)
+            {
+                var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
+                foreach (var member in compilationunit.Members)
+                {
+                    if (member is Syntax.NamespaceDeclarationSyntax)
+                    {
+                        processNameSpace(member as Syntax.NamespaceDeclarationSyntax, partialClasses);
+                    }
+                    else if (member is Syntax.ClassDeclarationSyntax)
+                    {
+                        processClass(member as Syntax.ClassDeclarationSyntax, partialClasses);
+                    }
+                }
+            }
+            if (partialClasses.Count > 0)
+            {
+                var tr = trees[0];
+                var cu = tr.GetRoot().Green as CompilationUnitSyntax;
+                var trans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                var classes = _pool.Allocate<MemberDeclarationSyntax>();
+                var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                foreach (var element in partialClasses)
+                {
+                    var name = element.Key;
+                    bool hasctor = false;
+                    XP.Class_Context cls = null;
+                    foreach (var xnode in element.Value)
+                    {
+                        if (cls == null)
+                            cls = xnode as XP.Class_Context;
+                        if (xnode.Data.HasCtor)
+                        {
+                            hasctor = true;
+                            break;
+                        }
+                    }
+                    if (!hasctor)
+                    {
+                        clsmembers.Clear();
+                        var classdecl = cls.Get<ClassDeclarationSyntax>();
+                        var ctor = trans.GenerateClipperCtor(classdecl.Identifier);
+                        clsmembers.Add(ctor);
+                        
+                        var decl = _syntaxFactory.ClassDeclaration(
+                            trans.MakeCompilerGeneratedAttribute(false), 
+                            classdecl.Modifiers,
+                            classdecl.Keyword, 
+                            classdecl.Identifier, 
+                            classdecl.TypeParameterList,
+                            classdecl.BaseList, 
+                            classdecl.ConstraintClauses, 
+                            classdecl.OpenBraceToken,
+                            clsmembers, 
+                            classdecl.CloseBraceToken, 
+                            null);
+                        classes.Add(decl);
+                    }
+                }
+                _pool.Free(clsmembers);
+                var result = cu.Update(
+                                    cu.Externs,
+                                    cu.Usings,
+                                    cu.AttributeLists,
+                                    classes,
+                                    cu.EndOfFileToken);
+                
+                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed());
+                _pool.Free(classes);
+                return tree;
+            }
+            return null;
+
+        }
+        private static void processClass(Syntax.ClassDeclarationSyntax classdecl, Dictionary<string, List<XP.Class_Context>> partialClasses)
+        {
+            var green = classdecl.Green as ClassDeclarationSyntax;
+            var xnode = green.XNode as XP.EntityContext;
+            if (xnode != null && xnode.ChildCount == 1)
+            {
+                var cls = xnode.GetChild(0) as XP.Class_Context;
+                if (cls != null && cls.Data.Partial)
+                {
+                    var name = cls.Name;
+                    if (!partialClasses.ContainsKey(name))
+                    {
+                        partialClasses.Add(name, new List<XP.Class_Context>());
+                    }
+                    partialClasses[name].Add(cls);
+                }
+            }
+        }
+        private static void processNameSpace(Syntax.NamespaceDeclarationSyntax ns, Dictionary<string, List<XP.Class_Context>> partialClasses)
+        {
+            foreach (var member in ns.Members)
+            {
+                if (member is Syntax.NamespaceDeclarationSyntax)
+                {
+                    processNameSpace(member as Syntax.NamespaceDeclarationSyntax, partialClasses);
+                }
+                else if (member is Syntax.ClassDeclarationSyntax)
+                {
+                    processClass(member as Syntax.ClassDeclarationSyntax, partialClasses);
+                }
+            }
+
+        }
+
+
 
     }
 }

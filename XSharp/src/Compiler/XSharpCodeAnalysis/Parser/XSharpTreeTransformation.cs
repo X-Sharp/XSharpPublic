@@ -731,7 +731,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
+        internal SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
@@ -1586,7 +1586,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                         var tree = CSharpSyntaxTree.Create(
                             (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
-                                t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
+                                t.GlobalEntities.Externs, 
+                                t.GlobalEntities.Usings, 
+                                t.GlobalEntities.Attributes, 
+                                t.GlobalEntities.Members, eof).CreateRed());
                         _defTree = tree;
                     }
                 }
@@ -2277,7 +2280,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (mCtx.CsNode != null)
                     members.Add(mCtx.Get<MemberDeclarationSyntax>());
             }
-
             generated.Free();
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             var baseType = context.BaseType?.Get<TypeSyntax>();
@@ -2291,9 +2293,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
+
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
@@ -2777,11 +2782,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Initializer != null)
             {
                 context.Initializer.SetSequencePoint();
-            }
-            if (initExpr == null && _options.VOInitializeVariables && !(CurrentEntity is XP.Structure_Context))
-            {
-                var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? _getMissingType();
-                initExpr = MakeDefault(varType);
             }
             context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
         }
@@ -4356,13 +4356,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.As?.Type == XP.IS)
                 {
                     varType.XVoIsDecl = true;
-                }
-            }
-            else
-            {
-                if (initExpr == null && _options.VOInitializeVariables)
-                {
-                    initExpr = MakeDefault(varType);
                 }
             }
             if (isStatic)

@@ -2273,6 +2273,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     members.Add(GenerateVoProperty(vop));
                 }
             }
+            // check if class has Ctor. 
+            foreach (var mem in members.ToList())
+            {
+                if (mem is ConstructorDeclarationSyntax)
+                {
+                    context.Data.HasCtor = true;
+                    break;
+                }
+            }
+
             // Do this after VOProps generation because GenerateVOProperty sets the members
             // for Access & Assign to NULL
             foreach (var mCtx in context._Members)

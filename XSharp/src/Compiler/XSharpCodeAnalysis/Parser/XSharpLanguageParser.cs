@@ -427,9 +427,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // this method gives us the ability to check all the generated syntax trees,
             // add generated constructors to partial classes when none of the parts has a constructor
             // merge accesses and assigns from different source files into one property etc.
-            if (!parseoptions.VOClipperConstructors)
+            if (!parseoptions.VOClipperConstructors || ! parseoptions.IsDialectVO)
                 return null;
-            var partialClasses = new Dictionary<string, List<XP.Class_Context>>();
+            var partialClasses = new Dictionary<string, List<XP.Class_Context>>(StringComparer.OrdinalIgnoreCase);
             foreach (var tree in trees)
             {
                 var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
@@ -447,6 +447,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (partialClasses.Count > 0)
             {
+                // Create a new tree which shall have the class declarations and generated constructors
+                // and return this tree to the caller.
+                // we copy the attributes, modifiers etc from one of the class instances to make sure that
+                // do not specify a conflicting modifier.
+                // When one of the partial declarations has a Ctor then we do not have to do anything.
                 var tr = trees[0];
                 var cu = tr.GetRoot().Green as CompilationUnitSyntax;
                 var trans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
@@ -460,7 +465,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var xnode in element.Value)
                     {
                         if (cls == null)
+                        {
                             cls = xnode as XP.Class_Context;
+                        }
                         if (xnode.Data.HasCtor)
                         {
                             hasctor = true;
@@ -511,7 +518,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (xnode != null && xnode.ChildCount == 1)
             {
                 var cls = xnode.GetChild(0) as XP.Class_Context;
-                if (cls != null && cls.Data.Partial)
+                if (cls != null && cls.Data.Partial )
                 {
                     var name = cls.Name;
                     if (!partialClasses.ContainsKey(name))

@@ -74,6 +74,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (file != null)
             {
                 file.LastUsed = DateTime.Now;
+                // Now clone the file so the tokens may be manipulated
+                file = file.Clone();
             }
             return file;
         }
@@ -155,6 +157,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal XSharpToken[] Tokens { get; set; }
             internal SourceText Text { get; set; }
             internal DateTime LastUsed { get; set; }
+
+            internal CachedIncludeFile Clone()
+            {
+                var clone = new CachedIncludeFile();
+                clone.LastUsed = LastUsed;
+                clone.FileName = FileName;
+                clone.Text = Text;
+                clone.LastWritten = LastWritten;
+                clone.Tokens = new XSharpToken[Tokens.Length];
+                for (int i = 0; i < Tokens.Length; i++)
+                {
+                    clone.Tokens[i] = new XSharpToken(Tokens[i]);
+                }
+                return clone;
+            }
+
+
         }
 
         XSharpLexer _lexer;
@@ -440,7 +459,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         void SkipHidden()
         {
             IToken t = Lt();
-            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel && t.Channel != XSharpLexer.PREPROCESSOR)
+            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel 
+                && t.Channel != XSharpLexer.PREPROCESSORCHANNEL)
             {
                 Consume();
                 t = Lt();
@@ -468,7 +488,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (t.Type == XSharpLexer.EOS && t.Text != ";")
                     break;
-                if (t.Channel == XSharpLexer.PREPROCESSOR)
+                if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
                 {
                     _parseErrors.Add(new ParseErrorData(t, ErrorCode.WRN_PreProcessorWarning, "Ignored input '"+t.Text+"'"));
                 }
@@ -479,10 +499,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void SkipInactive()
         {
+            // This will move the tokens from the preprocessor and hidden channel
+            // to the DEFOUTCHANNEL so they will not be seen by the parser
+            // this is used in an inactive section of an #ifdef .. #else .. #endif construct
             XSharpToken t = Lt();
             while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
             {
-                ((CommonToken)t).Channel = XSharpLexer.DEFOUT;
+                ((CommonToken)t).Channel = XSharpLexer.DEFOUTCHANNEL;
                 Consume();
                 if (t.Type == XSharpLexer.EOS && t.Text != ";")
                     break;
@@ -533,7 +556,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (t.IsEOS() && t.Text != ";")
                     break;
-                if (t.Channel == XSharpLexer.PREPROCESSOR)
+                if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
                 {
                      res.Add(t);
                 }
@@ -550,7 +573,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (t.IsEOS() && t.Text != ";")
                     break;
-                if (t.Channel == XSharpLexer.PREPROCESSOR)
+                if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
                 {
 
                     var nt = FixToken(new XSharpToken(t));
@@ -1337,7 +1360,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 {
                                                     if (r.Channel == XSharpLexer.DefaultTokenChannel)
                                                     {
-                                                        r.Channel = XSharpLexer.PREPROCESSOR;
+                                                        r.Channel = XSharpLexer.PREPROCESSORCHANNEL;
                                                     }
                                                 }
                                                 first = null;
@@ -1413,7 +1436,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                         {
                             // Token suppressed by Preprocessor
-                            ((CommonToken)t).Channel = XSharpLexer.DEFOUT;
+                            ((CommonToken)t).Channel = XSharpLexer.DEFOUTCHANNEL;
                             Consume();
                             if (t.Type == XSharpLexer.EOS)
                                 writeToPPO(t);

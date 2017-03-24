@@ -24,6 +24,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -91,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     file = node.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(file))
                     {
-                        file = (node.XNode.SourceSymbol as InternalSyntax.XSharpToken).SourceFileName;
+                        file = (node.XNode.SourceSymbol as XSharpToken).SourceFileName;
                     }
                 }
                 SourceText ntext;
@@ -172,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     fn = snode.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(fn))
                     {
-                        fn = (snode.XNode.SourceSymbol as InternalSyntax.XSharpToken).SourceFileName;
+                        fn = (snode.XNode.SourceSymbol as XSharpToken).SourceFileName;
                     }
 
                 }

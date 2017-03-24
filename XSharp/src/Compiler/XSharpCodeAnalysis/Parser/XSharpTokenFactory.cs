@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
+namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     internal class XSharpTokenFactory : ITokenFactory
     {

@@ -25,9 +25,9 @@ options	{
 
 
 channels {
-			XMLDOC,
-			DEFOUT,
-			PREPROCESSOR,
+			XMLDOCCHANNEL,
+			DEFOUTCHANNEL,
+			PREPROCESSORCHANNEL,
 			PRAGMACHANNEL
 		}
 
@@ -221,7 +221,7 @@ SEMI			: SEMICOLON ;
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
 // the Lexer Property AllowOldStyleComments
 
-DOC_COMMENT		:  '/' '/' '/'					NOT_NEW_LINE	-> channel(XMLDOC)
+DOC_COMMENT		:  '/' '/' '/'					NOT_NEW_LINE	-> channel(XMLDOCCHANNEL)
 				;
 
 SL_COMMENT		:( '/' '/'						NOT_NEW_LINE

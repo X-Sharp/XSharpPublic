@@ -17,7 +17,7 @@
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\clr-core\</OutDir>
     <SyntaxDefinition>$(MSBuildThisFileDirectory)..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
@@ -46,15 +46,15 @@
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2E}</Project>
       <Name>CSharpErrorFactsGenerator</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Tools\csc\csc.csproj">
-      <Project>{4B45CA0C-03A0-400F-B454-3D4BCB16AF38}</Project>
-      <Name>csc</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>-->
     <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\DeployCompilerGeneratorToolsRuntime\DeployCompilerGeneratorToolsRuntime.csproj">
       <Project>{6da08f12-32f2-4dd9-bbad-982eb71a2c9b}</Project>
       <Name>DeployCompilerGeneratorToolsRuntime</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Tools\csc\csc.csproj">
+      <Project>{4B45CA0C-03A0-400F-B454-3D4BCB16AF38}</Project>
+      <Name>csc</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
@@ -69,6 +69,8 @@
     <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -100,11 +102,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeAnalysisResources.Designer.cs">
+      <Link>CodeAnalysisResources.Designer.cs</Link>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
     </Compile>
     <Compile Include="XSharpResources.Designer.cs">
+      <Link>XSharpResources.Designer.cs</Link>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>XSharpResources.resx</DependentUpon>
@@ -354,36 +358,26 @@
     <BoundTreeDefinition Include="$(RoslynSrc)\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
       <SubType>Designer</SubType>
     </BoundTreeDefinition>
-    <Compile Include="ErrorCode.cs" />
-    <ErrorCode Include="ErrorCode.cs" />
-    <EmbeddedResource Include="XSharpResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CodeAnalysisResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(RoslynSrc)\Compilers\Core\Portable\Resources\default.win32manifest" />
-  </ItemGroup>
-  <ItemGroup>
-    <!--<BoundTreeDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
-      <SubType>Designer</SubType>
-    </BoundTreeDefinition>-->
     <Compile Include="$(IntermediateOutputPath)BoundNodes.xml.Generated.cs" />
     <Compile Include="$(IntermediateOutputPath)ErrorFacts.Generated.cs" />
     <Compile Include="$(IntermediateOutputPath)Syntax.xml.Syntax.Generated.cs" />
     <Compile Include="$(IntermediateOutputPath)Syntax.xml.Main.Generated.cs" />
     <Compile Include="$(IntermediateOutputPath)Syntax.xml.Internal.Generated.cs" />
-    <!--<Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
-    <ErrorCode Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />-->
-    <!--<EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisResources.resx">
+    <Compile Include="ErrorCode.cs" />
+    <ErrorCode Include="ErrorCode.cs" />
+    <EmbeddedResource Include="XSharpResources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>LanguageService.CodeAnalysis</CustomToolNamespace>
+      <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeAnalysisResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <CustomToolNamespace>LanguageService.CodeAnalysis</CustomToolNamespace>
       <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>-->
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(RoslynSrc)\Compilers\Core\Portable\Resources\default.win32manifest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
@@ -404,6 +398,16 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>-->
+  <ItemGroup>
+    <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.amd64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Preprocessor\harbourppdoc.txt" />
     <Content Include="Preprocessor\preprocessor.txt" />

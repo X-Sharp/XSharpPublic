@@ -5,19 +5,19 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
+    <RoslynBin>..\Roslyn\Binaries</RoslynBin>
     <ProjectGuid>{7B774ABC-83A0-4FD8-91FB-1DBE8829765B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
     <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\clr-core\</OutDir>
     <SyntaxDefinition>$(MSBuildThisFileDirectory)..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
-    <CSharpSyntaxGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\CSharpSyntaxGenerator.exe</CSharpSyntaxGeneratorToolPath>
-    <BoundTreeGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\BoundTreeGenerator.exe</BoundTreeGeneratorToolPath>
-    <CSharpErrorFactsGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\CSharpErrorFactsGenerator.exe</CSharpErrorFactsGeneratorToolPath>
+    <CompilerGeneratorToolsDir>$(SolutionDir)$(RoslynBin)\$(Configuration)\Exes\DeployCompilerGeneratorToolsRuntime\</CompilerGeneratorToolsDir>
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -109,11 +109,14 @@
     <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+	  <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
       <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
+      <LogicalName>Microsoft.CodeAnalysis.CodeAnalysisResources.resources</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpResources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
+	  <CustomToolNamespace>Microsoft.CodeAnalysis.CSharp</CustomToolNamespace>
       <LastGenOutput>CSharpResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\Resources\default.win32manifest" />
@@ -124,6 +127,16 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.amd64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
   </ItemGroup>
   <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
   <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />

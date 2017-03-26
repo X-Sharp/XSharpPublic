@@ -166,7 +166,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.Boxing:
 
 #if XSHARP
-                    conversionKind = UnBoxXSharpType(ref rewrittenOperand, conversionKind, rewrittenType);
+                    conversion = Conversion.GetTrivialConversion(
+                        UnBoxXSharpType(ref rewrittenOperand, conversion.Kind, rewrittenType));
 #endif
                     if (!_inExpressionLambda)
                     {

@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
         public override bool IsIndexedProperty
         {
-            get { return _originalDefinition.IsIndexedProperty; }
+            get { return _underlyingProperty.IsIndexedProperty; }
         }
 #endif
 

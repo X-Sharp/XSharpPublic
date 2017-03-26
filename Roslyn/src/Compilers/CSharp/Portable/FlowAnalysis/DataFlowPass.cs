@@ -1643,20 +1643,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var localsOpt = node.Locals;
             DeclareVariables(localsOpt);
-#if XSHARP
-                if (local.DeclarationKind == LocalDeclarationKind.RegularVariable || local.DeclarationKind == LocalDeclarationKind.RefVariable)
-#else
-#endif
             var result = base.VisitUsingStatement(node);
             if (!localsOpt.IsDefaultOrEmpty)
             {
                 foreach (LocalSymbol local in localsOpt)
                 {
-#if XSHARP
-                    if (local.DeclarationKind == LocalDeclarationKind.UsingVariable || local.DeclarationKind == LocalDeclarationKind.RefVariable)
-#else
                     if (local.DeclarationKind == LocalDeclarationKind.UsingVariable)
-#endif
                     {
                         // At the end of the statement, there's an implied read when the local is disposed
                         NoteRead(local);

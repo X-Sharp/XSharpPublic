@@ -40,18 +40,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert((object)owner != null);
             _methodSymbol = owner;
-#if XSHARP
-                _parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, CaseInsensitiveComparison.Comparer);
-#else
-#endif
         }
 
         private static void RecordDefinition<T>(SmallDictionary<string, Symbol> declarationMap, ImmutableArray<T> definitions) where T : Symbol
         {
-#if XSHARP
-            var declarationMap = _definitionMap ?? (_definitionMap = new SmallDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer));
-#else
-#endif
             foreach (Symbol s in definitions)
             {
                 if (!declarationMap.ContainsKey(s.Name))
@@ -211,7 +203,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (parameterMap == null)
             {
                 var parameters = _methodSymbol.Parameters;
+#if XSHARP
+                parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, CaseInsensitiveComparison.Comparer);
+#else
                 parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, EqualityComparer<string>.Default);
+#endif
                 foreach (var parameter in parameters)
                 {
                     parameterMap.Add(parameter.Name, parameter);
@@ -335,7 +331,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (map == null)
             {
+#if XSHARP
+				map = new SmallDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer);
+#else
                 map = new SmallDictionary<string, Symbol>();
+#endif
                 RecordDefinition(map, parameters);
                 RecordDefinition(map, typeParameters);
 

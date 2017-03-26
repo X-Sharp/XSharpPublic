@@ -573,7 +573,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     : leftType.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
                     : leftType.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
                     : BinaryOperatorKind.ULongSubtraction;
-                var resultConstant = FoldBinaryOperator(index.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
+                var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)index.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
                 var sig = this.Compilation.builtInOperators.GetSignature(opKind);
                 index = new BoundBinaryOperator(index.Syntax, kind, left, right, resultConstant, sig.Method,
                     resultKind: LookupResultKind.Viable,

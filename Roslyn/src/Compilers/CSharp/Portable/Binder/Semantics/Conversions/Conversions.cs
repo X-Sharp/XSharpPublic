@@ -10,7 +10,11 @@ using System.Collections.Generic;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+#if !XSHARP
     internal sealed class Conversions : ConversionsBase
+#else
+    internal sealed partial class Conversions : ConversionsBase
+#endif
     {
         private readonly Binder _binder;
 
@@ -30,7 +34,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new Conversions(_binder, currentRecursionDepth);
         }
 
+#if !XSHARP
         private CSharpCompilation Compilation { get { return _binder.Compilation; } }
+#else
+        internal CSharpCompilation Compilation { get { return _binder.Compilation; } }
+#endif
 
         public override Conversion GetMethodGroupConversion(BoundMethodGroup source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {

@@ -1245,10 +1245,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // NOTE: members were added in a single pass over the syntax, so they're already
                 // in lexical order.
 
+#if !XSHARP
                 var membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name);
-#if XSHARP
-                var membersByName = temp.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
 #else
+                var membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
 #endif
                 AddNestedTypesToDictionary(membersByName, GetTypeMembersDictionary());
 

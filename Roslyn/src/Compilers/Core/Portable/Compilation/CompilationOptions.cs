@@ -40,7 +40,11 @@ namespace Microsoft.CodeAnalysis
         /// The full name of a type that declares static Main method. Must be a valid non-generic namespace-qualified name.
         /// Null if any static Main method is a candidate for an entry point.
         /// </summary>
-        public string MainTypeName { get;  protected set; }
+#if !XSHARP
+        public string MainTypeName { get; protected set; }
+#else
+        public string MainTypeName { get; internal set; }
+#endif
 
         // Note that we avoid using default(ImmutableArray<byte>) for unspecified value since 
         // such value is currently not serializable by JSON serializer.

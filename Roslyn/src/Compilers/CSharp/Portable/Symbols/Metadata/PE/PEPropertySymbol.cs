@@ -44,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         private readonly Flags _flags;
 
 #if XSHARP
-        private readonly bool _namedIndexer = false;
+        private bool _namedIndexer = false;
 #endif
 
         [Flags]
@@ -71,7 +71,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             var metadataDecoder = new MetadataDecoder(moduleSymbol, containingType);
             SignatureHeader callingConvention;
             BadImageFormatException propEx;
+#if XSHARP
+            var propertyParams = handle.IsNil ? metadataDecoder.GetSignatureForMethod(getMethod.Handle, out callingConvention, out propEx)
+                : metadataDecoder.GetSignatureForProperty(handle, out callingConvention, out propEx);
+#else
             var propertyParams = metadataDecoder.GetSignatureForProperty(handle, out callingConvention, out propEx);
+#endif
             Debug.Assert(propertyParams.Length > 0);
 
             var returnInfo = propertyParams[0];
@@ -127,11 +132,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             _setMethod = setMethod;
             _handle = handle;
 
-#if XSHARP
-            var propertyParams = handle.IsNil ? metadataDecoder.GetSignatureForMethod(getMethod.Handle, out callingConvention, out propEx)
-                : metadataDecoder.GetSignatureForProperty(handle, out callingConvention, out propEx);
-#else
-#endif
             SignatureHeader unusedCallingConvention;
             BadImageFormatException getEx = null;
             var getMethodParams = (object)getMethod == null ? null : metadataDecoder.GetSignatureForMethod(getMethod.Handle, out unusedCallingConvention, out getEx);
@@ -155,7 +155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             // CONSIDER: Can we make parameter type computation lazy?
             TypeSymbol originalPropertyType = returnInfo.Type;
 #if XSHARP
-            _propertyType = DynamicTypeDecoder.TransformType(originalPropertyType, _typeCustomModifiers.Length, handle.IsNil ? (EntityHandle)getMethod.Handle : handle, moduleSymbol);
+            _propertyType = DynamicTypeDecoder.TransformType(originalPropertyType, countOfCustomModifiers, handle.IsNil ? (EntityHandle)getMethod.Handle : handle, moduleSymbol, _refKind);
 #else
             _propertyType = DynamicTypeDecoder.TransformType(originalPropertyType, countOfCustomModifiers, handle, moduleSymbol, _refKind);
 #endif
@@ -205,14 +205,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         }
 
 #if XSHARP
-        internal PEPropertySymbol(
+        internal static PEPropertySymbol Create(
             PEModuleSymbol moduleSymbol,
             PEPropertySymbol indexer)
-            : this(moduleSymbol, indexer._containingType, indexer._handle, indexer._getMethod, indexer._setMethod)
         {
             Debug.Assert(indexer.IsIndexer);
-
-            _namedIndexer = true;
+            var ps = Create(moduleSymbol, indexer._containingType, indexer._handle, indexer._getMethod, indexer._setMethod);
+            ps._namedIndexer = true;
+            return ps;
         }
 
         public bool IsIndexerWithAccessibleName

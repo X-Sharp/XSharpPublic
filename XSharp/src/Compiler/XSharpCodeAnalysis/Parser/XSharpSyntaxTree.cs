@@ -25,6 +25,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
+using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
@@ -50,9 +51,9 @@ namespace Antlr4.Runtime {
             internal readonly IParseTree Node;
             internal readonly ErrorCode Code;
             internal readonly object[] Args;
-            internal ParseErrorData(ErrorCode code) : this(node: null, code: code, args: SpecializedCollections.EmptyObjects) { }
+            internal ParseErrorData(ErrorCode code) : this(node: null, code: code, args: Array.Empty<object>() ) { }
             internal ParseErrorData(ErrorCode code, params object[] args) : this(node: null, code: code, args: args) { }
-            internal ParseErrorData(IParseTree node, ErrorCode code) : this(node, code, SpecializedCollections.EmptyObjects) { }
+            internal ParseErrorData(IParseTree node, ErrorCode code) : this(node, code, Array.Empty<object>() ) { }
             internal ParseErrorData(IParseTree node, ErrorCode code, params object[] args) {
                 this.Node = node;
                 this.Code = code;
@@ -264,16 +265,16 @@ namespace Antlr4.Runtime {
             return (T)t.CsNode;
         }
 
-        internal static void PutList<T>([NotNull] this IParseTree t, InternalSyntax.SyntaxList<T> node) where T : InternalSyntax.CSharpSyntaxNode {
+        internal static void PutList<T>([NotNull] this IParseTree t, CoreInternalSyntax.SyntaxList<T> node) where T : InternalSyntax.CSharpSyntaxNode {
             //node.XNode = t;
             t.CsNode = node;
         }
 
-        internal static InternalSyntax.SyntaxList<T> GetList<T>([NotNull] this IParseTree t) where T : InternalSyntax.CSharpSyntaxNode {
+        internal static CoreInternalSyntax.SyntaxList<T> GetList<T>([NotNull] this IParseTree t) where T : InternalSyntax.CSharpSyntaxNode {
             if(t.CsNode == null)
-                return default(InternalSyntax.SyntaxList<T>);
+                return default(CoreInternalSyntax.SyntaxList<T>);
 
-            return (InternalSyntax.SyntaxList<T>)t.CsNode;
+            return (CoreInternalSyntax.SyntaxList<T>)t.CsNode;
         }
 
         internal static TNode WithAdditionalDiagnostics<TNode>([NotNull] this TNode node, params DiagnosticInfo[] diagnostics) where TNode : InternalSyntax.CSharpSyntaxNode {
@@ -383,13 +384,21 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     public abstract partial class CSharpSyntaxNode
     {
-        internal IParseTree XNode { get { return (((InternalSyntax.CSharpSyntaxNode)(Green)).XNode) ?? Parent?.XNode; } }
-        internal bool XVoDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoDecl; } }
-        internal bool XVoIsDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDecl; } }
-        internal bool XPCall { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XPCall; } }
-        internal bool XGenerated { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XGenerated; } }
-        internal bool XVoIsDim { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDim; } }
-        internal bool XIsMissingArgument {
+        internal bool XVoDecl { get { return (CsGreen).XVoDecl; } }
+        internal bool XVoIsDecl { get { return (CsGreen).XVoIsDecl; } }
+        internal bool XPCall { get { return (CsGreen).XPCall; } }
+        internal bool XGenerated { get { return (CsGreen).XGenerated; } }
+        internal bool XVoIsDim { get { return (CsGreen).XVoIsDim; } }
+    }
+}
+
+namespace Microsoft.CodeAnalysis
+{
+    public abstract partial class SyntaxNode
+    {
+        internal IParseTree XNode { get { return ((CSharp.CSharpSyntaxNode)this).CsGreen.XNode ?? ((CSharp.CSharpSyntaxNode)this).Parent.XNode;  } }
+        internal bool XIsMissingArgument
+        {
             get
             {
                 var n = XNode;
@@ -410,7 +419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 {
     public sealed partial class CompilationUnitSyntax
     {
-		private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.Green;
+		private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.CsGreen;
         public XSharpParser.SourceContext XSource => internalUnit.XNode as XSharpParser.SourceContext; 
         public ITokenStream XTokenStream => internalUnit.XTokens; 
 		public ITokenStream XPPTokenStream => internalUnit.XPPTokens; 

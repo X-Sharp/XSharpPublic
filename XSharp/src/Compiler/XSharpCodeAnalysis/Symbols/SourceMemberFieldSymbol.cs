@@ -61,9 +61,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 type = binder.BindType(typeSyntax, diagnostics);
                 // parser could not determine the type
                 fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
-                var declarator = VariableDeclaratorNode;
+                var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
                 var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
-                var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, declarator.Initializer, declarator);
+                var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
                 if (initializerOpt != null)
                 {
                     if ((object)initializerOpt.Type != null && !initializerOpt.Type.IsErrorType())

@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
@@ -63,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (includecache.ContainsKey(fileName))
                 {
                     file = includecache[fileName];
-                    if (file.LastWritten != PortableShim.File.GetLastWriteTimeUtc(fileName))
+                    if (file.LastWritten != FileUtilities.GetFileTimeStamp(fileName))
                     {
                         includecache.Remove(fileName);
                         return null;
@@ -92,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 file.Text = text;
                 file.FileName = fileName;
                 //DebugOutput("Add include file to cache: {0}", fileName);
-                file.LastWritten = PortableShim.File.GetLastWriteTimeUtc(fileName);
+                file.LastWritten = FileUtilities.GetFileTimeStamp(fileName);
                 return file;
             }
         }
@@ -187,7 +188,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
 
         bool _preprocessorOutput = false;
-        System.IO.Stream _ppoStream;
+        Stream _ppoStream;
 
         internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>();
 
@@ -342,9 +343,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
             includeDirs = new List<string>(options.IncludePaths);
-            if ( !String.IsNullOrEmpty(fileName) && PortableShim.File.Exists(fileName))
+            if ( !String.IsNullOrEmpty(fileName) && File.Exists(fileName))
             {
-                includeDirs.Add(System.IO.Path.GetDirectoryName(fileName));
+                includeDirs.Add(Path.GetDirectoryName(fileName));
                 var ppoFile = FileNameUtilities.ChangeExtension(fileName, ".ppo");
                 try
                 {
@@ -358,11 +359,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (_preprocessorOutput)
                         {
-                            _ppoStream = FileUtilities.CreateFileStreamChecked(PortableShim.File.Create, ppoFile, "PPO file");
+                            _ppoStream = FileUtilities.CreateFileStreamChecked(File.Create, ppoFile, "PPO file");
                         }
-                        else if (PortableShim.File.Exists(ppoFile))
+                        else if (File.Exists(ppoFile))
                         {
-                            PortableShim.File.Delete(ppoFile);
+                            File.Delete(ppoFile);
                         }
                     }
                 }
@@ -846,11 +847,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             foreach (var p in dirs)
             {
-                bool rooted = System.IO.Path.IsPathRooted(fn);
+                bool rooted = Path.IsPathRooted(fn);
                 string fp;
                 try
                 {
-                    fp = rooted ? fn : System.IO.Path.Combine(p, fn);
+                    fp = rooted ? fn : Path.Combine(p, fn);
                 }
                 catch (Exception e)
                 {
@@ -859,9 +860,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 try
                 {
-                    using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
+                    using (var data = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 1, options: FileOptions.None))
                     {
-                        nfp = (string)PortableShim.FileStream.Name.GetValue(data);
+                        nfp = data.Name;
                         cachedFile = GetIncludeFile(nfp);
                         if (cachedFile != null)
                         {
@@ -869,7 +870,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            nfp = (string)PortableShim.FileStream.Name.GetValue(data);
+                            nfp = data.Name;
                             try
                             {
                                 text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);

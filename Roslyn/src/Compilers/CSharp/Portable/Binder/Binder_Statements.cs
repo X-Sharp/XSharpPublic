@@ -872,7 +872,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 if (this.Compilation.Options.VONullStrings && initializerOpt == null && declTypeOpt.SpecialType == SpecialType.System_String)
                 {
-                    initializerOpt = BindPossibleArrayInitializer(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")), declTypeOpt, new DiagnosticBag());
+                    initializerOpt = BindPossibleArrayInitializer(
+                        SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")), 
+                        declTypeOpt, valueKind, new DiagnosticBag());
                     initializerOpt.WasCompilerGenerated = true;
                 }
 #endif
@@ -1253,7 +1255,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Error(diagnostics, ReadOnlyLocalErrors[index], tree, local, cause.Localize());
 
+#if XSHARP
+            return result;
+#else
             return false;
+#endif
         }
 
         private bool CheckIsCallVariable(BoundCall call, SyntaxNode node, BindValueKind kind, bool checkingReceiver, DiagnosticBag diagnostics)
@@ -1299,11 +1305,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Error(diagnostics, GetStandardLvalueError(kind), node);
             }
-#if XSHARP
-            return result;
-#else
             return false;
-#endif
         }
 
         private static void ReportReadOnlyError(FieldSymbol field, SyntaxNode node, BindValueKind kind, bool checkingReceiver, DiagnosticBag diagnostics)
@@ -1466,7 +1468,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         errorCode = ErrorCode.ERR_CannotAssignToMethod;
 #else
                         errorCode = ErrorCode.ERR_AssgReadonlyLocalCause;
-#endif                 
+#endif
                         break;
                 }
                 Error(diagnostics, errorCode, node, methodGroup.Name, MessageID.IDS_MethodGroup.Localize());
@@ -1861,11 +1863,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             SyntaxNode syntax = expr.Syntax;
             switch (syntax.Kind())
             {
-#if XSHARP
-                case SyntaxKind.QualifiedName:
-                    eventSyntax = ((QualifiedNameSyntax)syntax).Right;
-                    break;
-#endif
                 case SyntaxKind.SimpleMemberAccessExpression:
                 case SyntaxKind.PointerMemberAccessExpression:
                     return ((MemberAccessExpressionSyntax)syntax).Name;

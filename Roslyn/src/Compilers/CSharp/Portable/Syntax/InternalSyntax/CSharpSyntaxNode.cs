@@ -10,7 +10,11 @@ using Roslyn.Utilities;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
+#if !XSHARP
     internal abstract class CSharpSyntaxNode : GreenNode
+#else
+    internal abstract partial class CSharpSyntaxNode : GreenNode
+#endif
     {
         internal CSharpSyntaxNode(SyntaxKind kind)
             : base((ushort)kind)

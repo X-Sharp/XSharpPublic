@@ -76,6 +76,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return conversion;
                     }
                 }
+#if XSHARP
+                if (sourceType.SpecialType == SpecialType.System_Void)
+                {
+                    return Conversion.NoConversion;
+                }
+#endif
             }
 
             return GetImplicitUserDefinedConversion(sourceExpression, sourceType, destination, ref useSiteDiagnostics);
@@ -842,7 +848,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitThrow;
             }
 
+#if !XSHARP
             return Conversion.NoConversion;
+#else
+            return ClassifyXSImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+#endif
         }
 
         private static Conversion ClassifyNullLiteralConversion(BoundExpression source, TypeSymbol destination)
@@ -904,6 +914,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return new Conversion(ConversionKind.ImplicitNullable, Conversion.ImplicitConstantUnderlying);
                 }
             }
+#if XSHARP
+            if (source.Type == null  &&
+                source.Kind != BoundKind.MethodGroup && 
+                (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr 
+                || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr ))
+                return Conversion.Identity;
+#endif                        
 
             return Conversion.NoConversion;
         }
@@ -1000,6 +1017,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return (int)ulong.MinValue <= value;
                     case SpecialType.System_UInt16:
                         return ushort.MinValue <= value && value <= ushort.MaxValue;
+#if XSHARP
+                    case SpecialType.System_IntPtr:
+                        return true;
+#endif
                     default:
                         return false;
                 }
@@ -1011,7 +1032,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
 
+#if !XSHARP
             return false;
+#else
+            return HasImplicitVOConstantExpressionConversion(source, destination);
+#endif
         }
 
         private Conversion ClassifyExplicitOnlyConversionFromExpression(BoundExpression sourceExpression, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast)
@@ -1049,6 +1074,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return conversion;
                     }
                 }
+#if XSHARP
+                if (sourceType.SpecialType == SpecialType.System_Void)
+                {
+                    return Conversion.NoConversion;
+                }
+#endif
             }
 
             return GetExplicitUserDefinedConversion(sourceExpression, sourceType, destination, ref useSiteDiagnostics);
@@ -1070,6 +1101,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!validType)
             {
+#if XSHARP
+                if(source.Type != null && (source.Type.IsEnumType() || source.Type.IsNullableType() && source.Type.GetNullableUnderlyingType().IsEnumType())) {
+                    return IsNumericType(destination.GetSpecialTypeSafe());
+                }
+#endif
                 return false;
             }
 
@@ -1219,7 +1255,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return IsAnonymousFunctionCompatibleWithDelegate(anonymousFunction, delegateType);
         }
 
+#if !XSHARP
         public static LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+#else
+        public virtual LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+#endif
         {
             Debug.Assert((object)anonymousFunction != null);
             Debug.Assert((object)type != null);
@@ -1236,7 +1276,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return LambdaConversionResult.BadTargetType;
         }
 
+#if !XSHARP
         private static bool HasAnonymousFunctionConversion(BoundExpression source, TypeSymbol destination)
+#else
+        private bool HasAnonymousFunctionConversion(BoundExpression source, TypeSymbol destination)
+#endif
         {
             Debug.Assert(source != null);
             Debug.Assert((object)destination != null);

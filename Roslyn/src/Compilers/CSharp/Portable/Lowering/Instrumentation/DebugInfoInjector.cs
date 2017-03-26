@@ -68,6 +68,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             rewritten = base.InstrumentExpressionStatement(original, rewritten);
             SyntaxNode syntax = original.Syntax;
 
+#if XSHARP
+            if (syntax.IsKind(SyntaxKind.VariableDeclarator))
+            {
+                return AddSequencePoint((VariableDeclaratorSyntax)syntax, rewritten);
+            }
+            else if (syntax.IsKind(SyntaxKind.PropertyDeclaration))
+            {
+                return AddSequencePoint((PropertyDeclarationSyntax)syntax, rewritten);
+            }
+#endif
             switch (syntax.Parent.Parent.Kind())
             {
                 case SyntaxKind.VariableDeclarator:

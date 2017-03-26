@@ -107,7 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
             // This is a last resort to convert to PSZ. Should normally never be called
-            if (BindStringToPsz(syntax, ref source, destination))
+            if (BindStringToPsz((CSharpSyntaxNode)syntax, ref source, destination))
             { 
                 constantValue = null;
                 wasCompilerGenerated = true;
@@ -298,7 +298,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 #if XSHARP
-        private BoundExpression CreateAnonymousFunctionConversion(CSharpSyntaxNode syntax, BoundExpression source, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
+        private BoundExpression CreateAnonymousFunctionConversion(SyntaxNode syntax, BoundExpression source, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
 #else
         private static BoundExpression CreateAnonymousFunctionConversion(SyntaxNode syntax, BoundExpression source, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
 #endif

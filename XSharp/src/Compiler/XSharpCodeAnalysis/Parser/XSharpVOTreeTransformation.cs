@@ -28,6 +28,8 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+
     internal class XSharpVOTreeTransformation : XSharpTreeTransformation
     {
         // Vulcan Assembly Names
@@ -1121,7 +1123,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XP.ArgumentListContext args = null,
             bool isInInterface = false)
         {
-            if (modifiers.Any(SyntaxKind.ExternKeyword))
+            if (modifiers.Any((int)SyntaxKind.ExternKeyword))
             {
                 if (stmtblock?._Stmts?.Count > 0)
                 {
@@ -1194,6 +1196,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             chain.SyntaxKeyword(),
                             args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
                     body: body,
+                    expressionBody: null,
                     semicolonToken: (stmtblock?._Stmts?.Count > 0) ? null : 
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             }
@@ -1207,7 +1210,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ParserRuleContext econtext,
             bool isInInterface = false)
         {
-            if (modifiers.Any(SyntaxKind.ExternKeyword))
+            if (modifiers.Any((int)SyntaxKind.ExternKeyword))
             {
                 if (stmtblock?._Stmts?.Count > 0)
                 {
@@ -1257,6 +1260,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     identifier: parentId,
                     parameterList: EmptyParameterList(),
                     body: stmtblock.Get<BlockSyntax>(),
+                    expressionBody: null,
                     semicolonToken: (stmtblock != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             }
             return null;
@@ -1294,7 +1298,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         //public override void ExitClass_([NotNull] XP.Class_Context context)
         //{
         //    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-        //    if (!mods.Any(SyntaxKind.PartialKeyword))
+        //    if (!mods.Any((int)SyntaxKind.PartialKeyword))
         //    {
         //        var attribs = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
         //        var builder = _pool.Allocate<AttributeListSyntax>();
@@ -1306,7 +1310,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         //        {
         //            builder.Add(a);
         //        }
-                
+
         //        if (context.Attributes == null)
         //        {
         //            context.Attributes = new XP.AttributesContext(context,0);
@@ -1319,7 +1323,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            if (mods.Any(SyntaxKind.StaticKeyword))
+            if (mods.Any((int)SyntaxKind.StaticKeyword))
             {
                 context.Data.HasClipperCallingConvention = false;
             }
@@ -3040,7 +3044,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var modBuilder = _pool.Allocate();
                 modBuilder.AddRange(mods);
                 modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
-                mods = modBuilder.ToTokenList();
+                mods = modBuilder.ToList<SyntaxToken>();
             }
             var attargs = ArrayBuilder<AttributeArgumentSyntax>.GetInstance();
             attargs.Add(_syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(SystemQualifiedNames.LayoutSequential)));
@@ -3152,7 +3156,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var modBuilder = _pool.Allocate();
                 modBuilder.AddRange(mods);
                 modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
-                mods = modBuilder.ToTokenList();
+                mods = modBuilder.ToList<SyntaxToken>();
             }
 
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(

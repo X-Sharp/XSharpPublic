@@ -31,6 +31,8 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+
     internal partial class XSharpLanguageParser : SyntaxParser
     {
         private readonly String _fileName;

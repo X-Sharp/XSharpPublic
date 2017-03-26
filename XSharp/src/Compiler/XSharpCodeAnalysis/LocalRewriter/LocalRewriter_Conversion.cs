@@ -154,7 +154,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                         rewrittenOperand.WasCompilerGenerated = true;
-                        rewrittenOperand = MakeConversion(rewrittenOperand.Syntax,
+                        rewrittenOperand = MakeConversionNode(rewrittenOperand.Syntax,
                             rewrittenOperand: rewrittenOperand,
                             rewrittenType: rewrittenType,
                             conversion: Conversion.ImplicitNumeric,

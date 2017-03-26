@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
 #if XSHARP
-    internal partial abstract class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
+    internal abstract partial class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
 #else
     internal abstract class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
 #endif

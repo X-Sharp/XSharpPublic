@@ -1342,7 +1342,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         if (((object)getOne != null) || ((object)setOne != null))
                         {
                             PropertyDefinitionHandle h = new PropertyDefinitionHandle();
-                            _vulcanArrayIndexerOne = new PEPropertySymbol(moduleSymbol, this, h, getOne, setOne);
+                            _vulcanArrayIndexerOne = PEPropertySymbol.Create(moduleSymbol, this, h, getOne, setOne);
                         }
                     }
                 }
@@ -1372,7 +1372,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         if (((object)getMany != null) || ((object)setMany != null))
                         {
                             PropertyDefinitionHandle h = new PropertyDefinitionHandle();
-                            _vulcanArrayIndexerMany = new PEPropertySymbol(moduleSymbol, this, h, getMany, setMany);
+                            _vulcanArrayIndexerMany = PEPropertySymbol.Create(moduleSymbol, this, h, getMany, setMany);
                         }
                     }
                 }
@@ -1903,7 +1903,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                             var prop = PEPropertySymbol.Create(moduleSymbol, this, propertyDef, getMethod, setMethod);
                             members.Add(prop);
                             if (prop.IsIndexerWithAccessibleName)
-                                members.Add(new PEPropertySymbol(moduleSymbol, prop));
+                                members.Add(PEPropertySymbol.Create(moduleSymbol, prop));
 #else
                             members.Add(PEPropertySymbol.Create(moduleSymbol, this, propertyDef, getMethod, setMethod));
 #endif

@@ -493,6 +493,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             clsmembers, 
                             classdecl.CloseBraceToken, 
                             null);
+                        decl.XGenerated = true;
                         classes.Add(decl);
                     }
                 }

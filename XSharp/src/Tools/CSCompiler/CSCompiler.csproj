@@ -76,7 +76,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
     <None Include="project.json" />
   </ItemGroup>
   <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />

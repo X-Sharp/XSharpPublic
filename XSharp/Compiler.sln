@@ -71,7 +71,8 @@ Global
 		..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems*{8b70ae9e-1054-4b80-ac8d-fe20c5041631}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{9508f118-f62e-4c16-a6f4-7c3b56e166ad}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Server\ServerShared\ServerShared.projitems*{9508f118-f62e-4c16-a6f4-7c3b56e166ad}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems*{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Server\ServerShared\ServerShared.projitems*{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4

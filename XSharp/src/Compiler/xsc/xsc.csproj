@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Label="Settings">
-    <Import Project="..\..\..\..\XSharp\build\Targets\VSL.Settings.targets" />
-  </ImportGroup>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\build\Targets\Settings.props" />
+  <Import Project="..\..\..\..\Roslyn\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -15,17 +14,21 @@
     <LargeAddressAware>true</LargeAddressAware>
     <StartupObject>LanguageService.CodeAnalysis.XSharp.CommandLine.Program</StartupObject>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
-    <CscToolPath>$(BaseOutputPath)\$(Configuration)\</CscToolPath>
+    <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSCompiler\XSCompiler.csproj">
       <Project>{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}</Project>
       <Name>XSCompiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
+      <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
+      <Name>XSharpCodeAnalysis</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -41,39 +44,26 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Binaries\Packages\System.Reflection.Metadata.1.4.2\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <!--<Reference Include="System.ComponentModel.Composition" />-->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(RoslynSrc)\Compilers\Core\MSBuildTask\BuildClient.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Shared\BuildClient.cs">
       <Link>BuildClient.cs</Link>
     </Compile>
-    <Compile Include="$(RoslynSrc)\Compilers\Core\MSBuildTask\NativeMethods.cs">
-      <Link>NativeMethods.cs</Link>
+    <Compile Include="$(RoslynSrc)\Compilers\Shared\BuildServerConnection.cs">
+      <Link>BuildServerConnection.cs</Link>
     </Compile>
-    <Compile Include="$(RoslynSrc)\Compilers\Core\VBCSCompiler\BuildProtocol.cs">
-      <Link>BuildProtocol.cs</Link>
+    <Compile Include="$(RoslynSrc)\Compilers\Shared\DesktopBuildClient.cs">
+      <Link>DesktopBuildClient.cs</Link>
     </Compile>
-    <Compile Include="$(RoslynSrc)\Compilers\Core\VBCSCompiler\CompilerServerLogger.cs">
-      <Link>CompilerServerLogger.cs</Link>
+    <Compile Include="$(RoslynSrc)\Compilers\Shared\DesktopAnalyzerAssemblyLoader.cs">
+      <Link>DesktopAnalyzerAssemblyLoader.cs</Link>
     </Compile>
-    <Compile Include="$(RoslynSrc)\Compilers\Helpers\AbstractAnalyzerAssemblyLoader.cs">
-      <Link>AbstractAnalyzerAssemblyLoader.cs</Link>
+    <Compile Include="$(RoslynSrc)\Compilers\Shared\ExitingTraceListener.cs">
+      <Link>ExitingTraceListener.cs</Link>
     </Compile>
-    <Compile Include="$(RoslynSrc)\Compilers\Helpers\AnalyzerAssemblyLoadUtils.cs">
-      <Link>AnalyzerAssemblyLoadUtils.cs</Link>
-    </Compile>
-    <Compile Include="$(RoslynSrc)\Compilers\Helpers\ConsoleUtil.cs">
-      <Link>ConsoleUtil.cs</Link>
-    </Compile>
-    <Compile Include="$(RoslynSrc)\Compilers\Helpers\SimpleAnalyzerAssemblyLoader.cs">
-      <Link>SimpleAnalyzerAssemblyLoader.cs</Link>
+    <Compile Include="$(RoslynSrc)\Compilers\Shared\Csc.cs">
+      <Link>Csc.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
@@ -90,15 +80,15 @@
     <None Include="xsc.rsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
+    <None Include="project.json" />
   </ItemGroup>
-  <ImportGroup Label="Targets">
-    <Import Project="..\..\..\..\XSharp\build\Targets\VSL.Imports.targets" />
-  </ImportGroup>
+  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="..\..\..\build\Targets\Imports.targets" />
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
+    <EditBinToolPath>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\VC\bin\editbin.exe</EditBinToolPath>
     <PostBuildEvent>"$(EditBinToolPath)" /stack:2097152 $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
 </Project>

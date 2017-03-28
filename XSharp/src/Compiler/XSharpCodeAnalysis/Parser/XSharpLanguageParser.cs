@@ -40,8 +40,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
 
-        private ITokenStream _lexerTokenStream;
-        private ITokenStream _preprocessorTokenStream;
+        private CommonTokenStream _lexerTokenStream;
+        private CommonTokenStream _preprocessorTokenStream;
 
         //#if DEBUG
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
@@ -107,55 +107,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal CompilationUnitSyntax ParseCompilationUnitCore()
         {
-#if false
-            SyntaxToken tmp = null;
-            SyntaxListBuilder initialBadNodes = null;
-            var body = new NamespaceBodyBuilder(_pool);
-            try
-            {
-                this.ParseNamespaceBody(ref tmp, ref body, ref initialBadNodes, SyntaxKind.CompilationUnit);
 
-                var eof = this.EatToken(SyntaxKind.EndOfFileToken);
-                var result = _syntaxFactory.CompilationUnit(body.Externs, body.Usings, body.Attributes, body.Members, eof);
-
-                if (initialBadNodes != null)
-                {
-                    // attach initial bad nodes as leading trivia on first token
-                    result = AddLeadingSkippedSyntax(result, initialBadNodes.ToListNode());
-                    _pool.Free(initialBadNodes);
-                }
-
-                return result;
-            }
-            finally
-            {
-                body.Free(_pool);
-            }
-#endif
             if (_options.ShowIncludes)  
             {
                 _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
 
             ParserRuleContext tree;
-            var stream = new AntlrInputStream(_text.ToString());
-            stream.name = _fileName;
-            var lexer = new XSharpLexer(stream);
-            lexer.TokenFactory = XSharpTokenFactory.Default;
-            if(_options.Dialect == XSharpDialect.VO) {
-                lexer.AllowFourLetterAbbreviations = true;
-                lexer.AllowOldStyleComments = true;
-            } else {
-                lexer.AllowFourLetterAbbreviations = false;
-                lexer.AllowOldStyleComments = false;
-            }
-
-            var tokenstream = new CommonTokenStream(lexer);
-            _lexerTokenStream = tokenstream;
+            var lexer = XSharpLexer.Create(_text.ToString(), _fileName, _options);
+            _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
-            tokenstream.Fill(); // Required due to the preprocessor
 #if DEBUG && DUMP_TIMES
             {
                 var ts = DateTime.Now - t;
@@ -164,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             var parseErrors = ParseErrorData.NewBag();
-            var pp = new XSharpPreprocessor(lexer, tokenstream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+            var pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var pp_tokens = new CommonTokenStream(pp);
             _preprocessorTokenStream = pp_tokens;
             var parser = new XSharpParser(pp_tokens);

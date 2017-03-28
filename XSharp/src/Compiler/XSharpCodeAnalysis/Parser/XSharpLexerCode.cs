@@ -1202,5 +1202,27 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
+        static public XSharpLexer Create( string text, string fileName, CSharpParseOptions options = null)
+        {
+            var stream = new AntlrInputStream(text);
+            stream.name = fileName;
+            var lexer =  new XSharpLexer(stream);
+            lexer.TokenFactory = XSharpTokenFactory.Default;
+            lexer.AllowFourLetterAbbreviations = false;
+            lexer.AllowOldStyleComments = false;
+            if (options != null && options.IsDialectVO)
+            {
+                lexer.AllowOldStyleComments = true;
+                lexer.AllowFourLetterAbbreviations = true;
+            }
+            return lexer;
+        }
+
+        public CommonTokenStream GetTokenStream()
+        {
+            var tokenstream = new CommonTokenStream(this);
+            tokenstream.Fill();
+            return tokenstream;
+        }
     }
 }

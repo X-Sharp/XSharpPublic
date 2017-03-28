@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IProjectTypeHelper.cs" />
     <Compile Include="XSharpCodeCompiler.cs" />
     <Compile Include="XSharpCodeConstants.cs" />
     <Compile Include="XSharpCodeGenerator.cs" />

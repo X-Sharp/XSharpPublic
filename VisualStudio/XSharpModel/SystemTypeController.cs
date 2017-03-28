@@ -115,6 +115,21 @@ namespace XSharpModel
             return oAssembly;
         }
 
+        public Type FindType(string typeName, IList<string> usings)
+        {
+            Type result = Lookup(typeName);
+            if (result != null)
+                return result;
+            foreach (var name in usings)
+            {
+                var fullname = name + "." + typeName;
+                result = Lookup(fullname);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+
         public static Type Lookup(string typeName)
         {
             System.Type sType = null;

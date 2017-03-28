@@ -31,6 +31,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TextManager.Interop;
 using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
+using XSharp.CodeDom;
 
 namespace XSharp.Project
 {
@@ -40,7 +41,7 @@ namespace XSharp.Project
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
     public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
-        IVsDesignTimeAssemblyResolution, IVsProject5
+        IVsDesignTimeAssemblyResolution, IVsProject5, IProjectTypeHelper
     {
 
         static Dictionary<string, string> dependencies;
@@ -1277,6 +1278,28 @@ namespace XSharp.Project
             }
             return bOk;
         }
+        #region IProjectTypeHelper
+        public System.Type ResolveType(string name, IList<string> usings)
+        {
+            switch (name.ToLower())
+            {
+                case "object":
+                case "system.object":
+                    return typeof(object);
+                case "void":
+                case "system.void":
+                    return typeof(void);
+                case "boolean":
+                case "system.boolean":
+                    return typeof(Boolean);
+                case "string":
+                case "system.string":
+                    return typeof(String);
+            }
+            var model = this.ProjectModel;
+            return model.TypeController.FindType(name,usings);
+        }
+        #endregion
         #region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 

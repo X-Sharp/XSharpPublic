@@ -13,11 +13,12 @@ namespace XSharp.CodeDom
 {
     public class XSharpCodeParser : CodeParser
     {
-
-        public XSharpCodeParser()
+        IProjectTypeHelper _projectNode;
+        public XSharpCodeParser(IProjectTypeHelper projectNode)
         {
             this.FileName = "";
-            this.TabSize = 1;       
+            this.TabSize = 1;
+            _projectNode = projectNode;
         }
         public string FileName { get; set; }
 
@@ -59,7 +60,7 @@ namespace XSharp.CodeDom
                 // Get the antlr4 parse tree root
                 var xtree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
                 //
-                var discover = new XSharpTreeDiscover();
+                var discover = new XSharpTreeDiscover(_projectNode);
                 discover.SourceCode = source;
                 discover.CurrentFile = this.FileName;
                 //

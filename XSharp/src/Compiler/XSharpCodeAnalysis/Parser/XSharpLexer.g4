@@ -182,8 +182,12 @@ SYMBOL_CONST    : NUMSIGN IDStartChar (IDChar)* ;
 NEQ2			: NUMSIGN ;			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
 
 
-// Char_Const is lexed and parsed as char but then converted to string later
-CHAR_CONST		: '\'' ESCAPED_CHARACTER '\'';
+// Char_Const is parsed as STRING_CONST in all but the core & vulcan dialect
+CHAR_CONST		: '\''   ESCAPED_CHARACTER '\''
+                | C '"'  ESCAPED_STRING_CHARACTER '"'    
+                | C '\'' ESCAPED_CHARACTER '\''
+                ;
+                
 
 STRING_CONST	: '"'  NOT_DOUBLE '"'			// Double quoted string
 				| '\'' NOT_SINGLE '\''			// Single quoted string

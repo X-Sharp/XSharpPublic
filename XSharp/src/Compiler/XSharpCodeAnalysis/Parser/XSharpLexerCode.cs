@@ -609,6 +609,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             c = InputStream.La(1);
                         }
                         break;
+                    case 'c':
+                    case 'C':
+                        if (InputStream.La(2) == '"' || InputStream.La(2) == '\'') // char const
+                        {
+                            break;
+                        }
+                        goto case 'a';
                     case 'e':
                     case 'E':
                         if (InputStream.La(2) == '"') // escaped string
@@ -633,7 +640,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         goto case 'a';
                     case 'a':
                     case 'b':
-                    case 'c':
                     case 'd':
                     case 'f':
                     case 'g':
@@ -657,7 +663,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case 'z':
                     case 'A':
                     case 'B':
-                    case 'C':
                     case 'D':
                     case 'F':
                     case 'G':

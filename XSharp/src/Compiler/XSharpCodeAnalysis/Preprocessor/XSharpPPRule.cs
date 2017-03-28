@@ -661,7 +661,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // whitespace tokens have been skipped
                     var ppWs = new XSharpToken(token, XSharpLexer.WS, " ");
-                    ppWs.Channel = XSharpLexer.Hidden;
+                    ppWs.Channel = ppWs.OriginalChannel = XSharpLexer.Hidden;
                     result.Add(new PPResultToken(ppWs, PPTokenType.Token));
                 }
                 lastTokenIndex = token.TokenIndex;
@@ -1212,7 +1212,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 result.Add(tokens[i]);
             }
-
+            foreach (var t in result)
+            {
+                if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
+                {
+                    t.Channel = t.OriginalChannel = XSharpLexer.DefaultTokenChannel;
+                }
+            }
             return result;
         }
 

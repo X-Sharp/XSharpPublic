@@ -1297,7 +1297,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
             attributeLists.Add(MakeClipperCallingConventionAttribute(new List<ExpressionSyntax>()));
             var mods = TokenList(SyntaxKind.PublicKeyword);
-            return _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null);
+            var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null);
+            ctor.XGenerated = true;
+            return ctor;
         }
 
         public AttributeListSyntax MakeClipperCallingConventionAttribute(List<ExpressionSyntax> names)
@@ -1325,7 +1327,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClass_([NotNull] XP.Class_Context context)
         {
             base.ExitClass_(context);
-            var classdecl = context.Get<ClassDeclarationSyntax>();
+            var csNode = context.Get<CSharpSyntaxNode>();
+            ClassDeclarationSyntax classdecl = null;
+            if (csNode is ClassDeclarationSyntax)
+                classdecl = csNode as ClassDeclarationSyntax;
+            else if (csNode is NamespaceDeclarationSyntax)
+            {
+                var ns = csNode as NamespaceDeclarationSyntax;
+                classdecl = ns.Members[0] as ClassDeclarationSyntax;
+            }
+            else
+            {
+                return;
+            }
             var members = classdecl.Members;
             context.Data.HasCtor = false;
             foreach (var m in members)

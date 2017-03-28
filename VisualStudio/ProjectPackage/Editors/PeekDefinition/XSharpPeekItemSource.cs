@@ -35,7 +35,7 @@ namespace XSharp.Project
             string fileName = EditorHelpers.GetDocumentFileName(session.TextView.TextBuffer);
             IToken stopToken;
             //
-            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _textBuffer.CurrentSnapshot.GetText(), out stopToken, false);
+            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _textBuffer.CurrentSnapshot.GetText(), out stopToken, false, fileName);
             // Check if we can get the member where we are
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.Position, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, fileName);

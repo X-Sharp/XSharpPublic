@@ -26,9 +26,12 @@ namespace XSharp.Project
     /// 
     public class XSharpProjectOptions : ProjectOptions
     {
+
+        static XSharpCommandLineParser xsCmdLineparser;
+
         private XSharpProjectNode _prjNode;
         internal ConfigCanonicalName ConfigCanonicalName { get; set; }
-        public string[] CommandLineArgs { get; private set; }
+        public XSharpParseOptions ParseOptions { get; private set;}
         public XSharpProjectOptions(XSharpProjectNode prjNode) : base()
         {
             _prjNode = prjNode;
@@ -38,6 +41,7 @@ namespace XSharp.Project
         internal static string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
         static XSharpProjectOptions()
         {
+            xsCmdLineparser = XSharpCommandLineParser.Default;
             _includedirs = "";
             var path = (string)Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
             if (!string.IsNullOrEmpty(path))
@@ -114,7 +118,16 @@ namespace XSharp.Project
             }
             finally
             {
-                CommandLineArgs = args.ToArray();
+                if (args.Count > 0)
+                {
+                    var cmdlineargs = xsCmdLineparser.Parse(args.ToArray(), null, null, null);
+                    ParseOptions = cmdlineargs.ParseOptions;
+                }
+                else
+                {
+                    var cmdlineargs = xsCmdLineparser.Parse(new string[0], null, null, null);
+                    ParseOptions = cmdlineargs.ParseOptions;
+                }
             }
         }
 

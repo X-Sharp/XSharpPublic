@@ -41,7 +41,19 @@ namespace XSharpModel
         {
             lock (this)
             {
-                _projects.Enqueue(xProject);
+                bool lAdd2Queue = true;
+                foreach (var prj in _projects)
+                {
+                    if (String.Equals(prj.Name, xProject.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        lAdd2Queue = false;
+                        break;
+                    }
+                }
+                if (lAdd2Queue)
+                {
+                    _projects.Enqueue(xProject);
+                }
                 if (!IsWalkerRunning)
                 {
                     Walk();

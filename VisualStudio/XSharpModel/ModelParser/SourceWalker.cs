@@ -17,14 +17,6 @@ namespace XSharpModel
 {
     public class SourceWalker
     {
-
-        static XSharpCommandLineParser xsCmdLineparser;
-
-        static SourceWalker()
-        {
-            xsCmdLineparser = XSharpCommandLineParser.Default;
-        }
-
         private IClassificationType _xsharpIdentifierType;
         private IClassificationType _xsharpBraceOpenType;
         private IClassificationType _xsharpBraceCloseType;
@@ -35,7 +27,6 @@ namespace XSharpModel
         private string _fullPath;
         private List<ClassificationSpan> _tags;
         private string[] _args;
-        private XSharpParseOptions xsparseoptions;
 
         private XFile _file;
 
@@ -145,14 +136,8 @@ namespace XSharpModel
                 // this gets at least the default include path     
                 // so we can process Vulcan and XSharp include files           
                 // get command line args and compare with old args
-                var args = this.File.Project.ProjectNode.CommandLineArgs;
-                if (args != _args || xsparseoptions == null)
-                {
-                    _args = args;
-                    var cmdlineopts = xsCmdLineparser.Parse(args, "", "", "");
-                    xsparseoptions = cmdlineopts.ParseOptions;
-                }
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, xsparseoptions, _fullPath);
+                var parseoptions = this.File.Project.ProjectNode.ParseOptions;
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, parseoptions, _fullPath);
                 if ( this.File != null )
                 {
                     // Put a Hash Tag on the File

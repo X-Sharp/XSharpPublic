@@ -22,6 +22,7 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Reflection;
 using Microsoft.VisualStudio;
+using LanguageService.CodeAnalysis.XSharp;
 
 namespace XSharpLanguage
 {
@@ -131,7 +132,7 @@ namespace XSharpLanguage
             // Build a list with the tokens we have from the TriggerPoint to the start of the line
             //List<String> tokenList = this.GetTokenList(triggerPoint);
             //LanguageService.SyntaxTree.ITokenStream tokenStream;
-            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false);
+            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _fileName);
             // and make it a string
             //String tokenLine = TokenListAsString(tokenList, 0);
             String filterText = "";
@@ -1776,7 +1777,8 @@ namespace XSharpLanguage
         /// <param name="stopToken">The IToken that stops the move backwards</param>
         /// <param name="fromGotoDefn">Indicate if the call is due to Goto Definition</param>
         /// <returns></returns>
-        public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber, string bufferText, out IToken stopToken, bool fromGotoDefn) // out LanguageService.SyntaxTree.ITokenStream tokenStream)
+        public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber, 
+            string bufferText, out IToken stopToken, bool fromGotoDefn, string fileName) 
         {
             List<String> tokenList = new List<string>();
             String token;
@@ -1784,12 +1786,17 @@ namespace XSharpLanguage
             stopToken = null;
             //tokenStream = null;
             // lex the entire document
-            var stream = new AntlrInputStream(bufferText);
-            var lexer = new XSharpLexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            tokens.Fill();
-            //
-            //tokenStream = tokens;
+            // Get compiler options
+            XFile file = XSolution.FindFile(fileName);
+            XSharpParseOptions parseoptions = null;
+            if (file != null)
+            {
+                var prj = file.Project.ProjectNode;
+                parseoptions  = prj.ParseOptions;
+
+            }
+            var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
+            var tokens = lexer.GetTokenStream();
 
             // locate the last token before the trigger point
             IToken nextToken;
@@ -2697,10 +2704,9 @@ namespace XSharpLanguage
         static XSharpTypes()
         {
             // Dummy call to a Lexer; just to copy the Keywords, Types, ...
-            var stream = new AntlrInputStream("");
-            var lexer = new XSharpLexer(stream);
+            var lexer = XSharpLexer.Create("","");
             //
-            
+
             _xTypes = new List<XType>();
             //
             foreach( var keyword in lexer.KwIds )

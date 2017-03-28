@@ -24,6 +24,7 @@ namespace XSharp.CodeDom
         private MemberAttributes classVarModifiers;
         private CodeMemberMethod initComponent;
         private IList<IToken> _tokens;
+        private IList<string> _localvariables;
 
         public XSharpTreeDiscover()
         {
@@ -37,6 +38,7 @@ namespace XSharp.CodeDom
             this.NamespaceStack = new Stack<CodeNamespace>();
             // To store intermediate declarations
             this.LocalDecls = new Stack<XSharpParser.LocalvarContext>();
+            this._localvariables = new List<String>();
             //
             this.CurrentFile = "";
             _tokens = null;
@@ -173,6 +175,7 @@ namespace XSharp.CodeDom
             newMethod.Attributes = MemberAttributes.Public;
             newMethod.Parameters.AddRange(GetParametersList(context.ParamList));
             newMethod.ReturnType = BuildDataType(context.Type); // new CodeTypeReference(context.Type.GetText());
+            this._localvariables.Clear();
             //
             if (context.Modifiers != null)
             {
@@ -224,6 +227,7 @@ namespace XSharp.CodeDom
         {
             // Reset 
             initComponent = null;
+            _localvariables.Clear();
         }
 
         public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
@@ -483,7 +487,7 @@ namespace XSharp.CodeDom
                 else if (context._expression is XSharpParser.MethodCallContext)
                 {
                     XSharpParser.MethodCallContext exp = (XSharpParser.MethodCallContext)context._expression;
-                    expr = BuildExpression(exp,false);
+                    expr = BuildExpression(exp,true);
                     stmt = new CodeExpressionStatement(expr);
                 }
                 else
@@ -590,26 +594,29 @@ namespace XSharp.CodeDom
         {
             CodeParameterDeclarationExpressionCollection pList = new CodeParameterDeclarationExpressionCollection();
             //
-            foreach (var param in paramList._Params)
+            if (paramList != null)
             {
-                CodeParameterDeclarationExpression pm = new CodeParameterDeclarationExpression();
-                pm.Name = param.Id.GetText();
-                pm.Type = BuildDataType(param.Type); // new CodeTypeReference(param.Type.GetText());
-                pm.Direction = FieldDirection.In;
-                if (param.Modifiers != null)
+                foreach (var param in paramList._Params)
                 {
-                    
-                    if (param.Modifiers.REF() != null)
+                    CodeParameterDeclarationExpression pm = new CodeParameterDeclarationExpression();
+                    pm.Name = param.Id.GetText();
+                    pm.Type = BuildDataType(param.Type); // new CodeTypeReference(param.Type.GetText());
+                    pm.Direction = FieldDirection.In;
+                    if (param.Modifiers != null)
                     {
-                        pm.Direction = FieldDirection.Ref;
+
+                        if (param.Modifiers.REF() != null)
+                        {
+                            pm.Direction = FieldDirection.Ref;
+                        }
+                        else if (param.Modifiers.OUT() != null)
+                        {
+                            pm.Direction = FieldDirection.Out;
+                        }
                     }
-                    else if (param.Modifiers.OUT() != null)
-                    {
-                        pm.Direction = FieldDirection.Out;
-                    }
+                    //
+                    pList.Add(pm);
                 }
-                //
-                pList.Add(pm);
             }
             //
             return pList;
@@ -663,9 +670,14 @@ namespace XSharp.CodeDom
             //
             if (type == XSharpParser.BIN_CONST || type == XSharpParser.INT_CONST || type == XSharpParser.HEX_CONST )
             {
-                bool isUnsigned = (value.Substring(0, 1).ToLower().CompareTo("u") == 0);
+                bool isUnsigned = value.EndsWith("u", StringComparison.OrdinalIgnoreCase);
+                bool isSigned = value.EndsWith("l", StringComparison.OrdinalIgnoreCase);
+                if (isSigned || isUnsigned)
+                {
+                    value = value.Substring(0, value.Length - 1);
+                }
                 // -1 for Unsigned; -2 for 0x or 0b
-                int len = value.Length - (isUnsigned ? 1 : 0) - (context.BIN_CONST() != null || context.HEX_CONST() != null ? 2 : 0);
+                int len = value.Length - (context.BIN_CONST() != null || context.HEX_CONST() != null ? 2 : 0);
                 //
                 if (context.BIN_CONST() != null)
                 {
@@ -787,10 +799,19 @@ namespace XSharp.CodeDom
             else
             {
                 double d;
-                // Should be REAL_CONST
-                if (!double.TryParse(value, out d))
+                if (value.EndsWith("m",StringComparison.OrdinalIgnoreCase) ||
+                    value.EndsWith("r", StringComparison.OrdinalIgnoreCase) ||
+                    value.EndsWith("d", StringComparison.OrdinalIgnoreCase))
                 {
-                    d = double.NaN;
+                    value = value.Substring(0, value.Length - 1);
+                }
+                try
+                {
+                    d = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                }
+                catch (Exception)
+                {
+                    d = Double.NaN;
                 }
                 ret = d;
             }
@@ -930,6 +951,7 @@ namespace XSharp.CodeDom
         {
             CodeVariableDeclarationStatement local = new CodeVariableDeclarationStatement();
             local.Name = context.Id.GetText();
+            _localvariables.Add(local.Name);
             local.Type = localType;
             if (context.Expression != null)
             {
@@ -951,6 +973,31 @@ namespace XSharp.CodeDom
             return local;
         }
 
+        private bool isMember(string name)
+        {
+            foreach (CodeTypeMember cm in this.CurrentClass.Members)
+            {
+                if (cm is CodeMemberField)
+                {
+                    if (String.Compare(name, cm.Name, true) == 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private bool isLocal(string name)
+        {
+            foreach (var local in _localvariables)
+            {
+                if (String.Compare(name, local, true) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         private CodeExpression BuildExpression(XSharpParser.ExpressionContext expression, bool right )
         {
@@ -958,7 +1005,7 @@ namespace XSharp.CodeDom
             //
             if (expression is XSharpParser.PrimaryExpressionContext) // xyz.SimpleName
             {
-                expr = BuildExpression((XSharpParser.PrimaryExpressionContext)expression);
+                expr = BuildPrimaryExpression((XSharpParser.PrimaryExpressionContext)expression);
             }
             else if (expression is XSharpParser.AccessMemberContext) // xyz.SimpleName
             {
@@ -967,42 +1014,52 @@ namespace XSharp.CodeDom
                 //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
                 // else --> always Property
                 bool isMember = false;
+                bool isLocal = false;
+                string lhsName = member.Expr.GetText();
+                string rhsName = member.Name.GetText();
+                string delim = member.Op.Text;
                 CodeExpression left = BuildExpression(member.Expr, false);
-                if (left is CodeThisReferenceExpression)
+                if (delim == ":")
                 {
-                    string fieldCandidate = member.Name.GetText();
-                    foreach (CodeTypeMember cm in this.CurrentClass.Members)
+                    if (left is CodeThisReferenceExpression)
                     {
-                        if (cm is CodeMemberField)
+                        isMember = this.isMember(rhsName);
+                    }
+                    else if (left is CodeVariableReferenceExpression)
+                    {
+                        // Most likely the LHS is a field or variable
+                        if (lhsName.IndexOfAny(new char[] { '.', ':' }) == -1)
                         {
-                            if (String.Compare(fieldCandidate, cm.Name, true) == 0)
-                            {
-                                isMember = true;
-                                break;
-                            }
+                            isMember = this.isMember(lhsName);
+                            isLocal = this.isLocal(lhsName);
                         }
+
                     }
                 }
                 // It seems to be a member...
                 if (isMember)
                 {
-                    expr = new CodeFieldReferenceExpression(BuildExpression(member.Expr, false), member.Name.GetText());
+                    expr = new CodeFieldReferenceExpression(left, rhsName);
+                }
+                else if (isLocal)
+                {
+                    expr = new CodePropertyReferenceExpression(left, rhsName);
                 }
                 else
                 {
                     // Let's guess that on the Left member, we should have a Property if it is not a Field
                     if (!right)
                     {
-                        expr = new CodePropertyReferenceExpression(BuildExpression(member.Expr, false), member.Name.GetText());
+                        expr = new CodePropertyReferenceExpression(left, rhsName);
                     }
                     else
                     {
                         // We are processing the Right member of an Assignment...
                         // Most likely Enum Value, which is a typereference expression followed by a DOT and a field
-                        if (member.DOT() != null)
+                        if (member.Op.Type == XSharpLexer.DOT)
                         {
-                            var typeexpr = new CodeTypeReferenceExpression(member.Expr.GetText());
-                            expr = new CodeFieldReferenceExpression(typeexpr, member.Name.GetText());
+                            var typeexpr = new CodeTypeReferenceExpression(lhsName);
+                            expr = new CodeFieldReferenceExpression(typeexpr, rhsName);
                         }
                         else
                         {
@@ -1020,21 +1077,26 @@ namespace XSharp.CodeDom
                 {
                     foreach (var arg in meth.ArgList._Args)
                     {
-                        exprlist.Add(BuildExpression(arg.Expr, false));
+                        exprlist.Add(BuildExpression(arg.Expr, true));
                     }
                 }
                 if (target is CodeFieldReferenceExpression)
                 {
-                    //
-                    expr = new CodeMethodInvokeExpression(((CodeFieldReferenceExpression)target).TargetObject, ((CodeFieldReferenceExpression)target).FieldName, exprlist.ToArray());
+                    // method call on a field
+                    var cfr = target as CodeFieldReferenceExpression;
+                    expr = new CodeMethodInvokeExpression(cfr.TargetObject, cfr.FieldName, exprlist.ToArray());
                 }
                 else if (target is CodePropertyReferenceExpression)
                 {
-                    //
-                    expr = new CodeMethodInvokeExpression(((CodePropertyReferenceExpression)target).TargetObject, ((CodePropertyReferenceExpression)target).PropertyName, exprlist.ToArray());
+                    // method call on a property
+                    var cpr = target as CodePropertyReferenceExpression;
+                    expr = new CodeMethodInvokeExpression(cpr.TargetObject, cpr.PropertyName, exprlist.ToArray());
                 }
                 else
+                {
+                    // simple method call
                     expr = new CodeMethodInvokeExpression(null, meth.Expr.GetText(), exprlist.ToArray());
+                }
             }
             else if (expression is XSharpParser.TypeCastContext)
             {
@@ -1052,7 +1114,7 @@ namespace XSharp.CodeDom
             return expr;
         }
 
-        private CodeExpression BuildExpression(XSharpParser.PrimaryExpressionContext expression)
+        private CodeExpression BuildPrimaryExpression(XSharpParser.PrimaryExpressionContext expression)
         {
             CodeExpression expr = null;
             XSharpParser.PrimaryContext ctx = expression.Expr;
@@ -1093,9 +1155,9 @@ namespace XSharp.CodeDom
                 XSharpParser.DelegateCtorCallContext delg = (XSharpParser.DelegateCtorCallContext)ctx;
                 //
                 CodeTypeReference ctr = BuildDataType(delg.Type);
-                CodeExpression ce = BuildExpression(delg.Obj,false);
+                CodeExpression ce = BuildExpression(delg.Obj,true);
                 //
-                expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj,false), delg.Func.GetText());
+                expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj,true), delg.Func.GetText());
 
             }
             else if (ctx is XSharpParser.CtorCallContext)
@@ -1108,7 +1170,7 @@ namespace XSharp.CodeDom
                     foreach (var arg in ctor.ArgList._Args)
                     {
                         // We should handle arg.Name if arg.ASSIGN_OP is not null...
-                        exprlist.Add(BuildExpression(arg.Expr,false));
+                        exprlist.Add(BuildExpression(arg.Expr,true));
                     }
                 }
                 expr = new CodeObjectCreateExpression(ctr.BaseType, exprlist.ToArray());
@@ -1130,10 +1192,17 @@ namespace XSharp.CodeDom
                 {
                     expr = new CodeBaseReferenceExpression();
                 }
+                else if (isMember(name))
+                {
+                    expr = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), name);
+                }
+                else if (isLocal(name))
+                {
+                    expr = new CodeVariableReferenceExpression(name);
+                }
                 else
                 {
-                    CodeTypeReference ctr = BuildSimpleName(((XSharpParser.NameExpressionContext)ctx).Name);
-                    expr = new CodeVariableReferenceExpression(name);
+                    expr = new CodeTypeReferenceExpression(BuildSimpleName(((XSharpParser.NameExpressionContext)ctx).Name));
                 }
             }
             else if (ctx is XSharpParser.ParenExpressionContext)

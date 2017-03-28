@@ -957,19 +957,7 @@ namespace XSharp.CodeDom
             local.Type = localType;
             if (context.Expression != null)
             {
-                if (context.Expression is XSharpParser.PrimaryExpressionContext)
-                {
-                    XSharpParser.PrimaryContext ctx = ((XSharpParser.PrimaryExpressionContext)context.Expression).Expr;
-                    if (ctx is XSharpParser.LiteralExpressionContext)
-                    {
-                        XSharpParser.LiteralExpressionContext lit = (XSharpParser.LiteralExpressionContext)ctx;
-                        local.InitExpression = BuildLiteralValue(lit.Literal);
-                    }
-                }
-                else
-                {
-                    local.InitExpression = new CodeSnippetExpression(context.Expression.GetText());
-                }
+                local.InitExpression = BuildExpression(context.Expression, false);
             }
 
             return local;
@@ -1017,24 +1005,67 @@ namespace XSharp.CodeDom
             //what is the left hand side ?
             //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
             // else --> always Property
-            bool isMember = false;
-            bool isLocal = false;
+            System.Type type;
+            string name = member.GetText();
+            type = _projectNode.ResolveType(name, _usings);
+            if (type != null)
+                return new CodeTypeReferenceExpression(type);
             string lhsName = member.Expr.GetText();
             string rhsName = member.Name.GetText();
-            string delim = member.Op.Text;
-            CodeExpression left = BuildExpression(member.Expr, false);
-            if (delim == ":")
+            type = _projectNode.ResolveType(lhsName, _usings);
+            if (type != null)
             {
-                if (left is CodeThisReferenceExpression)
+                var members = type.GetMember(rhsName, MemberTypes.All,BindingFlags.FlattenHierarchy | 
+                    BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+                if (members.Length > 0)
                 {
-                    isMember = this.isMember(rhsName);
-                }
-                else if (left is CodeVariableReferenceExpression)
-                {
-                    isMember = this.isMember(lhsName);
-                    isLocal = this.isLocal(lhsName);
+                    bool isPrivate = false;
+                    CodeTypeReferenceExpression typeExpr = new CodeTypeReferenceExpression(type);
+                    foreach (var m in members)
+                    {
+                        switch (m.MemberType)
+                        {
+                            case MemberTypes.Field:
+                                var fi = m as FieldInfo;
+                                if (!fi.IsPrivate)
+                                    return new CodeFieldReferenceExpression(typeExpr, fi.Name);
+                                break;
+                            case MemberTypes.Property:
+                                var pi = m as PropertyInfo;
+                                if (pi.CanRead)
+                                    isPrivate = pi.GetGetMethod().IsPrivate;
+                                else
+                                    isPrivate = pi.GetSetMethod().IsPrivate;
+                                if (!isPrivate)
+                                    return new CodePropertyReferenceExpression(typeExpr, pi.Name);
+                                break;
+                            case MemberTypes.Method:
+                            case MemberTypes.Constructor:
+                                var mb = m as MethodBase;
+                                isPrivate = mb.IsPrivate;
+                                if (!isPrivate)
+                                    return new CodeMethodReferenceExpression(typeExpr,mb.Name);
+                                break;
+                            case MemberTypes.Event:
+                                var ei = m as EventInfo;
+                                return new CodeEventReferenceExpression(typeExpr, ei.Name);
 
+                        }
+                    }
                 }
+
+            }
+            bool isMember = false;
+            bool isLocal = false;
+            CodeExpression left = BuildExpression(member.Expr, false);
+            if (left is CodeThisReferenceExpression)
+            {
+                isMember = this.isMember(rhsName);
+            }
+            else if (left is CodeVariableReferenceExpression)
+            {
+                isMember = this.isMember(lhsName);
+                isLocal = this.isLocal(lhsName);
             }
             // It seems to be a member...
             if (isMember)
@@ -1485,13 +1516,13 @@ namespace XSharp.CodeDom
         {
             CodeTypeReference expr = null;
             //
+            var sName = context.GetText();
+            System.Type type = _projectNode.ResolveType(sName, _usings);
+            if (type != null)
+                return new CodeTypeReference(type);
             if (context is XSharpParser.QualifiedNameContext)
             {
                 XSharpParser.QualifiedNameContext qual = (XSharpParser.QualifiedNameContext)context;
-                var name = qual.GetText();
-                System.Type type = _projectNode.ResolveType(name, _usings);
-                if (type != null)
-                    return new CodeTypeReference(type);
                 expr = BuildName(qual.Left);
                 expr = BuildTypeReference(expr.BaseType + "." + BuildSimpleName(qual.Right).BaseType);
             }

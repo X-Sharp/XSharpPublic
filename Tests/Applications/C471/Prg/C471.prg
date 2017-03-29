@@ -1,9 +1,9 @@
 // 471. Parser errors in VO dialect
 
 FUNCTION Start() AS VOID
-LOCAL @@_init AS INT
-@@_init := 1
-? @@_init
+LOCAL _init AS INT
+_init := 1
+? _init
 
 LOCAL @@other AS INT
 @@other := 1

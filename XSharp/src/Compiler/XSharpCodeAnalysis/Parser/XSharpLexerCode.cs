@@ -977,7 +977,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 var token = VoKeywords[text];
                 ids.Add(text, token);
-                if (lFour)
+                if (lFour && ! text.StartsWith("_INIT"))
                 {
                     var s = text;
                     while (s.Length > 4)
@@ -1213,7 +1213,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             lexer.TokenFactory = XSharpTokenFactory.Default;
             lexer.AllowFourLetterAbbreviations = false;
             lexer.AllowOldStyleComments = false;
-            if (options != null && options.IsDialectVO)
+            if (options != null && options.Dialect == XSharpDialect.VO) 
             {
                 lexer.AllowOldStyleComments = true;
                 lexer.AllowFourLetterAbbreviations = true;

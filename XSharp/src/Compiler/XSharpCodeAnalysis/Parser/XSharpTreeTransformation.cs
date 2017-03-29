@@ -203,7 +203,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             get { return "$" + _unique++; }
         }
 
-        internal T FixPosition<T>(T r, IToken t) where T : ParserRuleContext
+        internal T FixPosition<T>(T r, IToken t) where T : XSharpParserRuleContext
         {
             r.Start = r.Stop = t;
             return r;
@@ -565,7 +565,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _emptyBracketedArgs;
         }
 
-        protected SyntaxList<T> MakeList<T>(IEnumerable<IParseTree> t) where T : InternalSyntax.CSharpSyntaxNode
+        protected SyntaxList<T> MakeList<T>(IEnumerable<IXParseTree> t) 
+            where T : InternalSyntax.CSharpSyntaxNode
         {
             if (t == null)
                 return default(SyntaxList<T>);
@@ -585,7 +586,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return list;
         }
 
-        protected SyntaxList<T> MakeList<T>(IEnumerable<T> t, params T[] items) where T : InternalSyntax.CSharpSyntaxNode
+        protected SyntaxList<T> MakeList<T>(IEnumerable<T> t, params T[] items) 
+            where T : InternalSyntax.CSharpSyntaxNode
         {
             var l = _pool.Allocate<T>();
             if (t != null)
@@ -630,7 +632,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (l.Count > 0)
                         l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                    l.Add(((IParseTree)item).Get<T>());
+                    l.Add(((IXParseTree)item).Get<T>());
                 }
             }
             var list = l.ToList();
@@ -1424,7 +1426,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             #endregion
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
-            IParseTree xnode = null;
+            IXParseTree xnode = null;
             #region ACCESS = Get Accessor
             if (AccMet != null)
             {
@@ -1484,7 +1486,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 accessors.Add(accessor);
                 accessor.XNode = AccMet;
                 AccMet.CsNode = null;
-                AccMet.Parent.CsNode = null;
+                ((IXParseTree)AccMet.Parent).CsNode = null;
                 xnode = AccMet;
             }
             #endregion
@@ -1525,7 +1527,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 accessors.Add(accessor);
                 accessor.XNode = AssMet;
                 AssMet.CsNode = null;
-                AssMet.Parent.CsNode = null;
+                ((IXParseTree)AssMet.Parent).CsNode = null;
                 if (xnode == null)
                     xnode = AssMet;
             }
@@ -1619,8 +1621,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        public override void ExitEveryRule([NotNull] ParserRuleContext context)
+        public override void ExitEveryRule([NotNull] ParserRuleContext ctxt)
         {
+            var context = ctxt as XSharpParserRuleContext;
             if (context.HasErrors() && context.CsNode != null && context.CsNode is CSharpSyntaxNode)
             {
                 foreach (var e in context.ErrorData)
@@ -1782,7 +1785,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
-            var entity = context.children[0];
+            var entity = context.children[0] as IXParseTree;
             if (entity is XP.IGlobalEntityContext)
             {
                 var modifiers = ((XP.IGlobalEntityContext)entity).FuncProcModifiers;
@@ -2767,7 +2770,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         initExpr = initExpr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_SyntaxError, "AS"));
                         context.Initializer.Put(initExpr);
-                        context.ASSIGN_OP().Put(initExpr);
+                        ((IXParseTree)context.ASSIGN_OP()).Put(initExpr);
                         context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
                     }
                     else
@@ -2876,7 +2879,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 if (context.Auto != null)
-                    context.AddError(new ParseErrorData(context.AUTO(), ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
+                    context.AddError(new ParseErrorData(context.Auto, ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
                 context.Put(_syntaxFactory.IndexerDeclaration(
                     attributeLists: atts,
                     modifiers: mods,

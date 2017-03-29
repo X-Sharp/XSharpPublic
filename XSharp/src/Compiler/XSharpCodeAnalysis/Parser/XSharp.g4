@@ -23,8 +23,8 @@ grammar XSharp;
 // - preprocessor , #region, #using etc
 
 options	{
-        language=CSharp;
         tokenVocab=XSharpLexer;
+        contextSuperClass=XSharpParserRuleContext;
         }
 
 source				: (Entities+=entity)* EOF

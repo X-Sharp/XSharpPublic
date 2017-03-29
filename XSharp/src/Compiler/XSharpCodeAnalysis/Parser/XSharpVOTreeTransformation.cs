@@ -1105,7 +1105,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XP.AttributesContext atts,
             XP.ParameterListContext paramlist,
             XP.StatementBlockContext stmtblock,
-            ParserRuleContext econtext,
+            XSharpParserRuleContext econtext,
             IToken chain = null,
             XP.ArgumentListContext args = null,
             bool isInInterface = false)
@@ -1193,7 +1193,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxList<SyntaxToken> modifiers,
             XP.AttributesContext atts,
             XP.StatementBlockContext stmtblock,
-            ParserRuleContext econtext,
+            XSharpParserRuleContext econtext,
             bool isInInterface = false)
         {
             if (modifiers.Any(SyntaxKind.ExternKeyword))
@@ -2167,7 +2167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
 
-        private void _GenerateString2Psz(ParserRuleContext context, ExpressionSyntax expr)
+        private void _GenerateString2Psz(XSharpParserRuleContext context, ExpressionSyntax expr)
         {
             CurrentEntity.Data.UsesPSZ = true;
             NameSyntax pszlist = GenerateSimpleName(XSharpSpecialNames.VoPszList);

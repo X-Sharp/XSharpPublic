@@ -20,7 +20,6 @@ lexer grammar XSharpLexer;
 */
 
 options	{
-			language=CSharp;
 		}
 
 

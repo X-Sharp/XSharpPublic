@@ -59,12 +59,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (e?.OffendingToken != null)
                 {
                     //Debug.WriteLine(_fileName+"(" + e.OffendingToken.Line + "," + e.OffendingToken.Column + "): error: " + msg);
-                    _parseErrors.Add(new ParseErrorData(new ErrorNodeImpl(e.OffendingToken), ErrorCode.ERR_ParserError, msg));
+                    _parseErrors.Add(new ParseErrorData(e.OffendingToken, ErrorCode.ERR_ParserError, msg));
                 }
                 else if (offendingSymbol != null)
                 {
                     //Debug.WriteLine(_fileName + "(" + offendingSymbol.Line + "," + offendingSymbol.Column + "): error: " + msg);
-                    _parseErrors.Add(new ParseErrorData(new ErrorNodeImpl(offendingSymbol), ErrorCode.ERR_ParserError, msg));
+                    _parseErrors.Add(new ParseErrorData(offendingSymbol, ErrorCode.ERR_ParserError, msg));
                 }
                 else
                 {
@@ -221,7 +221,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
-                eof.XNode = new ErrorNodeImpl(tree.Stop);
+                eof.XNode = new XTerminalNodeImpl(tree.Stop);
                 var result = _syntaxFactory.CompilationUnit(
                     treeTransform.GlobalEntities.Externs,
                     treeTransform.GlobalEntities.Usings,
@@ -325,8 +325,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             if (e.Node.Parent != null)
                             {
-                                pos = e.Node.Parent.Position;
-                                len = e.Node.Parent.FullWidth;
+                                var xNode = e.Node as IXParseTree;
+                                pos = xNode.Position;
+                                len = xNode.FullWidth;
                             }
                             if (pos <= 0)
                                 pos = 1;

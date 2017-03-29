@@ -17,12 +17,10 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
@@ -982,7 +980,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var clone = cachedFile.Tokens.ToIListIToken();
                 var tokenSource = new ListTokenSource(clone, cachedFile.FileName);
                 var tokenStream = new BufferedTokenStream(tokenSource);
-                tokenStream.Sync(clone.Count);
+                tokenStream.Fill();
                 InsertStream(cachedFile.FileName, tokenStream);
             }
             return true;

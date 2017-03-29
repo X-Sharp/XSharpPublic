@@ -13,16 +13,15 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System.Collections.Immutable;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp;
+using System;
+using Antlr4.Runtime;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
-    using System.Collections.Immutable;
-    using System.Collections.Generic;
-    using Microsoft.CodeAnalysis.CSharp;
 
-    using System;
-    using Antlr4.Runtime;
-
-    public partial class XSharpLexer : Lexer
+    public partial class XSharpLexer 
     {
         // Several Help methods that can be used for colorizing in an editor
         public static bool IsKeyword(int iToken)
@@ -69,8 +68,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return fc == '_' || (fc >= 'A' && fc <= 'Z') || (fc >= 'a' && fc <= 'z');
             }
         }
-        IList<Antlr4.Runtime.Tree.ParseErrorData> _lexErrors = new List<Antlr4.Runtime.Tree.ParseErrorData>();
-        internal IList<Antlr4.Runtime.Tree.ParseErrorData> LexErrors { get { return _lexErrors; } }
+        IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
+        internal IList<ParseErrorData> LexErrors { get { return _lexErrors; } }
 
         int _lastToken = NL;
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
@@ -716,9 +715,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         if (!t.Text.EndsWith("*/"))
                         {
-                            _lexErrors.Add(new Antlr4.Runtime.Tree.ParseErrorData(
-                                new Antlr4.Runtime.Tree.ErrorNodeImpl(t), ErrorCode.ERR_OpenEndedComment)
-                                );
+                            _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
                         }
                     }
                 }
@@ -769,7 +766,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (_hasEos)
                 {
-                    if (type == SEMI )
+                    if (type == SEMI)
                     {
                         if (_lastToken != SEMI)
                             t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
@@ -794,8 +791,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             if (t.Channel == TokenConstants.DefaultChannel)
                 _lastToken = type; // nvk: Note that this is the type before any modifications!!!
-            
-            if (_inPp )
+
+            if (_inPp)
             {
                 // this is how a list of tokens for a #define will look like:
                 // Token        Channel
@@ -922,7 +919,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			// Predefined types
             {"ARRAY", ARRAY},
             {"BYTE", BYTE},
-            {"_CODEBLOCK", CODEBLOCK},
             {"CODEBLOCK", CODEBLOCK},
             {"DATE", DATE},
             {"DWORD", DWORD},
@@ -974,6 +970,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 VoKeywords.Add("PROTECT", PROTECTED);
                 VoKeywords.Add("SHORT", SHORTINT);
                 VoKeywords.Add("LONG", LONGINT);
+                VoKeywords.Add("_CODEBLOCK", CODEBLOCK);
+
             }
             foreach (var text in VoKeywords.Keys)
             {
@@ -1207,11 +1205,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        static public XSharpLexer Create( string text, string fileName, CSharpParseOptions options = null)
+        static public XSharpLexer Create(string text, string fileName, CSharpParseOptions options = null)
         {
             var stream = new AntlrInputStream(text);
             stream.name = fileName;
-            var lexer =  new XSharpLexer(stream);
+            var lexer = new XSharpLexer(stream);
             lexer.TokenFactory = XSharpTokenFactory.Default;
             lexer.AllowFourLetterAbbreviations = false;
             lexer.AllowOldStyleComments = false;

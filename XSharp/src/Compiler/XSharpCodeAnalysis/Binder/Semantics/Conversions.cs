@@ -14,14 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
-using XP= LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -242,11 +238,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (sourceExpression.Syntax != null)
             {
                 var xNode = sourceExpression.Syntax.XNode;
-                while (!(xNode is XP.VoCastExpressionContext) && ! (xNode is XP.VoConversionExpressionContext) )
+                while (!(xNode is XP.VoCastExpressionContext) &&
+                    ! (xNode is XP.VoConversionExpressionContext) )
                 {
                     if (xNode == null)
                         break;
-                    xNode = xNode.Parent;   
+                    xNode = xNode.Parent as IXParseTree;
                 }
                 if (xNode != null)
                 {

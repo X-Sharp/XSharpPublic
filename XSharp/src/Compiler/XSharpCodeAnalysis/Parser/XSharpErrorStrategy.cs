@@ -33,9 +33,13 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    partial class XSharpErrorStrategy : DefaultErrorStrategy
+    internal class XSharpErrorStrategy : DefaultErrorStrategy
     {
-        protected internal override void ReportUnwantedToken(Parser recognizer)
+        internal XSharpErrorStrategy() : base()
+        {
+
+        }
+        protected override void ReportUnwantedToken(Parser recognizer)
         {
             if (InErrorRecoveryMode(recognizer))
             {
@@ -77,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             recognizer.NotifyErrorListeners(t, msg, null);
         }
-        protected internal override void ReportInputMismatch(Parser recognizer, InputMismatchException e)
+        protected override void ReportInputMismatch(Parser recognizer, InputMismatchException e)
         {
             IntervalSet expecting = GetExpectedTokens(recognizer);
             string msg;
@@ -95,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             NotifyErrorListeners(recognizer, msg, e);
         }
-        protected internal override void ReportNoViableAlternative(Parser recognizer, NoViableAltException e)
+        protected override void ReportNoViableAlternative(Parser recognizer, NoViableAltException e)
         {
             ITokenStream tokens = ((ITokenStream)recognizer.InputStream);
             string input;
@@ -187,7 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             NotifyErrorListeners(recognizer, msg, e);
         }
-        protected internal override string EscapeWSAndQuote(string s)
+        protected override string EscapeWSAndQuote(string s)
         {
             //		if ( s==null ) return s;
             s = s.Replace("\r\n", "CRLF");

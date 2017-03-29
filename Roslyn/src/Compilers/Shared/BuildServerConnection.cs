@@ -54,7 +54,11 @@ namespace Microsoft.CodeAnalysis.CommandLine
 
     internal sealed class BuildServerConnection
     {
+#if XSHARP
+        internal const string ServerName = "XSCompiler.exe";
+#else
         internal const string ServerName = "VBCSCompiler.exe";
+#endif
 
         // Spend up to 1s connecting to existing process (existing processes should be always responsive).
         internal const int TimeOutMsExistingProcess = 1000;

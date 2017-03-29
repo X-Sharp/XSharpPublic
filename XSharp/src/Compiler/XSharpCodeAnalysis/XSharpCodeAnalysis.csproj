@@ -27,7 +27,10 @@
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
     <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
+    <TargetFrameworkProfile />
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	</PropertyGroup>
   <ItemGroup Label="Project References">
     <!--<ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2D}</Project>

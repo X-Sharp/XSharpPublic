@@ -19,7 +19,8 @@
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
-  </PropertyGroup>
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	</PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj">
       <Project>{7b774abc-83a0-4fd8-91fb-1dbe8829765b}</Project>

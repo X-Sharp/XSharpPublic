@@ -172,6 +172,7 @@ Generated/
 
 #project Locks
 project.lock.json
+*.project.lock.json
 
 
 __history/

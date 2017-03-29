@@ -84,7 +84,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
             }
         }
-
         public override void ExitEveryRule([NotNull] ParserRuleContext ctxt)
         {
             var context = ctxt as XSharpParserRuleContext;

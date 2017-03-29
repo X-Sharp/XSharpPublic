@@ -20,7 +20,8 @@
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
     <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
-  </PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	</PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSCompiler\XSCompiler.csproj">
       <Project>{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}</Project>
@@ -74,9 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="xsc.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="xsc.rsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

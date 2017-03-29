@@ -7,7 +7,7 @@ goto Error
 :Ok
 Echo Building Compiler 
 msbuild Compiler.sln 		/fl1 /flp1:Append /p:Configuration=%1	    /t:Build /p:OfficialBuild=true /m /v:m /nologo
-msbuild VsIntegration.sln 	/fl1 /flp1:Append /p:Configuration=%1	/t:Build /m /v:m /nologo
+rem msbuild VsIntegration.sln 	/fl1 /flp1:Append /p:Configuration=%1	/t:Build /m /v:m /nologo
 rem msbuild Setup.sln 			/fl1 /flp1:Append /p:Configuration=%1	/t:Build /m /v:m /nologo
 if exist build-%1.log del build-%1.log
 rename msbuild1.log build-%1.log

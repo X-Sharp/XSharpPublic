@@ -75,7 +75,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
                 sessionKey = sessionKey ?? GetSessionKey(buildPaths);
                 var libDirectory = Environment.GetEnvironmentVariable("LIB");
 #if XSHARP
-                var paths = global::XSharp.Xsc.GetXSharpPaths();
+                var paths = LanguageService.CodeAnalysis.XSharp.CommandLine.Xsc.GetPaths();
                 if (libDirectory == null)
                     libDirectory = string.Empty;
                 libDirectory = libDirectory+":::"+paths[0] +":::"+ paths[1]+ ":::" + paths[2];
@@ -234,11 +234,11 @@ namespace Microsoft.CodeAnalysis.CommandLine
 }
 #if XSHARP
 
-namespace XSharp
+namespace LanguageService.CodeAnalysis.XSharp.CommandLine
 {
-    static class Xsc
+    internal sealed partial class Xsc
     {
-        internal static string[] GetXSharpPaths()
+        internal static string[] GetPaths()
         {
             var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
             string XSharpIncludeDir = String.Empty;

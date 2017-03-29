@@ -26,7 +26,7 @@ using Microsoft.CodeAnalysis.CommandLine;
 
 namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 {
-    internal sealed class Xsc : CSharpCompiler
+    internal sealed partial class Xsc : CSharpCompiler
     {
         internal Xsc(string responseFile, BuildPaths buildPaths, string[] args, IAnalyzerAssemblyLoader analyzerLoader)
             : base(CSharpCommandLineParser.Default, responseFile, args, buildPaths, Environment.GetEnvironmentVariable("LIB"), analyzerLoader)
@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
         internal static int Run(string[] args, BuildPaths buildPaths, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)
         {
             FatalError.Handler = FailFast.OnFatalException;
-            string[] paths = global::XSharp.Xsc.GetXSharpPaths();
+            string[] paths = GetPaths(); 
             XSharpSpecificCompilationOptions.SetDefaultIncludeDir(paths[0]);
             XSharpSpecificCompilationOptions.SetWinDir(paths[1]);
             XSharpSpecificCompilationOptions.SetSysDir(paths[2]);

@@ -49,46 +49,10 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
         internal static int Run(string[] args, BuildPaths buildPaths, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)
         {
             FatalError.Handler = FailFast.OnFatalException;
-
-            var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
-            string XSharpIncludeDir = String.Empty;
-            string VulcanIncludeDir = string.Empty;
-            try {
-                string key;
-                if (Environment.Is64BitProcess)
-                    key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey64;
-                else
-                    key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey;
-                XSharpIncludeDir = (string)Registry.GetValue(key, global::XSharp.Constants.RegistryValue, "");
-            }
-            catch (Exception) { }
-            try {
-                string key;
-                if (Environment.Is64BitProcess)
-                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
-                else
-                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
-                VulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
-            } catch (Exception) { }
-            if (!String.IsNullOrEmpty(XSharpIncludeDir))
-            {
-                if (!XSharpIncludeDir.EndsWith("\\"))
-                    XSharpIncludeDir += @"\";
-                XSharpIncludeDir += @"Include\";
-            }
-
-            if (!String.IsNullOrEmpty(VulcanIncludeDir)) {
-                if (!VulcanIncludeDir.EndsWith("\\"))
-                    VulcanIncludeDir += @"\";
-                VulcanIncludeDir += @"Include\";
-            }
-            includeDir = includeDir ?? "" + XSharpIncludeDir;
-            if (!string.IsNullOrEmpty(VulcanIncludeDir))
-                includeDir += ";" + VulcanIncludeDir;
-            XSharpSpecificCompilationOptions.SetDefaultIncludeDir(includeDir);
-            XSharpSpecificCompilationOptions.SetWinDir(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
-            XSharpSpecificCompilationOptions.SetSysDir(Environment.GetFolderPath(Environment.SpecialFolder.System));
-
+            string[] paths = global::XSharp.Xsc.GetXSharpPaths();
+            XSharpSpecificCompilationOptions.SetDefaultIncludeDir(paths[0]);
+            XSharpSpecificCompilationOptions.SetWinDir(paths[1]);
+            XSharpSpecificCompilationOptions.SetSysDir(paths[2]);
             var responseFile = Path.Combine(buildPaths.ClientDirectory, CSharpCompiler.ResponseFileName);
             var compiler = new Xsc(responseFile, buildPaths, args, analyzerLoader);
             var result = ConsoleUtil.RunWithUtf8Output(compiler.Arguments.Utf8Output, textWriter, tw => compiler.Run(tw));
@@ -120,3 +84,4 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 
     }
 }
+

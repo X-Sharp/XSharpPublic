@@ -11,7 +11,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static Microsoft.CodeAnalysis.CommandLine.CompilerServerLogger;
-
+#if XSHARP
+using Microsoft.Win32;
+#endif
 namespace Microsoft.CodeAnalysis.CommandLine
 {
     internal delegate int CompileFunc(string[] arguments, BuildPaths buildPaths, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerAssemblyLoader);
@@ -72,6 +74,12 @@ namespace Microsoft.CodeAnalysis.CommandLine
             {
                 sessionKey = sessionKey ?? GetSessionKey(buildPaths);
                 var libDirectory = Environment.GetEnvironmentVariable("LIB");
+#if XSHARP
+                var paths = global::XSharp.Xsc.GetXSharpPaths();
+                if (libDirectory == null)
+                    libDirectory = string.Empty;
+                libDirectory = libDirectory+":::"+paths[0] +":::"+ paths[1]+ ":::" + paths[2];
+#endif
                 var serverResult = RunServerCompilation(textWriter, parsedArgs, buildPaths, libDirectory, sessionKey, keepAlive);
                 if (serverResult.HasValue)
                 {
@@ -195,7 +203,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
         }
 
         /// <summary>
-        /// When running on Windows we can't take the commmand line which was provided to the 
+        /// When running on Windows we can't take the command line which was provided to the 
         /// Main method of the application.  That will go through normal windows command line 
         /// parsing which eliminates artifacts like quotes.  This has the effect of normalizing
         /// the below command line options, which are semantically different, into the same
@@ -224,3 +232,63 @@ namespace Microsoft.CodeAnalysis.CommandLine
         }
     }
 }
+#if XSHARP
+
+namespace XSharp
+{
+    static class Xsc
+    {
+        internal static string[] GetXSharpPaths()
+        {
+            var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
+            string XSharpIncludeDir = String.Empty;
+            string VulcanIncludeDir = string.Empty;
+            try
+            {
+                string key;
+                if (Environment.Is64BitProcess)
+                    key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey64;
+                else
+                    key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey;
+                XSharpIncludeDir = (string)Registry.GetValue(key, global::XSharp.Constants.RegistryValue, "");
+            }
+            catch (Exception) { }
+            try
+            {
+                string key;
+                if (Environment.Is64BitProcess)
+                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
+                else
+                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
+                VulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
+            }
+            catch (Exception) { }
+            if (!String.IsNullOrEmpty(XSharpIncludeDir))
+            {
+                if (!XSharpIncludeDir.EndsWith("\\"))
+                    XSharpIncludeDir += @"\";
+                XSharpIncludeDir += @"Include\";
+            }
+
+            if (!String.IsNullOrEmpty(VulcanIncludeDir))
+            {
+                if (!VulcanIncludeDir.EndsWith("\\"))
+                    VulcanIncludeDir += @"\";
+                VulcanIncludeDir += @"Include\";
+            }
+            includeDir = includeDir ?? "" + XSharpIncludeDir;
+            if (!string.IsNullOrEmpty(VulcanIncludeDir))
+                includeDir += ";" + VulcanIncludeDir;
+
+            string[] result = new string[]
+            {
+                includeDir,
+                Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+                Environment.GetFolderPath(Environment.SpecialFolder.System)
+            };
+            return result;
+
+        }
+    }
+}
+#endif

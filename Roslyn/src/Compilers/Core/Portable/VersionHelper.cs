@@ -141,7 +141,11 @@ namespace Microsoft.CodeAnalysis
             {
                 for (int i = lastExplicitValue; i < values.Length; i++)
                 {
+#if !XSHARP
                     values[i] = ushort.MaxValue;
+#else
+                    values[i] = maxValue;
+#endif
                 }
             }
 

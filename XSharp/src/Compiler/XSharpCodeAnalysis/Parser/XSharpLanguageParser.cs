@@ -131,6 +131,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var pp_tokens = new CommonTokenStream(pp);
             _preprocessorTokenStream = pp_tokens;
             var parser = new XSharpParser(pp_tokens);
+            // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
+            // for info about optimization flags such as the next line
+            parser.Interpreter.enable_global_context_dfa = true;    // default = false
+            parser.Interpreter.tail_call_preserves_sll = false;     // default = true
+
             parser.AllowFunctionInsideClass = false;     // 
             if (_options.Dialect == XSharpDialect.VO)
             {

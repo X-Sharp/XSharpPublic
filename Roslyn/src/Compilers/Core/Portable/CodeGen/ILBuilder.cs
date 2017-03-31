@@ -966,7 +966,9 @@ namespace Microsoft.CodeAnalysis.CodeGen
                             Debug.Assert(lastOffset < offset);
                             // if there are any sequence points, there must
                             // be a sequence point at offset 0.
+#if !XSHARP
                             Debug.Assert((lastOffset >= 0) || (offset == 0));
+#endif
                             // the first sequence point on tree/offset location
                             lastOffset = offset;
                             seqPoints.Add(seqPoint);

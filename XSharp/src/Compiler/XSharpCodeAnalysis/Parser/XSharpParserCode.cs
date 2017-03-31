@@ -22,6 +22,7 @@ using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Roslyn.Utilities;
+using Microsoft.CodeAnalysis;
 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {

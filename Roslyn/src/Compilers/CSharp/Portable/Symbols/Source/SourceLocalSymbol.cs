@@ -61,6 +61,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             this._scopeBinder = scopeBinder;
             this._containingSymbol = containingSymbol;
             this._identifierToken = identifierToken;
+#if XSHARP
+            allowRefKind = true;
+#endif
             this._typeSyntax = allowRefKind ? typeSyntax.SkipRef(out this._refKind) : typeSyntax;
             this._declarationKind = declarationKind;
 
@@ -461,7 +464,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal override RefKind RefKind
         {
 #if XSHARP
-            get { return _declarationKind == LocalDeclarationKind.RefVariable ? RefKind.Ref : RefKind.None; }
+            get { return _declarationKind == LocalDeclarationKind.RefVariable ? RefKind.Ref : _refKind; }
 #else
             get { return _refKind; }
 #endif

@@ -4427,13 +4427,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             variables.Add(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 isStatic ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    GenerateSimpleName(staticName))
+                    _syntaxFactory.RefExpression(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword),GenerateSimpleName(staticName)))
                 : (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr)));
             var modifiers = _pool.Allocate();
             if (isConst)
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword));
-            if (isStatic)
-                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword));
+            /*if (isStatic)
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword));*/
             if (!isStatic)
             {
                 context.Put(_syntaxFactory.LocalDeclarationStatement(
@@ -4446,7 +4446,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var decl = _pool.Allocate<StatementSyntax>();
                 decl.Add(_syntaxFactory.LocalDeclarationStatement(
                     modifiers.ToList<SyntaxToken>(),
-                    _syntaxFactory.VariableDeclaration(varType, variables),
+                    _syntaxFactory.VariableDeclaration(
+                        _syntaxFactory.RefType(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), varType), variables),
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                 if (initExpr != null)
                 {

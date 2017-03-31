@@ -61,10 +61,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             StatementBlockContext Statements { get; }
         }
-        public interface ITypeContext : IEntityContext
-        {
-            IList<ClassmemberContext> Members { get; }
-        }
         public interface IEntityContext : IRuleNode, IXParseTree
         {
             EntityData Data { get; }
@@ -337,7 +333,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
         }
-        public partial class Interface_Context : ITypeContext
+        public partial class Interface_Context : IEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -346,9 +342,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
 
-            public IList<ClassmemberContext> Members => this._Members;
         }
-        public partial class Class_Context : ITypeContext
+        public partial class Class_Context : IEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -356,9 +351,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
-            public IList<ClassmemberContext> Members => this._Members;
         }
-        public partial class Structure_Context : ITypeContext
+        public partial class Structure_Context : IEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -366,7 +360,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
-            public IList<ClassmemberContext> Members => this._Members;
         }
         public partial class VodllContext : IEntityContext, IGlobalEntityContext
         {
@@ -392,6 +385,27 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class FuncprocModifiersContext
         {
             public bool IsStaticVisible { get; set; }
+        }
+
+        public partial class VounionContext : IEntityContext 
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => this.Id.GetText();
+            public String ShortName => this.Id.GetText();
+
+        }
+        public partial class VostructContext : IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => this.Id.GetText();
+            public String ShortName => this.Id.GetText();
+
         }
     }
 
@@ -493,7 +507,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
     public class MemVarFieldInfo
     {
-
         public string Name { get; private set; }
         public string Alias { get; private set; }
         public bool IsField { get; private set; }

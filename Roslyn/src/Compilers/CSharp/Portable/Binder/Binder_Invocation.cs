@@ -158,12 +158,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
 
 #if XSHARP
+            BindArgumentsAndNames(node.ArgumentList, diagnostics, analyzedArguments, allowArglist: !isArglist);
             BindPCall(node, diagnostics, analyzedArguments);
 #endif                        
 
             if (isArglist)
             {
+#if !XSHARP
                 BindArgumentsAndNames(node.ArgumentList, diagnostics, analyzedArguments, allowArglist: false);
+#endif
                 result = BindArgListOperator(node, diagnostics, analyzedArguments);
             }
             else
@@ -171,7 +174,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 BoundExpression boundExpression = BindMethodGroup(node.Expression, invoked: true, indexed: false, diagnostics: diagnostics);
                 boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                 string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
+#if !XSHARP
                 BindArgumentsAndNames(node.ArgumentList, diagnostics, analyzedArguments, allowArglist: true);
+#endif
                 result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
             }
 
@@ -441,7 +446,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // error CS1978: Cannot use an expression of type '__arglist' as an argument to a dynamically dispatched operation
                         Error(diagnostics, ErrorCode.ERR_BadDynamicMethodArg, arg.Syntax, "__arglist");
                     }
-#if XSHARP          
+#if XSHARP
                     else if (! lateBound)
 #else
                     else

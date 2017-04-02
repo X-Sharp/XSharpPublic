@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.CodeAnalysis.CSharp.Scripting {
+namespace LanguageService.CodeAnalysis.Scripting {
     using System;
     using System.Reflection;
     
@@ -23,14 +23,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CSharpScriptingResources {
+    internal class XSharpScriptingResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CSharpScriptingResources() {
+        internal XSharpScriptingResources() {
         }
         
         /// <summary>
@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.CodeAnalysis.CSharp.Scripting.CSharpScriptingResources", typeof(CSharpScriptingResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.XSharpScriptingResources", typeof(XSharpScriptingResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting {
         ///  /help                          Display this usage message (alternative form: /?)
         ///  /version                       Display the version and exit
         ///  /i                             Drop to REPL after executing the specified script.
-        ///  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternative  [rest of string was truncated]&quot;;.
+        ///  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternative form: /r [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string InteractiveHelp {
             get {

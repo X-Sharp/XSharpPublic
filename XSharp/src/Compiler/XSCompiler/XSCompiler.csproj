@@ -19,7 +19,7 @@
     <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
     <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-	</PropertyGroup>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
       <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>

@@ -19,7 +19,7 @@ namespace XSharp.Project
     /// <summary>
     /// Combines a listbox, an edit control and a few buttons to allow selection of multiple folders
     /// </summary>
-    public partial class FoldersSelector : UserControl
+    internal partial class FoldersSelector : UserControl
     {
         // =========================================================================================
         // Member Variables
@@ -43,7 +43,7 @@ namespace XSharp.Project
         /// <summary>
         /// Initializes a new instance
         /// </summary>
-        public FoldersSelector()
+        internal FoldersSelector()
         {
             this.InitializeComponent();
             this.moveUpOriginalImage = this.upButton.Image;

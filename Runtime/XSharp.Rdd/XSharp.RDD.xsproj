@@ -135,6 +135,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RddState.prg" />
     <Compile Include="Types\BaseIndex.prg" />
     <Compile Include="Types\BaseMemo.prg" />
     <Compile Include="Types\DBF.prg" />

@@ -1301,7 +1301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
             attributeLists.Add(MakeClipperCallingConventionAttribute(new List<ExpressionSyntax>()));
             var mods = TokenList(SyntaxKind.PublicKeyword);
-            var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null);
+            var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null, null);
             ctor.XGenerated = true;
             return ctor;
         }

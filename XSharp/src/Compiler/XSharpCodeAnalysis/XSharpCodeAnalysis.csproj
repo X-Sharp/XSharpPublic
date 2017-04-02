@@ -29,8 +29,8 @@
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-	</PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup Label="Project References">
     <!--<ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2D}</Project>
@@ -102,13 +102,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeAnalysisResources.Designer.cs">
-      <Link>CodeAnalysisResources.Designer.cs</Link>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
     </Compile>
     <Compile Include="XSharpResources.Designer.cs">
-      <Link>XSharpResources.Designer.cs</Link>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>XSharpResources.resx</DependentUpon>

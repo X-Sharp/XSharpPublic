@@ -9,13 +9,13 @@
     <Import_RootNamespace>CSharpScriptingShared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Hosting\CommandLine\Csi.cs" />
-    <Compile Include="CSharpMemberFilter.cs" />
-    <Compile Include="Hosting\ObjectFormatter\CSharpObjectFormatterImpl.cs" />
-    <Compile Include="Hosting\ObjectFormatter\CSharpPrimitiveFormatter.cs" />
-    <Compile Include="Hosting\ObjectFormatter\CSharpTypeNameFormatter.cs" />
-    <Compile Include="Hosting\ObjectFormatter\CSharpObjectFormatter.cs" />
-    <Compile Include="CSharpScript.cs" />
-    <Compile Include="CSharpScriptCompiler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\CommandLine\Csi.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharpMemberFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CSharpObjectFormatterImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CSharpPrimitiveFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CSharpTypeNameFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\ObjectFormatter\CSharpObjectFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharpScript.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharpScriptCompiler.cs" />
   </ItemGroup>
 </Project>

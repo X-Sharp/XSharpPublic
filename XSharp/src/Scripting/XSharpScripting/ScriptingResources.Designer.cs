@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.CodeAnalysis.Scripting {
+namespace LanguageService.CodeAnalysis.Scripting {
     using System;
     using System.Reflection;
     
@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.Scripting {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.CodeAnalysis.Scripting.ScriptingResources", typeof(ScriptingResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.ScriptingResources", typeof(ScriptingResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -160,7 +160,8 @@ namespace Microsoft.CodeAnalysis.Scripting {
         ///  Ctrl-C        Exit the REPL.
         ///REPL commands:
         ///  #help         Display help on available commands and key bindings.
-        ///Script directiv [rest of string was truncated]&quot;;.
+        ///Script directives:
+        ///  #r [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string HelpText {
             get {

@@ -63,6 +63,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>XSharpScriptingResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <!--    <InternalsVisibleTo Include="csi" />-->

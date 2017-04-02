@@ -57,6 +57,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeployCompilerGeneratorTool
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommandLine", "..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.shproj", "{AD6F474E-E6D4-4217-91F3-B7AF1BE31CCC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripting", "Scripting", "{F533A7B2-8296-4E6B-9D38-1A0A06C83D10}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ScriptingShared", "..\Roslyn\src\Scripting\Core\ScriptingShared.shproj", "{E855F40F-B139-4D7A-9658-C47253D17454}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CSharpScriptingShared", "..\Roslyn\src\Scripting\CSharp\CSharpScriptingShared.shproj", "{BD685E87-5357-4100-976F-37A4BDF47EE8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripting", "Scripting", "{CC5C64CB-F448-4C25-88EB-E22B4A5C9504}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpScripting", "src\Scripting\XSharpScripting\XSharpScripting.csproj", "{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{10993c9b-80cc-4df7-9b32-e6ccd920d64b}*SharedItemsImports = 13
@@ -82,8 +92,10 @@ Global
 		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{a8c219d6-3055-46ee-ba3e-6f07af0f7806}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{ad6f474e-e6d4-4217-91f3-b7af1be31ccc}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{aebebc71-1fde-4901-91e0-5667f9bb211a}*SharedItemsImports = 4
+		..\Roslyn\src\Scripting\CSharp\CSharpScriptingShared.projitems*{bd685e87-5357-4100-976f-37a4bdf47ee8}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\SharedCollections\SharedCollections.projitems*{c1930979-c824-496b-a630-70f5369a636f}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{d0bc9be7-24f6-40ca-8dc6-fcb93bd44b34}*SharedItemsImports = 13
+		..\Roslyn\src\Scripting\Core\ScriptingShared.projitems*{e855f40f-b139-4d7a-9658-c47253d17454}*SharedItemsImports = 13
 		..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems*{f9127f0f-95c8-4576-8081-96e004c1652f}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -307,6 +319,26 @@ Global
 		{6DA08F12-32F2-4DD9-BBAD-982EB71A2C9B}.Release|x64.ActiveCfg = Release|x64
 		{6DA08F12-32F2-4DD9-BBAD-982EB71A2C9B}.Release|x64.Build.0 = Release|x64
 		{6DA08F12-32F2-4DD9-BBAD-982EB71A2C9B}.Release|x86.ActiveCfg = Release|x64
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|ARM.Build.0 = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|x64.Build.0 = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|ARM.ActiveCfg = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|ARM.Build.0 = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|x64.ActiveCfg = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|x64.Build.0 = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -337,5 +369,10 @@ Global
 		{203B6D4D-D370-46F2-82DB-A5FD30EE58CE} = {0881BB9F-A799-47B2-9D39-1F218C037DE5}
 		{6DA08F12-32F2-4DD9-BBAD-982EB71A2C9B} = {DFB67BA4-B8A2-4968-B745-D201B4F4EF11}
 		{AD6F474E-E6D4-4217-91F3-B7AF1BE31CCC} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}
+		{F533A7B2-8296-4E6B-9D38-1A0A06C83D10} = {7A829140-9720-43DA-9151-DA13E6248878}
+		{E855F40F-B139-4D7A-9658-C47253D17454} = {F533A7B2-8296-4E6B-9D38-1A0A06C83D10}
+		{BD685E87-5357-4100-976F-37A4BDF47EE8} = {F533A7B2-8296-4E6B-9D38-1A0A06C83D10}
+		{CC5C64CB-F448-4C25-88EB-E22B4A5C9504} = {1C104221-6CDB-4227-A304-DA1377A2AA1D}
+		{6D1A434C-920C-4D9D-85A9-8A56C7061A1C} = {CC5C64CB-F448-4C25-88EB-E22B4A5C9504}
 	EndGlobalSection
 EndGlobal

@@ -2310,7 +2310,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
+            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: mods,

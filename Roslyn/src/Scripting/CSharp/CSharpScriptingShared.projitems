@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>bd685e87-5357-4100-976f-37a4bdf47ee8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CSharpScriptingShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Hosting\CommandLine\Csi.cs" />
+    <Compile Include="CSharpMemberFilter.cs" />
+    <Compile Include="Hosting\ObjectFormatter\CSharpObjectFormatterImpl.cs" />
+    <Compile Include="Hosting\ObjectFormatter\CSharpPrimitiveFormatter.cs" />
+    <Compile Include="Hosting\ObjectFormatter\CSharpTypeNameFormatter.cs" />
+    <Compile Include="Hosting\ObjectFormatter\CSharpObjectFormatter.cs" />
+    <Compile Include="CSharpScript.cs" />
+    <Compile Include="CSharpScriptCompiler.cs" />
+  </ItemGroup>
+</Project>

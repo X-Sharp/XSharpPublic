@@ -15,6 +15,9 @@ using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Microsoft.CodeAnalysis.CSharp
 {
+#if XSHARP
+    using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+#endif
     internal abstract class CSharpCompiler : CommonCompiler
     {
 #if XSHARP
@@ -85,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 diagnosticBag.Free();
             }
 #if XSHARP
-            var newtree = XSharpLanguageParser.ProcessTrees(trees,parseOptions);
+            var newtree = InternalSyntax.XSharpLanguageParser.ProcessTrees(trees,parseOptions);
             if (newtree != null)
             {
                 var oldtrees = trees;

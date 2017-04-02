@@ -1871,7 +1871,7 @@ namespace XSharpLanguage
                         token = "{}";
                         break;
                     case XSharpLexer.ASSIGN_OP:
-                    case XSharpLexer.COMMA:
+                    //case XSharpLexer.COMMA:
                     case XSharpLexer.USING:
                     case XSharpLexer.AS:
                     case XSharpLexer.IS:

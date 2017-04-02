@@ -246,7 +246,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
             return CSharpSyntaxTree.Create(
                 (Syntax.CompilationUnitSyntax)_syntaxFactory.CompilationUnit(
-                    GlobalEntities.Externs, GlobalEntities.Usings, GlobalEntities.Attributes, GlobalEntities.Members, eof).CreateRed());
+                    GlobalEntities.Externs, 
+                    GlobalEntities.Usings, 
+                    GlobalEntities.Attributes, 
+                    GlobalEntities.Members, eof).
+                    CreateRed());
         }
         public static SyntaxTree DefaultVOSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
         {
@@ -557,7 +561,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName+"." + XSharpSpecialNames.AppInit)));
             }
-            if (context.Type.GetText().ToLower() != "void")
+            if (context.Type != null && context.Type.GetText().ToLower() != "void")
             {
                 newbody.Add(GenerateLocalDecl(XSharpSpecialNames.ReturnName, context.Type.Get<TypeSyntax>()));
                 needsExtraReturn = true;
@@ -1003,22 +1007,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         names.Add(GenerateLiteral(name));
                     }
-                    attrs.Add(MakeAttributeList(
-                        target: null,
-                        attributes: MakeSeparatedList(_syntaxFactory.Attribute(
-                            name: GenerateQualifiedName(VulcanQualifiedTypeNames.ClipperCallingConvention),
-                            argumentList: MakeAttributeArgumentList(
-                                MakeSeparatedList(
-                                    _syntaxFactory.AttributeArgument(null, null,
-                                        _syntaxFactory.ArrayCreationExpression(
-                                            SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                                            arrayOfString,
-                                            _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                                                MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
-                                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)))))
-                                ))
-                        )));
+                    attrs.Add(MakeClipperCallingConventionAttribute(names));
                     attributes = attrs;
                     _pool.Free(attrs);
                 }
@@ -1295,31 +1284,103 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return _voClassAttribs;
         }
-        //public override void ExitClass_([NotNull] XP.Class_Context context)
-        //{
-        //    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-        //    if (!mods.Any((int)SyntaxKind.PartialKeyword))
-        //    {
-        //        var attribs = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-        //        var builder = _pool.Allocate<AttributeListSyntax>();
-        //        foreach (var a in attribs)
-        //        {
-        //            builder.Add(a);
-        //        }
-        //        foreach (var a in VOClassAttribs)
-        //        {
-        //            builder.Add(a);
-        //        }
 
-        //        if (context.Attributes == null)
-        //        {
-        //            context.Attributes = new XP.AttributesContext(context,0);
-        //        }
-        //        context.Attributes.PutList<AttributeListSyntax>(builder.ToList());
-        //        _pool.Free(builder);
-        //    }
-        //    base.ExitClass_(context);
-        //}
+        public ConstructorDeclarationSyntax GenerateClipperCtor(SyntaxToken id)
+        {
+            var pars = GetClipperParameters();
+            var expr = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
+            var args = MakeArgumentList(MakeArgument(expr));
+            var chain = _syntaxFactory.ConstructorInitializer(
+                SyntaxKind.BaseConstructorInitializer,
+                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword),
+                args);
+            var stmts = new List<StatementSyntax>();
+            var body = MakeBlock(stmts);
+            SyntaxListBuilder <AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
+            GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
+            attributeLists.Add(MakeClipperCallingConventionAttribute(new List<ExpressionSyntax>()));
+            var mods = TokenList(SyntaxKind.PublicKeyword);
+            var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null);
+            ctor.XGenerated = true;
+            return ctor;
+        }
+
+        public AttributeListSyntax MakeClipperCallingConventionAttribute(List<ExpressionSyntax> names)
+        {
+            InitializeArrayTypes();
+            return MakeAttributeList(
+                                    target: null,
+                                    attributes: MakeSeparatedList(_syntaxFactory.Attribute(
+                                        name: GenerateQualifiedName(VulcanQualifiedTypeNames.ClipperCallingConvention),
+                                        argumentList: MakeAttributeArgumentList(
+                                            MakeSeparatedList(
+                                                _syntaxFactory.AttributeArgument(null, null,
+                                                    _syntaxFactory.ArrayCreationExpression(
+                                                        SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                                                        arrayOfString,
+                                                        _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
+                                                            SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                                            MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
+                                                            SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)))))
+                                            ))
+                                    ));
+        }
+
+
+        public override void ExitClass_([NotNull] XP.Class_Context context)
+        {
+            base.ExitClass_(context);
+            var csNode = context.Get<CSharpSyntaxNode>();
+            ClassDeclarationSyntax classdecl = null;
+            if (csNode is ClassDeclarationSyntax)
+                classdecl = csNode as ClassDeclarationSyntax;
+            else if (csNode is NamespaceDeclarationSyntax)
+            {
+                var ns = csNode as NamespaceDeclarationSyntax;
+                classdecl = ns.Members[0] as ClassDeclarationSyntax;
+            }
+            else
+            {
+                return;
+            }
+            var members = classdecl.Members;
+            context.Data.HasCtor = false;
+            foreach (var m in members)
+            {
+                if (m is ConstructorDeclarationSyntax)
+                {
+                    context.Data.HasCtor = true;
+                    break;
+                }
+            }
+            
+            if (! context.Data.Partial && !context.Data.HasCtor  && _options.VOClipperConstructors)
+            {
+                //
+                // generate new class constructor
+                // 
+                var ctor = GenerateClipperCtor(classdecl.Identifier);
+                var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                newmembers.AddRange(classdecl.Members);
+                newmembers.Add(ctor);
+                classdecl = classdecl.Update(
+                    classdecl.AttributeLists, 
+                    classdecl.Modifiers, 
+                    classdecl.Keyword, 
+                    classdecl.Identifier, 
+                    classdecl.TypeParameterList, 
+                    classdecl.BaseList, 
+                    classdecl.ConstraintClauses, 
+                    classdecl.OpenBraceToken,
+                    newmembers, 
+                    classdecl.CloseBraceToken, 
+                    classdecl.SemicolonToken);
+                _pool.Free(newmembers);
+                context.Put(classdecl);
+                context.Data.HasCtor = true;
+            }
+        }
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
@@ -1549,8 +1610,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   tryBlock,
                   catchClause,
                   finallyClause);
-            outerTry = CheckForMissingKeyword(context.e, outerTry, "END SEQUENCE");
-
             context.Put(outerTry);
             _pool.Free(stmts);
 

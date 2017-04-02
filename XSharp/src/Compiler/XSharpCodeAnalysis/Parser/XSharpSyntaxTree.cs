@@ -33,6 +33,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser
@@ -192,9 +193,17 @@ namespace Antlr4.Runtime {
             {
                 iBpStart = start.StartIndex;
                 if (end.StopIndex >= start.StartIndex)
-                    iBPLength = end.StopIndex - start.StartIndex+1;
+                {
+                    iBPLength = end.StopIndex - start.StartIndex + 1;
+                }
+                else if (end.StartIndex >= start.StartIndex)
+                {
+                    iBPLength = end.StartIndex - start.StartIndex + 1;
+                }
                 else
+                {
                     iBPLength = 1;
+                }
             }
 
         }
@@ -205,8 +214,10 @@ namespace Antlr4.Runtime {
 			{
 	            if (next.StartIndex > this.Start.StartIndex)
 	                iBPLength = next.StartIndex - this.Start.StartIndex ;
-	            else
-	                iBPLength = 1;
+	            else if (next.StopIndex > this.Start.StartIndex)
+                    iBPLength = next.StopIndex - this.Start.StartIndex;
+                else
+                    iBPLength = 1;
 	            if (iBPLength < 0)
 	                iBPLength = 1;
 			}
@@ -218,14 +229,50 @@ namespace Antlr4.Runtime {
             SetSequencePoint(Start, Stop);
         }
 
-        public void SetSequencePoint(ParserRuleContext context)
+        public void SetSequencePoint(ParserRuleContext end)
         {
-            if (context != null)
+            if (end is XP.EosContext)
             {
-                if (context.Stop != null)
-                    SetSequencePoint(context.Start, context.Stop);
+                SetSequencePoint(this.Start, end.Start);
+                return;
+            }
+            else if (end != null )
+            {
+                if (end.Stop != null )
+                {
+                    SetSequencePoint(this.Start, end.Stop);
+                    return;
+                }
                 else
-                    SetSequencePoint(context.Start, context.Start);
+                {
+                    SetSequencePoint(this.Start, end.Start);
+                    return;
+                }
+            }
+            if (this.Stop != null)
+            {
+                SetSequencePoint(this.Start, this.Stop);
+                return;
+            }
+            else
+            {
+                var last = this.Start;
+                foreach (var child in children)
+                {
+                    var c = child as ParserRuleContext;
+                    if (c != null)
+                    {
+                        if (c.Stop != null && c.Stop.StopIndex > last.StopIndex)
+                        {
+                            last = c.Stop;
+                        }
+                        else if (c.Start.StopIndex > last.StopIndex)
+                        { 
+                                last = c.Start;
+                        }
+                    }
+                }
+                SetSequencePoint(this.Start, last);
             }
         }
         internal string ParentName
@@ -369,15 +416,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     internal sealed partial class CompilationUnitSyntax
     {
-        public Dictionary<string, SourceText> IncludedFiles { get; internal set; }
-        public ITokenStream XTokens { get; internal set; }
-        public ITokenStream XPPTokens { get; internal set; }
-        public IList<Tuple<int, string>> InitProcedures { get; internal set; }
-        public IList<FieldDeclarationSyntax> Globals { get; internal set; }
-        public bool HasPCall { get; internal set; }
-
+        public Dictionary<string, SourceText> IncludedFiles { get; internal set; } = new Dictionary<string, SourceText>();
+        public ITokenStream XTokens { get; internal set; } = default(ITokenStream);
+        public ITokenStream XPPTokens { get; internal set; } = default(ITokenStream);
+        public IList<Tuple<int, string>> InitProcedures { get; internal set; } = new List<Tuple<int, string>>();
+        public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
+        public bool HasPCall { get; internal set; } = false;
     }
-
 }
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -452,70 +497,76 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             String ShortName { get; }
         }
         [FlagsAttribute]
-        enum MethodFlags: short {
+        enum EntityFlags: short {
             None = 0,
-            ClipperCallingConvention = 1 << 0,
-            MissingReturnType = 1 << 1,
-            UsesPSZ = 1 << 2,
-            MustBeUnsafe = 1 << 3,
-            HasTypedParameter = 1 << 4,
-            UsesPCount = 1 << 5,
-            UsesGetMParam = 1 << 6,
-            MustBeVoid = 1 << 7,
-            IsInitAxit = 1 << 8,
-            HasDim = 1 << 9,
+            ClipperCallingConvention = 1 << 0, // Member property
+            MissingReturnType = 1 << 1, // Member property
+            UsesPSZ = 1 << 2,           // Member property
+            MustBeUnsafe = 1 << 3,      // Member property
+            HasTypedParameter = 1 << 4, // Member property
+            UsesPCount = 1 << 5,        // Member property
+            UsesGetMParam = 1 << 6,     // Member property
+            MustBeVoid = 1 << 7,        // Member property
+            IsInitAxit = 1 << 8,        // Member property
+            HasCtor = 1 << 9,           // Class property
+            Partial = 1 << 10,          // Class property
         }
 
         public class EntityData {
-            MethodFlags flags;
+            EntityFlags flags;
 
             public bool HasClipperCallingConvention {
-                get { return flags.HasFlag( MethodFlags.ClipperCallingConvention) ; }
-                set { if(value) flags |= MethodFlags.ClipperCallingConvention; else flags &= ~MethodFlags.ClipperCallingConvention; }
+                get { return flags.HasFlag( EntityFlags.ClipperCallingConvention) ; }
+                set { if(value) flags |= EntityFlags.ClipperCallingConvention; else flags &= ~EntityFlags.ClipperCallingConvention; }
             }
 
             public bool HasMissingReturnType {
-                get { return flags.HasFlag( MethodFlags.MissingReturnType) ; }
-                set { if(value) flags |= MethodFlags.MissingReturnType; else flags &= ~MethodFlags.MissingReturnType; }
+                get { return flags.HasFlag( EntityFlags.MissingReturnType) ; }
+                set { if(value) flags |= EntityFlags.MissingReturnType; else flags &= ~EntityFlags.MissingReturnType; }
             }
             public bool HasTypedParameter {
-                get { return flags.HasFlag(MethodFlags.HasTypedParameter) ; }
-                set { if(value) flags |= MethodFlags.HasTypedParameter; else flags &= ~MethodFlags.HasTypedParameter; }
+                get { return flags.HasFlag(EntityFlags.HasTypedParameter) ; }
+                set { if(value) flags |= EntityFlags.HasTypedParameter; else flags &= ~EntityFlags.HasTypedParameter; }
             }
             public bool UsesPSZ {
-                get { return flags.HasFlag(MethodFlags.UsesPSZ); }
-                set { if(value) flags |= MethodFlags.UsesPSZ; else flags &= ~MethodFlags.UsesPSZ; }
+                get { return flags.HasFlag(EntityFlags.UsesPSZ); }
+                set { if(value) flags |= EntityFlags.UsesPSZ; else flags &= ~EntityFlags.UsesPSZ; }
             }
             public bool MustBeUnsafe {
-                get { return flags.HasFlag(MethodFlags.MustBeUnsafe) ; }
-                set { if(value) flags |= MethodFlags.MustBeUnsafe; else flags &= ~MethodFlags.MustBeUnsafe; }
+                get { return flags.HasFlag(EntityFlags.MustBeUnsafe) ; }
+                set { if(value) flags |= EntityFlags.MustBeUnsafe; else flags &= ~EntityFlags.MustBeUnsafe; }
             }
 
             public bool UsesPCount {
-                get { return flags.HasFlag(MethodFlags.UsesPCount) ; }
-                set { if(value) flags |= MethodFlags.UsesPCount; else flags &= ~MethodFlags.UsesPCount; }
+                get { return flags.HasFlag(EntityFlags.UsesPCount) ; }
+                set { if(value) flags |= EntityFlags.UsesPCount; else flags &= ~EntityFlags.UsesPCount; }
             }
             public bool UsesGetMParam
             {
-                get { return flags.HasFlag( MethodFlags.UsesGetMParam) ; }
-                set { if(value) flags |= MethodFlags.UsesGetMParam; else flags &= ~MethodFlags.UsesGetMParam; }
+                get { return flags.HasFlag( EntityFlags.UsesGetMParam) ; }
+                set { if(value) flags |= EntityFlags.UsesGetMParam; else flags &= ~EntityFlags.UsesGetMParam; }
             }
 
             public bool MustBeVoid            // Assign, SET, Event Accessor
             {
-                get { return flags.HasFlag(MethodFlags.MustBeVoid); }
-                set { if (value) flags |= MethodFlags.MustBeVoid; else flags &= ~MethodFlags.MustBeVoid; }
+                get { return flags.HasFlag(EntityFlags.MustBeVoid); }
+                set { if (value) flags |= EntityFlags.MustBeVoid; else flags &= ~EntityFlags.MustBeVoid; }
             }
             public bool IsInitAxit            // init or axit with /vo1
             {
-                get { return flags.HasFlag(MethodFlags.IsInitAxit); }
-                set { if (value) flags |= MethodFlags.IsInitAxit; else flags &= ~MethodFlags.IsInitAxit; }
+                get { return flags.HasFlag(EntityFlags.IsInitAxit); }
+                set { if (value) flags |= EntityFlags.IsInitAxit; else flags &= ~EntityFlags.IsInitAxit; }
             }
 
-            public bool HasDim
+            public bool HasCtor
             {
-                get { return flags.HasFlag(MethodFlags.HasDim); }
-                set { if (value) flags |= MethodFlags.HasDim; else flags &= ~MethodFlags.HasDim; }
+                get { return flags.HasFlag(EntityFlags.HasCtor); }
+                set { if (value) flags |= EntityFlags.HasCtor; else flags &= ~EntityFlags.HasCtor; }
+            }
+            public bool Partial
+            {
+                get { return flags.HasFlag(EntityFlags.Partial); }
+                set { if (value) flags |= EntityFlags.Partial; else flags &= ~EntityFlags.Partial; }
             }
 
             private List<MemVarFieldInfo> Fields;

@@ -4487,6 +4487,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /lb[+|-]                       Allow late binding
  /norun[+|-]                    Do not link to any default runtime
  /ns:&lt;string&gt;                   Default Namespace
+ /s[+-]                         Syntax Check only (will not produce an assembly output)
  /ovf[+|-]                      Integer overflow exceptions (mapped to /checked)
  /vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
  /vo2[+|-]                      Initialize Strings
@@ -4503,6 +4504,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /vo13[+|-]                     Compatible String Comparisons
  /vo14[+|-]                     Use Float Literals
  /vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
+ /vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
 
                         - PREPROCESOR -
 
@@ -5075,12 +5077,6 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   <data name="ERR_PreProcessorError" xml:space="preserve">
     <value>Pre-processor: {0}</value>
-  </data>
-  <data name="ERR_UserError" xml:space="preserve">
-    <value>Error directive: {0}</value>
-  </data>
-  <data name="WRN_UserWarning" xml:space="preserve">
-    <value>Warning directive: {0}</value>
   </data>
   <data name="ERR_UntypedArrayNotAvailableInDialect" xml:space="preserve">
     <value>Untyped arrays are not available in the selected dialect '{0}'</value>

@@ -63,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo13 => VOStringComparisons;
         //public bool vo14 => VOFloatConstants;
         //public bool vo15 => VOUntypedAllowed;
-        //public bool vo16 => VOInitializeVariables;
+        //public bool vo16 => VOClipperConstructors;
 
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }
@@ -88,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOStringComparisons = opt.Vo13;
                 //VOFloatConstants = opt.Vo14;              // Handled in the parser
                 //VOUntypedAllowed = opt.Vo15;              // Handled in the parser
-                //VOInitializeVariables = opt.Vo16;         // Handled in the parser
+                //VOClipperConstructors = opt.Vo16;         // Handled in the parser
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;

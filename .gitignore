@@ -221,4 +221,5 @@ XSharp/docs/Help/
 /Tests/Applications/C386/NativeResources.rc
 /Tests/Applications/C439/Prg/C439.ppo
 /Tests/Applications/C438/Prg/C438.ppo
-*.project.lock.json
+
+project.lock.json

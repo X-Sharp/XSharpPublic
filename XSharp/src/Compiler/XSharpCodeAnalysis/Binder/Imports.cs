@@ -43,16 +43,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                     var _diagnostics = DiagnosticBag.GetInstance();
-                    string n = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(((CSharpSyntaxTree)usingDirective.SyntaxTree).Options);
-                    var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
-                    var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
-                    if (_imported.Kind == SymbolKind.NamedType)
+                    var opts = ((CSharpSyntaxTree)usingDirective.SyntaxTree).Options;
+                    if (opts.CommandLineArguments != null)
                     {
-                        var importedType = (NamedTypeSymbol)_imported;
-                        if (!uniqueUsings.Contains(importedType))
+                        string n = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(opts);
+                        var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
+                        var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
+                        if (_imported.Kind == SymbolKind.NamedType)
                         {
-                            uniqueUsings.Add(importedType);
-                            usings.Add(new NamespaceOrTypeAndUsingDirective(importedType, usingDirective));
+                            var importedType = (NamedTypeSymbol)_imported;
+                            if (!uniqueUsings.Contains(importedType))
+                            {
+                                uniqueUsings.Add(importedType);
+                                usings.Add(new NamespaceOrTypeAndUsingDirective(importedType, usingDirective));
+                            }
                         }
                     }
                 }

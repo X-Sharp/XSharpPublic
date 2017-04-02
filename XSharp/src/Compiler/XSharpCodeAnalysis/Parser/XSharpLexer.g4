@@ -25,9 +25,9 @@ options	{
 
 
 channels {
-			XMLDOC,
-			DEFOUT,
-			PREPROCESSOR,
+			XMLDOCCHANNEL,
+			DEFOUTCHANNEL,
+			PREPROCESSORCHANNEL,
 			PRAGMACHANNEL
 		}
 
@@ -40,8 +40,8 @@ tokens {
 //
 FIRST_KEYWORD,
 ACCESS,ALIGN,AS,ASPEN,ASSIGN,BEGIN,BREAK,CALLBACK,CASE,CAST,CLASS,CLIPPER,DECLARE,DEFINE,DIM,DLL,DLLEXPORT,DO,DOWNTO,ELSE,ELSEIF,END,ENDCASE,ENDDO,ENDIF,EXIT,EXPORT,FASTCALL,FIELD,FIELD_,
-FIELD,FOR,FUNC,FUNCTION,FUNCTION,GLOBAL,HIDDEN,IF,IIF,INHERIT,INIT1,INIT2,INIT3,INSTANCE,IS,IN,LOCAL,LOOP,MEMBER,MEMVAR,METHOD,NAMEOF,NEXT,OTHERWISE,PARAMETERS,PASCAL,
-PRIVATE,PROC,PROCEDURE,PROTECTED,PUBLIC,RECOVER,RETURN,SELF,SEQUENCE,SIZEOF,SIZEOF,STATIC,STEP,STRICT,SUPER,THISCALL,TO,TYPEOF,UNION,
+FOR,FUNC,FUNCTION,GLOBAL,HIDDEN,IF,IIF,INHERIT,INIT1,INIT2,INIT3,INSTANCE,IS,IN,LOCAL,LOOP,MEMBER,MEMVAR,METHOD,NAMEOF,NEXT,OTHERWISE,PARAMETERS,PASCAL,
+PRIVATE,PROC,PROCEDURE,PROTECTED,PUBLIC,RECOVER,RETURN,SELF,SEQUENCE,SIZEOF,STATIC,STEP,STRICT,SUPER,THISCALL,TO,TYPEOF,UNION,
 UPTO,USING,WHILE,WINCALL,
 
 // Vulcan keywords that are not part of the identifier rule
@@ -110,8 +110,6 @@ ASSIGN_OP,ASSIGN_ADD,ASSIGN_SUB,ASSIGN_EXP,ASSIGN_MUL,ASSIGN_DIV,
 ASSIGN_MOD,ASSIGN_BITAND,ASSIGN_BITOR,ASSIGN_LSHIFT,ASSIGN_RSHIFT,
 ASSIGN_XOR,
 
-// Logics
-FALSE_CONST,TRUE_CONST,
 
 // Operators
 LOGIC_AND,LOGIC_OR,LOGIC_NOT,LOGIC_XOR,
@@ -122,8 +120,10 @@ LPAREN,RPAREN,LCURLY,RCURLY,LBRKT,RBRKT,COLON,COMMA,PIPE,AMP,ADDROF,ALIAS,DOT,CO
 LAST_OPERATOR,
 
 FIRST_CONSTANT,
+// Logics
+FALSE_CONST,TRUE_CONST,
 // Consts
-HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRING_CONST,ESCAPED_STRING_CONST,INTERPOLATED_STRING_CONST,
+HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRING_CONST,ESCAPED_STRING_CONST,INTERPOLATED_STRING_CONST,INCOMPLETE_STRING_CONST,
 
 LAST_CONSTANT,
 
@@ -182,8 +182,12 @@ SYMBOL_CONST    : NUMSIGN IDStartChar (IDChar)* ;
 NEQ2			: NUMSIGN ;			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
 
 
-// Char_Const is lexed and parsed as char but then converted to string later
-CHAR_CONST		: '\'' ESCAPED_CHARACTER '\'';
+// Char_Const is parsed as STRING_CONST in all but the core & vulcan dialect
+CHAR_CONST		: '\''   ESCAPED_CHARACTER '\''
+                | C '"'  ESCAPED_STRING_CHARACTER '"'    
+                | C '\'' ESCAPED_CHARACTER '\''
+                ;
+                
 
 STRING_CONST	: '"'  NOT_DOUBLE '"'			// Double quoted string
 				| '\'' NOT_SINGLE '\''			// Single quoted string
@@ -200,6 +204,15 @@ ESCAPED_STRING_CONST
 				: E '"' ESCAPED_STRING_CHARACTER* '"'			// Escaped double quoted string
 				;
 
+// The next rule is used to match incomplete strings and allows to show a proper error message 
+INCOMPLETE_STRING_CONST	: '"'		NOT_DOUBLE					// Double quoted string with  missing end of string
+						| '\''		NOT_SINGLE					// Single quoted string with  missing end of string
+						| I	'"'		NOT_DOUBLE					// interpolated string with  missing end of string
+						| I E  '"'	ESCAPED_STRING_CHARACTER*	// interpolated escaped string with  missing end of string
+						| E I? '"'	ESCAPED_STRING_CHARACTER*	// escaped or interpolated string with  missing end of string
+						;
+
+
 // When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character
 LINE_CONT		:   SEMI WHITESPACE  ('/' '/' '/'?  NOT_NEW_LINE)?			NEW_LINE     ->channel(HIDDEN)
 				;
@@ -212,7 +225,7 @@ SEMI			: SEMICOLON ;
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
 // the Lexer Property AllowOldStyleComments
 
-DOC_COMMENT		:  '/' '/' '/'					NOT_NEW_LINE	-> channel(XMLDOC)
+DOC_COMMENT		:  '/' '/' '/'					NOT_NEW_LINE	-> channel(XMLDOCCHANNEL)
 				;
 
 SL_COMMENT		:( '/' '/'						NOT_NEW_LINE

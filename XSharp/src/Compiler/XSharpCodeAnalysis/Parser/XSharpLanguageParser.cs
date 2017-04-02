@@ -28,22 +28,22 @@ using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
     internal partial class XSharpLanguageParser : SyntaxParser
     {
-        private readonly String _fileName;
+        private readonly string _fileName;
         private readonly SourceText _text;
         private readonly CSharpParseOptions _options;
         private readonly SyntaxListPool _pool = new SyntaxListPool(); // Don't need to reset this.
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
 
-        private ITokenStream _lexerTokenStream;
-        private ITokenStream _preprocessorTokenStream;
+        private CommonTokenStream _lexerTokenStream;
+        private CommonTokenStream _preprocessorTokenStream;
 
         //#if DEBUG
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
@@ -109,55 +109,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal CompilationUnitSyntax ParseCompilationUnitCore()
         {
-#if false
-            SyntaxToken tmp = null;
-            SyntaxListBuilder initialBadNodes = null;
-            var body = new NamespaceBodyBuilder(_pool);
-            try
-            {
-                this.ParseNamespaceBody(ref tmp, ref body, ref initialBadNodes, SyntaxKind.CompilationUnit);
 
-                var eof = this.EatToken(SyntaxKind.EndOfFileToken);
-                var result = _syntaxFactory.CompilationUnit(body.Externs, body.Usings, body.Attributes, body.Members, eof);
-
-                if (initialBadNodes != null)
-                {
-                    // attach initial bad nodes as leading trivia on first token
-                    result = AddLeadingSkippedSyntax(result, initialBadNodes.ToListNode());
-                    _pool.Free(initialBadNodes);
-                }
-
-                return result;
-            }
-            finally
-            {
-                body.Free(_pool);
-            }
-#endif
             if (_options.ShowIncludes)  
             {
                 _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
 
             ParserRuleContext tree;
-            var stream = new AntlrInputStream(_text.ToString());
-            stream.name = _fileName;
-            var lexer = new XSharpLexer(stream);
-            lexer.TokenFactory = XSharpTokenFactory.Default;
-            if(_options.Dialect == XSharpDialect.VO) {
-                lexer.AllowFourLetterAbbreviations = true;
-                lexer.AllowOldStyleComments = true;
-            } else {
-                lexer.AllowFourLetterAbbreviations = false;
-                lexer.AllowOldStyleComments = false;
-            }
-
-            var tokenstream = new CommonTokenStream(lexer);
-            _lexerTokenStream = tokenstream;
+            var lexer = XSharpLexer.Create(_text.ToString(), _fileName, _options);
+            _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
-            tokenstream.Fill(); // Required due to the preprocessor
 #if DEBUG && DUMP_TIMES
             {
                 var ts = DateTime.Now - t;
@@ -166,7 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             var parseErrors = ParseErrorData.NewBag();
-            var pp = new XSharpPreprocessor(lexer, tokenstream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+            var pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var pp_tokens = new CommonTokenStream(pp);
             _preprocessorTokenStream = pp_tokens;
             var parser = new XSharpParser(pp_tokens);
@@ -237,7 +200,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parseErrors.Add(e);
             }
 
-            //#if DEBUG
+            // check for parser errors, such as missing tokens
+            // This adds items to the parseErrors list for missing
+            // tokens and missing keywords
+            var errchecker = new XSharpParseErrorAnalysis(parser,parseErrors);
+            walker.Walk(errchecker, tree);
+            //
+
 
             XSharpTreeTransformation treeTransform;
             if (_options.IsDialectVO)
@@ -249,7 +218,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
             }
 
-            if (parser.NumberOfSyntaxErrors != 0 || 
+            if ( parser.NumberOfSyntaxErrors != 0 || 
                 (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
@@ -338,44 +307,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return fileAsTrivia;
         }
 
-        private SkippedTokensTriviaSyntax ParserErrorsAsTrivia(IEnumerable<ParseErrorData> parseErrors, IDictionary<string,SourceText> includes)
+        private SkippedTokensTriviaSyntax ParserErrorsAsTrivia(List<ParseErrorData> parseErrors, IDictionary<string,SourceText> includes)
         {
-            var builder = new SyntaxListBuilder(1+includes.Count);
+            // create one syntax token per error
+            // and one syntax token for the main file
+            // these tokens will get as many errors as needed.
             var textNode = SyntaxFactory.BadToken(null, _text.ToString(), null);
-            Dictionary<string, SyntaxToken> incNodes = new Dictionary<string, SyntaxToken>(includes.Count);
-            foreach (var inc in includes)
-            {
-                var incNode = SyntaxFactory.BadToken(null, inc.Value.ToString(), null);
-                incNodes[inc.Key] = incNode;
-            }
+            var builder = new SyntaxListBuilder(parseErrors.Count+1);
             if (!parseErrors.IsEmpty())
             {
                 foreach (var e in parseErrors)
                 {
                     if (e.Node != null)
                     {
-                        SyntaxToken node;
-                        if (!string.IsNullOrEmpty(e.Node.SourceFileName) && incNodes.TryGetValue(e.Node.SourceFileName,out node))
-                            incNodes[e.Node.SourceFileName] = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
+                        var key = e.Node.SourceFileName;
+                        int pos = e.Node.Position;
+                        int len = e.Node.FullWidth;
+                        if (len <= 0 || pos <= 0)
+                        {
+                            if (e.Node.Parent != null)
+                            {
+                                pos = e.Node.Parent.Position;
+                                len = e.Node.Parent.FullWidth;
+                            }
+                            if (pos <= 0)
+                                pos = 1;
+                            if (len <= 0)
+                                len = 1;
+                        }
+                        var diag = new SyntaxDiagnosticInfo(pos, len, e.Code, e.Args);
+                        if (key != null && includes.ContainsKey(key))
+                        {
+                            var inc = includes[key];
+                            var incNode = SyntaxFactory.BadToken(null, inc.ToString(), null);
+                            incNode = incNode.WithAdditionalDiagnostics(diag);
+                            incNode.XNode = e.Node;
+                            builder.Add(incNode);
+                        }
                         else
-                            textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
+                        {
+                            textNode = textNode.WithAdditionalDiagnostics(diag);
+                        }
                     }
                     else
+                    {
                         textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Code, e.Args));
+                    }
                 }
             }
             else
             {
-                textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
+                if (! _options.SyntaxCheck)
+                {
+                    textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
+                }
             }
             builder.Add(textNode);
-            foreach (var inc in incNodes)
-            {
-                var t = new XSharpToken(XSharpLexer.WS);
-                t.SourceFileName = inc.Key;
-                inc.Value.XNode = new ErrorNodeImpl(t);
-                builder.Add(inc.Value);
-            }
             return _syntaxFactory.SkippedTokensTrivia(builder.ToList<SyntaxToken>());
         }
 
@@ -386,6 +373,145 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // original failure.
             return AddError(AddLeadingSkippedSyntax(node, FileAsTrivia(_text)), position, 0, ErrorCode.ERR_InsufficientStack);
         }
+
+
+        internal static SyntaxTree ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
+        {
+            if (trees.Length > 0)
+            {
+                var tree = trees[0];
+                var lp = new XSharpLanguageParser(tree.FilePath, null, options,null, null);
+                return lp.processTrees(trees, options);
+            }
+            return null;
+        }
+
+
+        private SyntaxTree processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
+        {
+            // this method gives us the ability to check all the generated syntax trees,
+            // add generated constructors to partial classes when none of the parts has a constructor
+            // merge accesses and assigns from different source files into one property etc.
+            if (!parseoptions.VOClipperConstructors || ! parseoptions.IsDialectVO)
+                return null;
+            var partialClasses = new Dictionary<string, List<XP.Class_Context>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var tree in trees)
+            {
+                var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
+                foreach (var member in compilationunit.Members)
+                {
+                    if (member is Syntax.NamespaceDeclarationSyntax)
+                    {
+                        processNameSpace(member as Syntax.NamespaceDeclarationSyntax, partialClasses);
+                    }
+                    else if (member is Syntax.ClassDeclarationSyntax)
+                    {
+                        processClass(member as Syntax.ClassDeclarationSyntax, partialClasses);
+                    }
+                }
+            }
+            if (partialClasses.Count > 0)
+            {
+                // Create a new tree which shall have the class declarations and generated constructors
+                // and return this tree to the caller.
+                // we copy the attributes, modifiers etc from one of the class instances to make sure that
+                // do not specify a conflicting modifier.
+                // When one of the partial declarations has a Ctor then we do not have to do anything.
+                var tr = trees[0];
+                var cu = tr.GetRoot().Green as CompilationUnitSyntax;
+                var trans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                var classes = _pool.Allocate<MemberDeclarationSyntax>();
+                var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                foreach (var element in partialClasses)
+                {
+                    var name = element.Key;
+                    bool hasctor = false;
+                    XP.Class_Context cls = null;
+                    foreach (var xnode in element.Value)
+                    {
+                        if (cls == null)
+                        {
+                            cls = xnode as XP.Class_Context;
+                        }
+                        if (xnode.Data.HasCtor)
+                        {
+                            hasctor = true;
+                            break;
+                        }
+                    }
+                    if (!hasctor)
+                    {
+                        clsmembers.Clear();
+                        var classdecl = cls.Get<ClassDeclarationSyntax>();
+                        var ctor = trans.GenerateClipperCtor(classdecl.Identifier);
+                        clsmembers.Add(ctor);
+                        
+                        var decl = _syntaxFactory.ClassDeclaration(
+                            trans.MakeCompilerGeneratedAttribute(false), 
+                            classdecl.Modifiers,
+                            classdecl.Keyword, 
+                            classdecl.Identifier, 
+                            classdecl.TypeParameterList,
+                            classdecl.BaseList, 
+                            classdecl.ConstraintClauses, 
+                            classdecl.OpenBraceToken,
+                            clsmembers, 
+                            classdecl.CloseBraceToken, 
+                            null);
+                        decl.XGenerated = true;
+                        classes.Add(decl);
+                    }
+                }
+                _pool.Free(clsmembers);
+                var result = cu.Update(
+                                    cu.Externs,
+                                    cu.Usings,
+                                    cu.AttributeLists,
+                                    classes,
+                                    cu.EndOfFileToken);
+                
+                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed());
+                _pool.Free(classes);
+                return tree;
+            }
+            return null;
+
+        }
+        private static void processClass(Syntax.ClassDeclarationSyntax classdecl, Dictionary<string, List<XP.Class_Context>> partialClasses)
+        {
+            var green = classdecl.Green as ClassDeclarationSyntax;
+            var xnode = green.XNode as XP.EntityContext;
+            if (xnode != null && xnode.ChildCount == 1)
+            {
+                var cls = xnode.GetChild(0) as XP.Class_Context;
+                if (cls != null && cls.Data.Partial )
+                {
+                    var name = cls.Name;
+                    if (!partialClasses.ContainsKey(name))
+                    {
+                        partialClasses.Add(name, new List<XP.Class_Context>());
+                    }
+                    partialClasses[name].Add(cls);
+                }
+            }
+        }
+        private static void processNameSpace(Syntax.NamespaceDeclarationSyntax ns, Dictionary<string, List<XP.Class_Context>> partialClasses)
+        {
+            foreach (var member in ns.Members)
+            {
+                if (member is Syntax.NamespaceDeclarationSyntax)
+                {
+                    processNameSpace(member as Syntax.NamespaceDeclarationSyntax, partialClasses);
+                }
+                else if (member is Syntax.ClassDeclarationSyntax)
+                {
+                    processClass(member as Syntax.ClassDeclarationSyntax, partialClasses);
+                }
+            }
+
+        }
+
+
 
     }
 }

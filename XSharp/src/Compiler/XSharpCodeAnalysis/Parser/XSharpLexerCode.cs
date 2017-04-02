@@ -58,11 +58,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             switch (t.Channel)
             {
                 case XSharpLexer.Hidden: // 1
-                case XSharpLexer.XMLDOC:  // 2
-                case XSharpLexer.DEFOUT: // 3
+                case XSharpLexer.XMLDOCCHANNEL:  // 2
+                case XSharpLexer.DEFOUTCHANNEL: // 3
                 case XSharpLexer.PRAGMACHANNEL: // 5
                     return false;
-                case XSharpLexer.PREPROCESSOR:  // 4
+                case XSharpLexer.PREPROCESSORCHANNEL:  // 4
                 case TokenConstants.DefaultChannel: // 0
                 default:
                     char fc = t.Text?[0] ?? (Char)0;
@@ -89,7 +89,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public override IToken NextToken()
         {
-            CommonToken t;
+            XSharpToken t;
             {
                 var _startCharIndex = InputStream.Index;
                 var _startColumn = Interpreter.Column;
@@ -609,6 +609,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             c = InputStream.La(1);
                         }
                         break;
+                    case 'c':
+                    case 'C':
+                        if (InputStream.La(2) == '"' || InputStream.La(2) == '\'') // char const
+                        {
+                            break;
+                        }
+                        goto case 'a';
                     case 'e':
                     case 'E':
                         if (InputStream.La(2) == '"') // escaped string
@@ -633,7 +640,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         goto case 'a';
                     case 'a':
                     case 'b':
-                    case 'c':
                     case 'd':
                     case 'f':
                     case 'g':
@@ -657,7 +663,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case 'z':
                     case 'A':
                     case 'B':
-                    case 'C':
                     case 'D':
                     case 'F':
                     case 'G':
@@ -701,12 +706,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (_type >= 0)
                 {
                     Interpreter.Column += (InputStream.Index - _startCharIndex);
-                    t = TokenFactory.Create(this.SourcePair, _type, _textSb.ToString(), _channel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as CommonToken;
+                    t = TokenFactory.Create(this.SourcePair, _type, _textSb.ToString(), _channel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
                     Emit(t);
                 }
                 else
                 {
-                    t = base.NextToken() as CommonToken;
+                    t = base.NextToken() as XSharpToken;
                     if (t.Type == ML_COMMENT)
                     {
                         if (!t.Text.EndsWith("*/"))
@@ -767,10 +772,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (type == SEMI )
                     {
                         if (_lastToken != SEMI)
-                            t.Channel = TokenConstants.HiddenChannel;
+                            t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
                     }
                     else
-                        t.Channel = TokenConstants.HiddenChannel;
+                        t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
                 }
                 else
                 {
@@ -789,11 +794,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             if (t.Channel == TokenConstants.DefaultChannel)
                 _lastToken = type; // nvk: Note that this is the type before any modifications!!!
-            if (_inPp && t.Channel == TokenConstants.DefaultChannel)
+            
+            if (_inPp )
             {
-                t.Channel = PREPROCESSOR;
-                if (type == NL || type == Eof)
-                    _inPp = false;
+                // this is how a list of tokens for a #define will look like:
+                // Token        Channel
+                // #define      4
+                // <space>      1
+                // FOO          4
+                // <space>      1
+                // 1            4
+                if (t.Channel == TokenConstants.DefaultChannel)
+                {
+                    t.Channel = t.OriginalChannel = PREPROCESSORCHANNEL;
+                    if (type == NL || type == Eof)
+                        _inPp = false;
+                }
             }
             return t;
         }
@@ -904,7 +920,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"_XOR", VO_XOR},
 
 			// Predefined types
-			{"ARRAY", ARRAY},
+            {"ARRAY", ARRAY},
             {"BYTE", BYTE},
             {"_CODEBLOCK", CODEBLOCK},
             {"CODEBLOCK", CODEBLOCK},
@@ -974,7 +990,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-
+            if (_Four)
+            {
+                ids.Add("ANY", USUAL);
+            }
             var Keywords = new Dictionary<string, int>
         {
 			// Vulcan keywords
@@ -1188,5 +1207,27 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
+        static public XSharpLexer Create( string text, string fileName, CSharpParseOptions options = null)
+        {
+            var stream = new AntlrInputStream(text);
+            stream.name = fileName;
+            var lexer =  new XSharpLexer(stream);
+            lexer.TokenFactory = XSharpTokenFactory.Default;
+            lexer.AllowFourLetterAbbreviations = false;
+            lexer.AllowOldStyleComments = false;
+            if (options != null && options.IsDialectVO)
+            {
+                lexer.AllowOldStyleComments = true;
+                lexer.AllowFourLetterAbbreviations = true;
+            }
+            return lexer;
+        }
+
+        public CommonTokenStream GetTokenStream()
+        {
+            var tokenstream = new CommonTokenStream(this);
+            tokenstream.Fill();
+            return tokenstream;
+        }
     }
 }

@@ -1070,8 +1070,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol type = this.BindType(typeSyntax, diagnostics, out alias);
 
             bool typeHasErrors = type.IsErrorType();
-
+#if XSHARP
+            if (!typeHasErrors && type.IsManagedType && ! Compilation.Options.IsDialectVO)
+#else
             if (!typeHasErrors && type.IsManagedType)
+#endif
             {
                 diagnostics.Add(ErrorCode.ERR_ManagedAddr, node.Location, type);
                 typeHasErrors = true;

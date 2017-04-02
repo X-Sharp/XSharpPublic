@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Compiler Options By Category</title>
   <keywords>
     <keyword>/showdefs</keyword>
@@ -32,7 +32,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">VO/Vulcan Compatibility</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="31" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="32" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -267,6 +267,14 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo16">/vo16</link></para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Body Text">Automatically generate Clipper calling convention constructors for classes without constructor</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-w">/w</link></para>
         </td>
         <td>
@@ -377,7 +385,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target">/target</link></para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target">/target</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specifies the format of the output file using one of five options: /target:<text styleclass="Body Text">appcon</text>tainerexe, /target:exe, /target:library, /target:module, /target:winexe, or /target:winmdobj.</para>
@@ -385,7 +393,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Heading2"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-touchedfiles" styleclass="Body Text">/touchedfiles</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-touchedfiles" styleclass="Body Text">/touchedfiles</link></para>
         </td>
         <td>
           <para styleclass="Normal">Specify filename that will be updated with list of files read and written by the compiler</para>
@@ -677,7 +685,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">Miscellaneous</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="19" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="20" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal">Option</para>
@@ -796,6 +804,14 @@
         </td>
         <td>
           <para styleclass="Normal">Searches subdirectories for source files to compile.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-s">/s</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Syntax check only</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

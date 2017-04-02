@@ -50,6 +50,7 @@ ApplicationGroup = C050-C099,3A527CCD-FFA2-423D-A17F-3B2D5424CFCE,715D7617-320E-
 ApplicationGroup = C001-C049,85737FA8-B9AF-41E9-A347-4C4093D05606,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C300-C399,CB2E170B-0122-4D3B-8692-FF0130BAE231,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C400-C449,C8A205F1-7289-4E5A-A714-71E5A29AFFCE,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C450-C499,6E592304-313A-42E3-8A1D-C66384522531,715D7617-320E-41FF-B82F-E314D950CD23
 
 [Applications]
 
@@ -43679,6 +43680,9 @@ ExportImages = 0
 File = %AppPath%\Prg\C439.prg
 FileGUID = 91D5A813-5177-4A09-B77E-F78F5A51CB6E
 FileType = Code
+File = %AppPath%\Prg\C439.ppo
+FileGUID = 814F7604-23D5-461A-8CAE-15CD2BC5915E
+FileType = Text
 [C439 - more complex #xcommand directives References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
@@ -44235,7 +44239,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C444 - Problem defining FLOAT DEFINE with /vo14+
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C445 - Cannot use SizeOf(USUAL) also DATE, FLOAT etc *************
 Application = C445 - Cannot use SizeOf(USUAL) also DATE, FLOAT etc
 IDEVersion = 1.06
@@ -44380,7 +44384,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C446 - VO incompatibility with missing constructors Native Resources]
 [C446 - VO incompatibility with missing constructors License files]
 [C446 - VO incompatibility with missing constructors General Options]
-Switches=
+Switches=/vo16+
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -44730,7 +44734,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C449 - "Failed to emit module" message with incorrect code, instead of reporting an error
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C450 - Cannot use <,<=,>,>= operators with LOGICs *************
 Application = C450 - Cannot use <,<=,>,>= operators with LOGICs
 IDEVersion = 1.06
@@ -44829,7 +44833,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C450 - Cannot use <,<=,>,>= operators with LOGICs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C451 - ANY is a synonym for USUAL in VO *************
 Application = C451 - ANY is a synonym for USUAL in VO
 IDEVersion = 1.06
@@ -44927,6 +44931,2296 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C451 - ANY is a synonym for USUAL in VO
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C452 - Preprocessor error with different order of clauses in #command *************
+Application = C452 - Preprocessor error with different order of clauses in #command
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C452\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C452
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = F6522847-260E-4A94-862C-38955C7C5A93
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C452 - Preprocessor error with different order of clauses in #command FileGroups]
+[C452 - Preprocessor error with different order of clauses in #command Files]
+File = %AppPath%\Prg\C452.prg
+FileGUID = 8BEFB129-38C0-462D-9B1A-C74814F42479
+FileType = Code
+[C452 - Preprocessor error with different order of clauses in #command References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C452 - Preprocessor error with different order of clauses in #command Resources]
+[C452 - Preprocessor error with different order of clauses in #command Native Resources]
+[C452 - Preprocessor error with different order of clauses in #command License files]
+[C452 - Preprocessor error with different order of clauses in #command General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=1
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C452 - Preprocessor error with different order of clauses in #command Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C452 - Preprocessor error with different order of clauses in #command
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION C453 - Compiler crash with invalid #command *************
+Application = C453 - Compiler crash with invalid #command
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C453\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C453
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = ED7711D2-0F1B-4E83-B873-43D5BC663953
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C453 - Compiler crash with invalid #command FileGroups]
+[C453 - Compiler crash with invalid #command Files]
+File = %AppPath%\Prg\C453.prg
+FileGUID = 96D0A50E-CBE5-4880-91D5-D437BDE3D7A6
+FileType = Code
+File = %AppPath%\Prg\C453.ch
+FileGUID = 21AFC131-79E1-4BA2-8D92-AFA195E2FB3D
+FileType = Code
+[C453 - Compiler crash with invalid #command References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C453 - Compiler crash with invalid #command Resources]
+[C453 - Compiler crash with invalid #command Native Resources]
+[C453 - Compiler crash with invalid #command License files]
+[C453 - Compiler crash with invalid #command General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C453 - Compiler crash with invalid #command Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C453 - Compiler crash with invalid #command
+
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+; ************** APPLICATION C454 - #command problem with TRUE/FALSE literals *************
+Application = C454 - #command problem with TRUE/FALSE literals
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C454\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C454
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = E843BCFC-24ED-4ABC-80D1-98E2613E1473
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C454 - #command problem with TRUE/FALSE literals FileGroups]
+[C454 - #command problem with TRUE/FALSE literals Files]
+File = %AppPath%\Prg\C454.prg
+FileGUID = F95CB848-7ED0-4590-B1C5-9A82058838B1
+FileType = Code
+[C454 - #command problem with TRUE/FALSE literals References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C454 - #command problem with TRUE/FALSE literals Resources]
+[C454 - #command problem with TRUE/FALSE literals Native Resources]
+[C454 - #command problem with TRUE/FALSE literals License files]
+[C454 - #command problem with TRUE/FALSE literals General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C454 - #command problem with TRUE/FALSE literals Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C454 - #command problem with TRUE/FALSE literals
+
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+; ************** APPLICATION C455 - #xcommand problem with ARRAY literals *************
+Application = C455 - #xcommand problem with ARRAY literals
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C455\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C455
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = D840D717-A73D-48DA-A077-D3DEB32FFDC8
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C455 - #xcommand problem with ARRAY literals FileGroups]
+[C455 - #xcommand problem with ARRAY literals Files]
+File = %AppPath%\Prg\C455.prg
+FileGUID = 30124E98-D4A7-4891-A5D4-5204BB1EA1BF
+FileType = Code
+[C455 - #xcommand problem with ARRAY literals References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C455 - #xcommand problem with ARRAY literals Resources]
+[C455 - #xcommand problem with ARRAY literals Native Resources]
+[C455 - #xcommand problem with ARRAY literals License files]
+[C455 - #xcommand problem with ARRAY literals General Options]
+Switches=/ppo
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C455 - #xcommand problem with ARRAY literals Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C455 - #xcommand problem with ARRAY literals
+
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+; ************** APPLICATION C456 - Compiler crash with empty codeblock in command *************
+Application = C456 - Compiler crash with empty codeblock in command
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C456\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C456
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = FE17426F-9DD3-4658-8288-029D107B9114
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C456 - Compiler crash with empty codeblock in command FileGroups]
+[C456 - Compiler crash with empty codeblock in command Files]
+File = %AppPath%\Prg\C456.prg
+FileGUID = 597C04F1-31BE-45CB-A786-3A17A1EEDEBC
+FileType = Code
+[C456 - Compiler crash with empty codeblock in command References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C456 - Compiler crash with empty codeblock in command Resources]
+[C456 - Compiler crash with empty codeblock in command Native Resources]
+[C456 - Compiler crash with empty codeblock in command License files]
+[C456 - Compiler crash with empty codeblock in command General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C456 - Compiler crash with empty codeblock in command Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C456 - Compiler crash with empty codeblock in command
+
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+; ************** APPLICATION C457 - Bogus(?) error about repeated match/result markers *************
+Application = C457 - Bogus(?) error about repeated match/result markers
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C457\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C457
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2C36325A-330D-41BA-9B88-531E10CC8426
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C457 - Bogus(?) error about repeated match/result markers FileGroups]
+[C457 - Bogus(?) error about repeated match/result markers Files]
+File = %AppPath%\Prg\C457.prg
+FileGUID = 2543FB77-02A2-4614-A00F-FA3FFD6574A2
+FileType = Code
+[C457 - Bogus(?) error about repeated match/result markers References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C457 - Bogus(?) error about repeated match/result markers Resources]
+[C457 - Bogus(?) error about repeated match/result markers Native Resources]
+[C457 - Bogus(?) error about repeated match/result markers License files]
+[C457 - Bogus(?) error about repeated match/result markers General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C457 - Bogus(?) error about repeated match/result markers Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C457 - Bogus(?) error about repeated match/result markers
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C458 - Name conflict between DEFINE and METHOD *************
+Application = C458 - Name conflict between DEFINE and METHOD
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C458\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C458
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = B9111F60-584C-4BD6-B506-CAF818354F0B
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C458 - Name conflict between DEFINE and METHOD FileGroups]
+[C458 - Name conflict between DEFINE and METHOD Files]
+File = %AppPath%\Prg\C458.prg
+FileGUID = 8F1897CF-7670-41D5-90A4-A47624548D38
+FileType = Code
+[C458 - Name conflict between DEFINE and METHOD References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C458 - Name conflict between DEFINE and METHOD Resources]
+[C458 - Name conflict between DEFINE and METHOD Native Resources]
+[C458 - Name conflict between DEFINE and METHOD License files]
+[C458 - Name conflict between DEFINE and METHOD General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C458 - Name conflict between DEFINE and METHOD Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C458 - Name conflict between DEFINE and METHOD
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C459 - Misleading error message with omitted argument *************
+Application = C459 - Misleading error message with omitted argument
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C459\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C459
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 995977D6-97F7-4585-AB03-4C92ED86D280
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C459 - Misleading error message with omitted argument FileGroups]
+[C459 - Misleading error message with omitted argument Files]
+File = %AppPath%\Prg\C459.prg
+FileGUID = A3503361-10FB-48B4-B7F6-0F00F11FB062
+FileType = Code
+[C459 - Misleading error message with omitted argument References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C459 - Misleading error message with omitted argument Resources]
+[C459 - Misleading error message with omitted argument Native Resources]
+[C459 - Misleading error message with omitted argument License files]
+[C459 - Misleading error message with omitted argument General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C459 - Misleading error message with omitted argument Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C459 - Misleading error message with omitted argument
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C460 - Preprocessor problem with complex #xcommand *************
+Application = C460 - Preprocessor problem with complex #xcommand
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C460\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C460
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 599F2511-3AF9-49C9-935E-71B23E1ADCE8
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C460 - Preprocessor problem with complex #xcommand FileGroups]
+[C460 - Preprocessor problem with complex #xcommand Files]
+File = %AppPath%\Prg\C460.prg
+FileGUID = B5539B46-D70C-4E2F-B6A7-0B747F3C2087
+FileType = Code
+File = %AppPath%\Prg\C460.CH
+FileGUID = 1C5E36BD-BA4E-491E-9EA0-E853B7CF33C4
+FileType = Binary
+[C460 - Preprocessor problem with complex #xcommand References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C460 - Preprocessor problem with complex #xcommand Resources]
+[C460 - Preprocessor problem with complex #xcommand Native Resources]
+[C460 - Preprocessor problem with complex #xcommand License files]
+[C460 - Preprocessor problem with complex #xcommand General Options]
+Switches=/ppo
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=1
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C460 - Preprocessor problem with complex #xcommand Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C460 - Preprocessor problem with complex #xcommand
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION C461 - Some compiler crashes with invalid syntax *************
+Application = C461 - Some compiler crashes with invalid syntax
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C461\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C461
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = B606E42B-8C9A-49D5-BEF0-0B02D2FC4C34
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C461 - Some compiler crashes with invalid syntax FileGroups]
+[C461 - Some compiler crashes with invalid syntax Files]
+File = %AppPath%\Prg\C461.prg
+FileGUID = 2F615FE9-4A57-4A75-8FB8-64894F96D350
+FileType = Code
+[C461 - Some compiler crashes with invalid syntax References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+[C461 - Some compiler crashes with invalid syntax Resources]
+[C461 - Some compiler crashes with invalid syntax Native Resources]
+[C461 - Some compiler crashes with invalid syntax License files]
+[C461 - Some compiler crashes with invalid syntax General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C461 - Some compiler crashes with invalid syntax Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C461 - Some compiler crashes with invalid syntax
+
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+; ************** APPLICATION C462 - problem with Char constant in SWITCH/CASE *************
+Application = C462 - problem with Char constant in SWITCH/CASE
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C462\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C462
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = CFC9FBDF-328B-4D25-B7C1-2D95C81DAB68
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C462 - problem with Char constant in SWITCH/CASE FileGroups]
+[C462 - problem with Char constant in SWITCH/CASE Files]
+File = %AppPath%\Prg\C462.prg
+FileGUID = 00D7640B-E3C2-4228-9CBB-A1D409852F71
+FileType = Code
+[C462 - problem with Char constant in SWITCH/CASE References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C462 - problem with Char constant in SWITCH/CASE Resources]
+[C462 - problem with Char constant in SWITCH/CASE Native Resources]
+[C462 - problem with Char constant in SWITCH/CASE License files]
+[C462 - problem with Char constant in SWITCH/CASE General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C462 - problem with Char constant in SWITCH/CASE Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C462 - problem with Char constant in SWITCH/CASE
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION C463 - Compiler crash with conflicting #define and DEFINE *************
+Application = C463 - Compiler crash with conflicting #define and DEFINE
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C463\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C463
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 93B3E5FC-4D64-4941-BA63-38E2EFB917F5
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C463 - Compiler crash with conflicting #define and DEFINE FileGroups]
+[C463 - Compiler crash with conflicting #define and DEFINE Files]
+File = %AppPath%\Prg\C463.prg
+FileGUID = 078AE0E3-9249-4DBA-B44A-71E7991D798F
+FileType = Code
+[C463 - Compiler crash with conflicting #define and DEFINE References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C463 - Compiler crash with conflicting #define and DEFINE Resources]
+[C463 - Compiler crash with conflicting #define and DEFINE Native Resources]
+[C463 - Compiler crash with conflicting #define and DEFINE License files]
+[C463 - Compiler crash with conflicting #define and DEFINE General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C463 - Compiler crash with conflicting #define and DEFINE Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C463 - Compiler crash with conflicting #define and DEFINE
+
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+; ************** APPLICATION C464 - Problem defining literal array in GLOBAL definition *************
+Application = C464 - Problem defining literal array in GLOBAL definition
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C464\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C464
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 70CE140C-53CF-4EB7-AA44-6C874DE7B018
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C464 - Problem defining literal array in GLOBAL definition FileGroups]
+[C464 - Problem defining literal array in GLOBAL definition Files]
+File = %AppPath%\Prg\C464.prg
+FileGUID = C9DA9AF4-9D50-4C44-832A-7358E81331FA
+FileType = Code
+[C464 - Problem defining literal array in GLOBAL definition References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C464 - Problem defining literal array in GLOBAL definition Resources]
+[C464 - Problem defining literal array in GLOBAL definition Native Resources]
+[C464 - Problem defining literal array in GLOBAL definition License files]
+[C464 - Problem defining literal array in GLOBAL definition General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C464 - Problem defining literal array in GLOBAL definition Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C464 - Problem defining literal array in GLOBAL definition
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION C465 - Compiler crash with untyped FUNCTION Start() *************
+Application = C465 - Compiler crash with untyped FUNCTION Start()
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C465\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C465
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = FBE5E816-D2F1-4D6D-B718-0A6D20379233
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C465 - Compiler crash with untyped FUNCTION Start() FileGroups]
+[C465 - Compiler crash with untyped FUNCTION Start() Files]
+File = %AppPath%\Prg\C465.prg
+FileGUID = 0E441051-7CEB-41FC-A0A8-4C3F56FA0228
+FileType = Code
+[C465 - Compiler crash with untyped FUNCTION Start() References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C465 - Compiler crash with untyped FUNCTION Start() Resources]
+[C465 - Compiler crash with untyped FUNCTION Start() Native Resources]
+[C465 - Compiler crash with untyped FUNCTION Start() License files]
+[C465 - Compiler crash with untyped FUNCTION Start() General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C465 - Compiler crash with untyped FUNCTION Start() Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C465 - Compiler crash with untyped FUNCTION Start()
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C466 - Problem using inline assignment inside function/method call in core *************
+Application = C466 - Problem using inline assignment inside function/method call in core
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C466\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C466
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 174F79C0-7721-48C2-9265-7FD8F5D5A7D3
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C466 - Problem using inline assignment inside function/method call in core FileGroups]
+[C466 - Problem using inline assignment inside function/method call in core Files]
+File = %AppPath%\Prg\C466.prg
+FileGUID = A4D5723E-23C3-4C00-8A81-3F68EC717C50
+FileType = Code
+[C466 - Problem using inline assignment inside function/method call in core References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C466 - Problem using inline assignment inside function/method call in core Resources]
+[C466 - Problem using inline assignment inside function/method call in core Native Resources]
+[C466 - Problem using inline assignment inside function/method call in core License files]
+[C466 - Problem using inline assignment inside function/method call in core General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C466 - Problem using inline assignment inside function/method call in core Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C466 - Problem using inline assignment inside function/method call in core
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C467 - DEFINEs ambiguity error message only when used inside class code *************
+Application = C467 - DEFINEs ambiguity error message only when used inside class code
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C467\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C467
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = CD04FFBF-2CDF-49DD-A16B-44C37D7F148E
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C467 - DEFINEs ambiguity error message only when used inside class code FileGroups]
+[C467 - DEFINEs ambiguity error message only when used inside class code Files]
+File = %AppPath%\Prg\C467.prg
+FileGUID = 0C28B3CA-E081-41AE-8341-C0E7B649616A
+FileType = Code
+[C467 - DEFINEs ambiguity error message only when used inside class code References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceProject = 7EEB01DC-D3E9-4612-A7F1-624098A89BAB,1,0,C467_helper
+[C467 - DEFINEs ambiguity error message only when used inside class code Resources]
+[C467 - DEFINEs ambiguity error message only when used inside class code Native Resources]
+[C467 - DEFINEs ambiguity error message only when used inside class code License files]
+[C467 - DEFINEs ambiguity error message only when used inside class code General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C467 - DEFINEs ambiguity error message only when used inside class code Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C467 - DEFINEs ambiguity error message only when used inside class code
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C467_helper *************
+Application = C467_helper
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C467_helper\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C467_helper
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 7EEB01DC-D3E9-4612-A7F1-624098A89BAB
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C467_helper FileGroups]
+[C467_helper Files]
+File = %AppPath%\Prg\C467_helper.prg
+FileGUID = 5C5EB198-1FED-442D-9EAE-361B4746BE4A
+FileType = Code
+[C467_helper References]
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C467_helper Resources]
+[C467_helper Native Resources]
+[C467_helper License files]
+[C467_helper General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C467_helper Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C467_helper
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C468 - Semi random preprocessor error with include files *************
+Application = C468 - Semi random preprocessor error with include files
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C468\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C468
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6936A4FC-2AF1-4B77-816F-22C9668A2C5F
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C468 - Semi random preprocessor error with include files FileGroups]
+[C468 - Semi random preprocessor error with include files Files]
+File = %AppPath%\Prg\C468.prg
+FileGUID = 00915BF5-B8CB-42E9-AB11-A273A2478A58
+FileType = Code
+File = %AppPath%\Prg\C468b.prg
+FileGUID = DF7A63A5-57FC-4D57-946C-AA713F01E660
+FileType = Code
+File = %AppPath%\Prg\C468a.prg
+FileGUID = 67D18C80-AF68-4579-84DD-979AA9FE6B4B
+FileType = Code
+[C468 - Semi random preprocessor error with include files References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C468 - Semi random preprocessor error with include files Resources]
+[C468 - Semi random preprocessor error with include files Native Resources]
+[C468 - Semi random preprocessor error with include files License files]
+[C468 - Semi random preprocessor error with include files General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C468 - Semi random preprocessor error with include files Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C468 - Semi random preprocessor error with include files
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C469 - Compiler crash with invalid code *************
+Application = C469 - Compiler crash with invalid code
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C469\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C469
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 7EEB74DE-4AF1-4E34-A9CC-FCC9807386E1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C469 - Compiler crash with invalid code FileGroups]
+[C469 - Compiler crash with invalid code Files]
+File = %AppPath%\Prg\C469.prg
+FileGUID = 8011D10A-15A5-4116-B252-5E51B297CFB3
+FileType = Code
+[C469 - Compiler crash with invalid code References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C469 - Compiler crash with invalid code Resources]
+[C469 - Compiler crash with invalid code Native Resources]
+[C469 - Compiler crash with invalid code License files]
+[C469 - Compiler crash with invalid code General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C469 - Compiler crash with invalid code Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C469 - Compiler crash with invalid code
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C470 - Parser errors in VULCAN dialect *************
+Application = C470 - Parser errors in VULCAN dialect
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C470\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C470
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = DF4BA697-C329-4AD5-85D0-289A80A39724
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C470 - Parser errors in VULCAN dialect FileGroups]
+[C470 - Parser errors in VULCAN dialect Files]
+File = %AppPath%\Prg\C470.prg
+FileGUID = 2DBF8187-5825-470A-BAA6-EC52448EE84D
+FileType = Code
+[C470 - Parser errors in VULCAN dialect References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C470 - Parser errors in VULCAN dialect Resources]
+[C470 - Parser errors in VULCAN dialect Native Resources]
+[C470 - Parser errors in VULCAN dialect License files]
+[C470 - Parser errors in VULCAN dialect General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C470 - Parser errors in VULCAN dialect Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C470 - Parser errors in VULCAN dialect
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C471 - Parser errors in VO dialect *************
+Application = C471 - Parser errors in VO dialect
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C471\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C471
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 729B611A-9736-4D39-9095-75EF0EE55BAA
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C471 - Parser errors in VO dialect FileGroups]
+[C471 - Parser errors in VO dialect Files]
+File = %AppPath%\Prg\C471.prg
+FileGUID = 85D46008-57C9-4A46-B422-7F048E44DDC4
+FileType = Code
+[C471 - Parser errors in VO dialect References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C471 - Parser errors in VO dialect Resources]
+[C471 - Parser errors in VO dialect Native Resources]
+[C471 - Parser errors in VO dialect License files]
+[C471 - Parser errors in VO dialect General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C471 - Parser errors in VO dialect Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C471 - Parser errors in VO dialect
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C472 - Issues with /vo16 *************
+Application = C472 - Issues with /vo16
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C472\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C472
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6C288D55-6792-4339-890A-AE0F4F8A19A8
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C472 - Issues with /vo16 FileGroups]
+[C472 - Issues with /vo16 Files]
+File = %AppPath%\Prg\C472.prg
+FileGUID = 1A2D8A51-3327-43CB-9D9A-16DA7409C289
+FileType = Code
+[C472 - Issues with /vo16 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C472 - Issues with /vo16 Resources]
+[C472 - Issues with /vo16 Native Resources]
+[C472 - Issues with /vo16 License files]
+[C472 - Issues with /vo16 General Options]
+Switches=/vo16+
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C472 - Issues with /vo16 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C472 - Issues with /vo16
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C473 - VO/Vulcan incompatibility with VOSTRUCTs *************
+Application = C473 - VO/Vulcan incompatibility with VOSTRUCTs
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C473\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C473
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6C9FC26D-F451-4956-88C8-F8EC07E6EA44
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C473 - VO/Vulcan incompatibility with VOSTRUCTs FileGroups]
+[C473 - VO/Vulcan incompatibility with VOSTRUCTs Files]
+File = %AppPath%\Prg\C473.prg
+FileGUID = F46C4D7E-D1C9-44E1-AED6-3F3F606E9974
+FileType = Code
+[C473 - VO/Vulcan incompatibility with VOSTRUCTs References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C473 - VO/Vulcan incompatibility with VOSTRUCTs Resources]
+[C473 - VO/Vulcan incompatibility with VOSTRUCTs Native Resources]
+[C473 - VO/Vulcan incompatibility with VOSTRUCTs License files]
+[C473 - VO/Vulcan incompatibility with VOSTRUCTs General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=1
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C473 - VO/Vulcan incompatibility with VOSTRUCTs Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C473 - VO/Vulcan incompatibility with VOSTRUCTs
 [EndApplications]
 
 [Configurations]

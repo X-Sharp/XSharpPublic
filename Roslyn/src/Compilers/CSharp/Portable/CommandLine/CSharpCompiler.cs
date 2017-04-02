@@ -13,7 +13,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal abstract class CSharpCompiler : CommonCompiler
@@ -85,6 +84,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Debug.Assert(diagnosticBag.IsEmptyWithoutResolution);
                 diagnosticBag.Free();
             }
+#if XSHARP
+            var newtree = XSharpLanguageParser.ProcessTrees(trees,parseOptions);
+            if (newtree != null)
+            {
+                var oldtrees = trees;
+                trees = new SyntaxTree[oldtrees.Length+1];
+                Array.Copy(oldtrees, trees, oldtrees.Length);
+                trees[oldtrees.Length] = newtree;
+            }
+#endif
 
             var diagnostics = new List<DiagnosticInfo>();
 

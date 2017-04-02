@@ -77,7 +77,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // is nested in an unsafe context."
                 return new CSDiagnosticInfo(ErrorCode.ERR_IllegalInnerUnsafe);
             }
+#if XSHARP
+            // only a warning when not compiling for a specific platform 
+            else if (!this.InUnsafeRegion && Compilation.Options.Platform != Platform.X86 && Compilation.Options.Platform != Platform.X64 )
+#else
             else if (!this.InUnsafeRegion)
+#endif
             {
                 return ((object)sizeOfTypeOpt == null)
 #if XSHARP
@@ -94,3 +99,4 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 }
+

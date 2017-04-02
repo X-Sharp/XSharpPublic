@@ -9620,15 +9620,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error directive: {0}.
-        /// </summary>
-        internal static string ERR_UserError {
-            get {
-                return ResourceManager.GetString("ERR_UserError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A using clause must precede all other elements defined in the namespace except extern alias declarations.
         /// </summary>
         internal static string ERR_UsingAfterElements {
@@ -14433,15 +14424,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_UnsafeImplied {
             get {
                 return ResourceManager.GetString("WRN_UnsafeImplied", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warning directive: {0}.
-        /// </summary>
-        internal static string WRN_UserWarning {
-            get {
-                return ResourceManager.GetString("WRN_UserWarning", resourceCulture);
             }
         }
         

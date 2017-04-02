@@ -46,12 +46,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoStdDef { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
+        public bool SyntaxCheck { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
         public bool VOClipperIntegerDivisions { get; private set; }
+        public bool VOClipperConstructors{ get; private set; }
 
         public bool VOFloatConstants { get; private set; }
         public bool VoInitAxitMethods { get; private set; }
@@ -59,7 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOClipperCallingConvention { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOImplicitCastsAndConversions { get; private set; }
-        public bool VOInitializeVariables { get; private set; } = false;
         public bool VOPreprocessorBehaviour { get; private set; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
@@ -91,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo13 => VOStringComparisons;
         public bool vo14 => VOFloatConstants;
         public bool vo15 => VOUntypedAllowed;
-        public bool vo16 => VOInitializeVariables;
+        public bool vo16 => VOClipperConstructors;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -105,6 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 NoStdDef = opt.NoStdDef;
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
+                SyntaxCheck = opt.SyntaxCheck;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
@@ -123,7 +125,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOStringComparisons = opt.Vo13;
                 VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
-                //VOInitializeVariables = opt.Vo16;
+                VOClipperConstructors = opt.Vo16;
+
                 VulcanAssemblies = opt.VulcanAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -151,6 +154,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             IncludePaths = opt.IncludePaths;
             ShowDefs = opt.ShowDefs;
             ShowIncludes = opt.ShowIncludes;
+            SyntaxCheck = opt.SyntaxCheck;
             NoStdDef = opt.NoStdDef;
             PreprocessorOutput = opt.PreprocessorOutput;
             Verbose = opt.Verbose;
@@ -170,7 +174,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOStringComparisons = opt.VOStringComparisons; // vo13
             VOFloatConstants = opt.VOFloatConstants; // vo14
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
-            //VOInitializeVariables = opt.VOInitializeVariables; // vo16
+            VOClipperConstructors = opt.VOClipperConstructors; // vo16
             VulcanAssemblies = opt.VulcanAssemblies;
             Overflow = opt.Overflow;
             ConsoleOutput = opt.ConsoleOutput;

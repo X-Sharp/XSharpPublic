@@ -174,16 +174,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _fileName = fileName;
         }
 
-        internal StatementSyntax CheckForMissingKeyword(IToken endToken, StatementSyntax node, string Keyword)
-        {
-            if (endToken == null)
-            {
-                var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_KeywordExpected, Keyword);
-                node = node.WithAdditionalDiagnostics(diag);
-            }
-            return node;
-        }
-
         internal CSharpSyntaxNode NotInDialect(string feature)
         {
             CSharpSyntaxNode node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
@@ -743,7 +733,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
+        internal SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
@@ -1601,7 +1591,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                         var tree = CSharpSyntaxTree.Create(
                             (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
-                                t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
+                                t.GlobalEntities.Externs, 
+                                t.GlobalEntities.Usings, 
+                                t.GlobalEntities.Attributes, 
+                                t.GlobalEntities.Members, eof).CreateRed());
                         _defTree = tree;
                     }
                 }
@@ -1932,6 +1925,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.STRING_CONST:
                     case XP.ESCAPED_STRING_CONST:
                     case XP.INTERPOLATED_STRING_CONST:
+                    case XP.INCOMPLETE_STRING_CONST:
                         type = stringType;
                         break;
                     case XP.NIL:
@@ -2284,6 +2278,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     members.Add(GenerateVoProperty(vop));
                 }
             }
+            // check if class has Ctor. 
+            foreach (var mem in members.ToList())
+            {
+                if (mem is ConstructorDeclarationSyntax)
+                {
+                    context.Data.HasCtor = true;
+                    break;
+                }
+            }
+
             // Do this after VOProps generation because GenerateVOProperty sets the members
             // for Access & Assign to NULL
             foreach (var mCtx in context._Members)
@@ -2291,7 +2295,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (mCtx.CsNode != null)
                     members.Add(mCtx.Get<MemberDeclarationSyntax>());
             }
-
             generated.Free();
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             var baseType = context.BaseType?.Get<TypeSyntax>();
@@ -2305,9 +2308,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
+
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
@@ -2797,11 +2803,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Initializer != null)
             {
                 context.Initializer.SetSequencePoint();
-            }
-            if (initExpr == null && _options.VOInitializeVariables && !(CurrentEntity is XP.Structure_Context))
-            {
-                var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? _getMissingType();
-                initExpr = MakeDefault(varType);
             }
             context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
         }
@@ -4383,13 +4384,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     varType.XVoIsDecl = true;
                 }
             }
-            else
-            {
-                if (initExpr == null && _options.VOInitializeVariables)
-                {
-                    initExpr = MakeDefault(varType);
-                }
-            }
             if (isStatic)
             {
                 staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
@@ -4527,7 +4521,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
-            whileStmt = CheckForMissingKeyword(context.e, whileStmt, "END[DO]");
             context.Put(whileStmt);
         }
 
@@ -4652,7 +4645,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.StmtBlk.Get<BlockSyntax>());
             _pool.Free(init);
             _pool.Free(incr);
-            forStmt = CheckForMissingKeyword(context.e, forStmt, "NEXT");
             context.Put(forStmt);
         }
 
@@ -4670,7 +4662,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
 
-            forStmt = CheckForMissingKeyword(context.e, forStmt, "NEXT");
             context.Put(forStmt);
 
         }
@@ -4679,7 +4670,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
             context.SetSequencePoint(context.IfStmt.Cond);
-            ifStmt = CheckForMissingKeyword(context.e, ifStmt, "END[IF]");
             context.Put(ifStmt);
         }
 
@@ -4704,8 +4694,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.SetSequencePoint(context.end);
             StatementSyntax caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
                 _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            caseStmt = CheckForMissingKeyword(context.e, caseStmt, "END[CASE]");
-
             context.Put(caseStmt);
         }
 
@@ -4804,9 +4792,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.FinBlock == null ? null : _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                     context.FinBlock.Get<BlockSyntax>()));
             _pool.Free(catches);
-            tryStmt = CheckForMissingKeyword(context.e, tryStmt, "END [TRY]");
             context.Put(tryStmt);
-
         }
 
         public override void ExitCatchBlock([NotNull] XP.CatchBlockContext context)
@@ -4907,7 +4893,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 sections,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
 
-            switchStmt = CheckForMissingKeyword(context.e, switchStmt, "END [SWITCH]");
             context.Put(switchStmt);
             _pool.Free(sections);
             _pool.Free(emptyLabels);
@@ -5207,7 +5192,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (node != null)
             {
-                node = CheckForMissingKeyword(context.e, node, "END [" + context.Key.Text + "]");
                 context.Put(node);
             }
 
@@ -6474,7 +6458,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxToken.WithValue(SyntaxKind.StringLiteralToken, replacement, replacement)));
                 }
                 else
+                {
                     context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+                    if (context.Token.Type == XP.INCOMPLETE_STRING_CONST)
+                    {
+                        var litExpr = context.Get<LiteralExpressionSyntax>();
+                        var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_UnterminatedStringLit);
+                        context.Put(litExpr.WithAdditionalDiagnostics(diag));
+                    }
+                }
             }
         }
 

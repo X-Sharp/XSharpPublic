@@ -9,11 +9,11 @@ c := 'A'
 ? c == 'A'
 ? Left(c,1) == 'A'
 
-c1 := 'B' 		// Assign single quoted string       
+c1 := c'B' 		// Assign single quoted string       
 ? c1
-c1 := "A" 		// Now can also assign double quoted string
+c1 := c"A" 		// Now can also assign double quoted string
 ? C1
-? c1 == 'A' 
+? c1 == c'A' 
 ? 'A':GetType() // System.String
 ? c1:GetType() 	// System.Char
 

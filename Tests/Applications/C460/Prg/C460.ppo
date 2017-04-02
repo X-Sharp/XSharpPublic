@@ -1,0 +1,12 @@
+// 460. error XS9002: Parser: unexpected input '@' (used to be compiler crash)
+//      error XS1003: Syntax error, 'Entity' expected
+
+
+//PP #translate ARRAY(<x>) => ArrayCreate(<x>)
+
+//PP #include "C460.CH"
+FUNCTION Start( ) AS VOID
+LOCAL aFiller := FillerClass{} AS FillerClass
+
+// this one is ok:
+DevPos( 1 , 2 ) ; DevOut( "Filler             "  );SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller:Filler , "aFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail

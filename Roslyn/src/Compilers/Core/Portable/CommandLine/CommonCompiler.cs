@@ -524,6 +524,7 @@ namespace Microsoft.CodeAnalysis
                 return Failed;
             }
 
+
             var touchedFilesLogger = (Arguments.TouchedFilesPath != null) ? new TouchedFileLogger() : null;
 
             Compilation compilation = CreateCompilation(consoleOutput, touchedFilesLogger, errorLogger);
@@ -539,7 +540,6 @@ namespace Microsoft.CodeAnalysis
             {
                 return Failed;
             }
-
             var diagnostics = new List<Diagnostic>();
             ImmutableArray<EmbeddedText> embeddedTexts = AcquireEmbeddedTexts(compilation, diagnostics);
             if (ReportErrors(diagnostics, consoleOutput, errorLogger))
@@ -579,6 +579,13 @@ namespace Microsoft.CodeAnalysis
                     return Failed;
                 }
 
+#if XSHARP
+                var parseOptions = Arguments.ParseOptions as CSharp.CSharpParseOptions;
+                if (parseOptions.SyntaxCheck)
+                {
+                    return Succeeded;
+                }
+#endif                        
                 cancellationToken.ThrowIfCancellationRequested();
 
                 string outputName = GetOutputFileName(compilation, cancellationToken);

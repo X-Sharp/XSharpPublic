@@ -218,7 +218,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int end = children[count - 1].End;
             return new PPMatchRange() { _start = start, _length = end - start + 1, _children = children, token = false };
         }
-        internal static PPMatchRange Optional()
+        internal static PPMatchRange Skipped()
         {
             return new PPMatchRange() { _start = -1, _length = 0, token = false, _children = null };
         }

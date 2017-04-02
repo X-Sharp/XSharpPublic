@@ -20,24 +20,35 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.VisualStudio.Text.Operations;
 
 namespace XSharp.Project
 {
     internal sealed class CommandFilter : IOleCommandTarget
     {
-        ICompletionSession _currentSession;
+        ICompletionSession _completionSession;
+        public IWpfTextView TextView { get; private set; }
+        public ICompletionBroker CompletionBroker { get; private set; }
+        public IOleCommandTarget Next { get; set; }
 
-        public CommandFilter(IWpfTextView textView, ICompletionBroker broker)
+
+
+        ISignatureHelpBroker SignatureBroker;
+        ISignatureHelpSession _signatureSession;
+        ITextStructureNavigator m_navigator;
+
+
+        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker)
         {
-            _currentSession = null;
+            m_navigator = nav;
+
+            _completionSession = null;
+            _signatureSession = null;
 
             TextView = textView;
-            Broker = broker;
+            CompletionBroker = completionBroker;
+            SignatureBroker = signatureBroker;
         }
-
-        public IWpfTextView TextView { get; private set; }
-        public ICompletionBroker Broker { get; private set; }
-        public IOleCommandTarget Next { get; set; }
 
         private char GetTypeChar(IntPtr pvaIn)
         {
@@ -58,34 +69,37 @@ namespace XSharp.Project
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
-                        handled = StartSession(nCmdID, '\0');
+                        handled = StartCompletionSession(nCmdID, '\0');
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
-                        handled = Complete(false);
+                        handled = CompleteCompletionSession(false);
                         break;
 
                     case VSConstants.VSStd2KCmdID.TAB:
-                        handled = Complete(true);
+                        handled = CompleteCompletionSession(true);
                         break;
                     case VSConstants.VSStd2KCmdID.CANCEL:
-                        handled = Cancel();
+                        handled = CancelCompletionSession();
+                        break;
+                    case VSConstants.VSStd2KCmdID.PARAMINFO:
+                        StartSignatureSession();
                         break;
                     case VSConstants.VSStd2KCmdID.TYPECHAR:
                         char ch = GetTypeChar(pvaIn);
-                        if (_currentSession != null)
+                        if (_completionSession != null)
                         {
                             switch (ch)
                             {
                                 case ' ':
-                                    Complete(true);
+                                    CompleteCompletionSession(true);
                                     break;
                                 case ':':
                                 case '.':
-                                    Complete(true);
+                                    CompleteCompletionSession(true);
                                     completeAndStart = true;
                                     break;
                                 case '=':
-                                    Cancel();
+                                    CancelCompletionSession();
                                     break;
                                 default:
                                     Filter();
@@ -118,11 +132,11 @@ namespace XSharp.Project
                     {
                         case VSConstants.VSStd2KCmdID.TYPECHAR:
                             char ch = GetTypeChar(pvaIn);
-                            if (_currentSession != null)
+                            if (_completionSession != null)
                             {
                                 if (completeAndStart)
                                 {
-                                    StartSession(nCmdID, ch);
+                                    StartCompletionSession(nCmdID, ch);
                                 }
                             }
                             else
@@ -131,7 +145,17 @@ namespace XSharp.Project
                                 {
                                     case ':':
                                     case '.':
-                                        StartSession(nCmdID, ch);
+                                        StartCompletionSession(nCmdID, ch);
+                                        break;
+                                    case '(':
+                                        StartSignatureSession();
+                                        break;
+                                    case ')':
+                                        if (_signatureSession != null)
+                                        {
+                                            _signatureSession.Dismiss();
+                                            _signatureSession = null;
+                                        }
                                         break;
                                     default:
                                         break;
@@ -142,7 +166,7 @@ namespace XSharp.Project
                             Filter();
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
-                            
+
                             break;
                     }
                 }
@@ -157,22 +181,22 @@ namespace XSharp.Project
             int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
             int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
             String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
-            string fileName = EditorHelpers.GetDocumentFileName( this.TextView.TextBuffer );
+            string fileName = EditorHelpers.GetDocumentFileName(this.TextView.TextBuffer);
             if (String.IsNullOrEmpty(fileName))
                 return;
             // Then, the corresponding Type/Element if possible
             IToken stopToken;
             //ITokenStream tokenStream;
-            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true );
+            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true);
             // Check if we can get the member where we are
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
             MemberInfo dummyElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, stopToken, out gotoElement, out dummyElement );
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, stopToken, out gotoElement, out dummyElement);
             //
-            if (gotoElement != null )
+            if (gotoElement != null)
             {
                 // Ok, find it ! Let's go ;)
                 gotoElement.OpenEditor();
@@ -180,72 +204,161 @@ namespace XSharp.Project
             //
         }
 
+
+        #region Completion Session
         private void Filter()
         {
-            if (_currentSession == null)
+            if (_completionSession == null)
                 return;
-            _currentSession.SelectedCompletionSet.Filter();
-            _currentSession.SelectedCompletionSet.SelectBestMatch();
+            _completionSession.SelectedCompletionSet.Filter();
+            _completionSession.SelectedCompletionSet.SelectBestMatch();
             //_currentSession.SelectedCompletionSet.Recalculate();
         }
 
-        bool Cancel()
+        bool CancelCompletionSession()
         {
-            if (_currentSession == null)
+            if (_completionSession == null)
                 return false;
 
-            _currentSession.Dismiss();
+            _completionSession.Dismiss();
 
             return true;
         }
 
-        bool Complete(bool force)
+        bool CompleteCompletionSession(bool force)
         {
-            if (_currentSession == null)
+            if (_completionSession == null)
                 return false;
 
-            if (!_currentSession.SelectedCompletionSet.SelectionStatus.IsSelected && !force)
+            if (!_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected && !force)
             {
-                _currentSession.Dismiss();
+                _completionSession.Dismiss();
                 return false;
             }
             else
             {
-                _currentSession.Commit();
+                _completionSession.Commit();
                 return true;
             }
         }
 
-        bool StartSession(uint nCmdId, char typedChar)
+        bool StartCompletionSession(uint nCmdId, char typedChar)
         {
-            if (_currentSession != null)
+            if (_completionSession != null)
                 return false;
 
             SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = caret.Snapshot;
 
-            if (!Broker.IsCompletionActive(TextView))
+            if (!CompletionBroker.IsCompletionActive(TextView))
             {
-                _currentSession = Broker.CreateCompletionSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+                _completionSession = CompletionBroker.CreateCompletionSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
             }
             else
             {
-                _currentSession = Broker.GetSessions(TextView)[0];
+                _completionSession = CompletionBroker.GetSessions(TextView)[0];
             }
 
-            _currentSession.Dismissed += OnSessionDismiss;
+            _completionSession.Dismissed += OnCompletionSessionDismiss;
 
-            _currentSession.Properties["Command"] = nCmdId;
-            _currentSession.Properties["Char"] = typedChar;
-            _currentSession.Start();
+            _completionSession.Properties["Command"] = nCmdId;
+            _completionSession.Properties["Char"] = typedChar;
+            _completionSession.Start();
 
             return true;
         }
 
-        private void OnSessionDismiss(object sender, EventArgs e)
+        private void OnCompletionSessionDismiss(object sender, EventArgs e)
         {
-            _currentSession = null;
+            _completionSession = null;
         }
+        #endregion
+
+
+        #region Signature Session
+        bool StartSignatureSession()
+        {
+            if (_signatureSession != null)
+                return false;
+
+            // First, where are we ?
+            int caretPos;
+            int startLineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
+            SnapshotPoint ssp = this.TextView.Caret.Position.BufferPosition;
+            int lineNumber = startLineNumber;
+            //
+            do
+            {
+                ssp = ssp - 1;
+                char leftCh = ssp.GetChar();
+                if ((leftCh == '(') || (leftCh == '{'))
+                    break;
+                lineNumber = ssp.GetContainingLine().LineNumber;
+            } while (startLineNumber == lineNumber);
+            //
+            caretPos = ssp.Position;
+            String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
+            string fileName = EditorHelpers.GetDocumentFileName(this.TextView.TextBuffer);
+            if (String.IsNullOrEmpty(fileName))
+                return false;
+            // Then, the corresponding Type/Element if possible
+            IToken stopToken;
+            //ITokenStream tokenStream;
+            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true);
+            // Check if we can get the member where we are
+            XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
+            XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
+            // LookUp for the BaseType, reading the TokenList (From left to right)
+            XSharpModel.XElement gotoElement;
+            MemberInfo systemElement;
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, stopToken, out gotoElement, out systemElement);
+            //
+            if ((gotoElement != null) || (systemElement != null))
+            {
+                //_signatureSession = SignatureBroker.TriggerSignatureHelp( TextView);
+                //_signatureSession.Dismissed += OnSignatureSessionDismiss;
+                //if (gotoElement != null)
+                //{
+                //    _signatureSession.Properties["Element"] = gotoElement;
+                //}
+                //else if (systemElement != null)
+                //{
+                //    _signatureSession.Properties["Element"] = systemElement;
+                //}
+                SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
+                ITextSnapshot snapshot = caret.Snapshot;
+                //
+                if (!SignatureBroker.IsSignatureHelpActive(TextView))
+                {
+                    _signatureSession = SignatureBroker.CreateSignatureHelpSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+                }
+                else
+                {
+                    _signatureSession = SignatureBroker.GetSessions(TextView)[0];
+                }
+
+                _signatureSession.Dismissed += OnSignatureSessionDismiss;
+                if (gotoElement != null)
+                {
+                    _signatureSession.Properties["Element"] = gotoElement;
+                }
+                else if (systemElement != null)
+                {
+                    _signatureSession.Properties["Element"] = systemElement;
+                }
+                _signatureSession.Properties["Start"] = ssp.Position;
+                _signatureSession.Properties["Length"] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;
+                _signatureSession.Start();
+            }
+            //
+            return true;
+        }
+
+        private void OnSignatureSessionDismiss(object sender, EventArgs e)
+        {
+            _signatureSession = null;
+        }
+        #endregion
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
@@ -268,15 +381,6 @@ namespace XSharp.Project
                         return VSConstants.S_OK;
                 }
             }
-            //else if (pguidCmdGroup == VSConstants.CMDSETID.StandardCommandSet12_guid )
-            //{
-            //    switch ((VSConstants.VSStd12CmdID)prgCmds[0].cmdID)
-            //    {
-            //        case VSConstants.VSStd12CmdID.PeekDefinition:
-            //            prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;
-            //            return VSConstants.S_OK;
-            //    }
-            //}
             return Next.QueryStatus(pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
 

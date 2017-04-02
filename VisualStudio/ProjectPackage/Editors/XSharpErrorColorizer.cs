@@ -107,10 +107,17 @@ namespace XSharp.Project
             int lineNumber = fullSpan.Start.GetContainingLine().LineNumber;
             int offset = this.GetLineOffsetFromColumn(text, errorColumn-1, tabSize);
             // If Error does span on several lines, the length might be negative as we are using Column to calculate length
-            if (Length < 2)
-                Length = 2;
+            if (Length < 1)
+                Length = 1;
             //
-            var span = new SnapshotSpan(line.Snapshot, Span.FromBounds(line.Start+offset, line.Start+offset + Length-1));
+            var iMax = line.End.Position;
+            var iEnd = line.Start.Position + offset + Length - 1;
+            if (iEnd > iMax)
+                iEnd = iMax;
+            var start = line.Start + offset;
+            var end = line.Start + (iEnd - line.Start.Position);
+                
+            var span = new SnapshotSpan(line.Snapshot, Span.FromBounds(start, end));
             //
             Geometry g = textViewLines.GetMarkerGeometry(span);
             if (g != null)

@@ -30,6 +30,8 @@ using XSharpModel;
 using System.Linq;
 using Microsoft.VisualStudio.TextManager.Interop;
 using LanguageService.CodeAnalysis;
+using LanguageService.CodeAnalysis.XSharp;
+using XSharp.CodeDom;
 
 namespace XSharp.Project
 {
@@ -39,7 +41,7 @@ namespace XSharp.Project
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
     public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
-        IVsDesignTimeAssemblyResolution, IVsProject5
+        IVsDesignTimeAssemblyResolution, IVsProject5, IProjectTypeHelper
     {
 
         static Dictionary<string, string> dependencies;
@@ -74,6 +76,7 @@ namespace XSharp.Project
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
         IErrorList errorList = null;
+        bool isLoading = false;
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
         #endregion
@@ -306,6 +309,8 @@ namespace XSharp.Project
         {
             switch (propId)
             {
+                case unchecked((int) VSConstants.VSITEMID_ROOT):
+                    return this;
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
                     return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
@@ -831,21 +836,27 @@ namespace XSharp.Project
         internal override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             base.OnAfterProjectOpen(sender, e);
-            foreach (var url in this.URLNodes.Keys)
+            if (this.isLoading)
             {
-                if (!IsProjectFile(url) && this.BuildProject != null)
+                // Run the background Walker/Listener, to fill the Model
+
+                this.isLoading = false;
+                foreach (var url in this.URLNodes.Keys)
                 {
-                    var xnode = this.URLNodes[url] as XSharpFileNode;
-                    if (xnode != null && !xnode.IsNonMemberItem)
+                    if (!IsProjectFile(url) && this.BuildProject != null)
                     {
-                        if (File.Exists(url) && IsCodeFile(url))
+                        var xnode = this.URLNodes[url] as XSharpFileNode;
+                        if (xnode != null && !xnode.IsNonMemberItem)
                         {
-                            this.ProjectModel.AddFile(url);
+                            if (File.Exists(url) && IsCodeFile(url))
+                            {
+                                this.ProjectModel.AddFile(url);
+                            }
                         }
                     }
                 }
+                this.ProjectModel.Walk();
             }
-            this.ProjectModel.Walk();
         }
 
 
@@ -853,7 +864,7 @@ namespace XSharp.Project
         {
             // check for incomplete conditions
             base.Load(filename, location, name, flags, ref iidProject, out canceled);
-
+            this.isLoading = true;
 
             // WAP ask the designer service for the CodeDomProvider corresponding to the project node.
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
@@ -869,7 +880,6 @@ namespace XSharp.Project
             //event handler generation (EventBindingProvider) for the XAML designer.
             this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
-            // Run the background Walker/Listener, to fill the Model
             CreateErrorListManager();
 
 
@@ -1268,6 +1278,28 @@ namespace XSharp.Project
             }
             return bOk;
         }
+        #region IProjectTypeHelper
+        public System.Type ResolveType(string name, IList<string> usings)
+        {
+            switch (name.ToLower())
+            {
+                case "object":
+                case "system.object":
+                    return typeof(object);
+                case "void":
+                case "system.void":
+                    return typeof(void);
+                case "boolean":
+                case "system.boolean":
+                    return typeof(Boolean);
+                case "string":
+                case "system.string":
+                    return typeof(String);
+            }
+            var model = this.ProjectModel;
+            return model.TypeController.FindType(name,usings);
+        }
+        #endregion
         #region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
@@ -1412,12 +1444,13 @@ namespace XSharp.Project
             return open;
         }
 
-        public string[] CommandLineArgs
+
+        public XSharpParseOptions ParseOptions
         {
             get
             {
                 var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                return xoptions.CommandLineArgs;
+                return xoptions.ParseOptions;
             }
         }
         public override int Close()

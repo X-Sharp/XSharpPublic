@@ -141,7 +141,7 @@ namespace XSharpColorizer
                     {
                         switch (token.Channel)
                         {
-                            case XSharpLexer.PREPROCESSOR:          // #define, #ifdef etc
+                            case XSharpLexer.PREPROCESSORCHANNEL:          // #define, #ifdef etc
                                 newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPPType));
                                 switch (token.Type)
                                 {
@@ -189,10 +189,10 @@ namespace XSharpColorizer
                             case XSharpLexer.PRAGMACHANNEL:         // #pragma
                                 newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPPType));
                                 break;
-                            case XSharpLexer.DEFOUT:                // code in an inactive #ifdef
+                            case XSharpLexer.DEFOUTCHANNEL:                // code in an inactive #ifdef
                                 newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpInactiveType));
                                 break;
-                            case XSharpLexer.XMLDOC:
+                            case XSharpLexer.XMLDOCCHANNEL:
                             case XSharpLexer.Hidden:
                                 if (XSharpLexer.IsComment(token.Type))
                                 {

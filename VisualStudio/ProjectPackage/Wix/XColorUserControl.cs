@@ -17,7 +17,7 @@ namespace XSharp.Project
     /// A control of which all children are being colored
     /// according to the VS colors service
     /// </summary>
-    public partial class XColorUserControl : UserControl
+    internal partial class XColorUserControl : UserControl
     {
         // =========================================================================================
         // Constructors
@@ -26,7 +26,7 @@ namespace XSharp.Project
         /// <summary>
         /// Constructor for the control
         /// </summary>
-        public XColorUserControl()
+        internal XColorUserControl()
         {
             this.InitializeComponent();
         }
@@ -36,7 +36,7 @@ namespace XSharp.Project
         // =========================================================================================
 
         /// <summary>
-        /// Override to return our specialized controls colletion which allows us 
+        /// Override to return our specialized controls collection which allows us 
         /// to control the colors of the controls as they're being added.
         /// </summary>
         /// <returns>A collection that will contain all controls on the control</returns>

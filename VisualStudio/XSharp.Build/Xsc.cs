@@ -666,8 +666,11 @@ namespace XSharp.Build
         {
             get
             {
-                string platform = this.Platform;
-                if ((string.IsNullOrEmpty(platform) || platform.Equals("anycpu", StringComparison.OrdinalIgnoreCase)) && this.Prefer32Bit)
+                // no 32 bit preference for libraries
+                string platform = this.Platform?.ToLower();
+                if ((string.IsNullOrEmpty(platform) || platform.Equals("anycpu")) 
+                    && this.Prefer32Bit
+                    && TargetType.ToLower().Contains("exe"))
                 {
                     platform = "anycpu32bitpreferred";
                 }

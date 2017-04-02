@@ -21,13 +21,16 @@ namespace XSharp.CodeDom
 
     class XSharpTreeDiscover : XSharpBaseListener
     {
+        IProjectTypeHelper _projectNode;
         private MemberAttributes classVarModifiers;
         private CodeMemberMethod initComponent;
-        private IList<IToken> _tokens;
+        private IList<IToken> _tokens;          // used to find comments 
+        private IList<string> _usings;          // uses for type lookup
 
-        public XSharpTreeDiscover()
+        public XSharpTreeDiscover(IProjectTypeHelper projectNode)
         {
             // The default (empty) CodeCompileUnit, so we can work if none is provided
+            _projectNode = projectNode;
             this.CodeCompileUnit = new CodeCompileUnit();
             // The default Namespace, so we can work if none is provided... :)
             this.CurrentNamespace = new CodeNamespace();
@@ -37,6 +40,7 @@ namespace XSharp.CodeDom
             this.NamespaceStack = new Stack<CodeNamespace>();
             // To store intermediate declarations
             this.LocalDecls = new Stack<XSharpParser.LocalvarContext>();
+            this._usings = new List<String>();
             //
             this.CurrentFile = "";
             _tokens = null;
@@ -152,14 +156,16 @@ namespace XSharp.CodeDom
             // INHERIT from ?
             if (context.BaseType != null)
             {
-                newClass.BaseTypes.Add(new CodeTypeReference(context.BaseType.GetText()));
+                string baseName = context.BaseType.GetText();
+                newClass.BaseTypes.Add(BuildTypeReference(baseName));
             }
             // IMPLEMENTS ?
             if ((context._Implements != null) && (context._Implements.Count > 0))
             {
                 foreach (var interfaces in context._Implements)
                 {
-                    newClass.BaseTypes.Add(new CodeTypeReference(interfaces.GetText()));
+                    var ifName = interfaces.GetText();
+                    newClass.BaseTypes.Add(BuildTypeReference(ifName));
                 }
             }
             //
@@ -172,7 +178,7 @@ namespace XSharp.CodeDom
             newMethod.Name = context.Id.GetText();
             newMethod.Attributes = MemberAttributes.Public;
             newMethod.Parameters.AddRange(GetParametersList(context.ParamList));
-            newMethod.ReturnType = BuildDataType(context.Type); // new CodeTypeReference(context.Type.GetText());
+            newMethod.ReturnType = BuildDataType(context.Type); 
             //
             if (context.Modifiers != null)
             {
@@ -230,6 +236,7 @@ namespace XSharp.CodeDom
         {
             var import = new CodeNamespaceImport(context.Name.GetText());
             CurrentNamespace.Imports.Add(import);
+            _usings.Add(import.Namespace);
         }
 
         public override void EnterEvent_([NotNull] XSharpParser.Event_Context context)
@@ -238,7 +245,8 @@ namespace XSharp.CodeDom
             evt.Comments.AddRange(context.GetLeadingComments(_tokens));
             evt.Name = context.Id.GetText();
             evt.Attributes = MemberAttributes.Public;
-            evt.Type = new CodeTypeReference(context.Type.GetText());
+            var typeName = context.Type.GetText();
+            evt.Type = BuildTypeReference(typeName);
             //
             if (context.Modifiers != null)
             {
@@ -358,7 +366,7 @@ namespace XSharp.CodeDom
             //
             if (context.DataType != null)
             {
-                CodeTypeReference fieldType = new CodeTypeReference(context.DataType.GetText());
+                CodeTypeReference fieldType = BuildDataType(context.DataType);
                 //
                 foreach (var varContext in context._Var)
                 {
@@ -397,7 +405,7 @@ namespace XSharp.CodeDom
                 if (context.DataType != null)
                 {
                     CodeStatementCollection locals = new CodeStatementCollection();
-                    CodeTypeReference localType = new CodeTypeReference(context.DataType.GetText());
+                    CodeTypeReference localType = BuildDataType(context.DataType);
                     CodeVariableDeclarationStatement local;
                     // Any previous Local ?
                     while (LocalDecls.Count > 0)
@@ -435,60 +443,61 @@ namespace XSharp.CodeDom
             }
         }
 
+        public CodeStatement CreateAssignStatement(XSharpParser.AssignmentExpressionContext exp)
+        {
+            // Can be normal assign but also event handler assign
+            CodeStatement stmt ;
+            //
+            //what is the left hand side ?
+            //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
+            // else --> always Property
+            //
+            CodeExpression left = BuildExpression(exp.Left, false);
+            CodeExpression right = BuildExpression(exp.Right, true);
+            CodeEventReferenceExpression cere;
+            switch (exp.Op.Type)
+            {
+                case XSharpLexer.ASSIGN_OP:
+                    stmt = new CodeAssignStatement(left, right);
+                    break;
+                case XSharpLexer.ASSIGN_ADD:
+                    // += Event Handler
+                    // We will decode Left as CodeFieldReferenceExpression or CodePropertyReferenceExpression, but we need a CodeEventReferenceExpression
+                    if (left is CodeFieldReferenceExpression)
+                        cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
+                    else
+                        cere = new CodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
+                    stmt = new CodeAttachEventStatement(cere, right);
+                    break;
+                case XSharpLexer.ASSIGN_SUB:
+                    // -= Event Handler
+                    if (left is CodeFieldReferenceExpression)
+                        cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
+                    else
+                        cere = new CodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
+                    stmt = new CodeRemoveEventStatement(cere, right);
+                    break;
+                default:
+                    var snip = new CodeSnippetExpression(exp.GetText());
+                    stmt = new CodeExpressionStatement(snip);
+                    break;
+            }
+            return stmt;
+        }
+
         public override void EnterExpressionStmt([NotNull] XSharpParser.ExpressionStmtContext context)
         {
             if (initComponent != null)
             {
-                CodeExpression expr = new CodeExpression();
                 CodeStatement stmt = new CodeStatement();
                 //
                 if (context._expression is XSharpParser.AssignmentExpressionContext)
                 {
-                    XSharpParser.AssignmentExpressionContext exp = (XSharpParser.AssignmentExpressionContext)context._expression;
-                    //
-                    //what is the left hand side ?
-                    //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
-                    // else --> always Property
-                    //
-                    CodeExpression left = BuildExpression(exp.Left, false);
-                    CodeExpression right = BuildExpression(exp.Right, true);
-                    if (exp.ASSIGN_OP() != null)
-                    {
-                        //expr = new CodeBinaryOperatorExpression(left, CodeBinaryOperatorType.Assign, right);
-                        stmt = new CodeAssignStatement(left, right);
-                    }
-                    else if (exp.ASSIGN_ADD() != null)
-                    {
-                        // += Event Handler
-                        // We will decode Left as CodeFieldReferenceExpression or CodePropertyReferenceExpression, but we need a CodeEventReferenceExpression
-                        CodeEventReferenceExpression cere;
-                        if (left is CodeFieldReferenceExpression)
-                            cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
-                        else
-                            cere = new CodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
-                        stmt = new CodeAttachEventStatement(cere, right);
-                        //
-                    }
-                    else if (exp.ASSIGN_SUB() != null)
-                    {
-                        // -= Event Handler
-                        CodeEventReferenceExpression cere;
-                        if (left is CodeFieldReferenceExpression)
-                            cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
-                        else
-                            cere = new CodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
-                        stmt = new CodeRemoveEventStatement(cere, right);
-                    }
+                    stmt = CreateAssignStatement(context._expression as XSharpParser.AssignmentExpressionContext);
                 }
-                else if (context._expression is XSharpParser.MethodCallContext)
+                else 
                 {
-                    XSharpParser.MethodCallContext exp = (XSharpParser.MethodCallContext)context._expression;
-                    expr = BuildExpression(exp,false);
-                    stmt = new CodeExpressionStatement(expr);
-                }
-                else
-                {
-                    expr = new CodeSnippetExpression(context.GetText());
+                    var expr = BuildExpression(context._expression, true);
                     stmt = new CodeExpressionStatement(expr);
                 }
                 //
@@ -590,26 +599,29 @@ namespace XSharp.CodeDom
         {
             CodeParameterDeclarationExpressionCollection pList = new CodeParameterDeclarationExpressionCollection();
             //
-            foreach (var param in paramList._Params)
+            if (paramList != null)
             {
-                CodeParameterDeclarationExpression pm = new CodeParameterDeclarationExpression();
-                pm.Name = param.Id.GetText();
-                pm.Type = BuildDataType(param.Type); // new CodeTypeReference(param.Type.GetText());
-                pm.Direction = FieldDirection.In;
-                if (param.Modifiers != null)
+                foreach (var param in paramList._Params)
                 {
-                    
-                    if (param.Modifiers.REF() != null)
+                    CodeParameterDeclarationExpression pm = new CodeParameterDeclarationExpression();
+                    pm.Name = param.Id.GetText();
+                    pm.Type = BuildDataType(param.Type); 
+                    pm.Direction = FieldDirection.In;
+                    if (param.Modifiers != null)
                     {
-                        pm.Direction = FieldDirection.Ref;
+
+                        if (param.Modifiers.REF() != null)
+                        {
+                            pm.Direction = FieldDirection.Ref;
+                        }
+                        else if (param.Modifiers.OUT() != null)
+                        {
+                            pm.Direction = FieldDirection.Out;
+                        }
                     }
-                    else if (param.Modifiers.OUT() != null)
-                    {
-                        pm.Direction = FieldDirection.Out;
-                    }
+                    //
+                    pList.Add(pm);
                 }
-                //
-                pList.Add(pm);
             }
             //
             return pList;
@@ -647,8 +659,6 @@ namespace XSharp.CodeDom
             return snippet;
         }
 
-
-
         /// <summary>
         /// Get a LiteralValueContext containing a BIN_CONST, INT_CONST, HEX_CONST, or a REAL_CONST
         /// as a String, and convert it to the "real" value, with the corresponding Type.
@@ -663,9 +673,14 @@ namespace XSharp.CodeDom
             //
             if (type == XSharpParser.BIN_CONST || type == XSharpParser.INT_CONST || type == XSharpParser.HEX_CONST )
             {
-                bool isUnsigned = (value.Substring(0, 1).ToLower().CompareTo("u") == 0);
+                bool isUnsigned = value.EndsWith("u", StringComparison.OrdinalIgnoreCase);
+                bool isSigned = value.EndsWith("l", StringComparison.OrdinalIgnoreCase);
+                if (isSigned || isUnsigned)
+                {
+                    value = value.Substring(0, value.Length - 1);
+                }
                 // -1 for Unsigned; -2 for 0x or 0b
-                int len = value.Length - (isUnsigned ? 1 : 0) - (context.BIN_CONST() != null || context.HEX_CONST() != null ? 2 : 0);
+                int len = value.Length - (context.BIN_CONST() != null || context.HEX_CONST() != null ? 2 : 0);
                 //
                 if (context.BIN_CONST() != null)
                 {
@@ -787,10 +802,19 @@ namespace XSharp.CodeDom
             else
             {
                 double d;
-                // Should be REAL_CONST
-                if (!double.TryParse(value, out d))
+                if (value.EndsWith("m",StringComparison.OrdinalIgnoreCase) ||
+                    value.EndsWith("r", StringComparison.OrdinalIgnoreCase) ||
+                    value.EndsWith("d", StringComparison.OrdinalIgnoreCase))
                 {
-                    d = double.NaN;
+                    value = value.Substring(0, value.Length - 1);
+                }
+                try
+                {
+                    d = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                }
+                catch (Exception)
+                {
+                    d = Double.NaN;
                 }
                 ret = d;
             }
@@ -933,24 +957,187 @@ namespace XSharp.CodeDom
             local.Type = localType;
             if (context.Expression != null)
             {
-                if (context.Expression is XSharpParser.PrimaryExpressionContext)
-                {
-                    XSharpParser.PrimaryContext ctx = ((XSharpParser.PrimaryExpressionContext)context.Expression).Expr;
-                    if (ctx is XSharpParser.LiteralExpressionContext)
-                    {
-                        XSharpParser.LiteralExpressionContext lit = (XSharpParser.LiteralExpressionContext)ctx;
-                        local.InitExpression = BuildLiteralValue(lit.Literal);
-                    }
-                }
-                else
-                {
-                    local.InitExpression = new CodeSnippetExpression(context.Expression.GetText());
-                }
+                local.InitExpression = BuildExpression(context.Expression, false);
             }
 
             return local;
         }
 
+        private bool isMember(string name)
+        {
+            foreach (CodeTypeMember cm in this.CurrentClass.Members)
+            {
+                if (cm is CodeMemberField && String.Compare(name, cm.Name, true) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private bool isLocal(string name)
+        {
+            if (initComponent != null)
+            {
+                foreach (CodeStatement stmt in initComponent.Statements)
+                {
+                    var cvds = stmt as CodeVariableDeclarationStatement;
+                    if (cvds != null && String.Compare(name, cvds.Name, true) == 0)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private CodeTypeReference BuildTypeReference(string name)
+        {
+            System.Type type = _projectNode.ResolveType(name, _usings);
+
+            if (type != null)
+                return new CodeTypeReference(type);
+            else
+                return new CodeTypeReference(name);
+
+        }
+
+        private CodeExpression BuildAccessMember(XSharpParser.AccessMemberContext member, bool right)
+        {
+            CodeExpression expr = null;
+            //what is the left hand side ?
+            //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
+            // else --> always Property
+            System.Type type;
+            string name = member.GetText();
+            type = _projectNode.ResolveType(name, _usings);
+            if (type != null)
+                return new CodeTypeReferenceExpression(type);
+            string lhsName = member.Expr.GetText();
+            string rhsName = member.Name.GetText();
+            type = _projectNode.ResolveType(lhsName, _usings);
+            if (type != null)
+            {
+                var members = type.GetMember(rhsName, MemberTypes.All,BindingFlags.FlattenHierarchy | 
+                    BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+                if (members.Length > 0)
+                {
+                    bool isPrivate = false;
+                    CodeTypeReferenceExpression typeExpr = new CodeTypeReferenceExpression(type);
+                    foreach (var m in members)
+                    {
+                        switch (m.MemberType)
+                        {
+                            case MemberTypes.Field:
+                                var fi = m as FieldInfo;
+                                if (!fi.IsPrivate)
+                                    return new CodeFieldReferenceExpression(typeExpr, fi.Name);
+                                break;
+                            case MemberTypes.Property:
+                                var pi = m as PropertyInfo;
+                                if (pi.CanRead)
+                                    isPrivate = pi.GetGetMethod().IsPrivate;
+                                else
+                                    isPrivate = pi.GetSetMethod().IsPrivate;
+                                if (!isPrivate)
+                                    return new CodePropertyReferenceExpression(typeExpr, pi.Name);
+                                break;
+                            case MemberTypes.Method:
+                            case MemberTypes.Constructor:
+                                var mb = m as MethodBase;
+                                isPrivate = mb.IsPrivate;
+                                if (!isPrivate)
+                                    return new CodeMethodReferenceExpression(typeExpr,mb.Name);
+                                break;
+                            case MemberTypes.Event:
+                                var ei = m as EventInfo;
+                                return new CodeEventReferenceExpression(typeExpr, ei.Name);
+
+                        }
+                    }
+                }
+
+            }
+            bool isMember = false;
+            bool isLocal = false;
+            CodeExpression left = BuildExpression(member.Expr, false);
+            if (left is CodeThisReferenceExpression)
+            {
+                isMember = this.isMember(rhsName);
+            }
+            else if (left is CodeVariableReferenceExpression)
+            {
+                isMember = this.isMember(lhsName);
+                isLocal = this.isLocal(lhsName);
+            }
+            // It seems to be a member...
+            if (isMember)
+            {
+                expr = new CodeFieldReferenceExpression(left, rhsName);
+            }
+            else if (isLocal)
+            {
+                expr = new CodePropertyReferenceExpression(left, rhsName);
+            }
+            else
+            {
+                // Let's guess that on the Left member, we should have a Property if it is not a Field
+                if (!right)
+                {
+                    expr = new CodePropertyReferenceExpression(left, rhsName);
+                }
+                else
+                {
+                    // We are processing the Right member of an Assignment...
+                    // Most likely Enum Value, which is a typereference expression followed by a DOT and a field
+                    if (member.Op.Type == XSharpLexer.DOT)
+                    {
+                        var typeexpr = new CodeTypeReferenceExpression(lhsName);
+                        expr = new CodeFieldReferenceExpression(typeexpr, rhsName);
+                    }
+                    else
+                    {
+                        expr = new CodeSnippetExpression(member.GetText());
+                    }
+                }
+            }
+
+            return expr;
+        }
+
+        private CodeMethodInvokeExpression BuildMethodCall(XSharpParser.MethodCallContext meth)
+        {
+            CodeMethodInvokeExpression expr = null;
+
+            // target: for example SELF:Controls:Add
+            CodeExpression target = BuildExpression(meth.Expr, false);
+
+            List<CodeExpression> exprlist = new List<CodeExpression>();
+            if (meth.ArgList != null)
+            {
+                foreach (var arg in meth.ArgList._Args)
+                {
+                    exprlist.Add(BuildExpression(arg.Expr, true));
+                }
+            }
+            // When we cannot find a field then we always map something like
+            // SELF:Controls:Add to a propertyReferenceExpression
+            // Change it to a method call now
+            if (target is CodePropertyReferenceExpression)
+            {
+                // method call on a property
+                var cpr = target as CodePropertyReferenceExpression;
+                var lhs = cpr.TargetObject;
+                var methodName = cpr.PropertyName;
+                expr = new CodeMethodInvokeExpression(lhs, methodName, exprlist.ToArray());
+            }
+            // can't be a variable ref: this will have only one element and not two
+            // can't be a field ref: cannot have a field with the same name as a method
+            else
+            {
+                // simple method call
+                var methodName = meth.Expr.GetText();
+                expr = new CodeMethodInvokeExpression(null, methodName, exprlist.ToArray());
+            }
+            return expr;
+        }
 
         private CodeExpression BuildExpression(XSharpParser.ExpressionContext expression, bool right )
         {
@@ -958,93 +1145,34 @@ namespace XSharp.CodeDom
             //
             if (expression is XSharpParser.PrimaryExpressionContext) // xyz.SimpleName
             {
-                expr = BuildExpression((XSharpParser.PrimaryExpressionContext)expression);
+                expr = BuildPrimaryExpression((XSharpParser.PrimaryExpressionContext)expression);
             }
             else if (expression is XSharpParser.AccessMemberContext) // xyz.SimpleName
             {
-                XSharpParser.AccessMemberContext member = (XSharpParser.AccessMemberContext)expression;
-                //what is the left hand side ?
-                //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
-                // else --> always Property
-                bool isMember = false;
-                CodeExpression left = BuildExpression(member.Expr, false);
-                if (left is CodeThisReferenceExpression)
-                {
-                    string fieldCandidate = member.Name.GetText();
-                    foreach (CodeTypeMember cm in this.CurrentClass.Members)
-                    {
-                        if (cm is CodeMemberField)
-                        {
-                            if (String.Compare(fieldCandidate, cm.Name, true) == 0)
-                            {
-                                isMember = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                // It seems to be a member...
-                if (isMember)
-                {
-                    expr = new CodeFieldReferenceExpression(BuildExpression(member.Expr, false), member.Name.GetText());
-                }
-                else
-                {
-                    // Let's guess that on the Left member, we should have a Property if it is not a Field
-                    if (!right)
-                    {
-                        expr = new CodePropertyReferenceExpression(BuildExpression(member.Expr, false), member.Name.GetText());
-                    }
-                    else
-                    {
-                        // We are processing the Right member of an Assignment...
-                        // Most likely Enum Value, which is a typereference expression followed by a DOT and a field
-                        if (member.DOT() != null)
-                        {
-                            var typeexpr = new CodeTypeReferenceExpression(member.Expr.GetText());
-                            expr = new CodeFieldReferenceExpression(typeexpr, member.Name.GetText());
-                        }
-                        else
-                        {
-                            expr = new CodeSnippetExpression(member.GetText());
-                        }
-                    }
-                }
+                expr = BuildAccessMember(expression as XSharpParser.AccessMemberContext, right);
             }
             else if (expression is XSharpParser.MethodCallContext)
             {
-                XSharpParser.MethodCallContext meth = (XSharpParser.MethodCallContext)expression;
-                CodeExpression target = BuildExpression(meth.Expr, false);
-                List<CodeExpression> exprlist = new List<CodeExpression>();
-                if (meth.ArgList != null)
-                {
-                    foreach (var arg in meth.ArgList._Args)
-                    {
-                        exprlist.Add(BuildExpression(arg.Expr, false));
-                    }
-                }
-                if (target is CodeFieldReferenceExpression)
-                {
-                    //
-                    expr = new CodeMethodInvokeExpression(((CodeFieldReferenceExpression)target).TargetObject, ((CodeFieldReferenceExpression)target).FieldName, exprlist.ToArray());
-                }
-                else if (target is CodePropertyReferenceExpression)
-                {
-                    //
-                    expr = new CodeMethodInvokeExpression(((CodePropertyReferenceExpression)target).TargetObject, ((CodePropertyReferenceExpression)target).PropertyName, exprlist.ToArray());
-                }
-                else
-                    expr = new CodeMethodInvokeExpression(null, meth.Expr.GetText(), exprlist.ToArray());
+                expr = BuildMethodCall(expression as XSharpParser.MethodCallContext);
             }
             else if (expression is XSharpParser.TypeCastContext)
             {
                 var tc = expression as XSharpParser.TypeCastContext;
                 var name = tc.Type.GetText();
-                var typeref = new CodeTypeReference(name);
+                var typeref = BuildTypeReference(name);
                 expr = BuildExpression(tc.Expr,true);
                 expr = new CodeCastExpression(typeref, expr);
             }
             else
+            // Unhandled expression types
+            // ArrayAccessExpressionContext
+            // CondAccessExpressionContext
+            // PostFixExpressionContext
+            // AwaitExpressionContext
+            // PrefixExpressionContext
+            // TypeCheckExpressionContext
+            // BinaryExpressionContext
+            // AssignmentExpressionContext: Handled separately because CodeDom wants a Assign Statement
             {
                 expr = new CodeSnippetExpression(expression.GetText());
             }
@@ -1052,7 +1180,7 @@ namespace XSharp.CodeDom
             return expr;
         }
 
-        private CodeExpression BuildExpression(XSharpParser.PrimaryExpressionContext expression)
+        private CodeExpression BuildPrimaryExpression(XSharpParser.PrimaryExpressionContext expression)
         {
             CodeExpression expr = null;
             XSharpParser.PrimaryContext ctx = expression.Expr;
@@ -1093,9 +1221,9 @@ namespace XSharp.CodeDom
                 XSharpParser.DelegateCtorCallContext delg = (XSharpParser.DelegateCtorCallContext)ctx;
                 //
                 CodeTypeReference ctr = BuildDataType(delg.Type);
-                CodeExpression ce = BuildExpression(delg.Obj,false);
+                CodeExpression ce = BuildExpression(delg.Obj,true);
                 //
-                expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj,false), delg.Func.GetText());
+                expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj,true), delg.Func.GetText());
 
             }
             else if (ctx is XSharpParser.CtorCallContext)
@@ -1108,7 +1236,7 @@ namespace XSharp.CodeDom
                     foreach (var arg in ctor.ArgList._Args)
                     {
                         // We should handle arg.Name if arg.ASSIGN_OP is not null...
-                        exprlist.Add(BuildExpression(arg.Expr,false));
+                        exprlist.Add(BuildExpression(arg.Expr,true));
                     }
                 }
                 expr = new CodeObjectCreateExpression(ctr.BaseType, exprlist.ToArray());
@@ -1130,10 +1258,18 @@ namespace XSharp.CodeDom
                 {
                     expr = new CodeBaseReferenceExpression();
                 }
+                else if (isMember(name))
+                {
+                    expr = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), name);
+                }
+                else if (isLocal(name))
+                {
+                    expr = new CodeVariableReferenceExpression(name);
+                }
                 else
                 {
-                    CodeTypeReference ctr = BuildSimpleName(((XSharpParser.NameExpressionContext)ctx).Name);
-                    expr = new CodeVariableReferenceExpression(name);
+                    var tr = BuildTypeReference(((XSharpParser.NameExpressionContext)ctx).Name.Id.GetText());
+                    expr = new CodeTypeReferenceExpression(tr);
                 }
             }
             else if (ctx is XSharpParser.ParenExpressionContext)
@@ -1160,6 +1296,24 @@ namespace XSharp.CodeDom
                 }
             }
             else
+            // Unhandled expression types:
+            // ---------------------------
+            // AnonTypeExpressionContext
+            // CodeBlockExpressionContext
+            // QueryExpressionContext
+            // CheckedExpressionContext
+            // SizeOfExpressionContext
+            // DefaultExpressionContext
+            // VoConversionExpressionContext
+            // VoCastExpressionContext
+            // VoCastPtrExpressionContext
+            // VoTypeNameExpressionContext
+            // IifExpressionContext
+            // IntrinsicExpressionContext  _OR(..)
+            // AliasedFieldContect
+            // AliasedExprContext
+            // MacroContext
+            // ArgListExpressionContext
             {
                 expr = new CodeSnippetExpression(ctx.GetText());
             }
@@ -1168,60 +1322,58 @@ namespace XSharp.CodeDom
 
         private CodeTypeReference BuildNativeType(XSharpParser.NativeTypeContext nativeType)
         {
-            CodeTypeReference expr = null;
             //
-            string strType;
+            Type type;
             switch (nativeType.Token.Type)
             {
                 case XSharpParser.BYTE:
-                    strType = "System.Byte";
+                    type = typeof(System.Byte);
                     break;
                 case XSharpParser.DWORD:
-                    strType = "System.UInt32";
+                    type = typeof(System.UInt32);
                     break;
                 case XSharpParser.SHORTINT:
-                    strType = "System.Int16";
+                    type = typeof(System.Int16);
                     break;
                 case XSharpParser.INT:
                 case XSharpParser.LONGINT:
-                    strType = "System.Int32";
+                    type = typeof(System.Int32);
                     break;
                 case XSharpParser.INT64:
-                    strType = "System.Int64";
+                    type = typeof(System.Int64);
                     break;
                 case XSharpParser.UINT64:
-                    strType = "System.UInt64";
+                    type = typeof(System.UInt64);
                     break;
                 case XSharpParser.LOGIC:
-                    strType = "System.Boolean";
+                    type = typeof(System.Boolean);
                     break;
                 case XSharpParser.OBJECT:
-                    strType = "System.Object";
+                    type = typeof(System.Object);
                     break;
                 case XSharpParser.REAL4:
-                    strType = "System.Single";
+                    type = typeof(System.Single);
                     break;
                 case XSharpParser.REAL8:
-                    strType = "System.Double";
+                    type = typeof(System.Double);
                     break;
                 case XSharpParser.STRING:
-                    strType = "System.String";
+                    type = typeof(System.String);
                     break;
                 case XSharpParser.WORD:
-                    strType = "System.UInt16";
+                    type = typeof(System.UInt16);
                     break;
                 case XSharpParser.VOID:
-                    strType = "System.Void";
+                    type = typeof(void);
                     break;
                 case XSharpParser.DYNAMIC:
-                    strType = "System.Dynamic";
+                    type = typeof(System.Object);
                     break;
                 default:
-                    strType = nativeType.Token.Text;
-                    break;
+                    var strType = nativeType.Token.Text;
+                    return BuildTypeReference(strType);
             }
-            expr = new CodeTypeReference(strType);
-            return expr;
+            return new CodeTypeReference(type);
         }
 
         private CodeTypeReference BuildXBaseType(XSharpParser.XbaseTypeContext xbaseType)
@@ -1250,7 +1402,7 @@ namespace XSharp.CodeDom
                 //
                 gen = "`" + i.ToString() + "[" + argList + "]";
             }
-            expr = new CodeTypeReference(name + gen);
+            expr = BuildTypeReference(name + gen);
             //
             return expr;
         }
@@ -1311,35 +1463,46 @@ namespace XSharp.CodeDom
 
         private CodeTypeReference BuildDataType(XSharpParser.DatatypeContext context)
         {
-            CodeTypeReference expr = null;
             //
+            // Datatype is ptrDatatype
+            // or arrayDatatype
+            // or simpleDatatype
+            // or nullableDatatype 
+            // they all have a TypeName
+            XSharpParser.TypeNameContext tn = null;
             if (context is XSharpParser.PtrDatatypeContext)
             {
                 XSharpParser.PtrDatatypeContext ptrData = (XSharpParser.PtrDatatypeContext)context;
-                if (ptrData.TypeName.NativeType != null)
-                    expr = BuildNativeType(ptrData.TypeName.NativeType);
-                else if (ptrData.TypeName.XType != null)
-                    expr = BuildXBaseType(ptrData.TypeName.XType);
-                else if (ptrData.TypeName.Name != null)
-                    expr = BuildName(ptrData.TypeName.Name);
+                tn = ptrData.TypeName;
             }
             else if (context is XSharpParser.ArrayDatatypeContext)
             {
-
+                XSharpParser.ArrayDatatypeContext aData = (XSharpParser.ArrayDatatypeContext)context;
+                tn = aData.TypeName;
             }
             else if (context is XSharpParser.SimpleDatatypeContext)
             {
                 XSharpParser.SimpleDatatypeContext sdt = (XSharpParser.SimpleDatatypeContext)context;
-                if (sdt.TypeName.Name != null)
-                    expr = BuildName(sdt.TypeName.Name);
-                else if (sdt.TypeName.NativeType != null)
-                    expr = BuildNativeType(sdt.TypeName.NativeType);
-                else if (sdt.TypeName.XType != null)
-                    expr = BuildXBaseType(sdt.TypeName.XType);
+                tn = sdt.TypeName;
             }
             else if (context is XSharpParser.NullableDatatypeContext)
             {
+                XSharpParser.NullableDatatypeContext ndc = context as XSharpParser.NullableDatatypeContext;
+                tn = ndc.TypeName;
+            }
+            CodeTypeReference expr = null;
 
+            if (tn.NativeType != null)
+            {
+                expr = BuildNativeType(tn.NativeType);
+            }
+            else if (tn.XType != null)
+            {
+                expr = BuildXBaseType(tn.XType);
+            }
+            else if (tn.Name != null)
+            {
+                expr = BuildName(tn.Name);
             }
             //
             return expr;
@@ -1353,11 +1516,15 @@ namespace XSharp.CodeDom
         {
             CodeTypeReference expr = null;
             //
+            var sName = context.GetText();
+            System.Type type = _projectNode.ResolveType(sName, _usings);
+            if (type != null)
+                return new CodeTypeReference(type);
             if (context is XSharpParser.QualifiedNameContext)
             {
                 XSharpParser.QualifiedNameContext qual = (XSharpParser.QualifiedNameContext)context;
                 expr = BuildName(qual.Left);
-                expr = new CodeTypeReference(expr.BaseType + "." + BuildSimpleName(qual.Right).BaseType);
+                expr = BuildTypeReference(expr.BaseType + "." + BuildSimpleName(qual.Right).BaseType);
             }
             else if (context is XSharpParser.SimpleOrAliasedNameContext)
             {
@@ -1369,13 +1536,13 @@ namespace XSharp.CodeDom
                 {
                     XSharpParser.AliasQualifiedNameContext al = (XSharpParser.AliasQualifiedNameContext)name;
                     expr = BuildSimpleName(al.Right);
-                    expr = new CodeTypeReference(al.Alias.GetText() + "::" + expr.BaseType);
+                    expr = BuildTypeReference(al.Alias.GetText() + "::" + expr.BaseType);
                 }
                 else if (name is XSharpParser.GlobalQualifiedNameContext)
                 {
                     var gqn = name as XSharpParser.GlobalQualifiedNameContext;
                     expr = BuildSimpleName(gqn.Right); 
-                    expr = new CodeTypeReference("global::" + expr.BaseType);
+                    expr = BuildTypeReference("global::" + expr.BaseType);
                 }
                 else if (name is XSharpParser.IdentifierOrGenericNameContext)
                 {

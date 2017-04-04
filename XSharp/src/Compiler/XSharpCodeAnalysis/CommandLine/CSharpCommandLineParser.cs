@@ -137,6 +137,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         name = "checked-";
                     handled = false;
                     break;
+                case "parseonly":
+                    options.ParseOnly = positive;
+                    break;
                 case "ppo":
                     options.PreProcessorOutput = positive;
                     break;

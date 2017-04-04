@@ -203,13 +203,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parseErrors.Add(e);
             }
 
-            // check for parser errors, such as missing tokens
-            // This adds items to the parseErrors list for missing
-            // tokens and missing keywords
-            var errchecker = new XSharpParseErrorAnalysis(parser,parseErrors);
-            walker.Walk(errchecker, tree);
+            if (! _options.ParseOnly)
+            {
+                // check for parser errors, such as missing tokens
+                // This adds items to the parseErrors list for missing
+                // tokens and missing keywords
+                var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors);
+                walker.Walk(errchecker, tree);
+            }
             //
-
 
             XSharpTreeTransformation treeTransform;
             if (_options.IsDialectVO)
@@ -221,7 +223,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
             }
 
-            if ( parser.NumberOfSyntaxErrors != 0 || 
+            if ( _options.ParseOnly ||
+                parser.NumberOfSyntaxErrors != 0 || 
                 (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);

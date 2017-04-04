@@ -1175,9 +1175,16 @@ namespace XSharp.Project
         }
 
         #region IXSharpProject Interface
+        protected IVsStatusbar statusBar;
+        protected bool lTriedToGetStatusBar = false;
         public void SetStatusBarText(string msg)
         {
-            var statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+            if (statusBar == null && ! lTriedToGetStatusBar)
+            {
+                statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+                lTriedToGetStatusBar = true;
+            }
+
             if (statusBar != null)
             {
                 statusBar.SetText(msg);

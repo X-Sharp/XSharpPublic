@@ -118,8 +118,11 @@ namespace Antlr4.Runtime.Atn
             public override int GetHashCode()
             {
                 int hashCode = 5;
-                hashCode = unchecked(7 * hashCode + (obj != null ? obj.GetHashCode() : 0));
-                hashCode = unchecked(7 * hashCode + value);
+				unchecked 
+				{
+                	hashCode = 7 * hashCode + (obj != null ? obj.GetHashCode() : 0);
+                	hashCode = 7 * hashCode + value;
+				}
                 return hashCode;
             }
         }

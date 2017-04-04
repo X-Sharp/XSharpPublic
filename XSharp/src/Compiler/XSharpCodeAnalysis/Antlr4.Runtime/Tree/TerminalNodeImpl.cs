@@ -7,7 +7,7 @@ using Antlr4.Runtime.Sharpen;
 
 namespace Antlr4.Runtime.Tree
 {
-    public partial class TerminalNodeImpl : ITerminalNode
+    public class TerminalNodeImpl : ITerminalNode
     {
         public IToken symbol;
 
@@ -116,21 +116,21 @@ namespace Antlr4.Runtime.Tree
             return ToString();
         }
 
-        //public override string ToString()
-        //{
-        //    if (symbol != null)
-        //    {
-        //        if (symbol.Type == TokenConstants.Eof)
-        //        {
-        //            return "<EOF>";
-        //        }
-        //        return symbol.Text;
-        //    }
-        //    else
-        //    {
-        //        return "<null>";
-        //    }
-        //}
+        public override string ToString()
+        {
+            if (symbol != null)
+            {
+                if (symbol.Type == TokenConstants.Eof)
+                {
+                    return "<EOF>";
+                }
+                return symbol.Text;
+            }
+            else
+            {
+                return "<null>";
+            }
+        }
 
         public virtual string ToStringTree()
         {

@@ -53,21 +53,26 @@ namespace Antlr4.Runtime.Sharpen
                     ulong count2 = value[data + j + 1];
                     ulong half1 = value[data + j + 2];
                     ulong half2 = half1;
-                    half1 &= unchecked(m1);
-                    half2 = unchecked((half2 >> 1) & m1);
-                    count1 -= unchecked((count1 >> 1) & m1);
-                    count2 -= unchecked((count2 >> 1) & m1);
-                    count1 += unchecked(half1);
-                    count2 += unchecked(half2);
-                    count1 = unchecked((count1 & m2) + ((count1 >> 2) & m2));
-                    count1 += unchecked((count2 & m2) + ((count2 >> 2) & m2));
-                    acc += unchecked((count1 & m4) + ((count1 >> 4) & m4));
+					unchecked 
+					{
+	                    half1 &= m1;
+	                    half2 = (half2 >> 1) & m1;
+	                    count1 -= (count1 >> 1) & m1;
+	                    count2 -= (count2 >> 1) & m1;
+	                    count1 += half1;
+	                    count2 += half2;
+	                    count1 = (count1 & m2) + ((count1 >> 2) & m2);
+	                    count1 += (count2 & m2) + ((count2 >> 2) & m2);
+	                    acc += (count1 & m4) + ((count1 >> 4) & m4);
+					}
                 }
-
-                acc = unchecked((acc & m8) + ((acc >> 8) & m8));
-                acc = unchecked((acc + (acc >> 16)) & m16);
-                acc = unchecked(acc + (acc >> 32));
-                bitCount += unchecked((uint)acc);
+				unchecked 
+				{
+	                acc = (acc & m8) + ((acc >> 8) & m8);
+	                acc = (acc + (acc >> 16)) & m16;
+	                acc = acc + (acc >> 32);
+	                bitCount += (uint)acc;
+				}
             }
 
             // count the bits of the remaining bytes (MAX 29*8) using 
@@ -77,10 +82,13 @@ namespace Antlr4.Runtime.Sharpen
             for (uint i = 0; i < size - limit30; i++)
             {
                 ulong x = value[data + i];
-                x = unchecked(x - ((x >> 1) & m1));
-                x = unchecked((x & m2) + ((x >> 2) & m2));
-                x = unchecked((x + (x >> 4)) & m4);
-                bitCount += unchecked((uint)((x * h01) >> 56));
+				unchecked 
+				{
+	                x = x - ((x >> 1) & m1);
+	                x = (x & m2) + ((x >> 2) & m2);
+	                x = (x + (x >> 4)) & m4;
+	                bitCount += (uint)((x * h01) >> 56);
+				}
             }
 
             return (int)bitCount;

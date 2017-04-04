@@ -16,7 +16,7 @@
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\$(Platform)</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\clr-core\</OutDir>
     <CSharpSyntaxGeneratorToolPath>$(SolutionDir)$(RoslynBin)\$(Configuration)\CSharpSyntaxGenerator.exe</CSharpSyntaxGeneratorToolPath>
@@ -416,11 +416,11 @@
     <Import Project="$(XsharpBuild)\Targets\VSL.Imports.targets" />
   </ImportGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharpLexer.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated -Dlanguage=CSharp_v4_5
-java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated -Dlanguage=CSharp_v4_5
+    <PreBuildEvent>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Parser\XSharpLexer.g4 -o $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Generated -Dlanguage=CSharp_v4_5
+java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Generated -Dlanguage=CSharp_v4_5
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

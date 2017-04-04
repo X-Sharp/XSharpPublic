@@ -1599,6 +1599,8 @@ namespace Antlr4.Runtime.Atn
         /// <see cref="ComputeStartState(Antlr4.Runtime.Dfa.DFA, Antlr4.Runtime.ParserRuleContext, bool)"/>
         /// as the start state for the DFA.
         /// </param>
+        /// <param name="globalContext"></param>
+        /// <param name="contextCache"></param>
         /// <returns>
         /// The transformed configuration set representing the start state
         /// for a precedence DFA at a particular precedence level (determined by

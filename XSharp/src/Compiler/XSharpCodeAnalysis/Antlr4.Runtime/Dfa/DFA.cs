@@ -185,6 +185,7 @@ namespace Antlr4.Runtime.Dfa
 
         /// <summary>Get the start state for a specific precedence value.</summary>
         /// <param name="precedence">The current precedence.</param>
+        /// <param name="fullContext"></param>
         /// <returns>
         /// The start state corresponding to the specified precedence, or
         /// <see langword="null"/>
@@ -210,6 +211,7 @@ namespace Antlr4.Runtime.Dfa
 
         /// <summary>Set the start state for a specific precedence value.</summary>
         /// <param name="precedence">The current precedence.</param>
+        /// <param name="fullContext"></param>
         /// <param name="startState">
         /// The start state corresponding to the specified
         /// precedence.

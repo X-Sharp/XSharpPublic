@@ -70,6 +70,15 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         #endregion
 
+		private void OnDesignTimeOutputDeleted(object sender, EventArgs args)
+		{
+			if (DesignTimeOutputDeleted == null)
+				return;
+
+			string moniker = OABuildManager.GetOutputMoniker(sender);
+			if (!String.IsNullOrEmpty(moniker))
+				DesignTimeOutputDeleted(moniker);
+		}
         private static string GetOutputMoniker(object sender)
         {
             IVsOutput2 output = sender as IVsOutput2;

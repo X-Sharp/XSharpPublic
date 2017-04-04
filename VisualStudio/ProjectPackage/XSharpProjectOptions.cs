@@ -71,6 +71,7 @@ namespace XSharp.Project
             List<String> args = new List<String>();
             try
             {
+                args.Add("/parseonly");
                 args.Add("/dialect:" + _prjNode.GetProjectProperty("Dialect"));
                 // Add pseudo references so the Vulcan/VO dialect will be allowed
                 args.Add("/errorendlocation");

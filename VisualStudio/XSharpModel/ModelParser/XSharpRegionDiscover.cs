@@ -52,6 +52,8 @@ namespace XSharpModel
 
         public void RegionExitEveryRule([NotNull] ParserRuleContext context)
         {
+            // we can probably move most of this to the Enter and Exit methods
+            // for each type and member rule as well.
             try
             {
                 if ((context is XSharpParser.Namespace_Context) ||

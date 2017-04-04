@@ -13,7 +13,7 @@
     <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\$(Platform)</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\clr-core\</OutDir>
     <CSharpSyntaxGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\CSharpSyntaxGenerator.exe</CSharpSyntaxGeneratorToolPath>

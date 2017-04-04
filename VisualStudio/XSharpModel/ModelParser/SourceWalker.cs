@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using LanguageService.SyntaxTree;
-
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace XSharpModel
 {
     public class SourceWalker
@@ -26,7 +26,6 @@ namespace XSharpModel
         private string _source;
         private string _fullPath;
         private List<ClassificationSpan> _tags;
-        private string[] _args;
 
         private XFile _file;
 
@@ -146,8 +145,8 @@ namespace XSharpModel
                 var syntaxRoot = tree.GetRoot();
 
                 var prjNode = File.Project.ProjectNode;
-
-                ShowErrorsAsync(syntaxRoot);
+                // Disabled for now . We may want to enable this for the current document only
+                // ShowErrorsAsync(syntaxRoot);
 
                  // Get the antlr4 parse tree root
                 _xTree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;

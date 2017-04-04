@@ -27,6 +27,8 @@ namespace XSharpModel
 
         private bool _reInitModel;
         private bool _buildModel;
+        private bool _buildLocals = false;
+
         public bool BuildModel
         {
             get

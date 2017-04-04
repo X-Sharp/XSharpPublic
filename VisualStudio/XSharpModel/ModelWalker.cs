@@ -113,35 +113,25 @@ namespace XSharpModel
                 {
                     // need to continue ?
                     if (_projects.Count == 0)
+                    {
                         break;
+                    }
                     project = _projects.Dequeue();
+                    project.ProjectNode.SetStatusBarText($"Start scanning project {project.Name}");
                     //
                 }
-#if DEBUG
-                Stopwatch stopWatch = new Stopwatch();
-#endif
-                foreach (XFile file in project.Files.ToArray())
+                var aFiles = project.Files.ToArray();
+                int iProcessed = 0;
+                Parallel.ForEach(aFiles, file =>
                 {
                     // Detect project unload
-                    if (!project.Loaded)
-                        break;
-
-                    //
-                    project.ProjectNode.SetStatusBarText(String.Format("Walking {0} : Processing File {1} ", project.Name, file.Name));
-#if DEBUG                    
-                    Debug.WriteLine(String.Format("Walking {0} : Processing File {1} ", project.Name, file.Name));
-                    stopWatch.Start();
-#endif
-                    //file.Name
-                    //var code = System.IO.File.ReadAllText(file.FullPath);
-                    //FileWalk(file, code);
-                    FileWalk(file);
-                    //
-#if DEBUG             
-                    stopWatch.Stop();
-                    Debug.WriteLine(String.Format("   needs {0}", stopWatch.Elapsed));
-#endif
-                }
+                    if (project.Loaded)
+                    {
+                        iProcessed += 1;
+                        project.ProjectNode.SetStatusBarText(String.Format("Walking {0} : Processing File {1} ({2} of {3})", project.Name, file.Name, iProcessed, aFiles.Length));
+                        FileWalk(file);
+                    }
+                });
                 project.ProjectNode.SetStatusBarText("");
             } while (true);
         }
@@ -160,7 +150,7 @@ namespace XSharpModel
             catch (Exception)
             {
                 // Push Exception away...
-                //throw;
+                ;
             }
         }
 

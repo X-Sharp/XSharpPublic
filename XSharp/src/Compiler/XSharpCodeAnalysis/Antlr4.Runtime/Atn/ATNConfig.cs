@@ -110,7 +110,6 @@ namespace Antlr4.Runtime.Atn
         }
 
         /// <summary>Gets the ATN state associated with this configuration.</summary>
-        /// <remarks>Gets the ATN state associated with this configuration.</remarks>
         public ATNState State
         {
             get
@@ -120,7 +119,6 @@ namespace Antlr4.Runtime.Atn
         }
 
         /// <summary>What alt (or lexer rule) is predicted by this configuration.</summary>
-        /// <remarks>What alt (or lexer rule) is predicted by this configuration.</remarks>
         public int Alt
         {
             get
@@ -169,7 +167,10 @@ namespace Antlr4.Runtime.Atn
         {
             get
             {
-                return unchecked(((int)(((uint)altAndOuterContextDepth) >> 24)) & (int)(0x7F));
+                unchecked
+                { 
+	                return ((int)(((uint)altAndOuterContextDepth) >> 24)) & unchecked((int)(0x7F));
+                }
             }
             set
             {
@@ -344,11 +345,6 @@ namespace Antlr4.Runtime.Atn
         /// the same state, they predict the same alternative, and
         /// syntactic/semantic contexts are the same.
         /// </summary>
-        /// <remarks>
-        /// An ATN configuration is equal to another if both have
-        /// the same state, they predict the same alternative, and
-        /// syntactic/semantic contexts are the same.
-        /// </remarks>
         public override bool Equals(object o)
         {
             if (!(o is Antlr4.Runtime.Atn.ATNConfig))

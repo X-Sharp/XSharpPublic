@@ -19,7 +19,7 @@ namespace Antlr4.Runtime.Tree
     /// <see cref="Antlr4.Runtime.RuleContext"/>
     /// object.</p>
     /// </summary>
-    public partial interface IParseTree : ISyntaxTree
+    public interface IParseTree : ISyntaxTree
     {
         new IParseTree Parent
         {

@@ -30,7 +30,7 @@ namespace Antlr4.Runtime
     /// group values such as this aggregate.  The getters/setters are there to
     /// satisfy the superclass interface.
     /// </remarks>
-    public partial class ParserRuleContext : RuleContext
+    public class ParserRuleContext : RuleContext
     {
         private static readonly Antlr4.Runtime.ParserRuleContext Empty = new Antlr4.Runtime.ParserRuleContext();
 
@@ -382,11 +382,6 @@ namespace Antlr4.Runtime
             {
                 return start;
             }
-            set
-            {
-                start = value;
-            }
-
         }
 
         /// <summary>Get the final token in this context.</summary>
@@ -401,11 +396,6 @@ namespace Antlr4.Runtime
             {
                 return stop;
             }
-            set
-            {
-                stop = value;
-            }
-
         }
 
         /// <summary>Used for rule context info debugging during parse-time, not so much for ATN debugging</summary>

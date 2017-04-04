@@ -111,7 +111,8 @@ namespace Antlr4.Runtime.Atn
 
         public virtual ATN Deserialize(char[] data)
         {
-            unchecked { 
+            unchecked 
+			{ 
                 data = (char[])data.Clone();
                 // don't adjust the first value since that's the version number
                 for (int i = 1; i < data.Length; i++)

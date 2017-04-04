@@ -90,15 +90,13 @@ namespace XSharp.LanguageService
             {
                 return elt1.Name.CompareTo(elt2.Name);
             });
+            XType typeGlobal = null;
+
             foreach (XType eltType in xList)
             {
                 //
-                if ((eltType.Kind != Kind.Class) &&
-                    (eltType.Kind != Kind.Structure) &&
-                    (eltType.Kind != Kind.Interface) &&
-                    (eltType.Kind != Kind.Enum))
-                    continue;
-                //
+                if (eltType.Name == XType.GlobalName)
+                    typeGlobal = eltType;
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
                 //
                 
@@ -132,6 +130,8 @@ namespace XSharp.LanguageService
             }
             //
             dropDownMembers.Clear();
+            if (typeAtPos == null)
+                typeAtPos = typeGlobal;
             if (typeAtPos != null)
             {
                 if (typeAtPos.Members.Count > 0)

@@ -94,6 +94,25 @@ namespace XSharpModel
             }
         }
 
+        public bool IsType
+        {
+            get
+            {
+                switch (this.Kind)
+                {
+                    case Kind.Class:
+                    case Kind.Structure:
+                    case Kind.VOStruct:
+                    case Kind.Union:
+                    case Kind.Interface:
+                    case Kind.Enum:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
         public bool IsStatic
         {
             get

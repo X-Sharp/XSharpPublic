@@ -47,6 +47,8 @@
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -159,9 +161,9 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="XSharp.CodeAnalysis, Version=0.2.9.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.CodeAnalysis, Version=0.2.10.1, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\XSharp\DevPublic\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

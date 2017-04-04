@@ -51,7 +51,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="XSharp.CodeAnalysis">
-      <HintPath>..\..\..\..\..\..\..\XSharp\DevPublic\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

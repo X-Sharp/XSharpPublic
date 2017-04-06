@@ -1,14 +1,22 @@
 // 452. error XS9002: Parser: mismatched input 
 // with different order of clauses passed. I assume this is a bug, because harbour allows it
 
-#command @ <one>, <two> THREE <three> [FOUR <four>] [FIVE <five>] => Test(<one>, <two> , <three> , <four> , <five>)
-
-#command TEST1 LEFT RIGHT => Test()
-#command TEST2 LEFT RIGHT => TEST1 RIGHT LEFT
+#command @ <one>, <two> THREE <three> [FOUR <four>] [FIVE <five>] => Test(<one>, <two> , <three> , <four> , <five> , 6)
 
 
-FUNCTION Test(a,b,c,d,e) CLIPPER
-	? pcount(),a,b,c,d,e
+#command TEST1 [LEFT <a>] [RIGHT <b>] => Test()
+#command TEST2 [LEFT <a>] [RIGHT <b>] => TEST1 RIGHT LEFT
+
+
+FUNCTION Test(a,b,c,d,e,f) CLIPPER
+	? pcount(),a,b,c,d,e,f
+	IF pcount() == 6 .and. e != NIL
+		IF a == 1 .and. b == 2 .and. c == 3 .and. d == 4 .and. e == 5 .and. f == 6
+			? "OK!"
+		ELSE
+			THROW Exception{"Incorrect result"}
+		END IF
+	END IF
 RETURN NIL
 
 FUNCTION Start() AS VOID
@@ -40,7 +48,7 @@ RETURN
 #command @ <row>, <col> zSAY <xpr> [PICTURE <pic>] [COLOR <color>] ;
 => Test("one argument")
 
-#warning By moving the VALID clause after WHEN, the code compiles without errors
+//#warning By moving the VALID clause after WHEN, the code compiles without errors
 #command @ <row>, <col> zGET <getvar>                                      ;
                         [PICTURE <pic>]                                 ;
                         [VALID <valid>]                                 ;

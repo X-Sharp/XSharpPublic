@@ -1,59 +1,58 @@
 // 460. error XS9002: Parser: unexpected input '@' (used to be compiler crash)
 //      error XS1003: Syntax error, 'Entity' expected
 
+#xtranslate :Field1 => \[1 \]
+#xtranslate :Field2 => \[2 \]
+
 
 #translate ARRAY(<x>) => ArrayCreate(<x>)
 
 #include "C460.CH"
 FUNCTION Start( ) AS VOID
-LOCAL aFiller := FillerClass{} AS FillerClass
+LOCAL oFiller := FillerClass{} AS FillerClass
+LOCAL aFiller := ArrayCreate(2) AS ARRAY
+LOCAL GetList := {} AS ARRAY
+
+aFiller:Field1 := "Field1"
+aFiller:Field2 := "Field2"
+
+@1,2 zSay "Filler             " zGet aFiller:Field1     PICTURE "@!" MESSAGE "Enter the filler" WHEN aFiller:Mode == "ADD" VALID Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))
+@1976,2 zGet aFiller:Field2 CHECKBOX "Active " RIGHT ON .t. OFF .f. MESSAGE "Is this an active filler?" VALID ValidActive(aFiller)
+
+xAssert(Row() == 1976)
+xAssert(ALen(GetList) == 2)
+
+
+ASize(GetList , 0)
 
 // this one is ok:
-@1,2 zSay "Filler             " zGet aFiller:Filler     PICTURE "@!" MESSAGE "Enter the filler" WHEN aFiller:Mode == "ADD" VALID Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))
+@1,2 zSay "Filler             " zGet oFiller:Filler     PICTURE "@!" MESSAGE "Enter the filler" WHEN aFiller:Mode == "ADD" VALID Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))
+
+xAssert(Row() == 1)
 
 // error XS9002: Parser: unexpected input '@'
-@1,2 zGet aFiller:Active CHECKBOX "Active " RIGHT ON .t. OFF .f. MESSAGE "Is this an active filler?" VALID ValidActive(aFiller)
+@1976,2 zGet oFiller:Active CHECKBOX "Active " RIGHT ON .t. OFF .f. MESSAGE "Is this an active filler?" VALID ValidActive(aFiller)
+
+xAssert(Row() == 1976)
+
+xAssert(ALen(GetList) == 2)
+LOCAL oGet AS _GET_Object
+oGet := GetList[1]
+? oGet:cargo[2]
+xAssert(oGet:cargo[2] == "Enter the filler")
+
+xAssert(GetList[2]:cargo[2] == "Is this an active filler?")
 RETURN
-
-
-
-
-GLOBAL GetList := {} AS ARRAY
-
-CLASS _GET_Object
-	EXPORT reader AS USUAL
-	EXPORT cargo AS USUAL
-	METHOD Display() AS _GET_Object
-	RETURN SELF
-END CLASS
-
-FUNCTION SetPos(y AS INT,x AS INT) AS VOID
-	? y,x
-RETURN 
-FUNCTION Row() AS INT
-RETURN 0
-FUNCTION Col() AS INT
-RETURN 0
-
-FUNCTION DevPos(y AS INT,x AS INT) AS VOID
-	? y,x
-RETURN 
-FUNCTION DevOut(cText AS STRING) AS VOID
-	? cText
-RETURN 
-FUNCTION _GET_(oVar AS USUAL, cVar AS STRING, cPic := "" AS STRING, oValid := NIL AS USUAL, oWhen := NIL AS USUAL) AS _GET_Object
-	? oVar , cVar , cPic , oValid , oWhen
-	LOCAL oGet AS _GET_Object
-	oGet := _GET_Object{}
-RETURN _GET_Object{}
-
-FUNCTION zdbCheckKey() CLIPPER
-RETURN TRUE
-FUNCTION zGEReader() CLIPPER
-RETURN TRUE
 
 CLASS FillerClass
 	EXPORT Filler AS INT
 	EXPORT Active AS INT
 	EXPORT Mode := "" AS STRING
 END CLASS
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+

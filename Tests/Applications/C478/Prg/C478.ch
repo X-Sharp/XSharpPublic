@@ -153,4 +153,58 @@
                      <xOff>,<cCheck>, <{bWhen}>, <{bValid}>,         ;
                      [<{bPostEval}>]) )
 
+// Filler group codes
+#command @<Row>,<Col> zGet <cVar> COMBO_FILGRP [STRICT <lStrict>]       ;
+                                               [EMPTY_ALLOWED <lEmpty>] ;
+                                               [COLOR <cColor>]         ;
+                                               [FOR <bFor>]             ;
+                                               [WHEN <bWhen>]           ;
+                                               [VALID <bValid>] =>      ;
+          @<Row>,<Col> zGet <cVar>                                      ;
+          COMBO BROWSE  {{"GrpCode" ,"Group"      } ,                   ;
+                         {"Descript","Description"}}                    ;
+          ALIAS          "FilGrp"                                       ;
+          DISPLAY_FIELD  "GrpCode"                                      ;
+          DISPLAY_TAG    "FilGrpGC"                                     ;
+          RETURN_FIELD   "GrpCode"                                      ;
+          RETURN_TAG     "FilGrpGC"                                     ;
+          PICTURE        "@!"                                           ;
+          WIDTH          39                                             ;
+          HEIGHT         9                                              ;
+          [STRICT        <lStrict>]                                     ;
+          [EMPTY_ALLOWED <lEmpty>]                                      ;
+          [COLOR         <cColor>]                                      ;
+          [FOR           <bFor>]                                        ;
+          [WHEN          <bWhen>]                                       ;
+          [VALID         <bValid>]                                      ;
+          MESSAGE        "Select the filler group code"
+          
+// SSUsers
+#Command @<Row>,<Col> zGet <cVar> COMBO_USER [STRICT <lStrict>]           ;
+                                             [COLOR <Color>]              ;
+                                             [FOR   <bFor>]               ;
+                                             [VALID <bValid>]             ;
+                                             [EMPTY_ALLOWED <lEmpty>]     ;
+                                             [WHEN <bWhen>] =>            ;
+         @<Row>,<Col> zGet <cVar>                                         ;
+         COMBO BROWSE   {{"UserId","User ID"},{"Name","User"}}            ;
+         ALIAS          "SSUsers"                                         ;
+         RETURN_FIELD   "UserId"                                          ;
+         RETURN_TAG     "SSUserSU"                                        ;
+         DISPLAY_FIELD  "UserId"                                          ;
+         DISPLAY_TAG    "SSUserSU"                                        ;
+         XTOP           zGetSysId()                                       ;
+         XBOTTOM        zGetSysId()                                       ;
+         BASE_FILTER    zGetSysId()                                       ;
+         WHILE          {|| SSUsers->SysId == zGetSysId()}                ;
+         WIDTH          36                                                ;
+         HEIGHT         10                                                ;
+         PICTURE        "!!!!!!!!!!"                                      ;
+         [EMPTY_ALLOWED <lEmpty>]                                         ;
+         [STRICT        <lStrict>]                                        ;
+         [COLOR         <Color>  ]                                        ;
+         [FOR           <bFor>   ]                                        ;
+         [VALID         <bValid>]                                         ;
+         [WHEN          <bWhen>]                                          ;
+         MESSAGE        "Enter the user id"
 

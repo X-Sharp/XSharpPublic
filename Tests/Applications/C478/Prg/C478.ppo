@@ -1,0 +1,18 @@
+// 478. error XS9002: Parser: unexpected input 'atail'
+// NOTE: deleting lines 203-208 (optional clauses) of C478.ch allows the sample to compile
+
+//PP #translate ARRAY(<x>) => ArrayCreate(<x>)
+//PP #xtranslate zGetSysId()               => zGetSet(1 )
+//PP #xtranslate zSetSysId(<x>)            => zGetSet(1 ,<x>)
+
+//PP #include "C478.ch"
+
+
+FUNCTION Start() AS VOID
+LOCAL GetList    := {}
+LOCAL nTextRow , nTextCol AS INT
+LOCAL aFiller := ArrayCreate(20) AS ARRAY
+LOCAL o := TRUE AS OBJECT
+
+// Those are OK:
+  DevPos( 1 , 5 ) ; DevOut( "a"  );SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( o , "o" , "@!" , {||FALSE} , {||TRUE} ):display() ) ;atail

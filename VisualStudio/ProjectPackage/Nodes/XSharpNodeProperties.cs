@@ -157,6 +157,7 @@ namespace XSharp.Project
         }
         #endregion
     }
+    [ComVisible(true)]
     public class XSharpReferenceNodeProperties : ReferenceNodeProperties
     {
         #region ctors

@@ -120,6 +120,18 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
         }
 
+        EnvDTE.Properties _properties = null;
+        public virtual EnvDTE.Properties Properties
+        {
+            get
+            {
+                if (_properties == null)
+                {
+                    _properties = new OAProperties(this.project.NodeProperties);
+                }
+                return _properties;
+            }
+        }
         public virtual References References
         {
             get

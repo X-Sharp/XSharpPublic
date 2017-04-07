@@ -41,6 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxListPool _pool = new SyntaxListPool(); // Don't need to reset this.
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
+        private readonly bool _isScript;
 
         private CommonTokenStream _lexerTokenStream;
         private CommonTokenStream _preprocessorTokenStream;
@@ -93,6 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _text = Text;
             _fileName = FileName;
             _options = options;
+            _isScript = options.Kind == SourceCodeKind.Script;
         }
 
         internal CompilationUnitSyntax ParseCompilationUnit()
@@ -133,6 +135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var pp_tokens = new CommonTokenStream(pp);
             _preprocessorTokenStream = pp_tokens;
             var parser = new XSharpParser(pp_tokens);
+            parser.IsScript = _options.Kind == SourceCodeKind.Script;
             parser.AllowFunctionInsideClass = false;     // 
             if (_options.Dialect == XSharpDialect.VO)
             {
@@ -167,7 +170,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             parser.ErrorHandler = new BailErrorStrategy();
             try
             {
-                tree = parser.source();
+                if (_isScript)
+                    tree = parser.script();
+                else
+                    tree = parser.source();
             }
             catch (ParseCanceledException e)
             {
@@ -183,7 +189,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 pp_tokens.Reset();
                 pp.Close();
                 parser.Reset();
-                tree = parser.source();
+                if (_isScript)
+                    tree = parser.script();
+                else
+                    tree = parser.source();
             }
 #if DEBUG && DUMP_TIMES
             {
@@ -230,7 +239,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     treeTransform.GlobalEntities.Attributes,
                     treeTransform.GlobalEntities.Members,
                     eof);
-                result.XNode = (XSharpParser.SourceContext)tree;
+                result.XNode = tree;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
                 result.IncludedFiles = pp.IncludedFiles;
@@ -251,7 +260,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     treeTransform.GlobalEntities.Attributes, 
                     treeTransform.GlobalEntities.Members, eof);
                 // TODO nvk: add parser warnings to tree diagnostic info
-                result.XNode = (XSharpParser.SourceContext)tree;
+                result.XNode = tree;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
                 result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;

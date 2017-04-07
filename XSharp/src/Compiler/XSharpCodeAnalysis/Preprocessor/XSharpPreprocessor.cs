@@ -266,7 +266,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     macroDefines.Add(flagName, () => new XSharpToken(XSharpLexer.FALSE_CONST));
             }
-            if (!options.NoStdDef)
+            if (!options.NoStdDef && options.Kind != SourceCodeKind.Script)
             {
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
                 // and automatically include it.

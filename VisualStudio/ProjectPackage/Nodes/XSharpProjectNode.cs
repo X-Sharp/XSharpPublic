@@ -116,16 +116,12 @@ namespace XSharp.Project
         /// </summary>
         private void InitializeCATIDs()
         {
-            // The following properties classes are specific to Nemerle so we can use their GUIDs directly
+            // The following properties classes are specific to XSharp so we can use their GUIDs directly
             //
             AddCATIDMapping(typeof(XSharpProjectNodeProperties), typeof(XSharpProjectNodeProperties).GUID);
             AddCATIDMapping(typeof(XSharpFileNodeProperties), typeof(XSharpFileNodeProperties).GUID);
-            //AddCATIDMapping(typeof(NemerleOAFileItem), typeof(NemerleOAFileItem).GUID);
-
-            //// The following are not specific and as such we need a separate GUID
-            //// (we simply used guidgen.exe to create new guids)
-            ////
-            //AddCATIDMapping(typeof(FolderNodeProperties), new Guid(NemerleConstants.FolderNodePropertiesGuidString));
+            AddCATIDMapping(typeof(OAXSharpProject), typeof(OAXSharpProject).GUID);
+            AddCATIDMapping(typeof(OAProject), typeof(OAProject).GUID);
 
             // This one we use the same as file nodes since both refer to files
             AddCATIDMapping(typeof(FileNodeProperties), typeof(XSharpFileNodeProperties).GUID);

@@ -27,7 +27,17 @@ options	{
         tokenVocab=XSharpLexer;
         }
 
-source				: (Entities+=entity)* EOF
+script				: ( Entities+=scriptEntity )*
+					EOF
+                    ;
+
+scriptEntity        : Stmt=statement
+                    | Entity=entity
+					| Expr=expression
+                    ;
+
+source				: ( Entities+=entity )*
+					EOF
                     ;
 
 entity              : namespace_

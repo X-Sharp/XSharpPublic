@@ -144,6 +144,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TypeSyntax _voidType;
         protected TypeSyntax _impliedType;
         protected string _fileName;
+        protected bool _isScript;
 
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
@@ -166,6 +167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _syntaxFactory = syntaxFactory;
             _parser = parser;
             _options = options;
+            _isScript = options.Kind == SourceCodeKind.Script;
             GlobalEntities = CreateEntities();
             _ptrType = GenerateQualifiedName(SystemQualifiedNames.IntPtr);
             _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
@@ -1643,6 +1645,102 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
             if (context is XP.IEntityContext)
                 Entities.Pop();
+        }
+
+        public override void EnterScript([NotNull] XP.ScriptContext context)
+        {
+/*            GlobalClassEntities = CreateClassEntities();
+            ClassEntities.Push(GlobalClassEntities);*/
+        }
+
+        public override void ExitScript([NotNull] XP.ScriptContext context)
+        {
+/*            FinalizeGlobalEntities();
+
+            var generated = ClassEntities.Pop();
+            if (generated.Members.Count > 0)
+            {
+                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, false, generated.Members));
+            }
+            generated.Free();
+
+            // Add: using static Functions
+            AddUsingWhenMissing(GlobalEntities.Usings, XSharpSpecialNames.CoreFunctionsClass, true);
+
+            // Add: using System
+            AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
+            //System.Diagnostics.Debug.WriteLine("Exit Source " + _fileName);
+*/
+        }
+
+        public override void ExitScriptEntity([NotNull] XP.ScriptEntityContext context)
+        {
+            if (context.Entity != null)
+            {
+                var s = context.Entity.CsNode;
+                if (s is NamespaceDeclarationSyntax)
+                {
+                    context.AddError(new ParseErrorData(context.Entity, ErrorCode.ERR_NamespaceNotAllowedInScript));
+                    GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
+                }
+                else if (s is MemberDeclarationSyntax)
+                    GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
+                else if (s is UsingDirectiveSyntax)
+                {
+                    NameSyntax ns = (s as UsingDirectiveSyntax).Name;
+                    bool bStatic = (s as UsingDirectiveSyntax).StaticKeyword != null;
+                    AddUsingWhenMissing(GlobalEntities.Usings, ns, bStatic);
+                }
+                else if (s is AttributeListSyntax)
+                {
+                    context.AddError(new ParseErrorData(context.Entity, ErrorCode.ERR_AttributesNotAllowed));
+                    GlobalEntities.Attributes.Add(s as AttributeListSyntax);
+                }
+                else if (s is ExternAliasDirectiveSyntax)
+                    GlobalEntities.Externs.Add(s as ExternAliasDirectiveSyntax);
+            }
+            else if (context.Stmt != null)
+            {
+                var s = context.Stmt.CsNode;
+                if (s is SyntaxList<StatementSyntax>)
+                {
+                    foreach (var stmt in context.Stmt.GetList<StatementSyntax>())
+                    {
+                        if ((stmt is LocalDeclarationStatementSyntax) && !stmt.ContainsDiagnostics)
+                        {
+                            var local = (LocalDeclarationStatementSyntax)stmt;
+                            var decl = _syntaxFactory.FieldDeclaration(
+                                EmptyList<AttributeListSyntax>(),
+                                local.Modifiers,
+                                local.Declaration,
+                                local.SemicolonToken);
+                            GlobalEntities.Members.Add(decl);
+                        }
+                        else
+                            GlobalEntities.Members.Add(_syntaxFactory.GlobalStatement(stmt));
+                    }
+                }
+                else if (context.Stmt is XP.ExpressionStmtContext)
+                {
+                    var b = (BlockSyntax)s;
+                    foreach (var stmt in b.Statements)
+                    {
+                        GlobalEntities.Members.Add(_syntaxFactory.GlobalStatement(
+                            _syntaxFactory.ExpressionStatement(
+                                ((ExpressionStatementSyntax)stmt).Expression,
+                                SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))
+                            ));
+                    }
+                }
+                else
+                {
+                    GlobalEntities.Members.Add(_syntaxFactory.GlobalStatement(context.Stmt.Get<StatementSyntax>()));
+                }
+            }
+            /*else if (context.Decl != null)
+            {
+                GlobalEntities.Members.Add(context.Decl.Get<MemberDeclarationSyntax>());
+            }*/
         }
 
         public override void EnterSource([NotNull] XP.SourceContext context)

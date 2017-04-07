@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <ProjectSystemBase>$(MSBuildThisFileDirectory)</ProjectSystemBase>
     <ProjectName>$(MSBuildProjectName)</ProjectName>
@@ -11,7 +12,6 @@
   	<UseOSWinMdReferences>true</UseOSWinMdReferences>
     <OutputType>exe</OutputType>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <DebugSymbols>true</DebugSymbols>
     <DebuggerFlavor>XSharpDebugger</DebuggerFlavor>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
@@ -20,10 +20,16 @@
     <RootNamespace>$(Name)</RootNamespace>
     <AssemblyName>$(Name)</AssemblyName>
     <Dialect>Core</Dialect>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <Optimize>false</Optimize>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <!-- Set defaults for Configuration and Platform -->
+  <PropertyGroup Condition="'$(Configuration)'==''" Label="Configuration">
+    <Configuration>Debug</Configuration>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'==''" Label="Configuration">
+    <Platform>AnyCPU</Platform>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <Optimize>true</Optimize>

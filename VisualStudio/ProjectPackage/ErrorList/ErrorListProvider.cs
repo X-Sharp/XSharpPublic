@@ -11,10 +11,11 @@ using Microsoft.VisualStudio.Shell.TableManager;
 
 namespace XSharp.Project
 {
-    [Export(typeof(IErrorListProvider))]
+    [Export(typeof(ErrorListProvider))]
     internal class ErrorListProvider : IErrorListProvider, ITableDataSource, IDisposable
     {
-        internal ITableManager tableManager;
+        [Export(typeof(ITableManager))]
+        internal  ITableManager tableManager;
         private readonly string dataSourceIdentifierString = Constants.Product;
         private readonly string dataSourceDisplayName = Constants.Product;
 
@@ -23,7 +24,6 @@ namespace XSharp.Project
         private List<IErrorListSinkManager> _managers = new List<IErrorListSinkManager>();
         private List<ITableEntriesSnapshotFactory> _errorListFactories = new List<ITableEntriesSnapshotFactory>();
 
-        [ImportingConstructor]
         internal ErrorListProvider(ITableManager manager)
         {
             tableManager = manager;

@@ -94,6 +94,8 @@ namespace XSharp.LanguageService
 
             foreach (XType eltType in xList)
             {
+                if (eltType.Kind == Kind.Namespace)
+                    continue;
                 //
                 if (eltType.Name == XType.GlobalName)
                     typeGlobal = eltType;
@@ -165,11 +167,11 @@ namespace XSharp.LanguageService
                 }
             }
             //
-            if (nSelType > -1)
+            //if (nSelType > -1)
             {
                 selectedType = nSelType;
             }
-            if (nSelMbr > -1)
+            //if (nSelMbr > -1)
             {
                 selectedMember = nSelMbr;
             }

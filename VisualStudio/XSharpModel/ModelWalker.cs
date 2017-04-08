@@ -23,7 +23,7 @@ namespace XSharpModel
         static ModelWalker()
         {
         }
-        static internal ModelWalker GetWalker()
+        static public ModelWalker GetWalker()
         {
             if (_walker == null)
                 _walker = new ModelWalker();
@@ -62,7 +62,7 @@ namespace XSharpModel
         }
 
 
-        internal bool IsWalkerRunning
+        public bool IsWalkerRunning
         {
             get
             {
@@ -81,8 +81,8 @@ namespace XSharpModel
 
             }
         }
-
-        internal void Walk()
+        public bool HasWork => _projects.Count > 0;
+        public void Walk()
         {
             try
             {
@@ -122,7 +122,9 @@ namespace XSharpModel
                 }
                 var aFiles = project.Files.ToArray();
                 int iProcessed = 0;
-                Parallel.ForEach(aFiles, file =>
+                var options = new ParallelOptions ();
+                options.MaxDegreeOfParallelism = System.Environment.ProcessorCount / 2;
+                Parallel.ForEach(aFiles, options, file =>
                 {
                     // Detect project unload
                     if (project.Loaded)
@@ -162,7 +164,7 @@ namespace XSharpModel
                     return;
                 if (_WalkerThread.IsAlive)
                 {
-
+                    _WalkerThread.Abort();
                 }
             }
             catch (Exception e)

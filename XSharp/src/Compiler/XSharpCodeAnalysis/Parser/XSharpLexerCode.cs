@@ -744,6 +744,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     t.Type = symtype;
                     _inPp = true;
                 }
+                else if (_isScript)
+                {
+                    if (Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer.Equals(t.Text, "#R"))
+                    {
+                        t.Type = SCRIPT_REF;
+                    }
+                    else if (Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer.Equals(t.Text, "#LOAD"))
+                    {
+                        t.Type = SCRIPT_LOAD;
+                    }
+                }
             }
             if (!_inId)
             {
@@ -828,6 +839,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             get { return _OldComment; }
             set { _OldComment = value; }
+        }
+        bool _isScript = false;
+        public bool IsScript
+        {
+            get { return _isScript; }
+            set { _isScript = value; }
         }
         static Object kwlock = new Object();
         static IDictionary<string, int> voKwIds = null;
@@ -1220,6 +1237,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 lexer.AllowOldStyleComments = true;
                 lexer.AllowFourLetterAbbreviations = true;
             }
+            lexer.IsScript = options.Kind == Microsoft.CodeAnalysis.SourceCodeKind.Script;
             return lexer;
         }
 

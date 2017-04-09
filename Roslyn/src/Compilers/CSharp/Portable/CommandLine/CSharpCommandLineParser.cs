@@ -26,8 +26,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
         }
 
+#if !XSHARP
         protected override string RegularFileExtension { get { return ".cs"; } }
         protected override string ScriptFileExtension { get { return ".csx"; } }
+#else
+        protected override string RegularFileExtension { get { return ".prg"; } }
+        protected override string ScriptFileExtension { get { return ".prgx"; } }
+#endif
 
         internal sealed override CommandLineArguments CommonParse(IEnumerable<string> args, string baseDirectory, string sdkDirectoryOpt, string additionalReferenceDirectories)
         {

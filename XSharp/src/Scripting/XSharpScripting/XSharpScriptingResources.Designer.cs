@@ -62,15 +62,15 @@ namespace LanguageService.CodeAnalysis.Scripting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Usage: csi [option] ... [script-file.csx] [script-argument] ...
+        ///   Looks up a localized string similar to Usage: xsi [option] ... [script-file.prgx] [script-argument] ...
         ///
-        ///Executes script-file.csx if specified, otherwise launches an interactive REPL (Read Eval Print Loop).
+        ///Executes script-file.prgx if specified, otherwise launches an interactive REPL (Read Eval Print Loop).
         ///
         ///Options:
         ///  /help                          Display this usage message (alternative form: /?)
         ///  /version                       Display the version and exit
         ///  /i                             Drop to REPL after executing the specified script.
-        ///  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternative form: /r [rest of string was truncated]&quot;;.
+        ///  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternative form:  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string InteractiveHelp {
             get {
@@ -79,7 +79,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Microsoft (R) Visual C# Interactive Compiler version {0}.
+        ///   Looks up a localized string similar to X# Interactive Compiler version {0}.
         /// </summary>
         internal static string LogoLine1 {
             get {
@@ -88,7 +88,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copyright (C) Microsoft Corporation. All rights reserved..
+        ///   Looks up a localized string similar to Copyright (C) XSharp BV. All rights reserved..
         /// </summary>
         internal static string LogoLine2 {
             get {

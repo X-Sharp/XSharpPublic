@@ -27,7 +27,8 @@ options	{
         tokenVocab=XSharpLexer;
         }
 
-script				: ( Entities+=scriptEntity )*
+script				: ( SCRIPT_LOAD Includes+=STRING_CONST EOS | SCRIPT_REF References+=STRING_CONST EOS )*
+                    ( Entities+=scriptEntity )*
 					EOF
                     ;
 

@@ -492,6 +492,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (ExternAliasDirectiveSyntax aliasSyntax in syntaxList)
             {
+#if XSHARP
+                if (compilation.IsSubmission && aliasSyntax.HasLeadingTrivia)
+                {
+                    continue;
+                }
+#endif
                 compilation.RecordImport(aliasSyntax);
 
                 // Extern aliases not allowed in interactive submissions:

@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting.Hosting
 #endif
             try
             {
-                // Note that AppContext.BaseDirectory isn't necessarily the directory containing csi.exe.
+                // Note that AppContext.BaseDirectory isn't necessarily the directory containing xsi.exe.
                 // For example, when executed via corerun it's the directory containing corerun.
                 string csiDirectory = Path.GetDirectoryName(typeof(Xsi).GetTypeInfo().Assembly.ManifestModule.FullyQualifiedName);
 

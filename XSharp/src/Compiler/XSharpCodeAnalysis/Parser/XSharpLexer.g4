@@ -77,8 +77,10 @@ DYNAMIC,
 WAIT, ACCEPT, CANCEL, QUIT,
 
 // UDC Tokens that should be shown in the keyword color
-
 UDC_KEYWORD,
+
+// Scripting directives (pseudo-preprocessor handling)
+SCRIPT_REF, SCRIPT_LOAD,
 
 LAST_KEYWORD,
 

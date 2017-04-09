@@ -148,9 +148,11 @@ namespace XSharp.Project
                                         StartCompletionSession(nCmdID, ch);
                                         break;
                                     case '(':
+                                    case '{':
                                         StartSignatureSession();
                                         break;
                                     case ')':
+                                    case '}':
                                         if (_signatureSession != null)
                                         {
                                             _signatureSession.Dismiss();
@@ -158,6 +160,19 @@ namespace XSharp.Project
                                         }
                                         break;
                                     default:
+                                        //if (_signatureSession != null)
+                                        //{
+                                        //    SnapshotPoint current = this.TextView.Caret.Position.BufferPosition;
+                                        //    int line = current.GetContainingLine().LineNumber;
+                                        //    int pos = current.Position;
+                                        //    //
+                                        //    int startLine = (int)_signatureSession.Properties["Line"];
+                                        //    int startPos = (int)_signatureSession.Properties["Start"];
+                                        //    if ( !(( line == startLine ) && ( pos >= startPos )) )
+                                        //    {
+                                        //        CancelSignatureSession();
+                                        //    }
+                                        //}
                                         break;
                                 }
                             }
@@ -187,14 +202,14 @@ namespace XSharp.Project
             // Then, the corresponding Type/Element if possible
             IToken stopToken;
             //ITokenStream tokenStream;
-            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true , fileName);
+            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, fileName);
             // Check if we can get the member where we are
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
             MemberInfo dummyElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, stopToken, out gotoElement, out dummyElement );
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, stopToken, out gotoElement, out dummyElement);
             //
             if (gotoElement != null)
             {
@@ -304,7 +319,7 @@ namespace XSharp.Project
             // Then, the corresponding Type/Element if possible
             IToken stopToken;
             //ITokenStream tokenStream;
-            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true,fileName);
+            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, fileName);
             // Check if we can get the member where we are
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
@@ -325,6 +340,21 @@ namespace XSharp.Project
                 //{
                 //    _signatureSession.Properties["Element"] = systemElement;
                 //}
+                if (gotoElement.Kind == XSharpModel.Kind.Class)
+                {
+                    XSharpModel.XType xType = gotoElement as XSharpModel.XType;
+                    if (xType != null)
+                    {
+                        foreach (XSharpModel.XTypeMember mbr in xType.Members)
+                        {
+                            if (String.Compare(mbr.Name, "constructor", true) == 0)
+                            {
+                                gotoElement = mbr;
+                                break;
+                            }
+                        }
+                    }
+                }
                 SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
                 ITextSnapshot snapshot = caret.Snapshot;
                 //
@@ -346,11 +376,21 @@ namespace XSharp.Project
                 {
                     _signatureSession.Properties["Element"] = systemElement;
                 }
+                _signatureSession.Properties["Line"] = startLineNumber;
                 _signatureSession.Properties["Start"] = ssp.Position;
                 _signatureSession.Properties["Length"] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;
                 _signatureSession.Start();
             }
             //
+            return true;
+        }
+
+        bool CancelSignatureSession()
+        {
+            if (_signatureSession == null)
+                return false;
+
+            _signatureSession.Dismiss();
             return true;
         }
 

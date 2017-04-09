@@ -23,10 +23,11 @@ namespace XSharpModel
     {
         internal List<ClassificationSpan> tags = new List<ClassificationSpan>();
         public ITextSnapshot Snapshot { get; set; }
-        public bool BuildRegionTags { get; internal set; }
+
 
         private bool _reInitModel;
         private bool _buildModel;
+        private bool _buildRegionTags;
         private bool _buildLocals = false;
 
         public bool BuildModel
@@ -40,6 +41,20 @@ namespace XSharpModel
             {
                 _buildModel = value;
                 _reInitModel = value;
+            }
+        }
+
+        public bool BuildRegionTags
+        {
+            get
+            {
+                return _buildRegionTags;
+            }
+
+            internal set
+            {
+                _buildRegionTags = value;
+                _buildLocals = value;
             }
         }
 

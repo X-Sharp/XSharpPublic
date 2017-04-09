@@ -156,6 +156,7 @@ namespace XSharp.Project
     {
 
         private ITextBuffer m_textBuffer;
+        //private ISignatureHelpSession m_session;
 
         public XSharpSignatureHelpSource(ITextBuffer textBuffer)
         {
@@ -179,13 +180,13 @@ namespace XSharp.Project
                 signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", applicableToSpan));
             }
 
-
         }
 
         private XSharpSignature CreateSignature(ITextBuffer textBuffer, string methodSig, string methodDoc, ITrackingSpan span)
         {
             XSharpSignature sig = new XSharpSignature(textBuffer, methodSig, methodDoc, null);
-            textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(sig.OnSubjectBufferChanged);
+            // Moved : Done in the XSharpSignature constructor
+            //textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(sig.OnSubjectBufferChanged);
 
             //find the parameters in the method signature (expect methodname(one, two)
             string[] pars = methodSig.Split(new char[] { '(', ',', ')' });
@@ -195,7 +196,6 @@ namespace XSharp.Project
             for (int i = 1; i < pars.Length; i++)
             {
                 string param = pars[i].Trim();
-
                 if (string.IsNullOrEmpty(param))
                     continue;
 
@@ -223,8 +223,7 @@ namespace XSharp.Project
                 ITrackingSpan applicableToSpan = session.Signatures[0].ApplicableToSpan;
                 string text = applicableToSpan.GetText(applicableToSpan.TextBuffer.CurrentSnapshot);
 
-                //if (text.Trim().Equals("add"))  //get only "add" 
-                    return session.Signatures[0];
+                return session.Signatures[0];
             }
             return null;
         }

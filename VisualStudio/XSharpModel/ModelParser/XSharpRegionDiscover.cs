@@ -23,11 +23,22 @@ namespace XSharpModel
     {
         internal List<ClassificationSpan> tags = new List<ClassificationSpan>();
         public ITextSnapshot Snapshot { get; set; }
+        public bool BuildRegionTags { get; internal set; }
+        public bool BuildLocals
+        {
 
+            get
+            {
+                return _buildLocals;
+            }
 
+            internal set
+            {
+                _buildLocals = value;
+            }
+        }
         private bool _reInitModel;
         private bool _buildModel;
-        private bool _buildRegionTags;
         private bool _buildLocals = false;
 
         public bool BuildModel
@@ -41,20 +52,6 @@ namespace XSharpModel
             {
                 _buildModel = value;
                 _reInitModel = value;
-            }
-        }
-
-        public bool BuildRegionTags
-        {
-            get
-            {
-                return _buildRegionTags;
-            }
-
-            internal set
-            {
-                _buildRegionTags = value;
-                _buildLocals = value;
             }
         }
 
@@ -177,7 +174,7 @@ namespace XSharpModel
                 XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
                 var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
                 tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
-                tokenSpan = new TextSpan(lastTokenInContext.Stop.StartIndex - 1, 1);
+                tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex-1 , 1);
                 tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
             }
             else if (endToken is ParserRuleContext)

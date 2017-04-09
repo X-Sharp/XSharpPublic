@@ -26,6 +26,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Diagnostics; // PLEASE DO NOT REMOVE THIS!!!!
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -1649,19 +1650,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterScript([NotNull] XP.ScriptContext context)
         {
-/*            GlobalClassEntities = CreateClassEntities();
-            ClassEntities.Push(GlobalClassEntities);*/
+            GlobalClassEntities = CreateClassEntities();
+            ClassEntities.Push(GlobalClassEntities);
+
+            if (context._References?.Count > 0 || context._Includes?.Count > 0)
+            {
+                var dirs = _pool.Allocate();
+                foreach (var @ref in context._References)
+                {
+                    var arg = @ref.SyntaxLiteralValue(_options);
+                    dirs.Add(_syntaxFactory.ReferenceDirectiveTrivia(SyntaxFactory.MissingToken(SyntaxKind.HashToken),
+                        SyntaxFactory.MissingToken(SyntaxKind.ReferenceKeyword),
+                        arg,
+                        SyntaxFactory.MissingToken(SyntaxKind.EndOfDirectiveToken), true));
+                }
+                foreach (var inc in context._Includes)
+                {
+                    var arg = inc.SyntaxLiteralValue(_options);
+                    dirs.Add(_syntaxFactory.LoadDirectiveTrivia(SyntaxFactory.MissingToken(SyntaxKind.HashToken),
+                        SyntaxFactory.MissingToken(SyntaxKind.LoadKeyword),
+                        arg,
+                        SyntaxFactory.MissingToken(SyntaxKind.EndOfDirectiveToken), true));
+                }
+                // HACK: Insert a dummy extern alias to ensure it is the first token in the compilation unit (it will be ignored during imports handling)
+                GlobalEntities.Externs.Add(_syntaxFactory.ExternAliasDirective(
+                    SyntaxFactory.MissingToken(dirs.ToListNode(), SyntaxKind.ExternKeyword, null),
+                    SyntaxFactory.MissingToken(SyntaxKind.AliasKeyword),
+                    SyntaxFactory.Identifier("XS$dummy"),
+                    SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)
+                    ));
+                _pool.Free(dirs);
+            }
         }
 
         public override void ExitScript([NotNull] XP.ScriptContext context)
         {
-/*            FinalizeGlobalEntities();
-
             var generated = ClassEntities.Pop();
-            if (generated.Members.Count > 0)
-            {
-                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, false, generated.Members));
-            }
+            GlobalEntities.Members.AddRange(generated.Members);
             generated.Free();
 
             // Add: using static Functions
@@ -1669,8 +1694,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
-            //System.Diagnostics.Debug.WriteLine("Exit Source " + _fileName);
-*/
         }
 
         public override void ExitScriptEntity([NotNull] XP.ScriptEntityContext context)
@@ -1678,6 +1701,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Entity != null)
             {
                 var s = context.Entity.CsNode;
+
                 if (s is NamespaceDeclarationSyntax)
                 {
                     context.AddError(new ParseErrorData(context.Entity, ErrorCode.ERR_NamespaceNotAllowedInScript));
@@ -1697,7 +1721,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GlobalEntities.Attributes.Add(s as AttributeListSyntax);
                 }
                 else if (s is ExternAliasDirectiveSyntax)
+                {
                     GlobalEntities.Externs.Add(s as ExternAliasDirectiveSyntax);
+                }
             }
             else if (context.Stmt != null)
             {
@@ -1714,10 +1740,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 local.Modifiers,
                                 local.Declaration,
                                 local.SemicolonToken);
-                            GlobalEntities.Members.Add(decl);
+                            GlobalClassEntities.Members.Add(decl);
                         }
                         else
-                            GlobalEntities.Members.Add(_syntaxFactory.GlobalStatement(stmt));
+                        {
+                            GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(stmt));
+                        }
                     }
                 }
                 else if (context.Stmt is XP.ExpressionStmtContext)
@@ -1725,7 +1753,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var b = (BlockSyntax)s;
                     foreach (var stmt in b.Statements)
                     {
-                        GlobalEntities.Members.Add(_syntaxFactory.GlobalStatement(
+                        GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(
                             _syntaxFactory.ExpressionStatement(
                                 ((ExpressionStatementSyntax)stmt).Expression,
                                 SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))
@@ -1734,7 +1762,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    GlobalEntities.Members.Add(_syntaxFactory.GlobalStatement(context.Stmt.Get<StatementSyntax>()));
+                    GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(context.Stmt.Get<StatementSyntax>()));
                 }
             }
             /*else if (context.Decl != null)

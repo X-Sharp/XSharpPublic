@@ -205,6 +205,7 @@ namespace XSharpModel
             var discover = new XSharpModelRegionDiscover();
             discover.File = this._file;
             discover.BuildRegionTags = true;
+            discover.BuildLocals = true;
             discover.BuildModel = false;
             //
             if ( _treeInit && ( _snapshot != null ) )
@@ -258,7 +259,8 @@ namespace XSharpModel
             var discover = new XSharpModelRegionDiscover();
             discover.File = this._file;
             discover.BuildRegionTags = (_snapshot != null);
-            discover.BuildModel = false;
+            discover.BuildModel = true;
+            discover.BuildLocals = true;
             if (this._file != null)
             {
                 if ( _file.Project.Loaded )

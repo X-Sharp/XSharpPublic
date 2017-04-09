@@ -2461,12 +2461,12 @@ namespace XSharpLanguage
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchFieldTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
+                        return SearchFieldTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Protected, out foundElement);
                     }
                     else if (cType.XType.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return SearchFieldTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, Modifiers.Public, out foundElement);
+                        return SearchFieldTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, Modifiers.Protected, out foundElement);
                     }
                 }
                 else

@@ -291,6 +291,11 @@ namespace XSharp.Project
             {
                 service.OnIdle(bPeriodic);
             }
+            var walker = XSharpModel.ModelWalker.GetWalker();
+            if (!walker.IsWalkerRunning && walker.HasWork)
+            {
+                walker.Walk();
+            }
             return 0;
         }
 

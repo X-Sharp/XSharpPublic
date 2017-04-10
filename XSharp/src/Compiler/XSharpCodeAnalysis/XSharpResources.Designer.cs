@@ -2672,7 +2672,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; cannot implement &apos;{1}&apos; because it does not have the matching return type of &apos;{3}&apos;..
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; cannot implement &apos;{1}&apos; because it does not have the matching return type of &apos;{3}&apos; or because the name does not match exactly..
         /// </summary>
         internal static string ERR_CloseUnimplementedInterfaceMemberWrongReturnType {
             get {

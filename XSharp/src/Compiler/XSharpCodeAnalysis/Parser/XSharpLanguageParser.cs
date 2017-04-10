@@ -133,8 +133,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parser = new XSharpParser(pp_tokens);
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
             // for info about optimization flags such as the next line
-            parser.Interpreter.enable_global_context_dfa = true;    // default = false
-            parser.Interpreter.tail_call_preserves_sll = false;     // default = true
+            //parser.Interpreter.enable_global_context_dfa = true;    // default = false
+            //parser.Interpreter.tail_call_preserves_sll = false;     // default = true
 
             parser.AllowFunctionInsideClass = false;     // 
             if (_options.Dialect == XSharpDialect.VO)
@@ -180,7 +180,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
                 if (_options.Verbose)
                 {
-                    _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: "+e.Message+". Trying again in LL mode.");
+                    Exception ex;
+                    string msg = e.Message;
+                    ex = e;
+                    while (ex.InnerException != null)
+                    {
+                        ex = ex.InnerException;
+                        msg = ex.Message;
+                    }
+                    _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: "+msg+". Trying again in LL mode.");
                 }
 
                 pp_tokens.Reset();

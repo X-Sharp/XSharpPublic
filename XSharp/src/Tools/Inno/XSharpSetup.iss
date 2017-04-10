@@ -10,16 +10,16 @@
 
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.10.0"
-#define ProdBuild       "XSharp Beta 10"
+#define ProdVer         "XSharp 0.2.10.2"
+#define ProdBuild       "XSharp Beta 10b"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
-#define VIVersion       "0.2.10.2101"
-#define VITextVersion   "0.2.10.2101 (Beta 10)"                                                                                            
-#define TouchDate       "2017-03-14"
-#define TouchTime       "02:10:01"
+#define VIVersion       "0.2.10.2102"
+#define VITextVersion   "0.2.10.2102 (Beta 10)"                                                                                            
+#define TouchDate       "2017-04-07"
+#define TouchTime       "02:10:02"
 #define InstallPath     "XSharpPath"
 
 

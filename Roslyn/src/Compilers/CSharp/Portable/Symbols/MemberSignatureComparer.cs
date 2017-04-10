@@ -296,9 +296,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _ignoreDynamic = ignoreDynamic;
         }
 
-#region IEqualityComparer<Symbol> Members
+        #region IEqualityComparer<Symbol> Members
 
+#if XSHARP
         public bool Equals(Symbol member1, Symbol member2)
+        {
+            return Equals(member1, member2, true);
+        }
+        public bool Equals(Symbol member1, Symbol member2, bool caseInsensitive)
+#else
+        public bool Equals(Symbol member1, Symbol member2)
+#endif
         {
             if (ReferenceEquals(member1, member2))
             {
@@ -319,10 +327,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 string name2 = ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member2.Name);
 
 #if XSHARP
-                sawInterfaceInName1 = !CaseInsensitiveComparison.Equals(name1, member1.Name);
-                sawInterfaceInName2 = !CaseInsensitiveComparison.Equals(name2, member2.Name);
+                bool isNotEqual;
+                if (caseInsensitive)
+                {
+                    sawInterfaceInName1 = !CaseInsensitiveComparison.Equals(name1, member1.Name);
+                    sawInterfaceInName2 = !CaseInsensitiveComparison.Equals(name2, member2.Name);
+                    isNotEqual = (!CaseInsensitiveComparison.Equals(name1, name2));
+                }
+                else
+                {
+                    sawInterfaceInName1 = name1 != member1.Name;
+                    sawInterfaceInName2 = name2 != member2.Name;
+                    isNotEqual = (name1 != name2);
 
-                if (!CaseInsensitiveComparison.Equals(name1, name2))
+                }
+
+                if (isNotEqual)
 #else
                 sawInterfaceInName1 = name1 != member1.Name;
                 sawInterfaceInName2 = name2 != member2.Name;

@@ -109,7 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string SymbolName;
             internal XSharpToken Symbol;
             internal InputState parent;
-
+            internal PPRule udc;
             internal InputState(ITokenStream tokens)
             {
                 Tokens = tokens;
@@ -775,6 +775,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                newtokens = ReadPPCommand();
+                return;
             }
 
         }
@@ -1363,7 +1365,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 }
                                                 first = null;
                                             }
-                                            InsertStream("UDC " + rule.Key, ts, first);
+                                            // detect recursion on the inputs stack
+                                            var currentinput = inputs;
+                                            bool ok = true;
+                                            while (currentinput != null )
+                                            {
+                                                if (currentinput.udc == rule)
+                                                {
+                                                    _parseErrors.Add(new ParseErrorData(first, ErrorCode.ERR_PreProcessorError, "Recursive UDC rule detected"));
+                                                    ReadLine();
+                                                    ok = false;
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    currentinput = currentinput.parent;
+                                                }
+                                            }
+                                            if (ok)
+                                            {
+                                                InsertStream("UDC " + rule.Key, ts, first);
+                                                inputs.udc = rule;
+                                            }
                                         }
                                         done = true;
                                     }

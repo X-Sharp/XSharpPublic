@@ -350,6 +350,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (len <= 0)
                                 len = 1;
                         }
+                        if (pos-1 + len > _text.Length)
+                        {
+                            len = _text.Length -pos+1;
+                        }
                         var diag = new SyntaxDiagnosticInfo(pos, len, e.Code, e.Args);
                         if (key != null && includes.ContainsKey(key))
                         {

@@ -1424,8 +1424,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         t.Type = XSharpLexer.ID;
                                     }
                                 }
-                                FixToken(t);
                                 Consume();
+                                FixToken(t);
                                 lastToken = t;
                                 writeToPPO(t);
                                 return t;

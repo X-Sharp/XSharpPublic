@@ -1,12 +1,19 @@
 // 460. error XS9002: Parser: unexpected input '@' (used to be compiler crash)
 //      error XS1003: Syntax error, 'Entity' expected
 
+//PP #xtranslate :Field1 => \[1 \]
+//PP #xtranslate :Field2 => \[2 \]
+
 
 //PP #translate ARRAY(<x>) => ArrayCreate(<x>)
 
 //PP #include "C460.CH"
 FUNCTION Start( ) AS VOID
-LOCAL aFiller := FillerClass{} AS FillerClass
+LOCAL oFiller := FillerClass{} AS FillerClass
+LOCAL aFiller := ArrayCreate(2) AS ARRAY
+LOCAL GetList := {} AS ARRAY
 
-// this one is ok:
-DevPos( 1 , 2 ) ; DevOut( "Filler             "  );SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller:Filler , "aFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail
+aFiller[ 1 ]:="Field1"
+aFiller[ 2 ]:="Field2"
+
+DevPos( 1 , 2 ) ; DevOut( "Filler             "  );SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller[ 1 ],"aFiller:Field1","@!",{||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))},{||aFiller:Mode=="ADD"}):display());atail

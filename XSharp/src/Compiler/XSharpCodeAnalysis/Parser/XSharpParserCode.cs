@@ -474,9 +474,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         int MappedLine { get; }
         IToken SourceSymbol { get; }
     }
+    [Serializable]
     public class XTerminalNodeImpl : Antlr4.Runtime.Tree.TerminalNodeImpl,
         IMessageSerializable,
-        IXParseTree
+        IXParseTree,
+        IErrorNode
     {
         public XTerminalNodeImpl(IToken symbol) : base(symbol)
         { }

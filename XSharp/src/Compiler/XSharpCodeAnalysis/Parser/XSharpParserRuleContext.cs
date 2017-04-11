@@ -16,6 +16,7 @@ limitations under the License.
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public class XSharpParserRuleContext :
@@ -31,6 +32,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 
         }
+
+        public override IErrorNode AddErrorNode(IToken badToken)
+        {
+            var t = new XTerminalNodeImpl(badToken);
+            AddChild(t);
+            t.parent = this;
+            return t;
+        }
+
 
         public object CsNode { get; set; }
         public string SourceFileName { get { return (Start as XSharpToken).SourceFileName; } }

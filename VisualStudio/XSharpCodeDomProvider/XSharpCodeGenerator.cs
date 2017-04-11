@@ -714,7 +714,12 @@ namespace XSharp.CodeDom
         {
             if (!String.IsNullOrEmpty(e.Name))
             {
-                base.Output.WriteLine("BEGIN NAMESPACE " + e.Name);
+                string name = e.Name;
+                if (name.StartsWith("global::",StringComparison.OrdinalIgnoreCase))
+                {
+                    name = name.Substring(8);
+                }
+                base.Output.WriteLine("BEGIN NAMESPACE " + name);
                 this.Indent++;
             }
         }

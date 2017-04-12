@@ -3,75 +3,108 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using  System
+using System
+using System.Globalization
 using System.Runtime.InteropServices
 using XSharp
+using System.Diagnostics
 begin namespace XSharp	
+    [DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
+    [StructLayout(LayoutKind.Explicit)];
 	structure __VODate implements System.IComparable, System.IFormattable, System.IConvertible, IDate
+        // This structure uses an explicit layout to map
+        // year, month and date into 32 bits
+        // the _value field is for convenience, so we can do a single numeric comparison
+        // to determine equality or relative comparisons
+        // for date calculation we use the Value property which returns a System.DateTime type
+		#region fields
+		//[DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [FieldOffSet(00)];
+        private _value as System.Int32
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [FieldOffSet(00)];
+        private _year  as System.UInt16
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [FieldOffSet(02)];
+        private _month as System.Byte
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [FieldOffSet(03)];
+        private _day   as System.Byte
+		#endregion
+
 		#region static fields
 		static private _dateFormat as string
-		static export _NULL_DATE as __VODate
+		static public  _NULL_DATE as __VODate
+
 		#endregion
-		#region fields
-		private _value as System.DateTime
-		#endregion
-		#region constrcutors
+        #region datetime conversions
+        Property Value as System.DateTime 
+        get
+            if (_value == 0)
+                return System.DateTime.MinValue
+            endif
+            return System.DateTime{_year, _month, _day}
+        end get
+        set
+            _year  := (Word) value:Year
+            _month := (Byte) value:Month
+            _day   := (Byte) value:Day
+        end set
+        end Property
+        #endregion
+
+		#region constructors
 		static  constructor()
-			__VODate._dateFormat := "MM/DD/YY"
+			_dateFormat := System.Globalization.DateTimeFormatInfo.CurrentInfo:ShortDatePattern
 			_NULL_DATE := __VODate{}
 		return       
 
 		constructor(d as System.DateTime)
-			_value := d:@@Date
-		return
+            if d == System.DateTime.MinValue
+                _value := 0
+            else
+			    _year  := (Word) d:Year
+                _month := (Byte) d:Month
+                _day   := (Byte) d:Day
+            endif
+		    return
 
 		constructor(d as iDate)
-			_value := d:Value
+            _value := 0
+			_year  := (Word) d:Year
+            _month := (Byte) d:Month
+            _day   := (Byte) d:Day
 		return
 
 		constructor(ticks as Int64)
-			try
-				_value := System.DateTime{ticks}
-			catch 
-				_value := System.DateTime.MinValue
-			end try
+			SELF(System.DateTime{ticks})
 		return
 
 		constructor(strDate as string)
 			throw System.NotImplementedException{"Constructor __VODate(string __VODate) is not implemented yet."}
 
 		constructor(year as Int, month as Int, day as Int)
-			if (year > 0x7fffffff)
-				throw System.ArgumentOutOfRangeException{"year"}
+			if (year > 0xffff)
+				throw System.ArgumentOutOfRangeException{nameof(year)}
 			endif
-			if (month > 0x7fffffff)
-				throw System.ArgumentOutOfRangeException{"month"}
+			if (month > 12)
+				throw System.ArgumentOutOfRangeException{nameof(month)}
 			endif
-			if (day > 0x7fffffff)
-				throw System.ArgumentOutOfRangeException{"day"}
+			if (day > 31)
+				throw System.ArgumentOutOfRangeException{nameof(day)}
 			endif
 			try
-				_value := System.DateTime{year , month , day }
+                var dt := System.DateTime{year, month, day}
+				_year  := (Word) dt:Year
+                _month := (Byte) dt:Month
+                _day   := (Byte) dt:Day
 			catch 
-				_value := System.DateTime.MinValue
+				_value := 0 // null_date
 			end try
 		return
 
 		constructor(year as DWord, month as DWord, day as DWord)
-			if (year > 0x7fffffff)
-				throw System.ArgumentOutOfRangeException{"year"}
-			endif
-			if (month > 0x7fffffff)
-				throw System.ArgumentOutOfRangeException{"month"}
-			endif
-			if (day > 0x7fffffff)
-				throw System.ArgumentOutOfRangeException{"day"}
-			endif
-			try
-				_value := System.DateTime{(Long)year , (Long)month , (Long)day }
-			catch 
-				_value := System.DateTime.MinValue
-			end try
+            self( (Int) year, (int) month, (int) day)
 		return
 		#endregion
 		#region methods
@@ -79,31 +112,38 @@ begin namespace XSharp
 			THROW NotImplementedException{}
 
 		method Add(days as real8) as __VODate
-			return __VODate{(_value:AddDays(days))}
+            var res := self:Value:AddDays(days)
+            return __VoDate{res}
 
 		method Add(days as Long) as __VODate
-			return __VODate{(_value:AddDays(days))}
+            var res := self:Value:AddDays(days)
+            return __VoDate{res}
 
 		method Add(days as Int64) as __VODate
-			return __VODate{(_value:AddDays(days))}
+            var res := self:Value:AddDays(days)
+            return __VoDate{res}
 
 		method Add(span as System.TimeSpan) as __VODate
-			return __VODate{(_value:Add(span))}
+            var res := self:Value:Add(span)
+            return __VoDate{res}
 
 		method Add(days as DWord) as __VODate
-			return __VODate{(_value:AddDays(days))}
+            var res := self:Value:AddDays(days)
+            return __VoDate{res}
 
 		method Add(days as UInt64) as __VODate
-			return __VODate{(_value:AddDays(days))}
+            var res := self:Value:AddDays(days)
+            return __VoDate{res}
 
 		method CompareTo(o as Object) as Long
-			local @@__VODate as __VODate
-			@@__VODate := (__VODate)o 
-		return _value:CompareTo(@@__VODate:value)
+			var rhs := (__VODate)o 
+		    return _value:CompareTo(rhs:_value)
 
 
 		method Equals(o as __VODate) as Logic
-		return (o:value == _value)
+			local rhs as __VODate
+			rhs := (__VODate)o 
+		    return _value == rhs:_value
 
 		method Equals(o as Object) as Logic
 			if o:getType() == typeof(__VODate)
@@ -114,240 +154,233 @@ begin namespace XSharp
 			return false
 
 		method FromDateTime(v as System.DateTime) as __VODate
-		return __VODate{v}
+		    return __VODate{v}
 
 		method GetHashCode() as Long
-		return _value:GetHashCode()
+		    return _value:GetHashCode()
 
 		method GetTypeCode() as System.TypeCode
-		return _value:GetTypeCode()
+		    return Value:GetTypeCode()
 
 		static operator +(d as __VODate, days as __Usual) as __VODate
-		return d:Add(days)
+		    return d:Add(days)
 
 		static operator +(d as __VODate, days as real8) as __VODate
-		return d:Add(days)
+		    return d:Add(days)
 
 		static operator +(d as __VODate, days as Long) as __VODate
-		return d:Add(days)
+		    return d:Add(days)
 
 		static operator +(d as __VODate, days as Int64) as __VODate
-		return d:Add(days)
+		    return d:Add(days)
 
 		static operator +(d as __VODate, ts as System.TimeSpan) as __VODate
-		return d:Add(ts)
+		    return d:Add(ts)
 
 		static operator +(d as __VODate, days as DWord) as __VODate
-		return d:Add(days)
+		    return d:Add(days)
 
 		static operator +(d as __VODate, days as UInt64) as __VODate
-		return d:Add(days)
+		    return d:Add(days)
 
 		static operator --(d as __VODate) as __VODate
-		return d:Subtract(1)
+		    return d:Subtract(1)
 
 		static operator ==(d as __VODate, d2 as __VODate) as Logic
-		return (d:value == d2:value)
+		    return (d:value == d2:value)
 
 		static operator explicit(v as __VODate) as DWord
-			THROW NotImplementedException{}
+			return (DWORD) v:_value
+
+		static operator explicit(dw as DWORD ) as __VoDate
+			var d := __VoDate{}
+            d:_value := (int) dw
+            return d
+
+		static operator implicit(v as __VODate) as int
+			return v:_value
+
+		static operator implicit(i as int ) as __VoDate
+			var d := __VoDate{}
+            d:_value := i
+            return d
 
 		static operator explicit(v as System.DateTime) as __VODate
 			return __VODate{v}
 
-		static operator explicit(v as DWord) as __VODate
-			THROW NotImplementedException{}
-
 		static operator >(d as __VODate, d2 as __VODate) as Logic
-		return (d:value > d2:value)
+		    return (d:_value > d2:_value)
 
 		static operator >=(d as __VODate, d2 as __VODate) as Logic
-		return (d:value >= d2:value)
+		    return (d:_value >= d2:_value)
 
 		static operator implicit(v as __VODate) as System.DateTime
-		return v:value
+		    return v:Value
 
 		static operator ++(d as __VODate) as __VODate
-		return d:Add(1)
+		    return d:Add(1)
 
 		static operator !=(d as __VODate, d2 as __VODate) as Logic
-		return (d:value != d2:value)
+		    return (d:_value != d2:_value)
 
 		static operator <(d as __VODate, d2 as __VODate) as Logic
-		return (d:value < d2:value)
+		    return (d:_value < d2:_value)
 
 		static operator <=(d as __VODate, d2 as __VODate) as Logic
-		return (d:value <= d2:value)
+		    return (d:_value <= d2:_value)
 
 		static operator -(d as __VODate, d2 as __VODate) as Long
-		return d:Subtract(d2)
+		    return d:Subtract(d2)
 
 		static operator -(d as __VODate, days as __Usual) as __VODate
-		return d:Subtract(days)
+		    return d:Subtract(days)
 
 		static operator -(d as __VODate, days as real8) as __VODate
-		return d:Subtract(days)
+		    return d:Subtract(days)
 
 		static operator -(d as __VODate, days as Long) as __VODate
-		return d:Subtract(days)
+		    return d:Subtract(days)
 
 		static operator -(d as __VODate, days as Int64) as __VODate
-		return d:Subtract(days)
+		    return d:Subtract(days)
 
 		static operator -(d as __VODate, ts as System.TimeSpan) as __VODate
-		return d:Subtract(ts)
+		    return d:Subtract(ts)
 
 		static operator -(d as __VODate, days as DWord) as __VODate
-		return d:Subtract(days)
+		    return d:Subtract(days)
 
 		static operator -(d as __VODate, days as UInt64) as __VODate
-		return d:Subtract(days)
+		    return d:Subtract(days)
 
 		method Subtract(d as __VODate) as Long
 			local span as System.TimeSpan
-			span := (System.TimeSpan)(_value - d:value) 
-		return span:Days
+			span := (System.TimeSpan)(self:Value - d:Value) 
+		    return span:Days
 
 		method Subtract(days as __Usual) as __VODate
-		return SELF:Add(-days)		
+    		return SELF:Add(-days)		
 
 		method Subtract(days as real8) as __VODate
-		return SELF:Add(-days)
+		    return SELF:Add(-days)
 
 		method Subtract(days as Long) as __VODate
-		return SELF:Add(-days)
+		    return SELF:Add(-days)
 
 		method Subtract(days as Int64) as __VODate
-		return SELF:Add(-days)
+		    return SELF:Add(-days)
 
 		method Subtract(ts as System.TimeSpan) as __VODate
-		return SELF:Add(-ts)
+		    return SELF:Add(-ts)
 
 		method Subtract(days as DWord) as __VODate
-		return SELF:Add(-days)
+		    return SELF:Add(-days)
 
 		method Subtract(days as UInt64) as __VODate
-		return SELF:Add(-(int64)days)
-
-		method ToBoolean(provider as System.IFormatProvider) as Logic
-			THROW NotImplementedException{}
-
-		method ToByte(provider as System.IFormatProvider) as Byte
-			THROW NotImplementedException{}
-
-		method ToChar(provider as System.IFormatProvider) as Char
-			THROW NotImplementedException{}
+		    return SELF:Add(-(int64)days)
 
 		method ToDateTime() as System.DateTime
-		return _value
+		    return Value
 
-		method ToDateTime(provider as System.IFormatProvider) as System.DateTime
-			THROW NotImplementedException{}
+    #region IConvertable 
+        // forward most methods to the DateTime class so there will
+        // be a proper (localized) error message
+		method IConvertible.ToBoolean(provider as System.IFormatProvider) as Logic
+			return ((IConvertible)Value):ToBoolean(provider)
 
-		method ToDecimal(provider as System.IFormatProvider) as Decimal
-			THROW NotImplementedException{}
+		method IConvertible.ToByte(provider as System.IFormatProvider) as Byte
+			return ((IConvertible)Value):ToByte(provider)
 
-		method ToDouble(provider as System.IFormatProvider) as real8
-			THROW NotImplementedException{}
+		method IConvertible.ToChar(provider as System.IFormatProvider) as Char
+			return ((IConvertible)Value):ToChar(provider)
 
-		method ToInt16(provider as System.IFormatProvider) as Short
-			THROW NotImplementedException{}
+		method IConvertible.ToDateTime(provider as System.IFormatProvider) as System.DateTime
+			return Value
 
-		method ToInt32(provider as System.IFormatProvider) as Long
-			THROW NotImplementedException{}
+		method IConvertible.ToDecimal(provider as System.IFormatProvider) as Decimal
+			return ((IConvertible)Value):ToDecimal(provider)
 
-		method ToInt64(provider as System.IFormatProvider) as Int64
-			THROW NotImplementedException{}
+		method IConvertible.ToDouble(provider as System.IFormatProvider) as real8
+			return ((IConvertible)Value):ToDouble(provider)
 
-		method ToSByte(provider as System.IFormatProvider) as SByte
-			THROW NotImplementedException{}
+		method IConvertible.ToInt16(provider as System.IFormatProvider) as Short
+			return ((IConvertible)Value):ToInt16(provider)
 
-		method ToSingle(provider as System.IFormatProvider) as real4
-			THROW NotImplementedException{}
+		method IConvertible.ToInt32(provider as System.IFormatProvider) as Long
+			return ((IConvertible)Value):ToInt32(provider)
 
+		method IConvertible.ToInt64(provider as System.IFormatProvider) as Int64
+			return ((IConvertible)Value):ToInt64(provider)
+
+		method IConvertible.ToSByte(provider as System.IFormatProvider) as SByte
+			return ((IConvertible)Value):ToSByte(provider)
+
+		method IConvertible.ToSingle(provider as System.IFormatProvider) as real4
+			return ((IConvertible)Value):ToSingle(provider)
+
+		method IConvertible.ToType(conversionType as System.Type, provider as System.IFormatProvider) as Object
+			if conversionType == typeof(__VoDate)
+                return SELF
+            elseif conversionType == typeof(System.DateTime)
+                return self:Value
+            endif
+            return ((IConvertible)Value):ToType(conversionType, provider)
+
+		method IConvertible.ToUInt16(provider as System.IFormatProvider) as Word
+			return ((IConvertible)Value):ToUInt16(provider)
+
+		method IConvertible.ToUInt32(provider as System.IFormatProvider) as DWord
+			return ((IConvertible)Value):ToUInt32(provider)
+
+		method IConvertible.ToUInt64(provider as System.IFormatProvider) as UInt64
+			return ((IConvertible)Value):ToUInt64(provider)
+		#endregion
+
+        #region ToString()
+        // Use DateTime ToString) methods as helpers
 		method ToString() as string
-		return _value:ToString("d")
+            if (_value == 0)
+                return "NULL_DATE"
+            endif
+		    return Value:ToString(_dateformat)
 
 		method ToString(provider as System.IFormatProvider) as string
-		return _value:ToString(provider)
+            if (_value == 0)
+                return "NULL_DATE"
+            endif
+		    return Value:ToString(provider)
 
 		method ToString(s as string) as string
-		return _value:ToString(s)
+            if (_value == 0)
+                return "NULL_DATE"
+            endif
+		    return Value:ToString(s)
 
 		method ToString(s as string, fp as System.IFormatProvider) as string
-		return _value:ToString(s, fp)
-
-		method ToType(conversionType as System.Type, provider as System.IFormatProvider) as Object
-			THROW NotImplementedException{}
-
-		method ToUInt16(provider as System.IFormatProvider) as Word
-			THROW NotImplementedException{}
-
-		method ToUInt32(provider as System.IFormatProvider) as DWord
-			THROW NotImplementedException{}
-
-		method ToUInt64(provider as System.IFormatProvider) as UInt64
-			THROW NotImplementedException{}
-		#endregion
+            if (_value == 0)
+                return "NULL_DATE"
+            endif
+            if (s == null)
+              s := _dateformat
+            endif
+		    return Value:ToString(s, fp)
+        #endregion
 		#region properties
 
-		property Day as int
-			Get
-				return IIF(! (_value == System.DateTime.MinValue),_value:Day ,0)
-			End Get
-			Set
-				_value := DateTime{_value:Year, _value:Month, value}
-			End Set
-		end property
-
-		property DayOfWeek as Long
-			Get
-				return (IIF(! (_value == System.DateTime.MinValue),(Long)_value:DayOfWeek ,0) + 1)
-			End Get
-		end property
-
+		property Day as int Get _day SET _day := (Byte) value
 
 		property IsEmpty as Logic
 			Get
-				return (_value == System.DateTime.MinValue)
+				return _value == 0
 			End Get
 		end property
 
-		property Month as int
-			Get
-				return IIF(! (_value == System.DateTime.MinValue),_value:Month,0)
-			End Get
-			Set
-				_value := DateTime{_value:Year, value, _value:Day}
-			End Set
-		end property
+		property Month as int GET _month SET _month := (Byte) value
 
-		property Value as System.DateTime
-			Get
-				return self:_value
-			End Get
-			Set
-				self:_value := value:@@Date
-			End Set
-		end property
+		property Year as int GET _year SET _year := (WORD) value
 
-		property Year as Long 
-			Get
-				return IIF(! (_value == System.DateTime.MinValue),_value:Year,0)
-			End Get
-			Set
-				self:_value := DateTime{value, _value:Month, _value:Day}
-			end Set
-		end property
 	#region Static Properties
-		static property DateFormat as string
-			Get
-				return __VODate._dateFormat
-			End Get
-			Set
-				__VODate._dateFormat := value
-			End Set
-		end property
+		static property DateFormat as string GET _dateFormat SET _dateFormat := value
 
 		static property Epoch as Long
 			Get
@@ -358,16 +391,11 @@ begin namespace XSharp
 			End Set
 		end property
 
-		static property NullDate as __VODate
-			Get
-				return (__VODate)System.DateTime.MinValue 
-			End Get
-		end property
+		static property NullDate as __VODate GET _NULL_DATE
 
 		static method ElapTime(cStartTime as string, cEndTime as string) as string
 			return System.DateTime.ParseExact(cEndTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture):Subtract(System.DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)):ToString()
 
 	#endregion
-
 	end structure
 end namespace

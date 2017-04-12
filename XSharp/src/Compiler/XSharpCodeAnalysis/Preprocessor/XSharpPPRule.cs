@@ -828,7 +828,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     string result = "";
                     foreach (var token in _matchtokens)
                     {
-                        result += token.SyntaxText + " ";
+                        result += token.SyntaxText +" ";
                     }
                     return result.Trim();
                 }
@@ -934,6 +934,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iChild = 0;
             int iEnd;
             bool found = false;
+            while (sourceToken.Type == XSharpLexer.WS)
+            {
+                iSource += 1;
+                sourceToken = tokens[iSource];
+            }
             switch (mToken.RuleTokenType)
             {
                 case PPTokenType.Token:
@@ -1543,6 +1548,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // So continue normally
                         lastToken = token;
                     }
+                }
+                else if (token.Type == XSharpLexer.WS)
+                {
+                    ;
                 }
                 else if (token.Type == XSharpLexer.COMMA)
                 {

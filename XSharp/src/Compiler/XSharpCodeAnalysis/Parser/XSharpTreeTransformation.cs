@@ -6271,7 +6271,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                     EmptyList(),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken),
-                    initializer)
+                    initializer);
+                expr = expr
                     .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UntypedArrayNotAvailableInDialect, _options.Dialect.ToString()));
             }
             context.Put<ExpressionSyntax>(expr);

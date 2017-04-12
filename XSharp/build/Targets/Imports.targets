@@ -158,6 +158,7 @@
       <Choose>
         <!-- Shipping binaries are always public signed.  In the case of an official build $(OfficialBuild) the
              binaries will be real signed as a post processing step. -->
+<!--
         <When Condition="'$(NonShipping)' != 'true'">
           <PropertyGroup>
             <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Strong Name Keys\35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
@@ -166,8 +167,10 @@
             <PublicSign>true</PublicSign>
           </PropertyGroup>
         </When>
+-->
 
         <!-- Non-shipping binaries are simply signed with the Roslyn internal key. -->
+<!--
         <Otherwise>
           <PropertyGroup>
             <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Strong Name Keys\RoslynInternalKey.Private.snk</AssemblyOriginatorKeyFile>
@@ -176,6 +179,16 @@
             <PublicKeyToken>fc793a00266884fb</PublicKeyToken>
           </PropertyGroup>
         </Otherwise>
+-->
+
+        <!-- Sign with XSharp key. -->
+        <When Condition="'$(NonShipping)' != 'true'">
+		  <PropertyGroup>
+			<AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
+			<DelaySign>false</DelaySign>
+			<PublicSign>true</PublicSign>
+		  </PropertyGroup>
+        </When>
       </Choose>
     </When>
   </Choose>
@@ -393,6 +406,9 @@
           Inputs="@(IntermediateAssembly)"
           Outputs="@(IntermediateAssembly);$(PostCompileBinaryModificationSentinelFile)">
 
+    <Message Text="Re-signing after merging optimization data" Condition="'$(DelaySign)' != 'true' AND '$(SignAssembly)' == 'true'" />
+    <Exec Command="&quot;$(SnToolPath)&quot; -q -R &quot;@(IntermediateAssembly)&quot; &quot;$(AssemblyOriginatorKeyFile)&quot;" Condition="'$(DelaySign)' != 'true' AND '$(SignAssembly)' == 'true'" />
+
     <!-- Write out a sentinel timestamp file to prevent unnecessary work in incremental builds. -->
     <Touch AlwaysCreate="true" Files="$(PostCompileBinaryModificationSentinelFile)" />
 
@@ -427,7 +443,7 @@
 
       <Message Text="$(IbcMergeOutput)" />
   </Target>
-
+  
   <!-- This is part of our developer convenience work to allow easy testing of our portable
        unit test projects.  It's a similar mechanism to CopyNuGetImplementations but is
        both unsupported and somewhat special cased to our build setup.

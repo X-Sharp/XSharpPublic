@@ -200,7 +200,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         PPRuleDictionary cmdRules = new PPRuleDictionary();
         PPRuleDictionary transRules = new PPRuleDictionary();
         bool _hasrules = false;
-
+        int rulesApplied = 0;
+        int defsApplied = 0;
         HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
 
         bool _preprocessorOutput = false;
@@ -271,6 +272,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 StdDefs = "xSharpDefs.xh";
                 ProcessIncludeFile(null, StdDefs,true);   
             }
+        }
+
+
+        internal void DumpStats()
+        {
+            DebugOutput("Preprocessor statistics");
+            DebugOutput("-----------------------");
+            DebugOutput("# of #defines    : {0}", this.symbolDefines.Count);
+            DebugOutput("# of #translates : {0}", this.transRules.Count);
+            DebugOutput("# of #commands   : {0}", this.cmdRules.Count);
+            DebugOutput("# of macros      : {0}", this.macroDefines.Count);
+            DebugOutput("# of defines used: {0}", this.defsApplied);
+            DebugOutput("# of UDCs used   : {0}", this.rulesApplied);
         }
 
         private void _writeToPPO(String text)
@@ -655,8 +669,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         tokens.Add(new XSharpToken(input.Get(i)));
                     }
                     string text = tokens.AsString();
-                    if (text.Length > 20)
-                        text = text.Substring(0, 20) + "...";
+                    //if (text.Length > 20)
+                    //    text = text.Substring(0, 20) + "...";
+                    DebugOutput("File {0} line {1}:", _fileName, symbol.Line);
                     DebugOutput("Input stack: Insert value of token Symbol {0}, {1} tokens => {2}", symbol.Text, input.Size-1, text);
                 }
                 else
@@ -836,7 +851,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     // TRANSLATE and XTRANSLATE can also match from beginning of line
-                    cmdRules.Add(rule);
                     transRules.Add(rule);
                     if (token == XSharpLexer.PP_DEFINE)
                     {
@@ -1322,20 +1336,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 var line = PeekLine();
                                 if (line.Count > 0)
                                 {
-                                    PPMatchRange[] matchInfo;
+                                    PPMatchRange[] matchInfo = null;
                                     PPRule rule = null;
                                     if (lastToken != null && (lastToken.Type == XSharpLexer.EOS ||
                                         lastToken.Type == XSharpLexer.NL))
                                     {
                                         rule = cmdRules.FindMatchingRule(line, out matchInfo);
                                     }
-                                    else
+                                    if (rule == null)
                                     {
                                         rule = transRules.FindMatchingRule(line, out matchInfo);
                                     }
                                     if (rule != null)
                                     {
+                                        rulesApplied += 1;
                                         var result = rule.Replace(line, matchInfo);
+                                        if (_options.Verbose)
+                                        {
+                                            int lineNo;
+                                            if (line[0].SourceSymbol != null)
+                                                lineNo = line[0].SourceSymbol.Line;
+                                            else
+                                                lineNo = line[0].Line;
+                                            DebugOutput("----------------------");
+                                            DebugOutput("File {0} line {1}:", _fileName, lineNo);
+                                            DebugOutput("   UDC   : {0}", rule.GetDebuggerDisplay());
+                                            DebugOutput("   Input : {0}", line.AsString());
+                                            DebugOutput("   Output: {0}", result.AsString());
+                                        }
                                         line = ReadLine();
                                         if (result.Count > 0)
                                         {
@@ -1365,12 +1393,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 }
                                                 first = null;
                                             }
-                                            // detect recursion on the inputs stack
-                                            var currentinput = inputs;
+                                            // detect recursion on the inputs stack, and will produce an error when
+                                            // we are more than 100 nested levels deep
                                             bool ok = true;
+                                            int nested = 0;
+                                            var currentinput = inputs;
                                             while (currentinput != null )
                                             {
-                                                if (currentinput.udc == rule)
+                                                ++nested;
+                                                if (currentinput.udc == rule && nested > 100)
                                                 {
                                                     _parseErrors.Add(new ParseErrorData(first, ErrorCode.ERR_PreProcessorError, "Recursive UDC rule detected"));
                                                     ReadLine();
@@ -1399,6 +1430,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 if ( symbolDefines.TryGetValue(t.Text, out tl) && isDefineAllowed())
                                 {
                                     Consume();
+                                    defsApplied++;
                                     XSharpToken p = new XSharpToken(t);
                                     if (tl != null)
                                     {

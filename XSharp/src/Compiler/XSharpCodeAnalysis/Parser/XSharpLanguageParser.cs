@@ -155,15 +155,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parser.AllowNamedArgs = true;
                 parser.AllowGarbageAfterEnd = false;
             }
+            pp_tokens.Fill();
+
+
 #if DEBUG && DUMP_TIMES
-           pp_tokens.Fill();
            {
                 var ts = DateTime.Now - t;
                 t += ts;
                 Debug.WriteLine("Preprocessing completed in {0}",ts);
             }
 #endif
-            parser.Interpreter.PredictionMode = PredictionMode.Sll;
+                parser.Interpreter.PredictionMode = PredictionMode.Sll;
             // When parsing in Sll mode we do not record any parser errors.
             // When this fails, then we try again with LL mode and then we record errors
             parser.RemoveErrorListeners();
@@ -192,6 +194,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 pp_tokens.Reset();
+                if (_options.Verbose)
+                {
+                    pp.DumpStats();
+                }
                 pp.Close();
                 parser.Reset();
                 tree = parser.source();

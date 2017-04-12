@@ -94,6 +94,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             _rules = new Dictionary<string, PPRules>(StringComparer.OrdinalIgnoreCase);
         }
+
+        internal int Count
+        {
+            get
+            {
+                int result = 0;
+                foreach (var r in _rules)
+                {
+                    result += r.Value.Count;
+                }
+                return result;
+            }
+        }
+
+
+
         internal void Add(PPRule rule)
         {
             // find element that matches the first token and insert at the front of the list

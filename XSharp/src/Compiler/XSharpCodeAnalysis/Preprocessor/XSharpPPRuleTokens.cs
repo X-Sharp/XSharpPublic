@@ -50,34 +50,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             get
             {
                 var type = _type.GetTokenType();
+                string sResult;
                 switch (type)
                 {
                     case PPTokenType.Token:
-                        return Key;
+                        sResult = Key;
+                        break;
                     case PPTokenType.MatchRegular:
-                        return "<" + Key + ">";
+                        sResult = "<" + Key + ">";
+                        break;
                     case PPTokenType.MatchList:
-                        return "<" + Key + ",...>";
+                        sResult = "<" + Key + ",...>";
+                        break;
                     case PPTokenType.MatchExtended:
-                        return "<(" + Key + ")>";
+                        sResult = "<(" + Key + ")>";
+                        break;
                     case PPTokenType.MatchRestricted:
-                        return "<" + Key + ":...>";
+                        sResult = "<" + Key + ":...>";
+                        break;
                     case PPTokenType.MatchWild:
-                        return "<*" + Key + "*>";
+                        sResult = "<*" + Key + "*>";
+                        break;
                     case PPTokenType.ResultRegular:
-                        return "<" + Key + ">";
+                        sResult = "<" + Key + ">";
+                        break;
                     case PPTokenType.ResultDumbStringify:
-                        return "#<" + Key + ">";
+                        sResult = "#<" + Key + ">";
+                        break;
                     case PPTokenType.ResultNormalStringify:
-                        return "<\"" + Key + "\">";
+                        sResult = "<\"" + Key + "\">";
+                        break;
                     case PPTokenType.ResultSmartStringify:
-                        return "<(" + Key + ")>";
+                        sResult = "<(" + Key + ")>";
+                        break;
                     case PPTokenType.ResultBlockify:
-                        return "<{" + Key + "}>";
+                        sResult = "<{" + Key + "}>";
+                        break;
                     case PPTokenType.ResultLogify:
-                        return "<." + Key + ".>";
+                        sResult = "<." + Key + ".>";
+                        break;
+                    default:
+                        sResult = "<" + Key + ">";
+                        break;
                 }
-                return "<" + Key + ">";
+                if (this.IsOptional)
+                {
+                    sResult = '[' + sResult + ']';
+                }
+                return sResult;
             }
         }
 

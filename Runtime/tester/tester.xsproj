@@ -53,6 +53,21 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">
+      <Name>XSharp.Base</Name>
+      <Project>{214b74ac-5fc9-4256-9e10-6bdfe5b12ce0}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Vulcan\XSharp.Vulcan.xsproj">
+      <Name>XSharp.Vulcan</Name>
+      <Project>{4e1bc90b-3696-4715-b7a4-17521172979c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

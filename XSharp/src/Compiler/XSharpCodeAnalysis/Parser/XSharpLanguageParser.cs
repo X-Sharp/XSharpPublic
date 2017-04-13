@@ -356,14 +356,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (len <= 0)
                                 len = 1;
                         }
-                        if (pos-1 + len > _text.Length)
-                        {
-                            len = _text.Length -pos+1;
-                        }
-                        var diag = new SyntaxDiagnosticInfo(pos, len, e.Code, e.Args);
+                        SourceText inc = null;
                         if (key != null && includes.ContainsKey(key))
                         {
-                            var inc = includes[key];
+                            inc  = includes[key];
+                            if (pos - 1 + len > inc.Length)
+                            {
+                                len = inc.Length - pos + 1;
+                            }
+                        }
+                        var diag = new SyntaxDiagnosticInfo(pos, len, e.Code, e.Args);
+                        if (inc != null)
+                        {
                             var incNode = SyntaxFactory.BadToken(null, inc.ToString(), null);
                             incNode = incNode.WithAdditionalDiagnostics(diag);
                             incNode.XNode = e.Node;

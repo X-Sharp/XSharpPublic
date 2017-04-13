@@ -8,7 +8,7 @@
 *  @..SAY
 */
 
-#command @ <row>, <col> zSAY <xpr>                                       ;
+#command @ <row>, <col> zSAY <xpr>                                       ;                                
                         [PICTURE <pic>]                                 ;
                         [COLOR <color>]                                 ;
                                                                         ;

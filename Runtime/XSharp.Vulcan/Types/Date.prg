@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using System
+using System.Runtime.Serialization
 using System.Globalization
 using System.Runtime.InteropServices
 using XSharp
@@ -11,11 +12,11 @@ using System.Diagnostics
 begin namespace XSharp	
     [DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
     [StructLayout(LayoutKind.Explicit)];
-	structure __VODate implements System.IComparable, System.IFormattable, System.IConvertible, IDate
+	structure __VODate implements System.IComparable, System.IFormattable, System.IConvertible, IDate, IComparable<__VoDate>, IEquatable<__VoDate>
         // This structure uses an explicit layout to map
         // year, month and date into 32 bits
         // the _value field is for convenience, so we can do a single numeric comparison
-        // to determine equality or relative comparisons
+        // to determine equality or relative comparisons in stead of doing 3 comparisons
         // for date calculation we use the Value property which returns a System.DateTime type
 		#region fields
 		//[DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -46,9 +47,13 @@ begin namespace XSharp
             return System.DateTime{_year, _month, _day}
         end get
         set
-            _year  := (Word) value:Year
-            _month := (Byte) value:Month
-            _day   := (Byte) value:Day
+            if (value == System.DateTime.MinValue)
+                _value := 0
+            else
+                _year  := (Word) value:Year
+                _month := (Byte) value:Month
+                _day   := (Byte) value:Day
+            endif
         end set
         end Property
         #endregion
@@ -60,13 +65,7 @@ begin namespace XSharp
 		return       
 
 		constructor(d as System.DateTime)
-            if d == System.DateTime.MinValue
-                _value := 0
-            else
-			    _year  := (Word) d:Year
-                _month := (Byte) d:Month
-                _day   := (Byte) d:Day
-            endif
+            SELF:Value := d
 		    return
 
 		constructor(d as iDate)
@@ -84,7 +83,7 @@ begin namespace XSharp
 			throw System.NotImplementedException{"Constructor __VODate(string __VODate) is not implemented yet."}
 
 		constructor(year as Int, month as Int, day as Int)
-			if (year > 0xffff)
+			if (year > 9999)
 				throw System.ArgumentOutOfRangeException{nameof(year)}
 			endif
 			if (month > 12)
@@ -94,10 +93,8 @@ begin namespace XSharp
 				throw System.ArgumentOutOfRangeException{nameof(day)}
 			endif
 			try
-                var dt := System.DateTime{year, month, day}
-				_year  := (Word) dt:Year
-                _month := (Byte) dt:Month
-                _day   := (Byte) dt:Day
+                // this may throw an exception when the combination is not valid
+                self:Value := System.DateTime{year, month, day}
 			catch 
 				_value := 0 // null_date
 			end try
@@ -139,6 +136,8 @@ begin namespace XSharp
 			var rhs := (__VODate)o 
 		    return _value:CompareTo(rhs:_value)
 
+		method CompareTo(rhs as __VODate) as Long
+		    return _value:CompareTo(rhs:_value)
 
 		method Equals(o as __VODate) as Logic
 			local rhs as __VODate

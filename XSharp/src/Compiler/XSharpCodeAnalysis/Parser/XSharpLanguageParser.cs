@@ -129,6 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parseErrors = ParseErrorData.NewBag();
             var pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var pp_tokens = new CommonTokenStream(pp);
+            pp_tokens.Fill();
             _preprocessorTokenStream = pp_tokens;
             var parser = new XSharpParser(pp_tokens);
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
@@ -155,7 +156,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parser.AllowNamedArgs = true;
                 parser.AllowGarbageAfterEnd = false;
             }
-            pp_tokens.Fill();
 
 
 #if DEBUG && DUMP_TIMES

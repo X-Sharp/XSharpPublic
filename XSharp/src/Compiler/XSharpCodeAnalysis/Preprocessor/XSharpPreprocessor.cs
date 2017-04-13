@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         static Dictionary<String, CachedIncludeFile> includecache = new Dictionary<string, CachedIncludeFile>(StringComparer.OrdinalIgnoreCase);
 
 
-        internal static void ClearOldIncludes()
+        static void clearOldIncludes()
         {
             // Remove old includes that have not been used in the last 1 minutes
             lock (includecache)
@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        internal static CachedIncludeFile GetIncludeFile(string fileName)
+        static CachedIncludeFile getIncludeFile(string fileName)
         {
             CachedIncludeFile file = null;
             lock (includecache)
@@ -77,11 +77,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return file;
         }
-        internal static CachedIncludeFile  AddIncludeFile(string fileName, XSharpToken[] tokens, SourceText text)
+        static CachedIncludeFile addIncludeFile(string fileName, XSharpToken[] tokens, SourceText text)
         {
             lock (includecache)
             {
-                CachedIncludeFile file = GetIncludeFile(fileName);
+                CachedIncludeFile file = getIncludeFile(fileName);
                 if (file == null)
                 {
                     file = new CachedIncludeFile();
@@ -192,7 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         Dictionary<string, Func<XSharpToken>> macroDefines = new Dictionary<string, Func<XSharpToken>>(/*CaseInsensitiveComparison.Comparer*/);
 
         Stack<bool> defStates = new Stack<bool> ();
-
+        Stack<XSharpToken> regions = new Stack<XSharpToken>();
         string _fileName = null;
         InputState inputs;
         IToken lastToken = null;
@@ -299,7 +299,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private bool mustWriteToPPO(XSharpToken t)
         {
-            return _preprocessorOutput && _ppoStream != null && t != null && (t?.TokenSource?.SourceName == _fileName || inputs.isSymbol);
+            return _preprocessorOutput && _ppoStream != null && t != null &&
+                (t.SourceName == _fileName || inputs.isSymbol);
         }
 
         private void writeToPPO(XSharpToken t)
@@ -360,7 +361,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal XSharpPreprocessor(XSharpLexer lexer, CommonTokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
-            ClearOldIncludes();
+            clearOldIncludes();
             _lexer = lexer;
             _options = options;
             _fileName = fileName;
@@ -750,7 +751,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
 
             }
-            XSharpToken def = newtokens[1];
+            XSharpToken def = newtokens[0];
             if (newtokens.Count > 2)
             {
                 // token 1 is the Identifier
@@ -899,7 +900,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
                     {
                         nfp = (string)PortableShim.FileStream.Name.GetValue(data);
-                        cachedFile = GetIncludeFile(nfp);
+                        cachedFile = getIncludeFile(nfp);
                         if (cachedFile != null)
                         {
                             text = cachedFile.Text;
@@ -986,7 +987,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(e);
                 }
                 var clone = tokens.GetTokens().ToArrayXSharpToken();
-                AddIncludeFile(nfp, clone, text);
+                addIncludeFile(nfp, clone, text);
             }
             else
             {
@@ -1053,6 +1054,287 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return true;
         }
+        #region Preprocessor Directives
+
+        private void doRegionDirective()
+        {
+            if (IsActiveElseSkip())
+            {
+                var token = Lt();
+                SkipToEol();
+                regions.Push(token);
+            }
+        }
+
+        private void doEndRegionDirective()
+        {
+            if (IsActiveElseSkip())
+            {
+                var token = Lt();
+                SkipToEol();
+                if (regions.Count > 0)
+                    regions.Pop();
+                else
+                    _parseErrors.Add(new ParseErrorData(token, ErrorCode.ERR_PreProcessorError, "#endregion directive without matching #region found"));
+            }
+        }
+
+        private void doDefineDirective(int nextType)
+        {
+            if (IsActiveElseSkip())
+            {
+                addDefine(nextType);
+            }
+        }
+
+        private void doUnDefDirective()
+        {
+            if (IsActiveElseSkip())
+            {
+                Consume();
+                SkipHidden();
+                var def = Lt();
+                removeDefine(def);
+                SkipToEol();
+            }
+        }
+
+        private void doErrorWarningDirective(int nextType)
+        {
+            if (IsActiveElseSkip())
+            {
+                var tokens = ReadLine();
+                string text;
+                XSharpToken ln;
+                writeToPPO(tokens[0], PPOPrefix + tokens[0].Text);
+                ln = tokens[0];
+                if (tokens.Count > 1)
+                {
+                    text = "";
+                    for (int i = 1; i < tokens.Count; i++)
+                    {
+                        text += tokens[i].Text;
+                        writeToPPO(tokens[i]);
+                    }
+                    text = text.Trim();
+                }
+                else
+                {
+                    if (nextType == XSharpLexer.PP_ERROR)
+                        text = "Empty error clause";
+                    else
+                        text = "Empty warning clause";
+
+                }
+                if (ln.SourceSymbol != null)
+                    ln = ln.SourceSymbol;
+                if (nextType == XSharpLexer.PP_WARNING)
+                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.WRN_WarningDirective, text));
+                else
+                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ErrorDirective, text));
+                lastToken = ln;
+            }
+        }
+
+        private void doIfDefDirective(bool isIfDef)
+        {
+            if (IsActiveElseSkip())
+            {
+                Consume();
+                SkipHidden();
+                var def = Lt();
+                if (isIfDef)
+                    writeToPPO(def, PPOPrefix + "#ifdef " + def.Text);
+                else
+                    writeToPPO(def, PPOPrefix + "#ifndef " + def.Text);
+                if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
+                {
+                    Consume();
+                    SkipEmpty();
+                    if (isIfDef)
+                        defStates.Push(IsDefined(def.Text));
+                    else
+                        defStates.Push(!IsDefined(def.Text));
+                }
+                else if (def.Type == XSharpLexer.MACRO)
+                {
+                    Consume();
+                    SkipEmpty();
+                    if (isIfDef)
+                        defStates.Push(IsDefinedMacro(def));
+                    else
+                        defStates.Push(!IsDefinedMacro(def));
+                }
+                else
+                {
+                    _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                }
+                SkipToEol();
+            }
+            else
+            {
+                defStates.Push(false);
+            }
+        }
+
+        private void doElseDirective()
+        {
+            writeToPPO(Lt(), PPOPrefix + "#else");
+            if (defStates.Count > 0)
+            {
+                bool a = defStates.Pop();
+                if (IsActiveElseSkip())
+                {
+                    Consume();
+                    defStates.Push(!a);
+                    SkipEmpty();
+                    SkipToEol();
+                }
+                else
+                    defStates.Push(false);
+            }
+            else
+            {
+                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #else"));
+                SkipToEol();
+            }
+        }
+
+        private void doEndifDirective()
+        {
+            if (defStates.Count > 0)
+            {
+                defStates.Pop();
+                if (IsActiveElseSkip())
+                {
+                    writeToPPO(Lt(), PPOPrefix + "#endif");
+                    Consume();
+                    SkipEmpty();
+                    SkipToEol();
+                }
+            }
+            else
+            {
+                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_UnexpectedDirective));
+                SkipToEol();
+            }
+        }
+
+        private void doIncludeDirective()
+        {
+            if (IsActiveElseSkip())
+            {
+                writeToPPO(Lt(), PPOPrefix + "#include ");
+                if (IncludeDepth() == MaxIncludeDepth)
+                {
+                    _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth));
+                    SkipToEol();
+                }
+                else
+                {
+                    Consume();
+                    SkipHidden();
+                    var ln = Lt();
+                    writeToPPO(ln);
+                    if (ln.Type == XSharpLexer.STRING_CONST)
+                    {
+                        Consume();
+                        string fn = ln.Text.Substring(1, ln.Text.Length - 2);
+                        lock (includecache)
+                        {
+                            ProcessIncludeFile(ln, fn);
+                        }
+
+                    }
+                    else
+                    {
+                        _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
+                        SkipToEol();
+                    }
+                }
+            }
+        }
+
+        private void doLineDirective()
+        {
+            if (IsActiveElseSkip())
+            {
+                Consume();
+                SkipHidden();
+                var ln = Lt();
+                if (ln.Type == XSharpLexer.INT_CONST)
+                {
+                    Consume();
+                    inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
+                    writeToPPO(ln, PPOPrefix + "#line " + ln.Text);
+                    SkipHidden();
+                    ln = Lt();
+                    if (ln.Type == XSharpLexer.STRING_CONST)
+                    {
+                        Consume();
+                        inputs.SourceFileName = ln.Text.Substring(1, ln.Text.Length - 2);
+                        writeToPPO(ln);
+
+                    }
+                    else
+                    {
+                        _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
+                    }
+                    SkipEmpty();
+                }
+                else
+                {
+                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected"));
+                }
+                SkipToEol();
+            }
+        }
+
+        private void doUnexpectedUDCSeparator()
+        {
+            var ln = Lt();
+            Consume();
+            writeToPPO(Lt(), PPOPrefix + ln.Text);
+            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Unexpected UDC separator character found"));
+            ReadLine();
+        }
+
+        private void doEOFChecks()
+        {
+            if (defStates.Count > 0)
+            {
+                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_EndifDirectiveExpected));
+            }
+            while (regions.Count > 0)
+            {
+                var token = regions.Pop();
+                _parseErrors.Add(new ParseErrorData(token, ErrorCode.ERR_EndRegionDirectiveExpected));
+            }
+        }
+
+        #endregion
+
+        XSharpToken tryMacro(XSharpToken t)
+        {
+            // Macros that cannot be found are changed to ID
+            Func<XSharpToken> ft;
+            t.Type = XSharpLexer.ID;
+            if (macroDefines.TryGetValue(t.Text, out ft))
+            {
+                var nt = ft();
+                if (t != null)
+                {
+                    nt.Line = t.Line;
+                    nt.Column = t.Column;
+                    nt.StartIndex = t.StartIndex;
+                    nt.StopIndex = t.StopIndex;
+                    nt.Original = t;
+                    t = nt;
+                }
+            }
+            return t;
+        }
+
 
         [return: NotNull]
         public IToken NextToken()
@@ -1084,244 +1366,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 switch (nextType)
                 {
-                    case IntStreamConstants.Eof:
-                        if (defStates.Count > 0)
-                        {
-                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "'#endif' expected"));
-                        }
-                        return Lt();
                     case XSharpLexer.PP_UNDEF:
-                        if (IsActiveElseSkip())
-                        {
-                            Consume();
-                            SkipHidden();
-                            var def = Lt();
-                            removeDefine(def);
-                            SkipToEol();
-                        }
+                        doUnDefDirective();
                         break;
                     case XSharpLexer.PP_IFDEF:
-                        if (IsActiveElseSkip())
-                        {
-                            Consume();
-                            SkipHidden();
-                            var def = Lt();
-                            writeToPPO(def, PPOPrefix+"#ifdef " + def.Text);
-                            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
-                            {
-                                Consume();
-                                SkipEmpty();
-                                defStates.Push(IsDefined(def.Text));
-                            }
-                            else if (def.Type == XSharpLexer.MACRO)
-                            {
-                                Consume();
-                                SkipEmpty();
-                                defStates.Push(IsDefinedMacro(def));
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
-                            }
-                            SkipToEol();
-                        }
-                        else {
-                            defStates.Push(false);
-                        }
+                        doIfDefDirective(true);
                         break;
                     case XSharpLexer.PP_IFNDEF:
-                        if (IsActiveElseSkip())
-                        {
-                            Consume();
-                            SkipHidden();
-                            var def = Lt();
-                            writeToPPO(def, PPOPrefix+"#ifndef " + def.Text );
-                            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
-                            {
-                                Consume();
-                                SkipEmpty();
-                                defStates.Push(!IsDefined(def.Text));
-                            }
-                            else if (def.Type == XSharpLexer.MACRO)
-                            {
-                                Consume();
-                                SkipEmpty();
-                                defStates.Push(!IsDefinedMacro(def));
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
-                            }
-                            SkipToEol();
-                        }
-                        else {
-                            defStates.Push(false);
-                        }
+                        doIfDefDirective(false);
                         break;
                     case XSharpLexer.PP_ENDIF:
-                        if (defStates.Count > 0)
-                        {
-                            defStates.Pop();
-                            if (IsActiveElseSkip())
-                            {
-                                writeToPPO(Lt(), PPOPrefix+"#endif");
-                                Consume();
-                                SkipEmpty();
-                                SkipToEol();
-                            }
-                        }
-                        else
-                        {
-                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #endif"));
-                            SkipToEol();
-                        }
+                        doEndifDirective();
                         break;
                     case XSharpLexer.PP_ELSE:
-                        writeToPPO(Lt(), PPOPrefix + "#else");
-                        if (defStates.Count > 0)
-                        {
-                            bool a = defStates.Pop();
-                            if (IsActiveElseSkip())
-                            {
-                                Consume();
-                                defStates.Push(!a);
-                                SkipEmpty();
-                                SkipToEol();
-                            }
-                            else
-                                defStates.Push(false);
-                        }
-                        else
-                        {
-                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #else"));
-                            SkipToEol();
-                        }
+                        doElseDirective();
                         break;
                     case XSharpLexer.PP_LINE:
-                        if (IsActiveElseSkip()) {
-                            Consume();
-                            SkipHidden();
-                            var ln = Lt();
-                            if (ln.Type == XSharpLexer.INT_CONST)
-                            {
-                                Consume();
-                                inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
-                                writeToPPO(ln, PPOPrefix + "#line " + ln.Text);
-                                SkipHidden();
-                                ln = Lt();
-                                if (ln.Type == XSharpLexer.STRING_CONST)
-                                {
-                                    Consume();
-                                    inputs.SourceFileName = ln.Text.Substring(1, ln.Text.Length - 2);
-                                    writeToPPO(ln);
-
-                                }
-                                else
-                                {
-                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
-                                }
-                                SkipEmpty();
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected"));
-                            }
-                            SkipToEol();
-                        }
+                        doLineDirective();
                         break;
                     case XSharpLexer.PP_ERROR:
                     case XSharpLexer.PP_WARNING:
-                        if (IsActiveElseSkip())
-                        {
-                            var tokens = ReadLine();
-                            string text;
-                            XSharpToken ln;
-                            writeToPPO(tokens[0], PPOPrefix + tokens[0].Text);
-                            ln = tokens[0];
-                            if (tokens.Count > 1)
-                            {
-                                text = "";
-                                for (int i = 1; i < tokens.Count; i++)
-                                {
-                                    text += tokens[i].Text;
-                                    writeToPPO(tokens[i]);
-                                }
-                                text = text.Trim();
-                            }
-                            else
-                            {
-                                if (nextType == XSharpLexer.PP_ERROR)
-                                    text = "Empty error clause";
-                                else
-                                    text = "Empty warning clause";
-
-                            }
-                            if (ln.SourceSymbol != null)
-                                ln = ln.SourceSymbol;
-                            if (nextType == XSharpLexer.PP_WARNING)
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.WRN_WarningDirective, text));
-                            else
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ErrorDirective, text));
-                            lastToken = ln;
-                        }
+                        doErrorWarningDirective(nextType);
                         break;
                     case XSharpLexer.PP_INCLUDE:
-                        if (IsActiveElseSkip())
-                        {
-                            writeToPPO(Lt(), PPOPrefix + "#include ");
-                            if (IncludeDepth() == MaxIncludeDepth)
-                            {
-                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth));
-                                SkipToEol();
-                            }
-                            else {
-                                Consume();
-                                SkipHidden();
-                                var ln = Lt();
-                                writeToPPO(ln);
-                                if (ln.Type == XSharpLexer.STRING_CONST)
-                                {
-                                    Consume();
-                                    string fn = ln.Text.Substring(1, ln.Text.Length - 2);
-                                    lock(includecache)
-                                    {
-                                        ProcessIncludeFile(ln, fn);
-                                    }
-
-                                }
-                                else
-                                {
-                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
-                                    SkipToEol();
-                                }
-                            }
-                        }
+                        doIncludeDirective();
                         break;
                     case XSharpLexer.PP_COMMAND:
                     case XSharpLexer.PP_TRANSLATE:
                         addRule(nextType);
                         break;
                     case XSharpLexer.PP_DEFINE:
-                        if (IsActiveElseSkip())
-                        {
-                            addDefine(nextType);
-                        }
+                        doDefineDirective(nextType);
                         break;
                     case XSharpLexer.PP_ENDREGION:
+                        doEndRegionDirective();
+                        break;
                     case XSharpLexer.PP_REGION:
-                        if (IsActiveElseSkip())
-                            SkipToEol();
+                        doRegionDirective();
                         break;
                     case XSharpLexer.UDCSEP:
-                        // UDC separator on a line of its own
-                        {
-                            var ln = Lt();
-                            Consume();
-                            writeToPPO(Lt(), PPOPrefix + ln.Text);
-                           _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Unexpected UDC separator character found"));
-                            ReadLine();
-                        }
+                        doUnexpectedUDCSeparator();
                         break;
+                    case IntStreamConstants.Eof:
+                        doEOFChecks();
+                        return Lt();
                     default:
                         var t = Lt();
                         var done = false;
@@ -1461,23 +1549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 if (t.Type == XSharpLexer.MACRO)
                                 {
-                                    Func<XSharpToken> ft;
-                                    if (macroDefines.TryGetValue(t.Text, out ft))
-                                    {
-                                        var nt = ft();
-                                        if (t == null) {
-                                            break;
-                                        }
-                                        nt.Line = t.Line;
-                                        nt.Column = t.Column;
-                                        nt.StartIndex = t.StartIndex;
-                                        nt.StopIndex = t.StopIndex;
-                                        t = nt;
-                                    }
-                                    else
-                                    {
-                                        t.Type = XSharpLexer.ID;
-                                    }
+                                    t = tryMacro(t);
                                 }
                                 Consume();
                                 FixToken(t);

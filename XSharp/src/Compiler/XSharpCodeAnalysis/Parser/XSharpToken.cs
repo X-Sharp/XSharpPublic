@@ -52,7 +52,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return _original;
                 return this;
             }
+            set
+            {
+                _original = value;
+            }
         }
-
+        public string SourceName
+        {
+            get
+            {
+                return Original.TokenSource?.SourceName;
+            }
+        }
     }
 }

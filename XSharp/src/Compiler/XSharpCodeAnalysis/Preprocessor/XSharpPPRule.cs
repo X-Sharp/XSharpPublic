@@ -1174,7 +1174,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return Replace(_resulttokens, tokens, matchInfo);
 
         }
-        internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo)
+        internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, bool nested = false)
         {
             Debug.Assert(matchInfo.Length == _matchtokens.Length);
             IList<XSharpToken> result = new List<XSharpToken>();
@@ -1207,21 +1207,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // we need to determine the tokens at the end of the tokens list that are not matched 
             // in the results and then copy these to the result as well
-            int last = -1;
-            foreach (var m in matchInfo)
+            if (! nested)
             {
-                if (m.End > last)
-                    last = m.End;
-            }
-            for (int i = last + 1; i < tokens.Count; i++)
-            {
-                result.Add(tokens[i]);
-            }
-            foreach (var t in result)
-            {
-                if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
+                int last = -1;
+                foreach (var m in matchInfo)
                 {
-                    t.Channel = t.OriginalChannel = XSharpLexer.DefaultTokenChannel;
+                    if (m.End > last)
+                        last = m.End;
+                }
+                for (int i = last + 1; i < tokens.Count; i++)
+                {
+                    result.Add(tokens[i]);
+                }
+                foreach (var t in result)
+                {
+                    if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
+                    {
+                        t.Channel = t.OriginalChannel = XSharpLexer.DefaultTokenChannel;
+                    }
                 }
             }
             return result;
@@ -1242,7 +1245,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var mm = matchInfo[rule.MatchMarker.Index];
                 if (!mm.IsSkipped)
                 {
-                    var block = Replace(rule.OptionalElements, tokens, matchInfo);
+                    var block = Replace(rule.OptionalElements, tokens, matchInfo,true);
                     foreach (var e in block)
                     {
                         result.Add(e);
@@ -1291,18 +1294,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (range.Length > 4)
             {
                 if (tokens[start].Type == XSharpLexer.LCURLY &&
-                    tokens[start + 1].Type == XSharpLexer.PIPE &&
-                    tokens[start + 2].Type == XSharpLexer.PIPE &&
+                    (tokens[start + 1].Type == XSharpLexer.PIPE  ||
+                     tokens[start + 1].Type == XSharpLexer.OR ) &&
                     tokens[end].Type == XSharpLexer.RCURLY)
+                {
                     addBlockMarker = false;
+                }
             }
             if (addBlockMarker)
             {
                 t = tokens[start];
                 nt = new XSharpToken(t, XSharpLexer.LCURLY, "{");
                 result.Add(nt);
-                nt = new XSharpToken(t, XSharpLexer.PIPE, "|");
-                result.Add(nt);
+                nt = new XSharpToken(t, XSharpLexer.OR, "||");
                 result.Add(nt);
             }
             for (int i = start; i <= end; i++)

@@ -803,6 +803,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return resulttokens;
 
         }
+        /// <summary>
+        /// Returns the key that is stored in the RuleTable. Depending on the type of the UDC
+        /// This is the while first word or the first word abbreviated to 4 chars (dBase compatible)
+        /// </summary>
+        internal string LookupKey
+        {
+            get
+            {
+                string key = this.Key;
+                if (key.Length > 4)
+                {
+                    if (_type == PPUDCType.Command || _type == PPUDCType.Translate)
+                    {
+                        key = key.Substring(0, 4);
+                    }
+                }
+                return key;
+            }
+        }
         internal string Key
         {
             get

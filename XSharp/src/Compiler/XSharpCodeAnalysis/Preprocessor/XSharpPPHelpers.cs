@@ -108,13 +108,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
-
         internal void Add(PPRule rule)
         {
             // find element that matches the first token and insert at the front of the list
             // so rules defined later override rules defined first
-            string key = rule.Key;
+            string key = rule.LookupKey;
             PPRules list;
             if (_rules.ContainsKey(key))
             {
@@ -127,39 +125,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             list.Insert(0, rule);
         }
-        internal PPRules Find(string key)
-        {
-            // Find a list of rules that start with the same first token
-            PPRules list;
-            if (_rules.ContainsKey(key))
-                list = _rules[key];
-            else
-                list = null;
-            return list;
-        }
-
+  
         internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
-            PPRule result = null;
             matchInfo = null;
             if (tokens?.Count != 0)
             {
                 var firsttoken = tokens[0];
-                var rules = Find(firsttoken.Text);
-                if (rules?.Count > 0)
+                var key = firsttoken.Text;
+                while (true)
                 {
-                    // try to find the first rule in the list that matches our tokens
-                    foreach (var rule in rules)
+                    if (_rules.ContainsKey(key))
                     {
-                        if (rule.Matches(tokens, out matchInfo))
+                        // try to find the first rule in the list that matches our tokens
+                        var rules = _rules[key];
+                        foreach (var rule in rules)
                         {
-                            result = rule;
-                            break;
+                            if (rule.Matches(tokens, out matchInfo))
+                            {
+                                return rule;
+                            }
                         }
                     }
+                    if (key.Length <= 4)
+                        return null;
+                    key = key.Substring(0, 4);
                 }
+
             }
-            return result;
+            return null;
         }
     }
 

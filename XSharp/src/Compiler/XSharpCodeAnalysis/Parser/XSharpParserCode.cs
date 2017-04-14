@@ -495,14 +495,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     if (ct.TokenSource != null && !String.IsNullOrEmpty(ct.TokenSource.SourceName))
                         return ct.TokenSource.SourceName;
-                    return ct.SourceFileName;
+                    return ct.SourceName;
                 }
                 return "<unknown>";
             }
         }
         public string MappedFileName { get { return ((XSharpToken)Symbol).MappedFileName; } }
         public int MappedLine { get { return ((XSharpToken)Symbol).MappedLine; } }
-        public IToken SourceSymbol { get { return ((XSharpToken)Symbol).SourceSymbol; } }
+        public IToken SourceSymbol
+        {
+            get
+            {
+                return ((XSharpToken)Symbol).SourceSymbol;
+            }
+        }
         public override string ToString() { return this.GetText(); }
     }
 

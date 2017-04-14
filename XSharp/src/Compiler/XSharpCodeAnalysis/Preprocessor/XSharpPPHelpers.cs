@@ -129,7 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
             matchInfo = null;
-            if (tokens?.Count != 0)
+            if (tokens?.Count >= 0)
             {
                 var firsttoken = tokens[0];
                 var key = firsttoken.Text;

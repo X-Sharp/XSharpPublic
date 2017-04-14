@@ -22,10 +22,10 @@ using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-
+using System.Diagnostics;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    internal class XSharpPreprocessor : ITokenSource
+    internal class XSharpPreprocessor 
     {
         const string PPOPrefix = "//PP ";
         #region Static Properties
@@ -174,10 +174,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        XSharpLexer _lexer;
+        ITokenStream _lexerStream;
         CSharpParseOptions _options;
-
-        CommonTokenStream _input;
 
         Encoding _encoding;
 
@@ -199,7 +197,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         PPRuleDictionary cmdRules = new PPRuleDictionary();
         PPRuleDictionary transRules = new PPRuleDictionary();
-        bool _hasrules = false;
+        bool _hasCommandrules = false;
+        bool _hasTransrules = false;
         int rulesApplied = 0;
         int defsApplied = 0;
         HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
@@ -212,6 +211,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public int MaxIncludeDepth { get; set; } = 16;
 
         public int MaxSymbolDepth { get; set; } = 16;
+
+        public int MaxUDCDepth { get; set; } = 256;
 
         public string StdDefs { get; set; } = string.Empty;
         private void initStdDefines(CSharpParseOptions options, string fileName)
@@ -292,60 +293,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // do not call t.Text when not needed.
             if (_preprocessorOutput)
             {
+                text = text.TrimAllWithInplaceCharArray();
                 var buffer = _encoding.GetBytes(text);
+                _ppoStream.Write(buffer, 0, buffer.Length);
+                buffer = _encoding.GetBytes("\r\n");
                 _ppoStream.Write(buffer, 0, buffer.Length);
             }
         }
 
-        private bool mustWriteToPPO(XSharpToken t)
+        private bool mustWriteToPPO()
         {
-            return _preprocessorOutput && _ppoStream != null && t != null &&
-                (t.SourceName == _fileName || inputs.isSymbol);
+            return _preprocessorOutput && _ppoStream != null && inputs.parent == null;
         }
 
-        private void writeToPPO(XSharpToken t)
+        private void writeToPPO(string text)
         {
-            // do not call t.Text when not needed.
-            if ( mustWriteToPPO(t))
-            {
-                _writeToPPO(t.Text);
-            }
-            
-        }
-
-        private void writeToPPO(XSharpToken t, string text)
-        {
-            if (mustWriteToPPO(t))
+            if (mustWriteToPPO())
             {
                 _writeToPPO(text);
             }
         }
         private void writeToPPO(IList<XSharpToken> tokens, bool prefix = false, bool prefixNewLines = false)
         {
-            XSharpToken first = null;
-            XSharpToken last = null;
-            foreach (var t in tokens)
+            if (tokens?.Count == 0)
+                return;
+            XSharpToken first = tokens[0];
+            XSharpToken last = tokens[tokens.Count - 1];
+            if (mustWriteToPPO())
             {
-                if (first == null)
-                    first = t;
-                last = t;
-            }
-            if (first != null)
-            {
-                if (mustWriteToPPO(first))
+                // mixed source, so create text on the fly
+                var bld = new System.Text.StringBuilder(1024);
+                if (prefix)
                 {
-                    var interval = new Interval(first.StartIndex, last.StopIndex);
-                    string text = first.TokenSource.InputStream.GetText(interval);
-                    if (prefixNewLines)
-                    {
-                        text = text.Replace("\n", "\n" + PPOPrefix);
-                    }
-                    if (prefix)
-                    {
-                        text = PPOPrefix + text;
-                    }
-                    _writeToPPO(text);
+                    bld.Append(PPOPrefix);
                 }
+                foreach (var t in tokens)
+                {
+                    bld.Append(t.Text);
+                    bld.Append(t.TrailingWs());
+                }
+                if (prefixNewLines)
+                {
+                    bld.Replace("\n", "\n" + PPOPrefix);
+                }
+                _writeToPPO(bld.ToString());
             }
         }
 
@@ -359,17 +350,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _ppoStream = null;
         }
 
-        internal XSharpPreprocessor(XSharpLexer lexer, CommonTokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
+        internal XSharpPreprocessor(ITokenStream lexerStream, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
             clearOldIncludes();
-            _lexer = lexer;
+            _lexerStream = lexerStream;
             _options = options;
             _fileName = fileName;
             if (_options.VOPreprocessorBehaviour)
                 symbolDefines = new Dictionary<string, IList<XSharpToken>>(CaseInsensitiveComparison.Comparer);
             else
                 symbolDefines = new Dictionary<string, IList<XSharpToken>>(/* case sensitive */);
-            _input = input;
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
@@ -413,7 +403,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            inputs = new InputState(input);
+            inputs = new InputState(lexerStream);
             foreach (var symbol in options.PreprocessorSymbols)
                 symbolDefines[symbol] = null;
 
@@ -424,109 +414,152 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             _options.ConsoleOutput.WriteLine("PP: " + format, objects);
         }
-        public int Column
-        {
-            get
-            {
-                return _input.TokenSource.Column;
-            }
-        }
 
-        public ICharStream InputStream
-        {
-            get
-            {
-                return _input.TokenSource.InputStream;
-            }
-        }
 
-        public int Line
+        /// <summary>
+        /// Pre-processes the input stream. Reads #Include files, processes #ifdef commands and translations from #defines, macros and UDCs
+        /// </summary>
+        /// <returns>Translated input stream</returns>
+        internal IList<IToken> PreProcess()
         {
-            get
-            {
-                return _input.TokenSource.Line;
-            }
-        }
-
-        public string SourceName
-        {
-            get
-            {
-                return _input.TokenSource.SourceName;
-            }
-        }
-
-        public ITokenFactory TokenFactory
-        {
-            get
-            {
-                return _input.TokenSource.TokenFactory;
-            }
-
-            set
-            {
-                _input.TokenSource.TokenFactory = value;
-            }
-        }
-
-        void SkipHidden()
-        {
-            IToken t = Lt();
-            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel 
-                && t.Channel != XSharpLexer.PREPROCESSORCHANNEL)
-            {
-                Consume();
-                t = Lt();
-            }
-        }
-
-        IToken SkipToEol()
-        {
+            var result = new List<IToken>(); ;
             XSharpToken t = Lt();
-            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
+            List<XSharpToken> omitted = new List<XSharpToken>(); ;
+            while (t.Type != IntStreamConstants.Eof)
             {
+                // read until the next EOS
+                var line = ReadLine(omitted);
+                t = Lt();   // CRLF or EOS. Must consume now, because #include may otherwise add a new inputs
                 Consume();
-                if (t.Type == XSharpLexer.EOS && t.Text != ";")
-                    break;
-                t = Lt();
+                if (line.Count > 0) 
+                {
+                    line = ProcessLine(line);
+                    if (line!= null && line.Count > 0)
+                    {
+                        result.AddRange(line);
+                    }
+                }
+                else
+                {
+                    if (omitted.Count > 0)
+                        writeToPPO(omitted, false);
+                    else
+                        writeToPPO("");
+                }
+                result.Add(t);
             }
-            writeToPPO(t);
-            return t;
+            result.Add(t);  // EOF
+            doEOFChecks();
+            return result;
         }
 
-        void SkipEmpty()
+        List<XSharpToken> ProcessLine(List<XSharpToken> line)
         {
-            IToken t = Lt();
-            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
+            Debug.Assert(line.Count > 0);
+            var nextType = line[0].Type;
+            switch (nextType)
             {
-                if (t.Type == XSharpLexer.EOS && t.Text != ";")
+                case XSharpLexer.PP_UNDEF:
+                    doUnDefDirective(line);
+                    line = null;
                     break;
-                if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
+                case XSharpLexer.PP_IFDEF:
+                    doIfDefDirective(line, true);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_IFNDEF:
+                    doIfDefDirective(line, false);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_ENDIF:
+                    doEndifDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_ELSE:
+                    doElseDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_LINE:
+                    doLineDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_ERROR:
+                case XSharpLexer.PP_WARNING:
+                    doErrorWarningDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_INCLUDE:
+                    doIncludeDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_COMMAND:
+                case XSharpLexer.PP_TRANSLATE:
+                    doUDCDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_DEFINE:
+                    doDefineDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_ENDREGION:
+                    doEndRegionDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.PP_REGION:
+                    doRegionDirective(line);
+                    line = null;
+                    break;
+                case XSharpLexer.UDCSEP:
+                    doUnexpectedUDCSeparator(line);
+                    line = null;
+                    break;
+                default:
+                    line = doNormalLine(line);
+                    break;
+            }
+            return line;
+        }
+
+        /// <summary>
+        /// Reads the a line from the input stream until the EOS token and skips hidden tokens
+        /// </summary>
+        /// <returns>List of tokens EXCLUDING the EOS but including statement separator char ;</returns>
+        List<XSharpToken> ReadLine( List<XSharpToken> omitted)
+        {
+            Debug.Assert(omitted != null);
+            var res = new List<XSharpToken>();
+            omitted.Clear();
+            XSharpToken t = Lt();
+            while (t.Type != IntStreamConstants.Eof)
+            {
+                if (t.IsEOS() && t.Text != ";")
+                    break;
+                if (t.Channel != XSharpLexer.Hidden && t.Channel != XSharpLexer.XMLDOCCHANNEL)
                 {
-                    _parseErrors.Add(new ParseErrorData(t, ErrorCode.WRN_PreProcessorWarning, "Ignored input '"+t.Text+"'"));
+                    var nt = FixToken(t);
+                    res.Add(nt);
+                }
+                else
+                {
+                    omitted.Add(t);
                 }
                 Consume();
                 t = Lt();
             }
+            return res;
         }
 
-        void SkipInactive()
+        /// <summary>
+        /// Returns the name of the active source. Can be the main prg file, but also an active #include file
+        /// </summary>
+        string SourceName
         {
-            // This will move the tokens from the preprocessor and hidden channel
-            // to the DEFOUTCHANNEL so they will not be seen by the parser
-            // this is used in an inactive section of an #ifdef .. #else .. #endif construct
-            XSharpToken t = Lt();
-            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
+            get
             {
-                ((CommonToken)t).Channel = XSharpLexer.DEFOUTCHANNEL;
-                Consume();
-                if (t.Type == XSharpLexer.EOS && t.Text != ";")
-                    break;
-                t = Lt();
+                return _fileName;
             }
-            if (t.Type == XSharpLexer.EOS)
-                writeToPPO(t);
         }
+
 
         XSharpToken GetSourceSymbol()
         {
@@ -547,100 +580,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 token.MappedLine = token.Line + inputs.MappedLineDiff;
             if (!string.IsNullOrEmpty(inputs.MappedFileName))
                 token.MappedFileName = inputs.MappedFileName;
-            if (!string.IsNullOrEmpty(inputs.SourceFileName))
-                token.SourceFileName = inputs.SourceFileName;
+            //if (!string.IsNullOrEmpty(inputs.SourceFileName))
+            //    token.SourceFileName = inputs.SourceFileName;
             if (inputs.isSymbol)
             {
                 token.SourceSymbol = GetSourceSymbol();
-                token.SourceFileName = (token.SourceSymbol as XSharpToken).SourceFileName;
+                //token.SourceFileName = (token.SourceSymbol as XSharpToken).SourceFileName;
             }
             return token;
-        }
-
-        IList<XSharpToken> PeekPPCommand()
-        {
-            IList<XSharpToken> res = new List<XSharpToken>();
-            var input = inputs;
-            if (input.Eof())
-                input = input.parent;
-            int i = input.Index;
-            var t = (XSharpToken) input.Tokens.Get(i);
-            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
-            {
-                if (t.IsEOS() && t.Text != ";")
-                    break;
-                if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
-                {
-                     res.Add(t);
-                }
-                i += 1;
-                t = (XSharpToken) input.Tokens.Get(i);
-            }
-            return res;
-        }
-        IList<XSharpToken> ReadPPCommand()
-        {
-            IList<XSharpToken> res = new List<XSharpToken>();
-            IToken  t = Lt();
-            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
-            {
-                if (t.IsEOS() && t.Text != ";")
-                    break;
-                if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
-                {
-
-                    var nt = FixToken(new XSharpToken(t));
-                    nt.Channel = TokenConstants.DefaultChannel;
-                    res.Add(nt);
-                }
-                Consume();
-                t = Lt();
-            }
-            return res;
-        }
-        IList<XSharpToken> ReadLine()
-        {
-            IList<XSharpToken> res = new List<XSharpToken>();
-            XSharpToken t = Lt();
-            while (t.Type != IntStreamConstants.Eof )
-            {
-                if (t.IsEOS() && t.Text != ";")
-                    break;
-                var nt = FixToken(t);
-                nt.Channel = TokenConstants.DefaultChannel;
-                res.Add(nt);
-                Consume();
-                t = Lt();
-            }
-            return res;
-        }
-
-        IList<XSharpToken> PeekLine()
-        {
-            var res = new List<XSharpToken>(); ;
-            var input = inputs;
-            if (input.Eof())
-                input = input.parent;
-            int i = input.Index;
-            IToken t = input.Tokens.Get(i);
-            while (t.Type != IntStreamConstants.Eof)
-            {
-                if (t.IsEOS()&& t.Text != ";")
-                    break;
-                if (t.Channel == XSharpLexer.DefaultTokenChannel)
-                {
-                    var nt = FixToken(new XSharpToken(t));
-                    res.Add(nt);
-                }
-                i += 1;
-                t = input.Tokens.Get(i);
-            }
-            return res;
-        }
-
-        int La()
-        {
-            return inputs.La();
         }
 
         XSharpToken Lt()
@@ -697,15 +644,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return defStates.Count == 0 || defStates.Peek();
         }
 
-        bool IsActiveElseSkip()
-        {
-            if (IsActive())
-                return true;
-            SkipInactive();
-            return false;
-        }
-
-        int IncludeDepth()
+          int IncludeDepth()
         {
             int d = 1;
             var o = inputs;
@@ -735,97 +674,93 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return (t.Type == XSharpLexer.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
         }
 
-        void addDefine(int type)
+        void addDefine(IList<XSharpToken> line)
         {
             // Check to see if the define contains a LPAREN, and there is no space in between them. 
             // Then it is a pseudo function that we will store as a #xtranslate UDC
-            var newtokens = PeekPPCommand();
             // this returns a list that includes #define and the ID
-            if (newtokens.Count < 2)
+            if (line.Count < 2)
             {
-                Consume();
-                var token = Lt();
-                if (newtokens.Count > 0)
-                    token = newtokens[0];
+                var token = line[0];
                 _parseErrors.Add(new ParseErrorData(token, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
                 return;
-
             }
-            XSharpToken def = newtokens[0];
-            if (newtokens.Count > 2)
+            // token 1 is the Identifier
+            // other tokens are optional and may contain a value
+            XSharpToken def = line[1];
+            if (line.Count > 2)
             {
-                // token 1 is the Identifier
-                def = newtokens[1];
-                var first = newtokens[2];
+                var first = line[2];
                 if (first.Type == XSharpLexer.LPAREN
                     && first.StartIndex == def.StopIndex + 1)
                 {
-                    addRule(type);
+                    doUDCDirective(line);
                     return;
                 }
             }
-
             if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
             {
-                writeToPPO(newtokens, true, true);
-                newtokens = ReadPPCommand();
-                newtokens.RemoveAt(0);  // remove #define
-                newtokens.RemoveAt(0);  // remove ID
+                line.RemoveAt(0);  // remove #define
+                line.RemoveAt(0);  // remove ID
                 if (symbolDefines.ContainsKey(def.Text))
                 {
                     // check to see if this is a new definition or a duplicate definition
                     var oldtokens = symbolDefines[def.Text];
                     var cOld = oldtokens.AsString();
-                    var cNew = newtokens.AsString();
+                    var cNew = line.AsString();
                     if (cOld == cNew)
                         _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
                     else
                         _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, cOld, cNew));
                 }
-                symbolDefines[def.Text] = newtokens;
+                symbolDefines[def.Text] = line;
                 if (_options.ShowDefs)
                 {
-                    DebugOutput("{0}:{1} add DEFINE {2} => {3}", def.FileName(), def.Line, def.Text, newtokens.AsString() );
+                    DebugOutput("{0}:{1} add DEFINE {2} => {3}", def.FileName(), def.Line, def.Text, line.AsString() );
                 }
             }
             else
             {
                 _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
-                newtokens = ReadPPCommand();
                 return;
             }
-
         }
-        void removeDefine(XSharpToken def)
+
+        void removeDefine(IList<XSharpToken> line)
         {
+            var errToken = line[0];
+            bool ok = true;
+            if (line.Count < 2)
+            {
+                ok = false;
+            }
+            XSharpToken def = line[1];
             if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
             {
-                Consume();
-                writeToPPO(def, PPOPrefix + "#undef " + def.Text );
-                SkipEmpty();
                 if (symbolDefines.ContainsKey(def.Text))
                     symbolDefines.Remove(def.Text);
-                // undef for a symbol that is not defined is not seen as an error in VO and Vulcan
-                //else
-                //{
-                //    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol not defined: " + def.Text));
-                //}
             }
             else
             {
-                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
-
+                errToken = def;
+                ok = false;
+            }
+            if (! ok)
+            {
+                _parseErrors.Add(new ParseErrorData(errToken, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
             }
         }
 
-        void addRule(int token)
+        void doUDCDirective(IList<XSharpToken> udc)
         {
-            var cmd = Lt();
-            Consume();
-            writeToPPO(cmd, PPOPrefix + cmd.Text+" ");
-            var udc = ReadPPCommand();
-            writeToPPO(udc,false, true);
-
+            Debug.Assert(udc?.Count > 0);
+            writeToPPO(udc, true, true);
+            if (udc.Count < 3)
+            {
+                _parseErrors.Add(new ParseErrorData(udc[0], ErrorCode.ERR_PreProcessorError, "Invalid UDC:{0}", udc.AsString()));
+                return;
+            }
+            var cmd = udc[0];
             PPErrorMessages errorMsgs;
             var rule = new PPRule(cmd, udc, out errorMsgs);
             if (rule.Type == PPUDCType.None)
@@ -844,30 +779,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (token == XSharpLexer.PP_COMMAND )
+                if (cmd.Type == XSharpLexer.PP_COMMAND )
                 {
                     // COMMAND and XCOMMAND can only match from beginning of line
                     cmdRules.Add(rule);
+                    _hasCommandrules = true;
                 }
                 else
                 {
                     // TRANSLATE and XTRANSLATE can also match from beginning of line
                     transRules.Add(rule);
-                    if (token == XSharpLexer.PP_DEFINE)
+                    _hasTransrules = true;
+                    if (cmd.Type == XSharpLexer.PP_DEFINE)
                     {
                         rule.CaseInsensitive = _options.VOPreprocessorBehaviour;
                     }
                 }
                 if (_options.ShowDefs)
                 {
-                    DebugOutput("{0}:{1} add {2} {3}", cmd.FileName(), cmd.Line, token == XSharpLexer.PP_DEFINE ? "DEFINE" : "UDC" ,rule.Name);
+                    DebugOutput("{0}:{1} add {2} {3}", cmd.FileName(), cmd.Line, cmd.Type == XSharpLexer.PP_DEFINE ? "DEFINE" : "UDC" ,rule.Name);
                 }
-                _hasrules = true;
+                
             }
-//#else
-//            _parseErrors.Add(new ParseErrorData(cmd, ErrorCode.ERR_PreProcessorError, "Directive '" + cmd.Text + "' not supported yet"));
-//#endif
-
         }
 
         private bool ProcessIncludeFile(XSharpToken ln, string fn, bool StdDefine = false)
@@ -937,11 +870,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (rooted)
                     break;
-            }
-            if (! StdDefine)
-            {
-                SkipEmpty();
-                SkipToEol();
             }
             if (nfp == null)
             {
@@ -1031,7 +959,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return isdefined;
         }
 
-        private bool isDefineAllowed()
+        private bool isDefineAllowed(IList<XSharpToken> line, int iPos)
         {
             // DEFINE will not be accepted immediately after or before a DOT
             // So this will not be recognized:
@@ -1039,16 +967,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // System.Console.WriteLine("zxc")
             // But this will , since there are spaces around the token
             // System. Console .WriteLine("zxc")
-
-            if (lastToken != null)
+            Debug.Assert(line?.Count > 0);
+            if (iPos > 0 && line[iPos-1].Type == XSharpLexer.DOT )
             {
-                if (lastToken.Type == XSharpLexer.DOT )
-                    return false;
+                return false;
             }
-            var index = inputs.Index;
-            if (index < inputs.Tokens.Size)
+            if (iPos < line.Count-1)
             {
-                var token = inputs.Tokens.Get(index + 1);
+                var token = line[iPos + 1];
                 if (token.Type == XSharpParser.DOT )
                     return false;
             }
@@ -1056,65 +982,85 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #region Preprocessor Directives
 
-        private void doRegionDirective()
+        private void doRegionDirective(List<XSharpToken> line)
         {
-            if (IsActiveElseSkip())
+            Debug.Assert(line?.Count > 0);
+            if (IsActive())
             {
-                var token = Lt();
-                SkipToEol();
+                var token = line[0];
                 regions.Push(token);
+                writeToPPO(line,  true);
+            }
+            else
+            {
+                writeToPPO("");
             }
         }
 
-        private void doEndRegionDirective()
+        private void doEndRegionDirective(IList<XSharpToken> line)
         {
-            if (IsActiveElseSkip())
+            Debug.Assert(line?.Count > 0);
+            if (IsActive())
             {
-                var token = Lt();
-                SkipToEol();
+                var token = line[0];
                 if (regions.Count > 0)
                     regions.Pop();
                 else
                     _parseErrors.Add(new ParseErrorData(token, ErrorCode.ERR_PreProcessorError, "#endregion directive without matching #region found"));
+                writeToPPO(line, true);
+            }
+            else
+            {
+                writeToPPO("");
             }
         }
 
-        private void doDefineDirective(int nextType)
+        private void doDefineDirective(List<XSharpToken> line)
         {
-            if (IsActiveElseSkip())
+            Debug.Assert(line?.Count > 0);
+            if (IsActive())
             {
-                addDefine(nextType);
+                writeToPPO(line, true);
+                addDefine(line);
             }
+            else
+            {
+                writeToPPO("");
+            }
+
         }
 
-        private void doUnDefDirective()
+        private void doUnDefDirective(List<XSharpToken> line)
         {
-            if (IsActiveElseSkip())
+            Debug.Assert(line?.Count > 0);
+            if (IsActive())
             {
-                Consume();
-                SkipHidden();
-                var def = Lt();
-                removeDefine(def);
-                SkipToEol();
+                removeDefine(line);
+                writeToPPO(line, true);
             }
+            else
+            {
+                writeToPPO("");
+            }
+
         }
 
-        private void doErrorWarningDirective(int nextType)
+        private void doErrorWarningDirective(List<XSharpToken> line)
         {
-            if (IsActiveElseSkip())
+            Debug.Assert(line?.Count > 0);
+            int nextType = line[0].Type;
+            if (IsActive())
             {
-                var tokens = ReadLine();
                 string text;
                 XSharpToken ln;
-                writeToPPO(tokens[0], PPOPrefix + tokens[0].Text);
-                ln = tokens[0];
-                if (tokens.Count > 1)
+                writeToPPO(line, true);
+                ln = line[0];
+                if (line.Count > 1)
                 {
                     text = "";
-                    for (int i = 1; i < tokens.Count; i++)
+                    for (int i = 1; i < line.Count; i++)
                     {
-                        text += tokens[i].Text;
-                        writeToPPO(tokens[i]);
+                        text += line[i].Text;
                     }
                     text = text.Trim();
                 }
@@ -1134,23 +1080,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ErrorDirective, text));
                 lastToken = ln;
             }
+            else
+            {
+                writeToPPO( "");
+            }
         }
 
-        private void doIfDefDirective(bool isIfDef)
+        private void doIfDefDirective(List<XSharpToken> line, bool isIfDef)
         {
-            if (IsActiveElseSkip())
+            Debug.Assert(line?.Count > 0);
+            if (IsActive())
             {
-                Consume();
-                SkipHidden();
-                var def = Lt();
-                if (isIfDef)
-                    writeToPPO(def, PPOPrefix + "#ifdef " + def.Text);
-                else
-                    writeToPPO(def, PPOPrefix + "#ifndef " + def.Text);
+                var def = line[1];
                 if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
                 {
-                    Consume();
-                    SkipEmpty();
                     if (isIfDef)
                         defStates.Push(IsDefined(def.Text));
                     else
@@ -1158,8 +1101,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (def.Type == XSharpLexer.MACRO)
                 {
-                    Consume();
-                    SkipEmpty();
                     if (isIfDef)
                         defStates.Push(IsDefinedMacro(def));
                     else
@@ -1169,26 +1110,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
                 }
-                SkipToEol();
+                writeToPPO(line,  true);
+
             }
             else
             {
                 defStates.Push(false);
+                writeToPPO( "");
             }
         }
 
-        private void doElseDirective()
+        private void doElseDirective(List<XSharpToken> line)
         {
-            writeToPPO(Lt(), PPOPrefix + "#else");
+            Debug.Assert(line?.Count > 0);
+            writeToPPO(line, true);
             if (defStates.Count > 0)
             {
                 bool a = defStates.Pop();
-                if (IsActiveElseSkip())
+                if (IsActive())
                 {
-                    Consume();
                     defStates.Push(!a);
-                    SkipEmpty();
-                    SkipToEol();
                 }
                 else
                     defStates.Push(false);
@@ -1196,49 +1137,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #else"));
-                SkipToEol();
             }
         }
 
-        private void doEndifDirective()
+        private void doEndifDirective(List<XSharpToken> line)
         {
+            Debug.Assert(line?.Count > 0);
             if (defStates.Count > 0)
             {
                 defStates.Pop();
-                if (IsActiveElseSkip())
+                if (IsActive())
                 {
-                    writeToPPO(Lt(), PPOPrefix + "#endif");
-                    Consume();
-                    SkipEmpty();
-                    SkipToEol();
+                    writeToPPO(line, true);
+                }
+                else
+                {
+                    writeToPPO("");
                 }
             }
             else
             {
                 _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_UnexpectedDirective));
-                SkipToEol();
+                writeToPPO(line, true);
             }
         }
 
-        private void doIncludeDirective()
+        private void doIncludeDirective(List<XSharpToken> line)
         {
-            if (IsActiveElseSkip())
+            Debug.Assert(line?.Count > 0);
+            if (IsActive())
             {
-                writeToPPO(Lt(), PPOPrefix + "#include ");
+                writeToPPO(line, true);
                 if (IncludeDepth() == MaxIncludeDepth)
                 {
-                    _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth));
-                    SkipToEol();
+                    _parseErrors.Add(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth));
                 }
                 else
                 {
-                    Consume();
-                    SkipHidden();
-                    var ln = Lt();
-                    writeToPPO(ln);
+                    var ln = line[1];
                     if (ln.Type == XSharpLexer.STRING_CONST)
                     {
-                        Consume();
                         string fn = ln.Text.Substring(1, ln.Text.Length - 2);
                         lock (includecache)
                         {
@@ -1249,54 +1187,273 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                     {
                         _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
-                        SkipToEol();
                     }
                 }
             }
+            else
+            {
+                writeToPPO("");
+            }
+
         }
 
-        private void doLineDirective()
+        private void doLineDirective(List<XSharpToken> line)
         {
-            if (IsActiveElseSkip())
+            Debug.Assert(line?.Count > 0);
+            if (IsActive())
             {
-                Consume();
-                SkipHidden();
-                var ln = Lt();
+                writeToPPO(line, true);
+                var ln = line[1];
                 if (ln.Type == XSharpLexer.INT_CONST)
                 {
-                    Consume();
                     inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
-                    writeToPPO(ln, PPOPrefix + "#line " + ln.Text);
-                    SkipHidden();
-                    ln = Lt();
+                    ln = line[2];
                     if (ln.Type == XSharpLexer.STRING_CONST)
                     {
-                        Consume();
                         inputs.SourceFileName = ln.Text.Substring(1, ln.Text.Length - 2);
-                        writeToPPO(ln);
-
                     }
                     else
                     {
                         _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
                     }
-                    SkipEmpty();
                 }
                 else
                 {
                     _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected"));
                 }
-                SkipToEol();
             }
+            else
+            {
+                writeToPPO("");
+            }
+
         }
 
-        private void doUnexpectedUDCSeparator()
+        private void doUnexpectedUDCSeparator(List<XSharpToken> line)
         {
-            var ln = Lt();
-            Consume();
-            writeToPPO(Lt(), PPOPrefix + ln.Text);
+            Debug.Assert(line?.Count > 0);
+            var ln = line[0];
+            writeToPPO(line, true);
             _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Unexpected UDC separator character found"));
-            ReadLine();
+        }
+
+        private List<XSharpToken> doNormalLine(List<XSharpToken> line, bool write2PPO = true)
+        {
+            // Process the whole line in one go and apply the defines, macros and udcs
+            // This is modeled after the way it is done in Harbour
+            // 1) Look for and replace defines
+            // 2) Look for and replace Macros
+            // 3) look for and replace (x)translates
+            // 4) look for and replace (x)commands
+            if (IsActive())
+            {
+                Debug.Assert(line?.Count > 0);
+                var token = line[0];
+                line = doProcessDefines(line);
+                if (line.Count > 0)
+                    line = doProcessMacros(line);
+                if (_hasTransrules && line.Count > 0)
+                    line = doProcessTranslates(line);
+                if (_hasCommandrules && line.Count > 0)
+                    line = doProcessCommands(line);
+                if (write2PPO)
+                {
+                    if (line.Count > 0)
+                        writeToPPO(line, false);
+                    else
+                        writeToPPO("");
+                }
+            }
+            else
+            {
+                if (write2PPO)
+                    writeToPPO( "");
+                line.Clear();
+            }
+            return line;
+        }
+
+        private List<XSharpToken> doProcessDefines(List<XSharpToken> line)
+        {
+            Debug.Assert(line?.Count > 0);
+            // process recursive because one define may depend on another
+            bool changed = true;
+            while (changed)
+            {
+                var result = new List<XSharpToken>(line.Count);
+                changed = false;
+                for (int i = 0; i < line.Count; i++)
+                {
+                    var token = line[i];
+                    IList<XSharpToken> deflist = null;
+                    if (isDefineAllowed(line, i) && symbolDefines.TryGetValue(token.Text, out deflist))
+                    {
+                        changed = true;
+                        foreach (var t in deflist)
+                        {
+                            var t2 = new XSharpToken(t);
+                            t2.Channel = XSharpLexer.DefaultTokenChannel;
+                            result.Add(t2);
+                        }
+                    }
+                    else
+                    {
+                        result.Add(token);
+                    }
+                }
+                line = result;
+            }
+            return line;
+        }
+        private List<XSharpToken> doProcessMacros(List<XSharpToken> line)
+        {
+            Debug.Assert(line?.Count > 0);
+            for (int i = 0; i < line.Count; i++)
+           {
+               var token = line[i];
+               if (token.Type == XSharpLexer.MACRO)
+               {
+                   line[i] = tryMacro(token);
+               }
+           }
+           return line;
+        }
+
+        private bool isRecursiveRule(PPRule rule, List<Tuple<PPRule, List<XSharpToken>>> list, List<XSharpToken> tokens)
+        {
+            // check to see if this is already there
+            if (list.Count == MaxUDCDepth)
+            {
+                _parseErrors.Add(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                return true;
+            }
+            foreach (var item in list)
+            {
+                if (item.Item1 == rule && item.Item2.Count == tokens.Count)
+                {
+                    bool equal = true;
+                    for (int i = 0; i < tokens.Count; i++)
+                    {
+                        var t1 = tokens[i];
+                        var t2 = item.Item2[i];
+                        if (t1.Text != t2.Text)
+                        {
+                            return false;
+                        }
+                    }
+                    if (equal)
+                    {
+                        _parseErrors.Add(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private List<XSharpToken> doProcessTranslates(List<XSharpToken> line)
+        {
+            Debug.Assert(line?.Count > 0);
+            List<XSharpToken> result = new List<XSharpToken>();
+            List<XSharpToken> temp = line;
+            // start anywhere in the string
+            var usedRules = new List<Tuple<PPRule, List<XSharpToken>>> ();
+            while (temp.Count > 0)
+            {
+                PPMatchRange[] matchInfo = null;
+                var rule = transRules.FindMatchingRule(temp, out matchInfo);
+                if (rule != null)
+                {
+                    temp = doReplace(temp, rule, matchInfo);
+                    if (isRecursiveRule(rule, usedRules, temp))
+                    {
+                        // duplicate, so exit now
+                        temp.Clear();
+                        return temp;
+                    }
+                    usedRules.Add(new Tuple<PPRule, List<XSharpToken>> (rule, temp));
+                }
+                else
+                {
+                    result.Add(temp[0]);
+                    temp.RemoveAt(0);
+                }
+            }
+            return result;
+        }
+
+        private List<List<XSharpToken>> splitCommands(IList<XSharpToken> tokens, out List<XSharpToken> separators)
+        {
+            var result = new List<List<XSharpToken>>(1);
+            var current = new List<XSharpToken>(tokens.Count);
+            separators = new List<XSharpToken>();
+            foreach (var t in tokens)
+            {
+                if (t.Type == XSharpLexer.EOS)
+                {
+                    current.TrimLeadingSpaces();
+                    result.Add(current);
+                    current = new List<XSharpToken>();
+                    separators.Add(t);
+                }
+                else
+                {
+                    current.Add(t);
+                }
+            }
+            result.Add(current);
+            return result;
+        }
+        private List<XSharpToken> doProcessCommands(List<XSharpToken> line)
+        {
+            Debug.Assert(line?.Count > 0);
+            line.TrimLeadingSpaces();
+            if (line.Count == 0)
+                return line;
+            List<XSharpToken> result = line;
+            var usedRules = new List<Tuple<PPRule, List<XSharpToken>>>();
+            while (true)
+            {
+                PPMatchRange[] matchInfo = null;
+                var rule = cmdRules.FindMatchingRule(result, out matchInfo);
+                if (rule == null)
+                {
+                    // nothing to do, so exit
+                    break; 
+                }
+                result = doReplace(result, rule, matchInfo);
+                if (isRecursiveRule(rule, usedRules, result))
+                {
+                    // duplicate so exit now
+                    result.Clear();
+                    return result;
+                }
+                usedRules.Add(new Tuple<PPRule, List<XSharpToken>>(rule, result));
+                // the UDC may have introduced a new semi colon and created more than one substatement
+                List<XSharpToken> separators;
+                var cmds = splitCommands(result, out separators);
+                Debug.Assert(cmds.Count == separators.Count + 1);
+                if (cmds.Count <= 1)
+                {
+                    continue; // result is already there
+                }
+                else
+                {
+                    result.Clear();
+                    for (int i = 0; i < cmds.Count; i++)
+                    {
+                        cmds[i] = doNormalLine(cmds[i], false);
+                        result.AddRange(cmds[i]);
+                        if (i < cmds.Count-1)
+                        {
+                            result.Add(separators[i]);
+                        }
+                    }
+                }
+                // recursive processing should have done everything, so exit
+                break;
+            }
+            result.TrimLeadingSpaces();
+            return result;
         }
 
         private void doEOFChecks()
@@ -1335,240 +1492,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return t;
         }
 
-
-        [return: NotNull]
-        public IToken NextToken()
+        private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)
         {
-            while (true)
+            Debug.Assert(line?.Count > 0);
+            var res = rule.Replace(line, matchInfo);
+            rulesApplied += 1;
+            List<XSharpToken> result = new List<XSharpToken>();
+            result.AddRange(res);
+            if (_options.Verbose)
             {
-                var nextType = La();
-                if (inputs.isSymbol)
-                {
-                    switch (nextType)
-                    {
-                        case XSharpLexer.PP_DEFINE:
-                        case XSharpLexer.PP_UNDEF:
-                        case XSharpLexer.PP_IFDEF:
-                        case XSharpLexer.PP_IFNDEF:
-                        case XSharpLexer.PP_ENDIF:
-                        case XSharpLexer.PP_ELSE:
-                        case XSharpLexer.PP_LINE:
-                        case XSharpLexer.PP_ERROR:
-                        case XSharpLexer.PP_WARNING:
-                        case XSharpLexer.PP_INCLUDE:
-                        case XSharpLexer.PP_COMMAND:
-                        case XSharpLexer.PP_TRANSLATE:
-                        case XSharpLexer.PP_ENDREGION:
-                        case XSharpLexer.PP_REGION:
-                            nextType = XSharpLexer.WS;
-                            break;
-                    }
-                }
-                switch (nextType)
-                {
-                    case XSharpLexer.PP_UNDEF:
-                        doUnDefDirective();
-                        break;
-                    case XSharpLexer.PP_IFDEF:
-                        doIfDefDirective(true);
-                        break;
-                    case XSharpLexer.PP_IFNDEF:
-                        doIfDefDirective(false);
-                        break;
-                    case XSharpLexer.PP_ENDIF:
-                        doEndifDirective();
-                        break;
-                    case XSharpLexer.PP_ELSE:
-                        doElseDirective();
-                        break;
-                    case XSharpLexer.PP_LINE:
-                        doLineDirective();
-                        break;
-                    case XSharpLexer.PP_ERROR:
-                    case XSharpLexer.PP_WARNING:
-                        doErrorWarningDirective(nextType);
-                        break;
-                    case XSharpLexer.PP_INCLUDE:
-                        doIncludeDirective();
-                        break;
-                    case XSharpLexer.PP_COMMAND:
-                    case XSharpLexer.PP_TRANSLATE:
-                        addRule(nextType);
-                        break;
-                    case XSharpLexer.PP_DEFINE:
-                        doDefineDirective(nextType);
-                        break;
-                    case XSharpLexer.PP_ENDREGION:
-                        doEndRegionDirective();
-                        break;
-                    case XSharpLexer.PP_REGION:
-                        doRegionDirective();
-                        break;
-                    case XSharpLexer.UDCSEP:
-                        doUnexpectedUDCSeparator();
-                        break;
-                    case IntStreamConstants.Eof:
-                        doEOFChecks();
-                        return Lt();
-                    default:
-                        var t = Lt();
-                        var done = false;
-                        if (IsActive())
-                        {
-
-                            // Now see if this matches a UDC rule.
-                            // When it does we read the whole line and check if we can find a matching rule
-
-                            if (_hasrules)
-                            {
-                                var line = PeekLine();
-                                if (line.Count > 0)
-                                {
-                                    PPMatchRange[] matchInfo = null;
-                                    PPRule rule = null;
-                                    if (lastToken != null && (lastToken.Type == XSharpLexer.EOS ||
-                                        lastToken.Type == XSharpLexer.NL))
-                                    {
-                                        rule = cmdRules.FindMatchingRule(line, out matchInfo);
-                                    }
-                                    if (rule == null)
-                                    {
-                                        rule = transRules.FindMatchingRule(line, out matchInfo);
-                                    }
-                                    if (rule != null)
-                                    {
-                                        rulesApplied += 1;
-                                        var result = rule.Replace(line, matchInfo);
-                                        if (_options.Verbose)
-                                        {
-                                            int lineNo;
-                                            if (line[0].SourceSymbol != null)
-                                                lineNo = line[0].SourceSymbol.Line;
-                                            else
-                                                lineNo = line[0].Line;
-                                            DebugOutput("----------------------");
-                                            DebugOutput("File {0} line {1}:", _fileName, lineNo);
-                                            DebugOutput("   UDC   : {0}", rule.GetDebuggerDisplay());
-                                            DebugOutput("   Input : {0}", line.AsString());
-                                            DebugOutput("   Output: {0}", result.AsString());
-                                        }
-                                        line = ReadLine();
-                                        if (result.Count > 0)
-                                        {
-                                            var first = line[0];
-                                            var resultIsPPCommand = result[0].Type >= XSharpLexer.PP_FIRST
-                                                && result[0].Type <= XSharpLexer.PP_LAST;
-                                            // insert whitespace from start of line into result
-                                            if (line[0].Type == XSharpLexer.WS)
-                                            {
-                                                var ws = new XSharpToken(line[0]);
-                                                ws.Channel = XSharpLexer.Hidden;
-                                                result.Insert(0, ws);
-                                                first = line[1];
-                                            }
-                                            var ts = new CommonTokenStream(new ListTokenSource(result.ToIListIToken()));
-                                            ts.Fill();
-                                            if (resultIsPPCommand)
-                                            {
-                                                // we do want to pass a symbol if a UDC generates another PP command
-                                                // set the channel for the tokens and clear first
-                                                foreach (var r in result)
-                                                {
-                                                    if (r.Channel == XSharpLexer.DefaultTokenChannel)
-                                                    {
-                                                        r.Channel = XSharpLexer.PREPROCESSORCHANNEL;
-                                                    }
-                                                }
-                                                first = null;
-                                            }
-                                            // detect recursion on the inputs stack, and will produce an error when
-                                            // we are more than 100 nested levels deep
-                                            bool ok = true;
-                                            int nested = 0;
-                                            var currentinput = inputs;
-                                            while (currentinput != null )
-                                            {
-                                                ++nested;
-                                                if (currentinput.udc == rule && nested > 100)
-                                                {
-                                                    _parseErrors.Add(new ParseErrorData(first, ErrorCode.ERR_PreProcessorError, "Recursive UDC rule detected"));
-                                                    ReadLine();
-                                                    ok = false;
-                                                    break;
-                                                }
-                                                else
-                                                {
-                                                    currentinput = currentinput.parent;
-                                                }
-                                            }
-                                            if (ok)
-                                            {
-                                                InsertStream("UDC " + rule.Key, ts, first);
-                                                inputs.udc = rule;
-                                            }
-                                        }
-                                        done = true;
-                                    }
-                                }
-
-                            }
-                            IList<XSharpToken> tl;
-                            if (! done && (XSharpLexer.IsIdentifier(t.Type) || XSharpLexer.IsKeyword(t.Type)))
-                            {
-                                if ( symbolDefines.TryGetValue(t.Text, out tl) && isDefineAllowed())
-                                {
-                                    Consume();
-                                    defsApplied++;
-                                    XSharpToken p = new XSharpToken(t);
-                                    if (tl != null)
-                                    {
-                                        if (XSharpLexer.IsKeyword(p.Type))
-                                        {
-                                            p.Type = XSharpLexer.ID;
-                                        }
-                                        if (SymbolDepth() == MaxSymbolDepth)
-                                        {
-                                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Reached max symbol replacement depth: " + MaxSymbolDepth));
-                                        }
-                                        else if (activeSymbols.Contains(p.Text))
-                                        {
-                                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Cyclic symbol replacement: " + p.Text));
-                                        }
-                                        else
-                                        {
-                                            var ts = new CommonTokenStream(new ListTokenSource(tl.ToIListIToken()));
-                                            ts.Fill();
-                                            FixToken(p);
-                                            InsertStream(null, ts, p);
-                                            done = true;
-                                        }
-                                    }
-                                }
-                            }
-                            if (! done)
-                            {
-                                if (t.Type == XSharpLexer.MACRO)
-                                {
-                                    t = tryMacro(t);
-                                }
-                                Consume();
-                                FixToken(t);
-                                lastToken = t;
-                                writeToPPO(t);
-                                return t;
-                            }
-                        }
-                        else
-                        {
-                            // Token suppressed by Preprocessor
-                            ((CommonToken)t).Channel = XSharpLexer.DEFOUTCHANNEL;
-                            Consume();
-                            if (t.Type == XSharpLexer.EOS)
-                                writeToPPO(t);
-                        }
-                        break;
-                }
+                int lineNo;
+                if (line[0].SourceSymbol != null)
+                    lineNo = line[0].SourceSymbol.Line;
+                else
+                    lineNo = line[0].Line;
+                DebugOutput("----------------------");
+                DebugOutput("File {0} line {1}:", _fileName, lineNo);
+                DebugOutput("   UDC   : {0}", rule.GetDebuggerDisplay());
+                DebugOutput("   Input : {0}", line.AsString());
+                DebugOutput("   Output: {0}", res.AsString());
             }
+            return result;
         }
     }
 }
+

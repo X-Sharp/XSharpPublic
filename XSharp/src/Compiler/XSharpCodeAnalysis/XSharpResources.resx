@@ -4718,6 +4718,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_PreProcessorError" xml:space="preserve">
     <value>Pre-processor: {0}</value>
   </data>
+  <data name="ERR_PreProcessorRecursiveRule" xml:space="preserve">
+    <value>Recursive preprocessor rule '#{0}' detected</value>
+  </data>
   <data name="ERR_UntypedArrayNotAvailableInDialect" xml:space="preserve">
     <value>Untyped arrays are not available in the selected dialect '{0}'</value>
   </data>
@@ -4833,8 +4836,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_StaticLocalInCodeBlock" xml:space="preserve">
     <value>Cannot use static local '{0}' in a codeblock.</value>
   </data>
-
   <data name="ERR_CannotAssignToMethod" xml:space="preserve">
     <value>Cannot assign to '{0}' because it is a '{1}'</value>
   </data>
+
 </root>

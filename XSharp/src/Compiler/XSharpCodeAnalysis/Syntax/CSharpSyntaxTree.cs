@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     file = node.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(file))
                     {
-                        file = (node.XNode.SourceSymbol as XSharpToken).SourceFileName;
+                        file = (node.XNode.SourceSymbol as XSharpToken).SourceName;
                     }
                 }
                 SourceText ntext;
@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     fn = snode.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(fn))
                     {
-                        fn = (snode.XNode.SourceSymbol as XSharpToken).SourceFileName;
+                        fn = (snode.XNode.SourceSymbol as XSharpToken).SourceName;
                     }
 
                 }

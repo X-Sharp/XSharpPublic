@@ -1371,7 +1371,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ParserError = 9002,
         ERR_PreProcessorError = 9003,
         WRN_PreProcessorWarning = 9004,
-        // reserved = 9005,
+        ERR_PreProcessorRecursiveRule = 9005,
         // reserved = 9006,
         ERR_FeatureNotAvailableInDialect = 9007,
         ERR_UntypedArrayNotAvailableInDialect = 9008,

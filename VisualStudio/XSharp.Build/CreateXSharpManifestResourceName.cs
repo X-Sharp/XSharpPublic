@@ -208,7 +208,7 @@ namespace XSharp.Build
             var namespaces = new Stack<string>();
             while (! reader.EndOfStream)
             {
-                var line = reader.ReadLine();
+                var line = reader.ReadLine();  
                 // Does the line contain "CLASS"
                 m = classRx.Match(line);
                 if (m.Success)
@@ -222,7 +222,12 @@ namespace XSharp.Build
                 if (m.Success)
                 {
                     namespaces.Push(currentNamespace);
-                    currentNamespace = currentNamespace + (m.Groups[1].Value + ".");
+                    var ns = m.Groups[1].Value + ".";
+                    if (ns.StartsWith("global::", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ns = ns.Substring(8);
+                    }
+                    currentNamespace = currentNamespace + ns;
                 }
                 // Does the line contain "END NAMESPACE"
                 else if (namespaceEndRx.Match(line).Success)

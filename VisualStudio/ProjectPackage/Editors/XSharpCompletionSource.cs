@@ -214,7 +214,12 @@ namespace XSharpLanguage
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XElement foundElement;
             MemberInfo dummyElement;
-            cType = XSharpTokenTools.RetrieveType(_fileName, tokenList, member, null, out foundElement, out dummyElement);
+            String currentNS ="";
+            if (currentNamespace != null)
+            {
+                currentNS = currentNamespace.Name;
+            }
+            cType = XSharpTokenTools.RetrieveType(_fileName, tokenList, member, currentNS, null, out foundElement, out dummyElement);
             switch (typedChar)
             {
                 case '.':
@@ -2123,7 +2128,7 @@ namespace XSharpLanguage
         /// <param name="foundElement"></param>
         /// <param name="sysFoundElement"></param>
         /// <returns></returns>
-        public static CompletionType RetrieveType(string fileName, List<string> tokenList, XTypeMember currentMember, IToken stopToken, out XElement foundElement, out MemberInfo sysFoundElement)
+        public static CompletionType RetrieveType(string fileName, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out XElement foundElement, out MemberInfo sysFoundElement)
         {
             foundElement = null;
             sysFoundElement = null;
@@ -2210,9 +2215,16 @@ namespace XSharpLanguage
                     // this a Constructor call
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
-                    if (!cType.IsEmpty() && cType.XType != null)
+                    if (!cType.IsEmpty())
                     {
-                        foundElement = cType.XType;
+                        if (cType.XType != null)
+                        {
+                            foundElement = cType.XType;
+                        }
+                        else
+                        {
+                            sysFoundElement = cType.SType;
+                        }
                     }
                 }
                 else if (currentToken.EndsWith("()"))
@@ -2264,7 +2276,7 @@ namespace XSharpLanguage
                         }
                         if (element != null)
                         {
-                            cType = new CompletionType((XVariable)element);
+                            cType = new CompletionType((XVariable)element, currentNS);
                             foundElement = element;
                         }
                     }

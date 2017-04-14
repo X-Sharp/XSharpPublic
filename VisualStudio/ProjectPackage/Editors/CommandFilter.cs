@@ -209,7 +209,12 @@ namespace XSharp.Project
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
             MemberInfo dummyElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, stopToken, out gotoElement, out dummyElement);
+            String currentNS = "";
+            if (currentNamespace != null)
+            {
+                currentNS = currentNamespace.Name;
+            }
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out dummyElement);
             //
             if (gotoElement != null)
             {
@@ -326,21 +331,17 @@ namespace XSharp.Project
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
             MemberInfo systemElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, stopToken, out gotoElement, out systemElement);
+            String currentNS = "";
+            if (currentNamespace != null)
+            {
+                currentNS = currentNamespace.Name;
+            }
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out systemElement);
             //
             if ((gotoElement != null) || (systemElement != null))
             {
-                //_signatureSession = SignatureBroker.TriggerSignatureHelp( TextView);
-                //_signatureSession.Dismissed += OnSignatureSessionDismiss;
-                //if (gotoElement != null)
-                //{
-                //    _signatureSession.Properties["Element"] = gotoElement;
-                //}
-                //else if (systemElement != null)
-                //{
-                //    _signatureSession.Properties["Element"] = systemElement;
-                //}
-                if (gotoElement.Kind == XSharpModel.Kind.Class)
+
+                if ((gotoElement != null) && (gotoElement.Kind == XSharpModel.Kind.Class))
                 {
                     XSharpModel.XType xType = gotoElement as XSharpModel.XType;
                     if (xType != null)

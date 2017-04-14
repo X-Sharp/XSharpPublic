@@ -19,6 +19,8 @@ CLASS _GET_Object
 	
 	METHOD Display() AS _GET_Object
 	RETURN SELF
+	METHOD colorDisp() AS _GET_Object
+	RETURN SELF
 END CLASS
 
 GLOBAL _Row AS INT
@@ -50,10 +52,10 @@ RETURN DevOut(cText)
 FUNCTION DevOut(cText AS STRING) AS USUAL
 RETURN NIL
 
-FUNCTION _GET_(oVar AS USUAL, cVar AS STRING, cPic := "" AS STRING, oValid := NIL AS USUAL, oWhen := NIL AS USUAL) AS _GET_Object
+FUNCTION _GET_(a,b,c,d,e) CLIPPER
 	LOCAL oGet AS _GET_Object
 	oGet := _GET_Object{}
-	? oVar , cVar
+	? a,b,c,d,e
 RETURN oGet
 
 FUNCTION zGEDBComboNew( cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,;
@@ -192,4 +194,8 @@ FUNCTION zGetSet CLIPPER
 RETURN NIL
 FUNCTION ValidActive CLIPPER
 RETURN FALSE
+
+FUNCTION zGetErr() CLIPPER
+RETURN TRUE
+
 

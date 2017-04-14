@@ -43,7 +43,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 
         public object CsNode { get; set; }
-        public string SourceFileName { get { return (Start as XSharpToken).SourceFileName; } }
+        public string SourceFileName { get { return (Start as XSharpToken).SourceName; } }
         public string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }
 
         internal List<ParseErrorData> ErrorData;

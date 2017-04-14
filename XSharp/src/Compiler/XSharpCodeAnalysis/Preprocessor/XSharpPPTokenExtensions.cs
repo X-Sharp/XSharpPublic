@@ -22,6 +22,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class XSharpPPTokenExtensions
     {
+
+        internal static void TrimLeadingSpaces(this List<XSharpToken> tokens)
+        {
+            while (tokens.Count > 0 &&
+                tokens[0].Channel == XSharpLexer.Hidden)
+            {
+                tokens.RemoveAt(0);
+            }
+        }
+        internal static string AsTokenString( this IList<IToken> tokens)
+        {
+            var sb = new System.Text.StringBuilder();
+            int i = 0;
+            foreach (var token in tokens)
+            {
+                if (token.Channel != XSharpLexer.Hidden)
+                {
+                    sb.Append(i);
+                    sb.Append(" ");
+                    sb.Append(token.ToString());
+                    sb.AppendLine();
+                    i++;
+                }
+            }
+            return sb.ToString();
+        }
+
         internal static string TrailingWs(this IToken token)
         {
             if (token == null || token.TokenSource == null)
@@ -62,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public static string TrimAllWithInplaceCharArray(string str)
+        public static string TrimAllWithInplaceCharArray(this string str)
         {
             var src = str.ToCharArray();
             var len = str.Length;

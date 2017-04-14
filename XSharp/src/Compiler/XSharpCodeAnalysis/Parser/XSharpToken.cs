@@ -10,7 +10,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public class XSharpToken : CommonToken, Microsoft.CodeAnalysis.IMessageSerializable
     {
-        internal string SourceFileName;
+        //internal string SourceFileName;
         internal string MappedFileName;
         internal int OriginalChannel;
         internal int MappedLine = -1;
@@ -48,8 +48,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             get
             {
-                if (_original != null)
-                    return _original;
+                // There could be several replacements, so walk up the tree
+                var org = _original;
+                while (org != null && org.Original != null && org.Original != org)
+                {
+                    org = org.Original;
+                }
+                if (org != null)
+                {
+                    return org;
+                }
                 return this;
             }
             set
@@ -64,5 +72,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return Original.TokenSource?.SourceName;
             }
         }
+        public override int Line
+        {
+            get
+            {
+                var org = this.Original;
+                if (org == this)
+                    return base.Line;
+                return org.Line;
+            }
+        }
+        public int FullWidth
+        {
+            get
+            {
+                if (StopIndex > StartIndex)
+                    return StopIndex + StartIndex + 1;
+                return 1;
+            }
+        }
+        public int Position => StartIndex;
+
     }
 }

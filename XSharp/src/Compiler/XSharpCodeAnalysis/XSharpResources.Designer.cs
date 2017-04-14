@@ -7325,6 +7325,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recursive preprocessor rule &apos;#{0}&apos; detected.
+        /// </summary>
+        internal static string ERR_PreProcessorRecursiveRule {
+            get {
+                return ResourceManager.GetString("ERR_PreProcessorRecursiveRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SecurityAction value &apos;{0}&apos; is invalid for PrincipalPermission attribute.
         /// </summary>
         internal static string ERR_PrincipalPermissionInvalidAction {

@@ -113,9 +113,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
 
-            ParserRuleContext tree;
             var lexer = XSharpLexer.Create(_text.ToString(), _fileName, _options);
-            _lexerTokenStream = lexer.GetTokenStream();
+            var lexerStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
@@ -127,11 +126,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             var parseErrors = ParseErrorData.NewBag();
-            var pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
-            var pp_tokens = new CommonTokenStream(pp);
-            pp_tokens.Fill();
-            _preprocessorTokenStream = pp_tokens;
-            var parser = new XSharpParser(pp_tokens);
+            var pp = new XSharpPreprocessor(lexerStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+            var ppTokens = pp.PreProcess();
+            // commontokenstream filters on tokens on the default channel. All other tokens are ignored
+            var ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+            ppStream.Fill();
+            _preprocessorTokenStream = ppStream;
+            var parser = new XSharpParser(ppStream);
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
             // for info about optimization flags such as the next line
             //parser.Interpreter.enable_global_context_dfa = true;    // default = false
@@ -170,6 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // When this fails, then we try again with LL mode and then we record errors
             parser.RemoveErrorListeners();
             parser.ErrorHandler = new BailErrorStrategy();
+            ParserRuleContext tree;
             try
             {
                 tree = parser.source();
@@ -193,7 +195,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: "+msg+". Trying again in LL mode.");
                 }
 
-                pp_tokens.Reset();
+                ppStream.Reset();
                 if (_options.Verbose)
                 {
                     pp.DumpStats();
@@ -340,10 +342,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (e.Node != null)
                     {
-                        var key = e.Node.SourceFileName;
-                        int pos = e.Node.Position;
-                        int len = e.Node.FullWidth;
-                        if (len <= 0 || pos <= 0)
+                        var node = e.Node;
+                        var key = node.SourceFileName;
+                        int pos = node.Position;
+                        int len = node.FullWidth;
+                        if (node.SourceSymbol != null)
+                        {
+                            var sym = node.SourceSymbol as XSharpToken;
+                            key = sym.SourceName;
+                            pos = sym.Position;
+                            len = sym.FullWidth;
+                        }
+                        if (len <= 0 || pos < 0)
                         {
                             if (e.Node.Parent != null)
                             {
@@ -351,8 +361,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 pos = xNode.Position;
                                 len = xNode.FullWidth;
                             }
-                            if (pos <= 0)
-                                pos = 1;
+                            if (pos < 0)
+                                pos = 0;
                             if (len <= 0)
                                 len = 1;
                         }

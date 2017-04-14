@@ -578,19 +578,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         Interpreter.Line += 1;
                         c = InputStream.La(1);
-                        while (c == '\r' || c == '\n')
-                        {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            if (c == '\r' && InputStream.La(1) == '\n')
-                            {
-                                c = InputStream.La(1);
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                            }
-                            Interpreter.Line += 1;
-                            c = InputStream.La(1);
-                        }
                         Interpreter.Column = 1 - (InputStream.Index - _startCharIndex);
                         break;
                     case '\t':
@@ -1221,9 +1208,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return lexer;
         }
 
-        public CommonTokenStream GetTokenStream()
+        public ITokenStream GetTokenStream()
         {
-            var tokenstream = new CommonTokenStream(this);
+            var tokenstream = new BufferedTokenStream(this);
             tokenstream.Fill();
             return tokenstream;
         }

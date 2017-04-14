@@ -85,7 +85,12 @@ namespace XSharp.Project
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
             MemberInfo systemElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, stopToken, out gotoElement, out systemElement);
+            String currentNS = "";
+            if (currentNamespace != null)
+            {
+                currentNS = currentNamespace.Name;
+            }
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out systemElement);
             //
             //
             if ( (gotoElement != null) || (systemElement != null) )
@@ -103,8 +108,17 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(systemElement);
-                    qiContent.Add(analysis.Description);
+                    if ( systemElement is TypeInfo )
+                    {
+                        XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)systemElement);
+                        qiContent.Add(analysis.Description);
+                    }
+                    else
+                    {
+                        XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(systemElement);
+                        qiContent.Add(analysis.Description);
+                    }
+
                 }
 
                 return;

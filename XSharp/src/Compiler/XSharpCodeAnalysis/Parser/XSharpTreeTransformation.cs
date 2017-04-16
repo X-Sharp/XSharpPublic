@@ -2954,7 +2954,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Expr.SetSequencePoint();
             }
-            context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
+            var decl = _syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 keyword: context.Key.SyntaxKeyword(),
@@ -2965,7 +2965,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     : (context.ExprList == null && !forceBody) ? null
                     : MakeBlock(context.ExprList?.GetList<StatementSyntax>() ?? EmptyList<StatementSyntax>())
                     ,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            if (context.Expr == null && context.ExprList == null)
+            {
+                decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GetSetMustHaveBody));
+            }
+            context.Put(decl);
         }
 
         public override void ExitExpressionList([NotNull] XP.ExpressionListContext context)

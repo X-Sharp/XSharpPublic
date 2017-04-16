@@ -1411,7 +1411,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ClipperInSubClass = 9042,
         WRN_VulcanAmbiguous = 9043,
         ERR_ImplicitlyTypedVariableCannotBeStatic = 9044,
-        ERR_StaticLocalInCodeBlock=9045,
-        ERR_CannotAssignToMethod=9046,
+        ERR_StaticLocalInCodeBlock = 9045,
+        ERR_CannotAssignToMethod = 9046,
+        WRN_GetSetMustHaveBody = 9047,
     }
 }

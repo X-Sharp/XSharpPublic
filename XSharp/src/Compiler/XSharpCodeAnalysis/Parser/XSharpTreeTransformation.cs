@@ -819,6 +819,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         statement, @else);
         }
 
+        protected virtual ExpressionSyntax GenerateMissingArgument()
+        {
+            var result = GenerateLiteralNull();
+            result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingArgument));
+            return result;
+        }
+
         protected LiteralExpressionSyntax GenerateLiteral(bool value)
         {
             if (value)
@@ -5863,7 +5870,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Expr == null)
             {
-                context.Put(NotInDialect(MakeArgument(GenerateLiteral("")), "Missing arguments"));
+                context.Put(GenerateMissingArgument());
                 return;
             }
             context.Put(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
@@ -5888,7 +5895,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Expr == null)
             {
-                context.Put(NotInDialect(MakeArgument(GenerateLiteral("")), "Missing arguments"));
+                context.Put(GenerateMissingArgument());
                 return;
             }
             context.Put(_syntaxFactory.Argument(
@@ -6061,14 +6068,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIif([NotNull] XP.IifContext context)
         {
-            ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
-            ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
-            // /vo10 does not do anything for the Core dialect
-            // if (_options.VOCompatibleIIF)
-            // {
-            //     left = MakeCastTo(_objectType, left);
-            //     right = MakeCastTo(_objectType, right);
-            // }
+            ExpressionSyntax left;
+            ExpressionSyntax right;
+            if (context.TrueExpr == null)
+            {
+                left = GenerateMissingArgument();
+            }
+            else
+            {
+                left = context.TrueExpr.Get<ExpressionSyntax>();
+            }
+            if (context.FalseExpr == null)
+            {
+                right= GenerateMissingArgument();
+            }
+            else
+            {
+                right = context.FalseExpr.Get<ExpressionSyntax>();
+            }
             context.Put(_syntaxFactory.ConditionalExpression(
                 context.Cond.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),

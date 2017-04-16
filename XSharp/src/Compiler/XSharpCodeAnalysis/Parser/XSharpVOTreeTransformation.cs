@@ -373,7 +373,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return MakeDefault(_usualType);
         }
-
+        protected override ExpressionSyntax GenerateMissingArgument()
+        {
+            var result = GenerateNIL();
+            result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingExpressionNILValueUsed));
+            return result;
+        }
         private void Check4ClipperCC(XP.IEntityContext context,
             XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType)
         {
@@ -1487,7 +1492,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Expr == null)
             {
-                context.Put(MakeArgument(GenerateNIL()));
+                context.Put(MakeArgument(GenerateMissingArgument()));
                 return;
             }
             base.ExitUnnamedArgument(context);
@@ -1496,7 +1501,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitNamedArgument([NotNull] XP.NamedArgumentContext context) {
             if (context.Expr == null) {
-                context.Put(MakeArgument(GenerateNIL()));
+                context.Put(MakeArgument(GenerateMissingArgument()));
                 return;
             }
             base.ExitNamedArgument(context);
@@ -2591,7 +2596,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if(item.Expr != null)
                     l.Add(item.Expr.Get<ExpressionSyntax>());
                 else
-                    l.Add(GenerateNIL());
+                    l.Add(GenerateMissingArgument());
 
             }
             exprs = l.ToList();

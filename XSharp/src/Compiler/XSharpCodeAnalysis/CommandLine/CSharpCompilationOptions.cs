@@ -45,7 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool HasDefaultTree { get; set; } = false;
         public bool CreatingRuntime { get; private set; }
 
-        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
+        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan || this.Dialect == XSharpDialect.Harbour; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
 
         //public bool vo1 => VoInitAxitMethods;

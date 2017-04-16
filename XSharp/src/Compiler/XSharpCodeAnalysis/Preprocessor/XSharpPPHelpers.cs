@@ -250,7 +250,73 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return $"{Start},{End}"; 
         }
     }
-
-
+    /// <summary>
+    /// This class is used to monitor recursion for #Translate and #command in the Preprocessor
+    /// </summary>
+    internal class PPUsedRules
+    {
+        class PPUsedRule
+        {
+            PPRule _rule;
+            List<XSharpToken> _tokens;
+            internal PPUsedRule(PPRule rule, List<XSharpToken> tokens)
+            {
+                _rule = rule;
+                _tokens = tokens;
+            }
+            internal bool isDuplicate(PPRule rule, List<XSharpToken> tokens)
+            {
+                if (_rule == rule && _tokens.Count == tokens.Count)
+                {
+                    for (int i = 0; i < tokens.Count; i++)
+                    {
+                        var t1 = tokens[i];
+                        var t2 = _tokens[i];
+                        if (t1.Text != t2.Text)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        }
+        List<PPUsedRule> _list;
+        XSharpPreprocessor _pp;
+        int _maxDepth;
+        internal PPUsedRules(XSharpPreprocessor pp, int maxDepth)
+        {
+            _list = new List<PPUsedRule>();
+            _pp = pp;
+            _maxDepth = maxDepth;
+        }
+        /// <summary>
+        /// Check for recursion, and add the rule to the list of rules that have been used
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="tokens"></param>
+        /// <returns>True when the rule with the same tokens list is found in the list</returns>
+        internal bool HasRecursion(PPRule rule, List<XSharpToken> tokens)
+        {
+            // check to see if this is already there
+            if (_list.Count == _maxDepth)
+            {
+                _pp.AddParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                return true;
+            }
+            foreach (var item in _list)
+            {
+                if (item.isDuplicate(rule, tokens))
+                {
+                    _pp.AddParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                    return true;
+                }
+            }
+            _list.Add(new PPUsedRule(rule, tokens));
+            return false;
+        }
+        internal int Count => _list.Count;
+    }
 }
 

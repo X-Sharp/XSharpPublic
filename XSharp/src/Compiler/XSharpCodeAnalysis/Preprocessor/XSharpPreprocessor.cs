@@ -1242,121 +1242,152 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Process the whole line in one go and apply the defines, macros and udcs
             // This is modeled after the way it is done in Harbour
             // 1) Look for and replace defines
-            // 2) Look for and replace Macros
+            // 2) Look for and replace Macros (combined with 1) for performance)
             // 3) look for and replace (x)translates
             // 4) look for and replace (x)commands
             if (IsActive())
             {
                 Debug.Assert(line?.Count > 0);
-                var token = line[0];
-                line = doProcessDefines(line);
-                if (line.Count > 0)
-                    line = doProcessMacros(line);
-                if (_hasTransrules && line.Count > 0)
-                    line = doProcessTranslates(line);
-                if (_hasCommandrules && line.Count > 0)
-                    line = doProcessCommands(line);
-                if (write2PPO)
+                List<XSharpToken> result;
+                bool changed = true;
+                // repeat this loop as long as there are matches
+                while (changed)
                 {
+                    changed = false;
                     if (line.Count > 0)
-                        writeToPPO(line, false);
-                    else
-                        writeToPPO("");
+                    {
+                        if (doProcessDefinesAndMacros(line, out result))
+                        {
+                            changed = true;
+                            line = result;
+                        }
+                    }
+                    if (_hasTransrules && line.Count > 0)
+                    {
+                        if (doProcessTranslates(line, out result))
+                        {
+                            changed = true;
+                            line = result;
+                        }
+                    }
+                    if (_hasCommandrules && line.Count > 0)
+                    {
+                        if (doProcessCommands(line, out result))
+                        {
+                            changed = true;
+                            line = result;
+                        }
+                    }
                 }
             }
             else
             {
-                if (write2PPO)
-                    writeToPPO( "");
                 line.Clear();
+            }
+            if (write2PPO)
+            {
+                if (line.Count > 0)
+                    writeToPPO(line, false);
+                else
+                    writeToPPO("");
             }
             return line;
         }
 
-        private List<XSharpToken> doProcessDefines(List<XSharpToken> line)
+        private bool doProcessDefinesAndMacros(List<XSharpToken> line, out List<XSharpToken> result)
         {
             Debug.Assert(line?.Count > 0);
-            // process recursive because one define may depend on another
-            bool changed = true;
-            while (changed)
+            // we loop in here because one define may add tokens that are defined by another
+            // such as:
+            // #define FOO 1
+            // #define BAR FOO + 1
+            // when the code is "? BAR" then we need to translate this to "? 1 + 1"
+            // For performance reasons we assume there is nothing to do, so we only 
+            // start allocating a result collection when a define is detected
+            // otherwise we will simply return the original string
+            bool hasChanged = false;
+            List<XSharpToken> tempResult = line;
+            result = null;
+            while (tempResult != null)
             {
-                var result = new List<XSharpToken>(line.Count);
-                changed = false;
+                tempResult = null;
+                // in a second iteration line will be the changed line
                 for (int i = 0; i < line.Count; i++)
                 {
                     var token = line[i];
                     IList<XSharpToken> deflist = null;
                     if (isDefineAllowed(line, i) && symbolDefines.TryGetValue(token.Text, out deflist))
                     {
-                        changed = true;
+                        if (tempResult == null)
+                        {
+                            // this is the first define in the list
+                            // allocate a result and copy the items 0 .. i-1 to the result
+                            tempResult = new List<XSharpToken>(line.Count);
+                            var temp = new XSharpToken[i];
+                            line.CopyTo(0, temp, 0, temp.Length);
+                            tempResult.AddRange(temp);
+                        }
                         foreach (var t in deflist)
                         {
                             var t2 = new XSharpToken(t);
                             t2.Channel = XSharpLexer.DefaultTokenChannel;
-                            result.Add(t2);
+                            tempResult.Add(t2);
                         }
                     }
-                    else
+                    else if (token.Type == XSharpLexer.MACRO)
                     {
-                        result.Add(token);
+                        // Macros that cannot be found are changed to ID
+                        Func<XSharpToken> ft;
+                        if (macroDefines.TryGetValue(token.Text, out ft))
+                        {
+                            var nt = ft();
+                            if (nt != null)
+                            {
+                                nt.Line = token.Line;
+                                nt.Column = token.Column;
+                                nt.StartIndex = token.StartIndex;
+                                nt.StopIndex = token.StopIndex;
+                                nt.Original = token;
+                                if (tempResult == null)
+                                {
+                                    // this is the first macro in the list
+                                    // allocate a result and copy the items 0 .. i-1 to the result
+                                    tempResult = new List<XSharpToken>(line.Count);
+                                    var temp = new XSharpToken[i];
+                                    line.CopyTo(0, temp, 0, temp.Length);
+                                    tempResult.AddRange(temp);
+                                }
+                                tempResult.Add(nt);
+                            }
+                        }
+                    }
+                    else if (tempResult != null)
+                    {
+                        tempResult.Add(token);
                     }
                 }
-                line = result;
+                if (tempResult != null)
+                {
+                    // copy temporary result to line for next iteration
+                    line = tempResult;
+                    result = line;
+                    hasChanged = true;
+                }
             }
-            return line;
-        }
-        private List<XSharpToken> doProcessMacros(List<XSharpToken> line)
-        {
-            Debug.Assert(line?.Count > 0);
-            for (int i = 0; i < line.Count; i++)
-           {
-               var token = line[i];
-               if (token.Type == XSharpLexer.MACRO)
-               {
-                   line[i] = tryMacro(token);
-               }
-           }
-           return line;
+            return hasChanged; ;
         }
 
-        private bool isRecursiveRule(PPRule rule, List<Tuple<PPRule, List<XSharpToken>>> list, List<XSharpToken> tokens)
+        internal void AddParseError(ParseErrorData data)
         {
-            // check to see if this is already there
-            if (list.Count == MaxUDCDepth)
-            {
-                _parseErrors.Add(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
-                return true;
-            }
-            foreach (var item in list)
-            {
-                if (item.Item1 == rule && item.Item2.Count == tokens.Count)
-                {
-                    bool equal = true;
-                    for (int i = 0; i < tokens.Count; i++)
-                    {
-                        var t1 = tokens[i];
-                        var t2 = item.Item2[i];
-                        if (t1.Text != t2.Text)
-                        {
-                            return false;
-                        }
-                    }
-                    if (equal)
-                    {
-                        _parseErrors.Add(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
-                        return true;
-                    }
-                }
-            }
-            return false;
+            _parseErrors.Add(data);
         }
-        private List<XSharpToken> doProcessTranslates(List<XSharpToken> line)
+        private bool doProcessTranslates(List<XSharpToken> line, out List<XSharpToken> result)
         {
             Debug.Assert(line?.Count > 0);
-            List<XSharpToken> result = new List<XSharpToken>();
-            List<XSharpToken> temp = line;
-            // start anywhere in the string
-            var usedRules = new List<Tuple<PPRule, List<XSharpToken>>> ();
+            var temp = new List<XSharpToken>();
+            temp.AddRange(line);
+            result = new List<XSharpToken>();
+            var usedRules = new PPUsedRules(this, MaxUDCDepth);
             while (temp.Count > 0)
             {
                 PPMatchRange[] matchInfo = null;
@@ -1364,26 +1395,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (rule != null)
                 {
                     temp = doReplace(temp, rule, matchInfo);
-                    if (isRecursiveRule(rule, usedRules, temp))
+                    if (usedRules.HasRecursion(rule, temp))
                     {
                         // duplicate, so exit now
-                        temp.Clear();
-                        return temp;
+                        result.Clear();
+                        return false;
                     }
-                    usedRules.Add(new Tuple<PPRule, List<XSharpToken>> (rule, temp));
+                    // note that we do not add the result of the replacement to processed
+                    // because it will processed further
                 }
                 else
                 {
+                    // first token of temp is not start of a #(x)translate. So add it to the result
+                    // and try from second token etc
                     result.Add(temp[0]);
                     temp.RemoveAt(0);
                 }
             }
-            return result;
+            if (usedRules.Count > 0)
+            {
+                result.TrimLeadingSpaces();
+                return true;
+            }
+            result = null;
+            return false;
         }
 
         private List<List<XSharpToken>> splitCommands(IList<XSharpToken> tokens, out List<XSharpToken> separators)
         {
-            var result = new List<List<XSharpToken>>(1);
+            var result = new List<List<XSharpToken>>(10); 
             var current = new List<XSharpToken>(tokens.Count);
             separators = new List<XSharpToken>();
             foreach (var t in tokens)
@@ -1403,41 +1443,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             result.Add(current);
             return result;
         }
-        private List<XSharpToken> doProcessCommands(List<XSharpToken> line)
+        private bool doProcessCommands(List<XSharpToken> line, out List<XSharpToken>  result)
         {
             Debug.Assert(line?.Count > 0);
             line.TrimLeadingSpaces();
+            result = null;
             if (line.Count == 0)
-                return line;
-            List<XSharpToken> result = line;
-            var usedRules = new List<Tuple<PPRule, List<XSharpToken>>>();
+                return false;
+            result = line;
+            var usedRules = new PPUsedRules(this, MaxUDCDepth);
             while (true)
             {
                 PPMatchRange[] matchInfo = null;
                 var rule = cmdRules.FindMatchingRule(result, out matchInfo);
                 if (rule == null)
                 {
-                    // nothing to do, so exit
+                    // nothing to do, so exit. Leave changed the way it is. This does not have to be the first iteration
                     break; 
                 }
                 result = doReplace(result, rule, matchInfo);
-                if (isRecursiveRule(rule, usedRules, result))
+                if (usedRules.HasRecursion(rule, result))
                 {
                     // duplicate so exit now
                     result.Clear();
-                    return result;
+                    return false;
                 }
-                usedRules.Add(new Tuple<PPRule, List<XSharpToken>>(rule, result));
-                // the UDC may have introduced a new semi colon and created more than one substatement
+                // the UDC may have introduced a new semi colon and created more than one sub statement
+                // so check to see and then process every statement
                 List<XSharpToken> separators;
                 var cmds = splitCommands(result, out separators);
                 Debug.Assert(cmds.Count == separators.Count + 1);
                 if (cmds.Count <= 1)
                 {
-                    continue; // result is already there
+                    // single statement result. Try again to see if the new statement matches another UDC rule
+                    continue; 
                 }
                 else
                 {
+                    // multi statement result. Process each statement separately (recursively) as a 'normal line'
+                    // the replacement may have introduced the usage of a define, translate or macro
                     result.Clear();
                     for (int i = 0; i < cmds.Count; i++)
                     {
@@ -1448,12 +1492,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             result.Add(separators[i]);
                         }
                     }
+                    // recursive processing should have done everything, so exit
+                    break;
                 }
-                // recursive processing should have done everything, so exit
-                break;
             }
-            result.TrimLeadingSpaces();
-            return result;
+            if (usedRules.Count > 0)
+            {
+                result.TrimLeadingSpaces();
+                return true;
+            }
+            result = null;
+            return false;
         }
 
         private void doEOFChecks()
@@ -1471,27 +1520,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
 
-        XSharpToken tryMacro(XSharpToken t)
-        {
-            // Macros that cannot be found are changed to ID
-            Func<XSharpToken> ft;
-            t.Type = XSharpLexer.ID;
-            if (macroDefines.TryGetValue(t.Text, out ft))
-            {
-                var nt = ft();
-                if (t != null)
-                {
-                    nt.Line = t.Line;
-                    nt.Column = t.Column;
-                    nt.StartIndex = t.StartIndex;
-                    nt.StopIndex = t.StopIndex;
-                    nt.Original = t;
-                    t = nt;
-                }
-            }
-            return t;
-        }
-
+  
         private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)
         {
             Debug.Assert(line?.Count > 0);

@@ -11882,6 +11882,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An get or set accessor must have a body.
+        /// </summary>
+        internal static string WRN_GetSetMustHaveBody {
+            get {
+                return ResourceManager.GetString("WRN_GetSetMustHaveBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Defining an alias named &apos;global&apos; is ill-advised since &apos;global::&apos; always references the global namespace and not an alias.
         /// </summary>
         internal static string WRN_GlobalAliasDefn {

@@ -4842,5 +4842,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_MissingExpressionNILValueUsed" xml:space="preserve">
     <value>Missing expression. The compiler will use the NIL value instead.</value>
   </data>
+  <data name="WRN_GetSetMustHaveBody" xml:space="preserve">
+    <value>An get or set accessor must have a body</value>
+  </data>
 
 </root>

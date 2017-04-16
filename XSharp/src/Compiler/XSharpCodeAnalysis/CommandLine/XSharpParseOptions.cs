@@ -67,7 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
         public string DefaultNamespace { get; private set; }
-        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
+        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan || this.Dialect == XSharpDialect.Harbour; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
         public bool VulcanRTFuncsIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRTFuncs);

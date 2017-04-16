@@ -12260,6 +12260,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing expression. The compiler will use the NIL value instead..
+        /// </summary>
+        internal static string WRN_MissingExpressionNILValueUsed {
+            get {
+                return ResourceManager.GetString("WRN_MissingExpressionNILValueUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; has no matching param tag in the XML comment for &apos;{1}&apos; (but other parameters do).
         /// </summary>
         internal static string WRN_MissingParamTag {

@@ -715,7 +715,7 @@ namedArgument		// NOTE: Expression is optional so we can skip arguments for VO/V
                     ;
 
 
-iif					: (IIF|IF) LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
+iif					: (IIF|IF) LPAREN Cond=expression COMMA TrueExpr=expression? COMMA FalseExpr=expression? RPAREN
                     ;
 
 nameDot				: Left=nameDot Right=simpleName DOT								#qualifiedNameDot

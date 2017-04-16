@@ -1485,11 +1485,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.Clear();
                     for (int i = 0; i < cmds.Count; i++)
                     {
-                        cmds[i] = doNormalLine(cmds[i], false);
-                        result.AddRange(cmds[i]);
-                        if (i < cmds.Count-1)
+                        if (cmds[i].Count > 0)
                         {
-                            result.Add(separators[i]);
+                            cmds[i] = doNormalLine(cmds[i], false);
+                            result.AddRange(cmds[i]);
+                            if (i < cmds.Count - 1)
+                            {
+                                result.Add(separators[i]);
+                            }
                         }
                     }
                     // recursive processing should have done everything, so exit

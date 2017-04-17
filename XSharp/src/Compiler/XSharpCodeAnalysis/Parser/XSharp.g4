@@ -27,7 +27,7 @@ options	{
         contextSuperClass=XSharpParserRuleContext;
         }
 
-source				: (Entities+=entity)* EOF
+source				: eos? (Entities+=entity)* EOF
                     ;
 
 entity              : namespace_

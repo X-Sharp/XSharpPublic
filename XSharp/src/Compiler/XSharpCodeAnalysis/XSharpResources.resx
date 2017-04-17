@@ -4839,11 +4839,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CannotAssignToMethod" xml:space="preserve">
     <value>Cannot assign to '{0}' because it is a '{1}'</value>
   </data>
-  <data name="WRN_MissingExpressionNILValueUsed" xml:space="preserve">
-    <value>Missing expression. The compiler will use the NIL value instead.</value>
-  </data>
   <data name="WRN_GetSetMustHaveBody" xml:space="preserve">
-    <value>An get or set accessor must have a body</value>
+    <value>A get or set accessor must have a body, an auto property will be generated</value>
   </data>
 
 </root>

@@ -373,10 +373,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return MakeDefault(_usualType);
         }
-        protected override ExpressionSyntax GenerateMissingArgument()
+        protected override ExpressionSyntax GenerateMissingExpression(bool AddError)
         {
             var result = GenerateNIL();
-            result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingExpressionNILValueUsed));
+            if (AddError)
+                result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingArgument));
             return result;
         }
         private void Check4ClipperCC(XP.IEntityContext context,
@@ -1487,26 +1488,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
-        public override void ExitUnnamedArgument([NotNull] XP.UnnamedArgumentContext context)
-        {
-            if (context.Expr == null)
-            {
-                context.Put(MakeArgument(GenerateMissingArgument()));
-                return;
-            }
-            base.ExitUnnamedArgument(context);
-        }
-
-
-        public override void ExitNamedArgument([NotNull] XP.NamedArgumentContext context) {
-            if (context.Expr == null) {
-                context.Put(MakeArgument(GenerateMissingArgument()));
-                return;
-            }
-            base.ExitNamedArgument(context);
-        }
-
         public override void ExitBinaryExpression([NotNull] XP.BinaryExpressionContext context) {
             if (context.Op.Type == XP.SUBSTR) {
                 string method = VulcanQualifiedFunctionNames.InStr; ;
@@ -2596,7 +2577,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if(item.Expr != null)
                     l.Add(item.Expr.Get<ExpressionSyntax>());
                 else
-                    l.Add(GenerateMissingArgument());
+                    l.Add(GenerateMissingExpression(false));
 
             }
             exprs = l.ToList();

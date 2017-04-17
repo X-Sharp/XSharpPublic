@@ -11882,7 +11882,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An get or set accessor must have a body.
+        ///   Looks up a localized string similar to A get or set accessor must have a body, an auto property will be generated.
         /// </summary>
         internal static string WRN_GetSetMustHaveBody {
             get {
@@ -12265,15 +12265,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_MainIgnored_Title {
             get {
                 return ResourceManager.GetString("WRN_MainIgnored_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing expression. The compiler will use the NIL value instead..
-        /// </summary>
-        internal static string WRN_MissingExpressionNILValueUsed {
-            get {
-                return ResourceManager.GetString("WRN_MissingExpressionNILValueUsed", resourceCulture);
             }
         }
         

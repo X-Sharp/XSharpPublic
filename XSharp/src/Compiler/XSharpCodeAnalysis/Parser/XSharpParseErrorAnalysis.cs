@@ -26,38 +26,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private XSharpParser _parser;
         private List<ParseErrorData> _parseErrors;
 
-        private void checkMissingToken(IToken l, IToken r, ParserRuleContext context)
-        {
-            if (l != null && r == null)
-            {
-                ErrorCode err = ErrorCode.ERR_SyntaxError;
-                object par = null;
-                switch (l.Type)
-                {
-                    case XSharpLexer.LPAREN:
-                        err = ErrorCode.ERR_CloseParenExpected;
-                        break;
-                    case XSharpLexer.LCURLY:
-                        err = ErrorCode.ERR_RbraceExpected;
-                        break;
-                    case XSharpLexer.LBRKT:
-                        err = ErrorCode.ERR_SyntaxError;
-                        par = ']';
-                        break;
-                }
-                IToken anchor = context.Stop;
-                if (anchor == null)
-                    anchor = l;
-                ParseErrorData errdata;
-                if (par != null)
-                    errdata = new ParseErrorData(anchor, err, par);
-                else
-                    errdata = new ParseErrorData(anchor, err);
-                _parseErrors.Add(errdata);
-            }
-        }
-
-        private void checkMissingKeyword(IToken endToken, ParserRuleContext context, string msg)
+         private void checkMissingKeyword(IToken endToken, ParserRuleContext context, string msg)
         {
             if (endToken == null)
             {
@@ -84,12 +53,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
             }
         }
-        public override void ExitEveryRule([NotNull] ParserRuleContext ctxt)
-        {
-            var context = ctxt as XSharpParserRuleContext;
-            if (context.exception != null)
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, context));
-        }
+        //public override void ExitEveryRule([NotNull] ParserRuleContext ctxt)
+        //{
+        //    var context = ctxt as XSharpParserRuleContext;
+        //    if (context.exception != null)
+        //    {
+        //        _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, context));
+        //    }
+        //}
 
         // Check for missing end keywords for statement blocks
         public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)

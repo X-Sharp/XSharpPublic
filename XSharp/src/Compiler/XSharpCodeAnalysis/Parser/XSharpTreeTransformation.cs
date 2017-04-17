@@ -819,10 +819,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         statement, @else);
         }
 
-        protected virtual ExpressionSyntax GenerateMissingArgument()
+        protected virtual ExpressionSyntax GenerateMissingExpression()
+        {
+            return GenerateMissingExpression(true);
+        }
+
+        protected virtual ExpressionSyntax GenerateMissingExpression(bool withError)
         {
             var result = GenerateLiteralNull();
-            result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingArgument));
+            if (withError)
+            {
+                result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingArgument));
+            }
             return result;
         }
 
@@ -5875,7 +5883,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Expr == null)
             {
-                context.Put(GenerateMissingArgument());
+                context.Put(MakeArgument(GenerateMissingExpression(_options.Dialect == XSharpDialect.Core)));
                 return;
             }
             context.Put(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
@@ -5900,7 +5908,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Expr == null)
             {
-                context.Put(GenerateMissingArgument());
+                context.Put(MakeArgument(GenerateMissingExpression(_options.Dialect == XSharpDialect.Core)));
                 return;
             }
             context.Put(_syntaxFactory.Argument(
@@ -6077,7 +6085,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax right;
             if (context.TrueExpr == null)
             {
-                left = GenerateMissingArgument();
+                // Harbour does not warn when NIL is missing
+                left = GenerateMissingExpression(_options.Dialect != XSharpDialect.Harbour);
             }
             else
             {
@@ -6085,7 +6094,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.FalseExpr == null)
             {
-                right= GenerateMissingArgument();
+                // Harbour does not warn when NIL is missing
+                right = GenerateMissingExpression(_options.Dialect != XSharpDialect.Harbour);
             }
             else
             {

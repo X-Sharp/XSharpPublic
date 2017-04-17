@@ -315,13 +315,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private void writeToPPO(IList<XSharpToken> tokens, bool prefix = false, bool prefixNewLines = false)
         {
-            if (tokens?.Count == 0)
-                return;
-            XSharpToken first = tokens[0];
-            XSharpToken last = tokens[tokens.Count - 1];
             if (mustWriteToPPO())
             {
-                // mixed source, so create text on the fly
+                if (tokens?.Count == 0)
+                {
+                    _writeToPPO("");
+                    return;
+                }
+                // We cannot use the interval and fetch the text from the source stream,
+                // because some tokens may come out of an include file or otherwise
+                // so concatenate text on the fly
                 var bld = new System.Text.StringBuilder(1024);
                 if (prefix)
                 {
@@ -448,7 +451,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 result.Add(t);
             }
-            result.Add(t);  // EOF
             doEOFChecks();
             return result;
         }
@@ -982,6 +984,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #region Preprocessor Directives
 
+
+        private void checkForUnexpectedPPInput(IList<XSharpToken> line, int nMax)
+        {
+            if (line.Count > nMax)
+            {
+                _parseErrors.Add(new ParseErrorData(line[nMax], ErrorCode.ERR_EndOfPPLineExpected));
+            }
+        }
         private void doRegionDirective(List<XSharpToken> line)
         {
             Debug.Assert(line?.Count > 0);
@@ -997,7 +1007,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private void doEndRegionDirective(IList<XSharpToken> line)
+        private void doEndRegionDirective(List<XSharpToken> line)
         {
             Debug.Assert(line?.Count > 0);
             if (IsActive())
@@ -1013,6 +1023,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 writeToPPO("");
             }
+            checkForUnexpectedPPInput(line, 1);
         }
 
         private void doDefineDirective(List<XSharpToken> line)
@@ -1042,7 +1053,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 writeToPPO("");
             }
-
+            checkForUnexpectedPPInput(line, 2);
         }
 
         private void doErrorWarningDirective(List<XSharpToken> line)
@@ -1118,6 +1129,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 defStates.Push(false);
                 writeToPPO( "");
             }
+            checkForUnexpectedPPInput(line, 2);
         }
 
         private void doElseDirective(List<XSharpToken> line)
@@ -1138,6 +1150,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #else"));
             }
+            checkForUnexpectedPPInput(line, 1);
         }
 
         private void doEndifDirective(List<XSharpToken> line)
@@ -1160,6 +1173,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_UnexpectedDirective));
                 writeToPPO(line, true);
             }
+            checkForUnexpectedPPInput(line, 1);
         }
 
         private void doIncludeDirective(List<XSharpToken> line)
@@ -1194,7 +1208,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 writeToPPO("");
             }
-
+            checkForUnexpectedPPInput(line, 2);
         }
 
         private void doLineDirective(List<XSharpToken> line)
@@ -1226,7 +1240,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 writeToPPO("");
             }
-
+            checkForUnexpectedPPInput(line, 3);
         }
 
         private void doUnexpectedUDCSeparator(List<XSharpToken> line)
@@ -1294,6 +1308,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return line;
         }
 
+
+        private List<XSharpToken> copySource(List<XSharpToken> line, int nCount)
+        {
+            var result = new List<XSharpToken>(line.Count);
+            var temp = new XSharpToken[nCount];
+            line.CopyTo(0, temp, 0, temp.Length);
+            result.AddRange(temp);
+            return result;
+        }
         private bool doProcessDefinesAndMacros(List<XSharpToken> line, out List<XSharpToken> result)
         {
             Debug.Assert(line?.Count > 0);
@@ -1322,15 +1345,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             // this is the first define in the list
                             // allocate a result and copy the items 0 .. i-1 to the result
-                            tempResult = new List<XSharpToken>(line.Count);
-                            var temp = new XSharpToken[i];
-                            line.CopyTo(0, temp, 0, temp.Length);
-                            tempResult.AddRange(temp);
+                            tempResult = copySource(line, i);
                         }
                         foreach (var t in deflist)
                         {
                             var t2 = new XSharpToken(t);
                             t2.Channel = XSharpLexer.DefaultTokenChannel;
+                            t2.SourceSymbol = token;
                             tempResult.Add(t2);
                         }
                     }
@@ -1347,15 +1368,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 nt.Column = token.Column;
                                 nt.StartIndex = token.StartIndex;
                                 nt.StopIndex = token.StopIndex;
-                                nt.Original = token;
+                                nt.SourceSymbol = token;
                                 if (tempResult == null)
                                 {
                                     // this is the first macro in the list
                                     // allocate a result and copy the items 0 .. i-1 to the result
-                                    tempResult = new List<XSharpToken>(line.Count);
-                                    var temp = new XSharpToken[i];
-                                    line.CopyTo(0, temp, 0, temp.Length);
-                                    tempResult.AddRange(temp);
+                                    tempResult = copySource(line, i);
                                 }
                                 tempResult.Add(nt);
                             }

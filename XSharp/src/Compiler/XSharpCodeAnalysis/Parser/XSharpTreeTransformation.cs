@@ -737,10 +737,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
-            if (lWithGlobalScope)
-            {
-                GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGlobalScope);
-            }
+            //if (lWithGlobalScope)
+            //{
+            //    GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGlobalScope);
+            //}
             var compilerGenerated = attributeLists.ToList();
             _pool.Free(attributeLists);
             return compilerGenerated;

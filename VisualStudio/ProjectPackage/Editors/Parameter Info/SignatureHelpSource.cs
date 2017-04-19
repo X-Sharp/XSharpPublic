@@ -110,7 +110,7 @@ namespace XSharp.Project
             else
             {
                 //too many commas, so use the last parameter as the current one.
-                this.CurrentParameter = Parameters[Parameters.Count - 1];
+                //this.CurrentParameter = Parameters[Parameters.Count - 1];
             }
         }
 
@@ -178,6 +178,17 @@ namespace XSharp.Project
             {
                 XSharpModel.XElement element = elt as XSharpModel.XElement;
                 signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", applicableToSpan));
+                //
+                if (elt is XSharpModel.XTypeMember)
+                {
+                    XSharpModel.XTypeMember xMember = elt as XSharpModel.XTypeMember;
+                    List<XSharpModel.XTypeMember> namesake = xMember.Namesake();
+                    foreach (var member in namesake)
+                    {
+                        signatures.Add(CreateSignature(m_textBuffer, member.Prototype, "", applicableToSpan));
+                    }
+                    //
+                }
             }
 
         }

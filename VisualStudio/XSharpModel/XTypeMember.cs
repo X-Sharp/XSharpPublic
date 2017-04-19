@@ -174,5 +174,32 @@ namespace XSharpModel
                 _locals = value;
             }
         }
+
+
+        /// <summary>
+        /// Fill a List of XTypeMember with Homonyms of the current one
+        /// </summary>
+        /// <returns></returns>
+        public List<XTypeMember> Namesake()
+        {
+            List<XTypeMember> _namesake = new List<XTypeMember>();
+            if ( Parent != null )
+            {
+                //Search in the parent members
+                foreach( var member in Parent.Members )
+                {
+                    // For Homonyms
+                    if ( String.Compare( member.FullName, this.FullName, true ) == 0 )
+                    {
+                        // But don't add the current one
+                        if ( String.Compare( member.Prototype, this.Prototype, true) !=0 )
+                        {
+                            _namesake.Add(member);
+                        }
+                    }
+                }
+            }
+            return _namesake;
+        }
     }
 }

@@ -1,45 +1,17 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
 
 namespace Antlr4.Runtime.Dfa
 {
     /// <summary>A DFA walker that knows how to dump them to serialized strings.</summary>
-    /// <remarks>A DFA walker that knows how to dump them to serialized strings.</remarks>
     public class DFASerializer
     {
         [NotNull]
@@ -54,6 +26,12 @@ namespace Antlr4.Runtime.Dfa
         [Nullable]
         internal readonly ATN atn;
 
+        [System.ObsoleteAttribute(@"Use DFASerializer(DFA, Antlr4.Runtime.IVocabulary) instead.")]
+        public DFASerializer(DFA dfa, string[] tokenNames)
+            : this(dfa, Vocabulary.FromTokenNames(tokenNames), null, null)
+        {
+        }
+
         public DFASerializer(DFA dfa, IVocabulary vocabulary)
             : this(dfa, vocabulary, null, null)
         {
@@ -61,6 +39,12 @@ namespace Antlr4.Runtime.Dfa
 
         public DFASerializer(DFA dfa, IRecognizer parser)
             : this(dfa, parser != null ? parser.Vocabulary : Vocabulary.EmptyVocabulary, parser != null ? parser.RuleNames : null, parser != null ? parser.Atn : null)
+        {
+        }
+
+        [System.ObsoleteAttribute(@"Use DFASerializer(DFA, Antlr4.Runtime.IVocabulary, string[], Antlr4.Runtime.Atn.ATN) instead.")]
+        public DFASerializer(DFA dfa, string[] tokenNames, string[] ruleNames, ATN atn)
+            : this(dfa, Vocabulary.FromTokenNames(tokenNames), ruleNames, atn)
         {
         }
 
@@ -82,7 +66,7 @@ namespace Antlr4.Runtime.Dfa
             if (dfa.states != null)
             {
                 List<DFAState> states = new List<DFAState>(dfa.states.Values);
-                states.Sort(new _IComparer_103());
+                states.Sort(new _IComparer_79());
                 foreach (DFAState s in states)
                 {
                     IEnumerable<KeyValuePair<int, DFAState>> edges = s.EdgeMap;
@@ -131,9 +115,9 @@ namespace Antlr4.Runtime.Dfa
             return output;
         }
 
-        private sealed class _IComparer_103 : IComparer<DFAState>
+        private sealed class _IComparer_79 : IComparer<DFAState>
         {
-            public _IComparer_103()
+            public _IComparer_79()
             {
             }
 
@@ -179,20 +163,32 @@ namespace Antlr4.Runtime.Dfa
             {
                 return "ERROR";
             }
-
-			int n = s.stateNumber;
-			string baseStateStr = (s.IsAcceptState ? ":" : "") + "s" + n + (s.IsContextSensitive ? "^" : "");
-			if ( s.IsAcceptState ) {
-				if ( s.predicates!=null ) {
-					return baseStateStr + "=>" + Arrays.ToString(s.predicates);
-				}
-				else {
-					return baseStateStr + "=>" + s.Prediction;
-				}
-			}
-			else {
-				return baseStateStr;
-			}
+            int n = s.stateNumber;
+            string stateStr = "s" + n;
+            if (s.IsAcceptState)
+            {
+                if (s.predicates != null)
+                {
+                    stateStr = ":s" + n + "=>" + Arrays.ToString(s.predicates);
+                }
+                else
+                {
+                    stateStr = ":s" + n + "=>" + s.Prediction;
+                }
+            }
+            if (s.IsContextSensitive)
+            {
+                stateStr += "*";
+                foreach (ATNConfig config in s.configs)
+                {
+                    if (config.ReachesIntoOuterContext)
+                    {
+                        stateStr += "*";
+                        break;
+                    }
+                }
+            }
+            return stateStr;
         }
     }
 }

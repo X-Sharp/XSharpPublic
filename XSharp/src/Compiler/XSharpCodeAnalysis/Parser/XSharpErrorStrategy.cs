@@ -33,8 +33,12 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    partial class XSharpErrorStrategy : DefaultErrorStrategy
+    internal class XSharpErrorStrategy : DefaultErrorStrategy
     {
+        internal XSharpErrorStrategy() : base()
+        {
+
+        }
         protected internal override void ReportUnwantedToken(Parser recognizer)
         {
             if (InErrorRecoveryMode(recognizer))

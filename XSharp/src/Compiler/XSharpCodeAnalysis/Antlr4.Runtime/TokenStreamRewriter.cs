@@ -1,37 +1,10 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
 
@@ -106,7 +79,7 @@ namespace Antlr4.Runtime
     /// ...
     /// rewriter.insertAfter(t, "text to put after t");}
     /// rewriter.insertAfter(u, "text after u");}
-    /// System.out.println(tokens.toString());
+    /// System.out.println(rewriter.getText());
     /// </pre>
     /// <p>
     /// You can also have multiple "instruction streams" and get multiple rewrites
@@ -114,10 +87,10 @@ namespace Antlr4.Runtime
     /// that name again when printing the buffer. This could be useful for generating
     /// a C file and also its header file--all from the same buffer:</p>
     /// <pre>
-    /// tokens.insertAfter("pass1", t, "text to put after t");}
-    /// tokens.insertAfter("pass2", u, "text after u");}
-    /// System.out.println(tokens.toString("pass1"));
-    /// System.out.println(tokens.toString("pass2"));
+    /// rewriter.insertAfter("pass1", t, "text to put after t");}
+    /// rewriter.insertAfter("pass2", u, "text after u");}
+    /// System.out.println(rewriter.getText("pass1"));
+    /// System.out.println(rewriter.getText("pass2"));
     /// </pre>
     /// <p>
     /// If you don't use named rewrite streams, a "default" stream is used as the
@@ -139,7 +112,6 @@ namespace Antlr4.Runtime
             protected internal int instructionIndex;
 
             /// <summary>Token buffer index.</summary>
-            /// <remarks>Token buffer index.</remarks>
             protected internal int index;
 
             protected internal object text;
@@ -196,13 +168,27 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>
+        /// Distinguish between insert after/before to do the "insert afters"
+        /// first and then the "insert befores" at same index.
+        /// </summary>
+        /// <remarks>
+        /// Distinguish between insert after/before to do the "insert afters"
+        /// first and then the "insert befores" at same index. Implementation
+        /// of "insert after" is "insert before index+1".
+        /// </remarks>
+        internal class InsertAfterOp : TokenStreamRewriter.InsertBeforeOp
+        {
+            public InsertAfterOp(ITokenStream tokens, int index, object text)
+                : base(tokens, index + 1, text)
+            {
+            }
+            // insert after is insert before index+1
+        }
+
+        /// <summary>
         /// I'm going to try replacing range from x..y with (y-x)+1 ReplaceOp
         /// instructions.
         /// </summary>
-        /// <remarks>
-        /// I'm going to try replacing range from x..y with (y-x)+1 ReplaceOp
-        /// instructions.
-        /// </remarks>
         internal class ReplaceOp : TokenStreamRewriter.RewriteOperation
         {
             protected internal int lastIndex;
@@ -315,7 +301,10 @@ namespace Antlr4.Runtime
         public virtual void InsertAfter(string programName, int index, object text)
         {
             // to insert after, just insert before next index (even if past end)
-            InsertBefore(programName, index + 1, text);
+            TokenStreamRewriter.RewriteOperation op = new TokenStreamRewriter.InsertAfterOp(tokens, index, text);
+            IList<TokenStreamRewriter.RewriteOperation> rewrites = GetProgram(programName);
+            op.instructionIndex = rewrites.Count;
+            rewrites.Add(op);
         }
 
         public virtual void InsertBefore(IToken t, object text)
@@ -452,13 +441,19 @@ namespace Antlr4.Runtime
         /// Return the text from the original tokens altered per the
         /// instructions given to this rewriter.
         /// </summary>
-        /// <remarks>
-        /// Return the text from the original tokens altered per the
-        /// instructions given to this rewriter.
-        /// </remarks>
         public virtual string GetText()
         {
             return GetText(DefaultProgramName, Interval.Of(0, tokens.Size - 1));
+        }
+
+        /// <summary>
+        /// Return the text from the original tokens altered per the
+        /// instructions given to this rewriter in programName.
+        /// </summary>
+        /// <since>4.5</since>
+        public virtual string GetText(string programName)
+        {
+            return GetText(programName, Interval.Of(0, tokens.Size - 1));
         }
 
         /// <summary>
@@ -639,7 +634,6 @@ namespace Antlr4.Runtime
                     }
                     // throw exception unless disjoint or identical
                     bool disjoint = prevRop.lastIndex < rop.index || prevRop.index > rop.lastIndex;
-                    bool same = prevRop.index == rop.index && prevRop.lastIndex == rop.lastIndex;
                     // Delete special case of replace (text==null):
                     // D.i-j.u D.x-y.v	| boundaries overlap	combine to max(min)..max(right)
                     if (prevRop.text == null && rop.text == null && !disjoint)
@@ -655,7 +649,7 @@ namespace Antlr4.Runtime
                     }
                     else
                     {
-                        if (!disjoint && !same)
+                        if (!disjoint)
                         {
                             throw new ArgumentException("replace op boundaries of " + rop + " overlap with previous " + prevRop);
                         }
@@ -681,12 +675,23 @@ namespace Antlr4.Runtime
                 {
                     if (prevIop.index == iop.index)
                     {
-                        // combine objects
-                        // convert to strings...we're in process of toString'ing
-                        // whole token buffer so no lazy eval issue with any templates
-                        iop.text = CatOpText(iop.text, prevIop.text);
-                        // delete redundant prior insert
-                        rewrites[prevIop.instructionIndex] = null;
+                        if (prevIop is InsertAfterOp)
+                        {
+                            iop.text = CatOpText(prevIop.text, iop.text);
+                            rewrites[prevIop.instructionIndex] = null;
+                        }
+                        else
+                        {
+                            if (prevIop is InsertBeforeOp)
+                            {
+                                // combine objects
+                                // convert to strings...we're in process of toString'ing
+                                // whole token buffer so no lazy eval issue with any templates
+                                iop.text = CatOpText(iop.text, prevIop.text);
+                                // delete redundant prior insert
+                                rewrites[prevIop.instructionIndex] = null;
+                            }
+                        }
                     }
                 }
                 // look for replaces where iop.index is in range; error

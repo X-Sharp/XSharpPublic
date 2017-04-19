@@ -1,9 +1,5 @@
 lexer grammar XPathLexer;
 
-@header {
-using System; 
-}
-
 tokens { TokenRef, RuleRef }
 
 /*
@@ -30,11 +26,9 @@ Bang	 : '!' ;
 
 ID			:	NameStartChar NameChar*
 				{
-				String text = Text;
-				if ( Char.IsUpper(text[0]) ) 
-					Type = TokenRef;
-				else 
-					Type = RuleRef;
+				string text = Text;
+				if ( char.IsUpper(text[0]) ) Type = TokenRef;
+				else Type = RuleRef;
 				}
 			;
 

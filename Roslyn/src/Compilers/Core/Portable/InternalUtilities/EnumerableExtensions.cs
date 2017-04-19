@@ -214,7 +214,7 @@ namespace Roslyn.Utilities
         }
 
         /// <remarks>
-        /// This method is necessary to avoid an ambiguity between <see cref="IsEmpty{T}(IReadOnlyCollection{T})"/> and <see cref="IsEmpty{T}(ICollection{T})"/>.
+        /// This method is necessary to avoid an ambiguity between and <see cref="IsEmpty{T}(ICollection{T})"/>.
         /// </remarks>
         public static bool IsEmpty<T>(this T[] source)
         {
@@ -222,7 +222,7 @@ namespace Roslyn.Utilities
         }
 
         /// <remarks>
-        /// This method is necessary to avoid an ambiguity between <see cref="IsEmpty{T}(IReadOnlyCollection{T})"/> and <see cref="IsEmpty{T}(ICollection{T})"/>.
+        /// This method is necessary to avoid an ambiguity between and <see cref="IsEmpty{T}(ICollection{T})"/>.
         /// </remarks>
         public static bool IsEmpty<T>(this List<T> source)
         {

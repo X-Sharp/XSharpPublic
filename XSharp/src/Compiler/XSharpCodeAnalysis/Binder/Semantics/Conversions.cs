@@ -14,14 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
-using XP= LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -169,18 +165,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (dstType == SpecialType.System_Char)
             {
-                if (srcType == SpecialType.System_String)
-                {
-                    // Literal Char_consts are no longer there
-                    // Convert literal string with length 1 to char_const when needed
-
-                    if (sourceExpression.ConstantValue != null &&
-                        sourceExpression.ConstantValue.StringValue.Length == 1)
-                    {
-                        // Not really boxed, but we handle the real conversion in LocalRewriter.UnBoxXSharpType
-                        return Conversion.Boxing;
-                    }
-                }
                 if (srcType == SpecialType.System_UInt16)
                 {
                     return Conversion.Identity;
@@ -254,11 +238,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (sourceExpression.Syntax != null)
             {
                 var xNode = sourceExpression.Syntax.XNode;
-                while (!(xNode is XP.VoCastExpressionContext) && ! (xNode is XP.VoConversionExpressionContext) )
+                while (!(xNode is XP.VoCastExpressionContext) &&
+                    ! (xNode is XP.VoConversionExpressionContext) )
                 {
                     if (xNode == null)
                         break;
-                    xNode = xNode.Parent;   
+                    xNode = xNode.Parent as IXParseTree;
                 }
                 if (xNode != null)
                 {
@@ -378,7 +363,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (destination.IsPointerType())
                 {
-                    // Not really boxed, but we handle this in LocalRewriter.UnBoxVOType
+                    // Not really boxed, but we handle this in LocalRewriter.UnBoxXSharpType
                     return Conversion.Boxing;
                 }
             }

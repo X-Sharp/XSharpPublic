@@ -1,37 +1,9 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
-using System.Text;
 using System.Collections;
 using System.Collections.Generic;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Misc;
@@ -42,7 +14,6 @@ using Antlr4.Runtime.Tree.Pattern;
 namespace Antlr4.Runtime
 {
     /// <summary>This is all the parsing support code essentially; most of it is error recovery stuff.</summary>
-    /// <remarks>This is all the parsing support code essentially; most of it is error recovery stuff.</remarks>
     public abstract class Parser : Recognizer<IToken, ParserATNSimulator>
     {
 #if !PORTABLE
@@ -121,14 +92,14 @@ namespace Antlr4.Runtime
         /// </remarks>
         /// <seealso cref="ErrorHandler"/>
         [NotNull]
-		private IAntlrErrorStrategy _errHandler = new DefaultErrorStrategy();
+        protected internal IAntlrErrorStrategy _errHandler = new DefaultErrorStrategy();
 
         /// <summary>The input stream.</summary>
-        /// <remarks>The input stream.</remarks>
         /// <seealso cref="InputStream()"/>
-    	private ITokenStream _input;
+        /// <seealso cref="SetInputStream(ITokenStream)"/>
+        protected internal ITokenStream _input;
 
-		private readonly List<int> _precedenceStack = new List<int> { 0 };
+        protected internal readonly List<int> _precedenceStack = new List<int> { 0 };
 
         /// <summary>
         /// The
@@ -136,7 +107,7 @@ namespace Antlr4.Runtime
         /// object for the currently executing rule.
         /// This is always non-null during the parsing process.
         /// </summary>
-        private ParserRuleContext _ctx;
+        protected internal ParserRuleContext _ctx;
 
         /// <summary>
         /// Specifies whether or not the parser should construct a parse tree during
@@ -149,7 +120,7 @@ namespace Antlr4.Runtime
         /// .
         /// </remarks>
         /// <seealso cref="BuildParseTree"/>
-        private bool _buildParseTrees = true;
+        protected internal bool _buildParseTrees = true;
 
 #if !PORTABLE
         /// <summary>
@@ -177,7 +148,7 @@ namespace Antlr4.Runtime
         /// </summary>
         /// <seealso cref="AddParseListener(Antlr4.Runtime.Tree.IParseTreeListener)"/>
         [Nullable]
-        private IList<IParseTreeListener> _parseListeners;
+        protected internal IList<IParseTreeListener> _parseListeners;
 
         /// <summary>The number of syntax errors reported during parsing.</summary>
         /// <remarks>
@@ -186,11 +157,19 @@ namespace Antlr4.Runtime
         /// <see cref="NotifyErrorListeners(string)"/>
         /// is called.
         /// </remarks>
-        private int _syntaxErrors;
+        protected internal int _syntaxErrors;
+
+        /// <summary>Indicates parser has match()ed EOF token.</summary>
+        /// <remarks>
+        /// Indicates parser has match()ed EOF token. See
+        /// <see cref="ExitRule()"/>
+        /// .
+        /// </remarks>
+        protected internal bool matchedEOF;
 
         public Parser(ITokenStream input)
         {
-            TokenStream = input;
+            SetInputStream(input);
         }
 
         /// <summary>reset the parser's state</summary>
@@ -203,6 +182,7 @@ namespace Antlr4.Runtime
             _errHandler.Reset(this);
             _ctx = null;
             _syntaxErrors = 0;
+            matchedEOF = false;
 #if !PORTABLE
             Trace = false;
 #endif
@@ -254,6 +234,10 @@ namespace Antlr4.Runtime
             IToken t = CurrentToken;
             if (t.Type == ttype)
             {
+                if (ttype == TokenConstants.Eof)
+                {
+                    matchedEOF = true;
+                }
                 _errHandler.ReportMatch(this);
                 Consume();
             }
@@ -352,7 +336,7 @@ namespace Antlr4.Runtime
         /// for a newly constructed parser.
         /// </remarks>
         /// <returns>
-        ///
+        /// 
         /// <see langword="true"/>
         /// if a complete parse tree will be constructed while
         /// parsing, otherwise
@@ -366,7 +350,8 @@ namespace Antlr4.Runtime
             }
             set
             {
-				this._buildParseTrees = value;
+                bool buildParseTrees = value;
+                this._buildParseTrees = buildParseTrees;
             }
         }
 
@@ -378,14 +363,14 @@ namespace Antlr4.Runtime
         /// by default for a newly constructed parser.
         /// </remarks>
         /// <value>
-        ///
+        /// 
         /// <see langword="true"/>
         /// to trim the capacity of the
         /// <see cref="ParserRuleContext.children"/>
         /// list to its size after a rule is parsed.
         /// </value>
         /// <returns>
-        ///
+        /// 
         /// <see langword="true"/>
         /// if the
         /// <see cref="ParserRuleContext.children"/>
@@ -504,7 +489,6 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>Remove all parse listeners.</summary>
-        /// <remarks>Remove all parse listeners.</remarks>
         /// <seealso cref="AddParseListener(Antlr4.Runtime.Tree.IParseTreeListener)"/>
         public virtual void RemoveParseListeners()
         {
@@ -512,7 +496,6 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>Notify any parse listeners of an enter rule event.</summary>
-        /// <remarks>Notify any parse listeners of an enter rule event.</remarks>
         /// <seealso cref="AddParseListener(Antlr4.Runtime.Tree.IParseTreeListener)"/>
         protected internal virtual void TriggerEnterRuleEvent()
         {
@@ -524,18 +507,16 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>Notify any parse listeners of an exit rule event.</summary>
-        /// <remarks>Notify any parse listeners of an exit rule event.</remarks>
         /// <seealso cref="AddParseListener(Antlr4.Runtime.Tree.IParseTreeListener)"/>
         protected internal virtual void TriggerExitRuleEvent()
         {
             // reverse order walk of listeners
-			if (_parseListeners != null) {
-				for (int i = _parseListeners.Count - 1; i >= 0; i--) {
-					IParseTreeListener listener = _parseListeners [i];
-					_ctx.ExitRule (listener);
-					listener.ExitEveryRule (_ctx);
-				}
-			}
+            for (int i = _parseListeners.Count - 1; i >= 0; i--)
+            {
+                IParseTreeListener listener = _parseListeners[i];
+                _ctx.ExitRule(listener);
+                listener.ExitEveryRule(_ctx);
+            }
         }
 
         /// <summary>Gets the number of syntax errors reported during parsing.</summary>
@@ -566,10 +547,6 @@ namespace Antlr4.Runtime
         /// The ATN with bypass alternatives is expensive to create so we create it
         /// lazily.
         /// </summary>
-        /// <remarks>
-        /// The ATN with bypass alternatives is expensive to create so we create it
-        /// lazily.
-        /// </remarks>
         /// <exception cref="System.NotSupportedException">
         /// if the current parser does not
         /// implement the
@@ -592,7 +569,7 @@ namespace Antlr4.Runtime
                     ATNDeserializationOptions deserializationOptions = new ATNDeserializationOptions();
                     deserializationOptions.GenerateRuleBypassTransitions = true;
                     result = new ATNDeserializer(deserializationOptions).Deserialize(serializedAtn.ToCharArray());
-                    bypassAltsAtnCache.Put(serializedAtn, result);
+                    bypassAltsAtnCache[serializedAtn] = result;
                 }
                 return result;
             }
@@ -650,35 +627,25 @@ namespace Antlr4.Runtime
         }
 
         public override IIntStream InputStream
-		{
-			get
-			{
-				return _input;
-			}
-		}
+        {
+            get
+            {
+                return _input;
+            }
+        }
 
-		public ITokenStream TokenStream
-		{
-			get
-			{
-				return _input;
-			}
-			set
-			{
-				this._input = null;
-				Reset ();
-				this._input = value;
-			}
-		}
+        /// <summary>Set the token stream and reset the parser.</summary>
+        public virtual void SetInputStream(ITokenStream input)
+        {
+            this._input = null;
+            Reset();
+            this._input = input;
+        }
 
         /// <summary>
         /// Match needs to return the current input symbol, which gets put
         /// into the label for the associated token ref; e.g., x=ID.
         /// </summary>
-        /// <remarks>
-        /// Match needs to return the current input symbol, which gets put
-        /// into the label for the associated token ref; e.g., x=ID.
-        /// </remarks>
         public virtual IToken CurrentToken
         {
             get
@@ -777,7 +744,7 @@ namespace Antlr4.Runtime
 
         protected internal virtual void AddContextToParseTree()
         {
-            ParserRuleContext parent = (ParserRuleContext)_ctx.Parent;
+            ParserRuleContext parent = (ParserRuleContext)_ctx.parent;
             // add current context to parent if we have a parent
             if (parent != null)
             {
@@ -795,7 +762,7 @@ namespace Antlr4.Runtime
         {
             State = state;
             _ctx = localctx;
-            _ctx.Start = _input.Lt(1);
+            _ctx.start = _input.Lt(1);
             if (_buildParseTrees)
             {
                 AddContextToParseTree();
@@ -813,11 +780,11 @@ namespace Antlr4.Runtime
             {
                 ParserRuleContext factoredContext = (ParserRuleContext)_ctx.GetChild(_ctx.ChildCount - 1);
                 _ctx.RemoveLastChild();
-                factoredContext.Parent = localctx;
+                factoredContext.parent = localctx;
                 localctx.AddChild(factoredContext);
             }
             _ctx = localctx;
-            _ctx.Start = _input.Lt(1);
+            _ctx.start = _input.Lt(1);
             if (_buildParseTrees)
             {
                 AddContextToParseTree();
@@ -830,24 +797,34 @@ namespace Antlr4.Runtime
 
         public virtual void ExitRule()
         {
-            _ctx.Stop = _input.Lt(-1);
+            if (matchedEOF)
+            {
+                // if we have matched EOF, it cannot consume past EOF so we use LT(1) here
+                _ctx.stop = _input.Lt(1);
+            }
+            else
+            {
+                // LT(1) will be end of file
+                _ctx.stop = _input.Lt(-1);
+            }
+            // stop node is what we just matched
             // trigger event on _ctx, before it reverts to parent
             if (_parseListeners != null)
             {
                 TriggerExitRuleEvent();
             }
             State = _ctx.invokingState;
-            _ctx = (ParserRuleContext)_ctx.Parent;
+            _ctx = (ParserRuleContext)_ctx.parent;
         }
 
         public virtual void EnterOuterAlt(ParserRuleContext localctx, int altNum)
         {
-        	localctx.setAltNumber(altNum);
+            localctx.OuterAlternative = altNum;
             // if we have new localctx, make sure we replace existing ctx
             // that is previous child of parse tree
             if (_buildParseTrees && _ctx != localctx)
             {
-                ParserRuleContext parent = (ParserRuleContext)_ctx.Parent;
+                ParserRuleContext parent = (ParserRuleContext)_ctx.parent;
                 if (parent != null)
                 {
                     parent.RemoveLastChild();
@@ -858,7 +835,6 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>Get the precedence level for the top-most precedence rule.</summary>
-        /// <remarks>Get the precedence level for the top-most precedence rule.</remarks>
         /// <returns>
         /// The precedence level for the top-most precedence rule, or -1 if
         /// the parser context is not nested within a precedence rule.
@@ -886,7 +862,7 @@ namespace Antlr4.Runtime
             State = state;
             _precedenceStack.Add(precedence);
             _ctx = localctx;
-            _ctx.Start = _input.Lt(1);
+            _ctx.start = _input.Lt(1);
             if (_parseListeners != null)
             {
                 TriggerEnterRuleEvent();
@@ -898,15 +874,16 @@ namespace Antlr4.Runtime
         /// Like
         /// <see cref="EnterRule(ParserRuleContext, int, int)"/>
         /// but for recursive rules.
+        /// Make the current context the child of the incoming localctx.
         /// </summary>
         public virtual void PushNewRecursionContext(ParserRuleContext localctx, int state, int ruleIndex)
         {
             ParserRuleContext previous = _ctx;
-            previous.Parent = localctx;
+            previous.parent = localctx;
             previous.invokingState = state;
-            previous.Stop = _input.Lt(-1);
+            previous.stop = _input.Lt(-1);
             _ctx = localctx;
-            _ctx.Start = previous.Start;
+            _ctx.start = previous.start;
             if (_buildParseTrees)
             {
                 _ctx.AddChild(previous);
@@ -921,7 +898,7 @@ namespace Antlr4.Runtime
         public virtual void UnrollRecursionContexts(ParserRuleContext _parentctx)
         {
             _precedenceStack.RemoveAt(_precedenceStack.Count - 1);
-            _ctx.Stop = _input.Lt(-1);
+            _ctx.stop = _input.Lt(-1);
             ParserRuleContext retctx = _ctx;
             // save current ctx (return value)
             // unroll so _ctx is as it was before call to recursive method
@@ -930,7 +907,7 @@ namespace Antlr4.Runtime
                 while (_ctx != _parentctx)
                 {
                     TriggerExitRuleEvent();
-                    _ctx = (ParserRuleContext)_ctx.Parent;
+                    _ctx = (ParserRuleContext)_ctx.parent;
                 }
             }
             else
@@ -938,7 +915,7 @@ namespace Antlr4.Runtime
                 _ctx = _parentctx;
             }
             // hook into tree
-            retctx.Parent = _parentctx;
+            retctx.parent = _parentctx;
             if (_buildParseTrees && _parentctx != null)
             {
                 // add return ctx into invoking rule's tree
@@ -955,7 +932,7 @@ namespace Antlr4.Runtime
                 {
                     return p;
                 }
-                p = (ParserRuleContext)p.Parent;
+                p = (ParserRuleContext)p.parent;
             }
             return null;
         }
@@ -982,7 +959,9 @@ namespace Antlr4.Runtime
         {
             get
             {
+#pragma warning disable 618 // Type or member is obsolete
                 return new ProxyParserErrorListener(ErrorListeners);
+#pragma warning restore 618 // Type or member is obsolete
             }
         }
 
@@ -1005,7 +984,7 @@ namespace Antlr4.Runtime
         /// </summary>
         /// <param name="symbol">the symbol type to check</param>
         /// <returns>
-        ///
+        /// 
         /// <see langword="true"/>
         /// if
         /// <paramref name="symbol"/>
@@ -1039,13 +1018,21 @@ namespace Antlr4.Runtime
                 {
                     return true;
                 }
-                ctx = (ParserRuleContext)ctx.Parent;
+                ctx = (ParserRuleContext)ctx.parent;
             }
             if (following.Contains(TokenConstants.Epsilon) && symbol == TokenConstants.Eof)
             {
                 return true;
             }
             return false;
+        }
+
+        public virtual bool MatchedEndOfFile
+        {
+            get
+            {
+                return matchedEOF;
+            }
         }
 
         /// <summary>
@@ -1111,18 +1098,6 @@ namespace Antlr4.Runtime
             return GetRuleInvocationStack(_ctx);
         }
 
-		public virtual string GetRuleInvocationStackAsString()
-		{
-			StringBuilder sb = new StringBuilder ("[");
-			foreach (string s in GetRuleInvocationStack()) {
-				sb.Append (s);
-				sb.Append (", ");
-			}
-			sb.Length = sb.Length - 2;
-			sb.Append ("]");
-			return sb.ToString ();
-		}
-
         public virtual IList<string> GetRuleInvocationStack(RuleContext p)
         {
             string[] ruleNames = RuleNames;
@@ -1139,19 +1114,18 @@ namespace Antlr4.Runtime
                 {
                     stack.Add(ruleNames[ruleIndex]);
                 }
-                p = p.Parent;
+                p = p.parent;
             }
             return stack;
         }
 
         /// <summary>For debugging and other purposes.</summary>
-        /// <remarks>For debugging and other purposes.</remarks>
         public virtual IList<string> GetDFAStrings()
         {
             IList<string> s = new List<string>();
-            for (int d = 0; d < Interpreter.atn.decisionToDFA.Length; d++)
+            for (int d = 0; d < _interp.atn.decisionToDFA.Length; d++)
             {
-				DFA dfa = Interpreter.atn.decisionToDFA[d];
+                DFA dfa = _interp.atn.decisionToDFA[d];
                 s.Add(dfa.ToString(Vocabulary, RuleNames));
             }
             return s;
@@ -1159,13 +1133,12 @@ namespace Antlr4.Runtime
 
 #if !PORTABLE
         /// <summary>For debugging and other purposes.</summary>
-        /// <remarks>For debugging and other purposes.</remarks>
         public virtual void DumpDFA()
         {
             bool seenOne = false;
-			for (int d = 0; d < Interpreter.atn.decisionToDFA.Length; d++)
+            for (int d = 0; d < _interp.atn.decisionToDFA.Length; d++)
             {
-				DFA dfa = Interpreter.atn.decisionToDFA[d];
+                DFA dfa = _interp.atn.decisionToDFA[d];
                 if (!dfa.IsEmpty)
                 {
                     if (seenOne)
@@ -1222,6 +1195,7 @@ namespace Antlr4.Runtime
                         Interpreter = new ParserATNSimulator(this, Atn);
                     }
                 }
+                Interpreter.PredictionMode = interp.PredictionMode;
             }
         }
 

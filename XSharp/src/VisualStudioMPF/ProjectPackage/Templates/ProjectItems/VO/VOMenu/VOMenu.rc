@@ -1,8 +1,0 @@
-#include "GlobalDefines.vh"
-#include "VOWin32APILibrary.vh"
-
-#define IDM_$safeitemrootname$_File_ID 15001
-$safeitemrootname$ MENU
-BEGIN
-	MENUITEM "File" , IDM_$safeitemrootname$_File_ID
-END

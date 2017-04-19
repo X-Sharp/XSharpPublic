@@ -1,37 +1,12 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System.Collections.Generic;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Sharpen;
-
+#if !PORTABLE || NET45PLUS
+using Stopwatch = System.Diagnostics.Stopwatch;
+#endif
 
 namespace Antlr4.Runtime.Atn
 {
@@ -64,6 +39,24 @@ namespace Antlr4.Runtime.Atn
         /// </summary>
         public long invocations;
 
+#if !PORTABLE || NET45PLUS
+        /// <summary>
+        /// The total time spent in
+        /// <see cref="ParserATNSimulator.AdaptivePredict(ITokenStream, int, ParserRuleContext)"/>
+        /// for
+        /// this decision, in nanoseconds.
+        /// <p>
+        /// The value of this field is computed by <see cref="Stopwatch"/>,
+        /// and is not adjusted to compensate for JIT
+        /// and/or garbage collection overhead. For best accuracy, perform profiling
+        /// in a separate process which is warmed up by parsing the input prior to
+        /// profiling. If desired, call <see cref="ATNSimulator.ClearDFA()"/>
+        /// to reset the DFA cache to its initial
+        /// state before starting the profiling measurement pass.</p>
+        /// </summary>
+        public long timeInPrediction;
+#endif
+
         /// <summary>The sum of the lookahead required for SLL prediction for this decision.</summary>
         /// <remarks>
         /// The sum of the lookahead required for SLL prediction for this decision.
@@ -81,11 +74,6 @@ namespace Antlr4.Runtime.Atn
         /// complete for this decision, by reaching a unique prediction, reaching an
         /// SLL conflict state, or encountering a syntax error.
         /// </summary>
-        /// <remarks>
-        /// Gets the minimum lookahead required for any single SLL prediction to
-        /// complete for this decision, by reaching a unique prediction, reaching an
-        /// SLL conflict state, or encountering a syntax error.
-        /// </remarks>
         public long SLL_MinLook;
 
         /// <summary>
@@ -93,11 +81,6 @@ namespace Antlr4.Runtime.Atn
         /// complete for this decision, by reaching a unique prediction, reaching an
         /// SLL conflict state, or encountering a syntax error.
         /// </summary>
-        /// <remarks>
-        /// Gets the maximum lookahead required for any single SLL prediction to
-        /// complete for this decision, by reaching a unique prediction, reaching an
-        /// SLL conflict state, or encountering a syntax error.
-        /// </remarks>
         public long SLL_MaxLook;
 
         /// <summary>

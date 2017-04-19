@@ -1,35 +1,9 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
-using Antlr4.Runtime;
+using System.Collections.ObjectModel;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
 using Antlr4.Runtime.Tree;
@@ -41,9 +15,8 @@ namespace Antlr4.Runtime
     /// A rule invocation record for parsing.
     /// Contains all of the information about the current rule not stored in the
     /// RuleContext. It handles parse tree children list, Any ATN state
-    /// tracing, and the default values available for rule indications:
-    /// start, stop, rule index, current alt number, current
-    /// ATN state.
+    /// tracing, and the default values available for rule invocations:
+    /// start, stop, rule index, current alt number.
     /// Subclasses made for each rule and grammar track the parameters,
     /// return values, locals, and labels specific to that rule. These
     /// are the objects that are returned from rules.
@@ -57,11 +30,7 @@ namespace Antlr4.Runtime
     /// group values such as this aggregate.  The getters/setters are there to
     /// satisfy the superclass interface.
     /// </remarks>
-#if XSHARP
-    public partial class ParserRuleContext : RuleContext
-#else
     public class ParserRuleContext : RuleContext
-#endif
     {
         private static readonly Antlr4.Runtime.ParserRuleContext Empty = new Antlr4.Runtime.ParserRuleContext();
 
@@ -99,7 +68,7 @@ namespace Antlr4.Runtime
         /// if we are debugging/tracing.
         /// This does not trace states visited during prediction.
         /// </remarks>
-        private IToken _start;
+        public IToken start;
 
         /// <summary>
         /// For debugging/tracing purposes, we want to track all of the nodes in
@@ -121,7 +90,7 @@ namespace Antlr4.Runtime
         /// if we are debugging/tracing.
         /// This does not trace states visited during prediction.
         /// </remarks>
-        private IToken _stop;
+        public IToken stop;
 
         /// <summary>The exception that forced this rule to return.</summary>
         /// <remarks>
@@ -145,14 +114,40 @@ namespace Antlr4.Runtime
             }
         }
 
-        /// <summary>COPY a ctx (I'm deliberately not using copy constructor)</summary>
+        /// <summary>
+        /// COPY a ctx (I'm deliberately not using copy constructor) to avoid
+        /// confusion with creating node with parent.
+        /// </summary>
+        /// <remarks>
+        /// COPY a ctx (I'm deliberately not using copy constructor) to avoid
+        /// confusion with creating node with parent. Does not copy children.
+        /// <p>This is used in the generated parser code to flip a generic XContext
+        /// node for rule X to a YContext for alt label Y. In that sense, it is not
+        /// really a generic copy function.</p>
+        /// <p>If we do an error sync() at start of a rule, we might add error nodes
+        /// to the generic XContext so this function must copy those nodes to the
+        /// YContext as well else they are lost!</p>
+        /// </remarks>
         public virtual void CopyFrom(Antlr4.Runtime.ParserRuleContext ctx)
         {
-            // from RuleContext
-            this.Parent = ctx.Parent;
+            this.parent = ctx.parent;
             this.invokingState = ctx.invokingState;
-            this._start = ctx._start;
-            this._stop = ctx._stop;
+            this.start = ctx.start;
+            this.stop = ctx.stop;
+            // copy any error nodes to alt label node
+            if (ctx.children != null)
+            {
+                this.children = new List<IParseTree>();
+                // reset parent pointer for any error nodes
+                foreach (IParseTree child in ctx.children)
+                {
+                    if (child is ErrorNodeImpl)
+                    {
+                        this.children.Add(child);
+                        ((ErrorNodeImpl)child).parent = this;
+                    }
+                }
+            }
         }
 
         public ParserRuleContext(Antlr4.Runtime.ParserRuleContext parent, int invokingStateNumber)
@@ -213,7 +208,7 @@ namespace Antlr4.Runtime
         {
             TerminalNodeImpl t = new TerminalNodeImpl(matchedToken);
             AddChild(t);
-            t.Parent = this;
+            t.parent = this;
             return t;
         }
 
@@ -221,10 +216,17 @@ namespace Antlr4.Runtime
         {
             ErrorNodeImpl t = new ErrorNodeImpl(badToken);
             AddChild(t);
-            t.Parent = this;
+            t.parent = this;
             return t;
         }
 
+        public override RuleContext Parent
+        {
+            get
+            {
+                return (Antlr4.Runtime.ParserRuleContext)base.Parent;
+            }
+        }
 
         public override IParseTree GetChild(int i)
         {
@@ -281,11 +283,7 @@ namespace Antlr4.Runtime
             return null;
         }
 
-#if NET45PLUS && false
-        public virtual IReadOnlyList<ITerminalNode> GetTokens(int ttype)
-#else
         public virtual ITerminalNode[] GetTokens(int ttype)
-#endif
         {
             if (children == null)
             {
@@ -312,11 +310,7 @@ namespace Antlr4.Runtime
             {
                 return Collections.EmptyList<ITerminalNode>();
             }
-#if NET45PLUS && false
-            return tokens;
-#else
             return tokens.ToArray();
-#endif
         }
 
         public virtual T GetRuleContext<T>(int i)
@@ -325,13 +319,8 @@ namespace Antlr4.Runtime
             return GetChild<T>(i);
         }
 
-#if NET45PLUS && false
-        public virtual IReadOnlyList<T> GetRuleContexts<T>()
-            where T : Antlr4.Runtime.ParserRuleContext
-#else
         public virtual T[] GetRuleContexts<T>()
             where T : Antlr4.Runtime.ParserRuleContext
-#endif
         {
             if (children == null)
             {
@@ -353,11 +342,7 @@ namespace Antlr4.Runtime
             {
                 return Collections.EmptyList<T>();
             }
-#if NET45PLUS && false
-            return contexts;
-#else
             return contexts.ToArray();
-#endif
         }
 
         public override int ChildCount
@@ -372,36 +357,45 @@ namespace Antlr4.Runtime
         {
             get
             {
-                if (_start == null || _stop == null)
+                if (start == null)
                 {
                     return Interval.Invalid;
                 }
-                return Interval.Of(_start.TokenIndex, _stop.TokenIndex);
+                if (stop == null || stop.TokenIndex < start.TokenIndex)
+                {
+                    return Interval.Of(start.TokenIndex, start.TokenIndex - 1);
+                }
+                // empty
+                return Interval.Of(start.TokenIndex, stop.TokenIndex);
             }
         }
 
+        /// <summary>Get the initial token in this context.</summary>
+        /// <remarks>
+        /// Get the initial token in this context.
+        /// Note that the range from start to stop is inclusive, so for rules that do not consume anything
+        /// (for example, zero length or error productions) this token may exceed stop.
+        /// </remarks>
         public virtual IToken Start
         {
             get
             {
-                return _start;
+                return start;
             }
-			set
-			{
-				_start = value;
-			}
         }
 
+        /// <summary>Get the final token in this context.</summary>
+        /// <remarks>
+        /// Get the final token in this context.
+        /// Note that the range from start to stop is inclusive, so for rules that do not consume anything
+        /// (for example, zero length or error productions) this token may precede start.
+        /// </remarks>
         public virtual IToken Stop
         {
             get
             {
-                return _stop;
+                return stop;
             }
-			set
-			{
-				_stop = value;
-			}
         }
 
         /// <summary>Used for rule context info debugging during parse-time, not so much for ATN debugging</summary>
@@ -409,7 +403,7 @@ namespace Antlr4.Runtime
         {
             List<string> rules = new List<string>(recognizer.GetRuleInvocationStack(this));
             rules.Reverse();
-            return "ParserRuleContext" + rules + "{" + "start=" + _start + ", stop=" + _stop + '}';
+            return "ParserRuleContext" + rules + "{" + "start=" + start + ", stop=" + stop + '}';
         }
     }
 }

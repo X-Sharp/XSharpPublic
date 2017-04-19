@@ -1,52 +1,21 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
-using Antlr4.Runtime.Tree;
 
 namespace Antlr4.Runtime.Tree
 {
-#if XSHARP
-    public partial class TerminalNodeImpl : ITerminalNode
-#else
     public class TerminalNodeImpl : ITerminalNode
-#endif
     {
-        private IToken _symbol;
+        public IToken symbol;
 
-        private IRuleNode _parent;
+        public IRuleNode parent;
 
         public TerminalNodeImpl(IToken symbol)
         {
-            this._symbol = symbol;
+            this.symbol = symbol;
         }
 
         public virtual IParseTree GetChild(int i)
@@ -63,7 +32,7 @@ namespace Antlr4.Runtime.Tree
         {
             get
             {
-                return _symbol;
+                return symbol;
             }
         }
 
@@ -71,12 +40,8 @@ namespace Antlr4.Runtime.Tree
         {
             get
             {
-                return _parent;
+                return parent;
             }
-			set
-			{
-				_parent = value;
-			}
         }
 
         IParseTree IParseTree.Parent
@@ -99,7 +64,7 @@ namespace Antlr4.Runtime.Tree
         {
             get
             {
-                return Symbol;
+                return symbol;
             }
         }
 
@@ -115,9 +80,9 @@ namespace Antlr4.Runtime.Tree
         {
             get
             {
-                if (Symbol != null)
+                if (symbol != null)
                 {
-                    int tokenIndex = Symbol.TokenIndex;
+                    int tokenIndex = symbol.TokenIndex;
                     return new Interval(tokenIndex, tokenIndex);
                 }
                 return Interval.Invalid;
@@ -139,39 +104,13 @@ namespace Antlr4.Runtime.Tree
 
         public virtual string GetText()
         {
-            if (Symbol != null)
+            if (symbol != null)
             {
-                return Symbol.Text;
+                return symbol.Text;
             }
             return null;
         }
-#if XSHARP
-        public virtual string ToStringTree(Parser parser)
-        {
-            return _ToString();
-        }
 
-        public string _ToString()
-        {
-            if (Symbol != null)
-            {
-                if (Symbol.Type == TokenConstants.Eof)
-                {
-                    return "<EOF>";
-                }
-                return Symbol.Text;
-            }
-            else
-            {
-                return "<null>";
-            }
-        }
-        public virtual string ToStringTree()
-        {
-            return _ToString();
-        }
-
-#else
         public virtual string ToStringTree(Parser parser)
         {
             return ToString();
@@ -179,23 +118,23 @@ namespace Antlr4.Runtime.Tree
 
         public override string ToString()
         {
-            if (Symbol != null)
+            if (symbol != null)
             {
-                if (Symbol.Type == TokenConstants.Eof)
+                if (symbol.Type == TokenConstants.Eof)
                 {
                     return "<EOF>";
                 }
-                return Symbol.Text;
+                return symbol.Text;
             }
             else
             {
                 return "<null>";
             }
         }
+
         public virtual string ToStringTree()
         {
             return ToString();
         }
-#endif
     }
 }

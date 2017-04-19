@@ -1,34 +1,7 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System.Collections.Generic;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
@@ -39,10 +12,6 @@ namespace Antlr4.Runtime.Atn
     /// This class provides access to specific and aggregate statistics gathered
     /// during profiling of a parser.
     /// </summary>
-    /// <remarks>
-    /// This class provides access to specific and aggregate statistics gathered
-    /// during profiling of a parser.
-    /// </remarks>
     /// <since>4.3</since>
     public class ParseInfo
     {
@@ -81,7 +50,7 @@ namespace Antlr4.Runtime.Atn
         /// <remarks>
         /// Gets the decision numbers for decisions that required one or more
         /// full-context predictions during parsing. These are decisions for which
-        /// <see cref="Antlr4.Runtime.Atn.DecisionInfo.LL_Fallback"/>
+        /// <see cref="DecisionInfo.LL_Fallback"/>
         /// is non-zero.
         /// </remarks>
         /// <returns>
@@ -104,6 +73,29 @@ namespace Antlr4.Runtime.Atn
             return Ll;
         }
 
+#if !PORTABLE || NET45PLUS
+        /// <summary>
+        /// Gets the total time spent during prediction across all decisions made
+        /// during parsing.
+        /// </summary>
+        /// <remarks>
+        /// Gets the total time spent during prediction across all decisions made
+        /// during parsing. This value is the sum of
+        /// <see cref="DecisionInfo.timeInPrediction"/>
+        /// for all decisions.
+        /// </remarks>
+        public virtual long GetTotalTimeInPrediction()
+        {
+            Antlr4.Runtime.Atn.DecisionInfo[] decisions = atnSimulator.DecisionInfo;
+            long t = 0;
+            for (int i = 0; i < decisions.Length; i++)
+            {
+                t += decisions[i].timeInPrediction;
+            }
+            return t;
+        }
+#endif
+
         /// <summary>
         /// Gets the total number of SLL lookahead operations across all decisions
         /// made during parsing.
@@ -111,7 +103,7 @@ namespace Antlr4.Runtime.Atn
         /// <remarks>
         /// Gets the total number of SLL lookahead operations across all decisions
         /// made during parsing. This value is the sum of
-        /// <see cref="Antlr4.Runtime.Atn.DecisionInfo.SLL_TotalLook"/>
+        /// <see cref="DecisionInfo.SLL_TotalLook"/>
         /// for all decisions.
         /// </remarks>
         public virtual long GetTotalSLLLookaheadOps()
@@ -132,7 +124,7 @@ namespace Antlr4.Runtime.Atn
         /// <remarks>
         /// Gets the total number of LL lookahead operations across all decisions
         /// made during parsing. This value is the sum of
-        /// <see cref="Antlr4.Runtime.Atn.DecisionInfo.LL_TotalLook"/>
+        /// <see cref="DecisionInfo.LL_TotalLook"/>
         /// for all decisions.
         /// </remarks>
         public virtual long GetTotalLLLookaheadOps()
@@ -150,10 +142,6 @@ namespace Antlr4.Runtime.Atn
         /// Gets the total number of ATN lookahead operations for SLL prediction
         /// across all decisions made during parsing.
         /// </summary>
-        /// <remarks>
-        /// Gets the total number of ATN lookahead operations for SLL prediction
-        /// across all decisions made during parsing.
-        /// </remarks>
         public virtual long GetTotalSLLATNLookaheadOps()
         {
             Antlr4.Runtime.Atn.DecisionInfo[] decisions = atnSimulator.DecisionInfo;
@@ -169,10 +157,6 @@ namespace Antlr4.Runtime.Atn
         /// Gets the total number of ATN lookahead operations for LL prediction
         /// across all decisions made during parsing.
         /// </summary>
-        /// <remarks>
-        /// Gets the total number of ATN lookahead operations for LL prediction
-        /// across all decisions made during parsing.
-        /// </remarks>
         public virtual long GetTotalLLATNLookaheadOps()
         {
             Antlr4.Runtime.Atn.DecisionInfo[] decisions = atnSimulator.DecisionInfo;
@@ -214,10 +198,6 @@ namespace Antlr4.Runtime.Atn
         /// Gets the total number of DFA states stored in the DFA cache for all
         /// decisions in the ATN.
         /// </summary>
-        /// <remarks>
-        /// Gets the total number of DFA states stored in the DFA cache for all
-        /// decisions in the ATN.
-        /// </remarks>
         public virtual int GetDFASize()
         {
             int n = 0;
@@ -233,10 +213,6 @@ namespace Antlr4.Runtime.Atn
         /// Gets the total number of DFA states stored in the DFA cache for a
         /// particular decision.
         /// </summary>
-        /// <remarks>
-        /// Gets the total number of DFA states stored in the DFA cache for a
-        /// particular decision.
-        /// </remarks>
         public virtual int GetDFASize(int decision)
         {
             DFA decisionToDFA = atnSimulator.atn.decisionToDFA[decision];

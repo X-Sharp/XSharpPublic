@@ -1,34 +1,7 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
@@ -83,10 +56,6 @@ namespace Antlr4.Runtime
         /// This method is called to enter error recovery mode when a recognition
         /// exception is reported.
         /// </summary>
-        /// <remarks>
-        /// This method is called to enter error recovery mode when a recognition
-        /// exception is reported.
-        /// </remarks>
         /// <param name="recognizer">the parser instance</param>
         protected internal virtual void BeginErrorCondition(Parser recognizer)
         {
@@ -103,10 +72,6 @@ namespace Antlr4.Runtime
         /// This method is called to leave error recovery mode after recovering from
         /// a recognition exception.
         /// </summary>
-        /// <remarks>
-        /// This method is called to leave error recovery mode after recovering from
-        /// a recognition exception.
-        /// </remarks>
         /// <param name="recognizer"/>
         protected internal virtual void EndErrorCondition(Parser recognizer)
         {
@@ -290,12 +255,8 @@ namespace Antlr4.Runtime
             ITokenStream tokens = ((ITokenStream)recognizer.InputStream);
             int la = tokens.La(1);
             // try cheaper subset first; might get lucky. seems to shave a wee bit off
-            if (recognizer.Atn.NextTokens(s).Contains(la) || la == TokenConstants.Eof)
-            {
-                return;
-            }
-            // Return but don't end recovery. only do that upon valid token match
-            if (recognizer.IsExpectedToken(la))
+            IntervalSet nextTokens = recognizer.Atn.NextTokens(s);
+            if (nextTokens.Contains(TokenConstants.Epsilon) || nextTokens.Contains(la))
             {
                 return;
             }
@@ -394,7 +355,7 @@ namespace Antlr4.Runtime
         /// <param name="e">the recognition exception</param>
         protected internal virtual void ReportFailedPredicate(Parser recognizer, FailedPredicateException e)
         {
-			string ruleName = recognizer.RuleNames[recognizer.RuleContext.RuleIndex];
+            string ruleName = recognizer.RuleNames[recognizer._ctx.RuleIndex];
             string msg = "rule " + ruleName + " " + e.Message;
             NotifyErrorListeners(recognizer, msg, e);
         }
@@ -620,7 +581,7 @@ namespace Antlr4.Runtime
             ATNState currentState = recognizer.Interpreter.atn.states[recognizer.State];
             ATNState next = currentState.Transition(0).target;
             ATN atn = recognizer.Interpreter.atn;
-			IntervalSet expectingAtLL2 = atn.NextTokens(next, PredictionContext.FromRuleContext(atn, recognizer.RuleContext));
+            IntervalSet expectingAtLL2 = atn.NextTokens(next, PredictionContext.FromRuleContext(atn, recognizer._ctx));
             //		System.out.println("LT(2) set="+expectingAtLL2.toString(recognizer.getTokenNames()));
             if (expectingAtLL2.Contains(currentSymbolType))
             {
@@ -670,6 +631,12 @@ namespace Antlr4.Runtime
             if (expecting.Contains(nextTokenType))
             {
                 ReportUnwantedToken(recognizer);
+                /*
+                System.err.println("recoverFromMismatchedToken deleting "+
+                ((TokenStream)recognizer.getInputStream()).LT(1)+
+                " since "+((TokenStream)recognizer.getInputStream()).LT(2)+
+                " is what we want");
+                */
                 recognizer.Consume();
                 // simply delete extra token
                 // we want to return the token we're actually matching
@@ -793,11 +760,103 @@ namespace Antlr4.Runtime
             return "'" + s + "'";
         }
 
+        /*  Compute the error recovery set for the current rule.  During
+        *  rule invocation, the parser pushes the set of tokens that can
+        *  follow that rule reference on the stack; this amounts to
+        *  computing FIRST of what follows the rule reference in the
+        *  enclosing rule. See LinearApproximator.FIRST().
+        *  This local follow set only includes tokens
+        *  from within the rule; i.e., the FIRST computation done by
+        *  ANTLR stops at the end of a rule.
+        *
+        *  EXAMPLE
+        *
+        *  When you find a "no viable alt exception", the input is not
+        *  consistent with any of the alternatives for rule r.  The best
+        *  thing to do is to consume tokens until you see something that
+        *  can legally follow a call to r *or* any rule that called r.
+        *  You don't want the exact set of viable next tokens because the
+        *  input might just be missing a token--you might consume the
+        *  rest of the input looking for one of the missing tokens.
+        *
+        *  Consider grammar:
+        *
+        *  a : '[' b ']'
+        *    | '(' b ')'
+        *    ;
+        *  b : c '^' INT ;
+        *  c : ID
+        *    | INT
+        *    ;
+        *
+        *  At each rule invocation, the set of tokens that could follow
+        *  that rule is pushed on a stack.  Here are the various
+        *  context-sensitive follow sets:
+        *
+        *  FOLLOW(b1_in_a) = FIRST(']') = ']'
+        *  FOLLOW(b2_in_a) = FIRST(')') = ')'
+        *  FOLLOW(c_in_b) = FIRST('^') = '^'
+        *
+        *  Upon erroneous input "[]", the call chain is
+        *
+        *  a -> b -> c
+        *
+        *  and, hence, the follow context stack is:
+        *
+        *  depth     follow set       start of rule execution
+        *    0         <EOF>                    a (from main())
+        *    1          ']'                     b
+        *    2          '^'                     c
+        *
+        *  Notice that ')' is not included, because b would have to have
+        *  been called from a different context in rule a for ')' to be
+        *  included.
+        *
+        *  For error recovery, we cannot consider FOLLOW(c)
+        *  (context-sensitive or otherwise).  We need the combined set of
+        *  all context-sensitive FOLLOW sets--the set of all tokens that
+        *  could follow any reference in the call chain.  We need to
+        *  resync to one of those tokens.  Note that FOLLOW(c)='^' and if
+        *  we resync'd to that token, we'd consume until EOF.  We need to
+        *  sync to context-sensitive FOLLOWs for a, b, and c: {']','^'}.
+        *  In this case, for input "[]", LA(1) is ']' and in the set, so we would
+        *  not consume anything. After printing an error, rule c would
+        *  return normally.  Rule b would not find the required '^' though.
+        *  At this point, it gets a mismatched token error and throws an
+        *  exception (since LA(1) is not in the viable following token
+        *  set).  The rule exception handler tries to recover, but finds
+        *  the same recovery set and doesn't consume anything.  Rule b
+        *  exits normally returning to rule a.  Now it finds the ']' (and
+        *  with the successful match exits errorRecovery mode).
+        *
+        *  So, you can see that the parser walks up the call chain looking
+        *  for the token that was a member of the recovery set.
+        *
+        *  Errors are not generated in errorRecovery mode.
+        *
+        *  ANTLR's error recovery mechanism is based upon original ideas:
+        *
+        *  "Algorithms + Data Structures = Programs" by Niklaus Wirth
+        *
+        *  and
+        *
+        *  "A note on error recovery in recursive descent parsers":
+        *  http://portal.acm.org/citation.cfm?id=947902.947905
+        *
+        *  Later, Josef Grosch had some good ideas:
+        *
+        *  "Efficient and Comfortable Error Recovery in Recursive Descent
+        *  Parsers":
+        *  ftp://www.cocolab.com/products/cocktail/doca4.ps/ell.ps.zip
+        *
+        *  Like Grosch I implement context-sensitive FOLLOW sets that are combined
+        *  at run-time upon error to avoid overhead during parsing.
+        */
         [return: NotNull]
         protected internal virtual IntervalSet GetErrorRecoverySet(Parser recognizer)
         {
             ATN atn = recognizer.Interpreter.atn;
-			RuleContext ctx = recognizer.RuleContext;
+            RuleContext ctx = recognizer._ctx;
             IntervalSet recoverSet = new IntervalSet();
             while (ctx != null && ctx.invokingState >= 0)
             {
@@ -806,7 +865,7 @@ namespace Antlr4.Runtime
                 RuleTransition rt = (RuleTransition)invokingState.Transition(0);
                 IntervalSet follow = atn.NextTokens(rt.followState);
                 recoverSet.AddAll(follow);
-                ctx = ctx.Parent;
+                ctx = ctx.parent;
             }
             recoverSet.Remove(TokenConstants.Epsilon);
             //		System.out.println("recover set "+recoverSet.toString(recognizer.getTokenNames()));
@@ -814,7 +873,6 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>Consume tokens until one matches the given token set.</summary>
-        /// <remarks>Consume tokens until one matches the given token set.</remarks>
         protected internal virtual void ConsumeUntil(Parser recognizer, IntervalSet set)
         {
             //		System.err.println("consumeUntil("+set.toString(recognizer.getTokenNames())+")");

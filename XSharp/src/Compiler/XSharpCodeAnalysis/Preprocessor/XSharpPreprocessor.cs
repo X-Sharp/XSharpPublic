@@ -1296,6 +1296,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                for (int i = 0; i < line.Count; i++)
+                {
+                    var t = line[i];
+                    t.Original.Channel = XSharpLexer.DEFOUTCHANNEL;
+                }
                 line.Clear();
             }
             if (write2PPO)

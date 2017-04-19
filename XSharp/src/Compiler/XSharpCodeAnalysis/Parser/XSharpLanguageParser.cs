@@ -40,8 +40,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
 
-        private CommonTokenStream _lexerTokenStream;
-        private CommonTokenStream _preprocessorTokenStream;
+        private ITokenStream _lexerTokenStream;
+        private ITokenStream _preprocessorTokenStream;
 
         //#if DEBUG
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
@@ -114,7 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var lexer = XSharpLexer.Create(_text.ToString(), _fileName, _options);
-            var lexerStream = lexer.GetTokenStream();
+            _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
@@ -126,7 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             var parseErrors = ParseErrorData.NewBag();
-            var pp = new XSharpPreprocessor(lexerStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+            var pp = new XSharpPreprocessor(_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var ppTokens = pp.PreProcess();
             // commontokenstream filters on tokens on the default channel. All other tokens are ignored
             var ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));

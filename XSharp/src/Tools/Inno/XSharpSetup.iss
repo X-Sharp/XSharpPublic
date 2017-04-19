@@ -58,7 +58,7 @@
 #define HelpInstall2  "/locale en-us /sourceuri """"{app}\help\XSharp.msha"""" /wait 0"
 #define HelpUninstall1 "/silent /operation uninstall /catalogname"
 #define HelpUninstall2 "/locale en-us /vendor """"XSharp"""" /productname """"X#"""" /booklist """"X# Documentation"""" /wait 0"
-#expr  Exec("c:\XSharp\Dev\XSharp\Binaries\Help\makecabs.cmd")
+
 
 
 [Setup]

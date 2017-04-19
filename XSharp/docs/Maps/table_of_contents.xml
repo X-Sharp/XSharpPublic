@@ -818,9 +818,6 @@
           <topicref type="topic" id="423892971107092" build="ALL" modified="2016-01-20T09:47:17.159Z" icon="0" href="opt-parallel">
             <caption translate="true">/parallel</caption>
           </topicref>
-          <topicref type="topic" id="428447912143740" build="ALL" modified="2017-04-19T15:56:11.952Z" icon="0" href="opt-parseonly">
-            <caption translate="true">/parseonly</caption>
-          </topicref>
           <topicref type="topic" id="426331724895353" build="ALL" modified="2016-09-20T09:16:55.333Z" icon="0" href="opt-pathmap">
             <caption translate="true">/pathmap</caption>
           </topicref>

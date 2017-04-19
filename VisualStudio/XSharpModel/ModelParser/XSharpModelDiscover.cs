@@ -31,9 +31,10 @@ namespace XSharpModel
         private Modifiers _currentVarVisibility;
         private string _defaultNS;
 
-        public XSharpModelRegionDiscover()
+        public XSharpModelRegionDiscover(XFile file)
         {
             // To store intermediate declarations
+            this._file = file;
             this._localDecls = new Stack<XSharpParser.LocalvarContext>();
             //
             this._currentTypes = new Stack<XType>();
@@ -69,8 +70,9 @@ namespace XSharpModel
 
             set
             {
+                // Project may be null when this is a stand alone file
                 this._file = value;
-                if (this._file != null)
+                if (this._file != null && this._file.Project != null)
                 {
                     if (this._file.Project.Loaded)       // this will fail if the project file is already unloaded
                     {
@@ -725,7 +727,7 @@ namespace XSharpModel
         #region Method Body
         public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
         {
-            if (!this._buildLocals || this._currentMethod == null)
+            if (!this._buildLocals  || ! this._buildModel)
                 return;
             try
             {
@@ -734,29 +736,19 @@ namespace XSharpModel
                     XVariable local;
                     String localType = context.DataType.GetText();
                     String localName;
-                    // Any previous Local ?
+                    // Push to stack so we can manage all contexts in one loop
+                    _localDecls.Push(context);
+                    
                     while (_localDecls.Count > 0)
                     {
                         XSharpParser.LocalvarContext tmpContext = _localDecls.Pop();
-                        localName = context.Id.GetText();
+                        localName = tmpContext.Id.GetText();
                         //
                         local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
                             new TextRange(tmpContext), new TextInterval(tmpContext),
                             localType);
                         local.File = this._file;
                         //
-                        this._currentMethod.Locals.Add(local);
-                    }
-                    // Now, manage the current one
-                    localName = context.Id.GetText();
-                    //
-                    local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
-                            new TextRange(context), new TextInterval(context),
-                            localType);
-                    local.File = this._file;
-                    //
-                    if (this._currentMethod != null)
-                    {
                         this._currentMethod.Locals.Add(local);
                     }
                 }
@@ -776,7 +768,7 @@ namespace XSharpModel
 
         private void addVariables([NotNull] ParserRuleContext context)
         {
-            if (!this._buildLocals)
+            if (!this._buildLocals || ! this._buildModel)
                 return;
             // Don't forget to add Self and Super as Local vars
             if ((context is XSharpParser.ClsctorContext) ||

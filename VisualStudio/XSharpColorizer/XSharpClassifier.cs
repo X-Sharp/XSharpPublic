@@ -117,6 +117,8 @@ namespace XSharpColorizer
             // Parse the source and get the (Lexer) Tokenstream to locate comments, keywords and other tokens.
             // The parser will identify (positional) keywords that are used as identifier
             //xsTagger.Parse(snapshot, out TokenStream, path);
+            // By setting the FullPath the system will also try to locate the project and its compiler options.
+            // when no project is found then the default parse options will be used
             xsWalker.FullPath = path;
             xsWalker.Snapshot = snapshot;
             xsWalker.InitParse();
@@ -145,6 +147,10 @@ namespace XSharpColorizer
                                 newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPPType));
                                 switch (token.Type)
                                 {
+                                    //case XSharpLexer.PP_ELSE:
+                                    //    tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
+                                    //    tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
+                                    //    break;
                                     case XSharpLexer.PP_REGION:
                                     case XSharpLexer.PP_IFDEF:
                                     case XSharpLexer.PP_IFNDEF:

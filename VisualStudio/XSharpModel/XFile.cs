@@ -22,7 +22,7 @@ namespace XSharpModel
         private XType _globalType;
         // 
         private object _lock;
-        private int _hashCode;
+        //private int _hashCode;
         private bool _parsed;
 
 
@@ -36,7 +36,7 @@ namespace XSharpModel
             //
             _parsed = false;
             _lock = new object();
-            _hashCode = 0;
+            //_hashCode = 0;
 
         }
 
@@ -143,20 +143,20 @@ namespace XSharpModel
 
         }
 
-        public int HashCode
-        {
-            get
-            {
-                return _hashCode;
-            }
+        //public int HashCode
+        //{
+        //    get
+        //    {
+        //        return _hashCode;
+        //    }
 
-            set
-            {
-                if (_hashCode != value)
-                    _parsed = false;
-                _hashCode = value;
-            }
-        }
+        //    set
+        //    {
+        //        if (_hashCode != value)
+        //            _parsed = false;
+        //        _hashCode = value;
+        //    }
+        //}
 
         /// <summary>
         /// Block the running Thread until the file has been parsed
@@ -186,23 +186,24 @@ namespace XSharpModel
             }
         }
 
-        public void Parse( string contentText )
-        {
-            XSharpModel.SourceWalker sw = new XSharpModel.SourceWalker();
-            //
-            sw.Source = contentText;
-            sw.File = this;
-            try
-            {
-                sw.InitParse();
-                sw.BuildModelOnly();
-                //
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-            }
-        }
+        // Unused ?
+        //public void Parse( string contentText )
+        //{
+        //    XSharpModel.SourceWalker sw = new XSharpModel.SourceWalker();
+        //    //
+        //    sw.Source = contentText;
+        //    sw.File = this;
+        //    try
+        //    {
+        //        sw.InitParse();
+        //        sw.BuildModelOnly();
+        //        //
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(e.Message);
+        //    }
+        //}
         public XTypeMember FirstMember()
         {
             foreach (var type in TypeList.Values)

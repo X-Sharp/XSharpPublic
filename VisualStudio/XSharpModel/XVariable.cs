@@ -24,7 +24,10 @@ namespace XSharpModel
         public XVariable(XElement parent, string name, Kind kind, Modifiers visibility, TextRange span, TextInterval position, string typeName)
             : base(name, kind, Modifiers.None, visibility, span, position)
         {
+            if (String.IsNullOrEmpty(typeName))
+                typeName = "USUAL";
             _typeName = typeName;
+
             this.Parent = parent;
         }
 
@@ -37,6 +40,8 @@ namespace XSharpModel
 
             set
             {
+                if (String.IsNullOrEmpty(value))
+                    value = "USUAL";
                 _typeName = value;
             }
         }

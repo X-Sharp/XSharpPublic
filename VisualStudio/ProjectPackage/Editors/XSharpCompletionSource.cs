@@ -2649,7 +2649,7 @@ namespace XSharpLanguage
         }
 
 
-        internal static IToken ProcessBounds(CommonTokenStream tokens, IToken currentToken, int LeftElement, int RightElement)
+        internal static IToken ProcessBounds(ITokenStream tokens, IToken currentToken, int LeftElement, int RightElement)
         {
             // Count the elements
             int rightElt = 1;
@@ -2684,7 +2684,7 @@ namespace XSharpLanguage
             return currentToken;
         }
 
-        internal static IToken GetPreviousToken(CommonTokenStream tokens, IToken currentToken)
+        internal static IToken GetPreviousToken(ITokenStream tokens, IToken currentToken)
         {
             IToken prev = null;
             if (currentToken != null)

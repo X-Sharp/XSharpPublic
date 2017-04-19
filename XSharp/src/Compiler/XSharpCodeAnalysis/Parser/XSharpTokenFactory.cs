@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
+namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     internal class XSharpTokenFactory : ITokenFactory
     {
@@ -28,6 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpToken t = new XSharpToken(source, type, channel, start, stop);
             t.Line = line;
             t.Column = charPositionInLine;
+            //t.SourceFileName = source.Item1.SourceName;
             if (text != null)
             {
                 t.Text = text;

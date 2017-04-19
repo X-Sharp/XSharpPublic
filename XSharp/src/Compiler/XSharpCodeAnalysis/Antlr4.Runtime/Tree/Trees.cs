@@ -1,44 +1,17 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
-using Antlr4.Runtime.Tree;
 
 namespace Antlr4.Runtime.Tree
 {
     /// <summary>A set of utility routines useful for all kinds of ANTLR trees.</summary>
-    /// <remarks>A set of utility routines useful for all kinds of ANTLR trees.</remarks>
     public class Trees
     {
         /// <summary>Print out a whole tree in LISP form.</summary>
@@ -74,8 +47,7 @@ namespace Antlr4.Runtime.Tree
         /// Print out a whole tree in LISP form.
         /// <see cref="GetNodeText(ITree, Antlr4.Runtime.Parser)"/>
         /// is used on the
-        /// node payloads to get the text for the nodes.  Detect
-        /// parse trees and extract data appropriately.
+        /// node payloads to get the text for the nodes.
         /// </remarks>
         public static string ToStringTree(ITree t, IList<string> ruleNames)
         {
@@ -112,14 +84,16 @@ namespace Antlr4.Runtime.Tree
         {
             if (ruleNames != null)
             {
-                if (t is RuleContext)
+                if (t is IRuleNode)
                 {
-                    int ruleIndex = ((RuleContext)t).RuleIndex;
+                    RuleContext ruleContext = ((IRuleNode)t).RuleContext;
+                    int ruleIndex = ruleContext.RuleIndex;
                     string ruleName = ruleNames[ruleIndex];
-					int altNumber = ((RuleContext)t).getAltNumber();
-					if ( altNumber!=Atn.ATN.InvalidAltNumber ) {
-						return ruleName+":"+altNumber;
-					}
+                    int altNumber = ruleContext.OuterAlternative;
+                    if (altNumber != ATN.InvalidAltNumber)
+                    {
+                        return ruleName + ":" + altNumber;
+                    }
                     return ruleName;
                 }
                 else
@@ -167,6 +141,7 @@ namespace Antlr4.Runtime.Tree
         /// Return a list of all ancestors of this node.  The first node of
         /// list is the root and the last is the parent of this node.
         /// </remarks>
+        /// <since>4.5.1</since>
         [return: NotNull]
         public static IList<ITree> GetAncestors(ITree t)
         {
@@ -183,6 +158,30 @@ namespace Antlr4.Runtime.Tree
                 t = t.Parent;
             }
             return ancestors;
+        }
+
+        /// <summary>Return true if t is u's parent or a node on path to root from u.</summary>
+        /// <remarks>
+        /// Return true if t is u's parent or a node on path to root from u.
+        /// Use == not equals().
+        /// </remarks>
+        /// <since>4.5.1</since>
+        public static bool IsAncestorOf(ITree t, ITree u)
+        {
+            if (t == null || u == null || t.Parent == null)
+            {
+                return false;
+            }
+            ITree p = u.Parent;
+            while (p != null)
+            {
+                if (t == p)
+                {
+                    return true;
+                }
+                p = p.Parent;
+            }
+            return false;
         }
 
         public static ICollection<IParseTree> FindAllTokenNodes(IParseTree t, int ttype)
@@ -202,7 +201,7 @@ namespace Antlr4.Runtime.Tree
             return nodes;
         }
 
-        private static void _findAllNodes(IParseTree t, int index, bool findTokens, IList<IParseTree> nodes)
+        public static void _findAllNodes(IParseTree t, int index, bool findTokens, IList<IParseTree> nodes)
         {
             // check this node (the root) first
             if (findTokens && t is ITerminalNode)
@@ -231,16 +230,115 @@ namespace Antlr4.Runtime.Tree
             }
         }
 
-        public static IList<IParseTree> Descendants(IParseTree t)
+        /// <summary>Get all descendents; includes t itself.</summary>
+        /// <since>4.5.1</since>
+        public static IList<IParseTree> GetDescendants(IParseTree t)
         {
             List<IParseTree> nodes = new List<IParseTree>();
             nodes.Add(t);
             int n = t.ChildCount;
             for (int i = 0; i < n; i++)
             {
-                nodes.AddRange(Descendants(t.GetChild(i)));
+                nodes.AddRange(GetDescendants(t.GetChild(i)));
             }
             return nodes;
+        }
+
+        [System.ObsoleteAttribute(@"")]
+        public static IList<IParseTree> Descendants(IParseTree t)
+        {
+            return GetDescendants(t);
+        }
+
+        /// <summary>
+        /// Find smallest subtree of t enclosing range startTokenIndex..stopTokenIndex
+        /// inclusively using postorder traversal.
+        /// </summary>
+        /// <remarks>
+        /// Find smallest subtree of t enclosing range startTokenIndex..stopTokenIndex
+        /// inclusively using postorder traversal.  Recursive depth-first-search.
+        /// </remarks>
+        /// <since>4.5</since>
+        [return: Nullable]
+        public static ParserRuleContext GetRootOfSubtreeEnclosingRegion(IParseTree t, int startTokenIndex, int stopTokenIndex)
+        {
+            // inclusive
+            // inclusive
+            int n = t.ChildCount;
+            for (int i = 0; i < n; i++)
+            {
+                IParseTree child = t.GetChild(i);
+                ParserRuleContext r = GetRootOfSubtreeEnclosingRegion(child, startTokenIndex, stopTokenIndex);
+                if (r != null)
+                {
+                    return r;
+                }
+            }
+            if (t is ParserRuleContext)
+            {
+                ParserRuleContext r = (ParserRuleContext)t;
+                if (startTokenIndex >= r.Start.TokenIndex && (r.Stop == null || stopTokenIndex <= r.Stop.TokenIndex))
+                {
+                    // is range fully contained in t?
+                    // note: r.getStop()==null likely implies that we bailed out of parser and there's nothing to the right
+                    return r;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Replace any subtree siblings of root that are completely to left
+        /// or right of lookahead range with a CommonToken(Token.INVALID_TYPE,"...")
+        /// node.
+        /// </summary>
+        /// <remarks>
+        /// Replace any subtree siblings of root that are completely to left
+        /// or right of lookahead range with a CommonToken(Token.INVALID_TYPE,"...")
+        /// node. The source interval for t is not altered to suit smaller range!
+        /// WARNING: destructive to t.
+        /// </remarks>
+        /// <since>4.5.1</since>
+        public static void StripChildrenOutOfRange(ParserRuleContext t, ParserRuleContext root, int startIndex, int stopIndex)
+        {
+            if (t == null)
+            {
+                return;
+            }
+            for (int i = 0; i < t.ChildCount; i++)
+            {
+                IParseTree child = t.GetChild(i);
+                Interval range = child.SourceInterval;
+                if (child is ParserRuleContext && (range.b < startIndex || range.a > stopIndex))
+                {
+                    if (IsAncestorOf(child, root))
+                    {
+                        // replace only if subtree doesn't have displayed root
+                        CommonToken abbrev = new CommonToken(TokenConstants.InvalidType, "...");
+                        t.children.Set(i, new TerminalNodeImpl(abbrev));
+                    }
+                }
+            }
+        }
+
+        /// <summary>Return first node satisfying the pred</summary>
+        /// <since>4.5.1</since>
+        public static ITree FindNodeSuchThat(ITree t, Predicate<ITree> pred)
+        {
+            if (pred(t))
+            {
+                return t;
+            }
+            int n = t.ChildCount;
+            for (int i = 0; i < n; i++)
+            {
+                ITree u = FindNodeSuchThat(t.GetChild(i), pred);
+                if (u != null)
+                {
+                    return u;
+                }
+            }
+            return null;
         }
 
         private Trees()

@@ -27,12 +27,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool VOAllowMissingReturns { get; private set; }  // Handled in the parser
         public bool VOArithmeticConversions { get; private set; }
         //public bool VOClipperCallingConvention { get; private set; }// Handled in the parser
+        //public bool VOClipperConstructors { get; private set; }// Handled in the parser
         //public bool VOClipperIntegerDivisions { get; private set; }// Handled in the parser
         public bool VOCompatibleIIF { get; private set; }
         //public bool VOFloatConstants { get; private set; }// Handled in the parser
         public bool VOImplicitCastsAndConversions { get; private set; }
         public bool VOImplicitSignedUnsignedConversions { get; private set; }
-        //public bool VOInitializeVariables { get; private set; }// Handled in the parser
         //public bool VoInitAxitMethods { get; private set; }// Handled in the parser
         //public bool VOPreprocessorBehaviour { get; private set; }// Handled in the parser
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
@@ -45,7 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool HasDefaultTree { get; set; } = false;
         public bool CreatingRuntime { get; private set; }
 
-        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
+        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan || this.Dialect == XSharpDialect.Harbour; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
 
         //public bool vo1 => VoInitAxitMethods;
@@ -63,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo13 => VOStringComparisons;
         //public bool vo14 => VOFloatConstants;
         //public bool vo15 => VOUntypedAllowed;
-        //public bool vo16 => VOInitializeVariables;
+        //public bool vo16 => VOClipperConstructors;
 
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }
@@ -88,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOStringComparisons = opt.Vo13;
                 //VOFloatConstants = opt.Vo14;              // Handled in the parser
                 //VOUntypedAllowed = opt.Vo15;              // Handled in the parser
-                //VOInitializeVariables = opt.Vo16;         // Handled in the parser
+                //VOClipperConstructors = opt.Vo16;         // Handled in the parser
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
@@ -127,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOStringComparisons = opt.VOStringComparisons; // vo13
             //VOFloatConstants = opt.VOFloatConstants; // vo14  // Handled in the parser
             //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
-            //VOInitializeVariables = opt.VOInitializeVariables; // vo16// Handled in the parser
+            //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
             ConsoleOutput = opt.ConsoleOutput;
         }
     }

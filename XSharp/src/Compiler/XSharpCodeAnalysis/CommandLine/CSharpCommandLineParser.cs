@@ -137,6 +137,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         name = "checked-";
                     handled = false;
                     break;
+                case "parseonly":
+                    options.ParseOnly = positive;
+                    break;
                 case "ppo":
                     options.PreProcessorOutput = positive;
                     break;
@@ -176,6 +179,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                     handled = false;
+                    break;
+                case "s":
+                    options.SyntaxCheck = positive;
                     break;
                 case "showdefs":
                 case "showdefines":
@@ -235,10 +241,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Vo15 = positive;
                     options.ExplicitVO15 = true;
                     break;
-                //case "vo16":    // VO Initialize variables
-                //    options.Vo16 = positive;
-                //    options.ExplicitVO16 = true;
-                //    break;
+                case "vo16":    // VO Add Clipper CC Missing constructors
+                    options.Vo16 = positive;
+                    break;
                 case "wx":       // disable warning
                     name = "warnaserror+";
                     handled = false;

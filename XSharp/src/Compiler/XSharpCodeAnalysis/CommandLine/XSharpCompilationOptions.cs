@@ -56,9 +56,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoRun { get; internal set; } = true;
         public bool NoStdDef { get; internal set; } = false;
         public string NameSpace { get; set; } = "";
+        public bool ParseOnly { get; internal set; } = false;
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
+        public bool SyntaxCheck { get; internal set; } = false;
         public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;
         public bool Vo2 { get; internal set; } = false;
@@ -75,12 +77,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo13{ get; internal set; } = false;
         public bool Vo14 { get; internal set; } = false;
         public bool Vo15 { get; internal set; } = false;
-        //public bool Vo16 { get; internal set; } = false;
+        public bool Vo16 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRT);
         public bool CreatingRuntime { get; internal set; } = false;
         public bool ExplicitVO15 { get; internal set; } = false;
-        //public bool ExplicitVO16 { get; internal set; } = false;
         internal VulcanAssemblies VulcanAssemblies { get; set; } = VulcanAssemblies.None;
         public bool Overflow { get; internal set; } = false;
         public bool OverflowHasBeenSet { get; internal set; } = false;

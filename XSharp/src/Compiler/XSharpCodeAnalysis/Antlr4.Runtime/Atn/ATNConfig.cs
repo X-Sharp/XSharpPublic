@@ -1,37 +1,10 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
 
@@ -137,7 +110,6 @@ namespace Antlr4.Runtime.Atn
         }
 
         /// <summary>Gets the ATN state associated with this configuration.</summary>
-        /// <remarks>Gets the ATN state associated with this configuration.</remarks>
         public ATNState State
         {
             get
@@ -147,7 +119,6 @@ namespace Antlr4.Runtime.Atn
         }
 
         /// <summary>What alt (or lexer rule) is predicted by this configuration.</summary>
-        /// <remarks>What alt (or lexer rule) is predicted by this configuration.</remarks>
         public int Alt
         {
             get
@@ -196,7 +167,10 @@ namespace Antlr4.Runtime.Atn
         {
             get
             {
-                return unchecked(((int)(((uint)altAndOuterContextDepth) >> 24)) & (int)(0x7F));
+                unchecked
+                { 
+	                return ((int)(((uint)altAndOuterContextDepth) >> 24)) & unchecked((int)(0x7F));
+                }
             }
             set
             {
@@ -305,7 +279,7 @@ namespace Antlr4.Runtime.Atn
 
         public virtual bool Contains(Antlr4.Runtime.Atn.ATNConfig subconfig)
         {
-            if (this.state.stateNumber != subconfig.State.stateNumber || this.Alt != subconfig.Alt || !this.SemanticContext.Equals(subconfig.SemanticContext))
+            if (this.State.stateNumber != subconfig.State.stateNumber || this.Alt != subconfig.Alt || !this.SemanticContext.Equals(subconfig.SemanticContext))
             {
                 return false;
             }
@@ -371,11 +345,6 @@ namespace Antlr4.Runtime.Atn
         /// the same state, they predict the same alternative, and
         /// syntactic/semantic contexts are the same.
         /// </summary>
-        /// <remarks>
-        /// An ATN configuration is equal to another if both have
-        /// the same state, they predict the same alternative, and
-        /// syntactic/semantic contexts are the same.
-        /// </remarks>
         public override bool Equals(object o)
         {
             if (!(o is Antlr4.Runtime.Atn.ATNConfig))

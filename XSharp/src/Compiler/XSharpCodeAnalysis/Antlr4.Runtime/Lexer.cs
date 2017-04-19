@@ -1,36 +1,9 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
@@ -56,12 +29,12 @@ namespace Antlr4.Runtime
 
         public const int MaxCharValue = '\uFFFE';
 
-        private ICharStream _input;
+        public ICharStream _input;
 
-		private Tuple<ITokenSource, ICharStream> _tokenFactorySourcePair;
+        protected internal Tuple<ITokenSource, ICharStream> _tokenFactorySourcePair;
 
         /// <summary>How to create token objects</summary>
-		private ITokenFactory _factory = CommonTokenFactory.Default;
+        protected internal ITokenFactory _factory = CommonTokenFactory.Default;
 
         /// <summary>The goal of all lexer rules/methods is to create a token object.</summary>
         /// <remarks>
@@ -73,7 +46,7 @@ namespace Antlr4.Runtime
         /// something nonnull so that the auto token emit mechanism will not
         /// emit another token.
         /// </remarks>
-        private IToken _token;
+        public IToken _token;
 
         /// <summary>
         /// What character index in the stream did the current token start at?
@@ -84,30 +57,30 @@ namespace Antlr4.Runtime
         /// Needed, for example, to get the text for current token.  Set at
         /// the start of nextToken.
         /// </remarks>
-        private int _tokenStartCharIndex = -1;
+        public int _tokenStartCharIndex = -1;
 
         /// <summary>The line on which the first character of the token resides</summary>
-		private int _tokenStartLine;
+        public int _tokenStartLine;
 
         /// <summary>The character position of first character within the line</summary>
-		private int _tokenStartColumn;
+        public int _tokenStartCharPositionInLine;
 
         /// <summary>Once we see EOF on char stream, next token will be EOF.</summary>
         /// <remarks>
         /// Once we see EOF on char stream, next token will be EOF.
         /// If you have DONE : EOF ; then you see DONE EOF.
         /// </remarks>
-		private bool _hitEOF;
+        public bool _hitEOF;
 
         /// <summary>The channel number for the current token</summary>
-		private int _channel;
+        public int _channel;
 
         /// <summary>The token type for the current token</summary>
-		private int _type;
+        public int _type;
 
-        private readonly Stack<int> _modeStack = new Stack<int>();
+        public readonly List<int> _modeStack = new List<int>();
 
-		private int _mode = Antlr4.Runtime.Lexer.DefaultMode;
+        public int _mode = Antlr4.Runtime.Lexer.DefaultMode;
 
         /// <summary>
         /// You can set the text for the current token to override what is in
@@ -117,7 +90,7 @@ namespace Antlr4.Runtime
         /// You can set the text for the current token to override what is in
         /// the input char buffer.  Use setText() or can set this instance var.
         /// </remarks>
-		private string _text;
+        public string _text;
 
         public Lexer(ICharStream input)
         {
@@ -137,7 +110,7 @@ namespace Antlr4.Runtime
             _type = TokenConstants.InvalidType;
             _channel = TokenConstants.DefaultChannel;
             _tokenStartCharIndex = -1;
-            _tokenStartColumn = -1;
+            _tokenStartCharPositionInLine = -1;
             _tokenStartLine = -1;
             _text = null;
             _hitEOF = false;
@@ -150,10 +123,6 @@ namespace Antlr4.Runtime
         /// Return a token from this source; i.e., match a token on the char
         /// stream.
         /// </summary>
-        /// <remarks>
-        /// Return a token from this source; i.e., match a token on the char
-        /// stream.
-        /// </remarks>
         public virtual IToken NextToken()
         {
             if (_input == null)
@@ -175,7 +144,7 @@ namespace Antlr4.Runtime
                     _token = null;
                     _channel = TokenConstants.DefaultChannel;
                     _tokenStartCharIndex = _input.Index;
-                    _tokenStartColumn = Interpreter.Column;
+                    _tokenStartCharPositionInLine = Interpreter.Column;
                     _tokenStartLine = Interpreter.Line;
                     _text = null;
                     do
@@ -254,7 +223,7 @@ outer_continue: ;
 
         public virtual void PushMode(int m)
         {
-            _modeStack.Push(_mode);
+            _modeStack.Add(_mode);
             Mode(m);
         }
 
@@ -265,7 +234,8 @@ outer_continue: ;
                 throw new InvalidOperationException();
             }
 
-            int mode = _modeStack.Pop();
+            int mode = _modeStack[_modeStack.Count - 1];
+            _modeStack.RemoveAt(_modeStack.Count - 1);
             Mode(mode);
             return _mode;
         }
@@ -313,7 +283,7 @@ outer_continue: ;
         {
             get
             {
-				return _input;
+                return (ICharStream)InputStream;
             }
         }
 
@@ -346,7 +316,7 @@ outer_continue: ;
         /// </remarks>
         public virtual IToken Emit()
         {
-            IToken t = _factory.Create(_tokenFactorySourcePair, _type, _text, _channel, _tokenStartCharIndex, CharIndex - 1, _tokenStartLine, _tokenStartColumn);
+            IToken t = _factory.Create(_tokenFactorySourcePair, _type, _text, _channel, _tokenStartCharIndex, CharIndex - 1, _tokenStartLine, _tokenStartCharPositionInLine);
             Emit(t);
             return t;
         }
@@ -354,7 +324,7 @@ outer_continue: ;
         public virtual IToken EmitEOF()
         {
             int cpos = Column;
-			int line = Line;
+            int line = Line;
             IToken eof = _factory.Create(_tokenFactorySourcePair, TokenConstants.Eof, null, TokenConstants.DefaultChannel, _input.Index, _input.Index - 1, line, cpos);
             Emit(eof);
             return eof;
@@ -395,46 +365,14 @@ outer_continue: ;
             }
         }
 
-		public virtual int TokenStartCharIndex
-		{
-			get
-			{
-				return _tokenStartCharIndex;
-			}
-		}
-
-		public virtual int TokenStartLine
-		{
-			get
-			{
-				return _tokenStartLine;
-			}
-		}
-
-		public virtual int TokenStartColumn
-		{
-			get
-			{
-				return _tokenStartColumn;
-			}
-		}
-
         /// <summary>
         /// Return the text matched so far for the current token or any text
         /// override.
         /// </summary>
-        /// <remarks>
-        /// Return the text matched so far for the current token or any text
-        /// override.
-        /// </remarks>
         /// <summary>
         /// Set the complete text of this token; it wipes any previous changes to the
         /// text.
         /// </summary>
-        /// <remarks>
-        /// Set the complete text of this token; it wipes any previous changes to the
-        /// text.
-        /// </remarks>
         public virtual string Text
         {
             get
@@ -453,7 +391,6 @@ outer_continue: ;
         }
 
         /// <summary>Override if emitting multiple tokens.</summary>
-        /// <remarks>Override if emitting multiple tokens.</remarks>
         public virtual IToken Token
         {
             get
@@ -493,40 +430,6 @@ outer_continue: ;
             }
         }
 
-        public virtual Stack<int> ModeStack
-        {
-            get
-            {
-                return _modeStack;
-            }
-        }
-
-        public virtual int CurrentMode
-        {
-            get
-            {
-                return _mode;
-            }
-            set
-            {
-                int mode = value;
-                _mode = mode;
-            }
-        }
-
-        public virtual bool HitEOF
-        {
-            get
-            {
-                return _hitEOF;
-            }
-            set
-            {
-                bool hitEOF = value;
-                _hitEOF = hitEOF;
-            }
-        }
-
         public virtual string[] ModeNames
         {
             get
@@ -535,6 +438,23 @@ outer_continue: ;
             }
         }
 
+        /// <summary>
+        /// Used to print out token names like ID during debugging and
+        /// error reporting.
+        /// </summary>
+        /// <remarks>
+        /// Used to print out token names like ID during debugging and
+        /// error reporting.  The generated parsers implement a method
+        /// that overrides this to point to their String[] tokenNames.
+        /// </remarks>
+        [Obsolete("Use IRecognizer.Vocabulary instead.")]
+        public override string[] TokenNames
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         /// <summary>Return a list of all Token objects in input char stream.</summary>
         /// <remarks>
@@ -567,7 +487,7 @@ outer_continue: ;
             string text = _input.GetText(Interval.Of(_tokenStartCharIndex, _input.Index));
             string msg = "token recognition error at: '" + GetErrorDisplay(text) + "'";
             IAntlrErrorListener<int> listener = ErrorListenerDispatch;
-            listener.SyntaxError(this, 0, _tokenStartLine, _tokenStartColumn, msg, e);
+            listener.SyntaxError(this, 0, _tokenStartLine, _tokenStartCharPositionInLine, msg, e);
         }
 
         public virtual string GetErrorDisplay(string s)

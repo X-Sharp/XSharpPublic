@@ -16,7 +16,6 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 
@@ -95,11 +94,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             _rules = new Dictionary<string, PPRules>(StringComparer.OrdinalIgnoreCase);
         }
+
+        internal int Count
+        {
+            get
+            {
+                int result = 0;
+                foreach (var r in _rules)
+                {
+                    result += r.Value.Count;
+                }
+                return result;
+            }
+        }
+
         internal void Add(PPRule rule)
         {
             // find element that matches the first token and insert at the front of the list
             // so rules defined later override rules defined first
-            string key = rule.Key;
+            string key = rule.LookupKey;
             PPRules list;
             if (_rules.ContainsKey(key))
             {
@@ -112,39 +125,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             list.Insert(0, rule);
         }
-        internal PPRules Find(string key)
-        {
-            // Find a list of rules that start with the same first token
-            PPRules list;
-            if (_rules.ContainsKey(key))
-                list = _rules[key];
-            else
-                list = null;
-            return list;
-        }
-
+  
         internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
-            PPRule result = null;
             matchInfo = null;
-            if (tokens?.Count != 0)
+            if (tokens?.Count >= 0)
             {
                 var firsttoken = tokens[0];
-                var rules = Find(firsttoken.Text);
-                if (rules?.Count > 0)
+                var key = firsttoken.Text;
+                while (true)
                 {
-                    // try to find the first rule in the list that matches our tokens
-                    foreach (var rule in rules)
+                    if (_rules.ContainsKey(key))
                     {
-                        if (rule.Matches(tokens, out matchInfo))
+                        // try to find the first rule in the list that matches our tokens
+                        var rules = _rules[key];
+                        foreach (var rule in rules)
                         {
-                            result = rule;
-                            break;
+                            if (rule.Matches(tokens, out matchInfo))
+                            {
+                                return rule;
+                            }
                         }
                     }
+                    if (key.Length <= 4)
+                        return null;
+                    key = key.Substring(0, 4);
                 }
+
             }
-            return result;
+            return null;
         }
     }
 
@@ -218,7 +227,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int end = children[count - 1].End;
             return new PPMatchRange() { _start = start, _length = end - start + 1, _children = children, token = false };
         }
-        internal static PPMatchRange Optional()
+        internal static PPMatchRange Skipped()
         {
             return new PPMatchRange() { _start = -1, _length = 0, token = false, _children = null };
         }
@@ -241,7 +250,73 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return $"{Start},{End}"; 
         }
     }
-
-
+    /// <summary>
+    /// This class is used to monitor recursion for #Translate and #command in the Preprocessor
+    /// </summary>
+    internal class PPUsedRules
+    {
+        class PPUsedRule
+        {
+            PPRule _rule;
+            List<XSharpToken> _tokens;
+            internal PPUsedRule(PPRule rule, List<XSharpToken> tokens)
+            {
+                _rule = rule;
+                _tokens = tokens;
+            }
+            internal bool isDuplicate(PPRule rule, List<XSharpToken> tokens)
+            {
+                if (_rule == rule && _tokens.Count == tokens.Count)
+                {
+                    for (int i = 0; i < tokens.Count; i++)
+                    {
+                        var t1 = tokens[i];
+                        var t2 = _tokens[i];
+                        if (t1.Text != t2.Text)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        }
+        List<PPUsedRule> _list;
+        XSharpPreprocessor _pp;
+        int _maxDepth;
+        internal PPUsedRules(XSharpPreprocessor pp, int maxDepth)
+        {
+            _list = new List<PPUsedRule>();
+            _pp = pp;
+            _maxDepth = maxDepth;
+        }
+        /// <summary>
+        /// Check for recursion, and add the rule to the list of rules that have been used
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="tokens"></param>
+        /// <returns>True when the rule with the same tokens list is found in the list</returns>
+        internal bool HasRecursion(PPRule rule, List<XSharpToken> tokens)
+        {
+            // check to see if this is already there
+            if (_list.Count == _maxDepth)
+            {
+                _pp.AddParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                return true;
+            }
+            foreach (var item in _list)
+            {
+                if (item.isDuplicate(rule, tokens))
+                {
+                    _pp.AddParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                    return true;
+                }
+            }
+            _list.Add(new PPUsedRule(rule, tokens));
+            return false;
+        }
+        internal int Count => _list.Count;
+    }
 }
 

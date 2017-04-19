@@ -1983,7 +1983,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>'{0}' does not implement interface member '{1}'. '{2}' cannot implement an interface member because it is not public.</value>
   </data>
   <data name="ERR_CloseUnimplementedInterfaceMemberWrongReturnType" xml:space="preserve">
-    <value>'{0}' does not implement interface member '{1}'. '{2}' cannot implement '{1}' because it does not have the matching return type of '{3}'.</value>
+    <value>'{0}' does not implement interface member '{1}'. '{2}' cannot implement '{1}' because it does not have the matching return type of '{3}' or because the name does not match exactly.</value>
   </data>
   <data name="ERR_DuplicateTypeForwarder" xml:space="preserve">
     <value>'{0}' duplicate TypeForwardedToAttribute</value>
@@ -4430,6 +4430,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /lb[+|-]                       Allow late binding
  /norun[+|-]                    Do not link to any default runtime
  /ns:&lt;string&gt;                   Default Namespace
+ /s[+-]                         Syntax Check only (will not produce an assembly output)
  /ovf[+|-]                      Integer overflow exceptions (mapped to /checked)
  /vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
  /vo2[+|-]                      Initialize Strings
@@ -4446,6 +4447,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /vo13[+|-]                     Compatible String Comparisons
  /vo14[+|-]                     Use Float Literals
  /vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
+ /vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
 
                         - PREPROCESOR -
 
@@ -4716,11 +4718,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_PreProcessorError" xml:space="preserve">
     <value>Pre-processor: {0}</value>
   </data>
-  <data name="ERR_UserError" xml:space="preserve">
-    <value>Error directive: {0}</value>
-  </data>
-  <data name="WRN_UserWarning" xml:space="preserve">
-    <value>Warning directive: {0}</value>
+  <data name="ERR_PreProcessorRecursiveRule" xml:space="preserve">
+    <value>Recursive preprocessor rule '#{0}' detected</value>
   </data>
   <data name="ERR_UntypedArrayNotAvailableInDialect" xml:space="preserve">
     <value>Untyped arrays are not available in the selected dialect '{0}'</value>
@@ -4837,8 +4836,11 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_StaticLocalInCodeBlock" xml:space="preserve">
     <value>Cannot use static local '{0}' in a codeblock.</value>
   </data>
-
   <data name="ERR_CannotAssignToMethod" xml:space="preserve">
     <value>Cannot assign to '{0}' because it is a '{1}'</value>
   </data>
+  <data name="WRN_GetSetMustHaveBody" xml:space="preserve">
+    <value>A get or set accessor must have a body, an auto property will be generated</value>
+  </data>
+
 </root>

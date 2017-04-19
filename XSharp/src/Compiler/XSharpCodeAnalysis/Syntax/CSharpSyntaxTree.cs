@@ -24,6 +24,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -61,10 +62,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (eof == null)
             {
                 var node = GetNode(root, position);
-                if (node != null)
-                    if (node.XNode == null || node.XNode.IsHidden)
-                        return LineVisibility.Hidden;
-                return string.IsNullOrEmpty(node?.XNode.SourceFileName) ? LineVisibility.Visible : LineVisibility.Hidden;
+                if (node != null && node.XNode != null && node.XNode.IsHidden)
+                {
+                    return LineVisibility.Hidden;
+                }
             }
             return LineVisibility.Visible;
         }
@@ -91,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     file = node.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(file))
                     {
-                        file = (node.XNode.SourceSymbol as InternalSyntax.XSharpToken).SourceFileName;
+                        file = (node.XNode.SourceSymbol as XSharpToken).SourceName;
                     }
                 }
                 SourceText ntext;
@@ -106,15 +107,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             string file = this.FilePath;
             var text = this.GetText();
             var root = (CSharpSyntaxNode)GetRoot();
-            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
-            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
+            var cs = root as CompilationUnitSyntax;
+            var eof = (cs?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
+            var eofPos = cs?.EndOfFileToken.Position;
             if (span.Start >= eofPos && eofPos != null)
             {
                 var start = span.Start - (eofPos ?? 0);
                 var length = span.Length;
-                if (root is CompilationUnitSyntax)
+                if (cs != null)
                 {
-                    foreach (var lead in (root as CompilationUnitSyntax).EndOfFileToken.LeadingTrivia)
+                    foreach (var lead in cs.EndOfFileToken.LeadingTrivia)
                     {
                         if (lead.HasStructure)
                         {
@@ -126,7 +128,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             string fn = f.XNode?.SourceFileName;
                             SourceText ntext;
-                            if (!string.IsNullOrEmpty(fn) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(fn, out ntext))
+                            if (!string.IsNullOrEmpty(fn) && cs.IncludedFiles.TryGetValue(fn, out ntext))
                             {
                                 text = ntext;
                                 file = fn;
@@ -141,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else if (root.XNode != null && eof == null && span.Start != 0 && span.End != 0)
             {
-                var snode = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
+                var snode = (CSharpSyntaxNode)root.ChildThatContainsPosition(span.Start);
                 var enode = snode;
                 while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth))
                 {
@@ -170,13 +172,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     length = snode.XNode.SourceSymbol.StopIndex - start + 1;
                     fn = snode.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(fn))
-                        fn = (snode.XNode.SourceSymbol as InternalSyntax.XSharpToken).SourceFileName;
+                    {
+                        fn = (snode.XNode.SourceSymbol as XSharpToken).SourceName;
+                    }
 
                 }
                 if (length < 0)
                     length = 0;
                 SourceText ntext;
-                if (!string.IsNullOrEmpty(fn) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(fn, out ntext))
+                if (!string.IsNullOrEmpty(fn) && cs.IncludedFiles.TryGetValue(fn, out ntext))
                 {
                     text = ntext;
                     file = fn;

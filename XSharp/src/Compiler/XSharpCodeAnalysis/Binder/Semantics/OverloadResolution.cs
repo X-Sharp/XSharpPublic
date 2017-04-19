@@ -16,8 +16,8 @@ limitations under the License.
 
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using System.Collections.Generic;
-using Antlr4.Runtime;
-using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using XP=LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using System;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -436,21 +436,21 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal static class CastExtensionMethods
     {
-        internal static bool IsVoCast(this ParserRuleContext node)
+        internal static bool IsVoCast(this XSharpParserRuleContext node)
         {
-            if (node is PrimaryExpressionContext)
+            if (node is XP.PrimaryExpressionContext)
             {
-                var pec = node as PrimaryExpressionContext;
-                return pec.Expr is VoCastExpressionContext;
+                var pec = node as XP.PrimaryExpressionContext;
+                return pec.Expr is XP.VoCastExpressionContext;
             }
             return false;
         }
-        internal static bool IsVoConvert(this ParserRuleContext node)
+        internal static bool IsVoConvert(this XSharpParserRuleContext node)
         {
-            if (node is PrimaryExpressionContext)
+            if (node is XP.PrimaryExpressionContext)
             {
-                var pec = node as PrimaryExpressionContext;
-                return pec.Expr is VoConversionExpressionContext;
+                var pec = node as XP.PrimaryExpressionContext;
+                return pec.Expr is XP.VoConversionExpressionContext;
             }
             return false;
         }

@@ -1,37 +1,10 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
 using Antlr4.Runtime.Tree;
-using Antlr4.Runtime.Tree.Pattern;
 using Antlr4.Runtime.Tree.Xpath;
 
 namespace Antlr4.Runtime.Tree.Pattern
@@ -108,7 +81,6 @@ namespace Antlr4.Runtime.Tree.Pattern
         }
 
         /// <summary>Match a specific parse tree against this tree pattern.</summary>
-        /// <remarks>Match a specific parse tree against this tree pattern.</remarks>
         /// <param name="tree">The parse tree to match against this tree pattern.</param>
         /// <returns>
         /// A
@@ -126,7 +98,6 @@ namespace Antlr4.Runtime.Tree.Pattern
         }
 
         /// <summary>Determine whether or not a parse tree matches this tree pattern.</summary>
-        /// <remarks>Determine whether or not a parse tree matches this tree pattern.</remarks>
         /// <param name="tree">The parse tree to match against this tree pattern.</param>
         /// <returns>
         /// 
@@ -147,10 +118,6 @@ namespace Antlr4.Runtime.Tree.Pattern
         /// Find all nodes using XPath and then try to match those subtrees against
         /// this tree pattern.
         /// </summary>
-        /// <remarks>
-        /// Find all nodes using XPath and then try to match those subtrees against
-        /// this tree pattern.
-        /// </remarks>
         /// <param name="tree">
         /// The
         /// <see cref="Antlr4.Runtime.Tree.IParseTree"/>
@@ -201,7 +168,6 @@ namespace Antlr4.Runtime.Tree.Pattern
         }
 
         /// <summary>Get the tree pattern in concrete syntax form.</summary>
-        /// <remarks>Get the tree pattern in concrete syntax form.</remarks>
         /// <returns>The tree pattern in concrete syntax form.</returns>
         [NotNull]
         public virtual string Pattern
@@ -216,10 +182,6 @@ namespace Antlr4.Runtime.Tree.Pattern
         /// Get the parser rule which serves as the outermost rule for the tree
         /// pattern.
         /// </summary>
-        /// <remarks>
-        /// Get the parser rule which serves as the outermost rule for the tree
-        /// pattern.
-        /// </remarks>
         /// <returns>
         /// The parser rule which serves as the outermost rule for the tree
         /// pattern.

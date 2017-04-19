@@ -1,37 +1,10 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
@@ -58,22 +31,18 @@ namespace Antlr4.Runtime.Atn
         public readonly IList<DecisionState> decisionToState = new List<DecisionState>();
 
         /// <summary>Maps from rule index to starting state number.</summary>
-        /// <remarks>Maps from rule index to starting state number.</remarks>
         public RuleStartState[] ruleToStartState;
 
         /// <summary>Maps from rule index to stop state number.</summary>
-        /// <remarks>Maps from rule index to stop state number.</remarks>
         public RuleStopState[] ruleToStopState;
 
         [NotNull]
         public readonly IDictionary<string, TokensStartState> modeNameToStartState = new Dictionary<string, TokensStartState>();
 
         /// <summary>The type of the ATN.</summary>
-        /// <remarks>The type of the ATN.</remarks>
         public readonly ATNType grammarType;
 
         /// <summary>The maximum value for any symbol recognized by a transition in the ATN.</summary>
-        /// <remarks>The maximum value for any symbol recognized by a transition in the ATN.</remarks>
         public readonly int maxTokenType;
 
         /// <summary>For lexer ATNs, this maps the rule index to the resulting token type.</summary>
@@ -102,10 +71,10 @@ namespace Antlr4.Runtime.Atn
         private readonly ConcurrentDictionary<PredictionContext, PredictionContext> contextCache = new ConcurrentDictionary<PredictionContext, PredictionContext>();
 
         [NotNull]
-		public DFA[] decisionToDFA = new DFA[0];
+        public DFA[] decisionToDFA = new DFA[0];
 
         [NotNull]
-		public DFA[] modeToDFA = new DFA[0];
+        public DFA[] modeToDFA = new DFA[0];
 
         protected internal readonly ConcurrentDictionary<int, int> LL1Table = new ConcurrentDictionary<int, int>();
 
@@ -116,6 +85,14 @@ namespace Antlr4.Runtime.Atn
             this.maxTokenType = maxTokenType;
         }
 
+        /// <summary>
+        /// Clears the DFA cached for this ATN.
+        /// </summary>
+        /// <remarks>
+        /// <para>This method is not safe for concurrent use. Since recognizers by default share an <see cref="ATN"/>
+        /// instance, all parsing operations by all recognizers using this instance must be stopped before the DFA can
+        /// be safely cleared.</para>
+        /// </remarks>
         public void ClearDFA()
         {
             decisionToDFA = new DFA[decisionToState.Count];
@@ -143,6 +120,15 @@ namespace Antlr4.Runtime.Atn
         public virtual PredictionContext GetCachedContext(PredictionContext context)
         {
             return PredictionContext.GetCachedContext(context, contextCache, new PredictionContext.IdentityHashMap());
+        }
+
+        public DFA[] DecisionToDfa
+        {
+            get
+            {
+                System.Diagnostics.Debug.Assert(decisionToDFA != null && decisionToDFA.Length == decisionToState.Count);
+                return decisionToDFA;
+            }
         }
 
         /// <summary>
@@ -263,6 +249,19 @@ namespace Antlr4.Runtime.Atn
         /// , it is treated as
         /// <see cref="ParserRuleContext.EmptyContext"/>
         /// .</p>
+        /// <p>Note that this does NOT give you the set of all tokens that could
+        /// appear at a given token position in the input phrase.  In other words, it
+        /// does not answer:</p>
+        /// <quote>"Given a specific partial input phrase, return the set of all
+        /// tokens that can follow the last token in the input phrase."</quote>
+        /// <p>The big difference is that with just the input, the parser could land
+        /// right in the middle of a lookahead decision. Getting all
+        /// <em>possible</em> tokens given a partial input stream is a separate
+        /// computation. See https://github.com/antlr/antlr4/issues/1428</p>
+        /// <p>For this function, we are specifying an ATN state and call stack to
+        /// compute what token(s) can come next and specifically: outside of a
+        /// lookahead decision. That is what you want for error reporting and
+        /// recovery upon parse error.</p>
         /// </summary>
         /// <param name="stateNumber">the ATN state number</param>
         /// <param name="context">the full parse context</param>
@@ -299,7 +298,7 @@ namespace Antlr4.Runtime.Atn
                 following = NextTokens(rt.followState);
                 expected.AddAll(following);
                 expected.Remove(TokenConstants.Epsilon);
-                ctx = ctx.Parent;
+                ctx = ctx.parent;
             }
             if (following.Contains(TokenConstants.Epsilon))
             {

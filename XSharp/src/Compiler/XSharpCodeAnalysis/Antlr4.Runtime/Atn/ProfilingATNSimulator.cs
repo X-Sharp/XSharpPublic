@@ -1,37 +1,13 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Sharpen;
+#if !PORTABLE || NET45PLUS
+using Stopwatch = System.Diagnostics.Stopwatch;
+#endif
 
 namespace Antlr4.Runtime.Atn
 {
@@ -42,13 +18,13 @@ namespace Antlr4.Runtime.Atn
 
         protected internal int numDecisions;
 
-        private ITokenStream _input;
+        protected internal ITokenStream _input;
 
-		private int _startIndex;
+        protected internal int _startIndex;
 
-		private int _sllStopIndex;
+        protected internal int _sllStopIndex;
 
-		private int _llStopIndex;
+        protected internal int _llStopIndex;
 
         protected internal int currentDecision;
 
@@ -97,8 +73,14 @@ namespace Antlr4.Runtime.Atn
                 this.currentDecision = decision;
                 this.currentState = null;
                 this.conflictingAltResolvedBySLL = ATN.InvalidAltNumber;
+#if !PORTABLE || NET45PLUS
+                Stopwatch stopwatch = Stopwatch.StartNew();
+#endif
                 // expensive but useful info
                 int alt = base.AdaptivePredict(input, decision, outerContext);
+#if !PORTABLE || NET45PLUS
+                decisions[decision].timeInPrediction += stopwatch.ElapsedTicks * 100;
+#endif
                 decisions[decision].invocations++;
                 int SLL_k = _sllStopIndex - _startIndex + 1;
                 decisions[decision].SLL_TotalLook += SLL_k;
@@ -106,7 +88,7 @@ namespace Antlr4.Runtime.Atn
                 if (SLL_k > decisions[decision].SLL_MaxLook)
                 {
                     decisions[decision].SLL_MaxLook = SLL_k;
-                    decisions[decision].SLL_MaxLookEvent = new LookaheadEventInfo(decision, null, input, _startIndex, _sllStopIndex, false);
+                    decisions[decision].SLL_MaxLookEvent = new LookaheadEventInfo(decision, null, alt, input, _startIndex, _sllStopIndex, false);
                 }
                 if (_llStopIndex >= 0)
                 {
@@ -116,7 +98,7 @@ namespace Antlr4.Runtime.Atn
                     if (LL_k > decisions[decision].LL_MaxLook)
                     {
                         decisions[decision].LL_MaxLook = LL_k;
-                        decisions[decision].LL_MaxLookEvent = new LookaheadEventInfo(decision, null, input, _startIndex, _llStopIndex, true);
+                        decisions[decision].LL_MaxLookEvent = new LookaheadEventInfo(decision, null, alt, input, _startIndex, _llStopIndex, true);
                     }
                 }
                 return alt;
@@ -189,9 +171,9 @@ namespace Antlr4.Runtime.Atn
             return existingTargetState;
         }
 
-		protected internal override Tuple<DFAState, ParserRuleContext> ComputeTargetState(DFA dfa, DFAState s, ParserRuleContext remainingGlobalContext, int t, bool useContext, PredictionContextCache contextCache)
+        protected internal override Tuple<DFAState, ParserRuleContext> ComputeTargetState(DFA dfa, DFAState s, ParserRuleContext remainingGlobalContext, int t, bool useContext, PredictionContextCache contextCache)
         {
-			Tuple<DFAState, ParserRuleContext> targetState = base.ComputeTargetState(dfa, s, remainingGlobalContext, t, useContext, contextCache);
+            Tuple<DFAState, ParserRuleContext> targetState = base.ComputeTargetState(dfa, s, remainingGlobalContext, t, useContext, contextCache);
             if (useContext)
             {
                 decisions[currentDecision].LL_ATNTransitions++;
@@ -224,7 +206,7 @@ namespace Antlr4.Runtime.Atn
             base.ReportContextSensitivity(dfa, prediction, acceptState, startIndex, stopIndex);
         }
 
-		protected internal override void ReportAttemptingFullContext(DFA dfa, BitSet conflictingAlts, SimulatorState conflictState, int startIndex, int stopIndex)
+        protected internal override void ReportAttemptingFullContext(DFA dfa, BitSet conflictingAlts, SimulatorState conflictState, int startIndex, int stopIndex)
         {
             if (conflictingAlts != null)
             {
@@ -238,7 +220,7 @@ namespace Antlr4.Runtime.Atn
             base.ReportAttemptingFullContext(dfa, conflictingAlts, conflictState, startIndex, stopIndex);
         }
 
-		protected internal override void ReportAmbiguity(DFA dfa, DFAState D, int startIndex, int stopIndex, bool exact, BitSet ambigAlts, ATNConfigSet configs)
+        protected internal override void ReportAmbiguity(DFA dfa, DFAState D, int startIndex, int stopIndex, bool exact, BitSet ambigAlts, ATNConfigSet configs)
         {
             int prediction;
             if (ambigAlts != null)
@@ -258,7 +240,7 @@ namespace Antlr4.Runtime.Atn
                 // context sensitivity.
                 decisions[currentDecision].contextSensitivities.Add(new ContextSensitivityInfo(currentDecision, currentState, _input, startIndex, stopIndex));
             }
-            decisions[currentDecision].ambiguities.Add(new AmbiguityInfo(currentDecision, currentState, _input, startIndex, stopIndex));
+            decisions[currentDecision].ambiguities.Add(new AmbiguityInfo(currentDecision, currentState, ambigAlts, _input, startIndex, stopIndex));
             base.ReportAmbiguity(dfa, D, startIndex, stopIndex, exact, ambigAlts, configs);
         }
 
@@ -268,6 +250,14 @@ namespace Antlr4.Runtime.Atn
             {
                 // ---------------------------------------------------------------------
                 return decisions;
+            }
+        }
+
+        public virtual SimulatorState CurrentState
+        {
+            get
+            {
+                return currentState;
             }
         }
     }

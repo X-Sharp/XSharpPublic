@@ -2672,7 +2672,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; cannot implement &apos;{1}&apos; because it does not have the matching return type of &apos;{3}&apos;..
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; cannot implement &apos;{1}&apos; because it does not have the matching return type of &apos;{3}&apos; or because the name does not match exactly..
         /// </summary>
         internal static string ERR_CloseUnimplementedInterfaceMemberWrongReturnType {
             get {
@@ -7325,6 +7325,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recursive preprocessor rule &apos;#{0}&apos; detected.
+        /// </summary>
+        internal static string ERR_PreProcessorRecursiveRule {
+            get {
+                return ResourceManager.GetString("ERR_PreProcessorRecursiveRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SecurityAction value &apos;{0}&apos; is invalid for PrincipalPermission attribute.
         /// </summary>
         internal static string ERR_PrincipalPermissionInvalidAction {
@@ -8725,15 +8734,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_UseDefViolationThis {
             get {
                 return ResourceManager.GetString("ERR_UseDefViolationThis", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error directive: {0}.
-        /// </summary>
-        internal static string ERR_UserError {
-            get {
-                return ResourceManager.GetString("ERR_UserError", resourceCulture);
             }
         }
         
@@ -11882,6 +11882,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A get or set accessor must have a body, an auto property will be generated.
+        /// </summary>
+        internal static string WRN_GetSetMustHaveBody {
+            get {
+                return ResourceManager.GetString("WRN_GetSetMustHaveBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Defining an alias named &apos;global&apos; is ill-advised since &apos;global::&apos; always references the global namespace and not an alias.
         /// </summary>
         internal static string WRN_GlobalAliasDefn {
@@ -13380,15 +13389,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_UnsafeImplied {
             get {
                 return ResourceManager.GetString("WRN_UnsafeImplied", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warning directive: {0}.
-        /// </summary>
-        internal static string WRN_UserWarning {
-            get {
-                return ResourceManager.GetString("WRN_UserWarning", resourceCulture);
             }
         }
         

@@ -1023,7 +1023,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 writeToPPO("");
             }
-            checkForUnexpectedPPInput(line, 1);
+            // ignore comments after #endregion
+            //checkForUnexpectedPPInput(line, 1);
         }
 
         private void doDefineDirective(List<XSharpToken> line)

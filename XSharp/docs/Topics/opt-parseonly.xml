@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>/parseonly</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">/parseonly</para>
+    </header>
+    <para styleclass="Normal">This option tells the compiler to only parse the source. Will not do any semantic or syntax checks. Is only useful when used as an embedded parser, such as from the X# intellisense system inside Visual Studio. Does not produce the output exe, dll or pdb</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">/parseonly[+|-]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just /parseonly, tells the compiler to only parse the source code.</para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This option has no normal use. It is only useful when running the compiler embedded. Use <text style="font-weight:bold;">/s</text> in stead</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

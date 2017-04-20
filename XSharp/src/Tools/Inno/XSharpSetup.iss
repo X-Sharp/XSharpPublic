@@ -1,6 +1,13 @@
 #define Compression     "lzma2/ultra64"
 ;#define Compression     "none"
 
+;
+; preprocess the help cab files
+;
+#expr Exec('c:\XSharp\Dev\XSharp\Binaries\Help\makecabs.cmd')
+
+
+
 #define FOX
 #ifdef FOX
 #define SetupExeName    "XSharpSetup0211Fox"
@@ -16,10 +23,10 @@
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
-#define VIVersion       "0.2.11.2110"
-#define VITextVersion   "0.2.10.2110 (Beta 11)"                                                                                            
+#define VIVersion       "0.2.11.2111"
+#define VITextVersion   "0.2.11.2111 (Beta 11)"                                                                                            
 #define TouchDate       "2017-04-19"
-#define TouchTime       "02:11:00"
+#define TouchTime       "02:11:01"
 #define InstallPath     "XSharpPath"
 
 
@@ -50,7 +57,7 @@
 #define VS14RegPath      "Software\Microsoft\VisualStudio\14.0"
 #define VS15RegPath      "Software\Microsoft\VisualStudio\15.0"
 #define VS14LocalDir     "{localappdata}\Microsoft\VisualStudio\14.0"
-#define VS15LocalDir     "{localappdata}\Microsoft\VisualStudio\15.0"
+#define VS15LocalDir     "{localappdata}\Microsoft\VisualStudio\15.0_"
 #define SnippetsPath     "\Snippets\1033"
 #define SnippetsSource   "\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
 
@@ -264,14 +271,15 @@ Source: "{#XIDEFolder}{#XIDESetup}";                      DestDir: "{app}\Xide";
 Source: "{#BinPFolder}XSharpProject.vsix";            DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015 or vs2017       
 ; CodeAnalysis is used by project system and CodeDom provider
 #ifdef FOX
-Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015 ;BeforeInstall: DeleteOldFiles(2015);
-Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015; BeforeInstall: DeleteOldFiles(2015);
+Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
 #else
-Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015; BeforeInstall: DeleteOldFiles(2015);
+Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015;
 #endif
-Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vs2015
-Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vs2015; 
+;Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015; 
+Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpColorizer.dll";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpColorizer.pdb";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpModel.dll";                   DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
@@ -311,14 +319,15 @@ Source: "{#BinPFolder}SetupCheck2017.exe";                 DestDir: "{tmp}";    
 ; vs2017
 ; CodeAnalysis is used by project system and CodeDom provider
 #ifdef FOX
-Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017     ;BeforeInstall: DeleteOldFiles(2017);
-Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2017; BeforeInstall: DeleteOldFiles(2017);
+Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2017
 #else
-Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
-Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2017; BeforeInstall: DeleteOldFiles(2017);
+Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2017
 #endif
-Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vs2017
-Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vs2017
+;Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2017
 Source: "{#BinPFolder}XSharpColorizer.dll";               DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
 Source: "{#BinPFolder}XSharpColorizer.pdb";               DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
 Source: "{#BinPFolder}XSharpModel.dll";                   DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
@@ -429,15 +438,21 @@ Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} V
 ; The old License.rtf file.
 ; Template cache, component cache and previous installation of our project system
 ; vs2015
+; Also the CodeDom provider from the GAC
+
+Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\XSharpCodeDomProvider";
+
 Type: files;          Name: "{app}\License.rtf"; 
 Type: filesandordirs; Name: "{app}\Xide"; 
 Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            Components: vs2015
 Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            Components: vs2015
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";       Components: vs2015
 
+
+
 ; vs2017
-Type: filesandordirs; Name: "{#Vs15LocalDir}\vtc";                            Components: vs2017
-Type: filesandordirs; Name: "{#Vs15LocalDir}\ComponentModelCache";            Components: vs2017
+Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId}\vtc";                            Components: vs2017
+Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId}\ComponentModelCache";            Components: vs2017
 Type: filesandordirs; Name: "{code:Getvs2017IdeDir}\Extensions\XSharp";       Components: vs2017
 
 ; remove the old uninstaller because the uninstall file format has changed in one of the previous builds
@@ -471,8 +486,8 @@ Type: dirifempty;     Name: "{commondocs}\XSharp";
 Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            Components: vs2015
 Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            Components: vs2015
 ;vs2017
-Type: filesandordirs; Name: "{#Vs15LocalDir}\vtc";                            Components: vs2017
-Type: filesandordirs; Name: "{#Vs15LocalDir}\ComponentModelCache";            Components: vs2017
+Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId}\vtc";                            Components: vs2017
+Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId}\ComponentModelCache";            Components: vs2017
 
 [Messages]
 WelcomeLabel1=Welcome to {# Product} (X#)
@@ -496,11 +511,16 @@ var
   CancelSetup : Boolean;
   
   vs2017Path : String;
+  vs2017InstanceId : String;
   vs2017Version: String;
   vs2017Installed: Boolean;
   vs2017BaseDir: String;
 
   vs2017Count: Integer;
+  vs2017InstanceId1: String;
+  vs2017InstanceId2: String;
+  vs2017InstanceId3: String;
+
   vs2017BaseDir1: String;
   vs2017BaseDir2: String;
   vs2017BaseDir3: String;
@@ -539,8 +559,6 @@ Workloads:
     Microsoft.VisualStudio.Workload.ManagedDesktop
 }
 
-
-
 procedure TaskKill(FileName: String);
 var
   ResultCode: Integer;
@@ -554,6 +572,7 @@ procedure FindVS2017;
 var FileContents : TArrayOfString;
   ResultCode: Integer;
   i: integer;
+  j: integer;
   line: String;
   tokenLength: Integer;
   token: String;
@@ -575,7 +594,21 @@ begin
                Log(line);
                token := 'InstanceId:';
                if Pos(token, line) > 0  then 
+               begin
                   vs2017Count := vs2017Count + 1;
+                  tokenLength := Length(token);
+                  vs2017InstanceId := Trim(Copy(line, tokenLength+1, Length(line) - tokenLength));
+                  j := Pos('(',vs2017InstanceId)
+                  if  j > 0 then
+                     vs2017InstanceId := trim(Copy(vs2017InstanceId, 1, j-1));
+                  if vs2017Count = 1 then
+                     vs2017InstanceId1 := vs2017InstanceId;
+                  if vs2017Count = 2 then
+                     vs2017InstanceId2 := vs2017InstanceId;
+                  if vs2017Count = 3 then
+                     vs2017InstanceId3 := vs2017InstanceId;
+
+               end
                token := 'InstallationPath:';
                if Pos(token, line) > 0  then 
                 begin
@@ -610,16 +643,19 @@ begin
       Log('Vs 2017 # of installations: '+IntToStr(vs2017Count));
       if vs2017Count > 0 then
       begin
+        Log('Vs 2017 instanceId 1      : '+vs2017InstanceId1);
         Log('Vs 2017 installation dir 1: '+vs2017BaseDir1);
         Log('Vs 2017 product version 1 : '+vs2017Version1);
       end
       if vs2017Count > 1 then
       begin
+        Log('Vs 2017 instanceId 2      : '+vs2017InstanceId2);
         Log('Vs 2017 installation dir 2: '+vs2017BaseDir2);
         Log('Vs 2017 product version 2 : '+vs2017Version2);
       end
       if vs2017Count > 2 then
       begin
+        Log('Vs 2017 instanceId 3      : '+vs2017InstanceId3);
         Log('Vs 2017 installation dir 3: '+vs2017BaseDir3);
         Log('Vs 2017 product version  3: '+vs2017Version3);
       end
@@ -712,6 +748,16 @@ end;
 function Getvs2017IdeDir(Param: String): String;
 begin
   result := vs2017Path;
+end;
+
+{ get instance id so we can delete the proper folder in appdata\local }
+function GetVs2017InstanceId(Param: String): String;
+begin
+  case vs2017VersionPage.SelectedValueIndex of
+    0: result := Vs2017InstanceId1;
+    1: result := Vs2017InstanceId2;
+    2: result := Vs2017InstanceId3;
+  end;
 end;
 
 function Getvs2017Version(Param: String): String;

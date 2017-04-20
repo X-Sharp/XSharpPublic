@@ -24,7 +24,6 @@ namespace XSharp.Project
     {
         private XSharpQuickInfoSourceProvider m_provider;
         private ITextBuffer m_subjectBuffer;
-        private Dictionary<string, string> m_dictionary;
         private String fileName;
 
         public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer subjectBuffer)
@@ -33,12 +32,6 @@ namespace XSharp.Project
             m_subjectBuffer = subjectBuffer;
 
             fileName = this.GetFileName(m_subjectBuffer);
-            //these are the method names and their descriptions
-            m_dictionary = new Dictionary<string, string>();
-            m_dictionary.Add("add", "int add(int firstInt, int secondInt)\nAdds one integer to another.");
-            m_dictionary.Add("subtract", "int subtract(int firstInt, int secondInt)\nSubtracts one integer from another.");
-            m_dictionary.Add("multiply", "int multiply(int firstInt, int secondInt)\nMultiplies one integer by another.");
-            m_dictionary.Add("divide", "int divide(int firstInt, int secondInt)\nDivides one integer by another.");
         }
 
         private string GetFileName(ITextBuffer buffer)
@@ -85,14 +78,19 @@ namespace XSharp.Project
             // Then, the corresponding Type/Element if possible
             IToken stopToken;
             //ITokenStream tokenStream;
-            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true);
+            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, fileName);
             // Check if we can get the member where we are
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
             MemberInfo systemElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, stopToken, out gotoElement, out systemElement);
+            String currentNS = "";
+            if (currentNamespace != null)
+            {
+                currentNS = currentNamespace.Name;
+            }
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out systemElement);
             //
             //
             if ( (gotoElement != null) || (systemElement != null) )
@@ -110,8 +108,17 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(systemElement);
-                    qiContent.Add(analysis.Description);
+                    if ( systemElement is TypeInfo )
+                    {
+                        XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)systemElement);
+                        qiContent.Add(analysis.Description);
+                    }
+                    else
+                    {
+                        XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(systemElement);
+                        qiContent.Add(analysis.Description);
+                    }
+
                 }
 
                 return;

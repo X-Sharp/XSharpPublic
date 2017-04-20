@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis;
+using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.TableManager;
 using System;
@@ -27,7 +28,7 @@ namespace XSharpModel
         void ShowIntellisenseErrors();
         bool IsDocumentOpen(string file);
         List<IXErrorPosition> GetIntellisenseErrorPos(string fileName);
-        string[] CommandLineArgs { get; }
+        XSharpParseOptions ParseOptions { get; }
     }
 
     public interface IXErrorPosition

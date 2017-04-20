@@ -26,9 +26,10 @@ namespace XSharp.Project
 
         // The parameterless constructor is called by the WPF designer ?
 
-        public VSXSharpCodeDomProvider(XSharpFileNode fileNode)
+        public VSXSharpCodeDomProvider(XSharpFileNode fileNode)  
         {
             _fileNode = fileNode;
+            _projectNode = fileNode.ProjectMgr as XSharpProjectNode;
         }
 
         #region helper functions
@@ -210,7 +211,7 @@ namespace XSharp.Project
                 designerStream.Close();
                 NormalizeLineEndings(designerPrgFile);
                 // The problem here, is that we "may" have some new members, like EvenHandlers, and we need to update their position (line/col)
-                XSharpCodeParser parser = new XSharpCodeParser();
+                XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
                 parser.TabSize = XSharpCodeDomProvider.TabSize;
                 parser.FileName = designerPrgFile;
                 CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
@@ -289,7 +290,7 @@ namespace XSharp.Project
                     DocDataTextReader ddtr = new DocDataTextReader(docData);
                     // Retrieve 
                     string generatedSource = ddtr.ReadToEnd();
-                    XSharpCodeParser parser = new XSharpCodeParser();
+                    XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
                     parser.TabSize = XSharpCodeDomProvider.TabSize;
                     if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_FILENAME))
                     {

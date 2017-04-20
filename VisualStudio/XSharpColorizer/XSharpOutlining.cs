@@ -100,8 +100,11 @@ namespace XSharpColorizer
                 int endLineNumber = fullSpan.End.GetContainingLine().LineNumber;
                 //
                 Stack<ClassificationSpan> startStack = new Stack<ClassificationSpan>();
+                // convert classifications to an array so there will be no crash when the classifications are changed
+                // in another thread.
+                var aclassifications = classifications.ToArray();
                 // Now, let's have a look at all the Classifications we have in the document
-                foreach (var tag in classifications)
+                foreach (var tag in aclassifications)
                 {
                     // Is it a Region ?
                     if (tag.ClassificationType.IsOfType(this.xsharpRegionStartType.Classification))
@@ -122,9 +125,7 @@ namespace XSharpColorizer
                             //
                             sSpan = new SnapshotSpan(startLine.Start, startLine.End);
                             String lineText = sSpan.GetText();
-                            // XSHARP : Temporary Solution - Remove Region marking
-                            //yield break;
-                            ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
+                           ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
                             yield return new TagSpan<IOutliningRegionTag>(
                                 new SnapshotSpan(startLine.End, endLine.End),
                                 new OutliningRegionTag(false, true, ellipsis, hoverText));

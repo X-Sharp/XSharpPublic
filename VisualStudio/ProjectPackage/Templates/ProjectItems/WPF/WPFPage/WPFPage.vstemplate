@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
   <TemplateData>
-    <Name>WPF Page</Name>
-    <Description>A WPF Page</Description>
-    <Icon Package="{b3bae735-386c-4030-8329-ef48eeda4036}" ID="4597" />
+    <Name>Page (WPF)</Name>
+    <Description>Windows Presentation Foundation page</Description>
+    <Icon>WPFPage.png</Icon>
     <TemplateID>XSharp.WPF.Page</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

@@ -46,12 +46,6 @@ namespace XSharp.Project
         internal const string descOptimize = "Should compiler optimize output?";
         internal const string captUseSharedCompilation = "Use Shared Compiler";
         internal const string descUseSharedCompilation = "Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors)";
-        internal const string captPreBuildEvent = "Pre Build Event";
-        internal const string descPreBuildEvent = "Pre Build Event Command Line (may use macros)";
-        internal const string captPostBuildEvent = "Post Build Event";
-        internal const string descPostBuildEvent = "Post Build Event Command Line (may use macros)";
-        internal const string captRunPostBuildEvent = "Run the Post Build Event";
-        internal const string descRunPostBuildEvent = "When to run the Post Build Event";
         internal const string captDisabledWarnings = "Suppress Specific Warnings";
         internal const string descDisabledWarnings = "Specify a list of warnings to suppress (/nowarn)";
         internal const string captWarningLevel = "Warning Level";
@@ -88,9 +82,6 @@ namespace XSharp.Project
         private bool delaysign;
         private string assemblyoriginatorkeyfile;
         private string disabledwarnings;
-        private string prebuildevent;
-        private string postbuildevent;
-        private RunPostBuildEvent runpostbuildevent;
         private bool docfile;
         private string documentationFile;
         private string outputpath;
@@ -145,6 +136,10 @@ namespace XSharp.Project
             {
                 this.platformtarget = value;
                 this.IsDirty = true;
+                if (this.platformtarget != Platform.AnyCPU)
+                {
+                    this.Prefer32Bit = false;
+                }
                 // now enable/disable the readonly flag on Prefer32bit
                 EnableDisablePrefer32Bit();
             }
@@ -238,34 +233,6 @@ namespace XSharp.Project
             set { this.usesharedcompilation = value; this.IsDirty = true; }
         }
 
-        [Category(catEvents)]
-        [DisplayName(captPreBuildEvent)]
-        [Description(descPreBuildEvent)]
-        [Editor(typeof(XSharpMLEPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        public string PreBuildEvent
-        {
-            get { return this.prebuildevent; }
-            set { this.prebuildevent = value; this.IsDirty = true; }
-        }
-
-        [Category(catEvents)]
-        [DisplayName(captPostBuildEvent)]
-        [Description(descPostBuildEvent)]
-        [Editor(typeof(XSharpMLEPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        public string PostBuildEvent
-        {
-            get { return this.postbuildevent; }
-            set { this.postbuildevent = value; this.IsDirty = true; }
-        }
-
-        [Category(catEvents)]
-        [DisplayName(captRunPostBuildEvent)]
-        [Description(descRunPostBuildEvent)]
-        public RunPostBuildEvent RunPostBuildEvent
-        {
-            get { return this.runpostbuildevent; }
-            set { this.runpostbuildevent = value; this.IsDirty = true; }
-        }
         [Category(catWarnings)]
         [DisplayName(captDisabledWarnings)]
         [Description(descDisabledWarnings)]
@@ -379,13 +346,8 @@ namespace XSharp.Project
             intermediateoutputpath = AddSlash(intermediateoutputpath);
             optimize = getCfgLogic(nameof(Optimize),  false);
             usesharedcompilation = getCfgLogic(nameof(UseSharedCompilation),  true);
-            prebuildevent = getCfgString(nameof(PreBuildEvent),"");
-            postbuildevent = getCfgString(nameof(PostBuildEvent), "");
-            string temp= "";
-            temp = getCfgString(nameof(RunPostBuildEvent),  "Always");
-            runpostbuildevent = (RunPostBuildEvent) new RunPostBuildEventConverter().ConvertFromString(temp);
 
-            temp = getCfgString(nameof(DocumentationFile), "");
+            var temp = getCfgString(nameof(DocumentationFile), "");
             docfile = !string.IsNullOrEmpty(temp);
             documentationFile = temp;
 
@@ -440,9 +402,6 @@ namespace XSharp.Project
             }
             this.SetConfigProperty(nameof(Optimize), this.optimize.ToString().ToLower());
             this.SetConfigProperty(nameof(UseSharedCompilation), this.usesharedcompilation.ToString().ToLower());
-            this.SetConfigProperty(nameof(PreBuildEvent), this.prebuildevent?.ToString());
-            this.SetConfigProperty(nameof(PostBuildEvent), this.postbuildevent?.ToString());
-            this.SetConfigProperty(nameof(RunPostBuildEvent), this.runpostbuildevent.ToString());
             this.SetConfigProperty(nameof(DisabledWarnings), this.disabledwarnings?.ToString());
             this.SetConfigProperty(nameof(WarningLevel), this.warningLevel.ToString().ToLower());
             this.SetConfigProperty(nameof(TreatWarningsAsErrors), this.warningAsErrors.ToString().ToLower());

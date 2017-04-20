@@ -67,7 +67,7 @@ namespace XSharpModel
             }
         }
 
-        public CompletionType(XVariable var)
+        public CompletionType(XVariable var, string defaultNS)
         {
             // We know the context
             // var.Parent
@@ -78,7 +78,11 @@ namespace XSharpModel
             XTypeMember member = var.Parent as XTypeMember;
             if (member != null)
             {
-                CheckProjectType(var.TypeName, member.File, member.Parent.NameSpace);
+                if ( !String.IsNullOrEmpty(member.Parent.NameSpace) )
+                {
+                    defaultNS = member.Parent.NameSpace;
+                }
+                CheckProjectType(var.TypeName, member.File, defaultNS);
             }
         }
 

@@ -1914,7 +1914,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
             var entity = context.children[0];
-            if (entity is XP.IGlobalEntityContext)
+            if (_isScript)
+            {
+                context.Put(entity.Get<CSharpSyntaxNode>());
+            }
+            else if (entity is XP.IGlobalEntityContext)
             {
                 var modifiers = ((XP.IGlobalEntityContext)entity).FuncProcModifiers;
                 if (entity is XP.ProcedureContext)

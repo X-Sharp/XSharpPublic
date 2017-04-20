@@ -27,7 +27,7 @@ namespace XSharp.Project
       }
       protected override NodeProperties CreatePropertiesObject()
       {
-          return new ReferenceNodeProperties(this);
+          return new XSharpAssemblyReferenceNodeProperties(this);
       }
 
 

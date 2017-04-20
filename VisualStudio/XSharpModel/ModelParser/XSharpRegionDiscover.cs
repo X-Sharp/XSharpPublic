@@ -24,9 +24,23 @@ namespace XSharpModel
         internal List<ClassificationSpan> tags = new List<ClassificationSpan>();
         public ITextSnapshot Snapshot { get; set; }
         public bool BuildRegionTags { get; internal set; }
+        public bool BuildLocals
+        {
 
+            get
+            {
+                return _buildLocals;
+            }
+
+            internal set
+            {
+                _buildLocals = value;
+            }
+        }
         private bool _reInitModel;
         private bool _buildModel;
+        private bool _buildLocals = false;
+
         public bool BuildModel
         {
             get
@@ -50,6 +64,8 @@ namespace XSharpModel
 
         public void RegionExitEveryRule([NotNull] ParserRuleContext context)
         {
+            // we can probably move most of this to the Enter and Exit methods
+            // for each type and member rule as well.
             try
             {
                 if ((context is XSharpParser.Namespace_Context) ||
@@ -158,7 +174,7 @@ namespace XSharpModel
                 XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
                 var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
                 tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
-                tokenSpan = new TextSpan(lastTokenInContext.Stop.StartIndex - 1, 1);
+                tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex-1 , 1);
                 tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
             }
             else if (endToken is ParserRuleContext)

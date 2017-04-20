@@ -51,10 +51,11 @@
     <Reference Include="System.Drawing" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="XSharp.CodeAnalysis">
-      <HintPath>..\..\..\..\..\..\..\XSharp\DevPublic\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IProjectTypeHelper.cs" />
     <Compile Include="XSharpCodeCompiler.cs" />
     <Compile Include="XSharpCodeConstants.cs" />
     <Compile Include="XSharpCodeGenerator.cs" />

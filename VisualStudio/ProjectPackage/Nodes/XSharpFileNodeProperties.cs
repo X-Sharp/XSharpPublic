@@ -129,9 +129,13 @@ namespace XSharp.Project
                     case XSharpBuildAction.Page:
                     case XSharpBuildAction.Resource:
                         return BuildActionEnum.Compile;
-
+                    case XSharpBuildAction.EmbeddedResource:
+                        return BuildActionEnum.EmbeddedResource;
                     default:
-                        return (BuildActionEnum)Enum.Parse(typeof(BuildAction), XSharpBuildAction.ToString());
+                        var action = BuildActionEnum.None;
+                        if (Enum.TryParse<BuildActionEnum>(XSharpBuildAction.ToString(), out action))
+                            return action;
+                        return BuildActionEnum.None;
                 }
             }
 
@@ -139,7 +143,10 @@ namespace XSharp.Project
             {
                 try
                 {
-                    this.XSharpBuildAction = (XSharpBuildAction)Enum.Parse(typeof(XSharpBuildAction), value.ToString());
+                    var action = XSharpBuildAction.None;
+                    if (Enum.TryParse<XSharpBuildAction>(value.ToString(), out action))
+                        this.XSharpBuildAction = action;
+                    this.XSharpBuildAction = XSharpBuildAction.None;
                 }
                 catch (Exception)
                 {

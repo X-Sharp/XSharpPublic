@@ -90,15 +90,15 @@ namespace XSharp.LanguageService
             {
                 return elt1.Name.CompareTo(elt2.Name);
             });
+            XType typeGlobal = null;
+
             foreach (XType eltType in xList)
             {
-                //
-                if ((eltType.Kind != Kind.Class) &&
-                    (eltType.Kind != Kind.Structure) &&
-                    (eltType.Kind != Kind.Interface) &&
-                    (eltType.Kind != Kind.Enum))
+                if (eltType.Kind == Kind.Namespace)
                     continue;
                 //
+                if (eltType.Name == XType.GlobalName)
+                    typeGlobal = eltType;
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
                 //
                 
@@ -132,6 +132,8 @@ namespace XSharp.LanguageService
             }
             //
             dropDownMembers.Clear();
+            if (typeAtPos == null)
+                typeAtPos = typeGlobal;
             if (typeAtPos != null)
             {
                 if (typeAtPos.Members.Count > 0)
@@ -165,11 +167,11 @@ namespace XSharp.LanguageService
                 }
             }
             //
-            if (nSelType > -1)
+            //if (nSelType > -1)
             {
                 selectedType = nSelType;
             }
-            if (nSelMbr > -1)
+            //if (nSelMbr > -1)
             {
                 selectedMember = nSelMbr;
             }

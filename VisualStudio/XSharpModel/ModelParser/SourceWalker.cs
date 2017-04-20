@@ -12,19 +12,11 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using LanguageService.SyntaxTree;
-
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace XSharpModel
 {
     public class SourceWalker
     {
-
-        static XSharpCommandLineParser xsCmdLineparser;
-
-        static SourceWalker()
-        {
-            xsCmdLineparser = XSharpCommandLineParser.Default;
-        }
-
         private IClassificationType _xsharpIdentifierType;
         private IClassificationType _xsharpBraceOpenType;
         private IClassificationType _xsharpBraceCloseType;
@@ -34,8 +26,7 @@ namespace XSharpModel
         private string _source;
         private string _fullPath;
         private List<ClassificationSpan> _tags;
-        private string[] _args;
-        private XSharpParseOptions xsparseoptions;
+        private IXSharpProject _prjNode;
 
         private XFile _file;
 
@@ -58,7 +49,11 @@ namespace XSharpModel
             set
             {
                 _fullPath = value;
-                this._file = XSolution.FindFullPath(value);
+                var file = XSolution.FindFullPath(value);
+                if (file == null)
+                    file = new XFile(_fullPath);
+                this.File = file;       // This also sets the _prjNode and _source
+
             }
         }
 
@@ -66,13 +61,15 @@ namespace XSharpModel
         {
             set
             {
-                this._file = value;
-                if (this._file != null)
+                System.Diagnostics.Debug.Assert(value != null);
+                if (value != null)
                 {
-                    this._fullPath = this._file.FullPath;
-                    if (this._source == null)
+                    _file = value;
+                    _prjNode = _file?.Project?.ProjectNode;
+                    _fullPath = _file.FullPath;
+                    if (_source == null)
                     {
-                        this._source = System.IO.File.ReadAllText(this._file.FullPath);
+                        _source = System.IO.File.ReadAllText(_fullPath);
                     }
                 }
             }
@@ -101,18 +98,19 @@ namespace XSharpModel
 
         }
 
-        public string Source
-        {
-            get
-            {
-                return _source;
-            }
+        // Unused ?
+        //public string Source
+        //{
+        //    get
+        //    {
+        //        return _source;
+        //    }
 
-            set
-            {
-                _source = value;
-            }
-        }
+        //    set
+        //    {
+        //        _source = value;
+        //    }
+        //}
 
         public SourceWalker()
         {
@@ -137,32 +135,30 @@ namespace XSharpModel
         {
             _treeInit = false;
             //
-            if (this.File == null || this.File.Project == null || this.File.Project.ProjectNode == null)
-                return;
 
             try
             {
                 // this gets at least the default include path     
                 // so we can process Vulcan and XSharp include files           
                 // get command line args and compare with old args
-                var args = this.File.Project.ProjectNode.CommandLineArgs;
-                if (args != _args || xsparseoptions == null)
+                XSharpParseOptions parseoptions;
+                // file may be empty when opening a standalone PRG file
+                if (_prjNode == null)
                 {
-                    _args = args;
-                    var cmdlineopts = xsCmdLineparser.Parse(args, "", "", "");
-                    xsparseoptions = cmdlineopts.ParseOptions;
-                }
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, xsparseoptions, _fullPath);
-                if ( this.File != null )
-                {
+                    parseoptions = XSharpParseOptions.Default;
+                    //this.File.HashCode = _source.GetHashCode();
                     // Put a Hash Tag on the File
-                    this.File.HashCode = _source.GetHashCode();
                 }
+                else
+                {
+                    parseoptions = _prjNode.ParseOptions;
+                }
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, parseoptions, _fullPath);
                 var syntaxRoot = tree.GetRoot();
 
-                var prjNode = File.Project.ProjectNode;
-
-                ShowErrorsAsync(syntaxRoot);
+               
+                // Disabled for now . We may want to enable this for the current document only
+                // ShowErrorsAsync(syntaxRoot);
 
                  // Get the antlr4 parse tree root
                 _xTree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
@@ -181,8 +177,8 @@ namespace XSharpModel
         void ShowErrorsAsync(LanguageService.CodeAnalysis.SyntaxNode syntaxRoot)
         {
             // To list errors: But how to add to errorlist from here ?
-            
-            var prjNode = File.Project.ProjectNode;
+            if (_prjNode == null)
+                return;
             lock (_gate)
             {
                 errors = syntaxRoot.GetDiagnostics();
@@ -198,18 +194,18 @@ namespace XSharpModel
                 {
                     current = errors;
                     string path = File.FullPath;
-                    prjNode.ClearIntellisenseErrors(path);
-                    if (current != null && prjNode.IsDocumentOpen(path))
+                    _prjNode.ClearIntellisenseErrors(path);
+                    if (current != null && _prjNode.IsDocumentOpen(path))
                     {
                         foreach (var diag in current)
                         {
                             var span = diag.Location.GetLineSpan();
                             var loc = span.StartLinePosition;
                             var length = span.Span.End.Character - span.Span.Start.Character + 1;
-                            prjNode.AddIntellisenseError(path, loc.Line + 1, loc.Character + 1,length ,diag.Id, diag.GetMessage(), diag.Severity);
+                            _prjNode.AddIntellisenseError(path, loc.Line + 1, loc.Character + 1,length ,diag.Id, diag.GetMessage(), diag.Severity);
                         }
                     }
-                    prjNode.ShowIntellisenseErrors();
+                    _prjNode.ShowIntellisenseErrors();
                 }
             //});
             //thread.Start();
@@ -218,9 +214,9 @@ namespace XSharpModel
 
         public void BuildRegionTagsOnly()
         {
-            var discover = new XSharpModelRegionDiscover();
-            discover.File = this._file;
+            var discover = new XSharpModelRegionDiscover(_file);
             discover.BuildRegionTags = true;
+            discover.BuildLocals = true;
             discover.BuildModel = false;
             //
             if ( _treeInit && ( _snapshot != null ) )
@@ -242,13 +238,13 @@ namespace XSharpModel
 
         public void BuildModelOnly()
         {
-            // abort when the project is unloaded
-            if (!_file.Project.Loaded)
+            // abort when the project is unloaded or when no project
+            // because in these cases there is no need to build a model
+            if (_prjNode == null || !_file.Project.Loaded)
                 return;
 
             //
-            var discover = new XSharpModelRegionDiscover();
-            discover.File = this._file;
+            var discover = new XSharpModelRegionDiscover(_file);
             discover.BuildRegionTags = false;
             discover.BuildModel = true;
             if (_file != null)
@@ -271,17 +267,11 @@ namespace XSharpModel
         public void BuildModelAndRegionTags()
         {
             //
-            var discover = new XSharpModelRegionDiscover();
-            discover.File = this._file;
+            var discover = new XSharpModelRegionDiscover(_file);
             discover.BuildRegionTags = (_snapshot != null);
-            discover.BuildModel = false;
-            if (this._file != null)
-            {
-                if ( _file.Project.Loaded )
-                {
-                    discover.BuildModel = ! _file.Parsed;
-                }
-            }
+            discover.BuildModel = true;
+            discover.BuildLocals = true;
+
             //
             if (_treeInit)
             {
@@ -297,7 +287,16 @@ namespace XSharpModel
                     discover.xsharpRegionStopType = _xsharpRegionStopType;
                 }
                 // Walk the tree. The TreeDiscover class will build the model.
-                walker.Walk(discover, _xTree);
+                // Make sure that when the is an error during the walking
+                // that we will not abort.
+                try
+                {
+                    walker.Walk(discover, _xTree);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
             }
             if ( discover.BuildRegionTags )
             {

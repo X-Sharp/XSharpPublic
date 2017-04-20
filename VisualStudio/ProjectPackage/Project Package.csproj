@@ -338,6 +338,12 @@
     <ZipProject Include="Templates\Projects\VulcanApp\VulcanApplication.png" />
     <ZipProject Include="Templates\Projects\VulcanApp\VulcanApplication.vstemplate" />
     <ZipProject Include="Templates\Projects\VulcanApp\Readme.txt" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.png" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.png" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.png" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.png" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.png" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.png" />
     <Content Include="XSharp.png" />
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

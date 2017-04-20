@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <Name>WPF UserControl</Name>
-    <Description>A WPF User Control</Description>
-    <Icon Package="{b3bae735-386c-4030-8329-ef48eeda4036}" ID="4594" />
+    <Name>UserControl (WPF)</Name>
+    <Description>Windows Presentation Foundation user control</Description>
+    <Icon>WPFUserControl.png</Icon>
     <TemplateID>XSharp.WPF.UserControl</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

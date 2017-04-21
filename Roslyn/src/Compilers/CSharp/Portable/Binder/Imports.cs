@@ -210,6 +210,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
 #if XSHARP
+                        if (compilation.IsSubmission && !usingDirective.UsingKeyword.HasTrailingTrivia)
+                            continue;
                         if (HandleVulcanImport(usingDirective,usingsBinder, usings, uniqueUsings, basesBeingResolved, compilation))
                             continue;
 #endif
@@ -493,7 +495,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (ExternAliasDirectiveSyntax aliasSyntax in syntaxList)
             {
 #if XSHARP
-                if (compilation.IsSubmission && aliasSyntax.HasLeadingTrivia)
+                if (compilation.IsSubmission && !aliasSyntax.ExternKeyword.HasTrailingTrivia)
                 {
                     continue;
                 }

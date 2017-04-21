@@ -4,9 +4,7 @@
 ;
 ; preprocess the help cab files
 ;
-#expr Exec('copy makecabs.cmd c:\XSharp\Dev\XSharp\Binaries\Help)
-#expr Exec('copy xsharp.msha c:\XSharp\Dev\XSharp\Binaries\Help)
-#expr Exec('c:\XSharp\Dev\XSharp\Binaries\Help\makecabs.cmd')
+#expr Exec('c:\xsharp\dev\xsharp\src\setup\makecabs.cmd')
 
 
 
@@ -19,16 +17,16 @@
 
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.11.0"
+#define ProdVer         "XSharp 0.2.11.2"
 #define ProdBuild       "XSharp Beta 11"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
-#define VIVersion       "0.2.11.2111"
-#define VITextVersion   "0.2.11.2111 (Beta 11)"                                                                                            
-#define TouchDate       "2017-04-19"
-#define TouchTime       "02:11:01"
+#define VIVersion       "0.2.11.2112"
+#define VITextVersion   "0.2.11.2112 (Beta 11)"                                                                                            
+#define TouchDate       "2017-04-21"
+#define TouchTime       "02:11:02"
 #define InstallPath     "XSharpPath"
 
 
@@ -48,8 +46,8 @@
 #define OutPutFolder    "\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "\Xsharp\Dev\XSharp\Xide\"
-#define XIDESetup       "XIDE_Set_up_1.08.exe"
-#define XIDEVersion     "1.08"
+#define XIDESetup       "XIDE_Set_up_1.09.exe"
+#define XIDEVersion     "1.09"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"

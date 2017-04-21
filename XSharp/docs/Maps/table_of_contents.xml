@@ -106,8 +106,11 @@
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
       <caption translate="true">Using X# in Visual Studio</caption>
-      <topicref type="topic" id="423888586335039" build="ALL" modified="2016-01-19T21:24:53.563Z" icon="0" href="Project-System">
+      <topicref type="topic" id="423888586335039" modified="2017-04-20T14:38:49.536Z" icon="0" href="Project-System">
         <caption translate="true">Project System</caption>
+        <topicref type="topic" id="42386764973040" build="ALL" modified="2016-01-19T21:24:53.694Z" icon="0" href="Source-code-Items">
+          <caption translate="true">Source code Items</caption>
+        </topicref>
         <topicref type="topic" id="423886862409427" build="ALL" modified="2016-01-19T21:24:53.893Z" icon="0" href="Forms">
           <caption translate="true">Forms</caption>
         </topicref>
@@ -123,11 +126,8 @@
         <topicref type="topic" id="423889093227394" build="ALL" modified="2016-01-19T21:24:53.825Z" icon="0" href="Settings">
           <caption translate="true">Settings</caption>
         </topicref>
-        <topicref type="topic" id="42386764973040" build="ALL" modified="2016-01-19T21:24:53.694Z" icon="0" href="Source-code-Items">
-          <caption translate="true">Source code Items</caption>
-        </topicref>
       </topicref>
-      <topicref type="topic" id="423888873133831" build="ALL" modified="2016-01-19T21:24:54.026Z" icon="0" href="Source-Code-Editor">
+      <topicref type="topic" id="423888873133831" modified="2017-04-20T14:38:45.180Z" icon="0" href="Source-Code-Editor">
         <caption translate="true">Source Code Editor</caption>
         <topicref type="topic" id="423887361540682" build="ALL" modified="2016-01-19T21:24:54.093Z" icon="0" href="Keyword-Coloring">
           <caption translate="true">Keyword Coloring</caption>
@@ -151,7 +151,7 @@
           <caption translate="true">Code Completion</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423890888167298" build="ALL" modified="2016-01-19T21:24:54.492Z" icon="0" href="Templates">
+      <topicref type="topic" id="423890888167298" build="ALL" modified="2017-04-20T14:46:46.911Z" icon="0" href="Templates">
         <caption translate="true">Templates</caption>
         <topicref type="topic" id="423886836758749" build="ALL" modified="2016-01-19T21:24:54.559Z" icon="0" href="Project-Templates">
           <caption translate="true">Project Templates</caption>
@@ -160,11 +160,11 @@
           <caption translate="true">Item Templates</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423887105698173" build="ALL" modified="2016-01-19T21:24:54.667Z" icon="0" href="Debugger">
+      <topicref type="topic" id="423887105698173" modified="2017-04-20T14:09:49.869Z" icon="0" href="Debugger">
         <caption translate="true">Debugger</caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="423889242125195" build="ALL" modified="2016-01-19T22:45:58.016Z" icon="0" href="X-Programming-guide">
+    <topicref type="topic" id="423889242125195" modified="2017-04-20T14:09:26.709Z" icon="0" href="X-Programming-guide">
       <caption translate="true">X# Programming guide</caption>
       <topicref type="topic" id="423891170408015" build="ALL" modified="2016-01-19T22:45:58.148Z" icon="0" href="Quick-Start">
         <caption translate="true">Quick Start</caption>

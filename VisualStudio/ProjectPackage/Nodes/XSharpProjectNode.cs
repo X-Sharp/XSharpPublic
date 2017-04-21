@@ -1508,7 +1508,10 @@ namespace XSharp.Project
                 str = str2;
             }
             // check to see required elements
-
+            int len = str.Length;
+            // /prebuildevent appears more than once.
+            if (str.ToLower().Replace("/prebuildevent", "").Length < str.Length - "/prebuildevent".Length)
+                ok = false;
             if (ok && str.IndexOf("'Debug|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
@@ -1594,6 +1597,31 @@ namespace XSharp.Project
             bool hasImport1 = false;
             bool hasImport2 = false;
             bool hasImport3 = false;
+            // clean up the duplicate pre and post build events groups
+            Microsoft.Build.Construction.ProjectPropertyGroupElement group1 = null;
+            Microsoft.Build.Construction.ProjectPropertyGroupElement group2 = null;
+            foreach (var group in xml.PropertyGroups.Where(grp => grp.Condition?.Length > 0))
+            {
+                foreach (var child in group.Children)
+                {
+                    var pp = child as Microsoft.Build.Construction.ProjectPropertyElement;
+                    if (pp != null && String.Equals(pp.Name, "PrebuildEvent",StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (group1 == null)
+                            group1 = group;
+                        else
+                            group2 = group;
+                        break;
+                    }
+                }
+                if (group1 != null && group2 != null)
+                    break;
+            }
+            if (group2 != null)
+            {
+                group2.Parent.RemoveChild(group2);
+                changed = true;
+            }
             foreach (var import in xml.Imports)
             {
                 var prj = import.Project;
@@ -1615,8 +1643,19 @@ namespace XSharp.Project
                 var import = xml.AddImport(import3);
                 changed = true;
             }
+            if (group1 != null)
+            {
+                // this is removing the condition from the pre/post build event group
+                // and makes sure it is at the end of the project file.
+                var parent = group1.Parent;
+                group1.Condition = null;
+                parent.RemoveChild(group1);
+                parent.AppendChild(group1);
+                changed = true;
+            }
             if (changed)
             {
+                File.Copy(filename, filename+".bak",true);
                 BuildProject.Xml.Save(filename);
                 BuildProject.ReevaluateIfNecessary();
             }

@@ -4,6 +4,8 @@
 ;
 ; preprocess the help cab files
 ;
+#expr Exec('copy makecabs.cmd c:\XSharp\Dev\XSharp\Binaries\Help)
+#expr Exec('copy xsharp.msha c:\XSharp\Dev\XSharp\Binaries\Help)
 #expr Exec('c:\XSharp\Dev\XSharp\Binaries\Help\makecabs.cmd')
 
 

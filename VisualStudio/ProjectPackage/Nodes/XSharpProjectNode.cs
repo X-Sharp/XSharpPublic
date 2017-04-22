@@ -1512,8 +1512,8 @@ namespace XSharp.Project
             // check to see required elements
             int len = str.Length;
             // /prebuildevent appears more than once.
-            if (str.ToLower().Replace("/prebuildevent", "").Length < str.Length - "/prebuildevent".Length)
-                ok = false;
+            //if (str.ToLower().Replace("/prebuildevent", "").Length < str.Length - "/prebuildevent".Length)
+            //    ok = false;
             if (ok && str.IndexOf("'Debug|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
@@ -1600,6 +1600,7 @@ namespace XSharp.Project
             bool hasImport2 = false;
             bool hasImport3 = false;
             // clean up the duplicate pre and post build events groups
+            /*
             Microsoft.Build.Construction.ProjectPropertyGroupElement group1 = null;
             Microsoft.Build.Construction.ProjectPropertyGroupElement group2 = null;
             foreach (var group in xml.PropertyGroups.Where(grp => grp.Condition?.Length > 0))
@@ -1624,6 +1625,7 @@ namespace XSharp.Project
                 group2.Parent.RemoveChild(group2);
                 changed = true;
             }
+            */
             foreach (var import in xml.Imports)
             {
                 var prj = import.Project;
@@ -1645,6 +1647,7 @@ namespace XSharp.Project
                 var import = xml.AddImport(import3);
                 changed = true;
             }
+            /*
             if (group1 != null)
             {
                 // this is removing the condition from the pre/post build event group
@@ -1655,6 +1658,7 @@ namespace XSharp.Project
                 parent.AppendChild(group1);
                 changed = true;
             }
+            */
             if (changed)
             {
                 File.Copy(filename, filename+".bak",true);

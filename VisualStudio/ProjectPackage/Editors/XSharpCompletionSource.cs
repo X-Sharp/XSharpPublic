@@ -1010,6 +1010,13 @@ namespace XSharpLanguage
                     }
                 }
             }
+            // fill members of parent class
+            if (sType.BaseType != null)
+            {
+                if (minVisibility == Modifiers.Private)
+                    minVisibility = Modifiers.Protected;
+                FillMembers(compList, sType.BaseType, minVisibility, staticOnly, startWith);
+            }
             // We will miss the System.Object members
             if (sType.IsInterface)
             {

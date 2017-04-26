@@ -8,7 +8,7 @@
 
 
 
-#define FOX
+;#define FOX
 #ifdef FOX
 #define SetupExeName    "XSharpSetup0211Fox"
 #else
@@ -120,7 +120,7 @@ UninstallLogMode=overwrite
 
 
 TouchDate={#=TouchDate}
-TouchTime={#=TouchTime}
+TouchTime={#=TouchTime}                               d
 
 
 ; Make sure they are admins

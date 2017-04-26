@@ -49,9 +49,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;
         }
 
+        public bool HasPreprocessorTokens => _hasPPTokens;
         bool _inId = false;
         bool _inPp = false;
         bool _hasEos = true;
+        bool _hasPPTokens = false;
         private bool _isKw(IToken t)
         {
             switch (t.Channel)
@@ -727,6 +729,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     t.Type = symtype;
                     _inPp = true;
+                    _hasPPTokens = true;
                 }
             }
             if (!_inId)

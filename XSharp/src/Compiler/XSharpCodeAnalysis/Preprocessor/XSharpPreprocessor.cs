@@ -288,16 +288,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             DebugOutput("# of UDCs used   : {0}", this.rulesApplied);
         }
 
-        private void _writeToPPO(String text)
+        private void _writeToPPO(String text, bool mustTrim = true, bool addCRLF = true)
         {
             // do not call t.Text when not needed.
             if (_preprocessorOutput)
             {
-                text = text.TrimAllWithInplaceCharArray();
+                if (mustTrim)
+                    text = text.TrimAllWithInplaceCharArray();
                 var buffer = _encoding.GetBytes(text);
                 _ppoStream.Write(buffer, 0, buffer.Length);
-                buffer = _encoding.GetBytes("\r\n");
-                _ppoStream.Write(buffer, 0, buffer.Length);
+                if (addCRLF)
+                {
+                    buffer = _encoding.GetBytes("\r\n");
+                    _ppoStream.Write(buffer, 0, buffer.Length);
+                }
             }
         }
 
@@ -306,11 +310,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _preprocessorOutput && _ppoStream != null && inputs.parent == null;
         }
 
-        private void writeToPPO(string text)
+        internal void writeToPPO(string text, bool mustTrim = true, bool addCRLF = true)
         {
             if (mustWriteToPPO())
             {
-                _writeToPPO(text);
+                _writeToPPO(text,mustTrim, addCRLF);
             }
         }
         private void writeToPPO(IList<XSharpToken> tokens, bool prefix = false, bool prefixNewLines = false)

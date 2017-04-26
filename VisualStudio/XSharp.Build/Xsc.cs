@@ -416,6 +416,7 @@ namespace XSharp.Build
             errorCount = 0;
             //hasShownMaxErrorMsg = false;
             VulcanCompatibleResources = false;
+            NoStandardDefs = true;
         }
 
         protected override string ToolName

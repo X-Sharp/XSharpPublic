@@ -112,8 +112,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
-
-            var lexer = XSharpLexer.Create(_text.ToString(), _fileName, _options);
+            var sourceText = _text.ToString();
+            var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
             _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
@@ -127,9 +127,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
             var parseErrors = ParseErrorData.NewBag();
             var pp = new XSharpPreprocessor(_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
-            var ppTokens = pp.PreProcess();
             // commontokenstream filters on tokens on the default channel. All other tokens are ignored
-            var ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+			CommonTokenStream ppStream;
+            if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
+            { 
+	            var ppTokens = pp.PreProcess();
+	            ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+            }
+            else
+            {
+				// No Standard Defs and no preprocessor tokens in the lexer
+				// so we bypass the preprocessor and use the lexer tokenstream
+                // but if a .ppo is required we must use the preprocessor to
+                // write the source text to the .ppo file
+                if (_options.PreprocessorOutput)
+                {
+                    pp.writeToPPO(sourceText,false,false);
+                }
+                BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
+                var tokens = ts.GetTokens();
+                ppStream = new CommonTokenStream(new ListTokenSource(tokens));
+            }
             ppStream.Fill();
             _preprocessorTokenStream = ppStream;
             var parser = new XSharpParser(ppStream);

@@ -27,7 +27,7 @@ namespace XSharp.Project
     [ClassInterface(ClassInterfaceType.AutoDual)]
     public class XSharpBuildPropertyPage : XSharpSettingsPage
     {
-        internal const string catEvents = "Build Events";
+        //internal const string catEvents = "Build Events";
         internal const string catSigning = "Code Signing";
         internal const string catMisc = "Miscellaneous";
         internal const string catWarnings = "Warnings";

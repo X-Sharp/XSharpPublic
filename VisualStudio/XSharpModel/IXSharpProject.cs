@@ -29,6 +29,7 @@ namespace XSharpModel
         bool IsDocumentOpen(string file);
         List<IXErrorPosition> GetIntellisenseErrorPos(string fileName);
         XSharpParseOptions ParseOptions { get; }
+        EnvDTE.Project FindProject(String sProject);
     }
 
     public interface IXErrorPosition

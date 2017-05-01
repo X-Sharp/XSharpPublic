@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,8 +20,12 @@ namespace XSharpModel
     [DebuggerDisplay("{FullName,nq}")]
     public class CompletionType
     {
+        // System Type
         private Type _stype = null;
+        // XSharp Type
         private XType _xtype = null;
+        // External project EnvDTE.CodeElement
+        private CodeElement _codeelt = null;
 
         public CompletionType(XType xType)
         {
@@ -30,6 +35,11 @@ namespace XSharpModel
         public CompletionType(Type sType)
         {
             this._stype = sType;
+        }
+
+        public CompletionType(CodeElement elt)
+        {
+            this._codeelt = elt;
         }
 
         public CompletionType()
@@ -175,7 +185,7 @@ namespace XSharpModel
         {
             get
             {
-                return ((this._stype != null) || (this._xtype != null));
+                return ((this._stype != null) || (this._xtype != null) || (this._codeelt != null));
             }
         }
 
@@ -197,6 +207,14 @@ namespace XSharpModel
 
         }
 
+        public CodeElement CodeElement
+        {
+            get
+            {
+                return _codeelt;
+            }
+        }
+
         public String FullName
         {
             get
@@ -208,6 +226,10 @@ namespace XSharpModel
                 if (this._stype != null)
                 {
                     return this._stype.FullName;
+                }
+                if (this._codeelt != null)
+                {
+                    return this._codeelt.FullName;
                 }
                 return null;
             }

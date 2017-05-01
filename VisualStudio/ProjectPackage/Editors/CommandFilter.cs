@@ -96,25 +96,30 @@ namespace XSharp.Project
                         char ch = GetTypeChar(pvaIn);
                         if (_completionSession != null)
                         {
-                            switch (ch)
-                            {
-                                case ' ':
-                                    CompleteCompletionSession(true);
-                                    break;
-                                case ':':
-                                case '.':
-                                    CompleteCompletionSession(true);
-                                    completeAndStart = true;
-                                    break;
-                                case '=':
-                                    CancelCompletionSession();
-                                    break;
-                                default:
-                                    Filter();
-                                    break;
-                            }
+                            if (Char.IsLetterOrDigit(ch) || ch == '_')
+                                Filter();
+                            else
+                                CancelCompletionSession();
                         }
-
+                        //{
+                        //    switch (ch)
+                        //    {
+                        //        case ' ':
+                        //            CompleteCompletionSession(true);
+                        //            break;
+                        //        case ':':
+                        //        case '.':
+                        //            CompleteCompletionSession(true);
+                        //            completeAndStart = true;
+                        //            break;
+                        //        case '=':
+                        //            CancelCompletionSession();
+                        //            break;
+                        //        default:
+                        //            Filter();
+                        //            break;
+                        //    }
+                        //}
                         break;
                 }
             }

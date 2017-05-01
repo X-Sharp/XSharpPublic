@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <Name>WPF Resource Dictionary</Name>
-    <Description></Description>
+    <Name>Resource Dictionary (WPF)</Name>
+    <Description>XAML Resource Dictionary</Description>
     <TemplateID>XSharp.WPF.ResourceDictionary</TemplateID>
-    <Icon Package="{b3bae735-386c-4030-8329-ef48eeda4036}" ID="4595" />
+    <Icon>WPFResourceDictionary.png</Icon>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>40</SortOrder>
     <RequiredFrameworkVersion>3.0</RequiredFrameworkVersion>

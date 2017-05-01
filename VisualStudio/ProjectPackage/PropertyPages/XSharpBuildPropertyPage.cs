@@ -27,7 +27,7 @@ namespace XSharp.Project
     [ClassInterface(ClassInterfaceType.AutoDual)]
     public class XSharpBuildPropertyPage : XSharpSettingsPage
     {
-        internal const string catEvents = "Build Events";
+        //internal const string catEvents = "Build Events";
         internal const string catSigning = "Code Signing";
         internal const string catMisc = "Miscellaneous";
         internal const string catWarnings = "Warnings";
@@ -361,7 +361,7 @@ namespace XSharp.Project
 
             commandlineoption= getCfgString(nameof(CommandLineOption),  "");
             ppo = getCfgLogic(nameof(PPO),  false);
-            nostandarddefs = getCfgLogic(nameof(NoStandardDefs),  false);
+            nostandarddefs = getCfgLogic(nameof(NoStandardDefs),  true);
             includepaths = getCfgString(nameof(IncludePaths),  "");
             defines = getCfgString(nameof(DefineConstants), "");
 

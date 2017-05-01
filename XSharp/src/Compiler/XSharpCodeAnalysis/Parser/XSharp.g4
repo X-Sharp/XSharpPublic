@@ -321,24 +321,8 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 
 classmember			: Member=method										#clsmethod
 				    | decl=declare										#clsdeclare
-                    | (Attributes=attributes)?
-                      (Modifiers=constructorModifiers)?
-                      CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
-					  (CallingConvention=callingconvention)? 
-					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
-					  end=eos
-                      (Chain=(SELF | SUPER)
-					  (
-						  (LPAREN RPAREN)
-						| (LPAREN ArgList=argumentList RPAREN)
-					  ) eos)?
-                      StmtBlk=statementBlock							#clsctor
-                    | (Attributes=attributes)?
-                      (Modifiers=destructorModifiers)?
-                      DESTRUCTOR (LPAREN RPAREN)? 
-					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
-					   end=eos
-                      StmtBlk=statementBlock							#clsdtor
+                    | Member=constructor                                #clsctor
+                    | Member=destructor                                 #clsdtor
                     | Member=classvars									#clsvars
                     | Member=property									#clsproperty
                     | Member=operator_									#clsoperator
@@ -352,12 +336,33 @@ classmember			: Member=method										#clsmethod
                     | {_ClsFunc}? Member=procedure						#clsprocedure		// Equivalent to static method
                     ;
 
+constructor         :  (Attributes=attributes)?
+                      (Modifiers=constructorModifiers)?
+                      CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
+					  (CallingConvention=callingconvention)? 
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					  end=eos
+                      (Chain=(SELF | SUPER)
+					  (
+						  (LPAREN RPAREN)
+						| (LPAREN ArgList=argumentList RPAREN)
+					  ) eos)?
+                      StmtBlk=statementBlock							
+                    ;
 
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
                     ;
 
 declare				: DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMMA Ids+=identifier)* eos
 					;
+
+destructor          : (Attributes=attributes)?
+                      (Modifiers=destructorModifiers)?
+                      DESTRUCTOR (LPAREN RPAREN)? 
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					   end=eos
+                      StmtBlk=statementBlock							
+                    ;
 
 destructorModifiers : ( Tokens+=EXTERN )+
                     ;

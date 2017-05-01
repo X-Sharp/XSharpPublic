@@ -1157,9 +1157,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         parentId = clsm.ClassId.Get<SyntaxToken>();
                     }
                 }
+                if (context is XP.ConstructorContext)
+                {
+                    var clsc = context as XP.ConstructorContext;
+                    if (clsc.ClassId != null)
+                    {
+                        // Method Init Class Foo
+                        parentId = clsc.ClassId.Get<SyntaxToken>();
+                    }
+                }
                 if (parentId == null)
                 {
-                    if (context.Parent is XP.ClsmethodContext)
+                    if (context.Parent is XP.ClsmethodContext |
+                        context.Parent is XP.ClsctorContext |
+                        context.Parent is XP.ClsdtorContext)
                     {
                         {
                             parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
@@ -1408,7 +1419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasCtor = true;
             }
         }
-        public override void ExitClsctor([NotNull] XP.ClsctorContext context)
+        public override void ExitConstructor([NotNull] XP.ConstructorContext context)
         {
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             if (mods.Any(SyntaxKind.StaticKeyword))
@@ -1429,7 +1440,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        public override void ExitClsdtor([NotNull] XP.ClsdtorContext context)
+        public override void ExitDestructor([NotNull] XP.DestructorContext context)
         {
             var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
             var dtor = createDestructor(context, modifiers,
@@ -2564,8 +2575,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null);
     }
 
-    public override void EnterClsctor([NotNull] XP.ClsctorContext context) {
-        base.EnterClsctor(context);
+    public override void EnterConstructor([NotNull] XP.ConstructorContext context) {
+        base.EnterConstructor(context);
         Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null);
     }
 

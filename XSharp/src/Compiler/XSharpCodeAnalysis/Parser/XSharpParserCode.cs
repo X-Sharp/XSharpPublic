@@ -267,7 +267,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => ParentName + Key.Text;
         }
 
-        public partial class ClsctorContext : IEntityContext
+        public partial class ConstructorContext : IEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -276,7 +276,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => "ctor";
         }
-        public partial class ClsdtorContext : ClassmemberContext, IEntityContext
+        public partial class DestructorContext :  IEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -613,14 +613,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         internal static bool isInInterface([NotNull] this RuleContext context)
         {
-            return ((context.Parent is XSharpParser.ClassmemberContext) && (context.Parent.Parent is XSharpParser.Interface_Context))
-                || (context.Parent is XSharpParser.Interface_Context);
+            var parent = context.Parent;
+            return ((parent is XSharpParser.ClassmemberContext) && (parent.Parent is XSharpParser.Interface_Context))
+                || (parent is XSharpParser.Interface_Context);
         }
 
         internal static bool isInClass([NotNull] this RuleContext context)
         {
-            return ((context.Parent is XSharpParser.ClassmemberContext) && (context.Parent.Parent is XSharpParser.Class_Context))
-                || (context.Parent is XSharpParser.Class_Context);
+            var parent = context.Parent;
+            return ((parent is XSharpParser.ClassmemberContext) && (parent.Parent is XSharpParser.Class_Context))
+                || (parent is XSharpParser.Class_Context);
         }
     }
 

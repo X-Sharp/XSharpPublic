@@ -305,17 +305,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     name += pc.Id.GetText();
                 Params = pc.ParamList;
             }
-            else if (context is XP.ClsctorContext)
+            else if (context is XP.ConstructorContext)
             {
-                XP.ClsctorContext cc = (XP.ClsctorContext)context;
+                var  cc = (XP.ConstructorContext)context;
                 if (name.Length > 0) // Remove the dot
                     name = name.Substring(0, name.Length - 1);
                 suffix = ".CTOR";
                 Params = cc.ParamList;
             }
-            else if (context is XP.ClsdtorContext)
+            else if (context is XP.DestructorContext)
             {
-                XP.ClsdtorContext dc = (XP.ClsdtorContext)context;
+                var dc = (XP.DestructorContext)context;
                 name += "Finalize()";
             }
             else if (context is XP.MethodContext)
@@ -3481,12 +3481,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
 
-        public override void EnterClsctor([NotNull] XP.ClsctorContext context)
+        public override void ExitClsctor([NotNull] XP.ClsctorContext context)
+        {
+            context.SetSequencePoint(context.Member.end);
+            if (context.Member.CsNode != null)
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+        public override void ExitClsdtor([NotNull] XP.ClsdtorContext context)
+        {
+            context.SetSequencePoint(context.Member.end);
+            if (context.Member.CsNode != null)
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void EnterConstructor([NotNull] XP.ConstructorContext context)
         {
             context.Data.MustBeVoid = true;
         }
 
-        public override void ExitClsctor([NotNull] XP.ClsctorContext context)
+        public override void ExitConstructor([NotNull] XP.ConstructorContext context)
         {
             context.SetSequencePoint(context.end);
             if (context.Modifiers?._EXTERN != null)
@@ -3529,11 +3542,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void EnterClsdtor([NotNull] XP.ClsdtorContext context)
+        public override void EnterDestructor([NotNull] XP.DestructorContext context)
         {
             context.Data.MustBeVoid = true;
         }
-        public override void ExitClsdtor([NotNull] XP.ClsdtorContext context)
+        public override void ExitDestructor([NotNull] XP.DestructorContext context)
         {
             context.SetSequencePoint(context.end);
             if (context.Modifiers?._EXTERN != null)

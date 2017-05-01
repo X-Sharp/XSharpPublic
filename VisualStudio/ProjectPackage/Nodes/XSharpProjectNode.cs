@@ -1144,7 +1144,47 @@ namespace XSharp.Project
                     }
                 }
             }
+            else
+            {
+                // References are added through here too
+                // so check if we are adding a "external" project
+                // that might be a X# Project or Something else
+                if (IsProjectFile(url))
+                {
+                    this.ProjectModel.AddProjectReference(url);
+                }
+                else if (IsStrangerProjectFile(url))
+                {
+                    this.ProjectModel.AddStrangerProjectReference(url);
+                }
+            }
 #endif
+        }
+
+
+        /// <summary>
+        /// Used in XProject to enumerate all projects in the current Solution, looking for a project using its name.
+        /// </summary>
+        /// <param name="sProject"></param>
+        /// <returns>The EnvDTE.Project found, or null</returns>
+        public EnvDTE.Project FindProject(String sProject)
+        {
+            EnvDTE.Project prj = null;
+            //
+            EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
+            if (dte != null)
+            {
+                foreach (EnvDTE.Project p in dte.Solution.Projects)
+                {
+                    if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        prj = p;
+                        break;
+                    }
+                }
+            }
+            //
+            return prj;
         }
 
         public override void RemoveURL(String url)
@@ -1162,12 +1202,37 @@ namespace XSharp.Project
             }
 #endif
             base.RemoveURL(url);
+            // We should remove the external projects entries
+            if (IsProjectFile(url))
+            {
+                this.ProjectModel.RemoveProjectReference(url);
+            }
+            else if (IsStrangerProjectFile(url))
+            {
+                this.ProjectModel.RemoveStrangerProjectReference(url);
+            }
         }
 
 
+        /// <summary>
+        /// Check if fullpath points to a XSharp Project file.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
         private bool IsProjectFile(string fullPath)
         {
             return (String.Compare(Path.GetExtension(fullPath), ".xsprj", StringComparison.OrdinalIgnoreCase) == 0);
+        }
+
+        /// <summary>
+        /// Check if fullpath points to a file, whose extension ends with "proj" so it might be project file.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        private bool IsStrangerProjectFile(string fullPath)
+        {
+            string ext = Path.GetExtension(fullPath);
+            return ( ext.EndsWith( "proj", StringComparison.OrdinalIgnoreCase));
         }
 
         #region IXSharpProject Interface

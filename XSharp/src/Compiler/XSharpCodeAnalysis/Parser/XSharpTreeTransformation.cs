@@ -2976,7 +2976,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (context.Expr == null && context.ExprList == null)
             {
-                decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GetSetMustHaveBody));
+                var property = context.Parent as XP.PropertyContext;
+                if (! property.isInInterface())
+                {
+                    decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GetSetMustHaveBody));
+                }
             }
             context.Put(decl);
         }

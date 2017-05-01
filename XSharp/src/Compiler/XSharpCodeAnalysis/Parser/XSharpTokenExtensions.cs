@@ -1547,6 +1547,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var lv = lit.Literal;
                     return lv.Token;
                 }
+                if (pe.Expr is XSharpParser.ParenExpressionContext)
+                {
+                    var paren = pe.Expr as XSharpParser.ParenExpressionContext;
+                    return paren.Expr.GetLiteralToken();
+                }
             }
             return null;
         }

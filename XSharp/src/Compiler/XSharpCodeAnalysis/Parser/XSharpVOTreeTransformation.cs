@@ -1838,6 +1838,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var attr = _syntaxFactory.Attribute(GenerateQualifiedName(VulcanQualifiedTypeNames.DefaultParameter), arglist);
             return attr;
         }
+
+        private XP.LiteralExpressionContext GetLiteralExpression(XP.ExpressionContext expr)
+        {
+            if (expr is XP.PrimaryExpressionContext)
+            {
+                var prim = (XP.PrimaryExpressionContext)expr;
+                var lit  = prim.Expr as XP.LiteralExpressionContext;
+                if (lit != null)
+                {
+                    return lit;
+                }
+                var paren = prim.Expr as XP.ParenExpressionContext;
+                if (paren != null)
+                {
+                    return GetLiteralExpression(paren.Expr);
+                }
+            }
+            return null;
+        }
         private AttributeSyntax EncodeVulcanDefaultParameter(XP.ExpressionContext initexpr )
         {
             bool negative = false;
@@ -1850,9 +1869,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     negative = prefix.Op.Type == XP.MINUS;
                 }
             }
-            if (initexpr is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)initexpr).Expr is XP.LiteralExpressionContext)
+            XP.LiteralExpressionContext litexpr = GetLiteralExpression(initexpr);
+            if (litexpr != null)
             {
-                var litexpr = ((XP.PrimaryExpressionContext)initexpr).Expr as XP.LiteralExpressionContext;
                 var token = litexpr.Literal.Token;
                 var nullExpr = GenerateLiteralNull(); 
                 switch (token.Type)

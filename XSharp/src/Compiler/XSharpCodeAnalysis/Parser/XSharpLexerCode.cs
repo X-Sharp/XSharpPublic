@@ -707,6 +707,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
                         }
                     }
+                    if (t.Type == SYMBOL_CONST)
+                    {
+                        var text = t.Text.Substring(1);
+                        if (KwIds.ContainsKey(text) && !SymIds.ContainsKey(t.Text))
+                        {
+                            // #NIL or #NULL_STRING
+                            t.Text = "#";
+                            t.Type = NEQ2;
+                            t.StopIndex = t.StartIndex ;
+                            InputStream.Seek(t.StartIndex + 1);
+                        }
+                    }
                 }
             }
             //System.Diagnostics.Debug.WriteLine("T[{0},{1}]:{2}",t.Line,t.Column,t.Text);

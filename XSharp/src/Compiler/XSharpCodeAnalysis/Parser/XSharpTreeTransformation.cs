@@ -45,6 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public List<Tuple<int, String>> InitProcedures;
             public List<FieldDeclarationSyntax> Globals;
             public bool HasPCall;
+            public bool NeedsProcessing;
 
             internal SyntaxEntities(SyntaxListPool pool)
             {
@@ -59,6 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Globals = new List<FieldDeclarationSyntax>();
                 _pool = pool;
                 HasPCall = false;
+                NeedsProcessing = false;
                 LastIsStatic = false;
                 LastMember = null;
             }
@@ -1288,7 +1290,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return string.Compare(id1, id2, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        protected BasePropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop)
+        internal BasePropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop, XSharpParserRuleContext parent)
         {
             var getMods = _pool.Allocate();
             var setMods = _pool.Allocate();
@@ -1297,6 +1299,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int setVisLvl;
             var AccMet = vop.AccessMethodCtx;
             var AssMet = vop.AssignMethodCtx;
+
+            if (AccMet == null || AssMet == null)
+            {
+                var ent = parent as XP.IEntityContext;
+                if (ent != null && ent.Data.Partial)
+                {
+                    ent.Data.PartialProps = true;
+                    if (ent is XP.IPartialPropertyContext)
+                    {
+                        var cls = ent as XP.IPartialPropertyContext;
+                        if (cls.PartialProperties == null)
+                            cls.PartialProperties = new List<XSharpParser.MethodContext>();
+                        var met = AccMet != null ? AccMet : AssMet;
+                        cls.PartialProperties.Add(met);
+                        if (met.CsNode == null)
+                            met.CsNode = ((XP.ClsmethodContext)met.Parent).CsNode;
+                        ((XP.ClsmethodContext)met.Parent).CsNode = null;
+                    }
+                    GlobalEntities.NeedsProcessing = true;
+                    return null;
+                }
+            }
+
+
             #region modifiers and visibility
             if (AccMet != null)
             {
@@ -2211,6 +2237,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -2219,7 +2247,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 foreach (var vop in generated.VoProperties.Values)
                 {
-                    members.Add(GenerateVoProperty(vop));
+                    var prop = GenerateVoProperty(vop, context);
+                    if (prop != null)
+                        members.Add(null);
                 }
             }
             // Do this after VOProps generation because GenerateVOProperty sets the members
@@ -2239,7 +2269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             MemberDeclarationSyntax m = _syntaxFactory.InterfaceDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.InterfaceKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
@@ -2256,7 +2286,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
             context.Put(m);
-
+            if (context.Data.Partial)
+            {
+                GlobalEntities.NeedsProcessing = true;
+            }
         }
 
         public override void ExitInterfaceModifiers([NotNull] XP.InterfaceModifiersContext context)
@@ -2280,6 +2313,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -2288,7 +2323,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 foreach (var vop in generated.VoProperties.Values)
                 {
-                    members.Add(GenerateVoProperty(vop));
+                    var prop = GenerateVoProperty(vop, context);
+                    if (prop != null)
+                        members.Add(null);
                 }
             }
             // check if class has Ctor. 
@@ -2305,7 +2342,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // for Access & Assign to NULL
             foreach (var mCtx in context._Members)
             {
-                if (mCtx.CsNode != null)
+                if (mCtx.CsNode != null )
                     members.Add(mCtx.Get<MemberDeclarationSyntax>());
             }
             generated.Free();
@@ -2322,8 +2359,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
 
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: mods,
@@ -2344,6 +2379,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
             context.Put(m);
+            if (context.Data.Partial)
+            {
+                GlobalEntities.NeedsProcessing = true;
+            }
         }
 
         public override void ExitClassModifiers([NotNull] XP.ClassModifiersContext context)
@@ -2367,6 +2406,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -2375,7 +2416,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 foreach (var vop in generated.VoProperties.Values)
                 {
-                    members.Add(GenerateVoProperty(vop));
+                    var prop = GenerateVoProperty(vop, context);
+                    if (prop != null)
+                        members.Add(null);
                 }
             }
             // Do this after VOProps generation because GenerateVOProperty sets the members
@@ -2393,9 +2436,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
+
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
@@ -2412,6 +2456,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
             context.Put(m);
+            if (context.Data.Partial)
+            {
+                GlobalEntities.NeedsProcessing = true;
+            }
         }
 
         public override void ExitStructureModifiers([NotNull] XP.StructureModifiersContext context)

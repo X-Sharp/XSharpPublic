@@ -53,6 +53,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             set { _allowGarbage = value; }
         }
 
+        public interface IPartialPropertyContext : IEntityContext
+        {
+            List<MethodContext> PartialProperties { get; set; }
+        }
+
         public interface IGlobalEntityContext : IEntityContext
         {
             FuncprocModifiersContext FuncProcModifiers { get; }
@@ -84,6 +89,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsInitAxit = 1 << 8,        // Member property
             HasCtor = 1 << 9,           // Class property
             Partial = 1 << 10,          // Class property
+            PartialProps = 1 << 11,     // Class property
         }
 
         public class EntityData
@@ -148,6 +154,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.Partial); }
                 set { if (value) flags |= EntityFlags.Partial; else flags &= ~EntityFlags.Partial; }
+            }
+            public bool PartialProps
+            {
+                get { return flags.HasFlag(EntityFlags.PartialProps); }
+                set { if (value) flags |= EntityFlags.PartialProps; else flags &= ~EntityFlags.PartialProps; }
             }
 
             private List<MemVarFieldInfo> Fields;
@@ -333,9 +344,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
         }
-        public partial class Interface_Context : IEntityContext
+        public partial class Interface_Context : IPartialPropertyContext, IEntityContext
         {
             EntityData data = new EntityData();
+            List<MethodContext> partialProperties = null;
+            public  List<MethodContext> PartialProperties
+            {
+                get { return partialProperties; }
+                set { partialProperties = value; }
+            } 
             public EntityData Data => data;
             public IList<ParameterContext> Params => null;
             public DatatypeContext ReturnType => null;
@@ -343,18 +360,30 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => this.Id.GetText();
 
         }
-        public partial class Class_Context : IEntityContext
+        public partial class Class_Context : IPartialPropertyContext, IEntityContext
         {
             EntityData data = new EntityData();
+            List<MethodContext> partialProperties = null;
+            public List<MethodContext> PartialProperties
+            {
+                get { return partialProperties; }
+                set { partialProperties = value; }
+            }
             public EntityData Data => data;
             public IList<ParameterContext> Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
         }
-        public partial class Structure_Context : IEntityContext
+        public partial class Structure_Context : IPartialPropertyContext, IEntityContext
         {
             EntityData data = new EntityData();
+            List<MethodContext> partialProperties = null;
+            public List<MethodContext> PartialProperties
+            {
+                get { return partialProperties; }
+                set { partialProperties = value; }
+            }
             public EntityData Data => data;
             public IList<ParameterContext> Params => null;
             public DatatypeContext ReturnType => null;

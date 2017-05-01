@@ -1287,21 +1287,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _voClassAttribs;
         }
 
-        public ConstructorDeclarationSyntax GenerateClipperCtor(SyntaxToken id)
+        public ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx)
         {
-            var pars = GetClipperParameters();
-            var expr = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
-            var args = MakeArgumentList(MakeArgument(expr));
-            var chain = _syntaxFactory.ConstructorInitializer(
-                SyntaxKind.BaseConstructorInitializer,
-                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword),
-                args);
+            ParameterListSyntax pars ;
+            // No parent class, so inherit from Object.
+            // Object has a parameterless constructor
+            if (classctx.BaseType == null)
+            {
+                pars = _syntaxFactory.ParameterList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken), 
+                    MakeSeparatedList<ParameterSyntax>(), 
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            }
+            else
+            {
+                pars = GetClipperParameters();
+            }
+
+            ArgumentListSyntax args;
+            if (classctx.BaseType == null)
+            {
+                args = MakeArgumentList();
+            }
+            else
+            {
+                var expr = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
+                args = MakeArgumentList(MakeArgument(expr));
+            }
+            var chain = _syntaxFactory.ConstructorInitializer(  SyntaxKind.BaseConstructorInitializer,
+                                                                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                                                SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword),
+                                                                args
+                                                                );
             var stmts = new List<StatementSyntax>();
             var body = MakeBlock(stmts);
             SyntaxListBuilder <AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
-            attributeLists.Add(MakeClipperCallingConventionAttribute(new List<ExpressionSyntax>()));
+            if (classctx.BaseType != null)
+            {
+                attributeLists.Add(MakeClipperCallingConventionAttribute(new List<ExpressionSyntax>()));
+            }
             var mods = TokenList(SyntaxKind.PublicKeyword);
             var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null);
             ctor.XGenerated = true;
@@ -1362,7 +1387,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //
                 // generate new class constructor
                 // 
-                var ctor = GenerateClipperCtor(classdecl.Identifier);
+                var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
                 var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
                 newmembers.AddRange(classdecl.Members);
                 newmembers.Add(ctor);

@@ -90,6 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public IList<Tuple<int, string>> InitProcedures { get; internal set; } = new List<Tuple<int, string>>();
         public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
         public bool HasPCall { get; internal set; } = false;
+        public bool NeedsProcessing { get; internal set; } = false;
     }
 }
 
@@ -132,6 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         public ITokenStream XTokenStream => internalUnit.XTokens;
         public ITokenStream XPPTokenStream => internalUnit.XPPTokens;
         public Dictionary<string, SourceText> IncludedFiles => internalUnit.IncludedFiles;
+        public bool NeedsProcessing => internalUnit.NeedsProcessing;
     }
 }
 

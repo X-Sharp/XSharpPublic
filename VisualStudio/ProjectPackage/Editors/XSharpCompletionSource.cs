@@ -384,65 +384,30 @@ namespace XSharpLanguage
             //
             foreach (AssemblyInfo assemblyInfo in stc.Assemblies)
             {
-                foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types)
+                foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
                 {
-                    if (typeInfo.Key.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                    {
-                        String realTypeName = typeInfo.Value.FullName;
-                        TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
-                        // remove the start
-                        if (startLen > 0)
-                            realTypeName = realTypeName.Substring(startLen);
-                        // Do we have another part file
-                        dotPos = realTypeName.IndexOf('.');
-                        // Then remove it
-                        if (dotPos > 0)
-                            realTypeName = realTypeName.Substring(0, dotPos);
-                        if ((realTypeName.Length > 2) && (realTypeName.StartsWith("__")))
-                            continue;
-                        //
-                        ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
-                        compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null));
-                    }
+                    String realTypeName = typeInfo.Value.FullName;
+                    TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
+                    // remove the start
+                    if (startLen > 0)
+                        realTypeName = realTypeName.Substring(startLen);
+                    // Do we have another part file
+                    dotPos = realTypeName.IndexOf('.');
+                    // Then remove it
+                    if (dotPos > 0)
+                        realTypeName = realTypeName.Substring(0, dotPos);
+                    if ((realTypeName.Length > 2) && (realTypeName.StartsWith("__")))
+                        continue;
+                    //
+                    ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
+                    compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null));
                 }
             }
             //
             // And our own Types
             foreach (XFile file in project.Files)
             {
-                foreach (XType typeInfo in file.TypeList.Values)
-                {
-                    if (typeInfo.FullName.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                    {
-                        String realTypeName = typeInfo.FullName;
-                        // remove the start
-                        if (startLen > 0)
-                            realTypeName = realTypeName.Substring(startLen);
-                        // Do we have another part 
-                        dotPos = realTypeName.IndexOf('.');
-                        // Then remove it
-                        if (dotPos > 0)
-                            realTypeName = realTypeName.Substring(0, dotPos);
-                        ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
-                        compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
-                    }
-                }
-            }
-        }
-
-        private void AddXSharpTypeNames(CompletionList compList, string startWith)
-        {
-            //
-            int startLen = 0;
-            int dotPos = startWith.LastIndexOf('.');
-            if (dotPos != -1)
-                startLen = dotPos + 1;
-            //
-            // And our own Types
-            List<XType> xsharpTypes = XSharpTypes.Get();
-            foreach (XType typeInfo in xsharpTypes)
-            {
-                if (typeInfo.FullName.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
+                foreach (XType typeInfo in file.TypeList.Values.Where( ti => nameStartsWith(ti.FullName, startWith)))
                 {
                     String realTypeName = typeInfo.FullName;
                     // remove the start
@@ -459,6 +424,32 @@ namespace XSharpLanguage
             }
         }
 
+        private void AddXSharpTypeNames(CompletionList compList, string startWith)
+        {
+            //
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
+            //
+            // And our own Types
+            List<XType> xsharpTypes = XSharpTypes.Get();
+            foreach (XType typeInfo in xsharpTypes.Where ( ti => nameStartsWith(ti.FullName, startWith)))
+            {
+                String realTypeName = typeInfo.FullName;
+                // remove the start
+                if (startLen > 0)
+                    realTypeName = realTypeName.Substring(startLen);
+                // Do we have another part 
+                dotPos = realTypeName.IndexOf('.');
+                // Then remove it
+                if (dotPos > 0)
+                    realTypeName = realTypeName.Substring(0, dotPos);
+                ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
+                compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
+            }
+        }
+
         private void AddNamespaces(CompletionList compList, XProject project, String startWith)
         {
             // We are looking for NameSpaces, in References
@@ -471,41 +462,35 @@ namespace XSharpLanguage
                 startLen = dotPos + 1;
             XType fakeNS = new XType("fake", Kind.Namespace, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty);
             ImageSource icon = _provider.GlyphService.GetGlyph(fakeNS.GlyphGroup, fakeNS.GlyphItem);
-            foreach (String nameSpace in namespaces)
+            foreach (String nameSpace in namespaces.Where (ns => nameStartsWith(ns, startWith)))
             {
-                if (nameSpace.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    String realNamespace = nameSpace;
-                    // remove the start
-                    if (startLen > 0)
-                        realNamespace = realNamespace.Substring(startLen);
-                    // Do we have another part 
-                    dotPos = realNamespace.IndexOf('.');
-                    // Then remove it
-                    if (dotPos > 0)
-                        realNamespace = realNamespace.Substring(0, dotPos);
-                    //
-                    compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null));
-                }
+                String realNamespace = nameSpace;
+                // remove the start
+                if (startLen > 0)
+                    realNamespace = realNamespace.Substring(startLen);
+                // Do we have another part 
+                dotPos = realNamespace.IndexOf('.');
+                // Then remove it
+                if (dotPos > 0)
+                    realNamespace = realNamespace.Substring(0, dotPos);
+                //
+                compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null));
             }
             //
             // And our own Namespaces
             List<XType> xsNamespaces = project.Namespaces;
-            foreach (XType nameSpace in xsNamespaces)
+            foreach (XType nameSpace in xsNamespaces.Where (ns => nameStartsWith(ns.Name, startWith )))
             {
-                if (nameSpace.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    String realNamespace = nameSpace.Name;
-                    // remove the start
-                    if (startLen > 0)
-                        realNamespace = realNamespace.Substring(startLen);
-                    // Do we have another part 
-                    dotPos = realNamespace.IndexOf('.');
-                    // Then remove it
-                    if (dotPos > 0)
-                        realNamespace = realNamespace.Substring(0, dotPos);
-                    compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null));
-                }
+                String realNamespace = nameSpace.Name;
+                // remove the start
+                if (startLen > 0)
+                    realNamespace = realNamespace.Substring(startLen);
+                // Do we have another part 
+                dotPos = realNamespace.IndexOf('.');
+                // Then remove it
+                if (dotPos > 0)
+                    realNamespace = realNamespace.Substring(0, dotPos);
+                compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null));
             }
 
         }
@@ -821,25 +806,19 @@ namespace XSharpLanguage
                 return;
             }
             // First, look after Parameters
-            foreach (XVariable paramVar in currentMember.Parameters)
+            foreach (XVariable paramVar in currentMember.Parameters.Where ( p => nameStartsWith(p.Name, startWith)))
             {
                 //
-                if (paramVar.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.GlyphGroup, paramVar.GlyphItem);
-                    compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null));
-                }
+                ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.GlyphGroup, paramVar.GlyphItem);
+                compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null));
             }
             // Then, look for Locals
             // First, look after Parameters
-            foreach (XVariable localVar in currentMember.Locals)
+            foreach (XVariable localVar in currentMember.Locals.Where (l => nameStartsWith(l.Name, startWith)))
             {
                 //
-                if (localVar.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
-                    compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null));
-                }
+                ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
+                compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null));
             }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
             //BuildCompletionList(compList, currentMember.Parent, Modifiers.Private);
@@ -873,7 +852,7 @@ namespace XSharpLanguage
             //
             XType Owner = parent as XType;
             //
-            foreach (XTypeMember elt in Owner.Members)
+            foreach (XTypeMember elt in Owner.Members.Where ( e=> nameStartsWith(e.Name, startWith)))
             {
                 if (elt.Kind == Kind.Constructor)
                     continue;
@@ -882,16 +861,13 @@ namespace XSharpLanguage
                 if (elt.Visibility < minVisibility)
                     continue;
                 //
-                if (elt.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
+                ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
+                String toAdd = "";
+                if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
                 {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
-                    String toAdd = "";
-                    if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
-                    {
-                        toAdd = "(";
-                    }
-                    compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
+                    toAdd = "(";
                 }
+                compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
             }
             // Hummm, we should call for Owner of the Owner.. Super !
             Owner.ForceComplete();
@@ -934,6 +910,11 @@ namespace XSharpLanguage
             }
         }
 
+
+        private bool nameStartsWith(string name, string startWith)
+        {
+            return name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture);
+        }
         /// <summary>
         /// Add Members for our Project Types
         /// </summary>
@@ -943,7 +924,7 @@ namespace XSharpLanguage
         private void FillMembers(CompletionList compList, XType xType, Modifiers minVisibility, bool staticOnly, String startWith)
         {
             // Add Members for our Project Types
-            foreach (XTypeMember elt in xType.Members)
+            foreach (XTypeMember elt in xType.Members.Where( x => nameStartsWith(x.Name, startWith)))
             {
                 if (elt.Kind == Kind.Constructor)
                     continue;
@@ -952,16 +933,13 @@ namespace XSharpLanguage
                 if (elt.Visibility < minVisibility)
                     continue;
                 //
-                if (elt.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
+                ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
+                String toAdd = "";
+                if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
                 {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
-                    String toAdd = "";
-                    if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
-                    {
-                        toAdd = "(";
-                    }
-                    compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
+                    toAdd = "(";
                 }
+                compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
             }
         }
 
@@ -978,7 +956,8 @@ namespace XSharpLanguage
             if (minVisibility < Modifiers.Public)
             {
                 // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+                members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+                    | BindingFlags.Static | BindingFlags.DeclaredOnly);
             }
             else
             {
@@ -986,29 +965,33 @@ namespace XSharpLanguage
                 members = sType.GetMembers();
             }
             //
-            foreach (var member in members)
+            foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
             {
-                if (member.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
+                MemberAnalysis analysis = new MemberAnalysis(member);
+                if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
                 {
-                    MemberAnalysis analysis = new MemberAnalysis(member);
-                    if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
+                    if (analysis.Kind == Kind.Constructor)
+                        continue;
+                    if (analysis.IsStatic != staticOnly)
                     {
-                        if (analysis.Kind == Kind.Constructor)
-                            continue;
-                        if (analysis.IsStatic != staticOnly)
-                        {
-                            continue;
-                        }
-                        String toAdd = "";
-                        if ((analysis.Kind == Kind.Method))
-                        {
-                            toAdd = "(";
-                        }
-                        //
-                        ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
-                        compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                        continue;
                     }
+                    String toAdd = "";
+                    if ((analysis.Kind == Kind.Method))
+                    {
+                        toAdd = "(";
+                    }
+                    //
+                    ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
+                    compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
                 }
+            }
+            // fill members of parent class
+            if (sType.BaseType != null)
+            {
+                if (minVisibility == Modifiers.Private)
+                    minVisibility = Modifiers.Protected;
+                FillMembers(compList, sType.BaseType, minVisibility, staticOnly, startWith);
             }
             // We will miss the System.Object members
             if (sType.IsInterface)

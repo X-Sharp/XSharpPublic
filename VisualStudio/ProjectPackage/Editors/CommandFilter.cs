@@ -21,6 +21,9 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.VisualStudio.Text.Operations;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 
 namespace XSharp.Project
 {
@@ -36,9 +39,10 @@ namespace XSharp.Project
         ISignatureHelpBroker SignatureBroker;
         ISignatureHelpSession _signatureSession;
         ITextStructureNavigator m_navigator;
+        IBufferTagAggregatorFactoryService Aggregator;
 
 
-        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker)
+        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator)
         {
             m_navigator = nav;
 
@@ -48,6 +52,7 @@ namespace XSharp.Project
             TextView = textView;
             CompletionBroker = completionBroker;
             SignatureBroker = signatureBroker;
+            Aggregator = aggregator;
         }
 
         private char GetTypeChar(IntPtr pvaIn)
@@ -66,6 +71,9 @@ namespace XSharp.Project
             {
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
+                    case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
+                        FormatDocument();
+                        break;
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
@@ -188,6 +196,69 @@ namespace XSharp.Project
             }
 
             return hresult;
+        }
+
+        private void FormatDocument()
+        {
+            var buffer = this.TextView.TextBuffer;
+            //
+            var tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(buffer);
+            SnapshotSpan docSpan = new SnapshotSpan(buffer.CurrentSnapshot, 0, buffer.CurrentSnapshot.Length);
+            var tags = tagAggregator.GetTags(docSpan);
+            //
+            Stack<Span> regionStarts = new Stack<Microsoft.VisualStudio.Text.Span>();
+            List<Tuple<Span, Span>> regions = new List<Tuple<Microsoft.VisualStudio.Text.Span, Microsoft.VisualStudio.Text.Span>>();
+            //
+            foreach (var tag in tags)
+            {
+                var name = tag.Tag.ClassificationType.Classification.ToLower();
+                //
+                if (name.Contains(XSharpModel.ColorizerConstants.XSharpRegionStartFormat))
+                {
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        System.Diagnostics.Debugger.Break();
+                    //
+                    var spans = tag.Span.GetSpans(this.TextView.TextSnapshot);
+                    if (spans.Count > 0)
+                        regionStarts.Push(spans[0]);
+                }
+                else if (name.Contains(XSharpModel.ColorizerConstants.XSharpRegionStopFormat))
+                {
+                    var spans = tag.Span.GetSpans(this.TextView.TextSnapshot);
+                    if (spans.Count > 0)
+                    {
+                        if (regionStarts.Count > 0)
+                        {
+                            var start = regionStarts.Pop();
+                            //
+                            regions.Add(new Tuple<Span, Span>(start, spans[0]));
+                        }
+                    }
+                }
+            }
+            //Now, we have a list of Regions Start/Stop
+            var editor = buffer.CreateEdit();
+            //
+            int tabSize = this.TextView.Options.GetTabSize();
+            //
+            //foreach( var region in regions )
+            //{
+            //    SnapshotPoint pt = new SnapshotPoint(this.TextView.TextSnapshot, region.Item1.Start);
+            //    var snapLine = pt.GetContainingLine();
+            //    snapLine.
+            //}
+            //var lines = this.TextView.TextViewLines;
+            //foreach( var twLine in lines )
+            //{
+            //    var fullSpan = new SnapshotSpan(twLine.Snapshot, Span.FromBounds(twLine.Start, twLine.End));
+            //    var snapLine = fullSpan.Start.GetContainingLine();
+            //    int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
+            //    string text = snapLine.GetText();
+            //    //
+            //    lines.
+            //    //
+            //}
+
         }
 
         private void GotoDefn()

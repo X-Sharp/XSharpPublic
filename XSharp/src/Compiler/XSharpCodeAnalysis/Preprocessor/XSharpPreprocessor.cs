@@ -1073,12 +1073,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ln = line[0];
                 if (line.Count > 1)
                 {
-                    text = "";
-                    for (int i = 1; i < line.Count; i++)
-                    {
-                        text += line[i].Text;
-                    }
-                    text = text.Trim();
+                    int start = line[1].StartIndex;
+                    int end = line[line.Count - 1].StopIndex;
+                    text = line[1].TokenSource.InputStream.GetText(new Interval(start, end));
                 }
                 else
                 {

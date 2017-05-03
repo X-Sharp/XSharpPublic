@@ -2817,6 +2817,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Class, Interface and Structure Members
+
+        protected MemberDeclarationSyntax GenerateClassWrapper (SyntaxToken identifier,MemberDeclarationSyntax member, XP.NameDotContext namedot)
+        {
+            MemberDeclarationSyntax cls = _syntaxFactory.ClassDeclaration(
+                attributeLists: EmptyList<AttributeListSyntax>(),
+                modifiers: TokenList(SyntaxKind.PartialKeyword),
+                keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                identifier: identifier,
+                typeParameterList: default(TypeParameterListSyntax),
+                baseList: default(BaseListSyntax),
+                constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                members: MakeList<MemberDeclarationSyntax>(member),
+                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: null);
+                if (namedot != null)
+                {
+                    cls = AddNameSpaceToMember(namedot, cls);
+                }
+            return cls;
+        }
+
         public override void EnterConstructor([NotNull] XP.ConstructorContext context)
         {
             context.Data.MustBeVoid = true;
@@ -2849,6 +2871,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // body = AddMissingReturnStatement(body, context.StmtBlk, null);
                 SyntaxToken parentId;
                 bool missingParent = false;
+                bool genClass = false;
                 if (context.Parent is XP.ClassmemberContext)
                 {
                     parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
@@ -2858,6 +2881,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (context.ClassId != null)
                 {
                     parentId = context.ClassId.Get<SyntaxToken>();
+                    genClass = true;
                 }
                 else
                 {
@@ -2878,9 +2902,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 if (missingParent)
                 {
-                    ctor = ctor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Construcor without ClassId"));
+                    ctor = ctor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Missing CLASS clause"));
                 }
-                context.Put(ctor);
+                if (!ctor.ContainsDiagnostics && genClass)
+                {
+                    var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), ctor, context.Namespace);
+                    context.Put(cls);
+                }
+                else
+                {
+                    context.Put(ctor);
+                }
             }
         }
 
@@ -2909,6 +2941,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // body = AddMissingReturnStatement(body, context.StmtBlk, null);
                 SyntaxToken parentId;
                 bool missingParent = false;
+                bool genClass = false;
                 if (context.Parent is XP.ClassmemberContext)
                 {
                     parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
@@ -2918,6 +2951,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (context.ClassId != null)
                 {
                     parentId = context.ClassId.Get<SyntaxToken>();
+                    genClass = true;
                 }
                 else
                 {
@@ -2934,9 +2968,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 if (missingParent)
                 {
-                    dtor = dtor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Destructor without ClassId"));
+                    dtor = dtor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Missing CLASS clause"));
                 }
-                context.Put(dtor);
+                if (!dtor.ContainsDiagnostics && genClass)
+                {
+                    var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), dtor, context.Namespace);
+                    context.Put(cls);
+                }
+                else
+                {
+                    context.Put(dtor);
+                }
+
 
             }
         }
@@ -3149,22 +3192,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 if (!m.ContainsDiagnostics && GenClass)
                 {
-                    m = _syntaxFactory.ClassDeclaration(
-                        attributeLists: EmptyList<AttributeListSyntax>(),
-                        modifiers: TokenList(SyntaxKind.PartialKeyword),
-                        keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                        identifier: context.ClassId.Get<SyntaxToken>(),
-                        typeParameterList: default(TypeParameterListSyntax),
-                        baseList: default(BaseListSyntax),
-                        constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        members: MakeList<MemberDeclarationSyntax>(m),
-                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                        semicolonToken: null);
-                }
-                if (context.Namespace != null)
-                {
-                    m = AddNameSpaceToMember(context.Namespace, m);
+                    m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), m, context.Namespace);
                 }
             }
             context.Put(m);

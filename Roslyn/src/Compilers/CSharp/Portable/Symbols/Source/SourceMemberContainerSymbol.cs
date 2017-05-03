@@ -3025,7 +3025,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 diagnostics.Add(ErrorCode.ERR_NamespaceUnexpected,
                                     new SourceLocation(constructorSyntax.Identifier));
                             }
-
+#if XSHARP
+                            //constructorSyntax = AdjustGeneratedContructor(constructorSyntax, this);
+#endif
                             var constructor = SourceConstructorSymbol.CreateConstructorSymbol(this, constructorSyntax, diagnostics);
                             builder.NonTypeNonIndexerMembers.Add(constructor);
                         }

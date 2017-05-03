@@ -957,10 +957,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"TRUE", TRUE_CONST},
 
 			// Vulcan UDCs
-			{"WAIT", WAIT},
-            {"ACCEPT", ACCEPT},
-            {"CANCEL", CANCEL},
-            {"QUIT", QUIT},
+			//{"WAIT", WAIT},
+            //{"ACCEPT", ACCEPT},
+            //{"CANCEL", CANCEL},
+            //{"QUIT", QUIT},
 
         };
 

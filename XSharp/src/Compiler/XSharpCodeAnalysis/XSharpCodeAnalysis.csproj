@@ -5,10 +5,13 @@
     <Import Project="..\..\..\..\XSharp\build\Targets\VSL.Settings.targets" />
   </ImportGroup>
   <PropertyGroup>
+	<!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->	
+	<UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
     <RoslynBin>..\Roslyn\Binaries</RoslynBin>
+	<SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
     <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
     <ProjectGuid>{A472BFB0-1BC4-4F9A-B610-9E83F6292D57}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -346,6 +349,7 @@
     <Compile Include="Binder\Semantics\Conversions.cs" />
     <Compile Include="LiteralNames.cs" />
     <Compile Include="Symbols\ConstantValueSpecialized.cs" />
+    <Compile Include="Symbols\SourceMemberContainerSymbol.cs" />
     <Compile Include="Symbols\SourceMemberFieldSymbol.cs" />
     <Compile Include="Symbols\SourceNamedTypeSymbol.cs" />
     <Compile Include="Symbols\MemberSymbolExtensions.cs" />

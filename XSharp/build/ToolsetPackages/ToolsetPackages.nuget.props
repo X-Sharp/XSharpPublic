@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(NuGetPackageRoot)' == ''">
-    <NuGetPackageRoot>C:\Users\robert\.nuget\packages\</NuGetPackageRoot>
-  </PropertyGroup>
-  <ImportGroup>
-    <Import Project="$(NuGetPackageRoot)\Microsoft.Net.Compilers\1.1.0-beta1-20150727-01\build\Microsoft.Net.Compilers.props" Condition="Exists('$(NuGetPackageRoot)\Microsoft.Net.Compilers\1.1.0-beta1-20150727-01\build\Microsoft.Net.Compilers.props')" />
-  </ImportGroup>
-</Project>

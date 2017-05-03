@@ -1097,6 +1097,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"__DIALECT_CORE__", MACRO},
             {"__DIALECT_VO__", MACRO},
             {"__DIALECT_VULCAN__", MACRO},
+            {"__DIALECT_HARBOUR__", MACRO},
             {"__ENTITY__", MACRO},
             {"__FILE__", MACRO},
             {"__LINE__", MACRO},

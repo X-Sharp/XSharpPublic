@@ -4842,5 +4842,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_GetSetMustHaveBody" xml:space="preserve">
     <value>A get or set accessor must have a body, an auto property will be generated</value>
   </data>
-
+  <data name="ERR_AssignMethodsMustHaveAParameter" xml:space="preserve">
+    <value>ASSIGN methods must have at least one parameter</value>
+  </data>
+  
 </root>

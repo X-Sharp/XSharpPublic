@@ -692,6 +692,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASSIGN methods must have at least one parameter.
+        /// </summary>
+        internal static string ERR_AssignMethodsMustHaveAParameter {
+            get {
+                return ResourceManager.GetString("ERR_AssignMethodsMustHaveAParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type parameter &apos;{0}&apos; cannot be used with the &apos;as&apos; operator because it does not have a class type constraint nor a &apos;class&apos; constraint.
         /// </summary>
         internal static string ERR_AsWithTypeVar {

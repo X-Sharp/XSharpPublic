@@ -1731,6 +1731,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             #endregion
             #region ASSIGN = Set Accessor
+            bool missingParam = false;
             if (AssMet != null)
             {
                 bool isInInterfaceOrAbstract = AssMet.isInInterface() ||
@@ -1740,7 +1741,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 BlockSyntax block = null;
                 if (!isInInterfaceOrAbstract)
                 {
-                    var paramName = AssMet.ParamList._Params[0].Id.GetText();
+                    var paramName = "value";
+                    if  (assParamCount > 0)
+                    {
+                        paramName = AssMet.ParamList._Params[0].Id.GetText();
+                    }
+                    else
+                    {
+                        missingParam = true;
+                    }
                     // when the name of the original parameter is value, then there is no need to change things
                     if (String.Compare(paramName, "value", StringComparison.OrdinalIgnoreCase) == 0)
                     {
@@ -1764,6 +1773,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
                         isInInterfaceOrAbstract ? null : block,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
+                if (missingParam)
+                {
+                    accessor = accessor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_AssignMethodsMustHaveAParameter));
+                }
                 accessors.Add(accessor);
                 accessor.XNode = AssMet;
                 AssMet.CsNode = null;

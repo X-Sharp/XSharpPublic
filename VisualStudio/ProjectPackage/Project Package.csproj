@@ -186,6 +186,7 @@
     <Compile Include="Editors\PeekDefinition\XSharpDefinitionPeekItem.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemSource.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemProvider.cs" />
+    <Compile Include="Editors\XSharpCompletionSource_Partial.cs" />
     <Compile Include="Editors\XSharpErrorColorizer.cs" />
     <Compile Include="Editors\XSharpQuickInfo.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />

@@ -2102,7 +2102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var prop = GenerateVoProperty(vop, context);
                     if (prop != null)
-                        members.Add(null);
+                        members.Add(prop); 
                 }
             }
             // Do this after VOProps generation because GenerateVOProperty sets the members
@@ -2166,7 +2166,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var prop = GenerateVoProperty(vop, context);
                     if (prop != null)
-                        members.Add(null);
+                        members.Add(prop);
                 }
             }
             // check if class has Ctor. 
@@ -2247,7 +2247,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var prop = GenerateVoProperty(vop, context);
                     if (prop != null)
-                        members.Add(null);
+                        members.Add(prop);
                 }
             }
             // Do this after VOProps generation because GenerateVOProperty sets the members
@@ -2847,10 +2847,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 // no return statement needed  in CONSTRUCTOR
                 // body = AddMissingReturnStatement(body, context.StmtBlk, null);
-                var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                context.Put(_syntaxFactory.ConstructorDeclaration(
+                SyntaxToken parentId;
+                bool missingParent = false;
+                if (context.Parent is XP.ClassmemberContext)
+                {
+                    parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                }
+                else if (context.ClassId != null)
+                {
+                    parentId = context.ClassId.Get<SyntaxToken>();
+                }
+                else
+                {
+                    parentId = SyntaxFactory.MakeIdentifier("unknown");
+                    missingParent = true;
+                }
+                var ctor = _syntaxFactory.ConstructorDeclaration(
                     attributeLists: attributes,
                     modifiers: mods,
                     identifier: parentId,
@@ -2861,7 +2875,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             context.Chain.SyntaxKeyword(),
                             context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
                     body: body,
-                    semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                if (missingParent)
+                {
+                    ctor = ctor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Construcor without ClassId"));
+                }
+                context.Put(ctor);
             }
         }
 
@@ -2888,17 +2907,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // no return statement needed in DESTRUCTOR
                 // body = AddMissingReturnStatement(body, context.StmtBlk, null);
-                var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                context.Put(_syntaxFactory.DestructorDeclaration(
+                SyntaxToken parentId;
+                bool missingParent = false;
+                if (context.Parent is XP.ClassmemberContext)
+                {
+                    parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                }
+                else if (context.ClassId != null)
+                {
+                    parentId = context.ClassId.Get<SyntaxToken>();
+                }
+                else
+                {
+                    parentId = SyntaxFactory.MakeIdentifier("unknown");
+                    missingParent = true;
+                }
+                var dtor = _syntaxFactory.DestructorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                     tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
                     identifier: parentId,
                     parameterList: EmptyParameterList(),
                     body: context.StmtBlk.Get<BlockSyntax>(),
-                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                if (missingParent)
+                {
+                    dtor = dtor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Destructor without ClassId"));
+                }
+                context.Put(dtor);
+
             }
         }
 

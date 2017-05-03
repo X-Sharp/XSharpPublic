@@ -5286,19 +5286,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
         #region  Vulcan UDCs
-        public override void ExitDefaultStmt([NotNull] XP.DefaultStmtContext context)
-        {
-            context.Put(NotInDialect("DEFAULT Statement"));
-        }
+        //public override void ExitDefaultStmt([NotNull] XP.DefaultStmtContext context)
+        //{
+        //    context.Put(NotInDialect("DEFAULT Statement"));
+        //}
 
-        public override void ExitWaitAcceptStmt([NotNull] XP.WaitAcceptStmtContext context)
-        {
-            context.Put(NotInDialect(context.Key.Text.ToUpper() + " Statement"));
-        }
-        public override void ExitCancelQuitStmt([NotNull] XP.CancelQuitStmtContext context)
-        {
-            context.Put(NotInDialect(context.Key.Text.ToUpper() + " Statement"));
-        }
+        //public override void ExitWaitAcceptStmt([NotNull] XP.WaitAcceptStmtContext context)
+        //{
+        //    context.Put(NotInDialect(context.Key.Text.ToUpper() + " Statement"));
+        //}
+        //public override void ExitCancelQuitStmt([NotNull] XP.CancelQuitStmtContext context)
+        //{
+        //    context.Put(NotInDialect(context.Key.Text.ToUpper() + " Statement"));
+        //}
         #endregion
         #endregion
         #region Expressions

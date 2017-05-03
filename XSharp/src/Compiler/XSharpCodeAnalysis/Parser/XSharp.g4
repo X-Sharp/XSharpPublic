@@ -497,10 +497,10 @@ statement           : Decl=localdecl                                            
                       (e=END FIXED? garbage? end=eos)?								#blockStmt
 
 					// Temporary solution for statements missing from the standard header file
-					| DEFAULT Variables+=simpleName TO Values+=expression 
-						(COMMA Variables+=simpleName TO Values+=expression)* end=eos	#defaultStmt
-					| Key=(WAIT|ACCEPT)  (Expr=expression)? (TO Variable=simpleName)? end = eos		#waitAcceptStmt
-					| Key=(CANCEL|QUIT) end=eos											#cancelQuitStmt
+					//| DEFAULT Variables+=simpleName TO Values+=expression 
+					//	(COMMA Variables+=simpleName TO Values+=expression)* end=eos	#defaultStmt
+					//| Key=(WAIT|ACCEPT)  (Expr=expression)? (TO Variable=simpleName)? end = eos		#waitAcceptStmt
+					//| Key=(CANCEL|QUIT) end=eos											#cancelQuitStmt
 
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                     | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
@@ -951,6 +951,6 @@ keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWA
 					| ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
 					| FASTCALL | FIELD | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
 					| STEP | STRICT | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
-					| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
+					//| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
 					)
                     ;

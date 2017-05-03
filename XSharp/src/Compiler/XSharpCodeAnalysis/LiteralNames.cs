@@ -128,10 +128,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string PushWorkarea = "global::VulcanRTFuncs.Functions.__pushWorkarea";
         internal const string PopWorkarea = "global::VulcanRTFuncs.Functions.__popWorkarea";
         internal const string Evaluate = "global::VulcanRTFuncs.Functions.Evaluate";
-        internal const string Default = "global::VulcanRTFuncs.Functions.Default";
-        internal const string Accept = "global::VulcanRTFuncs.Functions._accept";
-        internal const string Wait = "global::VulcanRTFuncs.Functions._wait";
-        internal const string Quit = "global::VulcanRTFuncs.Functions._quit";
+        //internal const string Default = "global::VulcanRTFuncs.Functions.Default";
+        //internal const string Accept = "global::VulcanRTFuncs.Functions._accept";
+        //internal const string Wait = "global::VulcanRTFuncs.Functions._wait";
+        //internal const string Quit = "global::VulcanRTFuncs.Functions._quit";
     }
 
     internal static class VulcanAssemblyNames

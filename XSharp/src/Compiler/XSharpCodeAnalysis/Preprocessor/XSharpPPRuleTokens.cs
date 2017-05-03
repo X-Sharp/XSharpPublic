@@ -37,8 +37,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Properties
         internal string Key { get { return _key; } }
         internal XSharpToken Token { get { return _token; } }
-        internal int Index { get; set; }
-        internal bool IsMarker { get { return (PPTokenType)((int)_type & 0x0F) != PPTokenType.Token; } }
+        internal bool IsMarker
+        {
+            get
+            {
+                switch (_type)
+                {
+                    case PPTokenType.Token:
+                    case PPTokenType.None:
+                        return false;
+                    default:
+                        return true;
+                }
+            }
+        }
         internal bool IsOptional { get { return _type.IsOptional(); } }
         internal bool IsToken { get { return _type == PPTokenType.Token; } }
         internal bool IsRepeat { get; set; }
@@ -113,7 +125,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _token = token;
             _key = token.Text;
             _type = type;
-            Index = -1;
             IsRepeat = false;
         }
     }
@@ -134,10 +145,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal XSharpToken[] Tokens { get; set; }
         // For optional tokens this contains the list of tokens inside the option block
         internal PPMatchToken[] Children { get; set; }
-       #endregion
+        internal int Index { get; set; } // Index in the flattened matchmarker list
+        #endregion
         internal PPMatchToken(XSharpToken token, PPTokenType type) : base(token, type)
         {
             Children = null;
+            Index = -1;
         }
         internal PPMatchToken(XSharpToken token, PPTokenType type, string key) : this(token, type)
         {

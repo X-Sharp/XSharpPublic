@@ -238,6 +238,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpDialect.Vulcan:
                     macroDefines.Add("__DIALECT_VULCAN__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     break;
+                case XSharpDialect.Harbour:
+                    macroDefines.Add("__DIALECT_HARBOUR__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                    break;
                 default:
                     break;
             }
@@ -425,7 +428,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         /// <summary>
         /// Pre-processes the input stream. Reads #Include files, processes #ifdef commands and translations from #defines, macros and UDCs
-        /// </summary>
+        /// </summary>                                                               a
         /// <returns>Translated input stream</returns>
         internal IList<IToken> PreProcess()
         {
@@ -453,7 +456,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                         writeToPPO("");
                 }
-                result.Add(t);
+                if (t.Channel == XSharpLexer.DefaultTokenChannel)
+                    result.Add(t);
             }
             doEOFChecks();
             return result;

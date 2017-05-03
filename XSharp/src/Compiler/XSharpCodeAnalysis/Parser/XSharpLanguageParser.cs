@@ -127,11 +127,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
             var parseErrors = ParseErrorData.NewBag();
             var pp = new XSharpPreprocessor(_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
-            // commontokenstream filters on tokens on the default channel. All other tokens are ignored
-			CommonTokenStream ppStream;
+			BufferedTokenStream ppStream;
             if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
             { 
 	            var ppTokens = pp.PreProcess();
+                // no need to filter. The preprocessor does this already
 	            ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
             }
             else
@@ -146,6 +146,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
                 var tokens = ts.GetTokens();
+                // commontokenstream filters on tokens on the default channel. All other tokens are ignored
                 ppStream = new CommonTokenStream(new ListTokenSource(tokens));
             }
             ppStream.Fill();

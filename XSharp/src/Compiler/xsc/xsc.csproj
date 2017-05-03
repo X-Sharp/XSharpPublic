@@ -4,8 +4,11 @@
     <Import Project="..\..\..\..\XSharp\build\Targets\VSL.Settings.targets" />
   </ImportGroup>
   <PropertyGroup>
+	<!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
+	<UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}</ProjectGuid>
     <OutputType>Exe</OutputType>

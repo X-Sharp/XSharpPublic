@@ -40,6 +40,9 @@ entity              : namespace_
                     | function                  // This will become part of the 'Globals' class
                     | procedure                 // This will become part of the 'Globals' class
                     | method                    // Method xxx Class xxx syntax
+                    | constructor               // Constructor Class xxx syntax
+                    | destructor                // Destructor Class xxx syntax
+                    | method                    // Method xxx Class xxx syntax
                     | globalAttributes          // Assembly attributes, Module attributes etc.
                     | using_                    // Using Namespace
                     | voglobal                  // This will become part of the 'Globals' class

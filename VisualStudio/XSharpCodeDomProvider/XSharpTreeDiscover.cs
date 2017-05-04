@@ -271,7 +271,7 @@ namespace XSharp.CodeDom
             this.CurrentClass.Members.Add(evt);
         }
 
-        public override void EnterClsctor([NotNull] XSharpParser.ClsctorContext context)
+        public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
             CodeConstructor ctor = new CodeConstructor();
             ctor.Comments.AddRange(context.GetLeadingComments(_tokens));
@@ -295,7 +295,7 @@ namespace XSharp.CodeDom
             this.CurrentClass.Members.Add(ctor);
         }
 
-        public override void EnterClsdtor([NotNull] XSharpParser.ClsdtorContext context)
+        public override void EnterDestructor([NotNull] XSharpParser.DestructorContext context)
         {
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member

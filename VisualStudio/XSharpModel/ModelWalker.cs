@@ -123,7 +123,10 @@ namespace XSharpModel
                 var aFiles = project.Files.ToArray();
                 int iProcessed = 0;
                 var options = new ParallelOptions ();
-                options.MaxDegreeOfParallelism = System.Environment.ProcessorCount / 2;
+				if (System.Environment.ProcessorCount > 1)
+				{
+					options.MaxDegreeOfParallelism = System.Environment.ProcessorCount / 2;
+				}
                 Parallel.ForEach(aFiles, options, file =>
                 {
                     // Detect project unload

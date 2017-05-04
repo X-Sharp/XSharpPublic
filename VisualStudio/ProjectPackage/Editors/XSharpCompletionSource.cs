@@ -245,7 +245,7 @@ namespace XSharpLanguage
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
                             AddTypeNames(compList, file.Project, filterText, Usings);
                             //
-                            AddXSharpTypeNames(compList, filterText);
+                            AddXSharpTypesTypeNames(compList, filterText);
                             break;
                         case XSharpLexer.IMPLEMENTS:
                             // It can be a namespace 
@@ -259,7 +259,7 @@ namespace XSharpLanguage
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
                             AddTypeNames(compList, file.Project, filterText, Usings);
                             //
-                            AddXSharpTypeNames(compList, filterText);
+                            AddXSharpTypesTypeNames(compList, filterText);
                             // it can be a static Method/Property/Enum
                             if (cType != null)
                             {
@@ -331,7 +331,7 @@ namespace XSharpLanguage
                                 // we should also walk all the USINGs, and the current Namespace if any, to search Types
                                 AddTypeNames(compList, file.Project, filterText, Usings);
                                 //
-                                AddXSharpTypeNames(compList, filterText);
+                                AddXSharpTypesTypeNames(compList, filterText);
                                 break;
                             case XSharpLexer.IMPLEMENTS:
                                 // It can be a namespace 
@@ -350,7 +350,7 @@ namespace XSharpLanguage
                                 // and Types
                                 AddTypeNames(compList, file.Project, filterText, Usings);
                                 //
-                                AddXSharpTypeNames(compList, filterText);
+                                AddXSharpTypesTypeNames(compList, filterText);
                                 break;
                         }
                     }
@@ -405,6 +405,23 @@ namespace XSharpLanguage
             }
             //
             // And our own Types
+            AddXSharpTypeNames(compList, project, startWith, startLen, dotPos);
+            // We should also add the external TypeNames
+            IList<XProject> prjs = project.ReferencedProjects;
+            foreach (var prj in prjs)
+            {
+                AddXSharpTypeNames(compList, prj, startWith, startLen, dotPos);
+            }
+            // And Stranger Projects
+            IList<EnvDTE.Project> sprjs = project.StrangerProjects;
+            foreach (var prj in sprjs)
+            {
+                AddStrangerTypeNames(compList, prj, startWith, startLen, dotPos);
+            }
+        }
+
+        private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith, int startLen, int dotPos )
+        {
             foreach (XFile file in project.Files)
             {
                 foreach (XType typeInfo in file.TypeList.Values.Where(ti => nameStartsWith(ti.FullName, startWith)))
@@ -424,7 +441,12 @@ namespace XSharpLanguage
             }
         }
 
-        private void AddXSharpTypeNames(CompletionList compList, string startWith)
+        private void AddStrangerTypeNames(CompletionList compList, EnvDTE.Project project, string startWith, int startLen, int dotPos)
+        {
+
+        }
+
+        private void AddXSharpTypesTypeNames(CompletionList compList, string startWith)
         {
             //
             int startLen = 0;
@@ -1634,6 +1656,7 @@ namespace XSharpLanguage
                     case XSharpLexer.LCURLY:
                     case XSharpLexer.LBRKT:
                     case XSharpLexer.SL_COMMENT:
+                    case XSharpLexer.ML_COMMENT:
                         // Stop here
                         stopToken = triggerToken;
                         token = null;

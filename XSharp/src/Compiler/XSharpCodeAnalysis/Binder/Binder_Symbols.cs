@@ -34,7 +34,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     new object[] {
                                         where,
                                         new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat) });
+                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        first.Kind.ToString()});
                 diagnostics.Add(info, where.Location);
                 return first;
             }
@@ -44,7 +45,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     new object[] {
                                         where,
                                         new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat) });
+                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        first.Kind.ToString()});
                 diagnostics.Add(info, where.Location);
                 return second;
             }
@@ -57,7 +59,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     new object[] {
                                     where,
                                     new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat) });
+                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                    first.Kind.ToString()});
                 diagnostics.Add(info, where.Location);
                 return first;
             }

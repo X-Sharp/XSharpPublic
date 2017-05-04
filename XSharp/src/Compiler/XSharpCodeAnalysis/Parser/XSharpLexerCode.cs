@@ -710,13 +710,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (t.Type == SYMBOL_CONST)
                     {
                         var text = t.Text.Substring(1);
-                        if (KwIds.ContainsKey(text) && !SymIds.ContainsKey(t.Text))
+                        if (KwIds.ContainsKey(text))
                         {
-                            // #NIL or #NULL_STRING
-                            t.Text = "#";
-                            t.Type = NEQ2;
-                            t.StopIndex = t.StartIndex ;
-                            InputStream.Seek(t.StartIndex + 1);
+                            var kwid = KwIds[text];
+                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL)
+                            {
+                                // #NIL or #NULL_STRING etc. 
+                                t.Text = "#";
+                                t.Type = NEQ2;
+                                t.StopIndex = t.StartIndex;
+                                InputStream.Seek(t.StartIndex + 1);
+                            }
                         }
                     }
                 }

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>XS1100</title>
 <keywords>
 <keyword>XS1100</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">XS1100</para>
   </header>
-  <para styleclass="Normal">Method '{0}' has a parameter modifier 'SELF' which is not on the first parameter</para>
+  <para styleclass="Normal">Method &apos;{0}&apos; has a parameter modifier &apos;SELF&apos; which is not on the first parameter</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

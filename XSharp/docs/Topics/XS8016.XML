@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>XS8016</title>
 <keywords>
 <keyword>XS8016</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">XS8016</para>
   </header>
-  <para styleclass="Normal">Transparent identifier member access failed for field '{0}' of '{1}'.  Does the data being queried implement the query pattern?</para>
+  <para styleclass="Normal">Transparent identifier member access failed for field &apos;{0}&apos; of &apos;{1}&apos;.  Does the data being queried implement the query pattern?</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

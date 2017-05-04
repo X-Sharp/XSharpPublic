@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS0246</title>
   <keywords>
     <keyword>XS0246</keyword>
@@ -15,7 +15,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following situations cause compiler error XS0246.</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Did you misspell the name of the type or namespace? Without the correct name, the compiler cannot find the definition for the type or namespace. This often occurs because the casing used in the name of the type is not correct. For example, Dataset ds; generates XS0246 because the s in Dataset must be capitalized.</li>
       <li styleclass="Normal" style="margin-left:13px;">If the error is for a namespace name, did you add a reference (<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">/reference</link>) to the assembly that contains the namespace? For example, your code might contain the directive using Accessibility. However, if your project does not reference the assembly Accessibility.dll, error XS0246 is reported. For more information, see Managing references in a project</li>
       <li styleclass="Normal" style="margin-left:13px;">If the error is for a type name, did you include the proper using directive, or, alternatively, fully qualify the name of the type? Consider the following declaration: DataSet ds. To use the DataSet type, you need two things. First, you need a reference to the assembly that contains the definition for the DataSet type. Second, you need a using directive for the namespace where DataSet is located. For example, because DataSet is located in the System.Data namespace, you need the following directive at the beginning of your code: using System.Data.</li>
@@ -35,11 +35,11 @@
     <para styleclass="Normal">The following example generates XS0246 because a necessary using directive is missing.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0246.prg &#160;<br/></para>
+    <para styleclass="Code with box">// XS0246.prg  <br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following example causes XS0246 because an object of type Type was used where an actual type was expected.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0246b.prg &#160;<br/></para>
+    <para styleclass="Code with box">// XS0246b.prg  <br/></para>
   </body>
 </topic>

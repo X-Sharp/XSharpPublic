@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>XS7056</title>
 <keywords>
 <keyword>XS7056</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">XS7056</para>
   </header>
-  <para styleclass="Normal">Unable to resolve file path '{0}' specified for the named argument '{1}' for PermissionSet attribute</para>
+  <para styleclass="Normal">Unable to resolve file path &apos;{0}&apos; specified for the named argument &apos;{1}&apos; for PermissionSet attribute</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

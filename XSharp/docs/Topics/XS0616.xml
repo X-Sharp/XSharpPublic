@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS0616</title>
   <keywords>
     <keyword>XS0616</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="Normal">The following sample generates XS0616.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0616.prg &#160;<br/>// compile with: /target:library &#160;<br/></para>
+    <para styleclass="Code with box">// XS0616.prg  <br/>// compile with: /target:library  <br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Example</para>
@@ -25,7 +25,7 @@
     <para styleclass="Normal">The following sample shows how you might define an attribute:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// CreateAttrib.prg &#160;<br/>// compile with: /target:library &#160;<br/></para>
+    <para styleclass="Code with box">// CreateAttrib.prg  <br/>// compile with: /target:library  <br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS4014</title>
   <keywords>
     <keyword>XS4014</keyword>
@@ -22,13 +22,13 @@
     <para styleclass="Normal">The following example shows how to cause the warning, how to suppress it, and how to await the call.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">&#32;</para>
+    <para styleclass="Code with box"> </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In the example, if you choose Call #1 or Call #2, the unawaited async method (<text styleclass="Code Example">CalledMethodAsync</text>) finishes after both its caller (<text styleclass="Code Example">CallingMethodAsync</text>) and the caller&apos;s caller (<text styleclass="Code Example">startButton_Click</text>) are complete. The last line in the following output shows you when the called method finishes. Entry to and exit from the event handler that calls <text styleclass="Code Example">CallingMethodAsync</text> in the full example are marked in the output.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"> &#160;</para>
+    <para styleclass="Normal">  </para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You</para>
@@ -37,12 +37,12 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following Windows Presentation Foundation (WPF) application contains the methods from the previous example. The following steps set up the application.</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Create a WPF application, and name it AsyncWarning.</li>
       <li styleclass="Normal" style="margin-left:13px;">In the Visual Studio Code Editor, choose the MainWindow.xaml tab.</li>
     </list>
-    <para styleclass="Normal" style="margin-left:13px;"> &#160; &#160; If the tab isn&apos;t visible, open the shortcut menu for MainWindow.xaml in Solution Explorer, and then choose View Code.</para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <para styleclass="Normal" style="margin-left:13px;">     If the tab isn&apos;t visible, open the shortcut menu for MainWindow.xaml in Solution Explorer, and then choose View Code.</para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Replace the code in the XAML view of MainWindow.xaml with the following code.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
@@ -54,14 +54,14 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For more information about the XAML Designer, see Creating a UI by using XAML Designer. For information about how to build your own simple UI, see the &quot;To create a WPF application&quot; and &quot;To design a simple WPF MainWindow&quot; sections of Walkthrough: Accessing the Web by Using Async and Await.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal" style="margin-left:13px;">4. &#160; Replace the code in MainWindow.xaml.prg with the following code.</para>
+    <para styleclass="Normal" style="margin-left:13px;">4.   Replace the code in MainWindow.xaml.prg with the following code.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal" style="margin-left:13px;">5. &#160;Choose the F5 key to run the program, and then choose the Start button.</para>
+    <para styleclass="Normal" style="margin-left:13px;">5.  Choose the F5 key to run the program, and then choose the Start button.</para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal" style="margin-left:13px;"> &#160; &#160; The expected output appears at the end of the code.</para>
+    <para styleclass="Normal" style="margin-left:13px;">     The expected output appears at the end of the code.</para>
   </body>
 </topic>

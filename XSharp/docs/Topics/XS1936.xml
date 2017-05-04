@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS1936</title>
   <keywords>
     <keyword>XS1936</keyword>
@@ -15,7 +15,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To correct this error</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Make sure that you are querying a collection of objects, not an individual object.</li>
       <li styleclass="Normal" style="margin-left:13px;">Make sure that you have specified the necessary using directives.</li>
     </list>
@@ -24,7 +24,7 @@
     <para styleclass="Normal">The following example produces XS1936:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS1936.prg &#160;<br/></para>
+    <para styleclass="Code with box">// XS1936.prg  <br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This error typically occurs when you accidentally try to query an object of some type instead of a collection of those objects.</para>
   </body>

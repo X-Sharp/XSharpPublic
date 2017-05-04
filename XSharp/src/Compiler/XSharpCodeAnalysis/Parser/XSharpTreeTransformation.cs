@@ -1667,6 +1667,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             #endregion
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             IXParseTree xnode = null;
+            bool paramMatch = true;
             #region ACCESS = Get Accessor
             if (AccMet != null)
             {
@@ -1677,7 +1678,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var m = AccMet.Get<MethodDeclarationSyntax>();
                 var args = MakeArgumentList(voPropArgs);
                 BlockSyntax block = isInInterfaceOrAbstract ? null : m.Body;
-                bool paramMatch = true;
                 if (AssMet != null)
                 {
                     // When both Access and Assign exist, then check the parameter names and types
@@ -1777,6 +1777,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     accessor = accessor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_AssignMethodsMustHaveAParameter));
                 }
+                if (!paramMatch)
+                {
+                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignParametersMutchMatch);
+                    accessor = accessor.WithAdditionalDiagnostics(diag);
+                }
+                if (!typeMatch)
+                {
+                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignTypesMutchMatch);
+                    accessor = accessor.WithAdditionalDiagnostics(diag);
+                }
                 accessors.Add(accessor);
                 accessor.XNode = AssMet;
                 AssMet.CsNode = null;
@@ -1784,7 +1794,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (xnode == null)
                     xnode = AssMet;
             }
-            #endregion
+             #endregion
             BasePropertyDeclarationSyntax prop;
             var accessorList = _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         accessors, SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));

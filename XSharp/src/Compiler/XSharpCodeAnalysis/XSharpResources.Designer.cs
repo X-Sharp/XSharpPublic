@@ -215,7 +215,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The parameters for the Access and Assign declarations must match by name and type. The first ASSIGN parameter is the value, the other parameters are the indexers and must be the same as the ACCESS parameters..
+        ///   Looks up a localized string similar to The parameters for the ACCESS and ASSIGN declarations must match by name, type and number. There must be one more ASSIGN parameter than ACCESS parameter. The first ASSIGN parameter is the value, the other parameters are the indexers and must be have the same name and type as the ACCESS parameters..
         /// </summary>
         internal static string ERR_AccessAssignParametersMutchMatch {
             get {

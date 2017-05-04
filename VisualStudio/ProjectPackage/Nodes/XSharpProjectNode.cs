@@ -1134,7 +1134,15 @@ namespace XSharp.Project
             // XSharpProjectReference
             // So, we will add files only (currently) => Don't forget RemoveURL
 #if CODEMODEL
-            if (!IsProjectFile(url) && this.IsProjectOpened)
+            if (IsProjectFile(url))
+            {
+                this.ProjectModel.AddProjectReference(url);
+            }
+            else if (IsStrangerProjectFile(url))
+            {
+                this.ProjectModel.AddStrangerProjectReference(url);
+            }
+            else if (this.IsProjectOpened)
             {
                 var xnode = node as XSharpFileNode;
                 if (xnode != null && !xnode.IsNonMemberItem)
@@ -1143,20 +1151,6 @@ namespace XSharp.Project
                     {
                         this.ProjectModel.AddFile(url);
                     }
-                }
-            }
-            else
-            {
-                // References are added through here too
-                // so check if we are adding a "external" project
-                // that might be a X# Project or Something else
-                if (IsProjectFile(url))
-                {
-                    this.ProjectModel.AddProjectReference(url);
-                }
-                else if (IsStrangerProjectFile(url))
-                {
-                    this.ProjectModel.AddStrangerProjectReference(url);
                 }
             }
 #endif
@@ -1193,16 +1187,6 @@ namespace XSharp.Project
             //
             //
 #if CODEMODEL
-            if (File.Exists(url) && IsCodeFile(url))
-            {
-                var node = this.FindChild(url) as XSharpFileNode;
-                if (node != null && !node.IsNonMemberItem)
-                {
-                    this.ProjectModel.RemoveFile(url);
-                }
-            }
-#endif
-            base.RemoveURL(url);
             // We should remove the external projects entries
             if (IsProjectFile(url))
             {
@@ -1212,6 +1196,16 @@ namespace XSharp.Project
             {
                 this.ProjectModel.RemoveStrangerProjectReference(url);
             }
+            else 
+            {
+                var node = this.FindChild(url) as XSharpFileNode;
+                if (node != null && !node.IsNonMemberItem)
+                {
+                    this.ProjectModel.RemoveFile(url);
+                }
+            }
+#endif
+            base.RemoveURL(url);
         }
 
 
@@ -1222,7 +1216,9 @@ namespace XSharp.Project
         /// <returns></returns>
         private bool IsProjectFile(string fullPath)
         {
-            return (String.Compare(Path.GetExtension(fullPath), ".xsprj", StringComparison.OrdinalIgnoreCase) == 0);
+            string cExt = Path.GetExtension(fullPath);
+            return String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase) 
+                || String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase) ;
         }
 
         /// <summary>

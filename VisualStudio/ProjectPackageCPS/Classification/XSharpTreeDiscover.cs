@@ -46,8 +46,8 @@ namespace XSharpColorizer
             else if ((context is XSharpParser.FunctionContext) ||
                     (context is XSharpParser.ProcedureContext) ||
                     (context is XSharpParser.MethodContext) ||
-                    (context is XSharpParser.ClsctorContext) ||
-                    (context is XSharpParser.ClsdtorContext))
+                    (context is XSharpParser.ConstructorContext) ||
+                    (context is XSharpParser.DestructorContext))
             {
                 // Put a region up to the end of the Entity
                 TagRegion(context, context.ChildCount - 1);

@@ -29,12 +29,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemberResolutionResult<TMember> m2,
             ArrayBuilder<BoundExpression> arguments,
             out BetterResult result,
-            out bool Ambiguous)
+            out HashSet<DiagnosticInfo> useSiteDiagnostics
+            )
             where TMember : Symbol
         {
             result = BetterResult.Neither;
-            Ambiguous = false;
+            bool Ambiguous = false;
             // Prefer the member not declared in VulcanRT, if applicable
+            useSiteDiagnostics = null;
             if (Compilation.Options.IsDialectVO)
             {
                 var asm1 = m1.Member.ContainingAssembly;
@@ -187,18 +189,43 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     foreach (var reference in Compilation.ReferencedAssemblyNames)
                     {
+                        bool ok = false;
                         if (reference.Name == asm1.Name)
                         {
                             result = BetterResult.Left;
                             Ambiguous = true;
-                            return true;
+                            ok = true;
                         }
                         if (reference.Name == asm2.Name)
                         {
                             result = BetterResult.Right;
                             Ambiguous = true;
-                            return true;
+                            ok = true;
                         }
+                        if (ok && Ambiguous)
+                        {
+                            TMember r1, r2;
+                            if (result == BetterResult.Left)
+                            {
+                                r1 = m1.Member;
+                                r2 = m2.Member;
+                            }
+                            else
+                            {
+                                r1 = m2.Member;
+                                r2 = m1.Member;
+                            }
+
+                            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
+                                new object[] {
+                                        r1.Name,
+                                        new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        r1.Kind.ToString()});
+                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            useSiteDiagnostics.Add(info);
+                        }
+                        return ok;
                     }
                 }
             }

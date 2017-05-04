@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS7101</title>
+<keywords>
+<keyword>XS7101</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">XS7101</para>
+  </header>
+  <para styleclass="Normal">Member '{0}' added during the current debug session can only be accessed from within its declaring assembly '{1}'.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

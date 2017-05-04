@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS1673</title>
+<keywords>
+<keyword>XS1673</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">XS1673</para>
+  </header>
+  <para styleclass="Normal">Anonymous methods, lambda expressions, and query expressions inside structs cannot access instance members of 'SELF'. Consider copying 'SELF' to a local variable outside the anonymous method, lambda expression or query expression and using the local instead.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

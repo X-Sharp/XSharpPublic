@@ -1222,7 +1222,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var symbols = result.Symbols;
             wasError = false;
-
+#if XSHARP
+            Symbol xresult;
+#endif
             if (result.IsMultiViable)
             {
                 if (symbols.Count > 1)
@@ -1447,7 +1449,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             //    whereText,
                             //    first,
                             //    second);
-
+#if XSHARP
+                            xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where, diagnostics);
+                            if (xresult != null)
+                                return xresult;
+#endif
                             // CS0229: Ambiguity between '{0}' and '{1}'
                             info = new CSDiagnosticInfo(ErrorCode.ERR_AmbigMember, originalSymbols,
                                 new object[] { first, second });
@@ -1479,38 +1485,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     new object[] { where, first, second });
                             }
 #if XSHARP
-                            else if (first.IsFromCompilation(Compilation) && ! second.IsFromCompilation(Compilation))
+                            else if ( (xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where, diagnostics)) != null)
                             {
-                                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
-                                    new object[] {
-                                        where,
-                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat) });
-                                diagnostics.Add(info, where.Location);
-                                return first;
-                            }
-                            else if (second.IsFromCompilation(Compilation) && !first.IsFromCompilation(Compilation))
-                            {
-                                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
-                                    new object[] {
-                                        where,
-                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat) });
-                                diagnostics.Add(info, where.Location);
-                                return second;
-                            }
-                            else if (first.Kind == second.Kind  && 
-                                ! string.Equals(first.Name, second.Name) && 
-                                string.Equals(first.Name, second.Name, StringComparison.OrdinalIgnoreCase))
-                            {
-                                // they only differ in case
-                                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
-                                    new object[] {
-                                    where,
-                                    new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat) });
-                                diagnostics.Add(info, where.Location);
-                                return first;
+                               return xresult;
                             }
 #endif
                             else

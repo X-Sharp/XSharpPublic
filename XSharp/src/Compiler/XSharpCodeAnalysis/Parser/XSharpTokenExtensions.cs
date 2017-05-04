@@ -120,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static string StringValue(string text)
         {
-            return text.Substring(1, text.Length - 2);
+            return text.Substring(1, text.Length> 2 ? text.Length - 2 :0);
         }
 
         private static string EscapedStringValue(string text)

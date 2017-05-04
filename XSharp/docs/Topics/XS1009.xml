@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS1009</title>
   <keywords>
     <keyword>XS1009</keyword>
@@ -16,7 +16,7 @@
     <para styleclass="Normal">The following sample generates XS1009.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS1009-a.prg &#160;<br/></para>
+    <para styleclass="Code with box">// XS1009-a.prg  <br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">A common cause of this error is using the backslash character in a file name, as the following example shows.</para>
     <para styleclass="Normal"></para>
@@ -26,7 +26,7 @@
     <para styleclass="Normal">To resolve this error, use &quot;\\&quot; or the @-quoted string literal, as the following example shows.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS1009-b.prg &#160;<br/></para>
+    <para styleclass="Code with box">// XS1009-b.prg  <br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

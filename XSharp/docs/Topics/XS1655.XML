@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>XS1655</title>
 <keywords>
 <keyword>XS1655</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">XS1655</para>
   </header>
-  <para styleclass="Normal">Cannot pass fields of '{0}' as a ref or out argument because it is a '{1}'</para>
+  <para styleclass="Normal">Cannot pass fields of &apos;{0}&apos; as a ref or out argument because it is a &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

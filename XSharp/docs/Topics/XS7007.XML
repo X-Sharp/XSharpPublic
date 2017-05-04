@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>XS7007</title>
 <keywords>
 <keyword>XS7007</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">XS7007</para>
   </header>
-  <para styleclass="Normal">A 'using static' directive can only be applied to types; '{0}' is a namespace not a type. Consider a 'using namespace' directive instead</para>
+  <para styleclass="Normal">A &apos;using static&apos; directive can only be applied to types; &apos;{0}&apos; is a namespace not a type. Consider a &apos;using namespace&apos; directive instead</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

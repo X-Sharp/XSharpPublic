@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>XS1113</title>
 <keywords>
 <keyword>XS1113</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">XS1113</para>
   </header>
-  <para styleclass="Normal">Extension method '{0}' defined on value type '{1}' cannot be used to create delegates</para>
+  <para styleclass="Normal">Extension method &apos;{0}&apos; defined on value type &apos;{1}&apos; cannot be used to create delegates</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

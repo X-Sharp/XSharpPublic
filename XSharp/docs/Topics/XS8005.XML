@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>XS8005</title>
 <keywords>
 <keyword>XS8005</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">XS8005</para>
   </header>
-  <para styleclass="Normal">Type '{0}' exported from module '{1}' conflicts with type '{2}' exported from module '{3}'.</para>
+  <para styleclass="Normal">Type &apos;{0}&apos; exported from module &apos;{1}&apos; conflicts with type &apos;{2}&apos; exported from module &apos;{3}&apos;.</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

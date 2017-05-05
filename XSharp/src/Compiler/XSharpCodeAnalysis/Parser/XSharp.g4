@@ -87,6 +87,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     // And with numeric entrypoint, which is supported by VO but not by .NET
                     // We parse the numeric entrypoint here but we will throw an error during the tree transformation
                     // _DLL FUNCTION SetDebugErrorLevel( dwLevel AS DWORD) AS VOID PASCAL:USER32.123
+					// and Finally we also parse the @Num
+					// 
 
 vodll				: (Attributes=attributes)? 
 					  (Modifiers=funcprocModifiers)? DLL
@@ -94,8 +96,10 @@ vodll				: (Attributes=attributes)?
                       | T=(PROCEDURE|PROC) Id=identifier ParamList=parameterList )
                       (CallingConvention=dllcallconv) COLON
                       Dll=identifierString (DOT Extension=identifierString)?
-                        ( DOT Entrypoint=identifierString (NEQ2 INT_CONST)?
-                        | Ordinal=REAL_CONST)
+						(	Ordinal=REAL_CONST 
+						 |  DOT Entrypoint=identifierString Address=ADDROF? Number=INT_CONST? (NEQ2 INT_CONST)? 
+						)
+					   
                       ( CharSet=(AUTO | ANSI | UNICODE) )?
                       eos
                     ;

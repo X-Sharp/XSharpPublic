@@ -882,9 +882,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"IIF", IIF},
             {"IN", IN},
             {"INHERIT", INHERIT},
-            {"_INIT1", INIT1},
-            {"_INIT2", INIT2},
-            {"_INIT3", INIT3},
+            //{"_INIT1", INIT1}, VO does not allow 4 letter abbreviations
+            //{"_INIT2", INIT2}, VO does not allow 4 letter abbreviations
+            //{"_INIT3", INIT3}, VO does not allow 4 letter abbreviations
             {"INSTANCE", INSTANCE},
             {"IS", IS},
             {"LOCAL", LOCAL},
@@ -907,14 +907,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"RETURN", RETURN},
             {"SELF", SELF},
             {"SEQUENCE", SEQUENCE},
-            {"_SIZEOF", SIZEOF},
+            //{"_SIZEOF", SIZEOF},  VO does not allow 4 letter abbreviations
             {"STATIC", STATIC},
             {"STEP", STEP},
             {"STRICT", STRICT},
             {"SUPER", SUPER},
             {"THISCALL", THISCALL},
             {"TO", TO},
-            {"_TYPEOF", TYPEOF},
+            //{"_TYPEOF", TYPEOF},  VO does not allow 4 letter abbreviations
             {"UNION", UNION},
             {"UPTO", UPTO},
             {"USING", USING},
@@ -983,7 +983,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 var token = VoKeywords[text];
                 ids.Add(text, token);
-                if (lFour && ! text.StartsWith("_INIT"))
+                if (lFour )
                 {
                     var s = text;
                     while (s.Length > 4)
@@ -1000,7 +1000,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             var Keywords = new Dictionary<string, int>
         {
-			// Vulcan keywords
+            // VO keywords that cannot be abbreviated
+
+            {"_INIT1", INIT1},
+            {"_INIT2", INIT2},
+            {"_INIT3", INIT3},
+            {"_SIZEOF", SIZEOF}, 
+            {"_TYPEOF", TYPEOF},  
+                
+            // Vulcan keywords
 			{"ABSTRACT", ABSTRACT},
             {"ANSI", ANSI},
             {"AUTO", AUTO},

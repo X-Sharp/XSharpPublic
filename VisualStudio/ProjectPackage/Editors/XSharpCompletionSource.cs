@@ -405,23 +405,29 @@ namespace XSharpLanguage
             }
             //
             // And our own Types
-            AddXSharpTypeNames(compList, project, startWith, startLen, dotPos);
+            AddXSharpTypeNames(compList, project, startWith);
             // We should also add the external TypeNames
             IList<XProject> prjs = project.ReferencedProjects;
             foreach (var prj in prjs)
             {
-                AddXSharpTypeNames(compList, prj, startWith, startLen, dotPos);
+                AddXSharpTypeNames(compList, prj, startWith);
             }
             // And Stranger Projects
             IList<EnvDTE.Project> sprjs = project.StrangerProjects;
             foreach (var prj in sprjs)
             {
-                AddStrangerTypeNames(compList, prj, startWith, startLen, dotPos);
+                AddStrangerTypeNames(compList, prj, startWith);
             }
         }
 
-        private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith, int startLen, int dotPos )
+        private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith)
         {
+            //
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
+            //
             foreach (XFile file in project.Files)
             {
                 foreach (XType typeInfo in file.TypeList.Values.Where(ti => nameStartsWith(ti.FullName, startWith)))
@@ -441,10 +447,82 @@ namespace XSharpLanguage
             }
         }
 
-        private void AddStrangerTypeNames(CompletionList compList, EnvDTE.Project project, string startWith, int startLen, int dotPos)
+        private void AddStrangerTypeNames(CompletionList compList, EnvDTE.Project project, string startWith)
         {
+            //
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
+            //
+            // First, get the project (s?)
+            foreach (EnvDTE.ProjectItem prj in project.ProjectItems)
+            {
+                EnvDTE.FileCodeModel filecodemodel = prj.FileCodeModel;
+                if (filecodemodel == null)
+                    continue;
+                // Ok, now enumerate all Elements
+                foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)
+                {
+                    // Types are in NameSpace
+                    if (codeElement.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
+                    {
+                        // Now, enumerate the Children of the Namespace : Class, Enum, ...
+                        foreach (EnvDTE.CodeElement child in codeElement.Children)
+                        {
+                            //
+                            String realTypeName = child.FullName;
+                            if (nameStartsWith(realTypeName, startWith))
+                            {
+                                // We are looking for Class
+                                if ((child.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                                (child.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                                (child.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+                                {
+                                    ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupClass, StandardGlyphItem.GlyphItemPublic);
+                                    String childType = "";
+                                    if (child.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                                    {
+                                        childType = "CLASS ";
+                                        EnvDTE.CodeClass objChild = (EnvDTE.CodeClass)child;
+                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
+                                            continue;
+                                    }
+                                    else if (child.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+                                    {
+                                        childType = "ENUM ";
+                                        EnvDTE.CodeEnum objChild = (EnvDTE.CodeEnum)child;
+                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
+                                            continue;
+                                        icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupEnum, StandardGlyphItem.GlyphItemPublic);
+                                    }
+                                    else if (child.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+                                    {
+                                        childType = "STRUCTURE ";
+                                        EnvDTE.CodeStruct objChild = (EnvDTE.CodeStruct)child;
+                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
+                                            continue;
+                                        icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupStruct, StandardGlyphItem.GlyphItemPublic);
+                                    }
 
+                                    // remove the start
+                                    if (startLen > 0)
+                                        realTypeName = realTypeName.Substring(startLen);
+                                    // Do we have another part 
+                                    dotPos = realTypeName.IndexOf('.');
+                                    // Then remove it
+                                    if (dotPos > 0)
+                                        realTypeName = realTypeName.Substring(0, dotPos);
+                                    
+                                    compList.Add(new XSCompletion(realTypeName, realTypeName, childType + realTypeName, icon, null));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+
 
         private void AddXSharpTypesTypeNames(CompletionList compList, string startWith)
         {
@@ -471,6 +549,7 @@ namespace XSharpLanguage
                 compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
             }
         }
+
 
         private void AddNamespaces(CompletionList compList, XProject project, String startWith)
         {
@@ -500,24 +579,28 @@ namespace XSharpLanguage
             }
             //
             // And our own Namespaces
-            AddXSharpNamespaces(compList, project, startWith, startLen, icon);
+            AddXSharpNamespaces(compList, project, startWith, icon);
             // We should also add the external NameSpaces
             IList<XProject> prjs = project.ReferencedProjects;
             foreach (var prj in prjs)
             {
-                AddXSharpNamespaces(compList, prj, startWith, startLen, icon);
+                AddXSharpNamespaces(compList, prj, startWith, icon);
             }
             // And Stranger Projects
             IList<EnvDTE.Project> sprjs = project.StrangerProjects;
             foreach (var prj in sprjs)
             {
-                AddStrangerNamespaces(compList, prj, startWith, startLen, icon);
+                AddStrangerNamespaces(compList, prj, startWith, icon);
             }
         }
 
-        private void AddXSharpNamespaces(CompletionList compList, XProject project, String startWith, int startLen, ImageSource icon)
+        private void AddXSharpNamespaces(CompletionList compList, XProject project, String startWith, ImageSource icon)
         {
-            int dotPos;
+            // Calculate the length we must remove
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
             // And our own Namespaces
             List<XType> xsNamespaces = project.Namespaces;
             foreach (XType nameSpace in xsNamespaces.Where(ns => nameStartsWith(ns.Name, startWith)))
@@ -535,9 +618,13 @@ namespace XSharpLanguage
             }
         }
 
-        private void AddStrangerNamespaces(CompletionList compList, EnvDTE.Project project, String startWith, int startLen, ImageSource icon)
+        private void AddStrangerNamespaces(CompletionList compList, EnvDTE.Project project, String startWith, ImageSource icon)
         {
-            int dotPos;
+            // Calculate the length we must remove
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
             // get all the items in each project
             foreach (EnvDTE.ProjectItem item in project.ProjectItems)
             {

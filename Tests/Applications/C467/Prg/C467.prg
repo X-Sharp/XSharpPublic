@@ -11,6 +11,8 @@ FUNCTION Start() AS VOID
 	
 	LOCAL o AS TestClass
 	o := TestClass{WM_USER}
+	
+	? DEFINE_IN_TWO_DLLS_ONLY
 RETURN
 
 
@@ -20,6 +22,8 @@ CLASS TestClass
 		? n
 		? WM_USER
 		n := WM_USER
+		
+		? DEFINE_IN_TWO_DLLS_ONLY
 	RETURN
 	
 	METHOD Test() AS INT

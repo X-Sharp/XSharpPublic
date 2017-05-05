@@ -3885,10 +3885,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Ordinal != null)
             {
                 entrypointExpr = GenerateLiteral(context.Ordinal.Text).WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, context.Ordinal.Text));
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, "A numeric entrypoint ("+context.Ordinal.Text.Substring(1)+") is not supported in .Net"));
             }
             else
-                entrypointExpr = GenerateLiteral(context.Entrypoint.GetText());
+            {
+                string entrypoint = context.Entrypoint.GetText();
+                entrypointExpr = GenerateLiteral(entrypoint);
+
+                if (context.Address != null || context.Number != null)
+                {
+                    if (context.Address == null || context.Number == null)
+                    {
+                        entrypointExpr = entrypointExpr.WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, "Both the @ sign and the number must be specified"));
+                    }
+                    else if (context.Address.StartIndex > context.Entrypoint.stop.StopIndex + 1
+                        || context.Number.StartIndex > context.Address.StopIndex + 1)
+                    {
+                        entrypointExpr = entrypointExpr.WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, "No spaces allowed in entrypoint name"));
+                    }
+                    else
+                    {
+                        // the whole string from entrypointExpr - @int is the entrypoint
+                        entrypoint = entrypoint + context.Address.Text + context.Number.Text;
+                        entrypointExpr = GenerateLiteral(entrypoint);
+                    }
+                }
+            }
+
             var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType());
             returnType.XVoDecl = true;
 

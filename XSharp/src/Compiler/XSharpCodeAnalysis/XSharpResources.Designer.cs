@@ -5282,7 +5282,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using a numeric DLL entrypoint &apos;{0}&apos; is not supported in .NET.
+        ///   Looks up a localized string similar to Invalid DLL entrypoint &apos;{0}&apos;.
         /// </summary>
         internal static string ERR_InvalidDLLEntryPoint {
             get {

@@ -20,3 +20,7 @@ FUNCTION Start() AS VOID
 
 RETURN
 
+
+
+VOSTRUCT strGDImage
+	MEMBER pImg AS PTR

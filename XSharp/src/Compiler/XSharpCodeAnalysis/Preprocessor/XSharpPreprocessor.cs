@@ -1358,10 +1358,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // allocate a result and copy the items 0 .. i-1 to the result
                             tempResult = copySource(line, i);
                         }
-                        foreach (var t in deflist)
+                        if (deflist != null)
                         {
-                            var t2 = new XSharpToken(t);
-                            t2.Channel = XSharpLexer.DefaultTokenChannel;
+                            foreach (var t in deflist)
+                            {
+                                var t2 = new XSharpToken(t);
+                                t2.Channel = XSharpLexer.DefaultTokenChannel;
+                                t2.SourceSymbol = token;
+                                tempResult.Add(t2);
+                            }
+                        }
+                        else
+                        {
+                            // add a space so error messages look proper
+                            var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ");
+                            t2.Channel = XSharpLexer.Hidden;
                             t2.SourceSymbol = token;
                             tempResult.Add(t2);
                         }

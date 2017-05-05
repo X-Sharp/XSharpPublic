@@ -47,9 +47,11 @@ ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,715D7617-320E-
 ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C050-C099,3A527CCD-FFA2-423D-A17F-3B2D5424CFCE,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C001-C049,85737FA8-B9AF-41E9-A347-4C4093D05606,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C300-C399,CB2E170B-0122-4D3B-8692-FF0130BAE231,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C350-C399,CB2E170B-0122-4D3B-8692-FF0130BAE231,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C400-C449,C8A205F1-7289-4E5A-A714-71E5A29AFFCE,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C450-C499,6E592304-313A-42E3-8A1D-C66384522531,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C300-C349,DBAFC850-8A63-413C-9C9F-0450290A3721,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C500-C549,A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 
 [Applications]
@@ -5645,7 +5647,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C233
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C234 - Problem With PSZ and NULL *************
 Application = C234 - Problem With PSZ and NULL
 IDEVersion = 1.06
@@ -29665,7 +29667,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C299
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C300 *************
 Application = C300
 IDEVersion = 1.06
@@ -29765,7 +29767,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C300
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C301 *************
 Application = C301
 IDEVersion = 1.06
@@ -29865,7 +29867,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C301
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C302 *************
 Application = C302
 IDEVersion = 1.06
@@ -30065,7 +30067,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C303
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C304 *************
 Application = C304
 IDEVersion = 1.06
@@ -30165,7 +30167,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C304
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C305 - String2Psz() in Start() function *************
 Application = C305 - String2Psz() in Start() function
 IDEVersion = 1.06
@@ -30265,7 +30267,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C305 - String2Psz() in Start() function
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C306 - Partial class definition with different casing *************
 Application = C306 - Partial class definition with different casing
 IDEVersion = 1.06
@@ -30365,7 +30367,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C306 - Partial class definition with different casing
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C307 - Assign decimal to usual with vo4+ *************
 Application = C307 - Assign decimal to usual with vo4+
 IDEVersion = 1.06
@@ -30465,7 +30467,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C307 - Assign decimal to usual with vo4+
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C308 - GLOBAL with same name as function used inside class code *************
 Application = C308 - GLOBAL with same name as function used inside class code
 IDEVersion = 1.06
@@ -30565,7 +30567,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C308 - GLOBAL with same name as function used inside class code
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C309 - Cannot assign DATE +/- USUAL to INT/DWORD *************
 Application = C309 - Cannot assign DATE +/- USUAL to INT/DWORD
 IDEVersion = 1.06
@@ -30665,7 +30667,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C309 - Cannot assign DATE +/- USUAL to INT/DWORD
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C310 - Preprocessor errors with identifiers next to or after '.' *************
 Application = C310 - Preprocessor errors with identifiers next to or after '.'
 IDEVersion = 1.06
@@ -30765,7 +30767,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C310 - Preprocessor errors with identifiers next to or after '.'
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C311 - Crash with #define Somehing and /define:Something *************
 Application = C311 - Crash with #define Somehing and /define:Something
 IDEVersion = 1.06
@@ -30865,7 +30867,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C311 - Crash with #define Somehing and /define:Something
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C312 - PCALL complete sample *************
 Application = C312 - PCALL complete sample
 IDEVersion = 1.06
@@ -30966,7 +30968,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C312 - PCALL complete sample
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C313 -  iif() with usual and non-usual arguments *************
 Application = C313 -  iif() with usual and non-usual arguments
 IDEVersion = 1.06
@@ -31066,7 +31068,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C313 -  iif() with usual and non-usual arguments
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C314 - Incorrect warnings about conversions reported with /vo4+ *************
 Application = C314 - Incorrect warnings about conversions reported with /vo4+
 IDEVersion = 1.06
@@ -31166,7 +31168,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C314 - Incorrect warnings about conversions reported with /vo4+
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C315 - Compiler crash with /vo4+ *************
 Application = C315 - Compiler crash with /vo4+
 IDEVersion = 1.06
@@ -31266,7 +31268,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C315 - Compiler crash with /vo4+
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C316 - Ambiguous conversion Char<->USUAL with /vo4 *************
 Application = C316 - Ambiguous conversion Char<->USUAL with /vo4
 IDEVersion = 1.06
@@ -31366,7 +31368,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C316 - Ambiguous conversion Char<->USUAL with /vo4
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C317 - compiler crash with VS generated code for resources and /lb+ *************
 Application = C317 - compiler crash with VS generated code for resources and /lb+
 IDEVersion = 1.06
@@ -31466,7 +31468,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C317 - compiler crash with VS generated code for resources and /lb+
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C318 - Problem with ASSIGN MyProp(value) *************
 Application = C318 - Problem with ASSIGN MyProp(value)
 IDEVersion = 1.06
@@ -31566,7 +31568,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C318 - Problem with ASSIGN MyProp(value)
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C319 - Problem with String2Psz() in ACCESS/ASSIGN *************
 Application = C319 - Problem with String2Psz() in ACCESS/ASSIGN
 IDEVersion = 1.06
@@ -31666,7 +31668,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C319 - Problem with String2Psz() in ACCESS/ASSIGN
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C320 - Psz2String() with BYTE array *************
 Application = C320 - Psz2String() with BYTE array
 IDEVersion = 1.06
@@ -31766,7 +31768,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C320 - Psz2String() with BYTE array
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C321 - Problem CASTing function returned numeric type to LOGIC *************
 Application = C321 - Problem CASTing function returned numeric type to LOGIC
 IDEVersion = 1.06
@@ -31866,7 +31868,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C321 - Problem CASTing function returned numeric type to LOGIC
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C322 - Return expression in DESTRUCTOR *************
 Application = C322 - Return expression in DESTRUCTOR
 IDEVersion = 1.06
@@ -31966,7 +31968,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C322 - Return expression in DESTRUCTOR
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C323 - Problem converting to PTR *************
 Application = C323 - Problem converting to PTR
 IDEVersion = 1.06
@@ -32066,7 +32068,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C323 - Problem converting to PTR
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C324 - Conversion errors without /vo4 *************
 Application = C324 - Conversion errors without /vo4
 IDEVersion = 1.06
@@ -32166,7 +32168,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C324 - Conversion errors without /vo4
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C325 - Problem with VOSTRUCT defined in dll *************
 Application = C325 - Problem with VOSTRUCT defined in dll
 IDEVersion = 1.06
@@ -32267,7 +32269,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C325 - Problem with VOSTRUCT defined in dll
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C325_helper *************
 Application = C325_helper
 IDEVersion = 1.06
@@ -32366,7 +32368,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C325_helper
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * *************
 Application = C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT *
 IDEVersion = 1.06
@@ -32466,7 +32468,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT *
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C327 - cannot convert DWORD to IntPtr *************
 Application = C327 - cannot convert DWORD to IntPtr
 IDEVersion = 1.06
@@ -32567,7 +32569,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C327 - cannot convert DWORD to IntPtr
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C328 - Problem converting USUAL to array type *************
 Application = C328 - Problem converting USUAL to array type
 IDEVersion = 1.06
@@ -32667,7 +32669,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C328 - Problem converting USUAL to array type
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C329 - Problem converting USUAL to VOSTRUCT *************
 Application = C329 - Problem converting USUAL to VOSTRUCT
 IDEVersion = 1.06
@@ -32767,7 +32769,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C329 - Problem converting USUAL to VOSTRUCT
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C330 - Conversion incompatibility issues without /vo4 *************
 Application = C330 - Conversion incompatibility issues without /vo4
 IDEVersion = 1.06
@@ -32867,7 +32869,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C330 - Conversion incompatibility issues without /vo4
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C331 - Problem casting value inside parens *************
 Application = C331 - Problem casting value inside parens
 IDEVersion = 1.06
@@ -32967,7 +32969,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C331 - Problem casting value inside parens
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C332 - Conversion poblem with literal LHS in expression *************
 Application = C332 - Conversion poblem with literal LHS in expression
 IDEVersion = 1.06
@@ -33067,7 +33069,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C332 - Conversion poblem with literal LHS in expression
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C333 - PCALL() with class field PTR *************
 Application = C333 - PCALL() with class field PTR
 IDEVersion = 1.06
@@ -33168,7 +33170,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C333 - PCALL() with class field PTR
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C334 - problem with #define in expression *************
 Application = C334 - problem with #define in expression
 IDEVersion = 1.06
@@ -33268,7 +33270,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C334 - problem with #define in expression
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C335 - Name conflict between class and field names *************
 Application = C335 - Name conflict between class and field names
 IDEVersion = 1.06
@@ -33368,7 +33370,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C335 - Name conflict between class and field names
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C336 - Problem with assigning NULL to IntPtr *************
 Application = C336 - Problem with assigning NULL to IntPtr
 IDEVersion = 1.06
@@ -33468,7 +33470,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C336 - Problem with assigning NULL to IntPtr
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT *************
 Application = C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT
 IDEVersion = 1.06
@@ -33568,7 +33570,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C338 - Problem with PCALL() arguments and same named identifiers *************
 Application = C338 - Problem with PCALL() arguments and same named identifiers
 IDEVersion = 1.06
@@ -33668,7 +33670,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C338 - Problem with PCALL() arguments and same named identifiers
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C339 - Problem with indexed ACCESS *************
 Application = C339 - Problem with indexed ACCESS
 IDEVersion = 1.06
@@ -33768,7 +33770,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C339 - Problem with indexed ACCESS
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C340 - Name conflict between FUNCTION and parameter *************
 Application = C340 - Name conflict between FUNCTION and parameter
 IDEVersion = 1.06
@@ -33868,7 +33870,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C340 - Name conflict between FUNCTION and parameter
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C341 - Cannot assign literal string to PSZ var *************
 Application = C341 - Cannot assign literal string to PSZ var
 IDEVersion = 1.06
@@ -33968,7 +33970,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C341 - Cannot assign literal string to PSZ var
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C342 - Problem when type of ACCESS/ASSIGN differs by casing *************
 Application = C342 - Problem when type of ACCESS/ASSIGN differs by casing
 IDEVersion = 1.06
@@ -34068,7 +34070,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C342 - Problem when type of ACCESS/ASSIGN differs by casing
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C343 - Problem invoking delegate *************
 Application = C343 - Problem invoking delegate
 IDEVersion = 1.06
@@ -34168,7 +34170,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C343 - Problem invoking delegate
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C344 - Problem with old style delegate instantiation with functions *************
 Application = C344 - Problem with old style delegate instantiation with functions
 IDEVersion = 1.06
@@ -34268,7 +34270,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C344 - Problem with old style delegate instantiation with functions
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C345 - Problem passing string as PSZ parameter *************
 Application = C345 - Problem passing string as PSZ parameter
 IDEVersion = 1.06
@@ -34369,7 +34371,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C345 - Problem passing string as PSZ parameter
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C346 - Problem with == operator on VOSTRUCT (AS) *************
 Application = C346 - Problem with == operator on VOSTRUCT (AS)
 IDEVersion = 1.06
@@ -34469,7 +34471,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C346 - Problem with == operator on VOSTRUCT (AS)
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C347 - Problem with == operator on VOSTRUCT (IS) *************
 Application = C347 - Problem with == operator on VOSTRUCT (IS)
 IDEVersion = 1.06
@@ -34569,7 +34571,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C347 - Problem with == operator on VOSTRUCT (IS)
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C348 - Incorrect error about mixing STRICT/CLIPPER *************
 Application = C348 - Incorrect error about mixing STRICT/CLIPPER
 IDEVersion = 1.06
@@ -34671,7 +34673,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C348 - Incorrect error about mixing STRICT/CLIPPER
 
-ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
+ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
 ; ************** APPLICATION C349 - Casting negative literral to unsigned type *************
 Application = C349 - Casting negative literral to unsigned type
 IDEVersion = 1.06
@@ -36474,7 +36476,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C366 - DEFINEs need type specified
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C367 - Cannot parse identifier#identifier (!=) *************
 Application = C367 - Cannot parse identifier#identifier (!=)
 IDEVersion = 1.06
@@ -45488,7 +45490,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C452 - Preprocessor error with different order of clauses in #command
 
-ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C453 - Compiler crash with invalid #command *************
 Application = C453 - Compiler crash with invalid #command
 IDEVersion = 1.06
@@ -45991,7 +45993,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C457 - Bogus(?) error about repeated match/result markers
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C458 - Name conflict between DEFINE and METHOD *************
 Application = C458 - Name conflict between DEFINE and METHOD
 IDEVersion = 1.06
@@ -46900,7 +46902,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C466 - Problem using inline assignment inside function/method call in core
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C467 - DEFINEs ambiguity error message only when used inside class code *************
 Application = C467 - DEFINEs ambiguity error message only when used inside class code
 IDEVersion = 1.06
@@ -47002,7 +47004,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C467 - DEFINEs ambiguity error message only when used inside class code
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C467_helper *************
 Application = C467_helper
 IDEVersion = 1.06
@@ -50423,7 +50425,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C499 - Problem casting negative number to unsigned type
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C500 - Parser problem with _DLL functions *************
 Application = C500 - Parser problem with _DLL functions
 IDEVersion = 1.06
@@ -50523,7 +50525,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C500 - Parser problem with _DLL functions
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C501 - Error about ambiguous function (used to be a warning) *************
 Application = C501 - Error about ambiguous function (used to be a warning)
 IDEVersion = 1.06
@@ -50625,7 +50627,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C501 - Error about ambiguous function (used to be a warning)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C502 - "_type" is a keyword in VO dialect? *************
 Application = C502 - "_type" is a keyword in VO dialect?
 IDEVersion = 1.06
@@ -50825,7 +50827,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C503 - Compiler crash with an identifier with same name with /define:<identifier>
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C467_helper_2 *************
 Application = C467_helper_2
 IDEVersion = 1.06
@@ -50925,6 +50927,206 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C467_helper_2
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params *************
+Application = C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C504\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C504
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2160B8CF-A522-41E5-9060-B44E45AE5D19
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params FileGroups]
+[C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params Files]
+File = %AppPath%\Prg\C504.prg
+FileGUID = 9221D52B-F717-4857-ADBD-EEDEDE3AE6DD
+FileType = Code
+[C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params Resources]
+[C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params Native Resources]
+[C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params License files]
+[C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C504 - GLOBALs/FIELDs incorrectly get presedence over same named LOCALs/params
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C505 - Problem with PARTIAL keyword producing strange compiler error in Core *************
+Application = C505 - Problem with PARTIAL keyword producing strange compiler error in Core
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C505\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C505
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 1F1DA937-FD17-4FAA-B31B-F4BC5F23FE9F
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C505 - Problem with PARTIAL keyword producing strange compiler error in Core FileGroups]
+[C505 - Problem with PARTIAL keyword producing strange compiler error in Core Files]
+File = %AppPath%\Prg\C505.prg
+FileGUID = ECAB3F0D-764D-48D6-A73C-58F890E90E02
+FileType = Code
+[C505 - Problem with PARTIAL keyword producing strange compiler error in Core References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C505 - Problem with PARTIAL keyword producing strange compiler error in Core Resources]
+[C505 - Problem with PARTIAL keyword producing strange compiler error in Core Native Resources]
+[C505 - Problem with PARTIAL keyword producing strange compiler error in Core License files]
+[C505 - Problem with PARTIAL keyword producing strange compiler error in Core General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C505 - Problem with PARTIAL keyword producing strange compiler error in Core Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C505 - Problem with PARTIAL keyword producing strange compiler error in Core
 [EndApplications]
 
 [Configurations]

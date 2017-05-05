@@ -303,6 +303,7 @@
     <Compile Include="Antlr4.Runtime\Vocabulary.cs" />
     <Compile Include="Binder\Binder_Invocation.cs" />
     <Compile Include="Binder\Binder_Expressions.cs" />
+    <Compile Include="Binder\Binder_Lookup.cs" />
     <Compile Include="Binder\Binder_Symbols.cs" />
     <Compile Include="Binder\Binder_Operators.cs" />
     <Compile Include="Binder\Binder_Codeblock.cs" />

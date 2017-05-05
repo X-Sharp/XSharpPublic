@@ -139,6 +139,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (length < 0)
                     length = 0;
+                if (start+ length > text.Length)
+                {
+                    length = text.Length - start;
+                }
                 span = new TextSpan(start, length);
             }
             else if (root.XNode != null && eof == null && span.Start != 0 && span.End != 0)

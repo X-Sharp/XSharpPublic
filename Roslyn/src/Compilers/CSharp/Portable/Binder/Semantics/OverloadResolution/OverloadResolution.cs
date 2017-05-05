@@ -1218,7 +1218,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             BetterResult result = BetterResult.Neither;
 #if XSHARP
-            bool ambiguous;
             var found = VOBetterFunctionMember(m1, m2, arguments, out result, out useSiteDiagnostics);
             if (found)
             {

@@ -189,20 +189,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     foreach (var reference in Compilation.ReferencedAssemblyNames)
                     {
-                        bool ok = false;
                         if (reference.Name == asm1.Name)
                         {
                             result = BetterResult.Left;
                             Ambiguous = true;
-                            ok = true;
                         }
                         if (reference.Name == asm2.Name)
                         {
                             result = BetterResult.Right;
                             Ambiguous = true;
-                            ok = true;
                         }
-                        if (ok && Ambiguous)
+                        if (Ambiguous)
                         {
                             TMember r1, r2;
                             if (result == BetterResult.Left)
@@ -224,8 +221,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         r1.Kind.ToString()});
                             useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                             useSiteDiagnostics.Add(info);
+                            return true;
                         }
-                        return ok;
                     }
                 }
             }

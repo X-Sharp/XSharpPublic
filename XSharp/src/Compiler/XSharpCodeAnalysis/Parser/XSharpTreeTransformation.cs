@@ -4461,7 +4461,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVotypeModifiers([NotNull] XP.VotypeModifiersContext context)
         {
-            HandleDefaultModifiers(context, context._Tokens, true);
+            IList<IToken> tokens = context._Tokens;
+            if (tokens != null)
+            {
+                foreach (XSharpToken t in tokens)
+                {
+                    if (t.Type == XSharpLexer.STATIC)
+                    {
+                        t.Type = XSharpLexer.INTERNAL;
+                        t.Text = "INTERNAL";
+                    }
+                }
+            }
+
+            HandleDefaultModifiers(context, tokens, true);
         }
 
         SyntaxList<SyntaxToken> GetFuncProcModifiers(XP.FuncprocModifiersContext context, bool isExtern, bool isInInterface)

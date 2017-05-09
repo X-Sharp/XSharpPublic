@@ -449,7 +449,7 @@ statement           : Decl=localdecl                                            
                     | Key=EXIT end=eos											#jumpStmt
                     | Key=LOOP end=eos											#jumpStmt
                     | Key=BREAK Expr=expression? end=eos						#jumpStmt
-                    | RETURN (VOID | Expr=expression)? end=eos					#returnStmt
+                    | RETURN (Expr=expression)? end=eos							#returnStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)? end=eos	#qoutStmt
                     | BEGIN SEQUENCE end=eos

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Linq;
 using System.Collections.Generic;
@@ -455,13 +456,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
         }
         internal ParseErrorData(ErrorCode code) :
-            this(node: null, code: code, args: SpecializedCollections.EmptyObjects)
+            this(node: null, code: code, args: Array.Empty<object>())
         { }
         internal ParseErrorData(ErrorCode code, params object[] args) :
             this(node: null, code: code, args: args)
         { }
         internal ParseErrorData(IXParseTree node, ErrorCode code) :
-            this(node, code, SpecializedCollections.EmptyObjects)
+            this(node, code, Array.Empty<object>())
         { }
         internal ParseErrorData(IXParseTree node, ErrorCode code, params object[] args)
         {
@@ -583,20 +584,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return (T)t.CsNode;
         }
 
-        internal static void PutList<T>([NotNull] this IXParseTree t, InternalSyntax.SyntaxList<T> node)
+        internal static void PutList<T>([NotNull] this IXParseTree t, CoreInternalSyntax.SyntaxList<T> node)
             where T : InternalSyntax.CSharpSyntaxNode
         {
             //node.XNode = t;
             t.CsNode = node;
         }
 
-        internal static InternalSyntax.SyntaxList<T> GetList<T>([NotNull] this IXParseTree t)
+        internal static CoreInternalSyntax.SyntaxList<T> GetList<T>([NotNull] this IXParseTree t)
             where T : InternalSyntax.CSharpSyntaxNode
         {
             if (t.CsNode == null)
-                return default(InternalSyntax.SyntaxList<T>);
+                return default(CoreInternalSyntax.SyntaxList<T>);
 
-            return (InternalSyntax.SyntaxList<T>)t.CsNode;
+            return (CoreInternalSyntax.SyntaxList<T>)t.CsNode;
         }
 
         internal static TNode WithAdditionalDiagnostics<TNode>([NotNull] this TNode node, params DiagnosticInfo[] diagnostics)

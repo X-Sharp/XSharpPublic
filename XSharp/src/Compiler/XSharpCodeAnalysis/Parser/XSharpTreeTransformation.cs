@@ -2249,7 +2249,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
+            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -2313,7 +2313,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
+            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -2394,7 +2394,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any(SyntaxKind.PartialKeyword);
+            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -3065,6 +3065,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             context.Chain.SyntaxKeyword(),
                             context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
                     body: body,
+                    expressionBody: null,
                     semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 if (missingParent)
                 {
@@ -3131,6 +3132,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     identifier: parentId,
                     parameterList: EmptyParameterList(),
                     body: context.StmtBlk.Get<BlockSyntax>(),
+                    expressionBody: null,
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 if (missingParent)
                 {
@@ -3480,7 +3482,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (parameters.Count > 0)
                     parameters.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 parameters.Add(tpCtx.Get<TypeParameterSyntax>());
-                    expressionBody: null,
             }
             context.Put(_syntaxFactory.TypeParameterList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
                 parameters,
@@ -3523,7 +3524,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.ClassOrStructConstraint(
                 context.Key.ConstraintKind(),
                 context.Key.SyntaxKeyword()));
-                    expressionBody: null,
         }
 
         public override void ExitConstructorConstraint([NotNull] XP.ConstructorConstraintContext context)
@@ -3869,7 +3869,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     token = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
                     list.Add(token);
                 }
-                modifiers = list.ToTokenList();
+                modifiers = list.ToList<SyntaxToken>();
                 _pool.Free(list);
             }
             else
@@ -4439,7 +4439,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
             AddUniqueModifiers(modifiers, tokens, fixDefault);
-            context.PutList(modifiers.ToTokenList());
+            context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
 
@@ -4477,9 +4477,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
             AddUniqueModifiers(modifiers, context._Tokens);
-            if (!modifiers.Any(SyntaxKind.StaticKeyword))
+            if (!modifiers.Any((int)SyntaxKind.StaticKeyword))
                 modifiers.FixDefaultVisibility();
-            context.PutList(modifiers.ToTokenList());
+            context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
 
@@ -4504,7 +4504,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     modifiers.FixDefaultMethod();
             }
-            context.PutList(modifiers.ToTokenList());
+            context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
 
@@ -4531,7 +4531,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     modifiers.FixDefaultMethod();
             }
-            context.PutList(modifiers.ToTokenList());
+            context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
 
@@ -4539,10 +4539,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
             AddUniqueModifiers(modifiers, context._Tokens);
-            if (!modifiers.Any(SyntaxKind.StaticKeyword))
+            if (!modifiers.Any((int)SyntaxKind.StaticKeyword))
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             modifiers.FixDefaultVisibility();
-            context.PutList(modifiers.ToTokenList());
+            context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
 
@@ -4555,7 +4555,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
             modifiers.FixDefaultVisibility();
-            context.PutList(modifiers.ToTokenList());
+            context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
 

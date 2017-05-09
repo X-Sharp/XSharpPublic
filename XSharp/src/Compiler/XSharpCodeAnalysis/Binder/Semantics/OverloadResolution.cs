@@ -16,8 +16,8 @@ limitations under the License.
 
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using System.Collections.Generic;
-using Antlr4.Runtime;
-using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using XP=LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using System;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -29,12 +29,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemberResolutionResult<TMember> m2,
             ArrayBuilder<BoundExpression> arguments,
             out BetterResult result,
-            out bool Ambiguous)
+            out HashSet<DiagnosticInfo> useSiteDiagnostics
+            )
             where TMember : Symbol
         {
             result = BetterResult.Neither;
-            Ambiguous = false;
+            bool Ambiguous = false;
             // Prefer the member not declared in VulcanRT, if applicable
+            useSiteDiagnostics = null;
             if (Compilation.Options.IsDialectVO)
             {
                 var asm1 = m1.Member.ContainingAssembly;
@@ -191,12 +193,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             result = BetterResult.Left;
                             Ambiguous = true;
-                            return true;
                         }
                         if (reference.Name == asm2.Name)
                         {
                             result = BetterResult.Right;
                             Ambiguous = true;
+                        }
+                        if (Ambiguous)
+                        {
+                            TMember r1, r2;
+                            if (result == BetterResult.Left)
+                            {
+                                r1 = m1.Member;
+                                r2 = m2.Member;
+                            }
+                            else
+                            {
+                                r1 = m2.Member;
+                                r2 = m1.Member;
+                            }
+
+                            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
+                                new object[] {
+                                        r1.Name,
+                                        new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        r1.Kind.ToString()});
+                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            useSiteDiagnostics.Add(info);
                             return true;
                         }
                     }
@@ -436,21 +460,21 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal static class CastExtensionMethods
     {
-        internal static bool IsVoCast(this ParserRuleContext node)
+        internal static bool IsVoCast(this XSharpParserRuleContext node)
         {
-            if (node is PrimaryExpressionContext)
+            if (node is XP.PrimaryExpressionContext)
             {
-                var pec = node as PrimaryExpressionContext;
-                return pec.Expr is VoCastExpressionContext;
+                var pec = node as XP.PrimaryExpressionContext;
+                return pec.Expr is XP.VoCastExpressionContext;
             }
             return false;
         }
-        internal static bool IsVoConvert(this ParserRuleContext node)
+        internal static bool IsVoConvert(this XSharpParserRuleContext node)
         {
-            if (node is PrimaryExpressionContext)
+            if (node is XP.PrimaryExpressionContext)
             {
-                var pec = node as PrimaryExpressionContext;
-                return pec.Expr is VoConversionExpressionContext;
+                var pec = node as XP.PrimaryExpressionContext;
+                return pec.Expr is XP.VoConversionExpressionContext;
             }
             return false;
         }

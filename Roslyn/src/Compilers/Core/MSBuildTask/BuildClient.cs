@@ -92,7 +92,8 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                     else
                         key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
                     VulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
-                } catch(Exception) { }
+                }
+                catch (Exception) { }
 
 
                 if(!String.IsNullOrEmpty(XSharpIncludeDir))
@@ -100,17 +101,22 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                     if (!XSharpIncludeDir.EndsWith("\\"))
                         XSharpIncludeDir += @"\";
                     XSharpIncludeDir += @"Include\";
+                    //Console.Error.WriteLine("XSharpIncludeDir=" + XSharpIncludeDir);
                 }
-                if(!String.IsNullOrEmpty(VulcanIncludeDir)) {
+                if (!String.IsNullOrEmpty(VulcanIncludeDir)) {
                     if(!VulcanIncludeDir.EndsWith("\\"))
                         VulcanIncludeDir += @"\";
                     VulcanIncludeDir += @"Include\";
+                    //Console.Error.WriteLine("VulcanIncludeDir=" + VulcanIncludeDir);
                 }
-                includeDir = includeDir ?? "" + XSharpIncludeDir;
+                if (String.IsNullOrEmpty(includeDir))
+                    includeDir = XSharpIncludeDir;
+                else
+                    includeDir += ";" + XSharpIncludeDir;
                 if(!string.IsNullOrEmpty(VulcanIncludeDir))
                     includeDir += ";" + VulcanIncludeDir;
+                //Console.Error.WriteLine("Include=" + includeDir);
 #endif
-
                 var responseTask = TryRunServerCompilation(
                     language,
                     clientDir,

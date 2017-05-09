@@ -381,16 +381,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             SimpleNameSyntax node,
             bool invoked,
             DiagnosticBag diagnostics,
-            bool preferStaticMethodCall = false,
-            bool allDialects = false
+            bool bindMethod
             )
         {
             // This method replaced the standard C# BindIdentifier
             // xBase has some different rules for binding
             // - for calls without object prefix we prefer static method calls over self method calls (In VO SELF: is mandatory)
+            //   and we also prefer to find DEFINES over PROPERTIES
             // - when invoked = TRUE then we do not return local variables, with the exception of delegates
             // - when invoked = FALSE then we do not return methods, with the exception of assigning event handlers
-            bool preferStatic = preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects);
+
+            bool preferStatic = Compilation.Options.IsDialectVO;
+
             Debug.Assert(node != null);
 
             // If the syntax tree is ill-formed and the identifier is missing then we've already
@@ -445,12 +447,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 options |= LookupOptions.MustNotBeMethodTypeParameter;
             }
             // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
+            // and also not access a property without SELF: Prefix
+            // So when there is a property (Access) and a DEFINE with the same name then the
+            // system will use the define and not the property
             // so we check here if we are called from a memberaccessexpression with a colon separator
             // so String.Compare will use different lookup options as SELF:ToString()
             var originalOptions = options;
+            bool colon = false;
             if (preferStatic)
             {
-                bool colon = false;
                 if (node.Parent is MemberAccessExpressionSyntax)
                 {
                     var xnode = node.Parent.XNode as AccessMemberContext;
@@ -461,11 +466,33 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (!colon)
                     options |= LookupOptions.MustNotBeInstance;
+                
+            }
+            else
+            {
+                if (node.Parent is MemberAccessExpressionSyntax)
+                {
+                    var par = node.Parent as MemberAccessExpressionSyntax;
+                    if (par.Expression == node)
+                    {
+                        // this the left side of a combined name, such as MessageBox in 
+                        // MessageBox.Show
+                        options |= LookupOptions.MustNotBeInstance;
+                    }
+                }
             }
 
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-            this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+
+            if (!bindMethod)
+            {
+                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options | LookupOptions.DefinesOnly);
+            }
+            if (lookupResult.IsClear )
+            {
+                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+            }
             if (preferStatic)
             {
                 bool lookupAgain = false;
@@ -588,6 +615,28 @@ namespace Microsoft.CodeAnalysis.CSharp
             lookupResult.Free();
             return expression;
         }
+
+        private void FilterResults(LookupResult result, LookupOptions options)
+        {
+            if (options.HasFlag(LookupOptions.DefinesOnly) && ! result.IsClear)
+            {
+                LookupResult tmp = LookupResult.GetInstance();
+                foreach (var sym in result.Symbols)
+                {
+                    if (sym.Kind == SymbolKind.Field)
+                    {
+                        SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, sym, null);
+                        tmp.MergeEqual(single);
+                    }
+                }
+                result.Clear();
+                result.MergeEqual(tmp);
+                tmp.Free();
+
+            }
+            return;
+        }
+
         private static TypeSymbol XsGetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<ParameterSymbol> parameters, int arg)
         {
             int paramNum = result.ParameterFromArgument(arg);

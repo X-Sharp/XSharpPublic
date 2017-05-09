@@ -1,33 +1,6 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-using Antlr4.Runtime;
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using Antlr4.Runtime.Sharpen;
 
 namespace Antlr4.Runtime
@@ -37,22 +10,15 @@ namespace Antlr4.Runtime
     /// (so we can ignore tabs), token channel, index, and source from which
     /// we obtained this token.
     /// </summary>
-    /// <remarks>
-    /// A token has properties: text, type, line, character position in the line
-    /// (so we can ignore tabs), token channel, index, and source from which
-    /// we obtained this token.
-    /// </remarks>
     public interface IToken
     {
         /// <summary>Get the text of the token.</summary>
-        /// <remarks>Get the text of the token.</remarks>
         string Text
         {
             get;
         }
 
         /// <summary>Get the token type of the token.</summary>
-        /// <remarks>Get the token type of the token.</remarks>
         int Type
         {
             get;
@@ -104,10 +70,6 @@ namespace Antlr4.Runtime
         /// The starting character index of the token
         /// This method is optional; return -1 if not implemented.
         /// </summary>
-        /// <remarks>
-        /// The starting character index of the token
-        /// This method is optional; return -1 if not implemented.
-        /// </remarks>
         int StartIndex
         {
             get;
@@ -152,10 +114,6 @@ namespace Antlr4.Runtime
         /// During lookahead operations, this "token" signifies we hit rule end ATN state
         /// and did not follow it despite needing to.
         /// </summary>
-        /// <remarks>
-        /// During lookahead operations, this "token" signifies we hit rule end ATN state
-        /// and did not follow it despite needing to.
-        /// </remarks>
         public const int Epsilon = -2;
 
         public const int MinUserTokenType = 1;
@@ -177,10 +135,6 @@ namespace Antlr4.Runtime
         /// Anything on different channel than DEFAULT_CHANNEL is not parsed
         /// by parser.
         /// </summary>
-        /// <remarks>
-        /// Anything on different channel than DEFAULT_CHANNEL is not parsed
-        /// by parser.
-        /// </remarks>
         public const int HiddenChannel = 1;
 
         /// <summary>

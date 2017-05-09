@@ -1,36 +1,9 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
 
@@ -64,7 +37,7 @@ namespace Antlr4.Runtime
         /// from which tokens for this stream are fetched.
         /// </summary>
         [NotNull]
-        private ITokenSource _tokenSource;
+        protected internal ITokenSource tokenSource;
 
         /// <summary>A collection of all tokens fetched from the token source.</summary>
         /// <remarks>
@@ -106,7 +79,7 @@ namespace Antlr4.Runtime
         /// Indicates whether the
         /// <see cref="TokenConstants.Eof"/>
         /// token has been fetched from
-        /// <see cref="_tokenSource"/>
+        /// <see cref="tokenSource"/>
         /// and added to
         /// <see cref="tokens"/>
         /// . This field improves
@@ -139,14 +112,14 @@ namespace Antlr4.Runtime
             {
                 throw new ArgumentNullException("tokenSource cannot be null");
             }
-            this._tokenSource = tokenSource;
+            this.tokenSource = tokenSource;
         }
 
         public virtual ITokenSource TokenSource
         {
             get
             {
-                return _tokenSource;
+                return tokenSource;
             }
         }
 
@@ -262,7 +235,7 @@ namespace Antlr4.Runtime
             }
             for (int i = 0; i < n; i++)
             {
-                IToken t = _tokenSource.NextToken();
+                IToken t = tokenSource.NextToken();
                 if (t is IWritableToken)
                 {
                     ((IWritableToken)t).TokenIndex = tokens.Count;
@@ -287,7 +260,6 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>Get all tokens from start..stop inclusively.</summary>
-        /// <remarks>Get all tokens from start..stop inclusively.</remarks>
         public virtual IList<IToken> Get(int start, int stop)
         {
             if (start < 0 || stop < 0)
@@ -390,10 +362,9 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>Reset this token stream by setting its token source.</summary>
-        /// <remarks>Reset this token stream by setting its token source.</remarks>
         public virtual void SetTokenSource(ITokenSource tokenSource)
         {
-            this._tokenSource = tokenSource;
+            this.tokenSource = tokenSource;
             tokens.Clear();
             p = -1;
         }
@@ -650,16 +621,14 @@ namespace Antlr4.Runtime
         {
             get
             {
-                return _tokenSource.SourceName;
+                return tokenSource.SourceName;
             }
         }
 
         /// <summary>Get the text of all tokens in this buffer.</summary>
-        /// <remarks>Get the text of all tokens in this buffer.</remarks>
         [return: NotNull]
         public virtual string GetText()
         {
-            Fill();
             return GetText(Interval.Of(0, Size - 1));
         }
 
@@ -672,7 +641,7 @@ namespace Antlr4.Runtime
             {
                 return string.Empty;
             }
-            LazyInit();
+            Fill();
             if (stop >= tokens.Count)
             {
                 stop = tokens.Count - 1;
@@ -707,7 +676,6 @@ namespace Antlr4.Runtime
         }
 
         /// <summary>Get all tokens from lexer until EOF.</summary>
-        /// <remarks>Get all tokens from lexer until EOF.</remarks>
         public virtual void Fill()
         {
             LazyInit();

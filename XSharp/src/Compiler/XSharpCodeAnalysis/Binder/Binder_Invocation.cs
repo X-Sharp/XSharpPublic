@@ -25,8 +25,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
-using Antlr4.Runtime.Tree;
-
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -55,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
         }
-        private string GetTypedPtrName(IParseTree xNode)
+        private string GetTypedPtrName(IXParseTree xNode)
         {
             if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext)
             {

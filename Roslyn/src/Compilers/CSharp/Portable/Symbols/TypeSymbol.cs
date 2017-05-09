@@ -1316,7 +1316,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // Inexact matches are acceptable because we'll just generate bridge members - explicit implementations
                 // with exact signatures that delegate to the inexact match.  This happens automatically in
                 // SourceNamedTypeSymbol.ImplementInterfaceMember.
+#if XSHARP
+                return MemberSignatureComparer.CSharpImplicitImplementationComparer.Equals(interfaceMember, candidateMember, false);
+#else
                 return MemberSignatureComparer.CSharpImplicitImplementationComparer.Equals(interfaceMember, candidateMember);
+#endif
             }
             else
             {
@@ -1370,9 +1374,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return map;
         }
 
-        #endregion Interface member checks
+#endregion Interface member checks
 
-        #region Abstract base type checks
+#region Abstract base type checks
 
         /// <summary>
         /// The set of abstract members in declared in this type or declared in a base type and not overridden.
@@ -1441,7 +1445,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return abstractMembers;
         }
 
-        #endregion Abstract base type checks
+#endregion Abstract base type checks
 
         [Obsolete("Use TypeWithModifiers.Is method.", true)]
         internal bool Equals(TypeWithModifiers other)

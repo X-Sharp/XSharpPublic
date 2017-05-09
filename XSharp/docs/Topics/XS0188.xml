@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS0188</title>
   <keywords>
     <keyword>XS0188</keyword>
@@ -21,7 +21,7 @@
     <para styleclass="Normal">The following sample generates XS0188:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0188.prg &#160;<br/>// compile with: /t:library &#160;<br/></para>
+    <para styleclass="Code with box">// XS0188.prg  <br/>// compile with: /t:library  <br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS1546</title>
   <keywords>
     <keyword>XS1546</keyword>
@@ -19,14 +19,14 @@
     <para styleclass="Normal">This code sample consists of a .cpp file, which compiles to a .dll, and a .prg file, which uses that .dll. The following code is for the .dll file, and defines a property to be accessed by the code in the .prg file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// CPP1546.cpp &#160;<br/>// compile with: /clr /LD &#160;<br/>using namespace System; &#160;<br/>public ref class MCPP &#160;<br/>{ &#160;<br/>public: &#160;<br/> &#160; &#160;property int Prop [int,int] &#160;<br/> &#160; &#160;{ &#160;<br/> &#160; &#160; &#160; &#160;int get( int i, int b ) &#160;<br/> &#160; &#160; &#160; &#160;{ &#160;<br/> &#160; &#160; &#160; &#160; &#160; &#160;return i; &#160;<br/> &#160; &#160; &#160; &#160;} &#160;<br/> &#160; &#160;} &#160;<br/>}; &#160;</para>
+    <para styleclass="Code with box">// CPP1546.cpp  <br/>// compile with: /clr /LD  <br/>using namespace System;  <br/>public ref class MCPP  <br/>{  <br/>public:  <br/>    property int Prop [int,int]  <br/>    {  <br/>        int get( int i, int b )  <br/>        {  <br/>            return i;  <br/>        }  <br/>    }  <br/>};  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This is the X# file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS1546.prg &#160;<br/>// compile with: /r:CPP1546.dll &#160; <br/></para>
+    <para styleclass="Code with box">// XS1546.prg  <br/>// compile with: /r:CPP1546.dll   <br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

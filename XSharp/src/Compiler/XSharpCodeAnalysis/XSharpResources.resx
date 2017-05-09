@@ -2016,7 +2016,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>'{0}' does not implement interface member '{1}'. '{2}' cannot implement an interface member because it is not public.</value>
   </data>
   <data name="ERR_CloseUnimplementedInterfaceMemberWrongReturnType" xml:space="preserve">
-    <value>'{0}' does not implement interface member '{1}'. '{2}' cannot implement '{1}' because it does not have the matching return type of '{3}'.</value>
+    <value>'{0}' does not implement interface member '{1}'. '{2}' cannot implement '{1}' because it does not have the matching return type of '{3}' or because the name does not match exactly.</value>
   </data>
   <data name="ERR_DuplicateTypeForwarder" xml:space="preserve">
     <value>'{0}' duplicate TypeForwardedToAttribute</value>
@@ -5078,6 +5078,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_PreProcessorError" xml:space="preserve">
     <value>Pre-processor: {0}</value>
   </data>
+  <data name="ERR_PreProcessorRecursiveRule" xml:space="preserve">
+    <value>Recursive preprocessor rule '#{0}' detected</value>
+  </data>
   <data name="ERR_UntypedArrayNotAvailableInDialect" xml:space="preserve">
     <value>Untyped arrays are not available in the selected dialect '{0}'</value>
   </data>
@@ -5109,7 +5112,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Invalid dialect {0}. Must be 'Core', 'Vo', 'Vulcan', 'dBase', 'FoxPro', 'Harbour' or 'XBasepp'</value>
   </data>
   <data name="ERR_InvalidDLLEntryPoint" xml:space="preserve">
-    <value>Using a numeric DLL entrypoint '{0}' is not supported in .NET</value>
+    <value>Invalid DLL entrypoint '{0}'</value>
   </data>
   <data name="ERR_CompilerOptionNotSupportedForDialect" xml:space="preserve">
     <value>Compiler option '{0}' ({1}) is not supported for dialect {2}</value>
@@ -5172,7 +5175,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Error locating the generated Delegate '{1}' for the pseudo function '{0}'.</value>
   </data>
   <data name="ERR_AccessAssignParametersMutchMatch" xml:space="preserve">
-    <value>The parameters for the Access and Assign declarations must match by name and type. The first ASSIGN parameter is the value, the other parameters are the indexers and must be the same as the ACCESS parameters.</value>
+    <value>The parameters for the ACCESS and ASSIGN declarations must match by name, type and number. There must be one more ASSIGN parameter than ACCESS parameter. The first ASSIGN parameter is the value, the other parameters are the indexers and must be have the same name and type as the ACCESS parameters.</value>
   </data>
   <data name="ERR_AccessAssignTypesMutchMatch" xml:space="preserve">
     <value>The type of the first ASSIGN parameter must match the returntype of the ACCESS.</value>
@@ -5184,7 +5187,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Override of virtual method '{0}' has CLIPPER calling convention but overridden method in parent class is STRICT.</value>
   </data>
   <data name="WRN_VulcanAmbiguous" xml:space="preserve">
-    <value>Function or type '{0}' is ambiguous. Could be '{1}' or '{2}'. Using the first one.</value>
+    <value>{3} '{0}' is ambiguous. Could be '{1}' or '{2}'. Using the first one.</value>
   </data>
   <data name="ERR_ImplicitlyTypedVariableCannotBeStatic" xml:space="preserve">
     <value>Implicitly-typed variables cannot be STATIC.</value>
@@ -5195,4 +5198,11 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CannotAssignToMethod" xml:space="preserve">
     <value>Cannot assign to '{0}' because it is a '{1}'</value>
   </data>
+  <data name="WRN_GetSetMustHaveBody" xml:space="preserve">
+    <value>A get or set accessor must have a body, an auto property will be generated</value>
+  </data>
+  <data name="ERR_AssignMethodsMustHaveAParameter" xml:space="preserve">
+    <value>ASSIGN methods must have at least one parameter</value>
+  </data>
+  
 </root>

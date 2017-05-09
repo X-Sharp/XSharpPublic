@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#region - #endregion</title>
   <keywords>
     <keyword>#endregion</keyword>
@@ -21,7 +21,8 @@
     <para styleclass="Code Example"></para>
     <para styleclass="Heading3">Comments</para>
     <para styleclass="Body Text">A #region block must be terminated with a #endregion directive.</para>
-    <para styleclass="Body Text">A #region block cannot overlap with a <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link> block or an <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link> block. However, a #region block can be nested in a #ifdef or #ifndef block, and a #ifdef or #ifndef block can be nested in a #region block.</para>
+    <para styleclass="Body Text">A #region block cannot overlap with a <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link> block or an <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link> block. However, a #region block can be nested in a #ifdef or #ifndef block, and a #ifdef or #ifndef block can be nested in a #region block.<br/>For now the compiler does not enforce this, but it will in the not too far future.</para>
+    <para styleclass="Body Text">A #region and #endregion block may have optional comments after the #region and #endregion keyword. The compiler will ignore everything after the keyword until the end of the line</para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

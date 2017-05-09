@@ -1510,8 +1510,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ParserError = 9002,
         ERR_PreProcessorError = 9003,
         WRN_PreProcessorWarning = 9004,
-        // reserved = 9005,
-        // reserved = 9006,
+        ERR_PreProcessorRecursiveRule = 9005,
+        //reserved = 9006,
         ERR_FeatureNotAvailableInDialect = 9007,
         ERR_UntypedArrayNotAvailableInDialect = 9008,
         ERR_TypedParametersWithClipperCallingConvention = 9009,
@@ -1550,8 +1550,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ClipperInSubClass = 9042,
         WRN_VulcanAmbiguous = 9043,
         ERR_ImplicitlyTypedVariableCannotBeStatic = 9044,
-        ERR_StaticLocalInCodeBlock=9045,
-        ERR_CannotAssignToMethod=9046,
+        ERR_StaticLocalInCodeBlock = 9045,
+        ERR_CannotAssignToMethod = 9046,
+        WRN_GetSetMustHaveBody = 9047,
+        ERR_AssignMethodsMustHaveAParameter = 9048,
         #endregion X#-only messages
     }
 }

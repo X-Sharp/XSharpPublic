@@ -177,14 +177,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var r = token.Text.StartsWith("@@") ? SyntaxFactory.Identifier(token.Text.Substring(2))
                 : isNameOf ? SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, token.Text, token.Text, null)
                 : SyntaxFactory.Identifier(token.Text);
-            r.XNode = new TerminalNodeImpl(token);
+            r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
 
         public static SyntaxToken SyntaxKeywordIdentifier(this IToken token)
         {
             var r = SyntaxFactory.Identifier(token.Text);
-            r.XNode = new TerminalNodeImpl(token);
+            r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
 
@@ -243,7 +243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
                     break;
             }
-            r.XNode = new TerminalNodeImpl(token);
+            r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
 
@@ -513,7 +513,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, text.StartsWith("@@") ? text.Substring(2) : text, SyntaxFactory.WS);
                     break;
             }
-            r.XNode = new TerminalNodeImpl(token);
+            r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
 
@@ -671,7 +671,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         new SyntaxDiagnosticInfo(0, "operator".Length, ErrorCode.ERR_SyntaxError, "operator"));
                     break;
             }
-            r.XNode = new TerminalNodeImpl(token);
+            r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
 
@@ -722,7 +722,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         new SyntaxDiagnosticInfo(0, "unary operator".Length, ErrorCode.ERR_SyntaxError, "unary operator"));
                     break;
             }
-            r.XNode = new TerminalNodeImpl(token);
+            r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
 
@@ -986,7 +986,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         new SyntaxDiagnosticInfo(0, text.Length, ErrorCode.ERR_SyntaxError, token));
                     break;
             }
-            r.XNode = new TerminalNodeImpl(token);
+            r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
 
@@ -1548,6 +1548,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var lit = pe.Expr as XSharpParser.LiteralExpressionContext;
                     var lv = lit.Literal;
                     return lv.Token;
+                }
+                if (pe.Expr is XSharpParser.ParenExpressionContext)
+                {
+                    var paren = pe.Expr as XSharpParser.ParenExpressionContext;
+                    return paren.Expr.GetLiteralToken();
                 }
             }
             return null;

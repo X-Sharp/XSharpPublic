@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     file = node.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(file))
                     {
-                        file = (node.XNode.SourceSymbol as XSharpToken).SourceFileName;
+                        file = (node.XNode.SourceSymbol as XSharpToken).SourceName;
                     }
                 }
                 SourceText ntext;
@@ -139,6 +139,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (length < 0)
                     length = 0;
+                if (start+ length > text.Length)
+                {
+                    length = text.Length - start;
+                }
                 span = new TextSpan(start, length);
             }
             else if (root.XNode != null && eof == null && span.Start != 0 && span.End != 0)
@@ -173,7 +177,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     fn = snode.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(fn))
                     {
-                        fn = (snode.XNode.SourceSymbol as XSharpToken).SourceFileName;
+                        fn = (snode.XNode.SourceSymbol as XSharpToken).SourceName;
                     }
 
                 }

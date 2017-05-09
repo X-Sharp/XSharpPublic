@@ -1,32 +1,5 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
 
 #if NET45PLUS
 
@@ -377,7 +350,7 @@ namespace Antlr4.Runtime.Misc
                 {
                     continue;
                 }
-                foreach (Transition transition in state.transitions)
+                foreach (Transition transition in state.Transitions)
                 {
                     if (transition.TransitionType != TransitionType.Rule)
                     {
@@ -686,11 +659,11 @@ namespace Antlr4.Runtime.Misc
                 }
                 Dependents dependents = Dependents.Self | dependency.Item1.Dependents;
                 ReportUnimplementedDependents(errors, dependency, dependents);
-				BitSet @checked = new BitSet();
+                BitSet @checked = new BitSet();
                 int highestRequiredDependency = CheckDependencyVersion(errors, dependency, ruleNames, ruleVersions, effectiveRule, null);
                 if ((dependents & Dependents.Parents) != 0)
                 {
-					BitSet parents = relations.parents[dependency.Item1.Rule];
+                    BitSet parents = relations.parents[dependency.Item1.Rule];
                     for (int parent = parents.NextSetBit(0); parent >= 0; parent = parents.NextSetBit(parent + 1))
                     {
                         if (parent < 0 || parent >= ruleVersions.Length || @checked.Get(parent))
@@ -704,7 +677,7 @@ namespace Antlr4.Runtime.Misc
                 }
                 if ((dependents & Dependents.Children) != 0)
                 {
-					BitSet children = relations.children[dependency.Item1.Rule];
+                    BitSet children = relations.children[dependency.Item1.Rule];
                     for (int child = children.NextSetBit(0); child >= 0; child = children.NextSetBit(child + 1))
                     {
                         if (child < 0 || child >= ruleVersions.Length || @checked.Get(child))
@@ -718,7 +691,7 @@ namespace Antlr4.Runtime.Misc
                 }
                 if ((dependents & Dependents.Ancestors) != 0)
                 {
-					BitSet ancestors = relations.GetAncestors(dependency.Item1.Rule);
+                    BitSet ancestors = relations.GetAncestors(dependency.Item1.Rule);
                     for (int ancestor = ancestors.NextSetBit(0); ancestor >= 0; ancestor = ancestors.NextSetBit(ancestor + 1))
                     {
                         if (ancestor < 0 || ancestor >= ruleVersions.Length || @checked.Get(ancestor))
@@ -732,7 +705,7 @@ namespace Antlr4.Runtime.Misc
                 }
                 if ((dependents & Dependents.Descendants) != 0)
                 {
-					BitSet descendants = relations.GetDescendants(dependency.Item1.Rule);
+                    BitSet descendants = relations.GetDescendants(dependency.Item1.Rule);
                     for (int descendant = descendants.NextSetBit(0); descendant >= 0; descendant = descendants.NextSetBit(descendant + 1))
                     {
                         if (descendant < 0 || descendant >= ruleVersions.Length || @checked.Get(descendant))
@@ -815,8 +788,8 @@ namespace Antlr4.Runtime.Misc
                         int index = (int)field.GetValue(null);
                         if (index < 0 || index >= versions.Length)
                         {
+                            object[] @params = new object[] { index, field.Name, recognizerClass.Name };
 #if false
-							object[] @params = new object[] { index, field.Name, recognizerClass.Name };
                             Logger.Log(Level.Warning, "Rule index {0} for rule ''{1}'' out of bounds for recognizer {2}.", @params);
 #endif
                             continue;
@@ -824,8 +797,8 @@ namespace Antlr4.Runtime.Misc
                         MethodInfo ruleMethod = GetRuleMethod(recognizerClass, name);
                         if (ruleMethod == null)
                         {
+                            object[] @params = new object[] { name, recognizerClass.Name };
 #if false
-							object[] @params = new object[] { name, recognizerClass.Name };
                             Logger.Log(Level.Warning, "Could not find rule method for rule ''{0}'' in recognizer {1}.", @params);
 #endif
                             continue;
@@ -932,7 +905,7 @@ namespace Antlr4.Runtime.Misc
                 {
                     continue;
                 }
-                foreach (Transition transition in state.transitions)
+                foreach (Transition transition in state.Transitions)
                 {
                     if (transition.TransitionType != TransitionType.Rule)
                     {
@@ -959,21 +932,21 @@ namespace Antlr4.Runtime.Misc
 
         private sealed class RuleRelations
         {
-			public readonly BitSet[] parents;
+            public readonly BitSet[] parents;
 
-			public readonly BitSet[] children;
+            public readonly BitSet[] children;
 
             public RuleRelations(int ruleCount)
             {
-				parents = new BitSet[ruleCount];
+                parents = new BitSet[ruleCount];
                 for (int i = 0; i < ruleCount; i++)
                 {
-					parents[i] = new BitSet();
+                    parents[i] = new BitSet();
                 }
-				children = new BitSet[ruleCount];
+                children = new BitSet[ruleCount];
                 for (int i_1 = 0; i_1 < ruleCount; i_1++)
                 {
-					children[i_1] = new BitSet();
+                    children[i_1] = new BitSet();
                 }
             }
 
@@ -994,9 +967,9 @@ namespace Antlr4.Runtime.Misc
                 return true;
             }
 
-			public BitSet GetAncestors(int rule)
+            public BitSet GetAncestors(int rule)
             {
-				BitSet ancestors = new BitSet();
+                BitSet ancestors = new BitSet();
                 ancestors.Or(parents[rule]);
                 while (true)
                 {
@@ -1014,9 +987,9 @@ namespace Antlr4.Runtime.Misc
                 return ancestors;
             }
 
-			public BitSet GetDescendants(int rule)
+            public BitSet GetDescendants(int rule)
             {
-				BitSet descendants = new BitSet();
+                BitSet descendants = new BitSet();
                 descendants.Or(children[rule]);
                 while (true)
                 {

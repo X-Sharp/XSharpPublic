@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS1579</title>
   <keywords>
     <keyword>XS1579</keyword>
@@ -13,7 +13,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">To iterate through a collection using the foreach statement, the collection must meet the following requirements:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">It must be an interface, class or struct.</li>
       <li styleclass="Normal" style="margin-left:13px;">It must include a public GetEnumerator method that returns a type.</li>
       <li styleclass="Normal" style="margin-left:13px;">The return type must contain a public property named Current, and a public method named MoveNext.</li>
@@ -26,7 +26,7 @@
     <para styleclass="Normal">The following sample generates XS1579.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS1579.prg &#160;<br/></para>
+    <para styleclass="Code with box">// XS1579.prg  <br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

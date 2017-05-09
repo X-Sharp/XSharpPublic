@@ -75,7 +75,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
                 sessionKey = sessionKey ?? GetSessionKey(buildPaths);
                 var libDirectory = Environment.GetEnvironmentVariable("LIB");
 #if XSHARP
-                var paths = LanguageService.CodeAnalysis.XSharp.CommandLine.Xsc.GetPaths();
+                var paths = LanguageService.CodeAnalysis.CSharp.CommandLine.Xsc.GetPaths();
                 if (libDirectory == null)
                     libDirectory = string.Empty;
                 libDirectory = libDirectory+":::"+paths[0] +":::"+ paths[1]+ ":::" + paths[2];
@@ -234,7 +234,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
 }
 #if XSHARP
 
-namespace LanguageService.CodeAnalysis.XSharp.CommandLine
+namespace LanguageService.CodeAnalysis.CSharp.CommandLine
 {
     internal sealed partial class Xsc
     {
@@ -276,7 +276,10 @@ namespace LanguageService.CodeAnalysis.XSharp.CommandLine
                     VulcanIncludeDir += @"\";
                 VulcanIncludeDir += @"Include\";
             }
-            includeDir = includeDir ?? "" + XSharpIncludeDir;
+            if (String.IsNullOrEmpty(includeDir))
+                includeDir = XSharpIncludeDir;
+            else
+                includeDir += ";" + XSharpIncludeDir;
             if (!string.IsNullOrEmpty(VulcanIncludeDir))
                 includeDir += ";" + VulcanIncludeDir;
 

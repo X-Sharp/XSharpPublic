@@ -3,6 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{203B6D4D-D370-46F2-82DB-A5FD30EE58CE}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -13,12 +14,14 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
     <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
     <TargetFrameworkProfile />
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,6 +71,10 @@
       <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
       <Name>XSharpCodeAnalysis</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

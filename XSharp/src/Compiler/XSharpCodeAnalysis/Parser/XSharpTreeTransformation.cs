@@ -5992,7 +5992,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTypeCast([NotNull] XP.TypeCastContext context)
         {
-            context.Put(MakeCastTo(context.Type.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()));
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            expr = MakeCastTo(context.Type.Get<TypeSyntax>(), expr);
+            if (_options.IsDialectVO)
+            {
+                expr = MakeChecked(expr, false);
+            }
+            context.Put(expr);
         }
 
         public override void ExitVoConversionExpression([NotNull] XP.VoConversionExpressionContext context)
@@ -6000,12 +6006,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = MakeChecked(context.Expr.Get<ExpressionSyntax>(), false);
             if (context.Type != null)
             {
-                context.Put(MakeChecked(MakeCastTo(context.Type.Get<TypeSyntax>(), expr),false));
+                expr = MakeChecked(MakeCastTo(context.Type.Get<TypeSyntax>(), expr), false);
             }
             else if (context.XType != null)
             {
-                context.Put(MakeChecked(MakeCastTo(context.XType.Get<TypeSyntax>(), expr),false));
+                expr = MakeChecked(MakeCastTo(context.XType.Get<TypeSyntax>(), expr),false);
             }
+            context.Put(expr);
         }
 
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)

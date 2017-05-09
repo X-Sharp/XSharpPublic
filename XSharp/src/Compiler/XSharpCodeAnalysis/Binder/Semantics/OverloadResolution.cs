@@ -84,7 +84,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var refRight = parRight.RefKind;
                         var arg = arguments[i];
                         bool argCanBeByRef = arg.Kind == BoundKind.AddressOfOperator;
-                        
                         if (parLeft.Type != parRight.Type)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
@@ -110,17 +109,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return true;
                             }
                             // Now check for REF parameters and possible REF arguments
-                            if (refLeft != refRight)
+                            if (argCanBeByRef)
                             {
-                                if (refLeft == RefKind.Ref && argCanBeByRef)
+                                var op = arg as BoundAddressOfOperator;
+                                var opType = op?.Operand?.Type;
+                                if (refLeft == RefKind.Ref && opType == parLeft.Type)
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (refRight == RefKind.Ref && argCanBeByRef)
+                                if (refRight == RefKind.Ref && opType == parRight.Type)
                                 {
                                     result = BetterResult.Right;
                                     return true;
+                                }
+                                if (refLeft != refRight)
+                                {
+                                    if (refLeft == RefKind.Ref)
+                                    {
+                                        result = BetterResult.Left;
+                                        return true;
+                                    }
+                                    if (refRight == RefKind.Ref )
+                                    {
+                                        result = BetterResult.Right;
+                                        return true;
+                                    }
                                 }
 
                             }
@@ -177,7 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
-                        }
+                         }
 
                     }
                 }

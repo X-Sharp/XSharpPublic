@@ -190,10 +190,14 @@ namespace XSharp.Project
         /// </summary>
         protected override void Initialize()
         {
+            // Suspend walking until Solution is opened.
+            base.SolutionListeners.Add(new ModelScannerEvents(this));
             base.Initialize();
             XSharpProjectPackage.instance = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             this.settings = new XPackageSettings(this);
+
+
 
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));

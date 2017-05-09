@@ -192,6 +192,7 @@
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
+    <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
       <SubType>UserControl</SubType>
@@ -309,6 +310,10 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
+    <Content Include="..\..\External\Debug\XSharp.CodeAnalysis.pdb">
+      <Link>XSharp.CodeAnalysis.pdb</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Designers.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

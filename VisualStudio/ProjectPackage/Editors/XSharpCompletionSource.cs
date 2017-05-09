@@ -628,7 +628,7 @@ namespace XSharpLanguage
             // get all the items in each project
             foreach (EnvDTE.ProjectItem item in project.ProjectItems)
             {
-                EnvDTE.FileCodeModel filecodemodel = item.FileCodeModel;
+                EnvDTE.FileCodeModel filecodemodel = item.FileCodeModel as EnvDTE.FileCodeModel;
                 if (filecodemodel == null)
                     continue;
                 foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)

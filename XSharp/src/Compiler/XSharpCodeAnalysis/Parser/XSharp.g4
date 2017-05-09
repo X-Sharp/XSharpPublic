@@ -796,7 +796,7 @@ codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE)
 codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
                     ;
 
-codeblockExprList	: (Exprs+=expression COMMA)+ ReturnExpr=expression
+codeblockExprList	: (Exprs+=expression? COMMA)+ ReturnExpr=expression
                     ;
 
 // LINQ Support

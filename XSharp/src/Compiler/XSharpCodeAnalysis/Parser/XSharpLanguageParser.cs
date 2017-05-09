@@ -482,7 +482,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // do not specify a conflicting modifier.
                 var tr = trees[0];
                 var cu = tr.GetRoot().Green as CompilationUnitSyntax;
-                var trans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                XSharpTreeTransformation trans = null;
+                XSharpVOTreeTransformation votrans = null;
+                if (_options.IsDialectVO)
+                {
+                    trans = votrans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                }
+                else
+                {
+                    trans = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                }
                 var classes = _pool.Allocate<MemberDeclarationSyntax>();
                 var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
                 foreach (var element in partialClasses)
@@ -575,9 +584,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             clsmembers.Clear();
                             var classdecl = ctxt.Get<ClassDeclarationSyntax>();
-                            if (!hasctor)
+                            if (!hasctor && votrans != null)
                             {
-                                var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
+                                var ctor = votrans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
                                 clsmembers.Add(ctor);
                             }
                             if (haspartialprop)

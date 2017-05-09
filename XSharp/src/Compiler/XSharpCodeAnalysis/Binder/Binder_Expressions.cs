@@ -451,18 +451,27 @@ namespace Microsoft.CodeAnalysis.CSharp
             // so we check here if we are called from a memberaccessexpression with a colon separator
             // so String.Compare will use different lookup options as SELF:ToString()
             var originalOptions = options;
-            bool colon = false;
+            
             if (preferStatic)
             {
+                bool instance = false;
                 if (node.Parent is MemberAccessExpressionSyntax)
                 {
                     var xnode = node.Parent.XNode as AccessMemberContext;
                     if (xnode != null && xnode.Op.Text == ":")
                     {
-                        colon = true;
+                        instance = true;
                     }
                 }
-                if (!colon)
+                else if (node.Parent is AssignmentExpressionSyntax)
+                {
+                    var aes = node.Parent as AssignmentExpressionSyntax;
+                    if (aes.Left == node)
+                    {
+                        instance = true;
+                    }
+                }
+                if (!instance)
                     options |= LookupOptions.MustNotBeInstance;
                 
             }

@@ -513,7 +513,7 @@ namespace XSharpLanguage
                                     // Then remove it
                                     if (dotPos > 0)
                                         realTypeName = realTypeName.Substring(0, dotPos);
-                                    
+
                                     compList.Add(new XSCompletion(realTypeName, realTypeName, childType + realTypeName, icon, null));
                                 }
                             }
@@ -767,6 +767,11 @@ namespace XSharpLanguage
                 // Now add Members for System types
                 FillMembers(compList, cType.SType, minVisibility, staticOnly, startWith);
             }
+            else if (cType.CodeElement != null)
+            {
+                // Now add Members for System types
+                FillMembers(compList, cType.CodeElement, minVisibility, staticOnly, startWith);
+            }
         }
 
 
@@ -774,6 +779,7 @@ namespace XSharpLanguage
         {
             return name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture);
         }
+
         /// <summary>
         /// Add Members for our Project Types
         /// </summary>
@@ -877,6 +883,66 @@ namespace XSharpLanguage
 
             }
         }
+
+        /// <summary>
+        /// Add Members from External "unknown" project Types
+        /// </summary>
+        /// <param name="compList"></param>
+        /// <param name="sType"></param>
+        /// <param name="minVisibility"></param>
+        private void FillMembers(CompletionList compList, EnvDTE.CodeElement fType, Modifiers minVisibility, bool staticOnly, String startWith)
+        {
+            if (fType.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+            {
+                //
+                EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)fType;
+                foreach (EnvDTE.CodeElement member in envClass.Members)
+                {
+                    if (nameStartsWith(member.Name, startWith))
+                    {
+                        if ( member.Kind == EnvDTE.vsCMElement.vsCMElementFunction )
+                        {
+                            //
+                            MemberAnalysis analysis = new MemberAnalysis(member);
+                            if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
+                            {
+                                if (analysis.Kind == Kind.Constructor)
+                                    continue;
+                                if (analysis.IsStatic != staticOnly)
+                                {
+                                    continue;
+                                }
+                                String toAdd = "";
+                                if ((analysis.Kind == Kind.Method))
+                                {
+                                    toAdd = "(";
+                                }
+                                //
+                                ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
+                                compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                            }
+                        }
+                    }
+                }
+                if (envClass.Bases != null)
+                {
+                    foreach (EnvDTE.CodeElement parent in envClass.Bases)
+                    {
+                        if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                        {
+                            //
+                            FillMembers(compList, parent, Modifiers.Protected, staticOnly, startWith);
+                        }
+                    }
+                }
+                object Parent = envClass.Parent;
+                if ( Parent != null )
+                {
+                    System.Diagnostics.Debug.WriteLine("CodeElement.Parent : " + Parent.ToString() );
+                }
+            }
+        }
+
 
         public void Dispose()
         {
@@ -1082,6 +1148,124 @@ namespace XSharpLanguage
                     //
                     declType = prop.PropertyType;
                     this._typeName = declType.FullName;
+                    break;
+                default:
+                    // Mark as Not-Initialized
+                    this._name = null;
+                    break;
+            }
+        }
+
+        internal MemberAnalysis(EnvDTE.CodeElement member)
+        {
+            EnvDTE.CodeTypeRef declType;
+            //
+            this._name = member.Name;
+            this._kind = Kind.Class;
+            this._modifiers = Modifiers.None;
+            this._visibility = Modifiers.Public;
+            this._typeName = "";
+            this._parameters = new List<ParamInfo>();
+            //
+            switch (member.Kind)
+            {
+                case EnvDTE.vsCMElement.vsCMElementEvent:
+                    this._kind = Kind.Event;
+                    EnvDTE80.CodeEvent evt = member as EnvDTE80.CodeEvent;
+                    //
+                    this._isStatic = evt.IsShared;
+                    //
+                    if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
+                    {
+                        this._visibility = Modifiers.Private;
+                    }
+                    else if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
+                    {
+                        this._visibility = Modifiers.Internal;
+                    }
+                    else if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
+                    {
+                        this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    declType = evt.Type;
+                    this._typeName = declType.AsFullName;
+                    break;
+                case EnvDTE.vsCMElement.vsCMElementVariable:
+                    this._kind = Kind.ClassVar;
+                    EnvDTE.CodeVariable field = member as EnvDTE.CodeVariable;
+                    //
+                    this._isStatic = field.IsShared;
+                    //
+                    if (field.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
+                    {
+                        this._visibility = Modifiers.Private;
+                    }
+                    else if (field.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
+                    {
+                        this._visibility = Modifiers.Internal;
+                    }
+                    else if (field.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
+                    {
+                        this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    declType = field.Type;
+                    this._typeName = declType.AsFullName;
+                    break;
+                case EnvDTE.vsCMElement.vsCMElementFunction:
+                    this.Kind = Kind.Method;
+                    EnvDTE.CodeFunction method = member as EnvDTE.CodeFunction;
+                    //
+                    if ( method.FunctionKind == EnvDTE.vsCMFunction.vsCMFunctionConstructor)
+                    {
+                        this.Kind = Kind.Constructor;
+                    }
+                    //
+                    this._isStatic = method.IsShared;
+                    //
+                    if (method.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
+                    {
+                        this._visibility = Modifiers.Private;
+                    }
+                    else if (method.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
+                    {
+                        this._visibility = Modifiers.Internal;
+                    }
+                    else if (method.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
+                    {
+                        this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    EnvDTE.CodeElements pars = method.Parameters;
+                    foreach (EnvDTE.CodeParameter p in pars)
+                    {
+                        //
+                        this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName));
+                    }
+                    //
+                    declType = method.Type;
+                    this._typeName = declType.AsFullName;
+                    break;
+                case EnvDTE.vsCMElement.vsCMElementProperty :
+                    this.Kind = Kind.Property;
+                    EnvDTE.CodeProperty prop = member as EnvDTE.CodeProperty;
+                    //
+                    if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
+                    {
+                        this._visibility = Modifiers.Private;
+                    }
+                    else if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
+                    {
+                        this._visibility = Modifiers.Internal;
+                    }
+                    else if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
+                    {
+                        this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    declType = prop.Type;
+                    this._typeName = declType.AsFullName;
                     break;
                 default:
                     // Mark as Not-Initialized
@@ -1374,6 +1558,43 @@ namespace XSharpLanguage
             //    this._visibility = Modifiers.Protected;
             //}
             //
+        }
+
+        internal TypeAnalysis(EnvDTE.CodeType typeInfo)
+        {
+            //
+            this._name = typeInfo.Name;
+            this._kind = Kind.Class;
+            this._modifiers = Modifiers.None;
+            this._visibility = Modifiers.Public;
+            //
+            if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+            {
+                this._kind = Kind.Class;
+            }
+            else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+            {
+                this._kind = Kind.Enum;
+            }
+            else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementInterface)
+            {
+                this._kind = Kind.Interface;
+            }
+            else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+            {
+                this._kind = Kind.Structure;
+            }
+            //
+            /*
+            this._isStatic = (typeInfo.IsAbstract && typeInfo.IsSealed);
+            //
+            if (!this.IsStatic)
+            {
+                if (typeInfo.IsAbstract)
+                {
+                    this._modifiers = Modifiers.Abstract;
+                }
+            }*/
         }
 
         public bool IsInitialized

@@ -141,7 +141,7 @@ namespace XSharpModel
             {
                 // Does this url belongs to a project in the Solution ?
                 XProject prj = XSolution.FindProject(url);
-                if ( _ReferencedProjects.Contains(prj))
+                if (_ReferencedProjects.Contains(prj))
                 {
                     _ReferencedProjects.Remove(prj);
                     return true;
@@ -289,7 +289,7 @@ namespace XSharpModel
                 if (caseInvariant)
                 {
                     file.TypeList.TryGetValue(typeName.ToLowerInvariant(), out xTemp);
-                        //file.TypeList.Find(x => x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant());
+                    //file.TypeList.Find(x => x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant());
                 }
                 else
                 {
@@ -318,15 +318,18 @@ namespace XSharpModel
                 }
             }
             //
-            if ( xType == null)
+            return xType;
+        }
+
+        public XType LookupReferenced(string typeName, bool caseInvariant)
+        {
+            XType xType = null;
+            // Ok, might be a good idea to look into References, no ?
+            foreach (var item in ReferencedProjects)
             {
-                // Ok, might be a good idea to look into References, no ?
-                foreach (var item in ReferencedProjects)
-                {
-                    xType = item.Lookup(typeName, caseInvariant);
-                    if (xType != null)
-                        break;
-                }
+                xType = item.Lookup(typeName, caseInvariant);
+                if (xType != null)
+                    break;
             }
             //
             return xType;
@@ -346,7 +349,7 @@ namespace XSharpModel
                 {
                     if (caseInvariant)
                     {
-                        if ( x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant() )
+                        if (x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant())
                         {
                             xTemp = x;
                             break;
@@ -384,22 +387,25 @@ namespace XSharpModel
                 }
             }
             //
-            if (xType == null)
+            return xType;
+        }
+
+        public XType LookupFullNameReferenced(string typeName, bool caseInvariant)
+        {
+            XType xType = null;
+            // Ok, might be a good idea to look into References, no ?
+            foreach (var item in ReferencedProjects)
             {
-                // Ok, might be a good idea to look into References, no ?
-                foreach (var item in ReferencedProjects)
-                {
-                    xType = item.LookupFullName(typeName, caseInvariant);
-                    if (xType != null)
-                        break;
-                }
+                xType = item.LookupFullName(typeName, caseInvariant);
+                if (xType != null)
+                    break;
             }
             //
             return xType;
         }
 
         // Look for a TypeName in "stranger" projects
-        public EnvDTE.CodeElement LookupForStranger(string typeName, IList<String> usings)
+        public EnvDTE.CodeElement LookupForStranger(string typeName, bool caseInvariant)
         {
             // If not found....
             EnvDTE.CodeElement foundElement = null;
@@ -431,11 +437,23 @@ namespace XSharpModel
                                     // !!!! WARNING !!! We may have nested types
                                     elementName = elementName.Replace("+", ".");
                                     // Got it ?
-                                    if (typeName.Equals(elementName, StringComparison.OrdinalIgnoreCase))
+                                    if (caseInvariant)
                                     {
-                                        // Bingo !
-                                        foundElement = elt;
-                                        break;
+                                        if (elementName.ToLowerInvariant() == typeName.ToLowerInvariant())
+                                        {
+                                            // Bingo !
+                                            foundElement = elt;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (elementName.ToLower() == typeName.ToLower())
+                                        {
+                                            // Bingo !
+                                            foundElement = elt;
+                                            break;
+                                        }
                                     }
                                 }
                             }

@@ -1598,7 +1598,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             //    first,
                             //    second);
 #if XSHARP
-                            xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where, diagnostics);
+                            xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics);
                             if (xresult != null)
                                 return xresult;
 #endif
@@ -1633,7 +1633,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     new object[] { (where as NameSyntax)?.ErrorDisplayName() ?? simpleName, first, second });
                             }
 #if XSHARP
-                            else if ( (xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where, diagnostics)) != null)
+                            else if ( (xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics)) != null)
                             {
                                return xresult;
                             }

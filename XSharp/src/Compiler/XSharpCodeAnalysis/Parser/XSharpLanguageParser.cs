@@ -195,7 +195,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // When this fails, then we try again with LL mode and then we record errors
             parser.RemoveErrorListeners();
             parser.ErrorHandler = new BailErrorStrategy();
-            ParserRuleContext tree;
+            XSharpParserRuleContext tree;
             try
             {
                 if (_isScript)

@@ -25,7 +25,7 @@ namespace XSharpModel
         // XSharp Type
         private XType _xtype = null;
         // External project EnvDTE.CodeElement
-        private CodeElement _codeelt = null;
+        private CodeElement _codeElt = null;
 
         public CompletionType(XType xType)
         {
@@ -39,7 +39,7 @@ namespace XSharpModel
 
         public CompletionType(CodeElement elt)
         {
-            this._codeelt = elt;
+            this._codeElt = elt;
         }
 
         public CompletionType()
@@ -58,7 +58,7 @@ namespace XSharpModel
                 XTypeMember member = element.Parent as XTypeMember;
                 if (member != null)
                 {
-                    CheckProjectType(member.TypeName, member.File, member.Parent.NameSpace);
+                    CheckType(member.TypeName, member.File, member.Parent.NameSpace);
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace XSharpModel
             if (element.Kind.HasReturnType())
             {
                 // lookup type from Return type
-                CheckProjectType(element.TypeName, element.File, element.Parent.NameSpace);
+                CheckType(element.TypeName, element.File, element.Parent.NameSpace);
             }
             else
             {
@@ -88,11 +88,11 @@ namespace XSharpModel
             XTypeMember member = var.Parent as XTypeMember;
             if (member != null)
             {
-                if ( !String.IsNullOrEmpty(member.Parent.NameSpace) )
+                if (!String.IsNullOrEmpty(member.Parent.NameSpace))
                 {
                     defaultNS = member.Parent.NameSpace;
                 }
-                CheckProjectType(var.TypeName, member.File, defaultNS);
+                CheckType(var.TypeName, member.File, defaultNS);
             }
         }
 
@@ -112,39 +112,65 @@ namespace XSharpModel
 
         public CompletionType(String typeName, XFile xFile, string defaultNS)
         {
-            CheckProjectType(typeName, xFile, defaultNS);
+            CheckType(typeName, xFile, defaultNS);
+        }
+
+        /// <summary>
+        /// Check/Lookup for typeName, in the project owning xFile, eventually looking at the Usings including the Default Namespace
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <param name="xFile"></param>
+        /// <param name="defaultNS"></param>
+        private void CheckType(string typeName, XFile xFile, string defaultNS)
+        {
+            // Create the Usings List
+            List<String> usings = new List<String>(xFile.Usings);
+            if (!String.IsNullOrEmpty(defaultNS))
+                usings.Add(defaultNS);
+            // First, check the XProject corresponding to the xFile
+            CheckProjectType(typeName, xFile.Project, usings);
             if (!this.IsInitialized)
             {
-                CheckSystemType(typeName, xFile.Usings);
+                // Not Found ?
+                // now try with System Types (External Dlls too)
+                CheckSystemType(typeName, usings);
+                if (!this.IsInitialized)
+                {
+                    // Not Found ? 
+                    // now try with Referenced XSharp Projects
+                    foreach (XProject prj in xFile.Project.ReferencedProjects)
+                    {
+                        CheckProjectType(typeName, prj, usings);
+                        if (this.IsInitialized)
+                            break;
+                    }
+                    if (!this.IsInitialized)
+                    {
+                        // Not Found ? 
+                        // now try with Referenced Foreign Projects
+                        CheckStrangerProjectType(typeName, xFile.Project, usings);
+                    }
+                }
             }
         }
 
-
-        private void CheckProjectType(string typeName, XFile xFile, string defaultNS )
+        private void CheckProjectType(string typeName, XProject xprj, List<String> usings)
         {
             // First, easy way..Use the simple name
-            XType xType = xFile.Project.Lookup(typeName, true);
+            XType xType = xprj.Lookup(typeName, true);
             if (xType == null)
             {
                 // ?? Fullname maybe ?
-                xType = xFile.Project.LookupFullName(typeName, true);
+                xType = xprj.LookupFullName(typeName, true);
                 if (xType == null)
                 {
-                    List<String> usings = new List<String>(xFile.Usings);
-                    if (!String.IsNullOrEmpty(defaultNS))
-                        usings.Add(defaultNS);
                     // Search using the USING statements in the File that contains the var
                     foreach (string usingStatement in usings)
                     {
                         String fqn = usingStatement + "." + typeName;
-                        xType = xFile.Project.LookupFullName(fqn, true);
+                        xType = xprj.LookupFullName(fqn, true);
                         if (xType != null)
                             break;
-                    }
-                    if (xType == null)
-                    {
-                        // Ok, none of our own Type; can be a System/Referenced Type
-                        CheckSystemType(typeName, usings);
                     }
                 }
             }
@@ -154,6 +180,26 @@ namespace XSharpModel
             }
         }
 
+        private void CheckStrangerProjectType(string typeName, XProject xprj, List<String> usings)
+        {
+            // First, easy way..Use the simple name
+            CodeElement codeElt = xprj.LookupForStranger(typeName, true);
+            if (codeElt == null)
+            {
+                // Search using the USING statements in the File that contains the var
+                foreach (string usingStatement in usings)
+                {
+                    String fqn = usingStatement + "." + typeName;
+                    codeElt = xprj.LookupForStranger(fqn, true);
+                    if (codeElt != null)
+                        break;
+                }
+            }
+            if (codeElt != null)
+            {
+                this._codeElt = codeElt;
+            }
+        }
 
         private void CheckSystemType(string typeName, List<string> usings)
         {
@@ -181,11 +227,12 @@ namespace XSharpModel
             }
         }
 
+
         public bool IsInitialized
         {
             get
             {
-                return ((this._stype != null) || (this._xtype != null) || (this._codeelt != null));
+                return ((this._stype != null) || (this._xtype != null) || (this._codeElt != null));
             }
         }
 
@@ -211,7 +258,7 @@ namespace XSharpModel
         {
             get
             {
-                return _codeelt;
+                return _codeElt;
             }
         }
 
@@ -227,9 +274,9 @@ namespace XSharpModel
                 {
                     return this._stype.FullName;
                 }
-                if (this._codeelt != null)
+                if (this._codeElt != null)
                 {
-                    return this._codeelt.FullName;
+                    return this._codeElt.FullName;
                 }
                 return null;
             }

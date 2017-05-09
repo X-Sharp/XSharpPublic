@@ -451,8 +451,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // this method gives us the ability to check all the generated syntax trees,
             // add generated constructors to partial classes when none of the parts has a constructor
             // merge accesses and assigns from different source files into one property etc.
-            if (! parseoptions.IsDialectVO)
-                return null;
             var partialClasses = new Dictionary<string, List<XP.IPartialPropertyContext>>(StringComparer.OrdinalIgnoreCase);
             foreach (var tree in trees)
             {

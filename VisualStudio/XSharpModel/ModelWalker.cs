@@ -20,8 +20,20 @@ namespace XSharpModel
     public class ModelWalker
     {
         static ModelWalker _walker;
+        static int suspendLevel;
         static ModelWalker()
+        { 
+            suspendLevel = 0;
+        }
+
+        public static void Suspend()
         {
+            suspendLevel += 1;
+        }
+        public static void Resume()
+        {
+            suspendLevel -= 1;
+
         }
         static public ModelWalker GetWalker()
         {
@@ -84,6 +96,8 @@ namespace XSharpModel
         public bool HasWork => _projects.Count > 0;
         public void Walk()
         {
+            if (suspendLevel != 0)
+                return;
             try
             {
                 StopThread();
@@ -108,6 +122,15 @@ namespace XSharpModel
             //
             do
             {
+                if (suspendLevel != 0)
+                {
+                    // Abort and put project back in the list
+                    if (project != null)
+                    { 
+                        _projects.Enqueue(project);
+                    }
+                    break;
+                }
                 // 
                 lock (this)
                 {

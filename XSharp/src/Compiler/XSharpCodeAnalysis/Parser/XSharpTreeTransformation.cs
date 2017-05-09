@@ -1723,6 +1723,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignTypesMutchMatch);
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
+                var node = AccMet.CsNode as CSharpSyntaxNode;
+                if (node != null && node.ContainsDiagnostics)
+                {
+                    var diag = node.GetDiagnostics();
+                    accessor = accessor.WithAdditionalDiagnostics(diag);
+                }
                 accessors.Add(accessor);
                 accessor.XNode = AccMet;
                 AccMet.CsNode = null;
@@ -1785,6 +1791,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (!typeMatch)
                 {
                     var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignTypesMutchMatch);
+                    accessor = accessor.WithAdditionalDiagnostics(diag);
+                }
+                var node = AssMet.CsNode as CSharpSyntaxNode;
+                if (node != null && node.ContainsDiagnostics)
+                {
+                    var diag = node.GetDiagnostics();
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
                 accessors.Add(accessor);
@@ -3221,6 +3233,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(m);
             if (context.T.Token.Type != XP.METHOD)
             {
+                if (context.Data.HasClipperCallingConvention && context.CallingConvention != null)
+                {
+                    m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(
+                                    ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
+                }
+                context.Put(m);
                 ClassEntities.Peek().AddVoPropertyAccessor(context);
             }
         }
@@ -4443,7 +4461,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVotypeModifiers([NotNull] XP.VotypeModifiersContext context)
         {
-            HandleDefaultModifiers(context, context._Tokens, true);
+            IList<IToken> tokens = context._Tokens;
+            if (tokens != null)
+            {
+                foreach (XSharpToken t in tokens)
+                {
+                    if (t.Type == XSharpLexer.STATIC)
+                    {
+                        t.Type = XSharpLexer.INTERNAL;
+                        t.Text = "INTERNAL";
+                    }
+                }
+            }
+
+            HandleDefaultModifiers(context, tokens, true);
         }
 
         SyntaxList<SyntaxToken> GetFuncProcModifiers(XP.FuncprocModifiersContext context, bool isExtern, bool isInInterface)
@@ -5992,7 +6023,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTypeCast([NotNull] XP.TypeCastContext context)
         {
-            context.Put(MakeCastTo(context.Type.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()));
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            expr = MakeCastTo(context.Type.Get<TypeSyntax>(), expr);
+            if (_options.IsDialectVO)
+            {
+                expr = MakeChecked(expr, false);
+            }
+            context.Put(expr);
         }
 
         public override void ExitVoConversionExpression([NotNull] XP.VoConversionExpressionContext context)
@@ -6000,12 +6037,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = MakeChecked(context.Expr.Get<ExpressionSyntax>(), false);
             if (context.Type != null)
             {
-                context.Put(MakeChecked(MakeCastTo(context.Type.Get<TypeSyntax>(), expr),false));
+                expr = MakeChecked(MakeCastTo(context.Type.Get<TypeSyntax>(), expr), false);
             }
             else if (context.XType != null)
             {
-                context.Put(MakeChecked(MakeCastTo(context.XType.Get<TypeSyntax>(), expr),false));
+                expr = MakeChecked(MakeCastTo(context.XType.Get<TypeSyntax>(), expr),false);
             }
+            context.Put(expr);
         }
 
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)

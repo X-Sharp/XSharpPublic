@@ -621,7 +621,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 LookupResult tmp = LookupResult.GetInstance();
                 foreach (var sym in result.Symbols)
                 {
-                    if (sym.Kind == SymbolKind.Field)
+                    if ((sym.Kind == SymbolKind.Field && sym.ContainingType.Name == XSharpSpecialNames.CoreFunctionsClass)
+                        || sym.Kind == SymbolKind.Local || sym.Kind == SymbolKind.Parameter)
                     {
                         SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, sym, null);
                         tmp.MergeEqual(single);

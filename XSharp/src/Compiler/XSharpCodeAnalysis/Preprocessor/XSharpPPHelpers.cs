@@ -16,7 +16,6 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 
@@ -95,11 +94,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             _rules = new Dictionary<string, PPRules>(StringComparer.OrdinalIgnoreCase);
         }
+
+        internal int Count
+        {
+            get
+            {
+                int result = 0;
+                foreach (var r in _rules)
+                {
+                    result += r.Value.Count;
+                }
+                return result;
+            }
+        }
+
         internal void Add(PPRule rule)
         {
             // find element that matches the first token and insert at the front of the list
             // so rules defined later override rules defined first
-            string key = rule.Key;
+            string key = rule.LookupKey;
             PPRules list;
             if (_rules.ContainsKey(key))
             {
@@ -112,39 +125,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             list.Insert(0, rule);
         }
-        internal PPRules Find(string key)
-        {
-            // Find a list of rules that start with the same first token
-            PPRules list;
-            if (_rules.ContainsKey(key))
-                list = _rules[key];
-            else
-                list = null;
-            return list;
-        }
-
+  
         internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
-            PPRule result = null;
             matchInfo = null;
-            if (tokens?.Count != 0)
+            if (tokens?.Count >= 0)
             {
                 var firsttoken = tokens[0];
-                var rules = Find(firsttoken.Text);
-                if (rules?.Count > 0)
+                var key = firsttoken.Text;
+                while (true)
                 {
-                    // try to find the first rule in the list that matches our tokens
-                    foreach (var rule in rules)
+                    if (_rules.ContainsKey(key))
                     {
-                        if (rule.Matches(tokens, out matchInfo))
+                        // try to find the first rule in the list that matches our tokens
+                        var rules = _rules[key];
+                        foreach (var rule in rules)
                         {
-                            result = rule;
-                            break;
+                            if (rule.Matches(tokens, out matchInfo))
+                            {
+                                return rule;
+                            }
                         }
                     }
+                    if (key.Length <= 4)
+                        return null;
+                    key = key.Substring(0, 4);
                 }
+
             }
-            return result;
+            return null;
         }
     }
 
@@ -164,73 +173,109 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Fields
         private int _length;
         private int _start;
-        private bool token;
+        private bool _token;
         private IList<PPMatchRange> _children ;
         #endregion
         #region Properties
         internal bool IsList { get { return _children != null; } }
         internal int Start { get { return _start; } }
         internal int Length { get { return _length; } }
+        internal int MatchCount
+        {
+            get
+            {
+                if (Empty)
+                    return 0;
+                if (_children == null)
+                    return 1;
+                else
+                    return _children.Count;
+
+            }
+        }
         internal int End
         {
             get
             {
-                return _start + _length - 1;
+                if (_children?.Count > 0)
+                    return _children[_children.Count - 1].End;
+                else
+                    return _start + _length - 1;
             }
         }
         internal IList<PPMatchRange> Children { get { return _children; } }
 
         internal bool Empty
         {
-            get { return !token  && _length == 0; }
+            get { return !_token && _length == 0; }
         }
         internal bool IsToken
         {
-            get { return token; }
+            get { return _token; }
         }
-        internal bool IsSkipped
+
+        internal void SetPos(int start, int end)
         {
-            get { return  _start == -1 && _length == 0; }
+            _token = false;
+            if (Empty)
+            {
+                _start = start;
+                _length = end - start + 1;
+                _children = null;
+            }
+            else
+            {
+                _children = new List<PPMatchRange>();
+                _children.Add(Create(Start, End));
+                _children.Add(Create(start, end));
+                _length = end - Start + 1;
+            }
+        }
+        internal void SetToken(int pos)
+        {
+            if (Empty)
+            {
+                _token = true;
+                _start = pos;
+                _length = 1;
+                _children = null;
+            }
+            else
+            {
+                _token = true;
+                _children = new List<PPMatchRange>();
+                _children.Add(Token(_start));
+                _children.Add(Token(pos));
+            }
+        }
+        internal void  SetSkipped()
+        {
+            _start = -1;
+            _length = 0;
+            _token = false;
+            _children = null;
         }
 
         #endregion
         #region Constructors
-        internal static PPMatchRange Create( int start, int end)
+        private static PPMatchRange Token(int pos)
+        {
+            return new PPMatchRange() { _token = true, _start = pos, _length = 1, _children = null };
+        }
+        private static PPMatchRange Create( int start, int end)
         {
             return new PPMatchRange() { _start = start, _length = end - start +1, _children = null};
-        }
-        internal static PPMatchRange Create(IList<PPMatchRange> children)
-        {
-            int count = 0;
-            if (children != null)
-            {
-                count = children.Count;
-            }
-            switch (count)
-            {
-                case 0:
-                    return new PPMatchRange();
-                case 1:
-                    return Create(children[0].Start, children[0].End);
-                    
-            }
-            int start = children[0].Start;
-            int end = children[count - 1].End;
-            return new PPMatchRange() { _start = start, _length = end - start + 1, _children = children, token = false };
-        }
-        internal static PPMatchRange Skipped()
-        {
-            return new PPMatchRange() { _start = -1, _length = 0, token = false, _children = null };
-        }
-        internal static PPMatchRange Token(int pos)
-        {
-            return new PPMatchRange() { _start = pos, _length = 1, token = true, _children = null };
         }
         #endregion
         internal string GetDebuggerDisplay()
         {
-            if (token)
-                return $"Token ({Start})";
+            if (_token)
+            {
+                if (_children != null)
+                    return $"Token ({Children.Count}) {Start},{End}";
+                else
+                    return $"Token ({Start})";
+            }
             if (_start == 0 && _length == 0)
                 return "Empty";
             if (_start == -1 && _length == 0 )
@@ -241,7 +286,73 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return $"{Start},{End}"; 
         }
     }
-
-
+    /// <summary>
+    /// This class is used to monitor recursion for #Translate and #command in the Preprocessor
+    /// </summary>
+    internal class PPUsedRules
+    {
+        class PPUsedRule
+        {
+            PPRule _rule;
+            List<XSharpToken> _tokens;
+            internal PPUsedRule(PPRule rule, List<XSharpToken> tokens)
+            {
+                _rule = rule;
+                _tokens = tokens;
+            }
+            internal bool isDuplicate(PPRule rule, List<XSharpToken> tokens)
+            {
+                if (_rule == rule && _tokens.Count == tokens.Count)
+                {
+                    for (int i = 0; i < tokens.Count; i++)
+                    {
+                        var t1 = tokens[i];
+                        var t2 = _tokens[i];
+                        if (t1.Text != t2.Text)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        }
+        List<PPUsedRule> _list;
+        XSharpPreprocessor _pp;
+        int _maxDepth;
+        internal PPUsedRules(XSharpPreprocessor pp, int maxDepth)
+        {
+            _list = new List<PPUsedRule>();
+            _pp = pp;
+            _maxDepth = maxDepth;
+        }
+        /// <summary>
+        /// Check for recursion, and add the rule to the list of rules that have been used
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="tokens"></param>
+        /// <returns>True when the rule with the same tokens list is found in the list</returns>
+        internal bool HasRecursion(PPRule rule, List<XSharpToken> tokens)
+        {
+            // check to see if this is already there
+            if (_list.Count == _maxDepth)
+            {
+                _pp.AddParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                return true;
+            }
+            foreach (var item in _list)
+            {
+                if (item.isDuplicate(rule, tokens))
+                {
+                    _pp.AddParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                    return true;
+                }
+            }
+            _list.Add(new PPUsedRule(rule, tokens));
+            return false;
+        }
+        internal int Count => _list.Count;
+    }
 }
 

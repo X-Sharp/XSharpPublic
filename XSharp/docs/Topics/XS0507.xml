@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS0507</title>
   <keywords>
     <keyword>XS0507</keyword>
@@ -17,21 +17,21 @@
     <para styleclass="Normal">The following sample generates XS0507.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0507.prg &#160;<br/>&#32;</para>
+    <para styleclass="Code with box">// XS0507.prg  <br/> </para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">XS0507 can also occur if a class attempts to override a method marked as <text styleclass="Code Example">protected internal</text> defined in referenced metadata. In this situation, the overriding method should be marked as <text styleclass="Code Example">protected</text>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0507_b.prg &#160;<br/>// compile with: /target:library &#160;<br/> &#160;</para>
+    <para styleclass="Code with box">// XS0507_b.prg  <br/>// compile with: /target:library  <br/>  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following sample generates XS0507.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0507_c.prg &#160;<br/>// compile with: /reference:XS0507_b.dll &#160;<br/>public class cly : clx &#160;<br/></para>
+    <para styleclass="Code with box">// XS0507_c.prg  <br/>// compile with: /reference:XS0507_b.dll  <br/>public class cly : clx  <br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

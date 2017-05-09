@@ -1,39 +1,12 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
 
@@ -80,16 +53,14 @@ namespace Antlr4.Runtime.Dfa
         private Antlr4.Runtime.Dfa.AcceptStateInfo acceptStateInfo;
 
         /// <summary>These keys for these edges are the top level element of the global context.</summary>
-        /// <remarks>These keys for these edges are the top level element of the global context.</remarks>
         [NotNull]
         private volatile AbstractEdgeMap<Antlr4.Runtime.Dfa.DFAState> contextEdges;
 
         /// <summary>Symbols in this set require a global context transition before matching an input symbol.</summary>
-        /// <remarks>Symbols in this set require a global context transition before matching an input symbol.</remarks>
         [Nullable]
         private BitSet contextSymbols;
 
-		/// <summary>
+        /// <summary>
         /// This list is computed by
         /// <see cref="Antlr4.Runtime.Atn.ParserATNSimulator.PredicateDFAState(DFAState, Antlr4.Runtime.Atn.ATNConfigSet, int)"/>
         /// .
@@ -98,7 +69,6 @@ namespace Antlr4.Runtime.Dfa
         public DFAState.PredPrediction[] predicates;
 
         /// <summary>Map a predicate to a predicted alternative.</summary>
-        /// <remarks>Map a predicate to a predicted alternative.</remarks>
         public class PredPrediction
         {
             [NotNull]
@@ -229,11 +199,7 @@ namespace Antlr4.Runtime.Dfa
             edges = edges.Put(symbol, target);
         }
 
-#if NET45PLUS
-        public virtual IReadOnlyDictionary<int, DFAState> EdgeMap
-#else
-        public virtual IDictionary<int, DFAState> EdgeMap
-#endif
+        public virtual ReadOnlyDictionary<int, DFAState> EdgeMap
         {
             get
             {
@@ -269,11 +235,7 @@ namespace Antlr4.Runtime.Dfa
             }
         }
 
-#if NET45PLUS
-        public virtual IReadOnlyDictionary<int, DFAState> ContextEdgeMap
-#else
-        public virtual IDictionary<int, DFAState> ContextEdgeMap
-#endif
+        public virtual ReadOnlyDictionary<int, DFAState> ContextEdgeMap
         {
             get
             {
@@ -296,11 +258,11 @@ namespace Antlr4.Runtime.Dfa
 #if NET45PLUS
                         map = new ReadOnlyDictionary<int, DFAState>(new SortedDictionary<int, DFAState>(result));
 #elif COMPACT
-                        map = new SortedList<int, DFAState>(result);
+                        map = new ReadOnlyDictionary<int,DFAState>(new SortedList<int, DFAState>(result));
 #elif PORTABLE && !NET45PLUS
-                        map = new Dictionary<int, DFAState>(result);
+                        map = new ReadOnlyDictionary<int, DFAState>(new Dictionary<int, DFAState>(result));
 #else
-                        map = new SortedDictionary<int, DFAState>(result);
+                        map = new ReadOnlyDictionary<int, DFAState>(new SortedDictionary<int, DFAState>(result));
 #endif
                     }
                 }

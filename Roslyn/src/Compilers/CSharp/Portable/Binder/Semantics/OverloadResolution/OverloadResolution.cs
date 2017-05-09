@@ -1217,32 +1217,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             BetterResult result = BetterResult.Neither;
 #if XSHARP
-            bool ambiguous;
-            var found = VOBetterFunctionMember(m1, m2, arguments, out result, out ambiguous);
+            var found = VOBetterFunctionMember(m1, m2, arguments, out result, out useSiteDiagnostics);
             if (found)
             {
-                if (ambiguous)
-                {
-                    TMember r1, r2;
-                    if (result == BetterResult.Left)
-                    {
-                        r1 = m1.Member;
-                        r2 = m2.Member;
-                    }
-                    else
-                    {
-                        r1 = m2.Member;
-                        r2 = m1.Member;
-                    }
-                 
-                    var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, 
-                        new object[] {
-                                        r1.Name,
-                                        new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat) });
-                    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                    useSiteDiagnostics.Add(info);
-                }
                 return result;
             }
 #endif

@@ -215,7 +215,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The parameters for the Access and Assign declarations must match by name and type. The first ASSIGN parameter is the value, the other parameters are the indexers and must be the same as the ACCESS parameters..
+        ///   Looks up a localized string similar to The parameters for the ACCESS and ASSIGN declarations must match by name, type and number. There must be one more ASSIGN parameter than ACCESS parameter. The first ASSIGN parameter is the value, the other parameters are the indexers and must be have the same name and type as the ACCESS parameters..
         /// </summary>
         internal static string ERR_AccessAssignParametersMutchMatch {
             get {
@@ -697,6 +697,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_AssgReadonlyStatic2 {
             get {
                 return ResourceManager.GetString("ERR_AssgReadonlyStatic2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ASSIGN methods must have at least one parameter.
+        /// </summary>
+        internal static string ERR_AssignMethodsMustHaveAParameter {
+            get {
+                return ResourceManager.GetString("ERR_AssignMethodsMustHaveAParameter", resourceCulture);
             }
         }
         
@@ -5651,7 +5660,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using a numeric DLL entrypoint &apos;{0}&apos; is not supported in .NET.
+        ///   Looks up a localized string similar to Invalid DLL entrypoint &apos;{0}&apos;.
         /// </summary>
         internal static string ERR_InvalidDLLEntryPoint {
             get {
@@ -7861,6 +7870,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_PreProcessorError {
             get {
                 return ResourceManager.GetString("ERR_PreProcessorError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recursive preprocessor rule &apos;#{0}&apos; detected.
+        /// </summary>
+        internal static string ERR_PreProcessorRecursiveRule {
+            get {
+                return ResourceManager.GetString("ERR_PreProcessorRecursiveRule", resourceCulture);
             }
         }
         
@@ -12908,6 +12926,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A get or set accessor must have a body, an auto property will be generated.
+        /// </summary>
+        internal static string WRN_GetSetMustHaveBody {
+            get {
+                return ResourceManager.GetString("WRN_GetSetMustHaveBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Defining an alias named &apos;global&apos; is ill-advised since &apos;global::&apos; always references the global namespace and not an alias.
         /// </summary>
         internal static string WRN_GlobalAliasDefn {
@@ -14473,7 +14500,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function or type &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the first one..
+        ///   Looks up a localized string similar to {3} &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the first one..
         /// </summary>
         internal static string WRN_VulcanAmbiguous {
             get {

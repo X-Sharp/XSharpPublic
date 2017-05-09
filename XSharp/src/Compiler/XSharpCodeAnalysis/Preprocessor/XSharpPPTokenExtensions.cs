@@ -13,18 +13,42 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Diagnostics;
 using Roslyn.Utilities;
-
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class XSharpPPTokenExtensions
     {
+
+        internal static void TrimLeadingSpaces(this List<XSharpToken> tokens)
+        {
+            while (tokens.Count > 0 &&
+                tokens[0].Channel == XSharpLexer.Hidden)
+            {
+                tokens.RemoveAt(0);
+            }
+        }
+        internal static string AsTokenString( this IList<IToken> tokens)
+        {
+            var sb = new System.Text.StringBuilder();
+            int i = 0;
+            foreach (var token in tokens)
+            {
+                if (token.Channel != XSharpLexer.Hidden)
+                {
+                    sb.Append(i);
+                    sb.Append(" ");
+                    sb.Append(token.ToString());
+                    sb.AppendLine();
+                    i++;
+                }
+            }
+            return sb.ToString();
+        }
+
         internal static string TrailingWs(this IToken token)
         {
             if (token == null || token.TokenSource == null)
@@ -50,6 +74,65 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return result;
         }
+        public static bool isWhiteSpace(char ch)
+        {
+            // this is surprisingly faster than the equivalent if statement
+            switch (ch) {
+                case '\u0009': case '\u000A': case '\u000B': case '\u000C': case '\u000D':
+                case '\u0020': case '\u0085': case '\u00A0': case '\u1680': case '\u2000':
+                case '\u2001': case '\u2002': case '\u2003': case '\u2004': case '\u2005':
+                case '\u2006': case '\u2007': case '\u2008': case '\u2009': case '\u200A':
+                case '\u2028': case '\u2029': case '\u202F': case '\u205F': case '\u3000':
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static string TrimAllWithInplaceCharArray(this string str)
+        {
+            var src = str.ToCharArray();
+            var len = str.Length;
+            int idest = 0;
+            bool instring = false;
+            char stringEnd = ' ';
+            bool lastIsWhiteSpace = false;
+            for (int i = 0; i < len; i++)
+            {
+                bool lAdd = true;
+                var ch = src[i];
+                switch (ch)
+                {
+                    case '"':
+                    case '\'':
+                        if (instring && ch == stringEnd)
+                        {
+                           instring = false;
+                            stringEnd = ' ';
+                        }
+                        else
+                        {
+                            stringEnd = ch;
+                            instring = true;
+                        }
+                        break;
+                    default:
+                        if (!instring && lastIsWhiteSpace && isWhiteSpace(ch))
+                        {
+                            lAdd = false;
+                        }
+                        else
+                            lAdd = true;
+                        break;
+                }
+                if (lAdd)
+                {
+                    src[idest++] = ch;
+                }
+                lastIsWhiteSpace = isWhiteSpace(ch);
+            }
+            return new string(src, 0, idest);
+        }
 
         internal static string AsString(this IList<XSharpToken> tokens)
         {
@@ -62,7 +145,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
             }
-            return result;
+            return TrimAllWithInplaceCharArray(result);
         }
         internal static IList<IToken> ToIListIToken(this IList<XSharpToken> tokens) 
         {

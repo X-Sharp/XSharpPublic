@@ -55,6 +55,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </remarks>
         private Binder LookupSymbolsWithFallback(LookupResult result, string name, int arity, ref HashSet<DiagnosticInfo> useSiteDiagnostics, ConsList<Symbol> basesBeingResolved = null, LookupOptions options = LookupOptions.Default)
         {
+#if XSHARP
+            return XSLookupSymbolsWithFallback(result, name, arity, ref useSiteDiagnostics, basesBeingResolved, options);
+#else
             Debug.Assert(options.AreValid());
 
             // don't create diagnosis instances unless lookup fails
@@ -71,11 +74,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Debug.Assert(result.IsMultiViable || result.IsClear || result.Error != null);
             return binder;
+#endif
         }
 
         private Binder LookupSymbolsInternal(
             LookupResult result, string name, int arity, ConsList<Symbol> basesBeingResolved, LookupOptions options, bool diagnose, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
+#if XSHARP
+            return XSLookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose, ref useSiteDiagnostics);
+#else
             Debug.Assert(result.IsClear);
             Debug.Assert(options.AreValid());
 
@@ -99,6 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             return binder;
+#endif
         }
 
         internal virtual void LookupSymbolsInSingleBinder(
@@ -390,7 +398,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             methods.Free();
         }
 
-        #region "AttributeTypeLookup"
+#region "AttributeTypeLookup"
 
         /// <summary>
         /// Lookup attribute name in the given binder. By default two name lookups are performed:
@@ -633,7 +641,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        #endregion
+#endregion
 
         internal virtual bool SupportsExtensionMethods
         {

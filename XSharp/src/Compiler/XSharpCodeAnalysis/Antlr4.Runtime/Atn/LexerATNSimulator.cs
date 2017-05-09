@@ -1,35 +1,8 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
@@ -101,7 +74,7 @@ namespace Antlr4.Runtime.Atn
         protected internal int startIndex = -1;
 
         /// <summary>line number 1..n within the input</summary>
-        private int _line = 1;
+        protected internal int line = 1;
 
         /// <summary>The index of the character relative to the beginning of the line 0..n-1</summary>
         protected internal int charPositionInLine = 0;
@@ -128,7 +101,7 @@ namespace Antlr4.Runtime.Atn
         public virtual void CopyState(LexerATNSimulator simulator)
         {
             this.charPositionInLine = simulator.charPositionInLine;
-            this._line = simulator._line;
+            this.line = simulator.line;
             this.mode = simulator.mode;
             this.startIndex = simulator.startIndex;
         }
@@ -162,7 +135,7 @@ namespace Antlr4.Runtime.Atn
         {
             prevAccept.Reset();
             startIndex = -1;
-            _line = 1;
+            line = 1;
             charPositionInLine = 0;
             mode = Lexer.DefaultMode;
         }
@@ -170,6 +143,7 @@ namespace Antlr4.Runtime.Atn
         protected internal virtual int MatchATN(ICharStream input)
         {
             ATNState startState = atn.modeToStartState[mode];
+            int old_mode = mode;
             ATNConfigSet s0_closure = ComputeStartState(input, startState);
             bool suppressEdge = s0_closure.HasSemanticContext;
             if (suppressEdge)
@@ -228,15 +202,15 @@ namespace Antlr4.Runtime.Atn
                 {
                     break;
                 }
-				// If this is a consumable input element, make sure to consume before
-				// capturing the accept state so the input index, line, and char
-				// position accurately reflect the state of the interpreter at the
-				// end of the token.
-				if (t != IntStreamConstants.Eof) {
-					Consume(input);
-				}
-
-				if (target.IsAcceptState)
+                // If this is a consumable input element, make sure to consume before
+                // capturing the accept state so the input index, line, and char
+                // position accurately reflect the state of the interpreter at the
+                // end of the token.
+                if (t != IntStreamConstants.Eof)
+                {
+                    Consume(input);
+                }
+                if (target.IsAcceptState)
                 {
                     CaptureSimState(prevAccept, input, target);
                     if (t == IntStreamConstants.Eof)
@@ -274,12 +248,10 @@ namespace Antlr4.Runtime.Atn
         {
             DFAState target = s.GetTarget(t);
 #if !PORTABLE
-			#pragma warning disable 162, 429
             if (debug && target != null)
             {
                 System.Console.Out.WriteLine("reuse state " + s.stateNumber + " edge to " + target.stateNumber);
             }
-			#pragma warning restore 162, 429
 #endif
             return target;
         }
@@ -288,10 +260,6 @@ namespace Antlr4.Runtime.Atn
         /// Compute a target state for an edge in the DFA, and attempt to add the
         /// computed state and corresponding edge to the DFA.
         /// </summary>
-        /// <remarks>
-        /// Compute a target state for an edge in the DFA, and attempt to add the
-        /// computed state and corresponding edge to the DFA.
-        /// </remarks>
         /// <param name="input">The input stream</param>
         /// <param name="s">The current DFA state</param>
         /// <param name="t">The next input symbol</param>
@@ -398,7 +366,7 @@ namespace Antlr4.Runtime.Atn
         {
             // seek to after last char in token
             input.Seek(index);
-            this._line = line;
+            this.line = line;
             this.charPositionInLine = charPos;
             if (lexerActionExecutor != null && recog != null)
             {
@@ -534,6 +502,24 @@ namespace Antlr4.Runtime.Atn
 
                 case TransitionType.Predicate:
                 {
+                    /*  Track traversing semantic predicates. If we traverse,
+                    we cannot add a DFA state for this "reach" computation
+                    because the DFA would not test the predicate again in the
+                    future. Rather than creating collections of semantic predicates
+                    like v3 and testing them on prediction, v4 will test them on the
+                    fly all the time using the ATN not the DFA. This is slower but
+                    semantically it's not used that often. One of the key elements to
+                    this predicate mechanism is not adding DFA states that see
+                    predicates immediately afterwards in the ATN. For example,
+                    
+                    a : ID {p1}? | ID {p2}? ;
+                    
+                    should create the start state for rule 'a' (to save start state
+                    competition), but should not create target of ID state. The
+                    collection of ATN states the following ID references includes
+                    states reached by traversing predicates. Since this is when we
+                    test them, we cannot cash the DFA state target of ID.
+                    */
                     PredicateTransition pt = (PredicateTransition)t;
                     configs.MarkExplicitSemanticContext();
                     if (EvaluatePredicate(input, pt.ruleIndex, pt.predIndex, speculative))
@@ -664,7 +650,7 @@ namespace Antlr4.Runtime.Atn
                 return recog.Sempred(null, ruleIndex, predIndex);
             }
             int savedCharPositionInLine = charPositionInLine;
-            int savedLine = _line;
+            int savedLine = line;
             int index = input.Index;
             int marker = input.Mark();
             try
@@ -675,7 +661,7 @@ namespace Antlr4.Runtime.Atn
             finally
             {
                 charPositionInLine = savedCharPositionInLine;
-                _line = savedLine;
+                line = savedLine;
                 input.Seek(index);
                 input.Release(marker);
             }
@@ -684,7 +670,7 @@ namespace Antlr4.Runtime.Atn
         protected internal virtual void CaptureSimState(LexerATNSimulator.SimState settings, ICharStream input, DFAState dfaState)
         {
             settings.index = input.Index;
-            settings.line = _line;
+            settings.line = line;
             settings.charPos = charPositionInLine;
             settings.dfaState = dfaState;
         }
@@ -692,6 +678,17 @@ namespace Antlr4.Runtime.Atn
         [return: NotNull]
         protected internal virtual DFAState AddDFAEdge(DFAState from, int t, ATNConfigSet q)
         {
+            /* leading to this call, ATNConfigSet.hasSemanticContext is used as a
+            * marker indicating dynamic predicate evaluation makes this edge
+            * dependent on the specific input sequence, so the static edge in the
+            * DFA should be omitted. The target DFAState is still created since
+            * execATN has the ability to resynchronize with the DFA state cache
+            * following the predicate evaluation step.
+            *
+            * TJP notes: next time through the DFA, we see a pred again and eval.
+            * If that gets us to a previously created (but dangling) DFA
+            * state, we can continue in pure DFA mode from there.
+            */
             bool suppressEdge = q.HasSemanticContext;
             if (suppressEdge)
             {
@@ -727,6 +724,9 @@ namespace Antlr4.Runtime.Atn
         [return: NotNull]
         protected internal virtual DFAState AddDFAState(ATNConfigSet configs)
         {
+            /* the lexer evaluates predicates on-the-fly; by this point configs
+            * should not contain any configurations with unevaluated predicates.
+            */
             System.Diagnostics.Debug.Assert(!configs.HasSemanticContext);
             DFAState proposed = new DFAState(atn.modeToDFA[mode], configs);
             DFAState existing;
@@ -761,7 +761,6 @@ namespace Antlr4.Runtime.Atn
         }
 
         /// <summary>Get the text matched so far for the current token.</summary>
-        /// <remarks>Get the text matched so far for the current token.</remarks>
         [return: NotNull]
         public virtual string GetText(ICharStream input)
         {
@@ -773,11 +772,12 @@ namespace Antlr4.Runtime.Atn
         {
             get
             {
-                return _line;
+                return line;
             }
             set
             {
-                this._line = value;
+                int line = value;
+                this.line = line;
             }
         }
 
@@ -799,7 +799,7 @@ namespace Antlr4.Runtime.Atn
             int curChar = input.La(1);
             if (curChar == '\n')
             {
-                _line++;
+                line++;
                 charPositionInLine = 0;
             }
             else

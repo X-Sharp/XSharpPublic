@@ -47,6 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
         public bool SyntaxCheck { get; private set; }
+        public bool ParseOnly { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
@@ -66,7 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
         public string DefaultNamespace { get; private set; }
-        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
+        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan || this.Dialect == XSharpDialect.Harbour; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
         public bool VulcanRTFuncsIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRTFuncs);
@@ -109,6 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 SyntaxCheck = opt.SyntaxCheck;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
+                ParseOnly = opt.ParseOnly;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
                 VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
@@ -157,6 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             SyntaxCheck = opt.SyntaxCheck;
             NoStdDef = opt.NoStdDef;
             PreprocessorOutput = opt.PreprocessorOutput;
+            ParseOnly = opt.ParseOnly;
             Verbose = opt.Verbose;
 
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1

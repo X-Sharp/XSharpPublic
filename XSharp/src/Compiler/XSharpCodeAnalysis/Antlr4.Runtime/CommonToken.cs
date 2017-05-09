@@ -1,41 +1,14 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
 
 namespace Antlr4.Runtime
 {
     [System.Serializable]
-	public class CommonToken : IWritableToken
+    public class CommonToken : IWritableToken
     {
         private const long serialVersionUID = -6708843461296520577L;
 
@@ -51,12 +24,12 @@ namespace Antlr4.Runtime
         /// <summary>
         /// This is the backing field for the <see cref="Type"/> property.
         /// </summary>
-        private int _type;
+        protected internal int type;
 
         /// <summary>
         /// This is the backing field for the <see cref="Line"/> property.
         /// </summary>
-        private int _line;
+        protected internal int line;
 
         /// <summary>
         /// This is the backing field for the <see cref="Column"/> property.
@@ -66,7 +39,7 @@ namespace Antlr4.Runtime
         /// <summary>
         /// This is the backing field for the <see cref="Channel"/> property.
         /// </summary>
-        private int _channel = TokenConstants.DefaultChannel;
+        protected internal int channel = TokenConstants.DefaultChannel;
 
         /// <summary>
         /// This is the backing field for
@@ -91,7 +64,7 @@ namespace Antlr4.Runtime
         /// This is the backing field for the <see cref="Text"/> property.
         /// </summary>
         /// <seealso cref="Text"/>
-        private string _text;
+        protected internal string text;
 
         /// <summary>
         /// This is the backing field for the <see cref="TokenIndex"/> property.
@@ -117,20 +90,20 @@ namespace Antlr4.Runtime
         public CommonToken(int type)
         {
             // set to invalid position
-            this._type = type;
+            this.type = type;
             this.source = EmptySource;
         }
 
         public CommonToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop)
         {
             this.source = source;
-            this._type = type;
-            this._channel = channel;
+            this.type = type;
+            this.channel = channel;
             this.start = start;
             this.stop = stop;
             if (source.Item1 != null)
             {
-                this._line = source.Item1.Line;
+                this.line = source.Item1.Line;
                 this.charPositionInLine = source.Item1.Column;
             }
         }
@@ -145,9 +118,9 @@ namespace Antlr4.Runtime
         /// <param name="text">The text of the token.</param>
         public CommonToken(int type, string text)
         {
-            this._type = type;
-            this._channel = TokenConstants.DefaultChannel;
-            this._text = text;
+            this.type = type;
+            this.channel = TokenConstants.DefaultChannel;
+            this.text = text;
             this.source = EmptySource;
         }
 
@@ -164,14 +137,14 @@ namespace Antlr4.Runtime
         /// <see cref="CommonToken"/>
         /// instance, the newly
         /// constructed token will share a reference to the
-        /// <see cref="Text()"/>
+        /// <see cref="text"/>
         /// field and
         /// the
         /// <see cref="Tuple{T1, T2}"/>
         /// stored in
         /// <see cref="source"/>
         /// . Otherwise,
-        /// <see cref="Text()"/>
+        /// <see cref="text"/>
         /// will
         /// be assigned the result of calling
         /// <see cref="Text()"/>
@@ -186,21 +159,21 @@ namespace Antlr4.Runtime
         /// <param name="oldToken">The token to copy.</param>
         public CommonToken(IToken oldToken)
         {
-            _type = oldToken.Type;
-            _line = oldToken.Line;
+            type = oldToken.Type;
+            line = oldToken.Line;
             index = oldToken.TokenIndex;
             charPositionInLine = oldToken.Column;
-            _channel = oldToken.Channel;
+            channel = oldToken.Channel;
             start = oldToken.StartIndex;
             stop = oldToken.StopIndex;
             if (oldToken is Antlr4.Runtime.CommonToken)
             {
-                _text = ((Antlr4.Runtime.CommonToken)oldToken)._text;
+                text = ((Antlr4.Runtime.CommonToken)oldToken).text;
                 source = ((Antlr4.Runtime.CommonToken)oldToken).source;
             }
             else
             {
-                _text = oldToken.Text;
+                text = oldToken.Text;
                 source = Tuple.Create(oldToken.TokenSource, oldToken.InputStream);
             }
         }
@@ -209,11 +182,12 @@ namespace Antlr4.Runtime
         {
             get
             {
-                return _type;
+                return type;
             }
             set
             {
- 				this._type = value;
+                int type = value;
+                this.type = type;
             }
         }
 
@@ -221,11 +195,12 @@ namespace Antlr4.Runtime
         {
             get
             {
-                return _line;
+                return line;
             }
             set
             {
- 				this._line = value;
+                int line = value;
+                this.line = line;
             }
         }
 
@@ -249,9 +224,9 @@ namespace Antlr4.Runtime
         {
             get
             {
-                if (_text != null)
+                if (text != null)
                 {
-                    return _text;
+                    return text;
                 }
                 ICharStream input = InputStream;
                 if (input == null)
@@ -270,7 +245,8 @@ namespace Antlr4.Runtime
             }
             set
             {
- 				this._text = value;
+                string text = value;
+                this.text = text;
             }
         }
 
@@ -291,11 +267,12 @@ namespace Antlr4.Runtime
         {
             get
             {
-                return _channel;
+                return channel;
             }
             set
             {
-                this._channel = value;
+                int channel = value;
+                this.channel = channel;
             }
         }
 
@@ -356,10 +333,15 @@ namespace Antlr4.Runtime
 
         public override string ToString()
         {
+            return ToString(null);
+        }
+
+        public virtual string ToString(IRecognizer r)
+        {
             string channelStr = string.Empty;
-            if (_channel > 0)
+            if (channel > 0)
             {
-                channelStr = ",channel=" + _channel;
+                channelStr = ",channel=" + channel;
             }
             string txt = Text;
             if (txt != null)
@@ -372,7 +354,12 @@ namespace Antlr4.Runtime
             {
                 txt = "<no text>";
             }
-            return "[@" + TokenIndex + "," + start + ":" + stop + "='" + txt + "',<" + _type + ">" + channelStr + "," + _line + ":" + Column + "]";
+            string typeString = type.ToString();
+            if (r != null)
+            {
+                typeString = r.Vocabulary.GetDisplayName(type);
+            }
+            return "[@" + TokenIndex + "," + start + ":" + stop + "='" + txt + "',<" + typeString + ">" + channelStr + "," + line + ":" + Column + "]";
         }
     }
 }

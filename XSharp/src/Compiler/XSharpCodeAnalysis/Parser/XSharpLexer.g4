@@ -20,7 +20,6 @@ lexer grammar XSharpLexer;
 */
 
 options	{
-			language=CSharp;
 		}
 
 
@@ -74,7 +73,7 @@ CHAR,INT64,UINT64,
 DYNAMIC,
 
 // Vulcan UDCs
-WAIT, ACCEPT, CANCEL, QUIT,
+//WAIT, ACCEPT, CANCEL, QUIT,
 
 // UDC Tokens that should be shown in the keyword color
 UDC_KEYWORD,

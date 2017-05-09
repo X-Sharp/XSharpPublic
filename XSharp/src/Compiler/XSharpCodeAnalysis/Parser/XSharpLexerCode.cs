@@ -13,16 +13,15 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System.Collections.Immutable;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp;
+using System;
+using Antlr4.Runtime;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
-    using System.Collections.Immutable;
-    using System.Collections.Generic;
-    using Microsoft.CodeAnalysis.CSharp;
 
-    using System;
-    using Antlr4.Runtime;
-
-    public partial class XSharpLexer : Lexer
+    public partial class XSharpLexer 
     {
         // Several Help methods that can be used for colorizing in an editor
         public static bool IsKeyword(int iToken)
@@ -50,9 +49,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;
         }
 
+        public bool HasPreprocessorTokens => _hasPPTokens;
         bool _inId = false;
         bool _inPp = false;
         bool _hasEos = true;
+        bool _hasPPTokens = false;
         private bool _isKw(IToken t)
         {
             switch (t.Channel)
@@ -69,8 +70,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return fc == '_' || (fc >= 'A' && fc <= 'Z') || (fc >= 'a' && fc <= 'z');
             }
         }
-        IList<Antlr4.Runtime.Tree.ParseErrorData> _lexErrors = new List<Antlr4.Runtime.Tree.ParseErrorData>();
-        internal IList<Antlr4.Runtime.Tree.ParseErrorData> LexErrors { get { return _lexErrors; } }
+        IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
+        internal IList<ParseErrorData> LexErrors { get { return _lexErrors; } }
 
         int _lastToken = NL;
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
@@ -579,19 +580,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         Interpreter.Line += 1;
                         c = InputStream.La(1);
-                        while (c == '\r' || c == '\n')
-                        {
-                            _textSb.Append((char)c);
-                            InputStream.Consume();
-                            if (c == '\r' && InputStream.La(1) == '\n')
-                            {
-                                c = InputStream.La(1);
-                                _textSb.Append((char)c);
-                                InputStream.Consume();
-                            }
-                            Interpreter.Line += 1;
-                            c = InputStream.La(1);
-                        }
                         Interpreter.Column = 1 - (InputStream.Index - _startCharIndex);
                         break;
                     case '\t':
@@ -716,9 +704,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         if (!t.Text.EndsWith("*/"))
                         {
-                            _lexErrors.Add(new Antlr4.Runtime.Tree.ParseErrorData(
-                                new Antlr4.Runtime.Tree.ErrorNodeImpl(t), ErrorCode.ERR_OpenEndedComment)
-                                );
+                            _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
+                        }
+                    }
+                    if (t.Type == SYMBOL_CONST)
+                    {
+                        var text = t.Text.Substring(1);
+                        if (KwIds.ContainsKey(text))
+                        {
+                            var kwid = KwIds[text];
+                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL)
+                            {
+                                // #NIL or #NULL_STRING etc. 
+                                t.Text = "#";
+                                t.Type = NEQ2;
+                                t.StopIndex = t.StartIndex;
+                                InputStream.Seek(t.StartIndex + 1);
+                            }
                         }
                     }
                 }
@@ -743,6 +745,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     t.Type = symtype;
                     _inPp = true;
+                    _hasPPTokens = true;
                 }
                 else if (_isScript)
                 {
@@ -780,7 +783,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (_hasEos)
                 {
-                    if (type == SEMI )
+                    if (type == SEMI)
                     {
                         if (_lastToken != SEMI)
                             t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
@@ -805,8 +808,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             if (t.Channel == TokenConstants.DefaultChannel)
                 _lastToken = type; // nvk: Note that this is the type before any modifications!!!
-            
-            if (_inPp )
+
+            if (_inPp)
             {
                 // this is how a list of tokens for a #define will look like:
                 // Token        Channel
@@ -896,9 +899,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"IIF", IIF},
             {"IN", IN},
             {"INHERIT", INHERIT},
-            {"_INIT1", INIT1},
-            {"_INIT2", INIT2},
-            {"_INIT3", INIT3},
+            //{"_INIT1", INIT1}, VO does not allow 4 letter abbreviations
+            //{"_INIT2", INIT2}, VO does not allow 4 letter abbreviations
+            //{"_INIT3", INIT3}, VO does not allow 4 letter abbreviations
             {"INSTANCE", INSTANCE},
             {"IS", IS},
             {"LOCAL", LOCAL},
@@ -921,14 +924,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"RETURN", RETURN},
             {"SELF", SELF},
             {"SEQUENCE", SEQUENCE},
-            {"_SIZEOF", SIZEOF},
+            //{"_SIZEOF", SIZEOF},  VO does not allow 4 letter abbreviations
             {"STATIC", STATIC},
             {"STEP", STEP},
             {"STRICT", STRICT},
             {"SUPER", SUPER},
             {"THISCALL", THISCALL},
             {"TO", TO},
-            {"_TYPEOF", TYPEOF},
+            //{"_TYPEOF", TYPEOF},  VO does not allow 4 letter abbreviations
             {"UNION", UNION},
             {"UPTO", UPTO},
             {"USING", USING},
@@ -939,7 +942,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			// Predefined types
             {"ARRAY", ARRAY},
             {"BYTE", BYTE},
-            {"_CODEBLOCK", CODEBLOCK},
             {"CODEBLOCK", CODEBLOCK},
             {"DATE", DATE},
             {"DWORD", DWORD},
@@ -976,10 +978,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"TRUE", TRUE_CONST},
 
 			// Vulcan UDCs
-			{"WAIT", WAIT},
-            {"ACCEPT", ACCEPT},
-            {"CANCEL", CANCEL},
-            {"QUIT", QUIT},
+			//{"WAIT", WAIT},
+            //{"ACCEPT", ACCEPT},
+            //{"CANCEL", CANCEL},
+            //{"QUIT", QUIT},
 
         };
 
@@ -991,12 +993,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 VoKeywords.Add("PROTECT", PROTECTED);
                 VoKeywords.Add("SHORT", SHORTINT);
                 VoKeywords.Add("LONG", LONGINT);
+                VoKeywords.Add("_CODEBLOCK", CODEBLOCK);
+
             }
             foreach (var text in VoKeywords.Keys)
             {
                 var token = VoKeywords[text];
                 ids.Add(text, token);
-                if (lFour)
+                if (lFour )
                 {
                     var s = text;
                     while (s.Length > 4)
@@ -1013,7 +1017,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             var Keywords = new Dictionary<string, int>
         {
-			// Vulcan keywords
+            // VO keywords that cannot be abbreviated
+
+            {"_INIT1", INIT1},
+            {"_INIT2", INIT2},
+            {"_INIT3", INIT3},
+            {"_SIZEOF", SIZEOF}, 
+            {"_TYPEOF", TYPEOF},  
+                
+            // Vulcan keywords
 			{"ABSTRACT", ABSTRACT},
             {"ANSI", ANSI},
             {"AUTO", AUTO},
@@ -1114,6 +1126,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"__DIALECT_CORE__", MACRO},
             {"__DIALECT_VO__", MACRO},
             {"__DIALECT_VULCAN__", MACRO},
+            {"__DIALECT_HARBOUR__", MACRO},
             {"__ENTITY__", MACRO},
             {"__FILE__", MACRO},
             {"__LINE__", MACRO},
@@ -1224,15 +1237,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        static public XSharpLexer Create( string text, string fileName, CSharpParseOptions options = null)
+        static public XSharpLexer Create(string text, string fileName, CSharpParseOptions options = null)
         {
             var stream = new AntlrInputStream(text);
             stream.name = fileName;
-            var lexer =  new XSharpLexer(stream);
+            var lexer = new XSharpLexer(stream);
             lexer.TokenFactory = XSharpTokenFactory.Default;
             lexer.AllowFourLetterAbbreviations = false;
             lexer.AllowOldStyleComments = false;
-            if (options != null && options.IsDialectVO)
+            if (options != null && options.Dialect == XSharpDialect.VO) 
             {
                 lexer.AllowOldStyleComments = true;
                 lexer.AllowFourLetterAbbreviations = true;
@@ -1241,9 +1254,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return lexer;
         }
 
-        public CommonTokenStream GetTokenStream()
+        public ITokenStream GetTokenStream()
         {
-            var tokenstream = new CommonTokenStream(this);
+            var tokenstream = new BufferedTokenStream(this);
             tokenstream.Fill();
             return tokenstream;
         }

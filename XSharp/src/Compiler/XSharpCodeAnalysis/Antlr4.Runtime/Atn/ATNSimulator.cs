@@ -1,35 +1,8 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
@@ -42,7 +15,6 @@ namespace Antlr4.Runtime.Atn
         public static readonly int SerializedVersion = ATNDeserializer.SerializedVersion;
 
         /// <summary>This is the current serialized UUID.</summary>
-        /// <remarks>This is the current serialized UUID.</remarks>
         [Obsolete(@"Use ATNDeserializer.CheckCondition(bool) instead.")]
         public static readonly Guid SerializedUuid = ATNDeserializer.SerializedUuid;
 
@@ -93,6 +65,42 @@ namespace Antlr4.Runtime.Atn
             return new ATNDeserializer().Deserialize(data);
         }
 
+        [Obsolete(@"Use ATNDeserializer.CheckCondition(bool) instead.")]
+        public static void CheckCondition(bool condition)
+        {
+            new ATNDeserializer().CheckCondition(condition);
+        }
+
+        [Obsolete(@"Use ATNDeserializer.CheckCondition(bool, string) instead.")]
+        public static void CheckCondition(bool condition, string message)
+        {
+            new ATNDeserializer().CheckCondition(condition, message);
+        }
+
+        [Obsolete(@"Use ATNDeserializer.ToInt(char) instead.")]
+        public static int ToInt(char c)
+        {
+            return ATNDeserializer.ToInt(c);
+        }
+
+        [Obsolete(@"Use ATNDeserializer.ToInt32(char[], int) instead.")]
+        public static int ToInt32(char[] data, int offset)
+        {
+            return ATNDeserializer.ToInt32(data, offset);
+        }
+
+        [Obsolete(@"Use ATNDeserializer.ToLong(char[], int) instead.")]
+        public static long ToLong(char[] data, int offset)
+        {
+            return ATNDeserializer.ToLong(data, offset);
+        }
+
+        [Obsolete(@"Use ATNDeserializer.ToUUID(char[], int) instead.")]
+        public static Guid ToUUID(char[] data, int offset)
+        {
+            return ATNDeserializer.ToUUID(data, offset);
+        }
+
         [return: NotNull]
         [Obsolete(@"Use ATNDeserializer.EdgeFactory(ATN, TransitionType, int, int, int, int, int, System.Collections.Generic.IList{E}) instead.")]
         public static Transition EdgeFactory(ATN atn, TransitionType type, int src, int trg, int arg1, int arg2, int arg3, IList<IntervalSet> sets)
@@ -105,5 +113,16 @@ namespace Antlr4.Runtime.Atn
         {
             return new ATNDeserializer().StateFactory(type, ruleIndex);
         }
+        /*
+        public static void dump(DFA dfa, Grammar g) {
+        DOTGenerator dot = new DOTGenerator(g);
+        String output = dot.getDOT(dfa, false);
+        System.out.println(output);
+        }
+        
+        public static void dump(DFA dfa) {
+        dump(dfa, null);
+        }
+        */
     }
 }

@@ -1,37 +1,10 @@
-/*
- * [The "BSD license"]
- *  Copyright (c) 2013 Terence Parr
- *  Copyright (c) 2013 Sam Harwell
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *  3. The name of the author may not be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+// Licensed under the BSD License. See LICENSE.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Sharpen;
@@ -44,29 +17,37 @@ namespace Antlr4.Runtime.Atn
         public static readonly int SerializedVersion = 3;
 
         /// <summary>This is the earliest supported serialized UUID.</summary>
-        /// <remarks>This is the earliest supported serialized UUID.</remarks>
         private static readonly Guid BaseSerializedUuid;
+
+        /// <summary>
+        /// This UUID indicates an extension of
+        /// <see cref="BaseSerializedUuid"/>
+        /// for the addition of lexer actions encoded as a sequence of
+        /// <see cref="ILexerAction"/>
+        /// instances.
+        /// </summary>
+        private static readonly Guid AddedLexerActions;
 
         /// <summary>
         /// This list contains all of the currently supported UUIDs, ordered by when
         /// the feature first appeared in this branch.
         /// </summary>
-        /// <remarks>
-        /// This list contains all of the currently supported UUIDs, ordered by when
-        /// the feature first appeared in this branch.
-        /// </remarks>
         private static readonly IList<Guid> SupportedUuids;
 
         /// <summary>This is the current serialized UUID.</summary>
-        /// <remarks>This is the current serialized UUID.</remarks>
         public static readonly Guid SerializedUuid;
 
         static ATNDeserializer()
         {
-			BaseSerializedUuid = new Guid("AADB8D7E-AEEF-4415-AD2B-8204D6CF042E");
+            /* WARNING: DO NOT MERGE THESE LINES. If UUIDs differ during a merge,
+            * resolve the conflict by generating a new ID!
+            */
+            BaseSerializedUuid = new Guid("E4178468-DF95-44D0-AD87-F22A5D5FB6D3");
+            AddedLexerActions = new Guid("AB35191A-1603-487E-B75A-479B831EAF6D");
             SupportedUuids = new List<Guid>();
             SupportedUuids.Add(BaseSerializedUuid);
-			SerializedUuid = BaseSerializedUuid;
+            SupportedUuids.Add(AddedLexerActions);
+            SerializedUuid = AddedLexerActions;
         }
 
         [NotNull]
@@ -128,462 +109,471 @@ namespace Antlr4.Runtime.Atn
             return SupportedUuids.IndexOf(actualUuid) >= featureIndex;
         }
 
-		char[] data;
-		int p;
-
         public virtual ATN Deserialize(char[] data)
         {
-			Reset (data);
-			CheckVersion ();
-			CheckUUID ();
-			ATN atn = ReadATN ();
-			ReadStates (atn);
-			ReadRules (atn);
-			ReadModes (atn);
-			IList<IntervalSet> sets = ReadSets (atn);
-			ReadEdges (atn, sets);
-			ReadDecisions (atn);
-			ReadLexerActions (atn);
+            unchecked 
+			{ 
+                data = (char[])data.Clone();
+                // don't adjust the first value since that's the version number
+                for (int i = 1; i < data.Length; i++)
+                {
+                    data[i] = (char)(data[i] - 2);
+                }
+            }
+            int p = 0;
+            int version = ToInt(data[p++]);
+            if (version != SerializedVersion)
+            {
+                string reason = string.Format(CultureInfo.CurrentCulture, "Could not deserialize ATN with version {0} (expected {1}).", version, SerializedVersion);
+                throw new NotSupportedException(reason);
+            }
+            Guid uuid = ToUUID(data, p);
+            p += 8;
+            if (!SupportedUuids.Contains(uuid))
+            {
+                string reason = string.Format(CultureInfo.CurrentCulture, "Could not deserialize ATN with UUID {0} (expected {1} or a legacy UUID).", uuid, SerializedUuid);
+                throw new NotSupportedException(reason);
+            }
+            bool supportsLexerActions = IsFeatureSupported(AddedLexerActions, uuid);
+            ATNType grammarType = (ATNType)ToInt(data[p++]);
+            int maxTokenType = ToInt(data[p++]);
+            ATN atn = new ATN(grammarType, maxTokenType);
+            //
+            // STATES
+            //
+            IList<Tuple<LoopEndState, int>> loopBackStateNumbers = new List<Tuple<LoopEndState, int>>();
+            IList<Tuple<BlockStartState, int>> endStateNumbers = new List<Tuple<BlockStartState, int>>();
+            int nstates = ToInt(data[p++]);
+            for (int i_1 = 0; i_1 < nstates; i_1++)
+            {
+                StateType stype = (StateType)ToInt(data[p++]);
+                // ignore bad type of states
+                if (stype == StateType.InvalidType)
+                {
+                    atn.AddState(null);
+                    continue;
+                }
+                int ruleIndex = ToInt(data[p++]);
+                if (ruleIndex == char.MaxValue)
+                {
+                    ruleIndex = -1;
+                }
+                ATNState s = StateFactory(stype, ruleIndex);
+                if (stype == StateType.LoopEnd)
+                {
+                    // special case
+                    int loopBackStateNumber = ToInt(data[p++]);
+                    loopBackStateNumbers.Add(Tuple.Create((LoopEndState)s, loopBackStateNumber));
+                }
+                else
+                {
+                    if (s is BlockStartState)
+                    {
+                        int endStateNumber = ToInt(data[p++]);
+                        endStateNumbers.Add(Tuple.Create((BlockStartState)s, endStateNumber));
+                    }
+                }
+                atn.AddState(s);
+            }
+            // delay the assignment of loop back and end states until we know all the state instances have been initialized
+            foreach (Tuple<LoopEndState, int> pair in loopBackStateNumbers)
+            {
+                pair.Item1.loopBackState = atn.states[pair.Item2];
+            }
+            foreach (Tuple<BlockStartState, int> pair_1 in endStateNumbers)
+            {
+                pair_1.Item1.endState = (BlockEndState)atn.states[pair_1.Item2];
+            }
+            int numNonGreedyStates = ToInt(data[p++]);
+            for (int i_2 = 0; i_2 < numNonGreedyStates; i_2++)
+            {
+                int stateNumber = ToInt(data[p++]);
+                ((DecisionState)atn.states[stateNumber]).nonGreedy = true;
+            }
+            int numSllDecisions = ToInt(data[p++]);
+            for (int i_3 = 0; i_3 < numSllDecisions; i_3++)
+            {
+                int stateNumber = ToInt(data[p++]);
+                ((DecisionState)atn.states[stateNumber]).sll = true;
+            }
+            int numPrecedenceStates = ToInt(data[p++]);
+            for (int i_4 = 0; i_4 < numPrecedenceStates; i_4++)
+            {
+                int stateNumber = ToInt(data[p++]);
+                ((RuleStartState)atn.states[stateNumber]).isPrecedenceRule = true;
+            }
+            //
+            // RULES
+            //
+            int nrules = ToInt(data[p++]);
+            if (atn.grammarType == ATNType.Lexer)
+            {
+                atn.ruleToTokenType = new int[nrules];
+            }
+            atn.ruleToStartState = new RuleStartState[nrules];
+            for (int i_5 = 0; i_5 < nrules; i_5++)
+            {
+                int s = ToInt(data[p++]);
+                RuleStartState startState = (RuleStartState)atn.states[s];
+                startState.leftFactored = ToInt(data[p++]) != 0;
+                atn.ruleToStartState[i_5] = startState;
+                if (atn.grammarType == ATNType.Lexer)
+                {
+                    int tokenType = ToInt(data[p++]);
+                    if (tokenType == unchecked((int)(0xFFFF)))
+                    {
+                        tokenType = TokenConstants.Eof;
+                    }
+                    atn.ruleToTokenType[i_5] = tokenType;
+                    if (!IsFeatureSupported(AddedLexerActions, uuid))
+                    {
+                        // this piece of unused metadata was serialized prior to the
+                        // addition of LexerAction
+                        int actionIndexIgnored = ToInt(data[p++]);
+                        if (actionIndexIgnored == unchecked((int)(0xFFFF)))
+                        {
+                            actionIndexIgnored = -1;
+                        }
+                    }
+                }
+            }
+            atn.ruleToStopState = new RuleStopState[nrules];
+            foreach (ATNState state in atn.states)
+            {
+                if (!(state is RuleStopState))
+                {
+                    continue;
+                }
+                RuleStopState stopState = (RuleStopState)state;
+                atn.ruleToStopState[state.ruleIndex] = stopState;
+                atn.ruleToStartState[state.ruleIndex].stopState = stopState;
+            }
+            //
+            // MODES
+            //
+            int nmodes = ToInt(data[p++]);
+            for (int i_6 = 0; i_6 < nmodes; i_6++)
+            {
+                int s = ToInt(data[p++]);
+                atn.modeToStartState.Add((TokensStartState)atn.states[s]);
+            }
+            atn.modeToDFA = new DFA[nmodes];
+            for (int i_7 = 0; i_7 < nmodes; i_7++)
+            {
+                atn.modeToDFA[i_7] = new DFA(atn.modeToStartState[i_7]);
+            }
+            //
+            // SETS
+            //
+            IList<IntervalSet> sets = new List<IntervalSet>();
+            int nsets = ToInt(data[p++]);
+            for (int i_8 = 0; i_8 < nsets; i_8++)
+            {
+                int nintervals = ToInt(data[p]);
+                p++;
+                IntervalSet set = new IntervalSet();
+                sets.Add(set);
+                bool containsEof = ToInt(data[p++]) != 0;
+                if (containsEof)
+                {
+                    set.Add(-1);
+                }
+                for (int j = 0; j < nintervals; j++)
+                {
+                    set.Add(ToInt(data[p]), ToInt(data[p + 1]));
+                    p += 2;
+                }
+            }
+            //
+            // EDGES
+            //
+            int nedges = ToInt(data[p++]);
+            for (int i_9 = 0; i_9 < nedges; i_9++)
+            {
+                int src = ToInt(data[p]);
+                int trg = ToInt(data[p + 1]);
+                TransitionType ttype = (TransitionType)ToInt(data[p + 2]);
+                int arg1 = ToInt(data[p + 3]);
+                int arg2 = ToInt(data[p + 4]);
+                int arg3 = ToInt(data[p + 5]);
+                Transition trans = EdgeFactory(atn, ttype, src, trg, arg1, arg2, arg3, sets);
+                //			System.out.println("EDGE "+trans.getClass().getSimpleName()+" "+
+                //							   src+"->"+trg+
+                //					   " "+Transition.serializationNames[ttype]+
+                //					   " "+arg1+","+arg2+","+arg3);
+                ATNState srcState = atn.states[src];
+                srcState.AddTransition(trans);
+                p += 6;
+            }
+            // edges for rule stop states can be derived, so they aren't serialized
+            // Map rule stop state -> return state -> outermost precedence return
+            HashSet<Tuple<int, int, int>> returnTransitionsSet = new HashSet<Tuple<int, int, int>>();
+            List<Tuple<int, int, int>> returnTransitions = new List<Tuple<int, int, int>>();
+            foreach (ATNState state_1 in atn.states)
+            {
+                bool returningToLeftFactored = state_1.ruleIndex >= 0 && atn.ruleToStartState[state_1.ruleIndex].leftFactored;
+                for (int i_10 = 0; i_10 < state_1.NumberOfTransitions; i_10++)
+                {
+                    Transition t = state_1.Transition(i_10);
+                    if (!(t is RuleTransition))
+                    {
+                        continue;
+                    }
+                    RuleTransition ruleTransition = (RuleTransition)t;
+                    bool returningFromLeftFactored = atn.ruleToStartState[ruleTransition.target.ruleIndex].leftFactored;
+                    if (!returningFromLeftFactored && returningToLeftFactored)
+                    {
+                        continue;
+                    }
+                    int outermostPrecedenceReturn = -1;
+                    if (atn.ruleToStartState[ruleTransition.target.ruleIndex].isPrecedenceRule)
+                    {
+                        if (ruleTransition.precedence == 0)
+                        {
+                            outermostPrecedenceReturn = ruleTransition.target.ruleIndex;
+                        }
+                    }
+
+                    var returnTransition = Tuple.Create(ruleTransition.target.ruleIndex, ruleTransition.followState.stateNumber, outermostPrecedenceReturn);
+                    if (returnTransitionsSet.Add(returnTransition))
+                        returnTransitions.Add(returnTransition);
+                }
+            }
+            // Add all elements from returnTransitions to the ATN
+            foreach (Tuple<int, int, int> returnTransition in returnTransitions)
+            {
+                EpsilonTransition transition = new EpsilonTransition(atn.states[returnTransition.Item2], returnTransition.Item3);
+                atn.ruleToStopState[returnTransition.Item1].AddTransition(transition);
+            }
+            foreach (ATNState state_2 in atn.states)
+            {
+                if (state_2 is BlockStartState)
+                {
+                    // we need to know the end state to set its start state
+                    if (((BlockStartState)state_2).endState == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    // block end states can only be associated to a single block start state
+                    if (((BlockStartState)state_2).endState.startState != null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    ((BlockStartState)state_2).endState.startState = (BlockStartState)state_2;
+                }
+                if (state_2 is PlusLoopbackState)
+                {
+                    PlusLoopbackState loopbackState = (PlusLoopbackState)state_2;
+                    for (int i_10 = 0; i_10 < loopbackState.NumberOfTransitions; i_10++)
+                    {
+                        ATNState target = loopbackState.Transition(i_10).target;
+                        if (target is PlusBlockStartState)
+                        {
+                            ((PlusBlockStartState)target).loopBackState = loopbackState;
+                        }
+                    }
+                }
+                else
+                {
+                    if (state_2 is StarLoopbackState)
+                    {
+                        StarLoopbackState loopbackState = (StarLoopbackState)state_2;
+                        for (int i_10 = 0; i_10 < loopbackState.NumberOfTransitions; i_10++)
+                        {
+                            ATNState target = loopbackState.Transition(i_10).target;
+                            if (target is StarLoopEntryState)
+                            {
+                                ((StarLoopEntryState)target).loopBackState = loopbackState;
+                            }
+                        }
+                    }
+                }
+            }
+            //
+            // DECISIONS
+            //
+            int ndecisions = ToInt(data[p++]);
+            for (int i_11 = 1; i_11 <= ndecisions; i_11++)
+            {
+                int s = ToInt(data[p++]);
+                DecisionState decState = (DecisionState)atn.states[s];
+                atn.decisionToState.Add(decState);
+                decState.decision = i_11 - 1;
+            }
+            //
+            // LEXER ACTIONS
+            //
+            if (atn.grammarType == ATNType.Lexer)
+            {
+                if (supportsLexerActions)
+                {
+                    atn.lexerActions = new ILexerAction[ToInt(data[p++])];
+                    for (int i_10 = 0; i_10 < atn.lexerActions.Length; i_10++)
+                    {
+                        LexerActionType actionType = (LexerActionType)ToInt(data[p++]);
+                        int data1 = ToInt(data[p++]);
+                        if (data1 == unchecked((int)(0xFFFF)))
+                        {
+                            data1 = -1;
+                        }
+                        int data2 = ToInt(data[p++]);
+                        if (data2 == unchecked((int)(0xFFFF)))
+                        {
+                            data2 = -1;
+                        }
+                        ILexerAction lexerAction = LexerActionFactory(actionType, data1, data2);
+                        atn.lexerActions[i_10] = lexerAction;
+                    }
+                }
+                else
+                {
+                    // for compatibility with older serialized ATNs, convert the old
+                    // serialized action index for action transitions to the new
+                    // form, which is the index of a LexerCustomAction
+                    List<ILexerAction> legacyLexerActions = new List<ILexerAction>();
+                    foreach (ATNState state_3 in atn.states)
+                    {
+                        for (int i_10 = 0; i_10 < state_3.NumberOfTransitions; i_10++)
+                        {
+                            Transition transition = state_3.Transition(i_10);
+                            if (!(transition is ActionTransition))
+                            {
+                                continue;
+                            }
+                            int ruleIndex = ((ActionTransition)transition).ruleIndex;
+                            int actionIndex = ((ActionTransition)transition).actionIndex;
+                            LexerCustomAction lexerAction = new LexerCustomAction(ruleIndex, actionIndex);
+                            state_3.SetTransition(i_10, new ActionTransition(transition.target, ruleIndex, legacyLexerActions.Count, false));
+                            legacyLexerActions.Add(lexerAction);
+                        }
+                    }
+                    atn.lexerActions = legacyLexerActions.ToArray();
+                }
+            }
             MarkPrecedenceDecisions(atn);
-			if (deserializationOptions.VerifyAtn) {
-				VerifyATN (atn);
-			}
-			if (deserializationOptions.GenerateRuleBypassTransitions && atn.grammarType == ATNType.Parser) {
-				GenerateRuleBypassTransitions (atn);
-			}
+            atn.decisionToDFA = new DFA[ndecisions];
+            for (int i_12 = 0; i_12 < ndecisions; i_12++)
+            {
+                atn.decisionToDFA[i_12] = new DFA(atn.decisionToState[i_12], i_12);
+            }
+            if (deserializationOptions.VerifyAtn)
+            {
+                VerifyATN(atn);
+            }
+            if (deserializationOptions.GenerateRuleBypassTransitions && atn.grammarType == ATNType.Parser)
+            {
+                atn.ruleToTokenType = new int[atn.ruleToStartState.Length];
+                for (int i_10 = 0; i_10 < atn.ruleToStartState.Length; i_10++)
+                {
+                    atn.ruleToTokenType[i_10] = atn.maxTokenType + i_10 + 1;
+                }
+                for (int i_13 = 0; i_13 < atn.ruleToStartState.Length; i_13++)
+                {
+                    BasicBlockStartState bypassStart = new BasicBlockStartState();
+                    bypassStart.ruleIndex = i_13;
+                    atn.AddState(bypassStart);
+                    BlockEndState bypassStop = new BlockEndState();
+                    bypassStop.ruleIndex = i_13;
+                    atn.AddState(bypassStop);
+                    bypassStart.endState = bypassStop;
+                    atn.DefineDecisionState(bypassStart);
+                    bypassStop.startState = bypassStart;
+                    ATNState endState;
+                    Transition excludeTransition = null;
+                    if (atn.ruleToStartState[i_13].isPrecedenceRule)
+                    {
+                        // wrap from the beginning of the rule to the StarLoopEntryState
+                        endState = null;
+                        foreach (ATNState state_3 in atn.states)
+                        {
+                            if (state_3.ruleIndex != i_13)
+                            {
+                                continue;
+                            }
+                            if (!(state_3 is StarLoopEntryState))
+                            {
+                                continue;
+                            }
+                            ATNState maybeLoopEndState = state_3.Transition(state_3.NumberOfTransitions - 1).target;
+                            if (!(maybeLoopEndState is LoopEndState))
+                            {
+                                continue;
+                            }
+                            if (maybeLoopEndState.epsilonOnlyTransitions && maybeLoopEndState.Transition(0).target is RuleStopState)
+                            {
+                                endState = state_3;
+                                break;
+                            }
+                        }
+                        if (endState == null)
+                        {
+                            throw new NotSupportedException("Couldn't identify final state of the precedence rule prefix section.");
+                        }
+                        excludeTransition = ((StarLoopEntryState)endState).loopBackState.Transition(0);
+                    }
+                    else
+                    {
+                        endState = atn.ruleToStopState[i_13];
+                    }
+                    // all non-excluded transitions that currently target end state need to target blockEnd instead
+                    foreach (ATNState state_4 in atn.states)
+                    {
+                        foreach (Transition transition in state_4.transitions)
+                        {
+                            if (transition == excludeTransition)
+                            {
+                                continue;
+                            }
+                            if (transition.target == endState)
+                            {
+                                transition.target = bypassStop;
+                            }
+                        }
+                    }
+                    // all transitions leaving the rule start state need to leave blockStart instead
+                    while (atn.ruleToStartState[i_13].NumberOfTransitions > 0)
+                    {
+                        Transition transition = atn.ruleToStartState[i_13].Transition(atn.ruleToStartState[i_13].NumberOfTransitions - 1);
+                        atn.ruleToStartState[i_13].RemoveTransition(atn.ruleToStartState[i_13].NumberOfTransitions - 1);
+                        bypassStart.AddTransition(transition);
+                    }
+                    // link the new states
+                    atn.ruleToStartState[i_13].AddTransition(new EpsilonTransition(bypassStart));
+                    bypassStop.AddTransition(new EpsilonTransition(endState));
+                    ATNState matchState = new BasicState();
+                    atn.AddState(matchState);
+                    matchState.AddTransition(new AtomTransition(bypassStop, atn.ruleToTokenType[i_13]));
+                    bypassStart.AddTransition(new EpsilonTransition(matchState));
+                }
+                if (deserializationOptions.VerifyAtn)
+                {
+                    // reverify after modification
+                    VerifyATN(atn);
+                }
+            }
             if (deserializationOptions.Optimize)
             {
-				OptimizeATN (atn);
+                while (true)
+                {
+                    int optimizationCount = 0;
+                    optimizationCount += InlineSetRules(atn);
+                    optimizationCount += CombineChainedEpsilons(atn);
+                    bool preserveOrder = atn.grammarType == ATNType.Lexer;
+                    optimizationCount += OptimizeSets(atn, preserveOrder);
+                    if (optimizationCount == 0)
+                    {
+                        break;
+                    }
+                }
+                if (deserializationOptions.VerifyAtn)
+                {
+                    // reverify after modification
+                    VerifyATN(atn);
+                }
             }
             IdentifyTailCalls(atn);
             return atn;
         }
-
-		protected internal virtual void OptimizeATN(ATN atn)
-		{
-			while (true)
-			{
-				int optimizationCount = 0;
-				optimizationCount += InlineSetRules(atn);
-				optimizationCount += CombineChainedEpsilons(atn);
-				bool preserveOrder = atn.grammarType == ATNType.Lexer;
-				optimizationCount += OptimizeSets(atn, preserveOrder);
-				if (optimizationCount == 0)
-				{
-					break;
-				}
-			}
-			if (deserializationOptions.VerifyAtn)
-			{
-				// reverify after modification
-				VerifyATN(atn);
-			}
-		}
-
-		protected internal virtual void GenerateRuleBypassTransitions(ATN atn)
-		{
-			atn.ruleToTokenType = new int[atn.ruleToStartState.Length];
-			for (int i_10 = 0; i_10 < atn.ruleToStartState.Length; i_10++)
-			{
-				atn.ruleToTokenType[i_10] = atn.maxTokenType + i_10 + 1;
-			}
-			for (int i_13 = 0; i_13 < atn.ruleToStartState.Length; i_13++)
-			{
-				BasicBlockStartState bypassStart = new BasicBlockStartState();
-				bypassStart.ruleIndex = i_13;
-				atn.AddState(bypassStart);
-				BlockEndState bypassStop = new BlockEndState();
-				bypassStop.ruleIndex = i_13;
-				atn.AddState(bypassStop);
-				bypassStart.endState = bypassStop;
-				atn.DefineDecisionState(bypassStart);
-				bypassStop.startState = bypassStart;
-				ATNState endState;
-				Transition excludeTransition = null;
-				if (atn.ruleToStartState[i_13].isPrecedenceRule)
-				{
-					// wrap from the beginning of the rule to the StarLoopEntryState
-					endState = null;
-					foreach (ATNState state_3 in atn.states)
-					{
-						if (state_3.ruleIndex != i_13)
-						{
-							continue;
-						}
-						if (!(state_3 is StarLoopEntryState))
-						{
-							continue;
-						}
-						ATNState maybeLoopEndState = state_3.Transition(state_3.NumberOfTransitions - 1).target;
-						if (!(maybeLoopEndState is LoopEndState))
-						{
-							continue;
-						}
-						if (maybeLoopEndState.epsilonOnlyTransitions && maybeLoopEndState.Transition(0).target is RuleStopState)
-						{
-							endState = state_3;
-							break;
-						}
-					}
-					if (endState == null)
-					{
-						throw new NotSupportedException("Couldn't identify final state of the precedence rule prefix section.");
-					}
-					excludeTransition = ((StarLoopEntryState)endState).loopBackState.Transition(0);
-				}
-				else
-				{
-					endState = atn.ruleToStopState[i_13];
-				}
-				// all non-excluded transitions that currently target end state need to target blockEnd instead
-				foreach (ATNState state_4 in atn.states)
-				{
-					foreach (Transition transition in state_4.transitions)
-					{
-						if (transition == excludeTransition)
-						{
-							continue;
-						}
-						if (transition.target == endState)
-						{
-							transition.target = bypassStop;
-						}
-					}
-				}
-				// all transitions leaving the rule start state need to leave blockStart instead
-				while (atn.ruleToStartState[i_13].NumberOfTransitions > 0)
-				{
-					Transition transition = atn.ruleToStartState[i_13].Transition(atn.ruleToStartState[i_13].NumberOfTransitions - 1);
-					atn.ruleToStartState[i_13].RemoveTransition(atn.ruleToStartState[i_13].NumberOfTransitions - 1);
-					bypassStart.AddTransition(transition);
-				}
-				// link the new states
-				atn.ruleToStartState[i_13].AddTransition(new EpsilonTransition(bypassStart));
-				bypassStop.AddTransition(new EpsilonTransition(endState));
-				ATNState matchState = new BasicState();
-				atn.AddState(matchState);
-				matchState.AddTransition(new AtomTransition(bypassStop, atn.ruleToTokenType[i_13]));
-				bypassStart.AddTransition(new EpsilonTransition(matchState));
-			}
-			if (deserializationOptions.VerifyAtn)
-			{
-				// reverify after modification
-				VerifyATN(atn);
-			}
-		}		
-
-		protected internal virtual void ReadLexerActions(ATN atn)
-		{
-			//
-			// LEXER ACTIONS
-			//
-			if (atn.grammarType == ATNType.Lexer)
-			{
-				atn.lexerActions = new ILexerAction[ReadInt()];
-				for (int i_10 = 0; i_10 < atn.lexerActions.Length; i_10++)
-				{
-					LexerActionType actionType = (LexerActionType)ReadInt();
-					int data1 = ReadInt();
-					if (data1 == unchecked((int)(0xFFFF)))
-					{
-						data1 = -1;
-					}
-					int data2 = ReadInt();
-					if (data2 == unchecked((int)(0xFFFF)))
-					{
-						data2 = -1;
-					}
-					ILexerAction lexerAction = LexerActionFactory(actionType, data1, data2);
-					atn.lexerActions[i_10] = lexerAction;
-				}
-			}		
-		}
-
-		protected internal virtual void ReadDecisions(ATN atn)
-		{
-			//
-			// DECISIONS
-			//
-			int ndecisions = ReadInt();
-			for (int i_11 = 0; i_11 < ndecisions; i_11++)
-			{
-				int s = ReadInt();
-				DecisionState decState = (DecisionState)atn.states[s];
-				atn.decisionToState.Add(decState);
-				decState.decision = i_11;
-			}
-			atn.decisionToDFA = new DFA[ndecisions];
-			for (int i_12 = 0; i_12 < ndecisions; i_12++)
-			{
-				atn.decisionToDFA[i_12] = new DFA(atn.decisionToState[i_12], i_12);
-			}
-		}
-
-		protected internal virtual void ReadEdges(ATN atn, IList<IntervalSet> sets)
-		{
-			//
-			// EDGES
-			//
-			int nedges = ReadInt();
-			for (int i_9 = 0; i_9 < nedges; i_9++)
-			{
-				int src = ReadInt();
-				int trg = ReadInt();
-				TransitionType ttype = (TransitionType)ReadInt();
-				int arg1 = ReadInt();
-				int arg2 = ReadInt();
-				int arg3 = ReadInt();
-				Transition trans = EdgeFactory(atn, ttype, src, trg, arg1, arg2, arg3, sets);
-				ATNState srcState = atn.states[src];
-				srcState.AddTransition(trans);
-			}
-			// edges for rule stop states can be derived, so they aren't serialized
-			foreach (ATNState state_1 in atn.states)
-			{
-				for (int i_10 = 0; i_10 < state_1.NumberOfTransitions; i_10++)
-				{
-					Transition t = state_1.Transition(i_10);
-					if (!(t is RuleTransition))
-					{
-						continue;
-					}
-					RuleTransition ruleTransition = (RuleTransition)t;
-					int outermostPrecedenceReturn = -1;
-					if (atn.ruleToStartState[ruleTransition.target.ruleIndex].isPrecedenceRule)
-					{
-						if (ruleTransition.precedence == 0)
-						{
-							outermostPrecedenceReturn = ruleTransition.target.ruleIndex;
-						}
-					}
-					EpsilonTransition returnTransition = new EpsilonTransition(ruleTransition.followState, outermostPrecedenceReturn);
-					atn.ruleToStopState[ruleTransition.target.ruleIndex].AddTransition(returnTransition);
-				}
-			}
-			foreach (ATNState state_2 in atn.states)
-			{
-				if (state_2 is BlockStartState)
-				{
-					// we need to know the end state to set its start state
-					if (((BlockStartState)state_2).endState == null)
-					{
-						throw new InvalidOperationException();
-					}
-					// block end states can only be associated to a single block start state
-					if (((BlockStartState)state_2).endState.startState != null)
-					{
-						throw new InvalidOperationException();
-					}
-					((BlockStartState)state_2).endState.startState = (BlockStartState)state_2;
-				}
-				else if (state_2 is PlusLoopbackState)
-				{
-					PlusLoopbackState loopbackState = (PlusLoopbackState)state_2;
-					for (int i_10 = 0; i_10 < loopbackState.NumberOfTransitions; i_10++)
-					{
-						ATNState target = loopbackState.Transition(i_10).target;
-						if (target is PlusBlockStartState)
-						{
-							((PlusBlockStartState)target).loopBackState = loopbackState;
-						}
-					}
-				}
-				else if (state_2 is StarLoopbackState)
-				{
-					StarLoopbackState loopbackState = (StarLoopbackState)state_2;
-					for (int i_10 = 0; i_10 < loopbackState.NumberOfTransitions; i_10++)
-					{
-						ATNState target = loopbackState.Transition(i_10).target;
-						if (target is StarLoopEntryState)
-						{
-							((StarLoopEntryState)target).loopBackState = loopbackState;
-						}
-					}
-				}
-			}
-		}
-
-		protected internal virtual IList<IntervalSet> ReadSets(ATN atn)
-		{
-			//
-			// SETS
-			//
-			IList<IntervalSet> sets = new List<IntervalSet>();
-			int nsets = ReadInt();
-			for (int i_8 = 0; i_8 < nsets; i_8++)
-			{
-				IntervalSet set = new IntervalSet();
-				sets.Add(set);
-				int nintervals = ReadInt();
-				bool containsEof = ReadInt() != 0;
-				if (containsEof)
-				{
-					set.Add(-1);
-				}
-				for (int j = 0; j < nintervals; j++)
-				{
-					set.Add(ReadInt(), ReadInt());
-				}
-			}
-			return sets;
-		}
-
-		protected internal virtual void ReadModes(ATN atn)
-		{
-			//
-			// MODES
-			//
-			int nmodes = ReadInt();
-			for (int i_6 = 0; i_6 < nmodes; i_6++)
-			{
-				int _i = ReadInt();
-				atn.modeToStartState.Add((TokensStartState)atn.states[_i]);
-			}
-			// not in Java code
-			atn.modeToDFA = new DFA[nmodes];
-			for (int i_7 = 0; i_7 < nmodes; i_7++)
-			{
-				atn.modeToDFA[i_7] = new DFA(atn.modeToStartState[i_7]);
-			}
-		}
-
-		protected internal virtual void ReadRules(ATN atn)
-		{
-			//
-			// RULES
-			//
-			int nrules = ReadInt();
-			if (atn.grammarType == ATNType.Lexer)
-			{
-				atn.ruleToTokenType = new int[nrules];
-			}
-			atn.ruleToStartState = new RuleStartState[nrules];
-			for (int i_5 = 0; i_5 < nrules; i_5++)
-			{
-				int s = ReadInt();
-				RuleStartState startState = (RuleStartState)atn.states[s];
-				atn.ruleToStartState[i_5] = startState;
-				if (atn.grammarType == ATNType.Lexer) {
-					int tokenType = ReadInt ();
-					if (tokenType == unchecked((int)(0xFFFF))) {
-						tokenType = TokenConstants.Eof;
-					}
-					atn.ruleToTokenType [i_5] = tokenType;
-				}
-			}
-			atn.ruleToStopState = new RuleStopState[nrules];
-			foreach (ATNState state in atn.states)
-			{
-				if (!(state is RuleStopState))
-				{
-					continue;
-				}
-				RuleStopState stopState = (RuleStopState)state;
-				atn.ruleToStopState[state.ruleIndex] = stopState;
-				atn.ruleToStartState[state.ruleIndex].stopState = stopState;
-			}
-		}
-
-		protected internal virtual void ReadStates(ATN atn)
-		{
-			//
-			// STATES
-			//
-			IList<Tuple<LoopEndState, int>> loopBackStateNumbers = new List<Tuple<LoopEndState, int>>();
-			IList<Tuple<BlockStartState, int>> endStateNumbers = new List<Tuple<BlockStartState, int>>();
-			int nstates = ReadInt();
-			for (int i_1 = 0; i_1 < nstates; i_1++)
-			{
-				StateType stype = (StateType)ReadInt();
-				// ignore bad type of states
-				if (stype == StateType.InvalidType)
-				{
-					atn.AddState(null);
-					continue;
-				}
-				int ruleIndex = ReadInt();
-				if (ruleIndex == char.MaxValue)
-				{
-					ruleIndex = -1;
-				}
-				ATNState s = StateFactory(stype, ruleIndex);
-				if (stype == StateType.LoopEnd)
-				{
-					// special case
-					int loopBackStateNumber = ReadInt();
-					loopBackStateNumbers.Add(Tuple.Create((LoopEndState)s, loopBackStateNumber));
-				}
-				else
-				{
-					if (s is BlockStartState)
-					{
-						int endStateNumber = ReadInt();
-						endStateNumbers.Add(Tuple.Create((BlockStartState)s, endStateNumber));
-					}
-				}
-				atn.AddState(s);
-			}
-			// delay the assignment of loop back and end states until we know all the state instances have been initialized
-			foreach (Tuple<LoopEndState, int> pair in loopBackStateNumbers)
-			{
-				pair.Item1.loopBackState = atn.states[pair.Item2];
-			}
-			foreach (Tuple<BlockStartState, int> pair_1 in endStateNumbers)
-			{
-				pair_1.Item1.endState = (BlockEndState)atn.states[pair_1.Item2];
-			}
-			int numNonGreedyStates = ReadInt();
-			for (int i_2 = 0; i_2 < numNonGreedyStates; i_2++)
-			{
-				int stateNumber = ReadInt();
-				((DecisionState)atn.states[stateNumber]).nonGreedy = true;
-			}
-			int numPrecedenceStates = ReadInt();
-			for (int i_4 = 0; i_4 < numPrecedenceStates; i_4++)
-			{
-				int stateNumber = ReadInt();
-				((RuleStartState)atn.states[stateNumber]).isPrecedenceRule = true;
-			}
-		}
-
-		protected internal virtual ATN ReadATN()
-		{
-			ATNType grammarType = (ATNType)ReadInt();
-			int maxTokenType = ReadInt();
-			return new ATN(grammarType, maxTokenType);
-		}
-
-		protected internal virtual void CheckUUID()
-		{
-			Guid uuid = ReadUUID();
-			if (!SupportedUuids.Contains(uuid))
-			{
-				string reason = string.Format(CultureInfo.CurrentCulture, "Could not deserialize ATN with UUID {0} (expected {1} or a legacy UUID).", uuid, SerializedUuid);
-				throw new NotSupportedException(reason);
-			}
-		}
-
-		protected internal virtual void CheckVersion()
-		{
-			int version = ReadInt();
-			if (version != SerializedVersion)
-			{
-				string reason = string.Format(CultureInfo.CurrentCulture, "Could not deserialize ATN with version {0} (expected {1}).", version, SerializedVersion);
-				throw new NotSupportedException(reason);
-			}
-		}
-
-		protected internal virtual void Reset(char[] data)
-		{
-			this.data = new char[data.Length];
-			// don't adjust the first value since that's the version number
-			this.data[0] = data[0];
-			for (int i = 1; i < data.Length; i++)
-			{
-				this.data[i] = unchecked((char)(data[i] - 2));
-			}
-			this.p = 0;
-		}
 
         /// <summary>
         /// Analyze the
@@ -597,12 +587,18 @@ namespace Antlr4.Runtime.Atn
         /// <param name="atn">The ATN.</param>
         protected internal virtual void MarkPrecedenceDecisions(ATN atn)
         {
+            // Map rule index -> precedence decision for that rule
+            IDictionary<int, StarLoopEntryState> rulePrecedenceDecisions = new Dictionary<int, StarLoopEntryState>();
             foreach (ATNState state in atn.states)
             {
                 if (!(state is StarLoopEntryState))
                 {
                     continue;
                 }
+                /* We analyze the ATN to determine if this ATN decision state is the
+                * decision for the closure block that determines whether a
+                * precedence rule should continue or complete.
+                */
                 if (atn.ruleToStartState[state.ruleIndex].isPrecedenceRule)
                 {
                     ATNState maybeLoopEndState = state.Transition(state.NumberOfTransitions - 1).target;
@@ -610,9 +606,29 @@ namespace Antlr4.Runtime.Atn
                     {
                         if (maybeLoopEndState.epsilonOnlyTransitions && maybeLoopEndState.Transition(0).target is RuleStopState)
                         {
+                            rulePrecedenceDecisions[state.ruleIndex] = (StarLoopEntryState)state;
                             ((StarLoopEntryState)state).precedenceRuleDecision = true;
+                            ((StarLoopEntryState)state).precedenceLoopbackStates = new BitSet(atn.states.Count);
                         }
                     }
+                }
+            }
+            // After marking precedence decisions, we go back through and fill in
+            // StarLoopEntryState.precedenceLoopbackStates.
+            foreach (KeyValuePair<int, StarLoopEntryState> precedenceDecision in rulePrecedenceDecisions)
+            {
+                foreach (Transition transition in atn.ruleToStopState[precedenceDecision.Key].transitions)
+                {
+                    if (transition.TransitionType != TransitionType.Epsilon)
+                    {
+                        continue;
+                    }
+                    EpsilonTransition epsilonTransition = (EpsilonTransition)transition;
+                    if (epsilonTransition.OutermostPrecedenceReturn != -1)
+                    {
+                        continue;
+                    }
+                    precedenceDecision.Value.precedenceLoopbackStates.Set(transition.target.stateNumber);
                 }
             }
         }
@@ -792,7 +808,7 @@ namespace Antlr4.Runtime.Atn
                     {
                         case TransitionType.Atom:
                         {
-							intermediateState.AddTransition(new AtomTransition(target, ((AtomTransition)effective).token));
+                            intermediateState.AddTransition(new AtomTransition(target, ((AtomTransition)effective).label));
                             break;
                         }
 
@@ -1079,30 +1095,30 @@ nextTransition_continue: ;
             return true;
         }
 
-
-        protected internal int ReadInt()
+        protected internal static int ToInt(char c)
         {
-			return data[p++];
+            return c;
         }
 
-        protected internal int ReadInt32()
+        protected internal static int ToInt32(char[] data, int offset)
         {
-			return (int)data[p++] | ((int)data[p++] << 16);
+            return (int)data[offset] | ((int)data[offset + 1] << 16);
         }
 
-        protected internal long ReadLong()
+        protected internal static long ToLong(char[] data, int offset)
         {
-            long lowOrder = ReadInt32() & unchecked((long)(0x00000000FFFFFFFFL));
-            return lowOrder | ((long)ReadInt32() << 32);
+            long lowOrder = ToInt32(data, offset) & unchecked((long)(0x00000000FFFFFFFFL));
+            return lowOrder | ((long)ToInt32(data, offset + 2) << 32);
         }
 
-        protected internal Guid ReadUUID()
+        protected internal static Guid ToUUID(char[] data, int offset)
         {
-			byte[] d = BitConverter.GetBytes (ReadLong ());
-			Array.Reverse(d);
-			short c = unchecked((short)ReadInt());
-			short b = unchecked((short)ReadInt());
-			int a = ReadInt32();
+            int a = ToInt32(data, offset + 4 + 2);
+            short b = (short)data[offset + 4 + 1];
+            short c = (short)data[offset + 4];
+            byte[] d = BitConverter.GetBytes(ToLong(data, offset));
+            Array.Reverse(d);
+
             return new Guid(a, b, c, d);
         }
 

@@ -54,8 +54,11 @@
       <_Parameter1>$(NuGetPerBuildPreReleaseVersion). Commit Hash: $(GitHeadSha)</_Parameter1>
     </AssemblyVersionAttribute>
   </ItemGroup>
-
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(SuppressRoslynBuildVersion)' == 'false' ">
+	  <SuppressRoslynBuildVersion>false</SuppressRoslynBuildVersion>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(SuppressRoslynBuildVersion)' == 'false' ">
     <!-- It is extremely important to make CoreCompile depend on us, and not anything else.
 
     This has to do with how XAML tasks compile a temporary assembly during the two markup compile

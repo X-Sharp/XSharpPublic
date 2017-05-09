@@ -1723,6 +1723,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignTypesMutchMatch);
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
+                var node = AccMet.CsNode as CSharpSyntaxNode;
+                if (node != null && node.ContainsDiagnostics)
+                {
+                    var diag = node.GetDiagnostics();
+                    accessor = accessor.WithAdditionalDiagnostics(diag);
+                }
                 accessors.Add(accessor);
                 accessor.XNode = AccMet;
                 AccMet.CsNode = null;
@@ -1785,6 +1791,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (!typeMatch)
                 {
                     var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignTypesMutchMatch);
+                    accessor = accessor.WithAdditionalDiagnostics(diag);
+                }
+                var node = AssMet.CsNode as CSharpSyntaxNode;
+                if (node != null && node.ContainsDiagnostics)
+                {
+                    var diag = node.GetDiagnostics();
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
                 accessors.Add(accessor);
@@ -3221,6 +3233,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(m);
             if (context.T.Token.Type != XP.METHOD)
             {
+                if (context.Data.HasClipperCallingConvention && context.CallingConvention != null)
+                {
+                    m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(
+                                    ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
+                }
+                context.Put(m);
                 ClassEntities.Peek().AddVoPropertyAccessor(context);
             }
         }

@@ -96,6 +96,16 @@ namespace XSharp.Project
         }
 
         #endregion
+        protected internal override void DeleteFromStorage(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.SetAttributes(path, FileAttributes.Normal); // make sure it's not readonly.
+                OurNativeMethods.ShellDelete(path, OurNativeMethods.RecycleOption.SendToRecycleBin,
+                   OurNativeMethods.UICancelOption.DoNothing, OurNativeMethods.FileOrDirectory.Directory);
+
+            }
+        }
 
 
         protected override int IncludeInProject()

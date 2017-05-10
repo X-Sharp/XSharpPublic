@@ -29,6 +29,7 @@ namespace XSharp.Project.WPF
     {
         private IVsProject3 _project;
         private FileNode _xsFile;
+        private CodeDomDocDataAdapter _cdda = null;
 
         internal XSharpEventBindingProvider(FileNode xsFile)
         {
@@ -309,10 +310,14 @@ namespace XSharp.Project.WPF
         /// <returns>The CodeDomDocDataAdapter for the .prg file that corresponds to the active xaml file</returns>
         CodeDomDocDataAdapter GetDocDataAdapterForXSharpFile()
         {
-            var codeDom = (IVSMDCodeDomProvider)(new ServiceProvider(_xsFile.OleServiceProvider, true)).GetService(typeof(SVSMDCodeDomProvider));
-            var data = new DocData(((XSharpProjectNode)_project).ProjectMgr.Site, _xsFile.Url);
+            if (_cdda == null)
+            {
+                var codeDom = (IVSMDCodeDomProvider)(new ServiceProvider(_xsFile.OleServiceProvider, true)).GetService(typeof(SVSMDCodeDomProvider));
+                var data = new DocData(((XSharpProjectNode)_project).ProjectMgr.Site, _xsFile.Url);
 
-            return new CodeDomDocDataAdapter((_project as XSharpProjectNode).ProjectMgr.Site, data);
+                _cdda = new CodeDomDocDataAdapter((_project as XSharpProjectNode).ProjectMgr.Site, data);
+            }
+            return _cdda;
         }
 
         /// <summary>

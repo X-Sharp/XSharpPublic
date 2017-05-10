@@ -6722,6 +6722,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ACCESS and ASSIGN methods cannot have Clipper Calling Convention.
+        /// </summary>
+        internal static string ERR_NoClipperCallingConventionForAccessAssign {
+            get {
+                return ResourceManager.GetString("ERR_NoClipperCallingConventionForAccessAssign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; has no constructors defined.
         /// </summary>
         internal static string ERR_NoConstructors {
@@ -7208,7 +7217,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The function &apos;{0}&apos; is only supported in functions or methods with CLIPPER calling convention.
+        ///   Looks up a localized string similar to The function &apos;{0}&apos; is only supported in functions or methods with CLIPPER calling convention (and not in ACCESS or ASSIGN methods).
         /// </summary>
         internal static string ERR_OnlySupportedForClipperCallingConvention {
             get {

@@ -50,7 +50,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (result.IsValid)
                     {
+#if XSHARP
+                        if (best.IsValid && (best.Signature.LeftType.SpecialType != SpecialType.System_Object  || 
+                            best.Signature.RightType.SpecialType != SpecialType.System_Object))
+#else
                         if (best.IsValid)
+#endif
                         {
                             // More than one best applicable method
                             return default(BinaryOperatorAnalysisResult);
@@ -109,7 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 #endif
 
-        #region "Poolable"
+#region "Poolable"
 
         public static BinaryOperatorOverloadResolutionResult GetInstance()
         {
@@ -131,6 +136,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return pool;
         }
 
-        #endregion
+#endregion
     }
 }

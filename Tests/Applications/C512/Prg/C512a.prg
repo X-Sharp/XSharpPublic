@@ -1,0 +1,3 @@
+CLASS Test
+END CLASS
+

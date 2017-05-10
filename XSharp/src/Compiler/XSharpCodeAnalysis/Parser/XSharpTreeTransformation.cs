@@ -1133,7 +1133,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   GenerateSimpleName(name), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken));
         }
 
-        protected NameSyntax GenerateQualifiedName(string name)
+        protected internal NameSyntax GenerateQualifiedName(string name)
         {
             string[] ids = name.Split('.');
             string idName = ids[0];

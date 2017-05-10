@@ -49,20 +49,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var tmp = LookupResult.GetInstance();
                     scope.LookupSymbolsInSingleBinder(tmp, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteDiagnostics);
-                    if (options.HasFlag(LookupOptions.DefinesOnly) && !tmp.IsClear)
-                    {
-                        FilterResults(tmp, options);
-                    }
+                    FilterResults(tmp, options);
                     result.MergeEqual(tmp);
                     tmp.Free();
                 }
                 else
                 {
                     scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteDiagnostics);
-                    if (options.HasFlag(LookupOptions.DefinesOnly) && !result.IsClear)
-                    {
-                        FilterResults(result, options);
-                    }
+                    FilterResults(result, options);
                     if (!result.IsClear)
                     {
                         binder = scope;

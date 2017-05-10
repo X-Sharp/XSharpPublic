@@ -24,10 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // don't create diagnosis instances unless lookup fails
             var binder = this.LookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose: false, useSiteDiagnostics: ref useSiteDiagnostics);
-            if (options.HasFlag(LookupOptions.DefinesOnly) && !result.IsClear)
-            {
-                FilterResults(result, options);
-            }
+            FilterResults(result, options);
             if (result.Kind != LookupResultKind.Viable && result.Kind != LookupResultKind.Empty)
             {
                 result.Clear();

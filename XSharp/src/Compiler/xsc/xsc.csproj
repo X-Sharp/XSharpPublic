@@ -105,8 +105,8 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <PropertyGroup>
+  <!--<PropertyGroup>
     <EditBinToolPath>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\VC\bin\editbin.exe</EditBinToolPath>
     <PostBuildEvent>"$(EditBinToolPath)" /stack:2097152 $(TargetPath)</PostBuildEvent>
-  </PropertyGroup>
+  </PropertyGroup>-->
 </Project>

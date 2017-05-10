@@ -7,7 +7,9 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Diagnostics;
-
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -78,7 +80,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
 
                     _current = new CSDiagnostic(sdi, new SourceLocation(_syntaxTree, new TextSpan(spanStart, spanWidth)));
-
+#if XSHARP
+                    var n = node as Syntax.InternalSyntax.CSharpSyntaxNode;
+                    if (n.XNode != null)
+                    {
+                        _current = new CSDiagnostic(sdi, n.XNode.GetLocation());
+                    }
+#endif
                     _stack.UpdateDiagnosticIndexForStackTop(diagIndex);
                     return true;
                 }
@@ -236,4 +244,41 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
     }
+
+#if XSHARP
+    internal static class XNodeExtensions
+    {
+        internal static Location GetLocation(this IXParseTree node)
+        {
+
+            TextSpan span = new TextSpan(0, 1);
+            LinePositionSpan lspan = new LinePositionSpan(new LinePosition(0, 1), new LinePosition(0, 1));
+            if (node is XSharpParserRuleContext)
+            {
+                var rule = node as XSharpParserRuleContext;
+                span = new TextSpan(rule.Start.StartIndex, rule.FullWidth);
+                lspan = new LinePositionSpan(new LinePosition(rule.Start.Line-1, rule.Start.Column-1), new LinePosition(rule.Stop.Line-1, rule.Stop.Column-1));
+            }
+            else if (node is XTerminalNodeImpl)
+            {
+                var term = node as XTerminalNodeImpl;
+                if (term.SourceSymbol != null)
+                {
+                    var sym = term.SourceSymbol;
+                    span = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex+1);
+
+                    lspan = new LinePositionSpan(new LinePosition(sym.Line - 1, sym.Column - 1),
+                        new LinePosition(sym.Line - 1, sym.Column + span.Length - 1));
+                }
+                else
+                {
+                    span = new TextSpan(term.Position, term.FullWidth);
+                }
+            }
+
+            return new ExternalFileLocation(node.SourceFileName, span, lspan);
+
+        }
+    }
+#endif
 }

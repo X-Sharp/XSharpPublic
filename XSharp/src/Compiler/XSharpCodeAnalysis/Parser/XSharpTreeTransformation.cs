@@ -5768,13 +5768,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg = argList.Arguments[0];
             var exp = arg.Expression;
             var lit = exp.XNode.GetLiteralToken();
-            if (lit != null && lit.Type == XP.INT_CONST)
+            if (lit != null && (lit.Type == XP.INT_CONST || lit.Type == XP.HEX_CONST || lit.Type == XP.BIN_CONST))
             {
                 // get number and create a string literal value
                 var value = lit.SyntaxLiteralValue(_options);
-                int number = (int)value.Value;
-                char ch = (char)number;
+                Int64 number = Convert.ToInt64(value.Value);
+                char ch = ' ';
+                bool overflow = false; ;
+                if (number < UInt16.MaxValue)
+                    ch = (char)number;
+                else
+                    overflow = true;
                 var literal = GenerateLiteral(ch.ToString());
+                if (overflow)
+                {
+                    literal = literal.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                }
                 context.Put(literal);
                 return true;
             }

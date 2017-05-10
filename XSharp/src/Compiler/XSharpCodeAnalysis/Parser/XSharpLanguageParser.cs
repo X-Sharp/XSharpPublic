@@ -445,6 +445,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return null;
         }
 
+        private string GetNsFullName(XP.Namespace_Context ns)
+        {
+            string name = ns.Name.GetText();
+            while (ns.Parent is XP.Namespace_Context)
+            {
+                ns = ns.Parent as XP.Namespace_Context;
+                name = ns.Name.GetText() + "." + name;
+            }
+            return name;
+        }
+
+        private MemberDeclarationSyntax WrapInNamespace(XSharpTreeTransformation trans , MemberDeclarationSyntax member, XP.Namespace_Context xns)
+        {
+            if (xns != null)
+            {
+                var members = _pool.Allocate<MemberDeclarationSyntax>();
+                string nsName = GetNsFullName(xns);
+                members.Add(member);
+                member  = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+                    name: trans.GenerateQualifiedName(nsName),
+                    openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    externs: null,
+                    usings: null,
+                    members: members,
+                    closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                _pool.Free(members);
+
+            }
+            return member;
+        }
+
 
         private SyntaxTree processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
         {
@@ -500,6 +532,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     bool hasctor = false;
                     bool haspartialprop = false;
                     XP.IPartialPropertyContext ctxt = null;
+                    XP.Namespace_Context xns;
                     foreach (var xnode in element.Value)
                     {
                         ctxt = xnode;
@@ -515,6 +548,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (ctxt.CsNode is InterfaceDeclarationSyntax)
                     {
                         var ifdecl = ctxt.Get<InterfaceDeclarationSyntax>();
+                        // ctxt.Parent is XP.EntityContext
+                        // ctxt.Parent.Parent may be XP.Namespace_Context
+                        xns = ctxt.Parent.Parent as XP.Namespace_Context;
                         if (haspartialprop)
                         {
                             clsmembers.Clear();
@@ -541,13 +577,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 ifdecl.CloseBraceToken,
                                 null);
                                 ifdecl.XGenerated = true;
-                                classes.Add(decl);
+                                classes.Add(WrapInNamespace(trans,decl, xns));
                             }
                         }
                     }
                     else if (ctxt.CsNode is StructDeclarationSyntax)
                     {
                         var strucdecl = ctxt.Get<StructDeclarationSyntax>();
+                        // ctxt.Parent is XP.EntityContext
+                        // ctxt.Parent.Parent may be XP.Namespace_Context
+                        xns = ctxt.Parent.Parent as XP.Namespace_Context;
                         if (haspartialprop)
                         {
                             clsmembers.Clear();
@@ -574,12 +613,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     strucdecl.CloseBraceToken,
                                     null);
                                 strucdecl.XGenerated = true;
-                                classes.Add(decl);
+                                classes.Add(WrapInNamespace(trans, decl, xns));
                             }
                         }
                     }
                     else if (ctxt.CsNode is ClassDeclarationSyntax)
                     {
+                        // ctxt.Parent is XP.EntityContext
+                        // ctxt.Parent.Parent may be XP.Namespace_Context
+                        xns = ctxt.Parent.Parent as XP.Namespace_Context;
                         if (!hasctor || haspartialprop)
                         {
                             clsmembers.Clear();
@@ -616,7 +658,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 classdecl.CloseBraceToken,
                                 null);
                                 decl.XGenerated = true;
-                                classes.Add(decl);
+
+                                classes.Add(WrapInNamespace(trans, decl, xns));
                             }
                         }
                     }

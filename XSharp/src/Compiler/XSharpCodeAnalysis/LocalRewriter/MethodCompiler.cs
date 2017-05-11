@@ -57,6 +57,86 @@ namespace Microsoft.CodeAnalysis.CSharp
             return body;
 
         }
+
+        /*
+    internal static MethodSymbol UpdateGeneratedMethod(MethodSymbol method, DiagnosticBag diagnostics)
+    {
+        var original = method as SourceConstructorSymbol;
+        var container = original.ContainingSymbol as SourceMemberContainerTypeSymbol;
+        var syntax = original.SyntaxNode as ConstructorDeclarationSyntax;
+        var baseType = method.ContainingType.BaseType;
+        var members = baseType.GetMembers(".ctor");
+        if (members.Length >= 1)
+        {
+            var baseconstructor = members[0] as MethodSymbol;
+            if (baseconstructor.ParameterCount != 0)
+            {
+                var count = baseconstructor.ParameterCount;
+                ParameterListSyntax parameterlist = syntax.ParameterList;
+                ConstructorInitializerSyntax initializer = syntax.Initializer;
+                var parambuilder = SeparatedSyntaxListBuilder<ParameterSyntax>.Create();
+                var argbuilder = SeparatedSyntaxListBuilder<ArgumentSyntax>.Create();
+                for (int i = 0; i < count; i++)
+                {
+                    if (i > 0)
+                    {
+                        parambuilder.AddSeparator(SyntaxFactory.Token(SyntaxKind.CommaToken));
+                        argbuilder.AddSeparator(SyntaxFactory.Token(SyntaxKind.CommaToken));
+                    }
+                    var param = baseconstructor.Parameters[i];
+                    var typesym = param.Type;
+                    var typesyntax = SyntaxFactory.ParseTypeName(typesym.Name);
+                    var id = SyntaxFactory.Identifier(param.Name);
+                    var par = SyntaxFactory.Parameter(id);
+                    par = par.Update(par.AttributeLists, par.Modifiers, typesyntax, id, par.Default);
+                    parambuilder.Add(par);
+                    var arg = SyntaxFactory.Argument(SyntaxFactory.IdentifierName(param.Name));
+                    argbuilder.Add(arg);
+                }
+                parameterlist = parameterlist.Update(
+                    parameterlist.OpenParenToken,
+                    parambuilder.ToList(),
+                    parameterlist.CloseParenToken);
+                var argumentlist = initializer.ArgumentList;
+                argumentlist = argumentlist.Update(argumentlist.OpenParenToken,argbuilder.ToList(),argumentlist.CloseParenToken);
+                initializer = initializer.Update(
+                    initializer.ColonToken,
+                    initializer.ThisOrBaseKeyword,
+                    argumentlist);
+                // we must adjust the parameters for the declaration
+                // and also the chained call
+                syntax = syntax.Update(
+                    syntax.AttributeLists, 
+                    syntax.Modifiers,
+                    syntax.Identifier, 
+                    parameterlist, 
+                    initializer, 
+                    syntax.Body, 
+                    syntax.SemicolonToken
+                    );
+                //method = SourceConstructorSymbol.CreateConstructorSymbol(container, syntax, diagnostics);
+            }
+
+        }
+        return method;
+    }
+        */
+
+    }
+    internal static class XsMethodExtensions
+    {
+        internal static bool IsGeneratedConstructor(this MethodSymbol method)
+        {
+            var scs = method as SourceConstructorSymbol;
+            if (scs == null)
+                return false;
+            var node = scs.SyntaxNode as CSharpSyntaxNode;
+            if (node == null)
+                return false;
+            //return node.XGenerated;
+            return false;
+
+        }
     }
 
 }

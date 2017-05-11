@@ -386,6 +386,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         }
                         else
                         {
+#if XSHARP
+                            // In VO/Vulcan dialect we allow a namespace and class with the same name
+                            if (!DeclaringCompilation.Options.IsDialectVO || other.Kind == nts.Kind )
+#endif
                             diagnostics.Add(ErrorCode.ERR_DuplicateNameInNS, symbol.Locations[0], name, this);
                         }
                     }

@@ -64,7 +64,10 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
                     VulcanIncludeDir += @"\";
                 VulcanIncludeDir += @"Include\";
             }
-            includeDir = includeDir ?? "" + XSharpIncludeDir;
+            if (String.IsNullOrEmpty(includeDir))
+                includeDir = XSharpIncludeDir;
+            else
+                includeDir += ";" + XSharpIncludeDir;
             if (!string.IsNullOrEmpty(VulcanIncludeDir))
                 includeDir += ";" + VulcanIncludeDir;
             XSharpSpecificCompilationOptions.SetDefaultIncludeDir(includeDir);

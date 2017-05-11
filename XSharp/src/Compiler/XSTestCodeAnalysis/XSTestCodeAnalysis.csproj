@@ -5,6 +5,7 @@
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CDB50137-5A12-4515-A15F-DAF46DD62579}</ProjectGuid>
     <OutputType>Exe</OutputType>

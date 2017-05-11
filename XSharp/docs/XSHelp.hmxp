@@ -190,7 +190,7 @@
       <config-value name="exportcommentsdate">36526</config-value>
       <config-value name="pdfa">0</config-value>
       <config-value name="compression">1</config-value>
-      <config-value name="jpegquality">0</config-value>
+      <config-value name="jpegquality">75</config-value>
       <config-value name="openmode">1</config-value>
       <config-value name="zoommode">0</config-value>
       <config-value name="pagelayout">0</config-value>
@@ -462,7 +462,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">4</config-value>
@@ -528,6 +528,10 @@
   <project-files>
     <file href="Topics/*.xml" build="ALL" filetype="topic">
       <file-mod href="Stylesheet-for-Style-Test.xml"/>
+      <file-mod href="Project-System.xml"/>
+      <file-mod href="Source-Code-Editor.xml"/>
+      <file-mod href="X-Programming-guide.xml"/>
+      <file-mod href="Debugger.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

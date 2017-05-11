@@ -215,7 +215,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The parameters for the Access and Assign declarations must match by name and type. The first ASSIGN parameter is the value, the other parameters are the indexers and must be the same as the ACCESS parameters..
+        ///   Looks up a localized string similar to The parameters for the ACCESS and ASSIGN declarations must match by name, type and number. There must be one more ASSIGN parameter than ACCESS parameter. The first ASSIGN parameter is the value, the other parameters are the indexers and must be have the same name and type as the ACCESS parameters..
         /// </summary>
         internal static string ERR_AccessAssignParametersMutchMatch {
             get {
@@ -688,6 +688,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_AssgReadonlyStatic2 {
             get {
                 return ResourceManager.GetString("ERR_AssgReadonlyStatic2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ASSIGN methods must have at least one parameter.
+        /// </summary>
+        internal static string ERR_AssignMethodsMustHaveAParameter {
+            get {
+                return ResourceManager.GetString("ERR_AssignMethodsMustHaveAParameter", resourceCulture);
             }
         }
         
@@ -5273,7 +5282,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using a numeric DLL entrypoint &apos;{0}&apos; is not supported in .NET.
+        ///   Looks up a localized string similar to Invalid DLL entrypoint &apos;{0}&apos;.
         /// </summary>
         internal static string ERR_InvalidDLLEntryPoint {
             get {
@@ -6263,6 +6272,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ACCESS and ASSIGN methods cannot have Clipper Calling Convention.
+        /// </summary>
+        internal static string ERR_NoClipperCallingConventionForAccessAssign {
+            get {
+                return ResourceManager.GetString("ERR_NoClipperCallingConventionForAccessAssign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; has no constructors defined.
         /// </summary>
         internal static string ERR_NoConstructors {
@@ -6749,7 +6767,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The function &apos;{0}&apos; is only supported in functions or methods with CLIPPER calling convention.
+        ///   Looks up a localized string similar to The function &apos;{0}&apos; is only supported in functions or methods with CLIPPER calling convention (and not in ACCESS or ASSIGN methods).
         /// </summary>
         internal static string ERR_OnlySupportedForClipperCallingConvention {
             get {
@@ -13438,7 +13456,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function or type &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the first one..
+        ///   Looks up a localized string similar to {3} &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the first one..
         /// </summary>
         internal static string WRN_VulcanAmbiguous {
             get {

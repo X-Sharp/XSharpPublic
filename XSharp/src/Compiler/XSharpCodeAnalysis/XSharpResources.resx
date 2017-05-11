@@ -4728,7 +4728,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Typed Parameters are not supported in combination with CLIPPER calling convention</value>
   </data>
   <data name="ERR_OnlySupportedForClipperCallingConvention" xml:space="preserve">
-    <value>The function '{0}' is only supported in functions or methods with CLIPPER calling convention</value>
+    <value>The function '{0}' is only supported in functions or methods with CLIPPER calling convention (and not in ACCESS or ASSIGN methods)</value>
   </data>
   <data name="ERR_AmbiguousCase" xml:space="preserve">
     <value>Ambiguous case between '{0}' and '{1}'</value>
@@ -4752,7 +4752,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Invalid dialect {0}. Must be 'Core', 'Vo', 'Vulcan', 'dBase', 'FoxPro', 'Harbour' or 'XBasepp'</value>
   </data>
   <data name="ERR_InvalidDLLEntryPoint" xml:space="preserve">
-    <value>Using a numeric DLL entrypoint '{0}' is not supported in .NET</value>
+    <value>Invalid DLL entrypoint '{0}'</value>
   </data>
   <data name="ERR_CompilerOptionNotSupportedForDialect" xml:space="preserve">
     <value>Compiler option '{0}' ({1}) is not supported for dialect {2}</value>
@@ -4816,7 +4816,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   
   <data name="ERR_AccessAssignParametersMutchMatch" xml:space="preserve">
-    <value>The parameters for the Access and Assign declarations must match by name and type. The first ASSIGN parameter is the value, the other parameters are the indexers and must be the same as the ACCESS parameters.</value>
+    <value>The parameters for the ACCESS and ASSIGN declarations must match by name, type and number. There must be one more ASSIGN parameter than ACCESS parameter. The first ASSIGN parameter is the value, the other parameters are the indexers and must be have the same name and type as the ACCESS parameters.</value>
   </data>
   <data name="ERR_AccessAssignTypesMutchMatch" xml:space="preserve">
     <value>The type of the first ASSIGN parameter must match the returntype of the ACCESS.</value>
@@ -4828,7 +4828,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Override of virtual method '{0}' has CLIPPER calling convention but overridden method in parent class is STRICT.</value>
   </data>
   <data name="WRN_VulcanAmbiguous" xml:space="preserve">
-    <value>Function or type '{0}' is ambiguous. Could be '{1}' or '{2}'. Using the first one.</value>
+    <value>{3} '{0}' is ambiguous. Could be '{1}' or '{2}'. Using the first one.</value>
   </data>
   <data name="ERR_ImplicitlyTypedVariableCannotBeStatic" xml:space="preserve">
     <value>Implicitly-typed variables cannot be STATIC.</value>
@@ -4842,5 +4842,11 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_GetSetMustHaveBody" xml:space="preserve">
     <value>A get or set accessor must have a body, an auto property will be generated</value>
   </data>
-
+  <data name="ERR_AssignMethodsMustHaveAParameter" xml:space="preserve">
+    <value>ASSIGN methods must have at least one parameter</value>
+  </data>
+  <data name="ERR_NoClipperCallingConventionForAccessAssign" xml:space="preserve">
+    <value>ACCESS and ASSIGN methods cannot have Clipper Calling Convention</value>
+  </data>
+  
 </root>

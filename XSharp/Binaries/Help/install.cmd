@@ -1,2 +1,0 @@
-"C:\Program Files (x86)\Microsoft Help Viewer\v2.2\HlpCtntMgr.exe" /operation install /catalogname VisualStudio14 /locale en-us /sourceuri "d:\Xsharp\Dev\XSharp\Binaries\Help\XSVulcan.msha" /wait 0
-"C:\Program Files (x86)\Microsoft Help Viewer\v2.2\HlpCtntMgr.exe" /operation install /catalogname VisualStudio14 /locale en-us /sourceuri "d:\Xsharp\Dev\XSharp\Binaries\Help\helpcontentsetup.msha" /wait 0

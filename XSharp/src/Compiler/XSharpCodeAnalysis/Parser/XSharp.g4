@@ -40,6 +40,8 @@ entity              : namespace_
                     | function                  // This will become part of the 'Globals' class
                     | procedure                 // This will become part of the 'Globals' class
                     | method                    // Method xxx Class xxx syntax
+                    | constructor               // Constructor Class xxx syntax
+                    | destructor                // Destructor Class xxx syntax
                     | globalAttributes          // Assembly attributes, Module attributes etc.
                     | using_                    // Using Namespace
                     | voglobal                  // This will become part of the 'Globals' class
@@ -85,6 +87,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     // And with numeric entrypoint, which is supported by VO but not by .NET
                     // We parse the numeric entrypoint here but we will throw an error during the tree transformation
                     // _DLL FUNCTION SetDebugErrorLevel( dwLevel AS DWORD) AS VOID PASCAL:USER32.123
+					// and Finally we also parse the @Num
+					// 
 
 vodll				: (Attributes=attributes)? 
 					  (Modifiers=funcprocModifiers)? DLL
@@ -92,8 +96,10 @@ vodll				: (Attributes=attributes)?
                       | T=(PROCEDURE|PROC) Id=identifier ParamList=parameterList )
                       (CallingConvention=dllcallconv) COLON
                       Dll=identifierString (DOT Extension=identifierString)?
-                        ( DOT Entrypoint=identifierString (NEQ2 INT_CONST)?
-                        | Ordinal=REAL_CONST)
+						(	Ordinal=REAL_CONST 
+						 |  DOT Entrypoint=identifierString Address=ADDROF? Number=INT_CONST? (NEQ2 INT_CONST)? 
+						)
+					   
                       ( CharSet=(AUTO | ANSI | UNICODE) )?
                       eos
                     ;
@@ -321,24 +327,8 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 
 classmember			: Member=method										#clsmethod
 				    | decl=declare										#clsdeclare
-                    | (Attributes=attributes)?
-                      (Modifiers=constructorModifiers)?
-                      CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
-					  (CallingConvention=callingconvention)? 
-					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
-					  end=eos
-                      (Chain=(SELF | SUPER)
-					  (
-						  (LPAREN RPAREN)
-						| (LPAREN ArgList=argumentList RPAREN)
-					  ) eos)?
-                      StmtBlk=statementBlock							#clsctor
-                    | (Attributes=attributes)?
-                      (Modifiers=destructorModifiers)?
-                      DESTRUCTOR (LPAREN RPAREN)? 
-					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
-					   end=eos
-                      StmtBlk=statementBlock							#clsdtor
+                    | Member=constructor                                #clsctor
+                    | Member=destructor                                 #clsdtor
                     | Member=classvars									#clsvars
                     | Member=property									#clsproperty
                     | Member=operator_									#clsoperator
@@ -352,12 +342,33 @@ classmember			: Member=method										#clsmethod
                     | {_ClsFunc}? Member=procedure						#clsprocedure		// Equivalent to static method
                     ;
 
+constructor         :  (Attributes=attributes)?
+                      (Modifiers=constructorModifiers)?
+                      CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
+					  (CallingConvention=callingconvention)? 
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					  end=eos
+                      (Chain=(SELF | SUPER)
+					  (
+						  (LPAREN RPAREN)
+						| (LPAREN ArgList=argumentList RPAREN)
+					  ) eos)?
+                      StmtBlk=statementBlock							
+                    ;
 
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
                     ;
 
 declare				: DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMMA Ids+=identifier)* eos
 					;
+
+destructor          : (Attributes=attributes)?
+                      (Modifiers=destructorModifiers)?
+                      DESTRUCTOR (LPAREN RPAREN)? 
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					   end=eos
+                      StmtBlk=statementBlock							
+                    ;
 
 destructorModifiers : ( Tokens+=EXTERN )+
                     ;
@@ -438,7 +449,7 @@ statement           : Decl=localdecl                                            
                     | Key=EXIT end=eos											#jumpStmt
                     | Key=LOOP end=eos											#jumpStmt
                     | Key=BREAK Expr=expression? end=eos						#jumpStmt
-                    | RETURN (VOID | Expr=expression)? end=eos					#returnStmt
+                    | RETURN (Expr=expression)? end=eos							#returnStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)? end=eos	#qoutStmt
                     | BEGIN SEQUENCE end=eos
@@ -492,10 +503,10 @@ statement           : Decl=localdecl                                            
                       (e=END FIXED? garbage? end=eos)?								#blockStmt
 
 					// Temporary solution for statements missing from the standard header file
-					| DEFAULT Variables+=simpleName TO Values+=expression 
-						(COMMA Variables+=simpleName TO Values+=expression)* end=eos	#defaultStmt
-					| Key=(WAIT|ACCEPT)  (Expr=expression)? (TO Variable=simpleName)? end = eos		#waitAcceptStmt
-					| Key=(CANCEL|QUIT) end=eos											#cancelQuitStmt
+					//| DEFAULT Variables+=simpleName TO Values+=expression 
+					//	(COMMA Variables+=simpleName TO Values+=expression)* end=eos	#defaultStmt
+					//| Key=(WAIT|ACCEPT)  (Expr=expression)? (TO Variable=simpleName)? end = eos		#waitAcceptStmt
+					//| Key=(CANCEL|QUIT) end=eos											#cancelQuitStmt
 
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                     | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
@@ -785,7 +796,7 @@ codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE)
 codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
                     ;
 
-codeblockExprList	: (Exprs+=expression COMMA)+ ReturnExpr=expression
+codeblockExprList	: (Exprs+=expression? COMMA)+ ReturnExpr=expression
                     ;
 
 // LINQ Support
@@ -946,6 +957,6 @@ keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWA
 					| ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
 					| FASTCALL | FIELD | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
 					| STEP | STRICT | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
-					| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
+					//| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
 					)
                     ;

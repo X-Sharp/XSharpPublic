@@ -49,9 +49,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;
         }
 
+        public bool HasPreprocessorTokens => _hasPPTokens;
         bool _inId = false;
         bool _inPp = false;
         bool _hasEos = true;
+        bool _hasPPTokens = false;
         private bool _isKw(IToken t)
         {
             switch (t.Channel)
@@ -705,6 +707,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
                         }
                     }
+                    if (t.Type == SYMBOL_CONST)
+                    {
+                        var text = t.Text.Substring(1);
+                        if (KwIds.ContainsKey(text))
+                        {
+                            var kwid = KwIds[text];
+                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL)
+                            {
+                                // #NIL or #NULL_STRING etc. 
+                                t.Text = "#";
+                                t.Type = NEQ2;
+                                t.StopIndex = t.StartIndex;
+                                InputStream.Seek(t.StartIndex + 1);
+                            }
+                        }
+                    }
                 }
             }
             //System.Diagnostics.Debug.WriteLine("T[{0},{1}]:{2}",t.Line,t.Column,t.Text);
@@ -727,6 +745,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     t.Type = symtype;
                     _inPp = true;
+                    _hasPPTokens = true;
                 }
             }
             if (!_inId)
@@ -863,9 +882,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"IIF", IIF},
             {"IN", IN},
             {"INHERIT", INHERIT},
-            {"_INIT1", INIT1},
-            {"_INIT2", INIT2},
-            {"_INIT3", INIT3},
+            //{"_INIT1", INIT1}, VO does not allow 4 letter abbreviations
+            //{"_INIT2", INIT2}, VO does not allow 4 letter abbreviations
+            //{"_INIT3", INIT3}, VO does not allow 4 letter abbreviations
             {"INSTANCE", INSTANCE},
             {"IS", IS},
             {"LOCAL", LOCAL},
@@ -888,14 +907,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"RETURN", RETURN},
             {"SELF", SELF},
             {"SEQUENCE", SEQUENCE},
-            {"_SIZEOF", SIZEOF},
+            //{"_SIZEOF", SIZEOF},  VO does not allow 4 letter abbreviations
             {"STATIC", STATIC},
             {"STEP", STEP},
             {"STRICT", STRICT},
             {"SUPER", SUPER},
             {"THISCALL", THISCALL},
             {"TO", TO},
-            {"_TYPEOF", TYPEOF},
+            //{"_TYPEOF", TYPEOF},  VO does not allow 4 letter abbreviations
             {"UNION", UNION},
             {"UPTO", UPTO},
             {"USING", USING},
@@ -942,10 +961,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"TRUE", TRUE_CONST},
 
 			// Vulcan UDCs
-			{"WAIT", WAIT},
-            {"ACCEPT", ACCEPT},
-            {"CANCEL", CANCEL},
-            {"QUIT", QUIT},
+			//{"WAIT", WAIT},
+            //{"ACCEPT", ACCEPT},
+            //{"CANCEL", CANCEL},
+            //{"QUIT", QUIT},
 
         };
 
@@ -964,7 +983,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 var token = VoKeywords[text];
                 ids.Add(text, token);
-                if (lFour && ! text.StartsWith("_INIT"))
+                if (lFour )
                 {
                     var s = text;
                     while (s.Length > 4)
@@ -981,7 +1000,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             var Keywords = new Dictionary<string, int>
         {
-			// Vulcan keywords
+            // VO keywords that cannot be abbreviated
+
+            {"_INIT1", INIT1},
+            {"_INIT2", INIT2},
+            {"_INIT3", INIT3},
+            {"_SIZEOF", SIZEOF}, 
+            {"_TYPEOF", TYPEOF},  
+                
+            // Vulcan keywords
 			{"ABSTRACT", ABSTRACT},
             {"ANSI", ANSI},
             {"AUTO", AUTO},
@@ -1082,6 +1109,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"__DIALECT_CORE__", MACRO},
             {"__DIALECT_VO__", MACRO},
             {"__DIALECT_VULCAN__", MACRO},
+            {"__DIALECT_HARBOUR__", MACRO},
             {"__ENTITY__", MACRO},
             {"__FILE__", MACRO},
             {"__LINE__", MACRO},

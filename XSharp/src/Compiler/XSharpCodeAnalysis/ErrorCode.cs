@@ -1414,5 +1414,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_StaticLocalInCodeBlock = 9045,
         ERR_CannotAssignToMethod = 9046,
         WRN_GetSetMustHaveBody = 9047,
+        ERR_AssignMethodsMustHaveAParameter = 9048,
+        ERR_NoClipperCallingConventionForAccessAssign = 9049,
     }
 }

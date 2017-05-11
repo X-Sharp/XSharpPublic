@@ -892,53 +892,69 @@ namespace XSharpLanguage
         /// <param name="minVisibility"></param>
         private void FillMembers(CompletionList compList, EnvDTE.CodeElement fType, Modifiers minVisibility, bool staticOnly, String startWith)
         {
-            if (fType.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+            if ((fType.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                (fType.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                (fType.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
             {
+
                 //
-                EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)fType;
-                foreach (EnvDTE.CodeElement member in envClass.Members)
+                EnvDTE.CodeElements members = null;
+                EnvDTE.CodeElements bases = null; ;
+                if (fType.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                {
+                    EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)fType;
+                    members = envClass.Members;
+                    bases = envClass.Bases;
+                }
+                else if (fType.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+                {
+                    EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)fType;
+                    members = envEnum.Members;
+                    bases = envEnum.Bases;
+                }
+                else if (fType.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+                {
+                    EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)fType;
+                    members = envStruct.Members;
+                    bases = envStruct.Bases;
+                }
+                foreach (EnvDTE.CodeElement member in members)
                 {
                     if (nameStartsWith(member.Name, startWith))
                     {
-                        if ( member.Kind == EnvDTE.vsCMElement.vsCMElementFunction )
+                        //
+                        MemberAnalysis analysis = new MemberAnalysis(member);
+                        if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
                         {
-                            //
-                            MemberAnalysis analysis = new MemberAnalysis(member);
-                            if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
+                            if (analysis.Kind == Kind.Constructor)
+                                continue;
+                            if (analysis.IsStatic != staticOnly)
                             {
-                                if (analysis.Kind == Kind.Constructor)
-                                    continue;
-                                if (analysis.IsStatic != staticOnly)
-                                {
-                                    continue;
-                                }
-                                String toAdd = "";
-                                if ((analysis.Kind == Kind.Method))
-                                {
-                                    toAdd = "(";
-                                }
-                                //
-                                ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
-                                compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                                continue;
                             }
+                            String toAdd = "";
+                            if ((analysis.Kind == Kind.Method))
+                            {
+                                toAdd = "(";
+                            }
+                            //
+                            ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
+                            compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
                         }
                     }
                 }
-                if (envClass.Bases != null)
+                if (bases != null)
                 {
-                    foreach (EnvDTE.CodeElement parent in envClass.Bases)
+                    foreach (EnvDTE.CodeElement parent in bases)
                     {
                         if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
                         {
                             //
-                            FillMembers(compList, parent, Modifiers.Protected, staticOnly, startWith);
+                            if (minVisibility == Modifiers.Private)
+                                minVisibility = Modifiers.Protected;
+                            FillMembers(compList, parent, minVisibility, staticOnly, startWith);
                         }
                     }
-                }
-                object Parent = envClass.Parent;
-                if ( Parent != null )
-                {
-                    System.Diagnostics.Debug.WriteLine("CodeElement.Parent : " + Parent.ToString() );
                 }
             }
         }
@@ -1217,7 +1233,7 @@ namespace XSharpLanguage
                     this.Kind = Kind.Method;
                     EnvDTE.CodeFunction method = member as EnvDTE.CodeFunction;
                     //
-                    if ( method.FunctionKind == EnvDTE.vsCMFunction.vsCMFunctionConstructor)
+                    if (method.FunctionKind == EnvDTE.vsCMFunction.vsCMFunctionConstructor)
                     {
                         this.Kind = Kind.Constructor;
                     }
@@ -1247,7 +1263,7 @@ namespace XSharpLanguage
                     declType = method.Type;
                     this._typeName = declType.AsFullName;
                     break;
-                case EnvDTE.vsCMElement.vsCMElementProperty :
+                case EnvDTE.vsCMElement.vsCMElementProperty:
                     this.Kind = Kind.Property;
                     EnvDTE.CodeProperty prop = member as EnvDTE.CodeProperty;
                     //

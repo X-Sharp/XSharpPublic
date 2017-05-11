@@ -425,12 +425,16 @@ namespace XSharpModel
                     {
                         if (codeElementNS.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
                         {
-                            // Classes are childs
+                            // May be here, we could speed up search if the TypeName doesn't start with the Namespace name ??
+                            //
+                            // Classes are childs, so are Enums and Structs
                             foreach (EnvDTE.CodeElement elt in codeElementNS.Children)
                             {
                                 // TODO: And what about Enums, Structures, ... ???
-                                // is it a Class ?
-                                if (elt.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                                // is it a Class/Enum/Struct ?
+                                if ((elt.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                                    (elt.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                                    (elt.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
                                 {
                                     // So the element name is
                                     string elementName = elt.FullName;

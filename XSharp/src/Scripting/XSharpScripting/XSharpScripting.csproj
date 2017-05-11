@@ -4,6 +4,7 @@
   <Import Project="..\..\..\build\Targets\Settings.props" />
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+	<RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
 	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
@@ -17,12 +18,12 @@
     <AssemblyName>XSharp.Scripting</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <DefineConstants>$(DefineConstants);SCRIPTING;XSHARP</DefineConstants>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\clr-core\</OutDir>
-    <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
+    <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <RestorePackages>true</RestorePackages>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

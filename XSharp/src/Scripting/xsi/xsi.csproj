@@ -4,9 +4,10 @@
   <Import Project="..\..\..\build\Targets\Settings.props" />
   <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
+    <RoslynProjectType>Custom</RoslynProjectType>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
+    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
     <RoslynBin>..\Roslyn\Binaries</RoslynBin>
     <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
@@ -21,7 +22,7 @@
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
+    <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <RestorePackages>true</RestorePackages>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

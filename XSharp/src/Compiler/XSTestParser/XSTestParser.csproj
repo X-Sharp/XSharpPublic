@@ -3,8 +3,10 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-	<SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
+    <RoslynProjectType>Custom</RoslynProjectType>
+    <SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <ProjectGuid>{203B6D4D-D370-46F2-82DB-A5FD30EE58CE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -15,11 +17,11 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
-    <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
+    <CscToolPath>$(BaseOutputPath)\$(CfgPath)</CscToolPath>
     <TargetFrameworkProfile />
-	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -61,10 +63,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">

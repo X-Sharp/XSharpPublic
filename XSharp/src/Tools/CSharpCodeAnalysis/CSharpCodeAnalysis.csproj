@@ -4,6 +4,7 @@
   <Import Project="..\..\..\..\Roslyn\build\Targets\Settings.props" />
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
 	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
@@ -16,7 +17,7 @@
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\clr-core\</OutDir>
+    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <SyntaxDefinition>$(MSBuildThisFileDirectory)..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
     <CompilerGeneratorToolsDir>$(SolutionDir)$(RoslynBin)\$(Configuration)\Exes\DeployCompilerGeneratorToolsRuntime\</CompilerGeneratorToolsDir>
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
@@ -52,7 +53,6 @@
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARPPRE</DefineConstants>
     <NoWarn>1591, CS0649</NoWarn>
-    <DocumentationFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>

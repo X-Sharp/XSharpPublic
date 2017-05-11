@@ -5,9 +5,10 @@
   <PropertyGroup>
     <!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <RoslynProjectType>Custom</RoslynProjectType>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
+    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
     <RoslynBin>..\Roslyn\Binaries</RoslynBin>
     <SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
@@ -23,13 +24,10 @@
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <SyntaxDefinition>$(MSBuildThisFileDirectory)..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
     <CompilerGeneratorToolsDir>$(SolutionDir)$(RoslynBin)\$(Configuration)\Exes\DeployCompilerGeneratorToolsRuntime\</CompilerGeneratorToolsDir>
-    <!--<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
-    <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>-->
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
+    <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>

@@ -24,10 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // don't create diagnosis instances unless lookup fails
             var binder = this.LookupSymbolsInternal(result, name, arity, basesBeingResolved, options, diagnose: false, useSiteDiagnostics: ref useSiteDiagnostics);
-            if (options.HasFlag(LookupOptions.DefinesOnly) && !result.IsClear)
-            {
-                FilterResults(result, options);
-            }
+            FilterResults(result, options);
             if (result.Kind != LookupResultKind.Viable && result.Kind != LookupResultKind.Empty)
             {
                 result.Clear();
@@ -52,20 +49,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var tmp = LookupResult.GetInstance();
                     scope.LookupSymbolsInSingleBinder(tmp, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteDiagnostics);
-                    if (options.HasFlag(LookupOptions.DefinesOnly) && !tmp.IsClear)
-                    {
-                        FilterResults(tmp, options);
-                    }
+                    FilterResults(tmp, options);
                     result.MergeEqual(tmp);
                     tmp.Free();
                 }
                 else
                 {
                     scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteDiagnostics);
-                    if (options.HasFlag(LookupOptions.DefinesOnly) && !result.IsClear)
-                    {
-                        FilterResults(result, options);
-                    }
+                    FilterResults(result, options);
                     if (!result.IsClear)
                     {
                         binder = scope;

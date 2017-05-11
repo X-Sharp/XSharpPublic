@@ -85,6 +85,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 internal SyntaxToken idName;
                 internal XP.MethodContext AccessMethodCtx = null;
                 internal XP.MethodContext AssignMethodCtx = null;
+                internal XP.MethodContext DupAccess = null;
+                internal XP.MethodContext DupAssign = null;
             }
 
             internal SyntaxListPool _pool;
@@ -118,13 +120,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     case XP.ACCESS:
                         if (propertyInfo.AccessMethodCtx != null)
-                            accessor.AddError(new ParseErrorData(ErrorCode.ERR_DuplicateAccessor, accessor));
+                            propertyInfo.DupAccess = accessor;
                         else
                             propertyInfo.AccessMethodCtx = accessor;
                         break;
                     case XP.ASSIGN:
                         if (propertyInfo.AssignMethodCtx != null)
-                            accessor.AddError(new ParseErrorData(ErrorCode.ERR_DuplicateAccessor, accessor));
+                            propertyInfo.DupAssign = accessor;
                         else
                             propertyInfo.AssignMethodCtx = accessor;
                         break;
@@ -1138,7 +1140,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   GenerateSimpleName(name), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken));
         }
 
-        protected NameSyntax GenerateQualifiedName(string name)
+        protected internal NameSyntax GenerateQualifiedName(string name)
         {
             string[] ids = name.Split('.');
             string idName = ids[0];
@@ -1335,12 +1337,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        protected void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, NameSyntax usingName, bool bStatic)
+        protected internal void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, NameSyntax usingName, bool bStatic)
         {
             bool found = false;
             for (int i = 0; i < usings.Count; i++)
             {
-                if (CaseInsensitiveComparison.Compare(GlobalEntities.Usings[i].Name.ToString(), usingName.ToString()) == 0)
+                if (CaseInsensitiveComparison.Compare(usings[i].Name.ToString(), usingName.ToString()) == 0)
                 {
                     found = true;
                     break;
@@ -1502,8 +1504,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var outerMods = _pool.Allocate();
             int getVisLvl;
             int setVisLvl;
-            var AccMet = vop.AccessMethodCtx;
-            var AssMet = vop.AssignMethodCtx;
+            var AccMet = vop.DupAccess != null ? vop.DupAccess : vop.AccessMethodCtx;
+            var AssMet = vop.DupAssign != null ? vop.DupAssign : vop.AssignMethodCtx;
 
             if (AccMet == null || AssMet == null)
             {
@@ -1720,6 +1722,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         isInInterfaceOrAbstract ? null : block,
                         null,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
+                if (vop.DupAccess != null)
+                {
+                    accessor = accessor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DuplicateAccessor));
+                }
                 if (!paramMatch)
                 {
                     var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignParametersMutchMatch);
@@ -1737,9 +1743,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
                 accessors.Add(accessor);
-                accessor.XNode = AccMet;
-                AccMet.CsNode = null;
-                ((IXParseTree)AccMet.Parent).CsNode = null;
+                AccMet.Put(accessor);
+                if (AccMet.Parent is XP.ClsmethodContext)
+                {
+                    ((XP.ClsmethodContext)AccMet.Parent).CsNode = null;
+                }
                 xnode = AccMet;
             }
             #endregion
@@ -1787,6 +1795,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         isInInterfaceOrAbstract ? null : block,
                         null,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
+                if (vop.DupAssign != null)
+                {
+                    accessor = accessor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DuplicateAccessor));
+                }
                 if (missingParam)
                 {
                     accessor = accessor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_AssignMethodsMustHaveAParameter));
@@ -1808,9 +1820,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
                 accessors.Add(accessor);
-                accessor.XNode = AssMet;
-                AssMet.CsNode = null;
-                ((IXParseTree)AssMet.Parent).CsNode = null;
+                AssMet.Put(accessor);
+                if (AssMet.Parent is XP.ClsmethodContext)
+                {
+                    ((XP.ClsmethodContext)AssMet.Parent).CsNode = null;
+                }
                 if (xnode == null)
                     xnode = AssMet;
             }
@@ -5915,13 +5929,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg = argList.Arguments[0];
             var exp = arg.Expression;
             var lit = exp.XNode.GetLiteralToken();
-            if (lit != null && lit.Type == XP.INT_CONST)
+            if (lit != null && (lit.Type == XP.INT_CONST || lit.Type == XP.HEX_CONST || lit.Type == XP.BIN_CONST))
             {
                 // get number and create a string literal value
                 var value = lit.SyntaxLiteralValue(_options);
-                int number = (int)value.Value;
-                char ch = (char)number;
+                Int64 number = Convert.ToInt64(value.Value);
+                char ch = ' ';
+                bool overflow = false; ;
+                if (number < UInt16.MaxValue)
+                    ch = (char)number;
+                else
+                    overflow = true;
                 var literal = GenerateLiteral(ch.ToString());
+                if (overflow)
+                {
+                    literal = literal.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                }
                 context.Put(literal);
                 return true;
             }

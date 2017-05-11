@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS0650</title>
   <keywords>
     <keyword>XS0650</keyword>
@@ -17,15 +17,15 @@
     <para styleclass="Normal">The following example code generates XS0650.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0650.prg &#160;<br/></para>
+    <para styleclass="Code with box">// XS0650.prg  <br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following example shows how to use the fixed keyword when you create a fixed size buffer:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// This code must appear in an unsafe block. &#160; <br/></para>
-    <para styleclass="Normal"> &#160;</para>
+    <para styleclass="Code with box">// This code must appear in an unsafe block.   <br/></para>
+    <para styleclass="Normal">  </para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -379,16 +379,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             SimpleNameSyntax node,
             bool invoked,
             DiagnosticBag diagnostics,
-            bool preferStaticMethodCall = false,
-            bool allDialects = false
+            bool bindMethod
             )
         {
             // This method replaced the standard C# BindIdentifier
             // xBase has some different rules for binding
             // - for calls without object prefix we prefer static method calls over self method calls (In VO SELF: is mandatory)
+            //   and we also prefer to find DEFINES over PROPERTIES
             // - when invoked = TRUE then we do not return local variables, with the exception of delegates
             // - when invoked = FALSE then we do not return methods, with the exception of assigning event handlers
-            bool preferStatic = preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects);
+
+            bool preferStatic = bindMethod && Compilation.Options.IsDialectVO;
+
             Debug.Assert(node != null);
 
             // If the syntax tree is ill-formed and the identifier is missing then we've already
@@ -443,28 +445,64 @@ namespace Microsoft.CodeAnalysis.CSharp
                 options |= LookupOptions.MustNotBeMethodTypeParameter;
             }
             // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
+            // and also not access a property without SELF: Prefix
+            // So when there is a property (Access) and a DEFINE with the same name then the
+            // system will use the define and not the property
             // so we check here if we are called from a memberaccessexpression with a colon separator
             // so String.Compare will use different lookup options as SELF:ToString()
             var originalOptions = options;
+
+            // Here we add XSharp Specific options
+            if (!bindMethod)
+            {
+                options |= LookupOptions.MustNotBeMethod;
+            }
+
             if (preferStatic)
             {
-                bool colon = false;
+                bool instance = false;
                 if (node.Parent is MemberAccessExpressionSyntax)
                 {
-                    var xnode = node.Parent.XNode as AccessMemberContext;
-                    if (xnode != null && xnode.Op.Text == ":")
+                    instance = node.IsInstanceMemberAccess(false);
+                }
+                else if (node.Parent is AssignmentExpressionSyntax)
+                {
+                    var aes = node.Parent as AssignmentExpressionSyntax;
+                    if (aes.Left == node)
                     {
-                        colon = true;
+                        instance = true;
                     }
                 }
-                if (!colon)
+                if (!instance)
                     options |= LookupOptions.MustNotBeInstance;
+                
+            }
+            else
+            {
+                if (node.Parent is MemberAccessExpressionSyntax)
+                {
+                    // Check for Messagebax.Show() which is class member access
+                    // versions window:ToString() which is instance member access
+                    if (!node.IsInstanceMemberAccess(true))
+                    { 
+                        options = LookupOptions.NamespacesOrTypesOnly;
+                    }
+                }
             }
 
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-            this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
-            if (preferStatic)
+
+            if (lookupResult.IsClear)
+            {
+                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+            }
+            // when no field or local found then try to find defines
+            if (lookupResult.IsClear && !bindMethod)
+            {
+                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options | LookupOptions.DefinesOnly);
+            }
+            if (preferStatic || lookupResult.IsClear)
             {
                 bool lookupAgain = false;
                 if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
@@ -478,7 +516,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (s.Kind != SymbolKind.Method)
                         lookupAgain = true;
                 }
-                if (lookupAgain)
+                if (lookupAgain || lookupResult.IsClear)
                 {
                     // This uses the 'original' BindIdentifier lookup mechanism
                     options = originalOptions;
@@ -586,6 +624,55 @@ namespace Microsoft.CodeAnalysis.CSharp
             lookupResult.Free();
             return expression;
         }
+
+        private void FilterResults(LookupResult result, LookupOptions options)
+        {
+            bool noMethod = options.HasFlag(LookupOptions.MustNotBeMethod);
+            bool onlyDef = options.HasFlag(LookupOptions.DefinesOnly);
+            if ((noMethod || onlyDef) && ! result.IsClear)
+            {
+                LookupResult tmp = LookupResult.GetInstance();
+                foreach (var sym in result.Symbols)
+                {
+                    bool add = false;
+                    switch (sym.Kind)
+                    {
+                        case SymbolKind.Field:
+                            if (onlyDef)
+                            {
+                                if (sym.ContainingType.Name == XSharpSpecialNames.CoreFunctionsClass)
+                                {
+                                    add = true;
+                                }
+                            }
+                            else
+                                add = true;
+                            break;
+                        case SymbolKind.Parameter:
+                        case SymbolKind.Local:
+                            add = true;
+                            break;
+                        case SymbolKind.Method:
+                            add = !noMethod;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (add)
+                    {
+                        SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, sym, null);
+                        tmp.MergeEqual(single);
+                    }
+
+                }
+                result.Clear();
+                result.MergeEqual(tmp);
+                tmp.Free();
+
+            }
+            return;
+        }
+
         private static TypeSymbol XsGetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<TypeSymbol> parameterTypes, int arg)
         {
             int paramNum = result.ParameterFromArgument(arg);
@@ -615,6 +702,27 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var targetType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
             return new BoundDefaultOperator(expression.Syntax, targetType);
+        }
+    }
+    internal static class XsBoundExpressionExtensions
+    {
+        internal static bool IsInstanceMemberAccess(this SimpleNameSyntax node, bool mustBeLHS)
+        {
+            bool instance = false;
+            if (node?.Parent is MemberAccessExpressionSyntax)
+            {
+                var xnode = node.Parent.XNode as AccessMemberContext;
+                if (xnode != null && xnode.Op.Text == ":")
+                {
+                    instance = true;
+                    if (mustBeLHS)
+                    {
+                        var par = node.Parent as MemberAccessExpressionSyntax;
+                        instance = par.Expression == node;
+                    }
+                }
+            }
+            return instance;
         }
     }
 }

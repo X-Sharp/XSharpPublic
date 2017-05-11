@@ -1,2 +1,0 @@
-"c:\Program Files (x86)\Microsoft Help Viewer\v2.2\HlpCtntMgr.exe" /silent /operation uninstall /catalogName VisualStudio14 /locale en-US /vendor "XSharp" /productName "X#"  /booklist "XSharp Documentation" /wait 0
-"c:\Program Files (x86)\Microsoft Help Viewer\v2.2\HlpCtntMgr.exe" /silent /operation uninstall /catalogName VisualStudio14 /locale en-US /vendor "XSharp" /productName "X#"  /booklist "X# BYOR Runtime Documentation" /wait 0

@@ -173,73 +173,109 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Fields
         private int _length;
         private int _start;
-        private bool token;
+        private bool _token;
         private IList<PPMatchRange> _children ;
         #endregion
         #region Properties
         internal bool IsList { get { return _children != null; } }
         internal int Start { get { return _start; } }
         internal int Length { get { return _length; } }
+        internal int MatchCount
+        {
+            get
+            {
+                if (Empty)
+                    return 0;
+                if (_children == null)
+                    return 1;
+                else
+                    return _children.Count;
+
+            }
+        }
         internal int End
         {
             get
             {
-                return _start + _length - 1;
+                if (_children?.Count > 0)
+                    return _children[_children.Count - 1].End;
+                else
+                    return _start + _length - 1;
             }
         }
         internal IList<PPMatchRange> Children { get { return _children; } }
 
         internal bool Empty
         {
-            get { return !token  && _length == 0; }
+            get { return !_token && _length == 0; }
         }
         internal bool IsToken
         {
-            get { return token; }
+            get { return _token; }
         }
-        internal bool IsSkipped
+
+        internal void SetPos(int start, int end)
         {
-            get { return  _start == -1 && _length == 0; }
+            _token = false;
+            if (Empty)
+            {
+                _start = start;
+                _length = end - start + 1;
+                _children = null;
+            }
+            else
+            {
+                _children = new List<PPMatchRange>();
+                _children.Add(Create(Start, End));
+                _children.Add(Create(start, end));
+                _length = end - Start + 1;
+            }
+        }
+        internal void SetToken(int pos)
+        {
+            if (Empty)
+            {
+                _token = true;
+                _start = pos;
+                _length = 1;
+                _children = null;
+            }
+            else
+            {
+                _token = true;
+                _children = new List<PPMatchRange>();
+                _children.Add(Token(_start));
+                _children.Add(Token(pos));
+            }
+        }
+        internal void  SetSkipped()
+        {
+            _start = -1;
+            _length = 0;
+            _token = false;
+            _children = null;
         }
 
         #endregion
         #region Constructors
-        internal static PPMatchRange Create( int start, int end)
+        private static PPMatchRange Token(int pos)
+        {
+            return new PPMatchRange() { _token = true, _start = pos, _length = 1, _children = null };
+        }
+        private static PPMatchRange Create( int start, int end)
         {
             return new PPMatchRange() { _start = start, _length = end - start +1, _children = null};
-        }
-        internal static PPMatchRange Create(IList<PPMatchRange> children)
-        {
-            int count = 0;
-            if (children != null)
-            {
-                count = children.Count;
-            }
-            switch (count)
-            {
-                case 0:
-                    return new PPMatchRange();
-                case 1:
-                    return Create(children[0].Start, children[0].End);
-                    
-            }
-            int start = children[0].Start;
-            int end = children[count - 1].End;
-            return new PPMatchRange() { _start = start, _length = end - start + 1, _children = children, token = false };
-        }
-        internal static PPMatchRange Skipped()
-        {
-            return new PPMatchRange() { _start = -1, _length = 0, token = false, _children = null };
-        }
-        internal static PPMatchRange Token(int pos)
-        {
-            return new PPMatchRange() { _start = pos, _length = 1, token = true, _children = null };
         }
         #endregion
         internal string GetDebuggerDisplay()
         {
-            if (token)
-                return $"Token ({Start})";
+            if (_token)
+            {
+                if (_children != null)
+                    return $"Token ({Children.Count}) {Start},{End}";
+                else
+                    return $"Token ({Start})";
+            }
             if (_start == 0 && _length == 0)
                 return "Empty";
             if (_start == -1 && _length == 0 )

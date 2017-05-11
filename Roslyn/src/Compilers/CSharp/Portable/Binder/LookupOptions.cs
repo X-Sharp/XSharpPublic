@@ -98,7 +98,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         MustNotBeMethodTypeParameter = 1 << 14,
 #if XSHARP
 
+        /// <summary>
+        /// Prevent finding namespaces when we want a type or member
+        /// </summary>
         ExcludeNameSpaces = 1 << 15,
+
+        /// <summary>
+        /// In VO/Vulcan compatibility mode we look for defines first
+        /// </summary>
+
+        DefinesOnly = 1 << 16,
+
+        /// <summary>
+        /// In VO/Vulcan compatibility mode we look for defines first
+        /// </summary>
+
+        MustNotBeMethod = 1 << 17,
 #endif
     }
 

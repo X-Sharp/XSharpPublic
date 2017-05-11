@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS0229</title>
   <keywords>
     <keyword>XS0229</keyword>
@@ -18,6 +18,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following example generates XS0229:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0229.prg &#160;<br/><br/>FUNCTION Start AS VOID<br/> &#160; &#160;RETURN<br/>FUNCTION Test(x AS IListCounter) &#160;AS VOID<br/> &#160; &#160;x:Count := 1<br/> &#160; &#160;// Try one of the following lines instead:<br/> &#160; &#160;// ((IList)x):Count := 1<br/> &#160; &#160;// or<br/> &#160; &#160;// ((Icounter)x):Count := 1<br/> &#160; &#160;RETURN<br/><br/>INTERFACE IList<br/> &#160; &#160;PROPERTY Count AS LONG GET SET<br/> &#160; &#160;METHOD Counter AS VOID<br/>END INTERFACE<br/><br/>INTERFACE ICounter<br/> &#160; &#160;PROPERTY Count AS REAL8 GET SET<br/>END INTERFACE<br/><br/>INTERFACE IListCounter INHERIT Ilist, ICounter<br/>END INTERFACE<br/></para>
+    <para styleclass="Code with box">// XS0229.prg  <br/><br/>FUNCTION Start AS VOID<br/>    RETURN<br/>FUNCTION Test(x AS IListCounter)  AS VOID<br/>    x:Count := 1<br/>    // Try one of the following lines instead:<br/>    // ((IList)x):Count := 1<br/>    // or<br/>    // ((Icounter)x):Count := 1<br/>    RETURN<br/><br/>INTERFACE IList<br/>    PROPERTY Count AS LONG GET SET<br/>    METHOD Counter AS VOID<br/>END INTERFACE<br/><br/>INTERFACE ICounter<br/>    PROPERTY Count AS REAL8 GET SET<br/>END INTERFACE<br/><br/>INTERFACE IListCounter INHERIT Ilist, ICounter<br/>END INTERFACE<br/></para>
   </body>
 </topic>

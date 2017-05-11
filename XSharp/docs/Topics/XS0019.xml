@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS0019</title>
   <keywords>
     <keyword>XS0019</keyword>
@@ -20,7 +20,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
-    <para styleclass="Normal"> &#160;</para>
+    <para styleclass="Normal">  </para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In the following example, conditional logic must be specified outside the ConditionalAttribute. You can pass only one predefined symbol to the ConditionalAttribute.</para>
@@ -28,7 +28,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
-    <para styleclass="Normal"> &#160;</para>
+    <para styleclass="Normal">  </para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

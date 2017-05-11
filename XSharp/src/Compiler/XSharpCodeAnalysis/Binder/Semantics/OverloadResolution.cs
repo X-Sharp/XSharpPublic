@@ -29,12 +29,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemberResolutionResult<TMember> m2,
             ArrayBuilder<BoundExpression> arguments,
             out BetterResult result,
-            out bool Ambiguous)
+            out HashSet<DiagnosticInfo> useSiteDiagnostics
+            )
             where TMember : Symbol
         {
             result = BetterResult.Neither;
-            Ambiguous = false;
+            bool Ambiguous = false;
             // Prefer the member not declared in VulcanRT, if applicable
+            useSiteDiagnostics = null;
             if (Compilation.Options.IsDialectVO)
             {
                 var asm1 = m1.Member.ContainingAssembly;
@@ -82,7 +84,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var refRight = parRight.RefKind;
                         var arg = arguments[i];
                         bool argCanBeByRef = arg.Kind == BoundKind.AddressOfOperator;
-                        
                         if (parLeft.Type != parRight.Type)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
@@ -108,17 +109,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return true;
                             }
                             // Now check for REF parameters and possible REF arguments
-                            if (refLeft != refRight)
+                            if (argCanBeByRef)
                             {
-                                if (refLeft == RefKind.Ref && argCanBeByRef)
+                                var op = arg as BoundAddressOfOperator;
+                                var opType = op?.Operand?.Type;
+                                if (refLeft == RefKind.Ref && opType == parLeft.Type)
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (refRight == RefKind.Ref && argCanBeByRef)
+                                if (refRight == RefKind.Ref && opType == parRight.Type)
                                 {
                                     result = BetterResult.Right;
                                     return true;
+                                }
+                                if (refLeft != refRight)
+                                {
+                                    if (refLeft == RefKind.Ref)
+                                    {
+                                        result = BetterResult.Left;
+                                        return true;
+                                    }
+                                    if (refRight == RefKind.Ref )
+                                    {
+                                        result = BetterResult.Right;
+                                        return true;
+                                    }
                                 }
 
                             }
@@ -175,7 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
-                        }
+                         }
 
                     }
                 }
@@ -191,12 +207,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             result = BetterResult.Left;
                             Ambiguous = true;
-                            return true;
                         }
                         if (reference.Name == asm2.Name)
                         {
                             result = BetterResult.Right;
                             Ambiguous = true;
+                        }
+                        if (Ambiguous)
+                        {
+                            TMember r1, r2;
+                            if (result == BetterResult.Left)
+                            {
+                                r1 = m1.Member;
+                                r2 = m2.Member;
+                            }
+                            else
+                            {
+                                r1 = m2.Member;
+                                r2 = m1.Member;
+                            }
+
+                            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
+                                new object[] {
+                                        r1.Name,
+                                        new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        r1.Kind.ToString()});
+                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            useSiteDiagnostics.Add(info);
                             return true;
                         }
                     }

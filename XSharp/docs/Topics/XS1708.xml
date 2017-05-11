@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
   <title>XS1708</title>
   <keywords>
     <keyword>XS1708</keyword>
@@ -19,6 +19,6 @@
     <para styleclass="Normal">The following sample generates XS1708.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS1708.prg &#160;<br/>// compile with: /unsafe &#160;<br/></para>
+    <para styleclass="Code with box">// XS1708.prg  <br/>// compile with: /unsafe  <br/></para>
   </body>
 </topic>

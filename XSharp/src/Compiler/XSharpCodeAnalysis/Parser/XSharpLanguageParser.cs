@@ -112,8 +112,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
-
-            var lexer = XSharpLexer.Create(_text.ToString(), _fileName, _options);
+            var sourceText = _text.ToString();
+            var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
             _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
@@ -127,9 +127,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
             var parseErrors = ParseErrorData.NewBag();
             var pp = new XSharpPreprocessor(_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
-            var ppTokens = pp.PreProcess();
-            // commontokenstream filters on tokens on the default channel. All other tokens are ignored
-            var ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+			BufferedTokenStream ppStream;
+            if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
+            { 
+	            var ppTokens = pp.PreProcess();
+                // no need to filter. The preprocessor does this already
+	            ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+            }
+            else
+            {
+				// No Standard Defs and no preprocessor tokens in the lexer
+				// so we bypass the preprocessor and use the lexer tokenstream
+                // but if a .ppo is required we must use the preprocessor to
+                // write the source text to the .ppo file
+                if (_options.PreprocessorOutput)
+                {
+                    pp.writeToPPO(sourceText,false,false);
+                }
+                BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
+                var tokens = ts.GetTokens();
+                // commontokenstream filters on tokens on the default channel. All other tokens are ignored
+                ppStream = new CommonTokenStream(new ListTokenSource(tokens));
+            }
             ppStream.Fill();
             _preprocessorTokenStream = ppStream;
             var parser = new XSharpParser(ppStream);
@@ -280,6 +299,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 result.Globals = treeTransform.GlobalEntities.Globals;
                 result.IncludedFiles = pp.IncludedFiles;
                 result.HasPCall = treeTransform.GlobalEntities.HasPCall;
+                result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
                 return result;
             }
             finally
@@ -414,137 +434,397 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        internal static SyntaxTree ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
+        internal static void ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
         {
             if (trees.Length > 0)
             {
                 var tree = trees[0];
                 var lp = new XSharpLanguageParser(tree.FilePath, null, options,null, null);
-                return lp.processTrees(trees, options);
+                lp.processTrees(trees, options);
             }
-            return null;
+            return;
         }
 
+        private string GetNsFullName(XP.Namespace_Context ns)
+        {
+            string name = ns.Name.GetText();
+            while (ns.Parent is XP.Namespace_Context)
+            {
+                ns = ns.Parent as XP.Namespace_Context;
+                name = ns.Name.GetText() + "." + name;
+            }
+            return name;
+        }
 
-        private SyntaxTree processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
+        private MemberDeclarationSyntax WrapInNamespace(XSharpTreeTransformation trans , MemberDeclarationSyntax member, XP.Namespace_Context xns)
+        {
+            if (xns != null)
+            {
+                var members = _pool.Allocate<MemberDeclarationSyntax>();
+                string nsName = GetNsFullName(xns);
+                members.Add(member);
+                member  = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+                    name: trans.GenerateQualifiedName(nsName),
+                    openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    externs: null,
+                    usings: null,
+                    members: members,
+                    closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                _pool.Free(members);
+
+            }
+            return member;
+        }
+
+        /// <summary>
+        /// Collects the types and the usings from their source file, because the body of the methods may contain references to code in this source
+        /// such as (static) functions.
+        /// </summary>
+        internal struct PartialPropertyElement
+        {
+            internal XP.IPartialPropertyContext Type;
+            internal IEnumerable<Syntax.UsingDirectiveSyntax> Usings;
+
+            internal PartialPropertyElement(XP.IPartialPropertyContext type, IEnumerable<Syntax.UsingDirectiveSyntax> usings)
+            {
+                Type = type;
+                Usings = usings;
+            }
+        }
+
+        private void processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
         {
             // this method gives us the ability to check all the generated syntax trees,
             // add generated constructors to partial classes when none of the parts has a constructor
             // merge accesses and assigns from different source files into one property etc.
-            if (!parseoptions.VOClipperConstructors || ! parseoptions.IsDialectVO)
-                return null;
-            var partialClasses = new Dictionary<string, List<XP.Class_Context>>(StringComparer.OrdinalIgnoreCase);
+            // we pass the usings from the compilationunits along because the new compilation unit will
+            // have to the same (combined) list of usings
+            var partialClasses = new Dictionary<string, List<PartialPropertyElement>>(StringComparer.OrdinalIgnoreCase);
             foreach (var tree in trees)
             {
                 var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
-                foreach (var member in compilationunit.Members)
+                if (compilationunit.NeedsProcessing)
                 {
-                    if (member is Syntax.NamespaceDeclarationSyntax)
+                    foreach (var member in compilationunit.Members)
                     {
-                        processNameSpace(member as Syntax.NamespaceDeclarationSyntax, partialClasses);
-                    }
-                    else if (member is Syntax.ClassDeclarationSyntax)
-                    {
-                        processClass(member as Syntax.ClassDeclarationSyntax, partialClasses);
+                        if (member is Syntax.NamespaceDeclarationSyntax)
+                        {
+                            processNameSpace(member as Syntax.NamespaceDeclarationSyntax, partialClasses, compilationunit.Usings);
+                        }
+                        else
+                        {
+                            var node = member.Green as CSharpSyntaxNode;
+                            if (node.XNode is XP.EntityContext)
+                            {
+                                processType(node.XNode as XP.EntityContext, partialClasses, compilationunit.Usings);
+                            }
+                        }
                     }
                 }
             }
             if (partialClasses.Count > 0)
             {
-                // Create a new tree which shall have the class declarations and generated constructors
+                // Create a new tree which shall have the generated constructors and properties
                 // and return this tree to the caller.
                 // we copy the attributes, modifiers etc from one of the class instances to make sure that
                 // do not specify a conflicting modifier.
-                // When one of the partial declarations has a Ctor then we do not have to do anything.
                 var tr = trees[0];
                 var cu = tr.GetRoot().Green as CompilationUnitSyntax;
-                var trans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
-                var classes = _pool.Allocate<MemberDeclarationSyntax>();
+                XSharpTreeTransformation trans = null;
+                XSharpVOTreeTransformation votrans = null;
+                if (_options.IsDialectVO)
+                {
+                    trans = votrans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                }
+                else
+                {
+                    trans = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                }
+                SyntaxListBuilder<UsingDirectiveSyntax> usingslist = _pool.Allocate<UsingDirectiveSyntax>();
+                usingslist.AddRange(cu.Usings);
+                var members = _pool.Allocate<MemberDeclarationSyntax>();
+                members.AddRange(cu.Members);
                 var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
                 foreach (var element in partialClasses)
                 {
                     var name = element.Key;
                     bool hasctor = false;
-                    XP.Class_Context cls = null;
-                    foreach (var xnode in element.Value)
+                    bool haspartialprop = false;
+                    XP.IPartialPropertyContext ctxt = null;
+                    XP.Namespace_Context xns;
+                    foreach (var val in element.Value)
                     {
-                        if (cls == null)
-                        {
-                            cls = xnode as XP.Class_Context;
-                        }
+                        var xnode = val.Type;
+                        ctxt = xnode;
                         if (xnode.Data.HasCtor)
                         {
                             hasctor = true;
-                            break;
+                        }
+                        if (xnode.Data.PartialProps)
+                        {
+                            haspartialprop = true;
                         }
                     }
-                    if (!hasctor)
+                    if (ctxt.CsNode is InterfaceDeclarationSyntax)
                     {
-                        clsmembers.Clear();
-                        var classdecl = cls.Get<ClassDeclarationSyntax>();
-                        var ctor = trans.GenerateClipperCtor(classdecl.Identifier);
-                        clsmembers.Add(ctor);
-                        
-                        var decl = _syntaxFactory.ClassDeclaration(
-                            trans.MakeCompilerGeneratedAttribute(false), 
-                            classdecl.Modifiers,
-                            classdecl.Keyword, 
-                            classdecl.Identifier, 
-                            classdecl.TypeParameterList,
-                            classdecl.BaseList, 
-                            classdecl.ConstraintClauses, 
-                            classdecl.OpenBraceToken,
-                            clsmembers, 
-                            classdecl.CloseBraceToken, 
-                            null);
-                        decl.XGenerated = true;
-                        classes.Add(decl);
+                        var ifdecl = ctxt.Get<InterfaceDeclarationSyntax>();
+                        // ctxt.Parent is XP.EntityContext
+                        // ctxt.Parent.Parent may be XP.Namespace_Context
+                        xns = ctxt.Parent.Parent as XP.Namespace_Context;
+                        if (haspartialprop)
+                        {
+                            clsmembers.Clear();
+                            var props = GeneratePartialProperties(element.Value, usingslist);
+                            if (props != null)
+                            {
+                                foreach (var prop in props)
+                                {
+                                    clsmembers.Add(prop);
+                                }
+                            }
+                            if (clsmembers.Count > 0)
+                            {
+                                var decl = _syntaxFactory.InterfaceDeclaration(
+                                trans.MakeCompilerGeneratedAttribute(false),
+                                ifdecl.Modifiers,
+                                ifdecl.Keyword,
+                                ifdecl.Identifier,
+                                ifdecl.TypeParameterList,
+                                ifdecl.BaseList,
+                                ifdecl.ConstraintClauses,
+                                ifdecl.OpenBraceToken,
+                                clsmembers,
+                                ifdecl.CloseBraceToken,
+                                null);
+                                ifdecl.XGenerated = true;
+                                members.Add(WrapInNamespace(trans,decl, xns));
+                            }
+                        }
+                    }
+                    else if (ctxt.CsNode is StructDeclarationSyntax)
+                    {
+                        var strucdecl = ctxt.Get<StructDeclarationSyntax>();
+                        // ctxt.Parent is XP.EntityContext
+                        // ctxt.Parent.Parent may be XP.Namespace_Context
+                        xns = ctxt.Parent.Parent as XP.Namespace_Context;
+                        if (haspartialprop)
+                        {
+                            clsmembers.Clear();
+                            var props = GeneratePartialProperties(element.Value, usingslist);
+                            if (props != null)
+                            {
+                                foreach (var prop in props)
+                                {
+                                    clsmembers.Add(prop);
+                                }
+                            }
+                            if (clsmembers.Count > 0)
+                            {
+                                var decl = _syntaxFactory.StructDeclaration(
+                                    trans.MakeCompilerGeneratedAttribute(false),
+                                    strucdecl.Modifiers,
+                                    strucdecl.Keyword,
+                                    strucdecl.Identifier,
+                                    strucdecl.TypeParameterList,
+                                    strucdecl.BaseList,
+                                    strucdecl.ConstraintClauses,
+                                    strucdecl.OpenBraceToken,
+                                    clsmembers,
+                                    strucdecl.CloseBraceToken,
+                                    null);
+                                strucdecl.XGenerated = true;
+                                members.Add(WrapInNamespace(trans, decl, xns));
+                            }
+                        }
+                    }
+                    else if (ctxt.CsNode is ClassDeclarationSyntax)
+                    {
+                        // ctxt.Parent is XP.EntityContext
+                        // ctxt.Parent.Parent may be XP.Namespace_Context
+                        xns = ctxt.Parent.Parent as XP.Namespace_Context;
+                        if (!hasctor || haspartialprop)
+                        {
+                            clsmembers.Clear();
+                            var classdecl = ctxt.Get<ClassDeclarationSyntax>();
+                            if (!hasctor && votrans != null)
+                            {
+                                var ctor = votrans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
+                                clsmembers.Add(ctor);
+                            }
+                            if (haspartialprop)
+                            {
+                                var props = GeneratePartialProperties(element.Value, usingslist);
+                                if (props != null)
+                                {
+                                    foreach (var prop in props)
+                                    {
+                                        clsmembers.Add(prop);
+                                    }
+                                }
+                            }
+                            if (clsmembers.Count > 0)
+                            {
+
+                                var decl = _syntaxFactory.ClassDeclaration(
+                                trans.MakeCompilerGeneratedAttribute(false),
+                                classdecl.Modifiers,
+                                classdecl.Keyword,
+                                classdecl.Identifier,
+                                classdecl.TypeParameterList,
+                                classdecl.BaseList,
+                                classdecl.ConstraintClauses,
+                                classdecl.OpenBraceToken,
+                                clsmembers,
+                                classdecl.CloseBraceToken,
+                                null);
+                                decl.XGenerated = true;
+
+                                members.Add(WrapInNamespace(trans, decl, xns));
+                            }
+                        }
                     }
                 }
                 _pool.Free(clsmembers);
                 var result = cu.Update(
                                     cu.Externs,
-                                    cu.Usings,
+                                    usingslist,
                                     cu.AttributeLists,
-                                    classes,
+                                    members,
                                     cu.EndOfFileToken);
                 
-                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed());
-                _pool.Free(classes);
-                return tree;
+                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed(), parseoptions, tr.FilePath, tr.Encoding);
+                
+                _pool.Free(members);
+                _pool.Free(usingslist);
+                trees[0] = tree;
             }
-            return null;
+            return ;
 
         }
-        private static void processClass(Syntax.ClassDeclarationSyntax classdecl, Dictionary<string, List<XP.Class_Context>> partialClasses)
+
+        private List<MemberDeclarationSyntax> GeneratePartialProperties (List<PartialPropertyElement> classes, 
+            SyntaxListBuilder<UsingDirectiveSyntax> usingslist)
         {
-            var green = classdecl.Green as ClassDeclarationSyntax;
-            var xnode = green.XNode as XP.EntityContext;
+            // Create a list of member declarations for all partial types 
+            // that do not have a constructor (when /vo16 is selected)
+            // or where access and assign were not found in the same source file
+            // the usingList will contain an unique list of using statements combined from the various
+            // source files where the types were found.
+            var dict = new Dictionary<string, List<XP.MethodContext>>(StringComparer.OrdinalIgnoreCase);
+            
+            var tmpUsings = new List<Syntax.UsingDirectiveSyntax>();
+            foreach (var clsctx in classes)
+            {
+                if (clsctx.Type.PartialProperties != null)
+                {
+                    foreach (var  m in clsctx.Type.PartialProperties)
+                    {
+                        var name = m.Id.GetText();
+                        if (dict.ContainsKey(name))
+                        {
+                            dict[name].Add(m);
+                        }
+                        else
+                        {
+                            var list = new List<XP.MethodContext>();
+                            list.Add(m);
+                            dict.Add(name, list);
+                        }
+                    }
+                    // Collect quickly now. Deduplicate later.
+                    tmpUsings.AddRange(clsctx.Usings);
+                }
+            }
+            // now we have a list of PropertyNames and methods
+            XSharpTreeTransformation Xform;
+            if (_options.IsDialectVO)
+            {
+                Xform = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
+            }
+            else
+            {
+                Xform = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
+            }
+
+            var result = new List<MemberDeclarationSyntax>();
+            // add the usings when they are not in the list yet
+            foreach (var u in tmpUsings)
+            {
+                if (u.StaticKeyword.IsKind(SyntaxKind.StaticKeyword))
+                    Xform.AddUsingWhenMissing(usingslist, (NameSyntax) u.Name.Green, true);
+                else
+                    Xform.AddUsingWhenMissing(usingslist, (NameSyntax)u.Name.Green, false);
+            }
+
+            // For each unique name add a property
+            foreach (var element in dict)
+            {
+                string originalName = null;
+                var prop = new XSharpTreeTransformation.SyntaxClassEntities.VoPropertyInfo();
+                foreach (var m in element.Value)
+                {
+                    originalName = m.Id.GetText();
+                    if (m.T.Token.Type == XSharpLexer.ACCESS)
+                    {
+                        if (prop.AccessMethodCtx == null)
+                            prop.AccessMethodCtx = m;
+                        else
+                            prop.DupAccess = m;
+                    }
+                    else
+                    {
+                        if (prop.AssignMethodCtx == null)
+                            prop.AssignMethodCtx = m;
+                        else
+                            prop.DupAssign = m;
+                    }
+                }
+                prop.idName = SyntaxFactory.Identifier(originalName);
+
+
+                var propdecl = Xform.GenerateVoProperty(prop, null);
+
+                result.Add(propdecl);
+            }
+            return result;
+        }
+        private static void processType(XP.EntityContext xnode, 
+            Dictionary<string, List<PartialPropertyElement>> partialClasses,
+            IEnumerable<Syntax.UsingDirectiveSyntax> usings
+            )
+        {
             if (xnode != null && xnode.ChildCount == 1)
             {
-                var cls = xnode.GetChild(0) as XP.Class_Context;
-                if (cls != null && cls.Data.Partial )
+                var cls = xnode.GetChild(0) as XP.IPartialPropertyContext;
+                if (cls != null && (cls.Data.Partial  || cls.Data.PartialProps))
                 {
                     var name = cls.Name;
                     if (!partialClasses.ContainsKey(name))
                     {
-                        partialClasses.Add(name, new List<XP.Class_Context>());
+                        partialClasses.Add(name, new List<PartialPropertyElement>());
                     }
-                    partialClasses[name].Add(cls);
+                    partialClasses[name].Add(new PartialPropertyElement(cls, usings));
                 }
             }
         }
-        private static void processNameSpace(Syntax.NamespaceDeclarationSyntax ns, Dictionary<string, List<XP.Class_Context>> partialClasses)
+        private static void processNameSpace(Syntax.NamespaceDeclarationSyntax ns, 
+            Dictionary<string, List<PartialPropertyElement>> partialClasses,
+            IEnumerable<Syntax.UsingDirectiveSyntax> usings)
         {
             foreach (var member in ns.Members)
             {
                 if (member is Syntax.NamespaceDeclarationSyntax)
                 {
-                    processNameSpace(member as Syntax.NamespaceDeclarationSyntax, partialClasses);
+                    processNameSpace(member as Syntax.NamespaceDeclarationSyntax, partialClasses, usings);
                 }
-                else if (member is Syntax.ClassDeclarationSyntax)
+                else
                 {
-                    processClass(member as Syntax.ClassDeclarationSyntax, partialClasses);
+                    var node = member.Green as CSharpSyntaxNode;
+                    if (node.XNode is XP.EntityContext)
+                    {
+                        processType(node.XNode as XP.EntityContext, partialClasses, usings);
+                    }
                 }
             }
 

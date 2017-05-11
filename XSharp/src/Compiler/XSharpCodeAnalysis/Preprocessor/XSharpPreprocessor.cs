@@ -238,6 +238,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpDialect.Vulcan:
                     macroDefines.Add("__DIALECT_VULCAN__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     break;
+                case XSharpDialect.Harbour:
+                    macroDefines.Add("__DIALECT_HARBOUR__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                    break;
                 default:
                     break;
             }
@@ -288,16 +291,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             DebugOutput("# of UDCs used   : {0}", this.rulesApplied);
         }
 
-        private void _writeToPPO(String text)
+        private void _writeToPPO(String text, bool mustTrim = true, bool addCRLF = true)
         {
             // do not call t.Text when not needed.
             if (_preprocessorOutput)
             {
-                text = text.TrimAllWithInplaceCharArray();
+                if (mustTrim)
+                    text = text.TrimAllWithInplaceCharArray();
                 var buffer = _encoding.GetBytes(text);
                 _ppoStream.Write(buffer, 0, buffer.Length);
-                buffer = _encoding.GetBytes("\r\n");
-                _ppoStream.Write(buffer, 0, buffer.Length);
+                if (addCRLF)
+                {
+                    buffer = _encoding.GetBytes("\r\n");
+                    _ppoStream.Write(buffer, 0, buffer.Length);
+                }
             }
         }
 
@@ -306,11 +313,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _preprocessorOutput && _ppoStream != null && inputs.parent == null;
         }
 
-        private void writeToPPO(string text)
+        internal void writeToPPO(string text, bool mustTrim = true, bool addCRLF = true)
         {
             if (mustWriteToPPO())
             {
-                _writeToPPO(text);
+                _writeToPPO(text,mustTrim, addCRLF);
             }
         }
         private void writeToPPO(IList<XSharpToken> tokens, bool prefix = false, bool prefixNewLines = false)
@@ -421,7 +428,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         /// <summary>
         /// Pre-processes the input stream. Reads #Include files, processes #ifdef commands and translations from #defines, macros and UDCs
-        /// </summary>
+        /// </summary>                                                               a
         /// <returns>Translated input stream</returns>
         internal IList<IToken> PreProcess()
         {
@@ -449,7 +456,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                         writeToPPO("");
                 }
-                result.Add(t);
+                if (t.Channel == XSharpLexer.DefaultTokenChannel)
+                    result.Add(t);
             }
             doEOFChecks();
             return result;
@@ -1069,12 +1077,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ln = line[0];
                 if (line.Count > 1)
                 {
-                    text = "";
-                    for (int i = 1; i < line.Count; i++)
-                    {
-                        text += line[i].Text;
-                    }
-                    text = text.Trim();
+                    int start = line[1].StartIndex;
+                    int end = line[line.Count - 1].StopIndex;
+                    text = line[1].TokenSource.InputStream.GetText(new Interval(start, end));
                 }
                 else
                 {
@@ -1353,10 +1358,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // allocate a result and copy the items 0 .. i-1 to the result
                             tempResult = copySource(line, i);
                         }
-                        foreach (var t in deflist)
+                        if (deflist != null)
                         {
-                            var t2 = new XSharpToken(t);
-                            t2.Channel = XSharpLexer.DefaultTokenChannel;
+                            foreach (var t in deflist)
+                            {
+                                var t2 = new XSharpToken(t);
+                                t2.Channel = XSharpLexer.DefaultTokenChannel;
+                                t2.SourceSymbol = token;
+                                tempResult.Add(t2);
+                            }
+                        }
+                        else
+                        {
+                            // add a space so error messages look proper
+                            var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ");
+                            t2.Channel = XSharpLexer.Hidden;
                             t2.SourceSymbol = token;
                             tempResult.Add(t2);
                         }

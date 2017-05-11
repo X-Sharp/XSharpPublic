@@ -6,6 +6,7 @@
 	<UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
 	<SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
+	<RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
 	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -21,7 +22,7 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
+    <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1591, CS8032</NoWarn>

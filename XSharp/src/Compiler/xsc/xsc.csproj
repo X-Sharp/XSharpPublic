@@ -3,12 +3,13 @@
   <Import Project="..\..\..\build\Targets\Settings.props" />
   <Import Project="..\..\..\..\Roslyn\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
-	<!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
-	<UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
+    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-	<SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
+    <SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
+    <RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
+    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
     <ProjectGuid>{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -23,7 +24,7 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <CscToolPath>$(BaseOutputPath)\$(Configuration)\Exes\csc\</CscToolPath>
+    <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NoWarn>1591, CS8032</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>

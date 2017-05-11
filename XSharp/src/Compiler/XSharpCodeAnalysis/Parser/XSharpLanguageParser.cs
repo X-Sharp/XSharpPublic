@@ -434,15 +434,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        internal static SyntaxTree ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
+        internal static void ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
         {
             if (trees.Length > 0)
             {
                 var tree = trees[0];
                 var lp = new XSharpLanguageParser(tree.FilePath, null, options,null, null);
-                return lp.processTrees(trees, options);
+                lp.processTrees(trees, options);
             }
-            return null;
+            return;
         }
 
         private string GetNsFullName(XP.Namespace_Context ns)
@@ -493,7 +493,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private SyntaxTree processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
+        private void processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
         {
             // this method gives us the ability to check all the generated syntax trees,
             // add generated constructors to partial classes when none of the parts has a constructor
@@ -531,7 +531,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // do not specify a conflicting modifier.
                 var tr = trees[0];
                 var cu = tr.GetRoot().Green as CompilationUnitSyntax;
-                SyntaxListBuilder<UsingDirectiveSyntax> usingslist = _pool.Allocate<UsingDirectiveSyntax>();
                 XSharpTreeTransformation trans = null;
                 XSharpVOTreeTransformation votrans = null;
                 if (_options.IsDialectVO)
@@ -542,7 +541,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     trans = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
                 }
-                var classes = _pool.Allocate<MemberDeclarationSyntax>();
+                SyntaxListBuilder<UsingDirectiveSyntax> usingslist = _pool.Allocate<UsingDirectiveSyntax>();
+                usingslist.AddRange(cu.Usings);
+                var members = _pool.Allocate<MemberDeclarationSyntax>();
+                members.AddRange(cu.Members);
                 var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
                 foreach (var element in partialClasses)
                 {
@@ -596,7 +598,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 ifdecl.CloseBraceToken,
                                 null);
                                 ifdecl.XGenerated = true;
-                                classes.Add(WrapInNamespace(trans,decl, xns));
+                                members.Add(WrapInNamespace(trans,decl, xns));
                             }
                         }
                     }
@@ -632,7 +634,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     strucdecl.CloseBraceToken,
                                     null);
                                 strucdecl.XGenerated = true;
-                                classes.Add(WrapInNamespace(trans, decl, xns));
+                                members.Add(WrapInNamespace(trans, decl, xns));
                             }
                         }
                     }
@@ -678,7 +680,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 null);
                                 decl.XGenerated = true;
 
-                                classes.Add(WrapInNamespace(trans, decl, xns));
+                                members.Add(WrapInNamespace(trans, decl, xns));
                             }
                         }
                     }
@@ -688,15 +690,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     cu.Externs,
                                     usingslist,
                                     cu.AttributeLists,
-                                    classes,
+                                    members,
                                     cu.EndOfFileToken);
                 
-                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed());
-                _pool.Free(classes);
+                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed(), parseoptions, tr.FilePath, tr.Encoding);
+                
+                _pool.Free(members);
                 _pool.Free(usingslist);
-                return tree;
+                trees[0] = tree;
             }
-            return null;
+            return ;
 
         }
 

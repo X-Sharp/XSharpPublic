@@ -88,14 +88,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 diagnosticBag.Free();
             }
 #if XSHARP
-            var newtree = InternalSyntax.XSharpLanguageParser.ProcessTrees(trees,parseOptions);
-            if (newtree != null)
-            {
-                var oldtrees = trees;
-                trees = new SyntaxTree[oldtrees.Length+1];
-                Array.Copy(oldtrees, trees, oldtrees.Length);
-                trees[oldtrees.Length] = newtree;
-            }
+            XSharpLanguageParser.ProcessTrees(trees, parseOptions);
+
 #endif
 
             var diagnostics = new List<DiagnosticInfo>();

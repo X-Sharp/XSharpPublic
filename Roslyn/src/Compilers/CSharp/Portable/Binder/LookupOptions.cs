@@ -108,6 +108,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
 
         DefinesOnly = 1 << 16,
+
+        /// <summary>
+        /// In VO/Vulcan compatibility mode we look for defines first
+        /// </summary>
+
+        MustNotBeMethod = 1 << 17,
 #endif
     }
 

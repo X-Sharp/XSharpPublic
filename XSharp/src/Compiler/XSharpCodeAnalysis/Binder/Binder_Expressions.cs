@@ -391,7 +391,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // - when invoked = TRUE then we do not return local variables, with the exception of delegates
             // - when invoked = FALSE then we do not return methods, with the exception of assigning event handlers
 
-            bool preferStatic = Compilation.Options.IsDialectVO;
+            bool preferStatic = bindMethod && Compilation.Options.IsDialectVO;
 
             Debug.Assert(node != null);
 
@@ -453,17 +453,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             // so we check here if we are called from a memberaccessexpression with a colon separator
             // so String.Compare will use different lookup options as SELF:ToString()
             var originalOptions = options;
-            
+
+            // Here we add XSharp Specific options
+            if (!bindMethod)
+            {
+                options |= LookupOptions.MustNotBeMethod;
+            }
+
             if (preferStatic)
             {
                 bool instance = false;
                 if (node.Parent is MemberAccessExpressionSyntax)
                 {
-                    var xnode = node.Parent.XNode as AccessMemberContext;
-                    if (xnode != null && xnode.Op.Text == ":")
-                    {
-                        instance = true;
-                    }
+                    instance = node.IsInstanceMemberAccess(false);
                 }
                 else if (node.Parent is AssignmentExpressionSyntax)
                 {
@@ -481,12 +483,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (node.Parent is MemberAccessExpressionSyntax)
                 {
-                    var par = node.Parent as MemberAccessExpressionSyntax;
-                    if (par.Expression == node)
-                    {
-                        // this the left side of a combined name, such as MessageBox in 
-                        // MessageBox.Show
-                        options |= LookupOptions.MustNotBeInstance;
+                    // Check for Messagebax.Show() which is class member access
+                    // versions window:ToString() which is instance member access
+                    if (!node.IsInstanceMemberAccess(true))
+                    { 
+                        options = LookupOptions.NamespacesOrTypesOnly;
                     }
                 }
             }
@@ -494,15 +495,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
 
-            if (!bindMethod)
-            {
-                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options | LookupOptions.DefinesOnly);
-            }
-            if (lookupResult.IsClear )
+            if (lookupResult.IsClear)
             {
                 this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
             }
-            if (preferStatic)
+            // when no field or local found then try to find defines
+            if (lookupResult.IsClear && !bindMethod)
+            {
+                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options | LookupOptions.DefinesOnly);
+            }
+            if (preferStatic || lookupResult.IsClear)
             {
                 bool lookupAgain = false;
                 if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
@@ -516,7 +518,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (s.Kind != SymbolKind.Method)
                         lookupAgain = true;
                 }
-                if (lookupAgain)
+                if (lookupAgain || lookupResult.IsClear)
                 {
                     // This uses the 'original' BindIdentifier lookup mechanism
                     options = originalOptions;
@@ -627,17 +629,43 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void FilterResults(LookupResult result, LookupOptions options)
         {
-            if (options.HasFlag(LookupOptions.DefinesOnly) && ! result.IsClear)
+            bool noMethod = options.HasFlag(LookupOptions.MustNotBeMethod);
+            bool onlyDef = options.HasFlag(LookupOptions.DefinesOnly);
+            if ((noMethod || onlyDef) && ! result.IsClear)
             {
                 LookupResult tmp = LookupResult.GetInstance();
                 foreach (var sym in result.Symbols)
                 {
-                    if ((sym.Kind == SymbolKind.Field && sym.ContainingType.Name == XSharpSpecialNames.CoreFunctionsClass)
-                        || sym.Kind == SymbolKind.Local || sym.Kind == SymbolKind.Parameter)
+                    bool add = false;
+                    switch (sym.Kind)
+                    {
+                        case SymbolKind.Field:
+                            if (onlyDef)
+                            {
+                                if (sym.ContainingType.Name == XSharpSpecialNames.CoreFunctionsClass)
+                                {
+                                    add = true;
+                                }
+                            }
+                            else
+                                add = true;
+                            break;
+                        case SymbolKind.Parameter:
+                        case SymbolKind.Local:
+                            add = true;
+                            break;
+                        case SymbolKind.Method:
+                            add = !noMethod;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (add)
                     {
                         SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, sym, null);
                         tmp.MergeEqual(single);
                     }
+
                 }
                 result.Clear();
                 result.MergeEqual(tmp);
@@ -676,6 +704,27 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var targetType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
             return new BoundDefaultOperator(expression.Syntax, targetType);
+        }
+    }
+    internal static class XsBoundExpressionExtensions
+    {
+        internal static bool IsInstanceMemberAccess(this SimpleNameSyntax node, bool mustBeLHS)
+        {
+            bool instance = false;
+            if (node?.Parent is MemberAccessExpressionSyntax)
+            {
+                var xnode = node.Parent.XNode as AccessMemberContext;
+                if (xnode != null && xnode.Op.Text == ":")
+                {
+                    instance = true;
+                    if (mustBeLHS)
+                    {
+                        var par = node.Parent as MemberAccessExpressionSyntax;
+                        instance = par.Expression == node;
+                    }
+                }
+            }
+            return instance;
         }
     }
 }

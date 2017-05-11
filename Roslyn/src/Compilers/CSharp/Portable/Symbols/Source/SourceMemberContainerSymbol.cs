@@ -1460,38 +1460,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 // The type '{0}' already contains a definition for '{1}'
                                 if (Locations.Length == 1 || IsPartial)
-#if XSHARP
-                                {
-                                    if (symbol.Kind == SymbolKind.Property)
-                                    {
-                                        string type;
-                                        var propSymbol = symbol as SourcePropertySymbol;
-                                        if (propSymbol.GetMethod != null)
-                                            type = "ASSIGN";
-                                        else
-                                            type = "ACCESS";
-                                        string sourceloc = "";
-                                        foreach (var syntaxref in this.DeclaringSyntaxReferences)
-                                        {
-                                            if (syntaxref == propSymbol.SyntaxReference)
-                                            {
-                                                sourceloc = propSymbol.Location.SourceTree.FilePath;
-                                            }
-                                        }
-                                        string message = "There is probably an " + type + " with the same name defined in another source file "+sourceloc+ ". X# does not support declaring an ACCESS and an ASSIGN in separate source files";
-                                        message = symbol.Name + " " + message;
-                                        diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, symbol.Locations[0], this, message);
-                                    }
-                                    else
-                                    {
-                                        diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, symbol.Locations[0], this, symbol.Name);
-                                    }
-                                }
-#else
                                 {
                                     diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, symbol.Locations[0], this, symbol.Name);
                                 }
-#endif
                             }
 
                             if (lastSym.Kind == SymbolKind.Method)

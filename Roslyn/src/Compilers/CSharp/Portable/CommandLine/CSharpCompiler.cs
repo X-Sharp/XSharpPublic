@@ -75,7 +75,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             }
 #if XSHARP
-            XSharpLanguageParser.ProcessTrees(trees,parseOptions);
+            var newtree = XSharpLanguageParser.ProcessTrees(trees,parseOptions);
+            if (newtree != null)
+            {
+                var newtrees = new SyntaxTree[trees.Length+1];
+                Array.Copy(trees, newtrees, trees.Length);
+                newtrees[trees.Length] = newtree;
+                trees = newtrees;
+            }
 #endif
 
             var diagnostics = new List<DiagnosticInfo>();

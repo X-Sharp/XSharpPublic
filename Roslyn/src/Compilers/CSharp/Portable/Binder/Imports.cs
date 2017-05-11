@@ -213,6 +213,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             else if (uniqueUsings.Contains(imported))
                             {
+#if XSHARP
+                                // No warnings for generated code 
+                                if (!declarationSyntax.XGenerated)
+#endif
                                 diagnostics.Add(ErrorCode.WRN_DuplicateUsing, usingDirective.Name.Location, imported);
                             }
                             else
@@ -230,9 +234,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                             else
                             {
                                 var importedType = (NamedTypeSymbol)imported;
-                                if (uniqueUsings.Contains(importedType))
+                                if (uniqueUsings.Contains(importedType) )
                                 {
-                                    diagnostics.Add(ErrorCode.WRN_DuplicateUsing, usingDirective.Name.Location, importedType);
+#if XSHARP
+                                    // No warnings for generated code 
+                                    if (!declarationSyntax.XGenerated)
+#endif
+                                        diagnostics.Add(ErrorCode.WRN_DuplicateUsing, usingDirective.Name.Location, importedType);
                                 }
                                 else
                                 {

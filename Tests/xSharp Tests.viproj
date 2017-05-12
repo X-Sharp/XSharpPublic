@@ -7338,7 +7338,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C107
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
 ; ************** APPLICATION C108 - Conflict between same named class and local *************
 Application = C108 - Conflict between same named class and local
 IDEVersion = 1.06
@@ -13168,7 +13168,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C166 - Problem assigning System.Decimal to usual
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C167 - Problem declaring class ClassName and NS.ClassName *************
 Application = C167 - Problem declaring class ClassName and NS.ClassName
 IDEVersion = 1.06
@@ -24116,7 +24116,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C078
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = 3A527CCD-FFA2-423D-A17F-3B2D5424CFCE
 ; ************** APPLICATION C079 - Cannot use static member of class with same name of containing function *************
 Application = C079 - Cannot use static member of class with same name of containing function
 IDEVersion = 1.06
@@ -43797,9 +43797,9 @@ GalleryPage =
 GalleryDefaultName = 
 Target = 0
 Platform = x86
-Language = XSharp
+Language = VulcanNet
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = None
 Folder = %ProjectPath%\Applications\C435\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -47510,7 +47510,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C471 - Parser errors in VO dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C472 - Issues with /vo16 *************
 Application = C472 - Issues with /vo16
 IDEVersion = 1.06
@@ -49926,7 +49926,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C494 - Compiler crash with ASSIGN without parameters
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C495 - Problem when omitting constructor with /vo16+ *************
 Application = C495 - Problem when omitting constructor with /vo16+
 IDEVersion = 1.06
@@ -51830,7 +51830,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C512 - PARTIAL classes problem with multiple files
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C513 - Problem with PARTIAL classes *************
 Application = C513 - Problem with PARTIAL classes
 IDEVersion = 1.06
@@ -51933,7 +51933,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C513 - Problem with PARTIAL classes
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C514 - Problem with PARTIAL class and CompilerGeneratedAttribute *************
 Application = C514 - Problem with PARTIAL class and CompilerGeneratedAttribute
 IDEVersion = 1.06

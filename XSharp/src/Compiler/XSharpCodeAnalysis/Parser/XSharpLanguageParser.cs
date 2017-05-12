@@ -445,15 +445,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        internal static void ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
+        internal static SyntaxTree ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
         {
             if (trees.Length > 0)
             {
                 var tree = trees[0];
                 var lp = new XSharpLanguageParser(tree.FilePath, null, options,null, null);
-                lp.processTrees(trees, options);
+                var newtree = lp.processTrees(trees, options);
+                return newtree;
             }
-            return;
+            return null;
         }
 
         private string GetNsFullName(XP.Namespace_Context ns)
@@ -467,12 +468,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return name;
         }
 
-        private MemberDeclarationSyntax WrapInNamespace(XSharpTreeTransformation trans , MemberDeclarationSyntax member, XP.Namespace_Context xns)
+        private MemberDeclarationSyntax WrapInNamespace(XSharpTreeTransformation trans , MemberDeclarationSyntax member, 
+            XP.Namespace_Context xns, string defaultNamespace)
         {
-            if (xns != null)
+            if (xns != null || !String.IsNullOrEmpty(defaultNamespace))
             {
                 var members = _pool.Allocate<MemberDeclarationSyntax>();
-                string nsName = GetNsFullName(xns);
+                string nsName;
+                if (xns != null)
+                    nsName = GetNsFullName(xns);
+                else
+                    nsName = defaultNamespace;
                 members.Add(member);
                 member  = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: trans.GenerateQualifiedName(nsName),
@@ -496,7 +502,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             internal XP.IPartialPropertyContext Type;
             internal IEnumerable<Syntax.UsingDirectiveSyntax> Usings;
-
             internal PartialPropertyElement(XP.IPartialPropertyContext type, IEnumerable<Syntax.UsingDirectiveSyntax> usings)
             {
                 Type = type;
@@ -504,7 +509,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private void processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
+        private SyntaxTree processTrees(SyntaxTree[] trees,CSharpParseOptions parseoptions)
         {
             // this method gives us the ability to check all the generated syntax trees,
             // add generated constructors to partial classes when none of the parts has a constructor
@@ -540,27 +545,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // and return this tree to the caller.
                 // we copy the attributes, modifiers etc from one of the class instances to make sure that
                 // do not specify a conflicting modifier.
-                var tr = trees[0];
-                var cu = tr.GetRoot().Green as CompilationUnitSyntax;
                 XSharpTreeTransformation trans = null;
-                XSharpVOTreeTransformation votrans = null;
                 if (_options.IsDialectVO)
                 {
-                    trans = votrans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                    trans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
                 }
                 else
                 {
-                    trans = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, tr.FilePath);
+                    trans = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
                 }
                 SyntaxListBuilder<UsingDirectiveSyntax> usingslist = _pool.Allocate<UsingDirectiveSyntax>();
-                usingslist.AddRange(cu.Usings);
                 var members = _pool.Allocate<MemberDeclarationSyntax>();
-                members.AddRange(cu.Members);
                 var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
+                var attribs = _pool.Allocate<AttributeListSyntax>();
                 foreach (var element in partialClasses)
                 {
                     var name = element.Key;
-                    bool hasctor = false;
+                    //bool hasctor = false;
                     bool haspartialprop = false;
                     XP.IPartialPropertyContext ctxt = null;
                     XP.Namespace_Context xns;
@@ -568,10 +570,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var xnode = val.Type;
                         ctxt = xnode;
-                        if (xnode.Data.HasCtor)
-                        {
-                            hasctor = true;
-                        }
+                        //if (xnode.Data.HasCtor)
+                        //{
+                        //    hasctor = true;
+                        //}
                         if (xnode.Data.PartialProps)
                         {
                             haspartialprop = true;
@@ -586,7 +588,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (haspartialprop)
                         {
                             clsmembers.Clear();
-                            var props = GeneratePartialProperties(element.Value, usingslist);
+                            var props = GeneratePartialProperties(element.Value, usingslist, trans);
                             if (props != null)
                             {
                                 foreach (var prop in props)
@@ -597,7 +599,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (clsmembers.Count > 0)
                             {
                                 var decl = _syntaxFactory.InterfaceDeclaration(
-                                trans.MakeCompilerGeneratedAttribute(false),
+                                attribs,
                                 ifdecl.Modifiers,
                                 ifdecl.Keyword,
                                 ifdecl.Identifier,
@@ -609,7 +611,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 ifdecl.CloseBraceToken,
                                 null);
                                 ifdecl.XGenerated = true;
-                                members.Add(WrapInNamespace(trans,decl, xns));
+                                members.Add(WrapInNamespace(trans,decl, xns, _options.DefaultNamespace));
                             }
                         }
                     }
@@ -622,7 +624,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (haspartialprop)
                         {
                             clsmembers.Clear();
-                            var props = GeneratePartialProperties(element.Value, usingslist);
+                            var props = GeneratePartialProperties(element.Value, usingslist, trans);
                             if (props != null)
                             {
                                 foreach (var prop in props)
@@ -633,7 +635,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (clsmembers.Count > 0)
                             {
                                 var decl = _syntaxFactory.StructDeclaration(
-                                    trans.MakeCompilerGeneratedAttribute(false),
+                                    attribs ,
                                     strucdecl.Modifiers,
                                     strucdecl.Keyword,
                                     strucdecl.Identifier,
@@ -645,7 +647,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     strucdecl.CloseBraceToken,
                                     null);
                                 strucdecl.XGenerated = true;
-                                members.Add(WrapInNamespace(trans, decl, xns));
+                                members.Add(WrapInNamespace(trans, decl, xns, _options.DefaultNamespace));
                             }
                         }
                     }
@@ -654,18 +656,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // ctxt.Parent is XP.EntityContext
                         // ctxt.Parent.Parent may be XP.Namespace_Context
                         xns = ctxt.Parent.Parent as XP.Namespace_Context;
-                        if (!hasctor || haspartialprop)
+                        if (/*!hasctor || */haspartialprop)
                         {
                             clsmembers.Clear();
                             var classdecl = ctxt.Get<ClassDeclarationSyntax>();
-                            if (!hasctor && votrans != null)
-                            {
-                                var ctor = votrans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
-                                clsmembers.Add(ctor);
-                            }
+                            //if (!hasctor && trans != null && _options.VOClipperConstructors)
+                            //{
+                            //    var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
+                            //    clsmembers.Add(ctor);
+                            //}
                             if (haspartialprop)
                             {
-                                var props = GeneratePartialProperties(element.Value, usingslist);
+                                var props = GeneratePartialProperties(element.Value, usingslist, trans);
                                 if (props != null)
                                 {
                                     foreach (var prop in props)
@@ -678,7 +680,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
 
                                 var decl = _syntaxFactory.ClassDeclaration(
-                                trans.MakeCompilerGeneratedAttribute(false),
+                                attribs ,
                                 classdecl.Modifiers,
                                 classdecl.Keyword,
                                 classdecl.Identifier,
@@ -691,31 +693,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 null);
                                 decl.XGenerated = true;
 
-                                members.Add(WrapInNamespace(trans, decl, xns));
+                                members.Add(WrapInNamespace(trans, decl, xns, _options.DefaultNamespace));
                             }
                         }
                     }
                 }
-                _pool.Free(clsmembers);
-                var result = cu.Update(
-                                    cu.Externs,
+                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                var result = _syntaxFactory.CompilationUnit(
+                                    externs,
                                     usingslist,
-                                    cu.AttributeLists,
+                                    attribs,
                                     members,
-                                    cu.EndOfFileToken);
-                
-                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed(), parseoptions, tr.FilePath, tr.Encoding);
+                                    eof);
+                result.XGenerated = true;
+                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed(), parseoptions);
                 
                 _pool.Free(members);
                 _pool.Free(usingslist);
-                trees[0] = tree;
+                _pool.Free(externs);
+                _pool.Free(attribs);
+                _pool.Free(clsmembers);
+                return tree;
             }
-            return ;
+            return null;
 
         }
 
         private List<MemberDeclarationSyntax> GeneratePartialProperties (List<PartialPropertyElement> classes, 
-            SyntaxListBuilder<UsingDirectiveSyntax> usingslist)
+            SyntaxListBuilder<UsingDirectiveSyntax> usingslist, XSharpTreeTransformation trans)
         {
             // Create a list of member declarations for all partial types 
             // that do not have a constructor (when /vo16 is selected)
@@ -723,7 +728,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // the usingList will contain an unique list of using statements combined from the various
             // source files where the types were found.
             var dict = new Dictionary<string, List<XP.MethodContext>>(StringComparer.OrdinalIgnoreCase);
-            
             var tmpUsings = new List<Syntax.UsingDirectiveSyntax>();
             foreach (var clsctx in classes)
             {
@@ -732,6 +736,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var  m in clsctx.Type.PartialProperties)
                     {
                         var name = m.Id.GetText();
+                        if (name.StartsWith("@@"))
+                            name = name.Substring(2);
                         if (dict.ContainsKey(name))
                         {
                             dict[name].Add(m);
@@ -748,34 +754,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             // now we have a list of PropertyNames and methods
-            XSharpTreeTransformation Xform;
-            if (_options.IsDialectVO)
-            {
-                Xform = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
-            }
-            else
-            {
-                Xform = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
-            }
 
             var result = new List<MemberDeclarationSyntax>();
             // add the usings when they are not in the list yet
             foreach (var u in tmpUsings)
             {
                 if (u.StaticKeyword.IsKind(SyntaxKind.StaticKeyword))
-                    Xform.AddUsingWhenMissing(usingslist, (NameSyntax) u.Name.Green, true);
+                    trans.AddUsingWhenMissing(usingslist, (NameSyntax)u.Name.Green, true);
                 else
-                    Xform.AddUsingWhenMissing(usingslist, (NameSyntax)u.Name.Green, false);
+                    trans.AddUsingWhenMissing(usingslist, (NameSyntax)u.Name.Green, false);
             }
 
             // For each unique name add a property
             foreach (var element in dict)
             {
-                string originalName = null;
                 var prop = new XSharpTreeTransformation.SyntaxClassEntities.VoPropertyInfo();
+                prop.idName = SyntaxFactory.Identifier(element.Key);
                 foreach (var m in element.Value)
                 {
-                    originalName = m.Id.GetText();
                     if (m.T.Token.Type == XSharpLexer.ACCESS)
                     {
                         if (prop.AccessMethodCtx == null)
@@ -791,10 +787,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             prop.DupAssign = m;
                     }
                 }
-                prop.idName = SyntaxFactory.Identifier(originalName);
-
-
-                var propdecl = Xform.GenerateVoProperty(prop, null);
+                var propdecl = trans.GenerateVoProperty(prop, null);
 
                 result.Add(propdecl);
             }

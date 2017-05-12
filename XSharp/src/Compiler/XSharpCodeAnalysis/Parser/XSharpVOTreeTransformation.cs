@@ -19,7 +19,7 @@ limitations under the License.
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Roslyn.Utilities;
+using Roslyn.Utilities; 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -925,52 +925,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return null;
         }
-        public ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx)
-        {
-            ParameterListSyntax pars;
-            // No parent class, so inherit from Object.
-            // Object has a parameterless constructor
-            if (classctx.BaseType == null)
-            {
-                pars = _syntaxFactory.ParameterList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    MakeSeparatedList<ParameterSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-            }
-            else
-            {
-                pars = GetClipperParameters();
-            }
-
-            ArgumentListSyntax args;
-            if (classctx.BaseType == null)
-            {
-                args = MakeArgumentList();
-            }
-            else
-            {
-                var expr = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
-                args = MakeArgumentList(MakeArgument(expr));
-            }
-            var chain = _syntaxFactory.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
-                                                                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                                                                SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword),
-                                                                args
-                                                                );
-            var stmts = new List<StatementSyntax>();
-            var body = MakeBlock(stmts);
-            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-            GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
-            if (classctx.BaseType != null)
-            {
-                attributeLists.Add(MakeClipperCallingConventionAttribute(new List<ExpressionSyntax>()));
-            }
-            var mods = TokenList(SyntaxKind.PublicKeyword);
-            var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null, null);
-            ctor.XGenerated = true;
-            return ctor;
-        }
-
+  
+            
         #endregion
 
         #region Helpers
@@ -1031,25 +987,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //
                 // generate new class constructor
                 // 
-                var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
-                var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
-                newmembers.AddRange(classdecl.Members);
-                newmembers.Add(ctor);
-                classdecl = classdecl.Update(
-                    classdecl.AttributeLists,
-                    classdecl.Modifiers,
-                    classdecl.Keyword,
-                    classdecl.Identifier,
-                    classdecl.TypeParameterList,
-                    classdecl.BaseList,
-                    classdecl.ConstraintClauses,
-                    classdecl.OpenBraceToken,
-                    newmembers,
-                    classdecl.CloseBraceToken,
-                    classdecl.SemicolonToken);
-                _pool.Free(newmembers);
-                context.Put(classdecl);
-                context.Data.HasCtor = true;
+                //var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
+                //var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                //newmembers.AddRange(classdecl.Members);
+                //newmembers.Add(ctor);
+                //classdecl = classdecl.Update(
+                //    classdecl.AttributeLists,
+                //    classdecl.Modifiers,
+                //    classdecl.Keyword,
+                //    classdecl.Identifier,
+                //    classdecl.TypeParameterList,
+                //    classdecl.BaseList,
+                //    classdecl.ConstraintClauses,
+                //    classdecl.OpenBraceToken,
+                //    newmembers,
+                //    classdecl.CloseBraceToken,
+                //    classdecl.SemicolonToken);
+                //_pool.Free(newmembers);
+                //context.Put(classdecl);
+                //context.Data.HasCtor = true;
             }
         }
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)

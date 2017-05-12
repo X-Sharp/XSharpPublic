@@ -756,7 +756,7 @@ aliasedName			: Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifie
 simpleName			: Id=identifier	GenericArgList=genericArgumentList?
                     ;
 
-genericArgumentList : l=LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* r=GT
+genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
                     ;
 
 identifierName		: Id=identifier

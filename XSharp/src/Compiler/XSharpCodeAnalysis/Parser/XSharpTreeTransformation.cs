@@ -3009,7 +3009,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Class, Interface and Structure Members
+        /*
+        public ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx)
+        {
+            ParameterListSyntax pars = _syntaxFactory.ParameterList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    MakeSeparatedList<ParameterSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
 
+            ArgumentListSyntax args = MakeArgumentList();
+            var chain = _syntaxFactory.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
+                                                                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                                                SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword),
+                                                                args
+                                                                );
+            var stmts = new List<StatementSyntax>();
+            var body = MakeBlock(stmts);
+            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
+            GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
+            var mods = TokenList(SyntaxKind.PublicKeyword);
+            var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null);
+            ctor.XGenerated = true;
+            return ctor;
+        }
+        */
         protected MemberDeclarationSyntax GenerateClassWrapper (SyntaxToken identifier,MemberDeclarationSyntax member, XP.NameDotContext namedot)
         {
             MemberDeclarationSyntax cls = _syntaxFactory.ClassDeclaration(

@@ -88,8 +88,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 diagnosticBag.Free();
             }
 #if XSHARP
-            XSharpLanguageParser.ProcessTrees(trees, parseOptions);
-
+            var newtree = InternalSyntax.XSharpLanguageParser.ProcessTrees(trees,parseOptions);
+            if (newtree != null)
+            {
+                var newtrees = new SyntaxTree[trees.Length+1];
+                Array.Copy(trees, newtrees, trees.Length);
+                newtrees[trees.Length] = newtree;
+                trees = newtrees;
+            }
 #endif
 
             var diagnostics = new List<DiagnosticInfo>();
@@ -253,7 +259,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// with assembly name "b" and module name "b.exe" embedded in the file.
         /// </summary>
         protected override string GetOutputFileName(Compilation compilation, CancellationToken cancellationToken)
-        {
+        { 
             if (Arguments.OutputFileName == null)
             {
                 Debug.Assert(Arguments.CompilationOptions.OutputKind.IsApplication());

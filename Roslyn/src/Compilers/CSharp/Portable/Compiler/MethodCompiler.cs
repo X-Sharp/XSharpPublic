@@ -838,7 +838,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     return;
                 }
-
+                /*
+                if (methodSymbol.IsGeneratedConstructor())
+                {
+                    methodSymbol = UpdateGeneratedMethod(methodSymbol, diagsForCurrentMethod);
+                }
+                */
                 // no need to emit the default ctor, we are not emitting those
                 if (methodSymbol.IsDefaultValueTypeConstructor())
                 {

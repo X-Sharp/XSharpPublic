@@ -69,18 +69,21 @@ namespace XSharp.Project
                         Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);
                     }
+                    //
+                    // Only capturing keystroke for OUR languageService... ???
+                    //
+                    IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
+                    Debug.Assert(textView != null);
+
+                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator);
+
+                    IOleCommandTarget next;
+                    textViewAdapter.AddCommandFilter(filter, out next);
+                    filter.Next = next;
                 }
             }
-            //
-            IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
-            Debug.Assert(textView != null);
+            }
 
-            CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator);
-
-            IOleCommandTarget next;
-            textViewAdapter.AddCommandFilter(filter, out next);
-            filter.Next = next;
-        }
     }
 
 }

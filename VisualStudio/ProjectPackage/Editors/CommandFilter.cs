@@ -283,19 +283,18 @@ namespace XSharp.Project
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpModel.XElement gotoElement;
-            MemberInfo dummyElement;
+            XSharpLanguage.CompletionElement gotoElement;
             String currentNS = "";
             if (currentNamespace != null)
             {
                 currentNS = currentNamespace.Name;
             }
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out dummyElement);
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             //
-            if (gotoElement != null)
+            if ((gotoElement != null) && (gotoElement.XSharpElement != null))
             {
                 // Ok, find it ! Let's go ;)
-                gotoElement.OpenEditor();
+                gotoElement.XSharpElement.OpenEditor();
             }
             //
         }
@@ -405,28 +404,27 @@ namespace XSharp.Project
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpModel.XElement gotoElement;
-            MemberInfo systemElement;
+            XSharpLanguage.CompletionElement gotoElement;
             String currentNS = "";
             if (currentNamespace != null)
             {
                 currentNS = currentNamespace.Name;
             }
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out systemElement);
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             //
-            if ((gotoElement != null) || (systemElement != null))
+            if ((gotoElement != null) || (gotoElement.IsInitialized))
             {
 
-                if ((gotoElement != null) && (gotoElement.Kind == XSharpModel.Kind.Class))
+                if ((gotoElement.XSharpElement != null) && (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Class))
                 {
-                    XSharpModel.XType xType = gotoElement as XSharpModel.XType;
+                    XSharpModel.XType xType = gotoElement.XSharpElement as XSharpModel.XType;
                     if (xType != null)
                     {
                         foreach (XSharpModel.XTypeMember mbr in xType.Members)
                         {
                             if (String.Compare(mbr.Name, "constructor", true) == 0)
                             {
-                                gotoElement = mbr;
+                                gotoElement = new XSharpLanguage.CompletionElement(mbr);
                                 break;
                             }
                         }
@@ -445,13 +443,17 @@ namespace XSharp.Project
                 }
 
                 _signatureSession.Dismissed += OnSignatureSessionDismiss;
-                if (gotoElement != null)
+                if (gotoElement.XSharpElement != null)
                 {
-                    _signatureSession.Properties["Element"] = gotoElement;
+                    _signatureSession.Properties["Element"] = gotoElement.XSharpElement;
                 }
-                else if (systemElement != null)
+                else if (gotoElement.SystemElement != null)
                 {
-                    _signatureSession.Properties["Element"] = systemElement;
+                    _signatureSession.Properties["Element"] = gotoElement.SystemElement;
+                }
+                else if (gotoElement.CodeElement != null)
+                {
+                    _signatureSession.Properties["Element"] = gotoElement.CodeElement;
                 }
                 _signatureSession.Properties["Line"] = startLineNumber;
                 _signatureSession.Properties["Start"] = ssp.Position;

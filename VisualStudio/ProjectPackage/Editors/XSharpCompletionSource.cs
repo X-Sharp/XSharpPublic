@@ -1878,7 +1878,7 @@ namespace XSharpLanguage
             // lex the entire document
             // Get compiler options
             XFile file = XSolution.FindFile(fileName);
-            XSharpParseOptions parseoptions = null;
+            XSharpParseOptions parseoptions = XSharpParseOptions.Default;
             if (file != null)
             {
                 var prj = file.Project.ProjectNode;

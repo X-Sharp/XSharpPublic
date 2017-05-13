@@ -83,17 +83,16 @@ namespace XSharp.Project
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpModel.XElement gotoElement;
-            MemberInfo systemElement;
+            XSharpLanguage.CompletionElement gotoElement;
             String currentNS = "";
             if (currentNamespace != null)
             {
                 currentNS = currentNamespace.Name;
             }
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out systemElement);
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             //
             //
-            if ( (gotoElement != null) || (systemElement != null) )
+            if ((gotoElement != null) && (gotoElement.IsInitialized))
             {
                 // Ok, find it ! Let's go ;)
                 applicableToSpan = currentSnapshot.CreateTrackingSpan
@@ -102,23 +101,25 @@ namespace XSharp.Project
                                             extent.Span.Start, searchText.Length, SpanTrackingMode.EdgeInclusive
                     );
 
-                if (gotoElement != null)
+                if (gotoElement.XSharpElement != null)
                 {
-                    qiContent.Add(gotoElement.Description);
+                    qiContent.Add(gotoElement.XSharpElement.Description);
+                }
+                else if (gotoElement.SystemElement is TypeInfo)
+                {
+                    XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)gotoElement.SystemElement);
+                    qiContent.Add(analysis.Description);
                 }
                 else
                 {
-                    if ( systemElement is TypeInfo )
-                    {
-                        XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)systemElement);
+                    // This works with System.MemberInfo AND 
+                    XSharpLanguage.MemberAnalysis analysis = null;
+                    if (gotoElement.SystemElement is MemberInfo )
+                        analysis = new XSharpLanguage.MemberAnalysis(gotoElement.SystemElement);
+                    else if ( gotoElement.CodeElement != null )
+                        analysis = new XSharpLanguage.MemberAnalysis(gotoElement.CodeElement);
+                    if ( analysis.IsInitialized )
                         qiContent.Add(analysis.Description);
-                    }
-                    else
-                    {
-                        XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(systemElement);
-                        qiContent.Add(analysis.Description);
-                    }
-
                 }
 
                 return;

@@ -209,6 +209,26 @@ namespace XSharp.Project
                 //
                 m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
             }
+            else if ( elt is System.Reflection.MemberInfo )
+            {
+                System.Reflection.MemberInfo element = elt as System.Reflection.MemberInfo;
+                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
+                if (analysis.IsInitialized)
+                {
+                    signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                }
+                //
+            }
+            else if ( elt is EnvDTE.CodeElement )
+            {
+                EnvDTE.CodeElement element = elt as EnvDTE.CodeElement;
+                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
+                if (analysis.IsInitialized)
+                {
+                    signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                }
+                //
+            }
             session.Dismissed += OnSignatureHelpSessionDismiss;
         }
 

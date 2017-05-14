@@ -198,6 +198,8 @@ namespace XSharpModel
                         }
                     }
                 }
+                // Hey, we should also walk the Parent's parents, no ?
+
             }
             return _namesake;
         }

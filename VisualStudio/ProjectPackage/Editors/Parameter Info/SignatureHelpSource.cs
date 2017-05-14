@@ -199,9 +199,9 @@ namespace XSharp.Project
                 }
                 // why not ?
                 int paramCount = int.MaxValue;
-                foreach( ISignature sig in signatures)
+                foreach (ISignature sig in signatures)
                 {
-                    if ( sig.Parameters.Count < paramCount)
+                    if (sig.Parameters.Count < paramCount)
                     {
                         paramCount = sig.Parameters.Count;
                     }
@@ -209,7 +209,7 @@ namespace XSharp.Project
                 //
                 m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
             }
-            else if ( elt is System.Reflection.MemberInfo )
+            else if (elt is System.Reflection.MemberInfo)
             {
                 System.Reflection.MemberInfo element = elt as System.Reflection.MemberInfo;
                 XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
@@ -219,7 +219,7 @@ namespace XSharp.Project
                 }
                 //
             }
-            else if ( elt is EnvDTE.CodeElement )
+            else if (elt is EnvDTE.CodeElement)
             {
                 EnvDTE.CodeElement element = elt as EnvDTE.CodeElement;
                 XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
@@ -228,6 +228,40 @@ namespace XSharp.Project
                     signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
                 }
                 //
+                if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                {
+                    EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
+                    if ( method.Parent is EnvDTE.CodeElement)
+                    {
+                        EnvDTE.CodeElement parent = (EnvDTE.CodeElement) method.Parent;
+                        if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                        {
+                            EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)parent;
+                            EnvDTE.CodeElements members = envClass.Members;
+                            foreach (EnvDTE.CodeElement member in members)
+                            {
+                                if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                                {
+                                    // Same Name ?
+                                    if (XSharpLanguage.XSharpTokenTools.StringEquals(member.Name, element.Name))
+                                    {
+                                        // Same Prototype
+                                        XSharpLanguage.MemberAnalysis newAnalysis = new XSharpLanguage.MemberAnalysis(member);
+                                        if (newAnalysis.IsInitialized)
+                                        {
+                                            // But don't add the current one
+                                            if (String.Compare(analysis.Prototype, newAnalysis.Prototype, true) != 0)
+                                            {
+                                                signatures.Add(CreateSignature(m_textBuffer, newAnalysis.Prototype, "", ApplicableToSpan));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // Hey, we should also walk the Parent's parents, no ?
+                        }
+                    }
+                }
             }
             session.Dismissed += OnSignatureHelpSessionDismiss;
         }

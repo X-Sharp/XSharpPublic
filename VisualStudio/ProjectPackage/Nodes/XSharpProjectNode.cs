@@ -251,8 +251,7 @@ namespace XSharp.Project
         /// <returns>This method returns a new instance of the ProjectOptions base class.</returns>
         public override ProjectOptions CreateProjectOptions()
         {
-            base.
-            options = new XSharpProjectOptions(this);
+            base.options = new XSharpProjectOptions(this);
             return options;
         }
 
@@ -816,6 +815,7 @@ namespace XSharp.Project
         {
             if (String.Compare(type, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) == 0          // prg
                 || String.Compare(type, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase) == 0          // none
+                || String.Compare(type, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase) == 0           // resource file
                 || String.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx
                 || String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
                 || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition

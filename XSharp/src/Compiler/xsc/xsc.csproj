@@ -11,6 +11,7 @@
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
+    <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
     <ProjectGuid>{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp.CommandLine</RootNamespace>
@@ -94,8 +95,8 @@
     </None>
     <None Include="project.json" />
   </ItemGroup>
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\XSharp\build\Targets\Imports.targets" />
+  <Import Project="$(RoslynSrc)\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

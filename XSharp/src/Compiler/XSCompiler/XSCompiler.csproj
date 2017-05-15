@@ -2,13 +2,13 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\..\build\Targets\Settings.props" />
   <PropertyGroup>
-	<!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
-	<UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
+    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-	<SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
-	<RoslynProjectType>Custom</RoslynProjectType>
+    <SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
+    <RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
+    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}</ProjectGuid>
@@ -52,19 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Binaries\Packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reflection.Metadata">
-      <HintPath>..\..\..\Binaries\Packages\System.Reflection.Metadata.1.4.2\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -113,8 +103,4 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <!--<PropertyGroup>
-    <EditBinToolPath>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\VC\bin\editbin.exe</EditBinToolPath>
-    <PostBuildEvent>"$(EditBinToolPath)" /stack:2097152 $(TargetPath)</PostBuildEvent>
-  </PropertyGroup>-->
 </Project>

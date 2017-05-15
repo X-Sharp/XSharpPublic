@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\build\Targets\Settings.props" />
+  <Import Project="..\..\..\..\XSharp\build\Targets\Settings.props" />
   <Import Project="..\..\..\..\Roslyn\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
@@ -32,6 +32,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -45,28 +46,17 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\XSCompiler\XSCompiler.csproj">
-      <Project>{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}</Project>
-      <Name>XSCompiler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
       <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
       <Name>XSharpCodeAnalysis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XSCompiler\XSCompiler.csproj">
+      <Project>{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}</Project>
+      <Name>XSCompiler</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Binaries\Packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Reflection.Metadata">
-      <HintPath>..\..\..\Binaries\Packages\System.Reflection.Metadata.1.4.2\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(RoslynSrc)\Compilers\Shared\BuildClient.cs">
@@ -96,13 +86,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="xsc.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="xsc.rsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="project.json" />
   </ItemGroup>
   <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />
-  <Import Project="..\..\..\build\Targets\Imports.targets" />
+  <Import Project="..\..\..\..\XSharp\build\Targets\Imports.targets" />
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

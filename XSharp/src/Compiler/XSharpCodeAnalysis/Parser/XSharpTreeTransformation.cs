@@ -5448,7 +5448,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitExpressionStmt([NotNull] XP.ExpressionStmtContext context)
         {
-
+            // an expression statement without a block does not properly debug.
+            // With a block we get 2 stops for every line of code.
+            
+            //if (context._Exprs.Count == 1)
+            //{
+            //    var expr = context._Exprs[0];
+            //    context.SetSequencePoint(expr.Start, expr.Stop);
+            //    var node = expr.CsNode;
+            //    if (node is StatementSyntax)
+            //    {
+            //        context.Put(MakeBlock(node as StatementSyntax));
+            //    }
+            //    else
+            //    {
+            //        context.Put(GenerateExpressionStatement(expr.Get<ExpressionSyntax>()));
+            //    }
+            //    return;
+            //}
+            
             context.SetSequencePoint(context._Exprs[0].Start, context._Exprs.Last().Stop);
             var statements = _pool.Allocate<StatementSyntax>();
             foreach (var exprCtx in context._Exprs)

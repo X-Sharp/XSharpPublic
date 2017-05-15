@@ -6,7 +6,7 @@
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
+    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
     <RoslynBin>..\Roslyn\Binaries</RoslynBin>
     <ProjectGuid>{7B774ABC-83A0-4FD8-91FB-1DBE8829765B}</ProjectGuid>
@@ -18,7 +18,7 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <SyntaxDefinition>$(MSBuildThisFileDirectory)..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
+    <SyntaxDefinition>$(MSBuildThisFileDirectory)$(RoslynSrc)\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
     <CompilerGeneratorToolsDir>$(SolutionDir)$(RoslynBin)\$(Configuration)\Exes\DeployCompilerGeneratorToolsRuntime\</CompilerGeneratorToolsDir>
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
@@ -27,22 +27,22 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <!-- <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
+    <!-- <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2D}</Project>
       <Name>CSharpSyntaxGenerator</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\BoundTreeGenerator\CompilersBoundTreeGenerator.csproj">
+    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\BoundTreeGenerator\CompilersBoundTreeGenerator.csproj">
       <Project>{02459936-CD2C-4F61-B671-5C518F2A3DDC}</Project>
       <Name>CompilersBoundTreeGenerator</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj">
+    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj">
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2E}</Project>
       <Name>CSharpErrorFactsGenerator</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference> -->
-    <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\DeployCompilerGeneratorToolsRuntime\DeployCompilerGeneratorToolsRuntime.csproj">
+    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\DeployCompilerGeneratorToolsRuntime\DeployCompilerGeneratorToolsRuntime.csproj">
       <Project>{6da08f12-32f2-4dd9-bbad-982eb71a2c9b}</Project>
       <Name>DeployCompilerGeneratorToolsRuntime</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -50,12 +50,12 @@
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARPPRE</DefineConstants>
     <NoWarn>1591, CS0649</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>TRACE;COMPILERCORE;XSHARPPRE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
@@ -68,7 +68,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARPPRE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -78,17 +78,17 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>TRACE;COMPILERCORE;XSHARPPRE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisResources.Designer.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Core\Portable\CodeAnalysisResources.Designer.cs">
       <Link>CodeAnalysisResources.Designer.cs</Link>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpResources.Designer.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\CSharp\Portable\CSharpResources.Designer.cs">
       <Link>CSharpResources.Designer.cs</Link>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -96,7 +96,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <BoundTreeDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
+    <BoundTreeDefinition Include="$(RoslynSrc)\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
       <SubType>Designer</SubType>
     </BoundTreeDefinition>
     <Compile Include="$(IntermediateOutputPath)BoundNodes.xml.Generated.cs" />
@@ -138,12 +138,12 @@
       <Visible>false</Visible>
     </Content>
   </ItemGroup>
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Dependencies\CodeAnalysis.Metadata\Microsoft.CodeAnalysis.Metadata.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Dependencies\CodeAnalysis.Metadata\Microsoft.CodeAnalysis.Metadata.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="..\..\..\..\Roslyn\build\Targets\Imports.targets" />
   <PropertyGroup>
     <PreBuildEvent>

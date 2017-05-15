@@ -22,7 +22,7 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <SyntaxDefinition>$(MSBuildThisFileDirectory)..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
+    <SyntaxDefinition>$(MSBuildThisFileDirectory)$(RoslynSrc)\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
     <CompilerGeneratorToolsDir>$(SolutionDir)$(RoslynBin)\$(Configuration)\Exes\DeployCompilerGeneratorToolsRuntime\</CompilerGeneratorToolsDir>
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
@@ -362,6 +362,7 @@
     <Compile Include="Symbols\CodeblockType.TypePublicSymbol.cs" />
     <Compile Include="Syntax\CSharpSyntaxTree.cs" />
     <Compile Include="Syntax\DeclarationStatementSyntax.cs" />
+    <Compile Include="Assembly.cs" />
   </ItemGroup>
   <ItemGroup>
     <BoundTreeDefinition Include="$(RoslynSrc)\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
@@ -375,14 +376,14 @@
     <Compile Include="ErrorCode.cs" />
     <ErrorCode Include="ErrorCode.cs" />
     <EmbeddedResource Include="XSharpResources.resx">
-      <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <CustomToolNamespace>LanguageService.CodeAnalysis</CustomToolNamespace>
       <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CodeAnalysisResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
       <CustomToolNamespace>LanguageService.CodeAnalysis</CustomToolNamespace>
       <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -391,13 +392,12 @@
   <ItemGroup>
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
-    <None Include="app.config" />
-    <None Include="project.json" />
     <None Include="Parser\XSharpLexer.g4" />
     <None Include="Parser\XSharp.g4" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assembly.cs" />
+    <None Include="app.config" />
+    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
@@ -414,12 +414,12 @@
     <Content Include="Preprocessor\preprocessor.txt" />
   </ItemGroup>
   <Import Project="$(RoslynSrc)\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="$(RoslynSrc)\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)\Dependencies\CodeAnalysis.Metadata\Microsoft.CodeAnalysis.Metadata.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
-  <Import Project="..\..\..\build\Targets\Imports.targets" />
+  <Import Project="$(RoslynSrc)\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="..\..\..\..\XSharp\build\Targets\Imports.targets" />
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

@@ -419,7 +419,7 @@
   <Import Project="$(RoslynSrc)\Dependencies\CodeAnalysis.Metadata\Microsoft.CodeAnalysis.Metadata.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\XSharp\build\Targets\Imports.targets" />
+  <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

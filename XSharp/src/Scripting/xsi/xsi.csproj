@@ -71,7 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Xsi.cs" />
   </ItemGroup>
-  <Import Project="..\..\..\build\Targets\Imports.targets" />
+  <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

@@ -114,9 +114,9 @@
       <LastGenOutput>ScriptingResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="..\..\..\..\Roslyn\src\Scripting\CSharp\CSharpScriptingShared.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Scripting\Core\ScriptingShared.projitems" Label="Shared" />
-  <Import Project="..\..\..\build\Targets\Imports.targets" />
+  <Import Project="$(RoslynSrc)\Scripting\CSharp\CSharpScriptingShared.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Scripting\Core\ScriptingShared.projitems" Label="Shared" />
+  <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

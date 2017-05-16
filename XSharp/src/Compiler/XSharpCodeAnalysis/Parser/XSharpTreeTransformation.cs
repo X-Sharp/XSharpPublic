@@ -1042,6 +1042,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
+        protected LiteralExpressionSyntax GenerateLiteral (IToken token)
+        {
+            if (token != null)
+                return SyntaxFactory.LiteralExpression(token.ExpressionKindLiteral(), token.SyntaxLiteralValue(_options));
+            return null;
+        }
         protected LiteralExpressionSyntax GenerateLiteral(bool value)
         {
             if (value)
@@ -5495,6 +5501,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.end);
             var expr = context.Expr?.Get<ExpressionSyntax>();
+            var ent = CurrentEntity;
+            if (context.Void != null && !ent.Data.MustBeVoid)
+            {
+                expr = GenerateLiteral(0);
+            }
             // / vo9 is handled in the Subclass
             context.Put(GenerateReturn(expr));
         }
@@ -6555,10 +6566,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIdentifierString([NotNull] XP.IdentifierStringContext context)
         {
-            context.Put(_syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,
-                context.Token?.SyntaxLiteralValue(_options)
-                ?? context.XsToken?.Token.SyntaxLiteralValue(_options)
-                ?? context.VnToken?.Token.SyntaxLiteralValue(_options)));
+            if (context.Token != null)
+                context.Put(GenerateLiteral(context.Token.Text ));
+            else if (context.XsToken != null)
+                context.Put(GenerateLiteral(context.XsToken.Token.Text));
+            else if (context.VnToken != null)
+                context.Put(GenerateLiteral(context.VnToken.Token.Text));
         }
 
         public override void ExitIdentifier([NotNull] XP.IdentifierContext context)
@@ -6737,7 +6750,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+                    context.Put(GenerateLiteral(context.Token));
                     if (context.Token.Type == XP.INCOMPLETE_STRING_CONST)
                     {
                         var litExpr = context.Get<LiteralExpressionSyntax>();

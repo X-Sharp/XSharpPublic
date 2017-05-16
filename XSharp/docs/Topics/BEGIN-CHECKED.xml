@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN (UN)CHECKED</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -12,10 +12,10 @@
     <header>
       <para styleclass="Heading1">BEGIN (UN)CHECKED</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN CHECKED </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END CHECKED? </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN CHECKED eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END CHECKED? garbage? eos</text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN UNCHECKED </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END CHECKED? </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN UNCHECKED eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END CHECKED? garbage? eos</text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"></para>
   </body>

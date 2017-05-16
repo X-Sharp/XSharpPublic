@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Codeblocks</title>
   <body>
     <header>
@@ -17,21 +17,24 @@
     <para styleclass="Code Example"></para>
     <para styleclass="Body Text">X# has extended the Codeblock rule. We now not only accept a single expression, but also a statement list and an expressionlist:</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">codeblock &#160; </text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: &#160;LCURLY PIPE codeblockParamList? PIPE expression RCURLY</text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">| LCURLY PIPE codeblockParamList? PIPE </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementblock</link><text style="font-weight:normal; font-style:normal; color:#000000;"> RCURLY</text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">| LCURLY PIPE codeblockParamList? PIPE codeblockExpressionList RCURLY</text><br/><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">codeblock &#160; </text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: LCURLY PIPE codeblockParamList? PIPE </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">( expression </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">| eos</text><text styleclass="" style="font-family:Consolas; font-size:12pt; color:#000000; background-color:#ffffff;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementblock</link><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">| codeblockExpressionList )</text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">RCURLY</text><br/><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">codeblockExprList</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: (expression COMMA)+ expression</text></para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">codeblockExprList</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: (expression? COMMA)+ expression</text><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">// The last expression is the return value of the block</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; ;</text></para>
     <para styleclass="Code Example"><br/></para>
     <para styleclass="Body Text">Examples of this are</para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; {|a,b| a:= Sqrt(a), a*b}</text><tab /><tab /><tab /></para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; {|a,b| ? a</text></para>
-    <para styleclass="Code Example"><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> ? b }</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; {|a,b| </text></para>
+    <para styleclass="Code Example"><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">? a</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">? b </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; }</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Body Text">The &#160;second example can be seen as an anonymous method.</para>
+    <para styleclass="Body Text">The &#160;second example can be seen as an anonymous method with 2 parameters</para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"><tab /><tab /><tab /></para>

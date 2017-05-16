@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Expressions</title>
   <body>
     <header>
@@ -12,7 +12,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Expressions </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><table styleclass="Default" rowcount="25" colcount="5" style="width:auto; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+    <para styleclass="Code Example"><table styleclass="Default" rowcount="26" colcount="5" style="width:auto; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><text style="font-weight:bold;">Expression type</text></para>
@@ -172,6 +172,23 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expression IS datatype</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">As Typecheck</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">expresion ASTYPE datatype</text></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>

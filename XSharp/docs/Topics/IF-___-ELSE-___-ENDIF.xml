@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>IF ... ELSE ... ENDIF</title>
   <keywords>
     <keyword>ELSE</keyword>
@@ -13,11 +13,11 @@
     <header>
       <para styleclass="Heading1">IF ... ELSE ... ENDIF</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">ifstmt &#160; </text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: &#160; &#160;IF expression </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">ifstmt &#160; </text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: &#160; &#160;IF expression eos</text></para>
     <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(ELSEIF expression </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(ELSEIF expression eos</text></para>
     <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><text style="font-weight:normal; font-style:normal; color:#000000;">) *</text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(ELSE </text></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><text style="font-weight:normal; font-style:normal; color:#000000;">)?</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(END IF? | ENDIF) &#160;</text><br/><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(ELSE eos</text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><text style="font-weight:normal; font-style:normal; color:#000000;">)?</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">(END IF? | ENDIF) &#160;garbage? eos</text><br/><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

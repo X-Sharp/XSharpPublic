@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN USING</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -11,7 +11,7 @@
     <header>
       <para styleclass="Heading1">BEGIN USING</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN USING ( expression | </text><link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL" style="font-weight:normal; font-style:normal; color:#000000;">variableDeclaration</link><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END USING? </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">BEGIN USING ( expression | </text><link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL" style="font-weight:normal; font-style:normal; color:#000000;">variableDeclaration</link><text style="font-weight:normal; font-style:normal; color:#000000;"> ) &#160;eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;">END USING? garbage? eos</text></para>
     <para styleclass="Code Example"></para>
   </body>
 </topic>

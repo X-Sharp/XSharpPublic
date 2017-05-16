@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FIELD</title>
   <keywords>
     <keyword>FIELD</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">FIELD</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">fielddecl</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">:</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">FIELD </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> (COMMA </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;">)* (IN </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;">)? </text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">fielddecl</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">:</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">FIELD </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> (COMMA </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;">)* (IN </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;">)? eos</text></para>
     <para styleclass="Code Example"><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

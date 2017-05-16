@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LOOP</title>
   <keywords>
     <keyword>LOOP</keyword>
@@ -11,6 +11,6 @@
     </header>
     <para styleclass="Body Text">The Loop statement jumps back to the beginning of the current DO WHILE, FOR NEXT, FOREACH NEXT or REPEAT UNTIL block</para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">loopstmt &#160; : LOOP </text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">loopstmt &#160; : LOOP eos</text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;;</text></para>
   </body>
 </topic>

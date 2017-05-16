@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FOREACH ... NEXT</title>
   <keywords>
     <keyword>AS</keyword>
@@ -14,8 +14,8 @@
     </header>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">foreachstmt &#160; : FOREACH</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;(</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">IMPLIED </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
     <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">| VAR </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">| </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> AS datatype )</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;IN expression </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link></para>
-    <para styleclass="Code Example"><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;NEXT </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">| </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" style="font-weight:normal; font-style:normal; color:#000000;">identifier</link><text style="font-weight:normal; font-style:normal; color:#000000;"> AS datatype )</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;IN expression eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" style="font-weight:normal; font-style:normal; color:#000000;">statementBlock</link></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;NEXT garbage? eos</text></para>
     <para styleclass="Code Example"><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

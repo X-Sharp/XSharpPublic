@@ -444,8 +444,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal static bool IsFieldOrPropertyInitializer(BoundStatement initializer)
         {
-            var syntax = initializer.Syntax;
 
+
+            var syntax = initializer.Syntax;
+#if XSHARP
+            if (syntax is VariableDeclaratorSyntax)
+            {
+                return (initializer as BoundExpressionStatement)?.Expression.Kind == BoundKind.AssignmentOperator;
+            }
+#endif
             if (syntax is ExpressionSyntax && syntax?.Parent.Kind() == SyntaxKind.EqualsValueClause) // Should be the initial value.
             {
                 switch (syntax.Parent?.Parent.Kind())
@@ -455,8 +462,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return (initializer as BoundExpressionStatement)?.Expression.Kind == BoundKind.AssignmentOperator;
                 }
             }
-
             return false;
+
+
         }
 
         /// <summary>

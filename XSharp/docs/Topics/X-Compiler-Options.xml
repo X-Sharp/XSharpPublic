@@ -10,6 +10,6 @@
     <header>
       <para styleclass="Heading1">X# Compiler Options</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">The X# compiler is a command line tool named xsc.exe. This tool can be controlled using command line options. The following pages describe these command line options.</para>
   </body>
 </topic>

@@ -1,1 +1,34 @@
-There are no redistributable files for XSharp at this moment.
+You are allowed to distribute the following XSharp DLLs with your projects:
+
+
+XSharp Scripting
+================
+Xsi.exe
+XSharp.Scripting.dll
+XSharp.CodeAnalysis.dll
+
+Support files
+=============
+Microsoft.DiaSymReader.Native.amd64.dll
+Microsoft.DiaSymReader.Native.x86.dll
+System.AppContext.dll
+System.Collections.Immutable.dll
+System.Diagnostics.FileVersionInfo.dll
+System.Diagnostics.StackTrace.dll
+System.IO.Compression.dll
+System.IO.FileSystem.dll
+System.IO.FileSystem.Primitives.dll
+System.Reflection.Metadata.dll
+System.Security.Cryptography.Algorithms.dll
+System.Security.Cryptography.Encoding.dll
+System.Security.Cryptography.Primitives.dll
+System.Security.Cryptography.X509Certificates.dll
+System.Text.Encoding.CodePages.dll
+System.ValueTuple.dll
+System.Xml.ReaderWriter.dll
+System.Xml.XmlDocument.dll
+System.Xml.XPath.dll
+System.Xml.XPath.XDocument.dll
+
+These files can all be found in the <Program Files>\XSharp\Bin folder
+

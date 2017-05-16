@@ -10,7 +10,6 @@
     <header>
       <para styleclass="Heading1">#define</para>
     </header>
-    <para styleclass="Body Text"></para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#define identifier [token-string]</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">or</para>

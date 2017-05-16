@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Namespace</title>
   <body>
     <header>
       <para styleclass="Heading1">Namespace</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">namespace &#160; &#160; &#160; &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: BEGIN NAMESPACE name </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;(entity)*</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; END NAMESPACE </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; ;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">namespace &#160; &#160; &#160; &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: BEGIN NAMESPACE name eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;(entity)*</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; END NAMESPACE garbage? eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; ;</text></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 
-;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
 
 ;
 ; preprocess the help cab files
@@ -26,7 +26,7 @@
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
 #define VIVersion       "0.2.12.2112"
 #define VITextVersion   "0.2.12.2112 (Beta 12)"                                                                                            
-#define TouchDate       "2017-05-11"
+#define TouchDate       "2017-05-15"
 #define TouchTime       "02:12:00"
 #define InstallPath     "XSharpPath"
 
@@ -64,7 +64,6 @@
 #define HelpInstall2  "/locale en-us /sourceuri """"{app}\help\XSharp.msha"""" /wait 0"
 #define HelpUninstall1 "/silent /operation uninstall /catalogname"
 #define HelpUninstall2 "/locale en-us /vendor """"XSharp"""" /productname """"X#"""" /booklist """"X# Documentation"""" /wait 0"
-
 
 
 [Setup]
@@ -191,9 +190,10 @@ Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin";
 Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}System*.Dll";                        DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}Microsoft*.Dll";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-
+Source: "{#BinRFolder}xsi.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinRFolder}xsi.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinRFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 
 Source: "Baggage\DebugRelease.txt";                        DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 ; Release Folder
@@ -205,6 +205,10 @@ Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin\R
 Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags};  
 Source: "{#BinRFolder}XSCompiler.exe.config";              DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}xsi.exe";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinRFolder}xsi.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinRFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 
 ; Debug Folder
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; 
@@ -215,6 +219,11 @@ Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin\D
 Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}xsc.exe.config";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}xsi.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinDFolder}xsi.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
+
 #else
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; 
 Source: "{#BinDFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
@@ -225,19 +234,22 @@ Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin";
 Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}xsc.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}  
 Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}System*.Dll";                        DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}Microsoft*.Dll";                        DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}xsi.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinDFolder}xsi.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 
 #endif
+
+; Ms Runtime DLLs
+Source: "{#BinDFolder}System*.Dll";                        DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinDFolder}Microsoft*.Dll";                     DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinPFolder}baggage\rcdll.dll";                 DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinPFolder}xporter.exe";                       DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; 
 Source: "{#BinPFolder}xporter.pdb";                       DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 
-
-; GAC files in Bin folder
-;Source: "{#BinDFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall}; 
-;Source: "{#BinDFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall}; 
 
 ; Support files
 #ifdef FOX
@@ -278,6 +290,10 @@ Source: "{#DocFolder}XSVulcan.cab";                      DestDir: "{app}\Help"; 
 Components: Xide; Source: "{#XIDEFolder}{#XIDESetup}";                      DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; 
 
 ;VsProjectSystem
+; Note that CodeAnalysis.DLL and CodeDomProvider must both go to the PrivateAssemblies folder.
+; We register CodeDomProvider also in the GAC because some processes read machine.config and that file does
+; not have location information
+
 Components: vs2015; Source: "{#BinPFolder}XSharpProject.vsix";            DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
 ; CodeAnalysis is used by project system and CodeDom provider
 #ifdef FOX
@@ -287,8 +303,6 @@ Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           De
 Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
 Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
 #endif
-Components: vs2015; Source: "{#BinRFolder}System*.Dll";                       DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} sharedfile; 
-Components: vs2015; Source: "{#BinRFolder}Microsoft*.Dll";                    DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} sharedfile; 
 
 Components: vs2015; Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; 
 Components: vs2015; Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
@@ -324,14 +338,17 @@ Components: vs2015; Source: "{#BinPFolder}XSharp.ico ";                       De
 Components: vs2015; Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; 
 
 
-; private snippets
-
 
 ; vs2017
-; CodeAnalysis is used by project system and CodeDom provider
+;VsProjectSystem
+; Note that CodeAnalysis.DLL and CodeDomProvider must both go to the PrivateAssemblies folder.
+; We register CodeDomProvider also in the GAC because some processes read machine.config and that file does
+; not have location information
+
 Components: vs2017; Source: "{#BinPFolder}SetupCheck2017.exe";          DestDir: "{tmp}";      Flags: signonce {#StdFlags};
 Components: vs2017; Source: "{#BinPFolder}XSharpProject.vsix";          DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
 
+; CodeAnalysis is used by project system and CodeDom provider
 #ifdef FOX
 Components: vs2017; Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2017);
 Components: vs2017; Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
@@ -339,8 +356,6 @@ Components: vs2017; Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           De
 Components: vs2017; Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2017);
 Components: vs2017; Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
 #endif
-Components: vs2017; Source: "{#BinRFolder}System*.Dll";                       DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} sharedfile; 
-Components: vs2017; Source: "{#BinRFolder}Microsoft*.Dll";                    DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} sharedfile; 
 
 Components: vs2017; Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; 
 Components: vs2017; Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
@@ -364,7 +379,7 @@ Components: vs2017; Source: "{#BinPFolder}Itemtemplates\R*.Zip";              De
 Components: vs2017; Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; 
 
 ; Snippets
-Source: "{#SnippetsSource}\*.*";                          DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp\{# SnippetsPath}";  Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Components: vs2017; Source: "{#SnippetsSource}\*.*";                          DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp\{# SnippetsPath}";  Flags: recursesubdirs {#StdFlags}; 
 
 Components: vs2017; Source: "{#BinPFolder}XSharpProject.dll";                 DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}XSharpProject.dll.config";          DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; 
@@ -436,19 +451,22 @@ Filename: "{app}\Tools\RegisterProvider.exe"; Flags: runhidden;
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2017"; Flags: waituntilidle;
 
-
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio14 {#HelpInstall2}";     StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     StatusMsg:"Installing VS Help for VS2017";  Flags: waituntilidle;
 Components: XIDE;        Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  
 
-; The following will only work if we make sure our assemblies have a strong name
-;Filename: {code:GetV4NetDir}ngen.exe; Parameters: "install ""{app}\bin\xsc.exe"""; StatusMsg: Optimizing performance for your system ...; Flags: runhidden; 
-;Filename: {code:GetV4NetDir}ngen.exe; Parameters: "install ""{app}\bin\XSCompiler.exe"""; StatusMsg: Optimizing performance for your system ...; Flags: runhidden; 
-;Filename: {code:GetV4NetDir}ngen.exe; Parameters: "install ""{app}\bin\XSharp.CodeAnalysis.dll"""; StatusMsg: Optimizing performance for your system ...; Flags: runhidden; 
+Filename: "{app}\uninst\instngen.cmd"; Check: CreateNGenTask(); Flags: Runhidden nowait;
 
 [UninstallRun]
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2017"; Flags: waituntilidle;
+
+Filename: "{app}\uninst\uninstngen.cmd";  Flags: Runhidden;
+
+
+
+
+
 
 
 [InstallDelete]
@@ -920,6 +938,7 @@ procedure InitializeWizard();
 begin
     
     Log('InitializeWizard start');
+    TaskKill('xscompiler.exe');
     vs2017VersionPage := CreateInputOptionPage(wpSelectComponents,
                 'Visual Studio 2017', 
                 'Please select in which Visual Studio 2017 instance the program must be installed',
@@ -997,6 +1016,45 @@ begin
 
     result := regval;
 end; 
+
+
+function GetV4Net64Dir(version: string) : string;
+
+var regkey, regval  : string;
+
+begin
+
+    // in case the target is 3.5, replace 'v4' with 'v3.5'
+    // for other info, check out this link 
+    // http://stackoverflow.com/questions/199080/how-to-detect-what-net-framework-versions-and-service-packs-are-installed
+    regkey := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full'
+
+    RegQueryStringValue(HKLM, regkey, 'InstallPath', regval);
+
+    StringChangeEx(regval, '\Framework', '\Framework64', false);
+    result := regval;
+end; 
+
+
+function CreateNGenTask : Boolean;
+var commands: string;
+var ngenpath: string;
+begin
+      ngenpath := GetV4NetDir('')+'ngen.exe';
+      commands := ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'"' +#13+#10;
+      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'"'+#13+#10;
+      ngenpath := GetV4Net64Dir('')+'ngen.exe';
+      if FileExists(ngenpath) then 
+      begin
+        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'"' +#13+#10;
+        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'"'+#13+#10;
+      end
+      SaveStringToFile( ExpandConstant('{app}\uninst\instngen.cmd '), commands, False);
+      StringChangeEx(commands, ' install ', ' uninstall ', false);
+      SaveStringToFile( ExpandConstant('{app}\uninst\uninstngen.cmd '), commands, False);
+      result := true;
+end;
+
 
 { Code to run when uninstalling }
 function InitializeUninstall(): Boolean;

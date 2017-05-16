@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Acknowledgements</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Acknowledgements</para>
+    </header>
+    <para styleclass="Normal">We could not have done this project without (source code) contributions from others.<br/>Below is a list of the contributions that we used for our compiler and Visual Studio integration</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The X# compiler is based on the open source project Roslyn, which contains the source to the Microsoft VB and C# compilers.<br/>Our project would have been impossible with this source.<br/>We are very grateful that Microsoft has moved this project to the open source. (<link displaytype="text" defaultstyle="true" type="weblink" href="http://github.com/dotnet/roslyn" target="_blank">github.com/dotnet/roslyn</link>)<br/>The source code to Roslyn is published under the Apache License, version 2 </li>
+      <li styleclass="Normal">The X# compiler uses Antlr 4 as parser generator to generate the front end of the compiler. We would like to thank <text style="font-weight:bold;">Terence Parr</text> and <text style="font-weight:bold;">Sam Harwell</text> for their excellent work.<br/>The source code to Antlr is published under the BSD License. (<link displaytype="text" defaultstyle="true" type="weblink" href="http://www.antlr.org" target="_blank">www.antlr.org</link>)</li>
+      <li styleclass="Normal">The project system for Wix (Votive). We have been inspired by some of the code in this system. We would like to thank <text style="font-weight:bold;">Rob Mensching</text> and the other authors of this project system. (<link displaytype="text" defaultstyle="true" type="weblink" href="http://wixtoolset.org/" target="_blank">wixtoolset.org/</link>)</li>
+      <li styleclass="Normal">The project system for Nemerle. We have been inspired by some of the solutions in their project system. We would like to thank the <text style="font-weight:bold;">authors of Nemerle</text> for showing us how to solve certain problems. (<link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">www.nemerle.org</link>)</li>
+      <li styleclass="Normal">The visual F# project system (<link displaytype="text" defaultstyle="true" type="weblink" href="http://www.fsharp.org" target="_blank">www.fsharp.org</link><link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">/</link>)</li>
+      <li styleclass="Normal">Our documentation is written with the excellent tool &quot;Help and Manual&quot; from Alexander Halser (<link displaytype="text" defaultstyle="true" type="weblink" href="http://www.helpandmanual.com" target="_blank">www.helpandmanual.com</link>)</li>
+      <li styleclass="Normal">The documentation for the runtime is/will be generated with the Sandcastle Help File Builder product. (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/EWSoftware/SHFB" target="_blank">github.com/EWSoftware/SHFB</link>)</li>
+    </list>
+  </body>
+</topic>

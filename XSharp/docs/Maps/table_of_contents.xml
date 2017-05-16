@@ -100,8 +100,23 @@
           <caption translate="true">YIELD </caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="426353111383136" build="ALL" modified="2016-09-22T12:29:00.560Z" icon="0" href="Calling-Vulcan-Init-Procedures">
-        <caption translate="true">Calling Vulcan Init Procedures</caption>
+      <topicref type="topic" id="428711073823775" build="ALL" modified="2017-05-15T21:41:37.062Z" icon="0" href="Licenses">
+        <caption translate="true">Licenses</caption>
+        <topicref type="topic" id="428707220706899" build="ALL" modified="2017-05-15T21:48:57.359Z" icon="0" href="XSharp-Open-Software-License">
+          <caption translate="true">XSharp Open Software License</caption>
+        </topicref>
+        <topicref type="topic" id="428711141122145" build="ALL" modified="2017-05-15T21:45:52.116Z" icon="0" href="Apache-2">
+          <caption translate="true">Apache 2</caption>
+        </topicref>
+        <topicref type="topic" id="428707437480530" build="ALL" modified="2017-05-15T21:45:58.606Z" icon="0" href="BSD">
+          <caption translate="true">BSD</caption>
+        </topicref>
+        <topicref type="topic" id="428709558580474" build="ALL" modified="2017-05-15T21:52:31.315Z" icon="0" href="XSharp-Compiler-Sourcecode-Lic">
+          <caption translate="true">XSharp Compiler Sourcecode License</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="428708026773084" build="ALL" modified="2017-05-15T22:23:34.706Z" icon="0" href="Acnowledgements">
+        <caption translate="true">Acknowledgements</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
@@ -572,6 +587,9 @@
           <topicref type="topic" id="426775124635299" build="ALL" modified="2016-11-03T12:48:43.200Z" icon="0" href="Pseudo-Functions">
             <caption translate="true">Pseudo Functions</caption>
           </topicref>
+          <topicref type="topic" id="428678460419018" build="ALL" modified="2017-05-12T16:55:11.624Z" icon="0" href="Helpers">
+            <caption translate="true">Helpers</caption>
+          </topicref>
         </topicref>
         <topicref type="topic" id="423890338204503" build="ALL" modified="2016-11-15T20:59:41.661Z" icon="0" href="Expressions">
           <caption translate="true">X# Expressions</caption>
@@ -659,9 +677,6 @@
           <topicref type="topic" id="424524899744417" build="ALL" modified="2016-03-23T11:43:39.153Z" icon="0" href="pp-Undef">
             <caption translate="true">#undef</caption>
           </topicref>
-        </topicref>
-        <topicref type="topic" id="423890739145443" build="ALL" modified="2016-01-19T22:47:35.865Z" icon="0" href="X-Language-Specification">
-          <caption translate="true">X# Language Specification</caption>
         </topicref>
         <topicref type="topic" id="423890627480191" build="ALL" modified="2016-01-19T22:47:35.921Z" icon="0" href="X-Walkthroughs">
           <caption translate="true">X# Walkthroughs</caption>
@@ -943,7 +958,10 @@
           </topicref>
         </topicref>
       </topicref>
-      <topicref type="topic" id="42390796229101" build="ALL" modified="2017-01-25T19:14:03.457Z" icon="0" href="X-Compiler-Errors">
+      <topicref type="topic" id="428677478306665" build="EBOOK,PDF,PRINT" modified="2017-05-12T17:23:53.927Z" icon="0" href="X-Compiler-Errors-and-Warnings">
+        <caption translate="true">X# Compiler Errors and Warnings</caption>
+      </topicref>
+      <topicref type="topic" id="42390796229101" build="CHM,HTML,HXS" modified="2017-05-12T17:24:11.679Z" icon="0" href="X-Compiler-Errors">
         <caption translate="true">X# Compiler Errors</caption>
         <topicref type="topic" id="427448667862524" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS0006">
           <caption translate="true">XS0006</caption>
@@ -4101,8 +4119,11 @@
         <topicref type="topic" id="1009048" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9048">
           <caption translate="true">XS9048</caption>
         </topicref>
+        <topicref type="topic" id="42867228504395" build="ALL" modified="2017-05-12T16:26:58.985Z" icon="0" href="XS9049">
+          <caption translate="true">XS9049</caption>
+        </topicref>
       </topicref>
-      <topicref type="topic" id="427607830537848" build="ALL" modified="2017-01-25T18:02:45.792Z" icon="0" href="X-Compiler-Warnings">
+      <topicref type="topic" id="427607830537848" build="CHM,HTML,HXS" modified="2017-05-12T17:24:19.511Z" icon="0" href="X-Compiler-Warnings">
         <caption translate="true">X# Compiler Warnings</caption>
         <topicref type="topic" id="1000028" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS0028">
           <caption translate="true">XS0028</caption>

@@ -15,6 +15,7 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code Example"> &#160; &#160; #command &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</para>
     <para styleclass="Code Example"> &#160; &#160; #xcommand &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</para>
+    <para styleclass="Code Example"></para>
     <para styleclass="Normal"><snippet src="Command-translate" inline="false"/></para>
   </body>
 </topic>

@@ -218,6 +218,7 @@ namespace XSharp.Project
                     signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
                 }
                 //
+                m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
             }
             else if (elt is EnvDTE.CodeElement)
             {
@@ -233,37 +234,55 @@ namespace XSharp.Project
                     EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
                     if ( method.Parent is EnvDTE.CodeElement)
                     {
-                        EnvDTE.CodeElement parent = (EnvDTE.CodeElement) method.Parent;
-                        if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                        EnvDTE.CodeElement owner = (EnvDTE.CodeElement) method.Parent;
+                        if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
                         {
-                            EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)parent;
-                            EnvDTE.CodeElements members = envClass.Members;
-                            foreach (EnvDTE.CodeElement member in members)
+                            EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
+                            NameSake(envClass, signatures, element.Name, analysis.Prototype);
+                            // Hey, we should also walk the Parent's parents, no ?
+                            EnvDTE.CodeElements bases = envClass.Bases;
+                            if (bases != null)
                             {
-                                if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                                foreach (EnvDTE.CodeElement parent in bases)
                                 {
-                                    // Same Name ?
-                                    if (XSharpLanguage.XSharpTokenTools.StringEquals(member.Name, element.Name))
+                                    if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
                                     {
-                                        // Same Prototype
-                                        XSharpLanguage.MemberAnalysis newAnalysis = new XSharpLanguage.MemberAnalysis(member);
-                                        if (newAnalysis.IsInitialized)
-                                        {
-                                            // But don't add the current one
-                                            if (String.Compare(analysis.Prototype, newAnalysis.Prototype, true) != 0)
-                                            {
-                                                signatures.Add(CreateSignature(m_textBuffer, newAnalysis.Prototype, "", ApplicableToSpan));
-                                            }
-                                        }
+                                        NameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype);
                                     }
                                 }
                             }
-                            // Hey, we should also walk the Parent's parents, no ?
+                        }
+                    }
+                }
+                //
+                m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+            }
+            session.Dismissed += OnSignatureHelpSessionDismiss;
+        }
+
+        private void NameSake(EnvDTE.CodeClass envClass, IList<ISignature> signatures, String elementName, String elementPrototype )
+        {
+            EnvDTE.CodeElements members = envClass.Members;
+            foreach (EnvDTE.CodeElement member in members)
+            {
+                if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                {
+                    // Same Name ?
+                    if (XSharpLanguage.XSharpTokenTools.StringEquals(member.Name, elementName))
+                    {
+                        // Same Prototype
+                        XSharpLanguage.MemberAnalysis newAnalysis = new XSharpLanguage.MemberAnalysis(member);
+                        if (newAnalysis.IsInitialized)
+                        {
+                            // But don't add the current one
+                            if (String.Compare(elementPrototype, newAnalysis.Prototype, true) != 0)
+                            {
+                                signatures.Add(CreateSignature(m_textBuffer, newAnalysis.Prototype, "", ApplicableToSpan));
+                            }
                         }
                     }
                 }
             }
-            session.Dismissed += OnSignatureHelpSessionDismiss;
         }
 
         private XSharpSignature CreateSignature(ITextBuffer textBuffer, string methodSig, string methodDoc, ITrackingSpan span)

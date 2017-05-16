@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\build\Targets\Settings.props" />
+  <Import Project="..\..\..\..\XSharp\build\Targets\Settings.props" />
   <PropertyGroup>
     <!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
     <RoslynProjectType>Custom</RoslynProjectType>
-    <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
-    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <ForceGenerationOfBindingRedirects>true</ForceGenerationOfBindingRedirects>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
+    <RoslynBin>..\Roslyn\Binaries</RoslynBin>
+    <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
     <ProjectGuid>{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis.CompilerServer</RootNamespace>
@@ -25,10 +25,11 @@
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1591, CS8032</NoWarn>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -103,6 +104,6 @@
   <Import Project="$(RoslynSrc)\Compilers\Server\ServerShared\ServerShared.projitems" Label="Shared" />
   <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(XSharpBuild)\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 </Project>

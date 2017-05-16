@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\..\..\XSharp\build\Targets\Settings.props" />
-  <Import Project="..\..\..\..\Roslyn\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
     <RoslynProjectType>Custom</RoslynProjectType>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <ForceGenerationOfBindingRedirects>true</ForceGenerationOfBindingRedirects>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
+    <RoslynBin>..\Roslyn\Binaries</RoslynBin>
     <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
     <ProjectGuid>{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp.CommandLine</RootNamespace>
     <AssemblyName>xsc</AssemblyName>
-    <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
     <StartupObject>LanguageService.CodeAnalysis.XSharp.CommandLine.Program</StartupObject>
     <RestorePackages>true</RestorePackages>
@@ -26,10 +26,11 @@
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NoWarn>1591, CS8032</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>1591, CS8032</NoWarn>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -100,8 +101,4 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <!--<PropertyGroup>
-    <EditBinToolPath>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\VC\bin\editbin.exe</EditBinToolPath>
-    <PostBuildEvent>"$(EditBinToolPath)" /stack:2097152 $(TargetPath)</PostBuildEvent>
-  </PropertyGroup>-->
 </Project>

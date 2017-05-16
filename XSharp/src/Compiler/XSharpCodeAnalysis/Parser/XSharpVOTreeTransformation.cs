@@ -1701,6 +1701,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr?.Get<ExpressionSyntax>();
             // when / vo9 is enabled then add missing Expression
             var ent = CurrentEntity;
+            if (context.Void != null && !ent.Data.MustBeVoid)
+            {
+                expr = GenerateLiteral(0);
+            }
             if (expr == null && _options.VOAllowMissingReturns && !ent.Data.MustBeVoid)
             {
                 if (ent is XP.MethodContext || ent is XP.FunctionContext || ent is XP.PropertyAccessorContext)
@@ -1753,16 +1757,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     expr = expr.WithAdditionalDiagnostics(
                                         new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
-                    bool literal = false;
-                    if (context.Expr is XP.PrimaryExpressionContext)
-                    {
-                        var p = context.Expr as XP.PrimaryExpressionContext;
-                        if (p.Expr is XP.LiteralExpressionContext)
-                        {
-                            literal = true;
-                        }
-                    }
-                    if (!literal)
+                    if (context.Expr.GetLiteralToken() == null) // nor  literal so we must evaluate the expression
                     {
                         var declstmt = GenerateLocalDecl(XSharpSpecialNames.ReturnName, _impliedType, expr);
                         var retstmt = GenerateReturn(null);
@@ -1829,10 +1824,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     negative = prefix.Op.Type == XP.MINUS;
                 }
             }
-            XP.LiteralExpressionContext litexpr = GetLiteralExpression(initexpr);
-            if (litexpr != null)
+            var token = initexpr.GetLiteralToken();
+            if (token != null)
             {
-                var token = litexpr.Literal.Token;
                 var nullExpr = GenerateLiteralNull();
                 switch (token.Type)
                 {
@@ -1851,7 +1845,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.NULL_SYMBOL:
                         return MakeDefaultParameter(nullExpr, GenerateLiteral(3));                      // 3 = Symbol, value is empty
                     case XP.SYMBOL_CONST:
-                        var symvalue = litexpr.Literal.Token.Text.Substring(1);
+                        var symvalue = token.Text.Substring(1);
                         return MakeDefaultParameter(GenerateLiteral(symvalue), GenerateLiteral(3));      // 3 = Symbol, value is a string
                     case XP.NULL_PSZ:
                         return MakeDefaultParameter(nullExpr, GenerateLiteral(4));                       // 4 = PSZ, null = empty
@@ -1877,7 +1871,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             return MakeDefaultParameter(GenerateLiteral(iValue), GenerateLiteral(0));   // 0 = regular .Net Value
                         }
                         else
-                            return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
+                            return MakeDefaultParameter(GenerateLiteral(token), GenerateLiteral(0));   // 0 = regular .Net Value
                     case XP.REAL_CONST:
                         double dValue;
                         switch (token.Text.Last())
@@ -1900,7 +1894,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             return MakeDefaultParameter(GenerateLiteral(dValue), GenerateLiteral(0));   // 0 = regular .Net Value
 
                     default:
-                        return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
+                        return MakeDefaultParameter(GenerateLiteral(token), GenerateLiteral(0));   // 0 = regular .Net Value
                 }
             }
             return null;
@@ -2861,7 +2855,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XP.SYMBOL_CONST:
-                    arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+                    arg0 = MakeArgument(GenerateLiteral(context.Token));
                     expr = CreateObject(_symbolType, MakeArgumentList(arg0));
                     break;
                 case XP.REAL_CONST:
@@ -2877,7 +2871,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 int len = context.Token.Text.Length;
                                 int dec = args[1].Length;
-                                arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+                                arg0 = MakeArgument(GenerateLiteral(context.Token));
                                 arg1 = MakeArgument(GenerateLiteral(len.ToString(), len));
                                 arg2 = MakeArgument(GenerateLiteral(dec.ToString(), dec));
                                 expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2));
@@ -3104,18 +3098,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    if (context.Expr is XP.PrimaryExpressionContext)
+                    var token = context.Expr.GetLiteralToken();
+                    if (token != null && token.Type == XP.STRING_CONST)
                     {
-                        var pec = context.Expr as XP.PrimaryExpressionContext;
-                        if (pec.Expr is XP.LiteralExpressionContext)
-                        {
-                            var lit = pec.Expr as XP.LiteralExpressionContext;
-                            if (lit.Literal.Token.Type == XP.STRING_CONST)
-                            {
-                                _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
-                                return;
-                            }
-                        }
+                        _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                        return;
                     }
 
                 }
@@ -3192,7 +3179,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             attargs.Add(_syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(SystemQualifiedNames.LayoutSequential)));
             if (context.Alignment != null)
             {
-                var lit = _syntaxFactory.LiteralExpression(context.Alignment.ExpressionKindLiteral(), context.Alignment.SyntaxLiteralValue(_options));
+                var lit = GenerateLiteral(context.Alignment);
                 attargs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null, lit));
             }
 

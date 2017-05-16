@@ -5207,5 +5207,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_NoClipperCallingConventionForAccessAssign" xml:space="preserve">
     <value>ACCESS and ASSIGN methods cannot have Clipper Calling Convention</value>
   </data>
-  
+  <data name="ERR_ExpectedEndOfStatement" xml:space="preserve">
+    <value>Expecting 'end of statement', found '{0}'</value>
+  </data>
+
 </root>

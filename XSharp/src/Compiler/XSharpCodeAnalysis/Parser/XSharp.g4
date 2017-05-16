@@ -37,7 +37,7 @@ scriptEntity        : Stmt=statement
 					| Expr=expression
                     ;
 
-source				: ( Entities+=entity )*
+source				: eos? (Entities+=entity )*
 					EOF
                     ;
 

@@ -260,6 +260,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         if (t is TypeSymbol)
                         {
                             type = (TypeSymbol)t;
+                            break;
                         }
                     }
                 }

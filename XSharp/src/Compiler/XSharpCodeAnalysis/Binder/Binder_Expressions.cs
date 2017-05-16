@@ -675,13 +675,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             return;
         }
 
-        private static TypeSymbol XsGetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<ParameterSymbol> parameters, int arg)
+        private static TypeSymbol XsGetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<TypeSymbol> parameterTypes, int arg)
         {
             int paramNum = result.ParameterFromArgument(arg);
             var type =
-                (paramNum == parameters.Length - 1 && result.Kind == MemberResolutionKind.ApplicableInExpandedForm) ?
-                ((ArrayTypeSymbol)(parameters[paramNum].Type)).ElementType :
-                parameters[paramNum].Type;
+                (paramNum == parameterTypes.Length - 1 && result.Kind == MemberResolutionKind.ApplicableInExpandedForm) ?
+                ((ArrayTypeSymbol)parameterTypes[paramNum]).ElementType :
+                parameterTypes[paramNum];
             return type;
         }
         private BoundExpression XsFixPszArgumentProblems (BoundExpression argument, TypeSymbol type, ref Conversion kind)

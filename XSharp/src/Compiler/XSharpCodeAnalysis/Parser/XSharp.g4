@@ -521,8 +521,8 @@ statement           : Decl=localdecl                                            
 
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                     | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
-                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
-                      Exprs+=expression (COMMA Exprs+=expression)* g=garbage? end=eos		#expressionStmt
+                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR )}?
+                      Exprs+=expression (COMMA Exprs+=expression)*  end=eos		#expressionStmt
                     ;
 
 garbage				: {_allowGarbage}? (~EOS)+

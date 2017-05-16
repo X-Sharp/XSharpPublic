@@ -5492,10 +5492,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             var block = MakeBlock(statements);
-            if (context.g != null)
-            {
-                block = block.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExpectedEndOfStatement, context.g.GetText()));
-            }
+            //if (context.g != null)
+            //{
+            //    block = block.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExpectedEndOfStatement, context.g.GetText()));
+            //}
             context.Put(block);
             _pool.Free(statements);
         }

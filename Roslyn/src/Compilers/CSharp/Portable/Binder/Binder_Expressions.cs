@@ -2470,10 +2470,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // Parameter types should be taken from the least overridden member:
 #if XSHARP
-            var parameters = methodResult.LeastOverriddenMember.GetParameters();
-#else
-            var parameters = methodResult.LeastOverriddenMember.GetParameters();
+            var parameterTypes = methodResult.LeastOverriddenMember.GetParameterTypes();
 #endif
+            var parameters = methodResult.LeastOverriddenMember.GetParameters();
 
             for (int arg = 0; arg < arguments.Count; ++arg)
             {
@@ -2483,7 +2482,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!kind.IsIdentity || argument.Kind == BoundKind.TupleLiteral)
                 {
 #if XSHARP
-                    TypeSymbol type = XsGetCorrespondingParameterType(ref result, parameters, arg);
+                    TypeSymbol type = XsGetCorrespondingParameterType(ref result, parameterTypes, arg);
                     argument = XsFixPszArgumentProblems(argument, type, ref kind);
 #else
                     TypeSymbol type = GetCorrespondingParameterType(ref result, parameters, arg);

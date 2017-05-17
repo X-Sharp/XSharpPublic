@@ -538,9 +538,6 @@
             <topicref type="topic" id="423887867754946" build="ALL" modified="2016-11-03T15:44:26.511Z" icon="0" href="LogicLiterals">
               <caption translate="true">Logic Literals</caption>
             </topicref>
-            <topicref type="topic" id="423890081813098" build="ALL" modified="2016-01-19T21:38:58.710Z" icon="0" href="Macros">
-              <caption translate="true">Macros</caption>
-            </topicref>
             <topicref type="topic" id="423887993100569" build="ALL" modified="2016-11-03T15:44:35.250Z" icon="0" href="NullLiterals">
               <caption translate="true">Null Literals</caption>
             </topicref>

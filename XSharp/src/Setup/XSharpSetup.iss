@@ -115,7 +115,7 @@ WizardImagefile=Baggage\XSharp_Bmp_Dialog.bmp
 ;Uninstaller
 UninstallFilesDir={app}\uninst
 UninstallDisplayName={#=ProdBuild}
-UninstallDisplayIcon={app}\Images\XSharp.ico;
+UninstallDisplayIcon={app}\Images\XSharp.ico
 UninstallLogMode=overwrite
 
 
@@ -460,8 +460,6 @@ Components: main\script; Root: HKCR; Subkey: ".prgx";                           
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}";                      ValueData: "Program {#XSScript}";        Flags: uninsdeletekey;   ValueType: string;  ValueName: ""
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}\DefaultIcon";          ValueData: "{app}\Images\xsharp.ico,0";  ValueType: string;  ValueName: ""
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\open\command";   ValueData: """{app}\bin\xsi.exe"" ""%1"" %*";  ValueType: string;  ValueName: ""
-Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\edit\command";   ValueData: "%SystemRoot%\system32\NOTEPAD.EXE %1";  ValueType: string;  ValueName: ""
-Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\print\command";  ValueData: "%SystemRoot%\system32\NOTEPAD.EXE /p %1";  ValueType: string;  ValueName: ""
 
 
 [Ini]

@@ -26,5 +26,84 @@ namespace Microsoft.CodeAnalysis.CSharp
         XBasePP = 5,
         dBase = 6,
     }
+    public static class DialectExtensions
+    {
+        public static bool IsDialectVO (this XSharpDialect dialect)
+        {
+            return dialect != XSharpDialect.Core;
+        }
+        public static bool SupportsMemvars(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.Core:
+                case XSharpDialect.Vulcan:
+                    return false;
+                default:
+                    return true;
+            }
+        }
+        public static bool AllowGarbage(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.Core:
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
+        public static bool AllowNamedArgs(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.VO:
+                case XSharpDialect.Harbour:
+                case XSharpDialect.Vulcan:
+                    return false;
+                default:
+                    return true;
+            }
+        }
+        public static bool AllowXBaseVariables(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.VO:
+                case XSharpDialect.Harbour:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        public static bool AllowFunctionsInsideClass(this XSharpDialect dialect)
+        {
+            return false;
+        }
+        public static bool AllowFourLetterAbbreviations(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.VO:
+                case XSharpDialect.Harbour:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        // Allow && comments
+        public static bool AllowOldStyleComments(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.VO:
+                case XSharpDialect.Harbour:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
 }
     

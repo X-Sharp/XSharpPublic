@@ -162,25 +162,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //parser.Interpreter.enable_global_context_dfa = true;    // default = false
             //parser.Interpreter.tail_call_preserves_sll = false;     // default = true
 
-            parser.AllowFunctionInsideClass = false;     // 
-            if (_options.Dialect == XSharpDialect.VO)
-            {
-                parser.AllowXBaseVariables = true;
-                parser.AllowNamedArgs = false;
-                parser.AllowGarbageAfterEnd = true;
-            }
-            else if (_options.Dialect == XSharpDialect.Vulcan)
-            {
-                parser.AllowXBaseVariables = false;
-                parser.AllowNamedArgs = false;
-                parser.AllowGarbageAfterEnd = true;
-            }
-            else
-            {                                      // memvar and private statements are not recognized in Vulcan
-                parser.AllowXBaseVariables = false;
-                parser.AllowNamedArgs = true;
-                parser.AllowGarbageAfterEnd = false;
-            }
+            parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
+            parser.AllowGarbageAfterEnd = _options.Dialect.AllowGarbage();
+            parser.AllowNamedArgs = _options.Dialect.AllowNamedArgs();
+            parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
 
 
 #if DEBUG && DUMP_TIMES

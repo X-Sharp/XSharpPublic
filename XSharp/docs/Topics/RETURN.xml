@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">RETURN</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">returnstmt &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: RETURN (expression)? eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">returnstmt &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> (</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">VOID</text><text style="font-weight:normal; font-style:normal; color:#000000;"> | expression)? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">eos</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

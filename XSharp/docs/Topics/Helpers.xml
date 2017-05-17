@@ -15,6 +15,6 @@
     <para styleclass="Normal"><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">garbage</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">: (~EOS)+</text><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">All tokens until a EOS token (used to ignore &quot;garbage&quot; after NEXT, ENDIF etc.</text></para>
-    <para styleclass="Normal"><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
+    <para styleclass="Normal"><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">;</text><tab /><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">This is NOT supported in the Core dialect !</text></para>
   </body>
 </topic>

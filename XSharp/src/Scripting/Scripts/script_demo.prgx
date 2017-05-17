@@ -1,0 +1,44 @@
+// References (#R and #LOAD) must be at the top!
+#R "System.Net.Http.dll"
+#LOAD "script_demo_helper.prgx"
+using static System.Threading.Thread
+
+Console.WriteLine()
+Console.WriteLine("The Print() function can pretty-print objects.")
+Sleep(500)
+Console.WriteLine("For example, let's pretty-print the arguments to this script:")
+Sleep(500)
+
+foreach var arg in args
+	Print(arg)
+	Sleep(500)
+next
+
+Console.WriteLine()
+Console.WriteLine("We can use namespaces and static members as normal with 'using' and 'using static'.")
+Sleep(500)
+Console.Write("For example, let's use the System.Threading.Thread.Sleep() static method to wait for 5 sec ...")
+Sleep(5000)
+Console.WriteLine()
+
+Console.WriteLine()
+Console.WriteLine("Assemblies can be referenced with the #R directive, but only at the top of the .prgx file.")
+Console.WriteLine("For example, the System.Net.Http.dll has been loaded. Let's try to download the xsharp.info page ...")
+var http := System.Net.Http.HttpClient{}
+var page := await http:GetAsync("http://www.xsharp.info")
+Print(page)
+
+Console.WriteLine()
+Console.WriteLine("Other scripts can be loaded with the #LOAD directive. As with assemblies, this only works at the top of the file.")
+Console.WriteLine("The loaded scripts are executed inline, so this is most useful for declaring functions or types to be used by the main script.")
+Console.WriteLine("For example, the script_demo_helper script has been loaded. Let's call the CountTo() function declared there to count to Ten ...")
+CountTo(Ten) // Note that "Ten" is a global variable declared in the script_demo_helper.prgx script
+
+Console.WriteLine()
+Console.WriteLine("Now let's call the Test.CountDown() method to count down from Ten ...")
+Test.CountDown(Ten)
+
+Console.WriteLine()
+Console.WriteLine("Now let's instantiate the Test class to call the Test:CountFromTo() instance method to count down from 5 to Ten ...")
+var t := Test{}
+t:CountFromTo(5,Ten)

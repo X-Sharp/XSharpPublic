@@ -1,0 +1,50 @@
+#R "System.Windows.Forms.dll"
+#using System
+#using System.Windows.Forms
+#using System.IO
+#using System.ComponentModel
+
+Application.Run(TestForm{})
+
+
+CLASS TestForm INHERIT System.Windows.Forms.Form
+
+	PROTECT oButton1 AS System.Windows.Forms.Button
+	// User code starts here (DO NOT remove this line)  ##USER##
+	CONSTRUCTOR()
+
+		SUPER()
+
+		SELF:InitializeForm()
+
+	RETURN
+	METHOD InitializeForm() AS VOID
+	
+	// IDE generated code (please DO NOT modify)
+	
+		SELF:oButton1 := System.Windows.Forms.Button{}
+
+		SELF:SuspendLayout()
+
+		SELF:ClientSize := System.Drawing.Size{284 , 261}
+		SELF:Location := System.Drawing.Point{100 , 100}
+		SELF:Name := "TestForm"
+		SELF:Text := "Form"
+
+		SELF:oButton1:Click += System.EventHandler{ SELF , @Button1Click() }
+		SELF:oButton1:Location := System.Drawing.Point{80 , 96}
+		SELF:oButton1:Name := "Button1"
+		SELF:oButton1:Size := System.Drawing.Size{75 , 23}
+		SELF:oButton1:TabIndex := 0
+		SELF:oButton1:Text := "Button"
+		SELF:Controls:Add(SELF:oButton1)
+		
+		SELF:ResumeLayout()
+
+	RETURN
+
+	METHOD Button1Click(sender AS System.Object , e AS System.EventArgs) AS VOID
+		Application.Exit()
+	RETURN
+
+END CLASS

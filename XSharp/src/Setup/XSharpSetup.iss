@@ -1,6 +1,6 @@
 
-#define Compression     "lzma2/ultra64"
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra64"
+#define Compression     "none"
 
 ;
 ; preprocess the help cab files
@@ -44,6 +44,7 @@
 #define CommonFolder    "\Xsharp\Dev\XSharp\src\Common\"
 #define ToolsFolder     "\Xsharp\Dev\XSharp\src\Tools\"
 #define ExamplesFolder  "\Xsharp\DevPublic\Samples\"
+#define ScriptFolder    "\XSharp\Dev\XSharp\src\Scripting\"
 #define OutPutFolder    "\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "\Xsharp\Dev\XSharp\Xide\"
@@ -65,6 +66,7 @@
 #define HelpUninstall1 "/silent /operation uninstall /catalogname"
 #define HelpUninstall2 "/locale en-us /vendor """"XSharp"""" /productname """"X#"""" /booklist """"X# Documentation"""" /wait 0"
 
+#define XSScript            "XSharpScript"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -129,10 +131,14 @@ Minversion=6.0.600
 ; Code Signing
 Signtool=mssigntool sign /f {# KeyFile} /p {# Keypassword}  /t {# TimeStampURL}  /d "{# Description}" $f        
 SignToolRetryCount=5
+; Tell windows that we associte the prgx extension
+ChangesAssociations=yes
 
 
 [Components]
 Name: "main";             Description: "The XSharp Compiler and Build System";        Types: full compact custom; Flags: fixed; 
+Name: "main\script";      Description: "Register .prgx as X# Script extension";       Types: full compact custom;  
+Name: "main\ngen";        Description: "Optimize performance by generating native images";       Types: full compact custom;  
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";              Types: full custom;         Check: Vs2015IsInstalled;
 Name: "vs2015\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer22Found;
 Name: "vs2017";           Description: "Visual Studio 2017 Integration";              Types: full custom;         Check: vs2017IsInstalled;
@@ -192,6 +198,7 @@ Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin";
 Source: "{#BinRFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}xsi.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}xsi.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}xsi.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 
@@ -207,6 +214,7 @@ Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin\R
 Source: "{#BinRFolder}XSCompiler.exe.config";              DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}xsi.exe";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}xsi.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}xsi.exe.config";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 
@@ -221,6 +229,7 @@ Source: "{#BinDFolder}xsc.exe.config";                     DestDir: "{app}\bin\D
 Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}xsi.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}xsi.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}xsi.exe.config";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 
@@ -236,6 +245,7 @@ Source: "{#BinDFolder}xsc.exe.config";                     DestDir: "{app}\bin";
 Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}xsi.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}xsi.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}xsi.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}  
 Source: "{#BinDFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 
@@ -400,6 +410,8 @@ Source: "{#ExamplesFolder}*.dbf";                             DestDir: "{commond
 Source: "{#ExamplesFolder}*.ntx";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.xsproj";                          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 
+; Scripting
+Source: "{#ScriptFolder}*.*";                                 DestDir: "{commondocs}\XSharp\Scripting";    Flags: recursesubdirs {#StdFlags};
 
 ; update machine.config
 Source:"{#ToolsFolder}Various\RegisterProvider.exe";          DestDir: "{app}\Tools";                     Flags: signonce {#StdFlags};
@@ -415,7 +427,8 @@ Name: "{group}\{#Product} Documenation (PDF)"; Filename: "{app}\Help\XSharp.pdf"
 Name: "{group}\{#Product} Vulcan Runtime Reference (CHM)"; Filename: "{app}\Help\XSVulcan.chm"; 
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}"; 
 Name: "{group}\{#Product} Examples"; Filename: "{commondocs}\XSharp\Examples";
-Name: "{app}\Examples";  Filename: "{commondocs}\XSharp\Examples";
+Name: "{commondesktop}\XSharp Examples";  Filename: "{commondocs}\XSharp\Examples";
+Name: "{commondesktop}\XSharp Script Examples";  Filename: "{commondocs}\XSharp\Scripting";
 
 
 [Registry]
@@ -440,6 +453,17 @@ Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGui
 Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "prg"; ValueData: 1; Check: VulcanPrgAssociated;
 Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "vh";  ValueData: 1; Check: VulcanPrgAssociated;
 
+
+; associate prgx extension
+
+Components: main\script; Root: HKCR; Subkey: ".prgx";                            ValueData: "{#XSScript}";                Flags: uninsdeletevalue; ValueType: string;  ValueName: ""
+Components: main\script; Root: HKCR; Subkey: "{#XSScript}";                      ValueData: "Program {#XSScript}";        Flags: uninsdeletekey;   ValueType: string;  ValueName: ""
+Components: main\script; Root: HKCR; Subkey: "{#XSScript}\DefaultIcon";          ValueData: "{app}\Images\xsharp.ico,0";  ValueType: string;  ValueName: ""
+Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\open\command";   ValueData: """{app}\bin\xsi.exe"" ""%1"" %*";  ValueType: string;  ValueName: ""
+Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\edit\command";   ValueData: "%SystemRoot%\system32\NOTEPAD.EXE %1";  ValueType: string;  ValueName: ""
+Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\print\command";  ValueData: "%SystemRoot%\system32\NOTEPAD.EXE /p %1";  ValueType: string;  ValueName: ""
+
+
 [Ini]
 Components: vs2015; Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; 
 Components: vs2017; Filename: "{code:Getvs2017IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; 
@@ -455,13 +479,13 @@ Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Paramet
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     StatusMsg:"Installing VS Help for VS2017";  Flags: waituntilidle;
 Components: XIDE;        Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  
 
-Filename: "{app}\uninst\instngen.cmd"; Check: CreateNGenTask(); Flags: Runhidden nowait;
+Components: main\ngen;  Filename: "{app}\uninst\instngen.cmd"; Check: CreateNGenTask(); Flags: Runhidden ; StatusMsg: "Generating Native images, please wait.....";
 
 [UninstallRun]
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2017"; Flags: waituntilidle;
 
-Filename: "{app}\uninst\uninstngen.cmd";  Flags: Runhidden;
+Components: main\ngen;  Filename: "{app}\uninst\uninstngen.cmd";  Flags: Runhidden;
 
 
 
@@ -1041,12 +1065,15 @@ var commands: string;
 var ngenpath: string;
 begin
       ngenpath := GetV4NetDir('')+'ngen.exe';
-      commands := ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'"' +#13+#10;
+      commands := '';
+      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'"' +#13+#10;
+      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsi.exe') +'"'+#13+#10;
       commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'"'+#13+#10;
       ngenpath := GetV4Net64Dir('')+'ngen.exe';
       if FileExists(ngenpath) then 
       begin
         commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'"' +#13+#10;
+        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsi.exe') +'"'+#13+#10;
         commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'"'+#13+#10;
       end
       SaveStringToFile( ExpandConstant('{app}\uninst\instngen.cmd '), commands, False);

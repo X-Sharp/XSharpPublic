@@ -26,17 +26,17 @@ CLASS TestForm INHERIT System.Windows.Forms.Form
 
 		SELF:SuspendLayout()
 
-		SELF:ClientSize := System.Drawing.Size{284 , 261}
+		SELF:ClientSize := System.Drawing.Size{640 , 480}
 		SELF:Location := System.Drawing.Point{100 , 100}
 		SELF:Name := "TestForm"
-		SELF:Text := "Form"
+		SELF:Text := "This form is created from an XSharp Script !"
 
 		SELF:oButton1:Click += System.EventHandler{ SELF , @Button1Click() }
 		SELF:oButton1:Location := System.Drawing.Point{80 , 96}
 		SELF:oButton1:Name := "Button1"
-		SELF:oButton1:Size := System.Drawing.Size{75 , 23}
+		SELF:oButton1:Size := System.Drawing.Size{200 , 20}
 		SELF:oButton1:TabIndex := 0
-		SELF:oButton1:Text := "Button"
+		SELF:oButton1:Text := "Click me to close the form"
 		SELF:Controls:Add(SELF:oButton1)
 		
 		SELF:ResumeLayout()

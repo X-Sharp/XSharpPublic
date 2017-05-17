@@ -78,6 +78,8 @@ namespace XSharp.Project
         private VSLangProj.VSProject vsProject;
         IErrorList errorList = null;
         bool isLoading = false;
+        private FileChangeManager filechangemanager = null;
+
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
         #endregion
@@ -108,6 +110,17 @@ namespace XSharp.Project
 
             object errlist = ((IServiceProvider)this.package).GetService(typeof(SVsErrorList));
             errorList = (IErrorList)errlist;
+
+        }
+
+        private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
+        {
+            if (IsXamlFile(e.FileName))
+            {
+                this.ProjectModel.RemoveFile(e.FileName);
+                this.ProjectModel.AddFile(e.FileName);
+                this.ProjectModel.Walk();
+            }
         }
 
 
@@ -804,6 +817,14 @@ namespace XSharp.Project
                 string.Compare(ext, XSharpConstants.FileExtension2, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
+        public bool IsXamlFile(string strFileName)
+        {
+            // Don't check errors here
+            if (string.IsNullOrEmpty(strFileName))
+                return false;
+            string ext = Path.GetExtension(strFileName);
+            return string.Compare(ext, ".xaml" , StringComparison.OrdinalIgnoreCase) == 0 ;
+        }
         /// <summary>
         /// Called by the project to know if the item is a file (that is part of the project)
         /// or an intermediate file used by the MSBuild tasks/targets
@@ -833,6 +854,12 @@ namespace XSharp.Project
         internal override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             base.OnAfterProjectOpen(sender, e);
+            if (filechangemanager == null)
+            {
+                filechangemanager = new FileChangeManager(this.Site);
+                filechangemanager.FileChangedOnDisk += Filechangemanager_FileChangedOnDisk;
+                
+            }
             if (this.isLoading)
             {
                 // Run the background Walker/Listener, to fill the Model
@@ -845,9 +872,15 @@ namespace XSharp.Project
                         var xnode = this.URLNodes[url] as XSharpFileNode;
                         if (xnode != null && !xnode.IsNonMemberItem)
                         {
-                            if (File.Exists(url) && IsCodeFile(url))
+                            if (File.Exists(url))
                             {
-                                this.ProjectModel.AddFile(url);
+                                if (IsCodeFile(url))
+                                    this.ProjectModel.AddFile(url);
+                                if (IsXamlFile(url))
+                                {
+                                    this.ProjectModel.AddFile(url);
+                                    filechangemanager.ObserveItem(url);
+                                }
                             }
                         }
                     }
@@ -1147,9 +1180,19 @@ namespace XSharp.Project
                 var xnode = node as XSharpFileNode;
                 if (xnode != null && !xnode.IsNonMemberItem)
                 {
-                    if (File.Exists(url) && IsCodeFile(url))
+                    if (File.Exists(url) )
                     {
-                        this.ProjectModel.AddFile(url);
+                        if (IsCodeFile(url))
+                            this.ProjectModel.AddFile(url);
+                        if (IsXamlFile(url))
+                        {
+                            this.ProjectModel.AddFile(url);
+                            if (filechangemanager != null)
+                            {
+                                filechangemanager.ObserveItem(url);
+                            }
+
+                        }
                     }
                 }
             }
@@ -1198,6 +1241,11 @@ namespace XSharp.Project
             }
             else 
             {
+                if (filechangemanager != null && IsXamlFile(url))
+                {
+                    filechangemanager.StopObservingItem(url);
+                }
+
                 var node = this.FindChild(url) as XSharpFileNode;
                 if (node != null && !node.IsNonMemberItem)
                 {
@@ -1249,6 +1297,20 @@ namespace XSharp.Project
             }
         }
 
+        public string IntermediateOutputPath
+        {
+            get
+            {
+                if (this.BuildProject != null)
+                { 
+                    var result = this.BuildProject.GetPropertyValue("IntermediateOutputPath");
+                    if (!Path.IsPathRooted(result))
+                        result = Path.Combine(this.ProjectFolder, result);
+                    return result;
+                }
+                return "";
+            }
+        }
         public void OpenElement(string file, int line, int column)
         {
             IVsWindowFrame window;

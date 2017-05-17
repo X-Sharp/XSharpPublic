@@ -136,7 +136,7 @@ namespace XSharp.Project
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
-
+    // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
     [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension1, 0x42, DefaultName = EditorName, NameResourceID =109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), PpoExtension, 0x42, DefaultName = EditorName, NameResourceID = 109)]

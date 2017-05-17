@@ -166,19 +166,24 @@ namespace XSharpModel
 
         internal void FileWalk( XFile file )
         {
-            SourceWalker sw = new SourceWalker();
-            //
-            sw.File = file;
-            try
+            DateTime dt = System.IO.File.GetLastWriteTime(file.FullPath);
+            if (dt > file.LastWritten)
             {
-                sw.InitParse();
-                sw.BuildModelOnly();
+                SourceWalker sw = new SourceWalker();
                 //
-            }
-            catch (Exception)
-            {
-                // Push Exception away...
-                ;
+                sw.File = file;
+                try
+                {
+                    sw.InitParse();
+                    sw.BuildModelOnly();
+                    file.LastWritten= dt;
+                    //
+                }
+                catch (Exception)
+                {
+                    // Push Exception away...
+                    ;
+                }
             }
         }
 

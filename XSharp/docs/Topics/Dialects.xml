@@ -8,322 +8,274 @@
     </header>
     <para styleclass="Normal">The X# compiler can run in different dialects. The table below shows the differences between these dialects.<br/>You can use the /dialect compiler option to select the dialect that you want to use. The <text style="font-weight:bold;">Core dialect</text><text style="font-weight:normal;"> is default.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="39" colcount="6">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="40" colcount="5" style="width:auto;">
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal" style="text-indent:1px; margin-right:0px; margin-left:38px; tabstops:none;"><text style="font-weight:bold;">Core dialect</text></para>
         </td>
-        <td style="width:275px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">VO Dialect 1,2</text></para>
         </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Vulcan dialect 1,2</text></para>
         </td>
-        <td style="width:256px;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Harbour 1,2</text></para>
-        </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Other</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Harbour 1,2</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">4 Letter </text><text style="font-weight:normal;">abbreviations of keywords</text></para>
           <para styleclass="Normal"><text style="font-weight:normal;">(FUNC, WHIL etc). </text></para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
+        <td>
           <para styleclass="Normal">Yes, 11</para>
         </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">No</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes, 11</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
-          <para styleclass="Normal"><text style="font-weight:bold;">&amp;&amp;</text><text style="font-weight:normal;"> as single line comment character</text></para>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">&amp;&amp;</text><text style="font-weight:normal;"> as single line comment character (alternative syntax for </text><text style="font-weight:bold;">//</text>)</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">No</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-size:12pt; font-weight:bold;">*</text><text style="font-weight:normal;"> at beginning of line as comment character</text></para>
         </td>
-        <td style="width:290px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">ALIAS</text> (-&gt;) operator</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">ARRAY</text> type, Including Array literals &amp; NULL_ARRAY, including missing elements</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">BREAK</text> statement</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px; height:19px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">BEGIN SEQUENCE .. RECOVER .. END SEQUENCE</text></para>
         </td>
-        <td style="width:290px; height:19px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px; height:19px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
-        <td style="width:256px; height:19px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
-        <td style="width:256px; height:19px;">
+        <td>
           <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="height:19px;">
-          <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">CLIPPER</text> calling convention (requires USUAL support)</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">CODEBLOCK</text> type</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
+        <td>
           <para styleclass="Normal"><text style="color:#000000;">Yes</text></para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal"><text style="color:#000000;">Yes</text></para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal"><text style="color:#000000;">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">DATE</text> type, including Date literals &amp; NULL_DATE</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:340px;">
-          <para styleclass="Normal"><text style="font-weight:bold;">DEFINE </text><text style="font-weight:normal;">statement</text></para>
-        </td>
-        <td style="width:290px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">DEFINE </text><text style="font-weight:normal;">statement with optional type clause</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">FIELD</text> statement, and recognition of Field names in stead of locals or instance variables</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text> type, including Float literals &amp; the <text style="font-weight:bold;">/vo14</text> compiler option</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">FUNCTION</text><text style="font-weight:normal;"> and </text><text style="font-weight:bold;">PROCEDURE </text><text style="font-weight:normal;"> inside class are compiled as Static Method of that class</text></para>
         </td>
-        <td style="width:290px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">GLOBAL</text><text style="font-weight:normal;"> statement</text></para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
-        <td style="width:275px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
@@ -331,356 +283,321 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">IIF</text>() expression and the <text style="font-weight:bold;">/vo10</text> compiler option</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">Yes 7</para>
         </td>
-        <td style="width:275px;">
+        <td>
           <para styleclass="Normal">Yes 7</para>
         </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes 7</para>
         </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes 12</para>
         </td>
+      </tr>
+      <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Late binding</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">No</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Yes (with /lb+)</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Yes (with /lb+)</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Yes (with /lb+)</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
-          <para styleclass="Normal">MEMVAR statement</para>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">MEMVAR</text> statement</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">NO</para>
         </td>
-        <td style="width:275px;">
+        <td>
           <para styleclass="Normal"><text style="color:#ff0000;">Not yet</text></para>
         </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">No</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal"><text style="color:#ff0000;">Not yet</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">PSZ</text> Type, including NULL_PSZ and (pseudo) PSZ conversion functions (String2Psz(), Cast2Psz()</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">NULL_STRING</text></para>
         </td>
-        <td style="width:290px;">
-          <para styleclass="Normal">Yes 9</para>
-        </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes 9</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes 9</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes 9</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes 9</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 9</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 9</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">SYMBOL</text> type, including Symbol literals &amp; NULL_SYMBOL</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">USUAL</text> type, including NIL literal</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Special features</text></para>
         </td>
-        <td style="width:290px;">
-        </td>
-        <td style="width:275px;">
-        </td>
-        <td style="width:256px;">
-        </td>
-        <td style="width:256px;">
+        <td>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+        </td>
+        <td>
+        </td>
+        <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal">Untyped Literal Arrays</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes 8</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes 8</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes 8</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes 8</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 8</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal">Missing types allowed</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes 3</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes 3</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes 3</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes 3</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 3</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal">Missing arguments in function/method calls MyFunc(1,,2)</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">Pseudo functions</text></para>
         </td>
-        <td style="width:290px;">
+        <td>
         </td>
-        <td style="width:275px;">
+        <td>
         </td>
-        <td style="width:256px;">
-        </td>
-        <td style="width:256px;">
+        <td>
         </td>
         <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"> &#160;PCount(), _GetMParam(), _GetFParam()</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes 4</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes 4</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes 4</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes 4</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 4</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"> &#160;SLen()</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes 5</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes 5</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes 5</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes 5</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 5</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal">_Chr()</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"> &#160;AltD()</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes 6</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes 6</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes 6</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes 6</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 6</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"> &#160;PCall, PCallNative</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"> &#160;CCall, CCallNative</para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Other information</text></para>
         </td>
-        <td style="width:290px;">
+        <td>
         </td>
-        <td style="width:275px;">
+        <td>
         </td>
-        <td style="width:256px;">
-        </td>
-        <td style="width:256px;">
+        <td>
         </td>
         <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
-          <para styleclass="Normal"><text style="font-weight:normal;">Function class name</text></para>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Function class </text><text style="font-weight:normal;">name</text></para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">Functions<br/>X$&lt;ModuleName&gt;$Functions for static functions and globals</para>
         </td>
         <td colspan="2">
@@ -688,75 +605,62 @@
         </td>
         <td>
         </td>
-        <td>
-          <para styleclass="Normal">n/a</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">VOSTRUCT </text><text style="font-weight:normal;">and </text><text style="font-weight:bold;">AS/IS </text><text style="font-weight:normal;">syntax</text></para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No 10</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">UNION </text><text style="font-weight:normal;">and </text><text style="font-weight:bold;">AS/IS </text><text style="font-weight:normal;">syntax</text></para>
         </td>
-        <td style="width:290px;">
+        <td>
           <para styleclass="Normal">No 10</para>
         </td>
-        <td style="width:275px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td style="width:256px;">
+        <td>
           <para styleclass="Normal">Yes</para>
         </td>
         <td>
-          <para styleclass="Normal">n/a</para>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Method Resolution</text></para>
         </td>
-        <td style="width:290px;">
+        <td>
         </td>
-        <td style="width:275px;">
+        <td>
         </td>
-        <td style="width:256px;">
-        </td>
-        <td style="width:256px;">
+        <td>
         </td>
         <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td>
         </td>
-        <td style="width:290px;">
+        <td>
         </td>
-        <td style="width:275px;">
+        <td>
         </td>
-        <td style="width:256px;">
-        </td>
-        <td style="width:256px;">
+        <td>
         </td>
         <td>
         </td>
@@ -773,7 +677,7 @@
       <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">In the core dialect each of the expressions is casted to OBJECT. In the other dialects the expression is cast to USUAL when VulcanRTFuncs is included. Otherwise it is casted to OBJECT.</text></li>
       <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:</text><br/><text styleclass="Code Example" style="font-size:10pt;">{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</text><br/><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Typed literal arrays are prefixed with &lt;Type&gt; like this:</text><br/><text styleclass="Code Example" style="font-size:10pt;">&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</text><br/><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">This becomes a literal string array</text></li>
       <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit) attribute on the structure and the FieldOffSet attribute on each field to explicitly define the location of the fields. </text></li>
+      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit)] attribute on the structure and the [FieldOffSet()] attribute on each field to explicitly define the location of the fields. </text></li>
       <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal" style="font-weight:normal;">Only for VO compatible keywords, not for keywords introduced in Vulcan or XSharp.</text></li>
       <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal" style="font-weight:normal;">The true and false expressions for an IIF() are optional in Harbour</text></li>
     </list>

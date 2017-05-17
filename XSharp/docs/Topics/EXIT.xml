@@ -10,6 +10,6 @@
       <para styleclass="Heading1">EXIT</para>
     </header>
     <para styleclass="Body Text">The Exit statement jumps out of the current DO WHILE, FOR NEXT, FOREACH NEXT or REPEAT UNTIL block</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">exitstmt &#160; : EXIT eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">exitstmt &#160; : </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">EXIT</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#000000;">eos</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
   </body>
 </topic>

@@ -19,8 +19,8 @@
       <topicref type="topic" id="423890249842237" build="ALL" modified="2016-01-19T21:14:28.114Z" icon="0" href="Known-Issues">
         <caption translate="true">Known Issues</caption>
       </topicref>
-      <topicref type="topic" id="423886741980303" build="ALL" modified="2016-01-19T21:15:13.357Z" icon="0" href="New-features">
-        <caption translate="true">New features</caption>
+      <topicref type="topic" id="423886741980303" build="ALL" modified="2017-05-17T10:10:08.820Z" icon="0" href="New-features">
+        <caption translate="true">New language features </caption>
         <topicref type="topic" id="423997726350447" build="ALL" modified="2016-01-30T21:22:45.037Z" icon="0" href="Anonymous-Methods">
           <caption translate="true">Anonymous Methods</caption>
         </topicref>
@@ -66,9 +66,6 @@
         <topicref type="topic" id="424000368292699" build="ALL" modified="2016-01-30T21:22:44.766Z" icon="0" href="Expression-IS-Type">
           <caption translate="true">Expression IS Type</caption>
         </topicref>
-        <topicref type="topic" id="423999835390226" build="ALL" modified="2016-01-30T21:26:07.826Z" icon="0" href="FUNCTION-inside-CLASS">
-          <caption translate="true">FUNCTION inside CLASS</caption>
-        </topicref>
         <topicref type="topic" id="426888066632269" build="ALL" modified="2016-11-14T20:15:03.627Z" icon="0" href="Initializers">
           <caption translate="true">Initializers</caption>
         </topicref>
@@ -100,8 +97,8 @@
           <caption translate="true">YIELD </caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="428711073823775" build="ALL" modified="2017-05-15T21:41:37.062Z" icon="0" href="Licenses">
-        <caption translate="true">Licenses</caption>
+      <topicref type="topic" id="428711073823775" build="ALL" modified="2017-05-17T10:08:58.415Z" icon="0" href="Licenses">
+        <caption translate="true">Licensing</caption>
         <topicref type="topic" id="428707220706899" build="ALL" modified="2017-05-15T21:48:57.359Z" icon="0" href="XSharp-Open-Software-License">
           <caption translate="true">XSharp Open Software License</caption>
         </topicref>
@@ -117,6 +114,9 @@
       </topicref>
       <topicref type="topic" id="428708026773084" build="ALL" modified="2017-05-15T22:23:34.706Z" icon="0" href="Acnowledgements">
         <caption translate="true">Acknowledgements</caption>
+      </topicref>
+      <topicref type="topic" id="428724207686309" build="ALL" modified="2017-05-17T10:00:44.864Z" icon="0" href="Who-is-the-X-team">
+        <caption translate="true">Who is who in the X# team</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
@@ -241,6 +241,9 @@
       <topicref type="topic" id="423891384096573" build="ALL" modified="2016-01-19T22:45:59.144Z" icon="0" href="XML-Documentation-Comments">
         <caption translate="true">XML Documentation Comments</caption>
       </topicref>
+    </topicref>
+    <topicref type="topic" id="428725168955982" build="ALL" modified="2017-05-17T09:41:40.642Z" icon="0" href="X-Scripting">
+      <caption translate="true">X# Scripting</caption>
     </topicref>
     <topicref type="topic" id="427443291795393" build="ALL" modified="2017-01-09T09:11:10.581Z" icon="0" href="X-Reference">
       <caption translate="true">X# Reference</caption>

@@ -6009,6 +6009,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(GenerateMethodCall(VulcanQualifiedFunctionNames.Chr, argList));
             }
+            else
+            {
+                context.Put(GenerateMethodCall(context.Expr.GetText(), argList));
+            }
             return true;
         }
 

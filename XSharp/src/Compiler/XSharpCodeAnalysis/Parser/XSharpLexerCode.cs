@@ -390,7 +390,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         break;
                     case '*':
-                        if (/*_OldComment && */LastToken == NL)
+                        if (LastToken == NL)
                             break;
                         _type = MULT;
                         _textSb.Clear();
@@ -1243,13 +1243,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             stream.name = fileName;
             var lexer = new XSharpLexer(stream);
             lexer.TokenFactory = XSharpTokenFactory.Default;
-            lexer.AllowFourLetterAbbreviations = false;
-            lexer.AllowOldStyleComments = false;
-            if (options != null && options.Dialect == XSharpDialect.VO) 
-            {
-                lexer.AllowOldStyleComments = true;
-                lexer.AllowFourLetterAbbreviations = true;
-            }
+            lexer.AllowFourLetterAbbreviations = options.Dialect.AllowFourLetterAbbreviations();
+            lexer.AllowOldStyleComments = options.Dialect.AllowOldStyleComments();
             lexer.IsScript = options.Kind == Microsoft.CodeAnalysis.SourceCodeKind.Script;
             return lexer;
         }

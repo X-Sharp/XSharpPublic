@@ -357,7 +357,7 @@ constructor         :  (Attributes=attributes)?
                       (Modifiers=constructorModifiers)?
                       CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
 					  (CallingConvention=callingconvention)? 
-					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		
 					  end=eos
                       (Chain=(SELF | SUPER)
 					  (
@@ -376,7 +376,7 @@ declare				: DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMMA Ids+=id
 destructor          : (Attributes=attributes)?
                       (Modifiers=destructorModifiers)?
                       DESTRUCTOR (LPAREN RPAREN)? 
-					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		
 					   end=eos
                       StmtBlk=statementBlock							
                     ;

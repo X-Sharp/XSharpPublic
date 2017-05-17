@@ -24,18 +24,21 @@ namespace XSharpModel
         private object _lock;
         //private int _hashCode;
         private bool _parsed;
-
+        private bool _xaml;
+        private DateTime _lastWritten;
 
         public XFile(string fullPath)
         {
             // TODO: Change to support Case Sensitive types
             _usings = new List<string>();
             this.filePath = fullPath;
+            _xaml = System.IO.Path.GetExtension(fullPath).ToLower() == ".xaml";
             //
             InitTypeList();
             //
             _parsed = false;
             _lock = new object();
+            _lastWritten = DateTime.MinValue;
             //_hashCode = 0;
 
         }
@@ -104,6 +107,11 @@ namespace XSharpModel
                     _typeList = value;
                 }
             }
+        }
+        public DateTime LastWritten
+        {
+            get { return _lastWritten; }
+            set { _lastWritten = value; }
         }
 
         ///// <summary>
@@ -215,6 +223,8 @@ namespace XSharpModel
             }
             return null;
         }
+
+        public bool IsXaml => _xaml;
     }
 
 }

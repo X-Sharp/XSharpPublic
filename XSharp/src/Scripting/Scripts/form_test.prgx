@@ -34,7 +34,7 @@ CLASS TestForm INHERIT System.Windows.Forms.Form
 		SELF:oButton1:Click += System.EventHandler{ SELF , @Button1Click() }
 		SELF:oButton1:Location := System.Drawing.Point{80 , 96}
 		SELF:oButton1:Name := "Button1"
-		SELF:oButton1:Size := System.Drawing.Size{200 , 20}
+		SELF:oButton1:Size := System.Drawing.Size{200 , 30}
 		SELF:oButton1:TabIndex := 0
 		SELF:oButton1:Text := "Click me to close the form"
 		SELF:Controls:Add(SELF:oButton1)

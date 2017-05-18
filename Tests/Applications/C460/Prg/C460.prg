@@ -44,6 +44,15 @@ xAssert(oGet:cargo[2] == "Enter the filler")
 xAssert(GetList[2]:cargo[2] == "Is this an active filler?")
 RETURN
 
+FUNCTION zGECheckNew(a,b,c,d,e,f,g,h,i) CLIPPER
+	? "zGECheckNew arguments:",a,b,c,d,e,f,g,h,i
+	xAssert(f == TRUE)
+	LOCAL oGet AS _GET_Object
+	oGet := _GET_Object{}
+	oGet:cargo := ArrayCreate(10)
+RETURN oGet
+
+
 CLASS FillerClass
 	EXPORT Filler AS INT
 	EXPORT Active AS INT

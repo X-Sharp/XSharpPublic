@@ -26,7 +26,7 @@
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
 #define VIVersion       "0.2.12.2112"
 #define VITextVersion   "0.2.12.2112 (Beta 12)"                                                                                            
-#define TouchDate       "2017-05-15"
+#define TouchDate       "2017-05-18"
 #define TouchTime       "02:12:00"
 #define InstallPath     "XSharpPath"
 
@@ -53,6 +53,8 @@
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"
+#define ImmutableVersion "System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+#define MetadataVersion  "System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define VulcanEditorGuid "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
 #define VS14RegPath      "Software\Microsoft\VisualStudio\14.0"
 #define VS15RegPath      "Software\Microsoft\VisualStudio\15.0"
@@ -251,9 +253,15 @@ Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin";
 
 #endif
 
-; Ms Runtime DLLs
-Source: "{#BinDFolder}System*.Dll";                        DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinDFolder}Microsoft*.Dll";                     DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+; GAC files in Bin folder
+Source: "{#BinDFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall}; components: main
+Source: "{#BinDFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall}; components: main
+
+; 'Normal' Ms Runtime DLLs
+Source: "{#BinDFolder}System.Security.Cryptography.Algorithms.Dll"; DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinDFolder}System.Text.Encoding.Codepages.Dll";          DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinDFolder}System.Valuetuple.Dll";                       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinDFolder}Microsoft.DiaSymReader.*.Dll";                DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
 
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinPFolder}baggage\rcdll.dll";                 DestDir: "{app}\bin"; Flags: {#StdFlags}; 

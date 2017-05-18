@@ -369,6 +369,7 @@ namespace Microsoft.CodeAnalysis.Scripting.Hosting
 
         private static bool TryReadMvid(string filePath, out Guid mvid)
         {
+            mvid = Guid.Empty;
             try
             {
                 using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))

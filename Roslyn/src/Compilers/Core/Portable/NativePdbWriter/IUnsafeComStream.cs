@@ -26,7 +26,7 @@ namespace Roslyn.Utilities
         void Revert();
         void LockRegion(long libOffset, long cb, int dwLockType);
         void UnlockRegion(long libOffset, long cb, int dwLockType);
-        void Stat(out STATSTG pstatstg, int grfStatFlag);
+        void Stat(out System.Runtime.InteropServices.ComTypes.STATSTG pstatstg, int grfStatFlag);
         void Clone(out IStream ppstm);
     }
 }

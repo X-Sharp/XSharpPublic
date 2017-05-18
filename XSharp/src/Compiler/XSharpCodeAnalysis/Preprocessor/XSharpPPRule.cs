@@ -1488,7 +1488,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 end--;
             }
-
+            
             switch (rule.RuleTokenType)
             {
                 // Handle 3 kind of stringifies:
@@ -1504,7 +1504,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // we cannot take an interval and the source stream. That will not work if a transformation has been done already
                         var sb = new System.Text.StringBuilder();
                         sb.Append('"');
-                        for (int i = range.Start; i <= range.End; i++)
+                        for (int i = start; i <= end; i++)
                         {
                             var token = tokens[i];
                             sb.Append(token.Text);
@@ -1529,7 +1529,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // we cannot take an interval and the source stream. That will not work if a transformation has been done already
                         var sb = new System.Text.StringBuilder();
                         sb.Append('"');
-                        for (int i = range.Start; i <= range.End; i++)
+                        for (int i = start; i <= end; i++)
                         {
                             var token = tokens[i];
                             sb.Append(token.Text);

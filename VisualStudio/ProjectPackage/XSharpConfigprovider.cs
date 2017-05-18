@@ -31,6 +31,18 @@ namespace XSharp.Project
         {
             return new XSharpProjectConfig(base.ProjectMgr, canonicalName);
         }
+
+        public override int GetCfgOfName(string name, string platName, out IVsCfg cfg)
+        {
+            if (name.IndexOf("|") >= 0)
+            {
+                var elements = name.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                name = elements[0];
+                platName = elements[1];
+            }
+            return base.GetCfgOfName(name, platName, out cfg);
+
+        }
     }
 
     internal class XSharpProjectConfig : DebuggableProjectConfig

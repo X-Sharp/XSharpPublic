@@ -1188,7 +1188,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (!mtoken.IsOptional)
                         return false;
-                    matchInfo[iRule].SetSkipped();
+                    matchInfo[mtoken.Index].SetSkipped();
                     hasSkippedMarkers = true;
                     iRule++;
                 }
@@ -1497,7 +1497,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         for (int i = range.Start; i <= range.End; i++)
                         {
                             var token = tokens[i];
-                            sb.Append(token.Text);
+                            if (token.Channel != XSharpLexer.Hidden)
+                            {
+                                sb.Append(token.Text);
+                            }
                         }
                         sb.Append('"');
                         var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString());
@@ -1522,7 +1525,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         for (int i = range.Start; i <= range.End; i++)
                         {
                             var token = tokens[i];
-                            sb.Append(token.Text);
+                            if (token.Channel != XSharpLexer.Hidden)
+                            {
+                                sb.Append(token.Text);
+                            }
                         }
                         sb.Append('"');
                         var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString());
@@ -1573,7 +1579,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             for (int i = start; i <= end; i++)
                             {
                                 var token = tokens[i];
-                                sb.Append(token.Text);
+                                if (token.Channel != XSharpLexer.Hidden)
+                                {
+                                    sb.Append(token.Text);
+                                }
                             }
                             if (addDelimiters)
                                 sb.Append('"');

@@ -1479,6 +1479,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
                 }
             }
+            // adjust start and end to skip hidden tokens at begin and end
+            while (tokens[start].Channel == XSharpLexer.Hidden && start < end)
+            {
+                start++;
+            }
+            while (tokens[end].Channel == XSharpLexer.Hidden && start < end)
+            {
+                end--;
+            }
+
             switch (rule.RuleTokenType)
             {
                 // Handle 3 kind of stringifies:
@@ -1497,10 +1507,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         for (int i = range.Start; i <= range.End; i++)
                         {
                             var token = tokens[i];
-                            if (token.Channel != XSharpLexer.Hidden)
-                            {
-                                sb.Append(token.Text);
-                            }
+                            sb.Append(token.Text);
                         }
                         sb.Append('"');
                         var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString());
@@ -1525,10 +1532,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         for (int i = range.Start; i <= range.End; i++)
                         {
                             var token = tokens[i];
-                            if (token.Channel != XSharpLexer.Hidden)
-                            {
-                                sb.Append(token.Text);
-                            }
+                            sb.Append(token.Text);
                         }
                         sb.Append('"');
                         var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString());
@@ -1579,10 +1583,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             for (int i = start; i <= end; i++)
                             {
                                 var token = tokens[i];
-                                if (token.Channel != XSharpLexer.Hidden)
-                                {
-                                    sb.Append(token.Text);
-                                }
+                                sb.Append(token.Text);
                             }
                             if (addDelimiters)
                                 sb.Append('"');

@@ -84,3 +84,26 @@ LOCAL aFiller := ArrayCreate(20) AS ARRAY
 
 RETURN
 
+
+FUNCTION zGEDBComboNew( cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,;
+                       cAlias, cTag, xTop, xBottom, bFor, bWhile,;
+                       cBaseFilter, xRetFld, aBrowse_,;
+                       xDispFld, cKeyTag, lStrict, aHotKeys_, cpicture,;
+                       nWidth,nHeight, cColor, bPostEval, lEmptyAllowed)
+/*
+? cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,;
+                       cAlias, cTag, xTop, xBottom, bFor, bWhile,;
+                       cBaseFilter, xRetFld, aBrowse_,;
+                       xDispFld, cKeyTag, lStrict, aHotKeys_, cpicture,;
+                       nWidth,nHeight, cColor, bPostEval, lEmptyAllowed
+*/                       
+? "zGEDBComboNew() params cAlias, cTag:" , cAlias, cTag
+IF cAlias == NIL .or. .not. (cAlias == "SSUsers" .or. cAlias == "FilGrp")
+	THROW Exception{"cAlias parameter not preprocessed correctly"}
+END IF
+
+	LOCAL oGet AS _GET_Object
+	oGet := _GET_Object{}
+	oGet:cargo := ArrayCreate(10)
+RETURN oGet
+

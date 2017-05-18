@@ -39,7 +39,12 @@ nNotSeenInPpo := 0
 ? nNotSeenInPpo
 RETURN
 
-FUNCTION Test() CLIPPER
+FUNCTION Test(a,b,c,d,e,f) CLIPPER
+	? a,b,c
+	? "Param b:" + AsString(b) + ":"
+	IF .not. b == "1"
+		THROW Exception{"Param b contains a space"}
+	END IF
 	? "This text does not appear in the ppo output"
 RETURN "nNotSeenInPpo"
 

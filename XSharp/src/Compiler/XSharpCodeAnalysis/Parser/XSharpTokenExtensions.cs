@@ -266,27 +266,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CHAR_CONST:
                     if (text.StartsWith("c", StringComparison.OrdinalIgnoreCase))
                     {
-                        text = text.Substring(1);
-                        r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
+                         text = text.Substring(1);
+                         r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
+                        if (text[1] != '\\' && text.Length > 3)     // c'\n' is allowed but not c'nn'
+                        {
+                            r = r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TooManyCharsInConst));
+                        }
                     }
                     else
                     {
-                        switch (options.Dialect)
-                        {
-                            case XSharpDialect.Core:
-                            case XSharpDialect.Vulcan:
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
-                                break;
-                            default:
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, text, StringValue(text), SyntaxFactory.WS);
-                                break;
-                        }
+                        // Dialects with a single quote are excluded with a predicate in the lexer
+                        r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
                     }
                     break;
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.INTERPOLATED_STRING_CONST:
                 case XSharpParser.INCOMPLETE_STRING_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, StringValue(text), SyntaxFactory.WS);
+                    if (text.StartsWith("'") && ! options.Dialect.AllowStringsWithSingleQuotes())
+                    {
+                        r = r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Single Quoted Strings", options.Dialect.ToString()));
+                    }
                     break;
                 case XSharpParser.ESCAPED_STRING_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, EscapedStringValue(text), SyntaxFactory.WS);

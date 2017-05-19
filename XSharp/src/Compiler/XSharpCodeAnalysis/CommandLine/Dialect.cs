@@ -104,6 +104,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return false;
             }
         }
+        public static bool AllowStringsWithSingleQuotes(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.VO:
+                case XSharpDialect.Harbour:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }
     

@@ -332,6 +332,7 @@ namespace XSharp.Project
             }
             else
             {
+                //
                 _completionSession.Commit();
                 return true;
             }
@@ -355,12 +356,26 @@ namespace XSharp.Project
             }
 
             _completionSession.Dismissed += OnCompletionSessionDismiss;
+            _completionSession.Committed += OnCompletionSessionCommitted;
 
             _completionSession.Properties["Command"] = nCmdId;
             _completionSession.Properties["Char"] = typedChar;
             _completionSession.Start();
 
             return true;
+        }
+
+        private void OnCompletionSessionCommitted(object sender, EventArgs e)
+        {
+            // it MUST be the case....
+            if (_completionSession.SelectedCompletionSet.Completions.Count > 0)
+            {
+                if (_completionSession.SelectedCompletionSet.Completions[0].InsertionText.EndsWith("("))
+                {
+                    StartSignatureSession();
+                }
+            }
+            //
         }
 
         private void OnCompletionSessionDismiss(object sender, EventArgs e)
@@ -412,7 +427,7 @@ namespace XSharp.Project
             }
             XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             //
-            if ((gotoElement != null) || (gotoElement.IsInitialized))
+            if ((gotoElement != null) && (gotoElement.IsInitialized))
             {
 
                 if ((gotoElement.XSharpElement != null) && (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Class))

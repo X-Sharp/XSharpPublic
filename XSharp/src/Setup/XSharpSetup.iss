@@ -1,6 +1,6 @@
 
-;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
 
 ;
 ; preprocess the help cab files
@@ -352,7 +352,7 @@ Components: vs2015; Source: "{#BinPFolder}XSharpProject.pkgdef";              De
 Components: vs2015; Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; DestName: "extension.vsixmanifest"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}Designers.pkgdef";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 
-Components: vs2015; Source: "{#BinPFolder}XSharp.ico ";                       DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; 
+Components: vs2015; Source: "Baggage\XSharp.ico";                             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; 
 
 
@@ -406,7 +406,7 @@ Components: vs2017; Source: "{#BinPFolder}XSharpProject.pkgdef";              De
 Components: vs2017; Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  DestName: "extension.vsixmanifest"; Flags: {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}Designers.pkgdef";                  DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 
-Components: vs2017; Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; 
+Components: vs2017; Source: "Baggage\XSharp.ico";                             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; 
 
 ; Examples
@@ -448,7 +448,7 @@ Components: vs2017\help; Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"
 
 ; set the VSHelp to Offline
 Components: vs2015\help;  Root: HKCU; Subkey: "{#Vs14RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Flags: noerror;
-; Cannot set VS 2015 Online help off. It is in a private registry
+; Cannot set VS 2017 Online help off. It is in a private registry
 ;Components: vs2017\help; Root: HKCU; Subkey: "{#Vs15RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Flags: noerror;
 
 ; When Vulcan is Installed then update its extension registration so we can handle the priorities in our project system

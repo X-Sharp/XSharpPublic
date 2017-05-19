@@ -67,9 +67,17 @@ namespace XSharpModel
                     _file = value;
                     _prjNode = _file?.Project?.ProjectNode;
                     _fullPath = _file.FullPath;
-                    if (_source == null)
+                    if (_source == null )
                     {
-                        _source = System.IO.File.ReadAllText(_fullPath);
+                        if (_file.IsXaml)
+                        {
+                            _fullPath = System.IO.Path.Combine(_prjNode.IntermediateOutputPath, System.IO.Path.GetFileName(_fullPath));
+                            _fullPath = System.IO.Path.ChangeExtension(_fullPath, ".g.prg");
+                        }
+                        if (System.IO.File.Exists(_fullPath))
+                        {
+                            _source = System.IO.File.ReadAllText(_fullPath);
+                        }
                     }
                 }
             }

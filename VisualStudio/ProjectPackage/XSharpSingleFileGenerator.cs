@@ -311,6 +311,12 @@ namespace XSharp.Project
 
             if (customToolProgID.StartsWith("MSBuild:Compile", StringComparison.OrdinalIgnoreCase))
             {
+                var project = fileNode.ProjectMgr as XSharpProjectNode;
+                if (project.IsXamlFile(document))
+                {
+                    // need to generate the .g.prg file.
+                    project.Build(project.CurrentConfig.ConfigCanonicalName, "BuildGenerateSources"); //  BuildGenerateSources
+                }
                 // The C# project system then calls a InvokeMsBuild method with the following contents
                 /*
                 HRESULT CVsProjBaseFileNode::InvokeMSBuildTarget(_In_z_ LPCWSTR wszMSBuildTarget)

@@ -12,7 +12,7 @@
     <AssemblyName>XSharpModel</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>XSharp.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
@@ -67,7 +67,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="XSharp.CodeAnalysis, Version=0.2.8.2, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.CodeAnalysis">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>

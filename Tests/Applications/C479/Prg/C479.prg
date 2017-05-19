@@ -26,7 +26,7 @@
 FUNCTION Start() AS VOID
 LOCAL cChFile AS STRING
 cChFile := DirectoryInfo{Environment.CurrentDirectory}:Parent:Parent:FullName + "\Applications\C479\Prg\C479.ppo"
-IF .not. File.ReadAllText(cChFile):Contains(AsString( Test()) )
+IF .not. File.ReadAllText(cChFile):Contains(AsString( Test("one argument")) )
 	// string not found in the .ppo file
 	THROW Exception{"Ppo file C479.ppo was not fully generated"}
 END IF
@@ -42,7 +42,7 @@ RETURN
 FUNCTION Test(a,b,c,d,e,f) CLIPPER
 	? a,b,c
 	? "Param b:" + AsString(b) + ":"
-	IF .not. b == "1"
+	IF .not. b == "1" .and. .not. (b == NIL .and. a == "one argument")
 		THROW Exception{"Param b contains a space"}
 	END IF
 	? "This text does not appear in the ppo output"

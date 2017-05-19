@@ -4,7 +4,8 @@ PUBLIC PARTIAL CLASS frmXporter ;
     
     PUBLIC CONSTRUCTOR()
         SUPER()
-    SELF:InitializeComponent()
+        SELF:InitializeComponent()
+        SELF:Icon := XPorter.Properties.Resources.XSharp
 RETURN
     PUBLIC VIRTUAL METHOD OKButtonClick(sender AS OBJECT, e AS System.EventArgs) AS VOID
         LOCAL oDlg AS frmProgress

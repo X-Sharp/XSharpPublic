@@ -12,6 +12,8 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
+using System.Reflection;
+using System.Linq;
 
 namespace XSharp.Project
 {
@@ -217,6 +219,8 @@ namespace XSharp.Project
                 {
                     signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
                 }
+                // Any other member with the same name in the current Type and in the Parent(s) ?
+                SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype);
                 //
                 m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
             }
@@ -232,13 +236,13 @@ namespace XSharp.Project
                 if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
                 {
                     EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
-                    if ( method.Parent is EnvDTE.CodeElement)
+                    if (method.Parent is EnvDTE.CodeElement)
                     {
-                        EnvDTE.CodeElement owner = (EnvDTE.CodeElement) method.Parent;
+                        EnvDTE.CodeElement owner = (EnvDTE.CodeElement)method.Parent;
                         if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
                         {
                             EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
-                            NameSake(envClass, signatures, element.Name, analysis.Prototype);
+                            StrangerNameSake(envClass, signatures, element.Name, analysis.Prototype);
                             // Hey, we should also walk the Parent's parents, no ?
                             EnvDTE.CodeElements bases = envClass.Bases;
                             if (bases != null)
@@ -247,7 +251,7 @@ namespace XSharp.Project
                                 {
                                     if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
                                     {
-                                        NameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype);
+                                        StrangerNameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype);
                                     }
                                 }
                             }
@@ -260,7 +264,34 @@ namespace XSharp.Project
             session.Dismissed += OnSignatureHelpSessionDismiss;
         }
 
-        private void NameSake(EnvDTE.CodeClass envClass, IList<ISignature> signatures, String elementName, String elementPrototype )
+
+        private void SystemNameSake(System.Type sType, IList<ISignature> signatures, String elementName, String elementPrototype)
+        {
+            MemberInfo[] members;
+            // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+            members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+                | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            //
+            foreach (var member in members.Where(x => nameEquals(x.Name, elementName)))
+            {
+                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(member);
+                if (analysis.IsInitialized)
+                {
+                    // But don't add the current one
+                    if (String.Compare(elementPrototype, analysis.Prototype, true) != 0)
+                    {
+                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                    }
+                }
+            }
+            // fill members of parent class
+            if (sType.BaseType != null)
+            {
+                SystemNameSake(sType.BaseType, signatures, elementName, elementPrototype);
+            }
+        }
+
+        private void StrangerNameSake(EnvDTE.CodeClass envClass, IList<ISignature> signatures, String elementName, String elementPrototype)
         {
             EnvDTE.CodeElements members = envClass.Members;
             foreach (EnvDTE.CodeElement member in members)
@@ -329,6 +360,11 @@ namespace XSharp.Project
                 return session.Signatures[0];
             }
             return null;
+        }
+
+        private bool nameEquals(string name, string compareWith)
+        {
+            return (name.ToLower().CompareTo(compareWith.ToLower()) == 0);
         }
 
         private bool m_isDisposed;

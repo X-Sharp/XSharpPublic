@@ -879,6 +879,9 @@ namespace XSharp.Project
 
             CreateErrorListManager();
 
+            // Be sure we have External/system types for Intellisense
+            UpdateAssemblyReferencesModel();
+
 
         }
         #endregion
@@ -1102,15 +1105,8 @@ namespace XSharp.Project
                     projectModel = new XSharpModel.XProject(this);
                     // Set the backlink, so the walker can access the StatusBar
                     projectModel.ProjectNode = this;
-                    // Add all references to the Type Controller
-                    foreach (Reference reference in this.VSProject.References)
-                    {
-                        if (reference.Type == prjReferenceType.prjReferenceTypeAssembly)
-                        {
-                            string fullPath = reference.Path;
-                            SystemTypeController.LoadAssembly(fullPath);
-                        }
-                    }
+                    //
+                    UpdateAssemblyReferencesModel();
                     //
                     XSharpModel.XSolution.Add(projectModel);
                 }
@@ -1120,6 +1116,19 @@ namespace XSharp.Project
             private set
             {
                 projectModel = null;
+            }
+        }
+
+        public void UpdateAssemblyReferencesModel()
+        {
+            // Add all references to the Type Controller
+            foreach (Reference reference in this.VSProject.References)
+            {
+                if (reference.Type == prjReferenceType.prjReferenceTypeAssembly)
+                {
+                    string fullPath = reference.Path;
+                    SystemTypeController.LoadAssembly(fullPath);
+                }
             }
         }
 

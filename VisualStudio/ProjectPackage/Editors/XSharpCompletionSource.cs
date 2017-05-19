@@ -1322,11 +1322,6 @@ namespace XSharpLanguage
                     desc += this.Kind.ToString() + " ";
                 desc += this.Prototype;
                 //
-                if ((this.Kind == Kind.Method) || (this.Kind == Kind.Function) || (this.Kind == Kind.Property) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
-                {
-                    desc += " as " + this.TypeName;
-                }
-                //
                 return desc;
             }
         }
@@ -1351,6 +1346,11 @@ namespace XSharpLanguage
                 desc += "(";
                 desc += vars;
                 desc += ")";
+                //
+                if ((this.Kind == Kind.Method) || (this.Kind == Kind.Function) || (this.Kind == Kind.Property) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
+                {
+                    desc += " as " + this.TypeName;
+                }
                 //
                 return desc;
             }

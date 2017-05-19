@@ -837,6 +837,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             get { return _Four; }
             set { _Four = value; }
         }
+        bool _SingleQuotedStrings = false;
+        public bool AllowSingleQuotedStrings
+        {
+            get { return _SingleQuotedStrings; }
+            set { _SingleQuotedStrings = value; }
+
+        }
         bool _OldComment = false;
         public bool AllowOldStyleComments
         {
@@ -1245,6 +1252,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             lexer.TokenFactory = XSharpTokenFactory.Default;
             lexer.AllowFourLetterAbbreviations = options.Dialect.AllowFourLetterAbbreviations();
             lexer.AllowOldStyleComments = options.Dialect.AllowOldStyleComments();
+            lexer.AllowSingleQuotedStrings = options.Dialect.AllowStringsWithSingleQuotes();
             lexer.IsScript = options.Kind == Microsoft.CodeAnalysis.SourceCodeKind.Script;
             return lexer;
         }

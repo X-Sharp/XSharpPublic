@@ -208,7 +208,7 @@ namespace XSharpModel
             if (sType == null)
             {
                 // When we have a TypeName as string, let's suppose it is a System Type
-                sType = SystemTypeController.Lookup(typeName);
+               sType = SystemTypeController.Lookup(typeName);
                 if ((sType == null) && (usings != null))
                 {
                     // Search using the USING statements in the File that contains the var

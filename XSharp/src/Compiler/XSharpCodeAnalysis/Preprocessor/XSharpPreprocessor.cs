@@ -768,7 +768,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             writeToPPO(udc, true, true);
             if (udc.Count < 3)
             {
-                _parseErrors.Add(new ParseErrorData(udc[0], ErrorCode.ERR_PreProcessorError, "Invalid UDC:{0}", udc.AsString()));
+                _parseErrors.Add(new ParseErrorData(udc[0], ErrorCode.ERR_PreProcessorError, "Invalid UDC: '" + udc.AsString()+"'"));
                 return;
             }
             var cmd = udc[0];

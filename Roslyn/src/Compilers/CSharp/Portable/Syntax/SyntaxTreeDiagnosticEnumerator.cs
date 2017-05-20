@@ -270,9 +270,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (sym != null)
                 {
                     span = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex+1);
-
-                    lspan = new LinePositionSpan(new LinePosition(sym.Line - 1, sym.Column - 1),
-                        new LinePosition(sym.Line - 1, sym.Column + span.Length - 1));
+                    int row, col;
+                    row = sym.Line - 1;
+                    col = sym.Column -1;
+                    if (col < 0)
+                        col = 0;
+                    if(row < 0)
+                        row = 0;
+                    lspan = new LinePositionSpan(new LinePosition(row, col),
+                        new LinePosition(row, col + span.Length - 1));
                 }
                 else
                 {

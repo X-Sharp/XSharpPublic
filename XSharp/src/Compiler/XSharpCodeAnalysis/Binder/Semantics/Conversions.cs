@@ -400,11 +400,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Convert Integral type -> Ptr Type 
             if (source.IsIntegralType() && destination.IsPointerType())
             {
-                if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() == 4)
+                if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() <= 4)
                 {
                     return Conversion.Identity;
                 }
-                if (Compilation.Options.Platform == Platform.X64 && srcType.SizeInBytes() == 8)
+                if (Compilation.Options.Platform == Platform.X64 && srcType.SizeInBytes() <= 8)
                 {
                     return Conversion.Identity;
                 }

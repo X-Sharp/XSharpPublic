@@ -713,9 +713,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         if (KwIds.ContainsKey(text))
                         {
                             var kwid = KwIds[text];
-                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL)
+                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
                             {
-                                // #NIL or #NULL_STRING etc. 
+                                // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
                                 t.Text = "#";
                                 t.Type = NEQ2;
                                 t.StopIndex = t.StartIndex;
@@ -1250,6 +1250,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             stream.name = fileName;
             var lexer = new XSharpLexer(stream);
             lexer.TokenFactory = XSharpTokenFactory.Default;
+            if (options == null)
+                options = CSharpParseOptions.Default;
             lexer.AllowFourLetterAbbreviations = options.Dialect.AllowFourLetterAbbreviations();
             lexer.AllowOldStyleComments = options.Dialect.AllowOldStyleComments();
             lexer.AllowSingleQuotedStrings = options.Dialect.AllowStringsWithSingleQuotes();

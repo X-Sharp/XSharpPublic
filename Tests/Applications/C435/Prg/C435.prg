@@ -1,7 +1,8 @@
 // error XS0029: Cannot implicitly convert type 'char' to 'string'
 FUNCTION Start() AS VOID
 LOCAL c AS STRING
-LOCAL c1 AS CHAR
+LOCAL c1 AS CHAR     
+? #abc
 c := 'AA' // OK
 c := ' '
 c := 'A'
@@ -11,9 +12,9 @@ c := 'A'
 
 c1 := c'B' 		// Assign single quoted string       
 ? c1
-c1 := c"A" 		// Now can also assign double quoted string
+c1 := c"\u0042" 		// Now can also assign double quoted string
 ? C1
-? c1 == c'A' 
+? c1 == c'a' 
 ? 'A':GetType() // System.String
 ? c1:GetType() 	// System.Char
 

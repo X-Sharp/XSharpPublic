@@ -721,10 +721,10 @@ namespace XSharpLanguage
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
                 String toAdd = "";
-                if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
-                {
-                    toAdd = "(";
-                }
+                //if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
+                //{
+                //    toAdd = "(";
+                //}
                 compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
             }
             // Hummm, we should call for Owner of the Owner.. Super !
@@ -2956,7 +2956,9 @@ namespace XSharpLanguage
         static XSharpTypes()
         {
             // Dummy call to a Lexer; just to copy the Keywords, Types, ...
-            var lexer = XSharpLexer.Create("", "");
+            // Pass default options so this will be the core dialect and no 
+            // 4 letter abbreviations will be in the list
+            var lexer = XSharpLexer.Create("", "",XSharpParseOptions.Default);
             //
 
             _xTypes = new List<XType>();

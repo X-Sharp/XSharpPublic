@@ -253,13 +253,16 @@
           <caption translate="true">X# Keywords</caption>
           <topicref type="topic" id="423889842078590" build="ALL" modified="2016-01-19T22:48:15.647Z" icon="0" href="Built-in-Types">
             <caption translate="true">Types</caption>
-            <topicref type="topic" id="423889647849809" build="ALL" modified="2016-01-19T20:50:25.473Z" icon="0" href="Native-Types">
-              <caption translate="true">Native Types</caption>
+            <topicref type="topic" id="423889647849809" build="ALL" modified="2017-05-19T16:33:10.765Z" icon="0" href="Native-Types">
+              <caption translate="true">Simple (Native) Types</caption>
               <topicref type="topic" id="423889963400613" build="ALL" modified="2016-01-19T20:54:01.330Z" icon="0" href="BYTE">
                 <caption translate="true">BYTE</caption>
               </topicref>
               <topicref type="topic" id="42388989074765" build="ALL" modified="2016-01-19T20:54:01.386Z" icon="0" href="CHAR">
                 <caption translate="true">CHAR</caption>
+              </topicref>
+              <topicref type="topic" id="428746167270587" build="ALL" modified="2017-05-19T16:47:23.571Z" icon="0" href="DECIMAL">
+                <caption translate="true">DECIMAL</caption>
               </topicref>
               <topicref type="topic" id="423889168473100" build="ALL" modified="2016-01-19T20:54:01.452Z" icon="0" href="DWORD">
                 <caption translate="true">DWORD</caption>
@@ -287,6 +290,9 @@
               </topicref>
               <topicref type="topic" id="423887865665128" build="ALL" modified="2016-01-19T20:54:01.881Z" icon="0" href="REAL8">
                 <caption translate="true">REAL8</caption>
+              </topicref>
+              <topicref type="topic" id="428748164814520" build="ALL" modified="2017-05-19T16:47:24.204Z" icon="0" href="SBYTE">
+                <caption translate="true">SBYTE</caption>
               </topicref>
               <topicref type="topic" id="423890781942997" build="ALL" modified="2016-01-19T20:54:01.930Z" icon="0" href="SHORT">
                 <caption translate="true">SHORT</caption>
@@ -328,8 +334,8 @@
                 <caption translate="true">USUAL</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="423890697550599" build="ALL" modified="2016-11-03T15:35:52.494Z" icon="0" href="User-defined-Types">
-              <caption translate="true">User defined Types</caption>
+            <topicref type="topic" id="423890697550599" build="ALL" modified="2017-05-19T16:32:55.257Z" icon="0" href="User-defined-Types">
+              <caption translate="true">Complex Types</caption>
               <topicref type="topic" id="423888967356687" build="ALL" modified="2016-01-19T20:56:50.106Z" icon="0" href="CLASS">
                 <caption translate="true">CLASS</caption>
               </topicref>
@@ -529,6 +535,9 @@
             <topicref type="topic" id="423887937208891" build="ALL" modified="2016-11-03T15:43:59.093Z" icon="0" href="CharLiterals">
               <caption translate="true">Char Literals</caption>
             </topicref>
+            <topicref type="topic" id="423888241301361" build="ALL" modified="2016-11-15T10:43:58.515Z" icon="0" href="StringLiterals">
+              <caption translate="true">String Literals</caption>
+            </topicref>
             <topicref type="topic" id="423889587575677" build="ALL" modified="2016-11-03T15:44:16.962Z" icon="0" href="DateLiterals">
               <caption translate="true">Date Literals</caption>
             </topicref>
@@ -555,9 +564,6 @@
               <topicref type="topic" id="423890067649063" build="ALL" modified="2016-11-03T15:45:01.314Z" icon="0" href="RealLiterals">
                 <caption translate="true">Real Literals</caption>
               </topicref>
-            </topicref>
-            <topicref type="topic" id="423888241301361" build="ALL" modified="2016-11-15T10:43:58.515Z" icon="0" href="StringLiterals">
-              <caption translate="true">String Literals</caption>
             </topicref>
             <topicref type="topic" id="423890264622123" build="ALL" modified="2016-11-03T15:45:09.293Z" icon="0" href="SymbolLiterals">
               <caption translate="true">Symbol Literals</caption>
@@ -611,8 +617,8 @@
         </topicref>
         <topicref type="topic" id="423889109101067" build="ALL" modified="2016-11-03T10:36:35.577Z" icon="0" href="X-Symbols-And-Operators">
           <caption translate="true">X# Symbols and Operators</caption>
-          <topicref type="topic" id="423887682890922" build="ALL" modified="2016-01-19T21:11:46.389Z" icon="0" href="Assignment">
-            <caption translate="true">Assignment</caption>
+          <topicref type="topic" id="423887682890922" build="ALL" modified="2017-05-19T15:05:14.868Z" icon="0" href="Assignment">
+            <caption translate="true">Assignment operators</caption>
           </topicref>
           <topicref type="topic" id="42387974843972" build="ALL" modified="2016-01-19T21:11:46.442Z" icon="0" href="Logical">
             <caption translate="true">Logical</caption>
@@ -631,9 +637,6 @@
           </topicref>
           <topicref type="topic" id="423890249914780" build="ALL" modified="2016-01-19T21:11:46.748Z" icon="0" href="Unary">
             <caption translate="true">Unary</caption>
-          </topicref>
-          <topicref type="topic" id="423888050525421" build="ALL" modified="2016-01-19T22:08:55.471Z" icon="0" href="Equality">
-            <caption translate="true">Equality</caption>
           </topicref>
           <topicref type="topic" id="423888894934256" build="ALL" modified="2016-01-19T22:09:49.901Z" icon="0" href="Workarea">
             <caption translate="true">Workarea</caption>

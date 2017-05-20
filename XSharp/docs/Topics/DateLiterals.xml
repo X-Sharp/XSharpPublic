@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Date Literals</title>
   <keywords>
     <keyword>Date</keyword>
@@ -14,8 +14,8 @@
     <para styleclass="Normal"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">YYYY.MM.DD</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Body Text">Examples:</para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2000.01.01</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2012.02.29</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2015.09.25</text></para>
     <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Of course you can also use runtime functions to construct a literal, such as STOD(&quot;20150925&quot;) or ConDate(2019,9,25) but a literal is more efficient.</para>
   </body>
 </topic>

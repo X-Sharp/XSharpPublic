@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>Assignment</title>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Assignment operators</title>
   <keywords>
     <keyword>%=</keyword>
     <keyword>&amp;=</keyword>
@@ -18,8 +18,154 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Assignment</para>
+      <para styleclass="Heading1">Assignment operators</para>
     </header>
+    <para styleclass="Normal">X# uses the following Assignment operators:</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="13" colcount="3" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">:=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x := y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Store the value of the second operand in the object specified by the first operand (simple assignment).</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">+=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x += y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Add the value of the second operand to the value of the first operand; store the result in the object specified by the first operand</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">-=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x -= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Subtract the value of the second operand from the value of the first operand; store the result in the object specified by the first operand.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">/=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x /= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Divide the value of the first operand by the value of the second operand; store the result in the object specified by the first operand</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">%=</para>
+        </td>
+        <td>
+          <para styleclass="Normal">x %= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Take modulus of the first operand specified by the value of the second operand; store the result in the object specified by the first operand.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">*=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x *= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Multiply the value of the first operand by the value of the second operand; store the result in the object specified by the first operand.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">^= or **=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x ^= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Calculate the exponent of the first operand and the second operand ; store the result in the object specified by the first operand.<br/><text style="font-weight:bold;">Please note that in languages such as C# the ^= operator performs a Bitwise XOR</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">|=<br/></para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x |= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Obtain the bitwise inclusive OR of the first and second operands; store the result in the object specified by the first operand.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">&amp;= </para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x &amp;= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Obtain the bitwise AND of the first and second operands; store the result in the object specified by the first operand.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">~=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x ~= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Obtain the bitwise exclusive OR of the first and second operands; store the result in the object specified by the first operand.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">&lt;&lt;=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x &lt;&lt;= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Shift the value of the first operand left the number of bits specified by the value of the second operand; store the result in the object specified by the first operand.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Code Example">&gt;&gt;=</para>
+        </td>
+        <td>
+          <para styleclass="Code Example">x &gt;&gt;= y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Shift the value of the first operand right the number of bits specified by the value of the second operand; store the result in the object specified by the first operand.</para>
+        </td>
+      </tr>
+    </table></para>
   </body>
 </topic>

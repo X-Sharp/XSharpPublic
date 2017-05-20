@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Shift</title>
   <keywords>
     <keyword>&lt;&lt;</keyword>
@@ -10,6 +10,42 @@
     <header>
       <para styleclass="Heading1">Shift</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">X# uses the following shift operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="3" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&gt;&gt;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">x &gt;&gt; y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">shift bits right. If the left operand is signed, then left bits are filled with the sign bit. If the left operand is unsigned, then left bits are filled with zero.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&lt;&lt;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">x &lt;&lt; y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">shift bits left and fill with zero on the right.</para>
+        </td>
+      </tr>
+    </table></para>
   </body>
 </topic>

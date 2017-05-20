@@ -9,7 +9,7 @@
     <para styleclass="Body Text">XSharp is FREE Software. Of course that does not mean that you can do with it whatever you want. We have set a couple of rules that determine what you can and cannot do with our software, so our software is released under a license.</para>
     <para styleclass="Body Text">In an ideal world we would have published all of our source code and binaries under a very open license agreement, such as the Apache License, just like how the Roslyn code is published.<br/>However the reality is that there are people on this world that would like to take our source code and binaries and release this with minimal changes under their own name.<br/>To prevent that from happening we have been forced to set some limitations to how you can use our product.<br/>For any &quot;normal&quot; developer that uses XSharp to develop applications for end users this should present no problems.</para>
     <para styleclass="Body Text">The simplified version of the limitations means that :</para>
-    <list id="28" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">You can only redistribute the &apos;runtime&apos; components that are listed in the documentation. You can not redistribute our compiler. However when needed, you can ask your customer to download our compiler from this website</li>
       <li styleclass="Body Text">You (when you are a FOX subscriber) have access to the compiler source code and may change and rebuild the compiler for internal use inside your company. However you are not allowed to publish or redistribute the (changed) compiler to your customers</li>
     </list>
@@ -36,7 +36,7 @@
         </td>
         <td>
           <para styleclass="Body Text">This can be downloaded for free from our website. All you have to do is to create an account on this website.</para>
-          <list id="29" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Body Text">You can download the components from our website</li>
             <li styleclass="Body Text">You can use the components for free both for commercial and personal use</li>
             <li styleclass="Body Text">You can only deploy the runtime components to your customers</li>
@@ -53,7 +53,7 @@
         </td>
         <td>
           <para styleclass="Body Text">Everybody can access this public source code in our public repository on <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic" target="_blank">GitHub</link></para>
-          <list id="30" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Body Text">You can download the source from our GitHub project</li>
             <li styleclass="Body Text">You can make adjustments to the source code both for internal use and also to redistribute the changed runtime binaries to your customers</li>
             <li styleclass="Body Text">If you have a contribution that you want to see included in a future version of XSharp you can send us a pull request on GitHub</li>
@@ -93,7 +93,7 @@
         <td>
           <para styleclass="Body Text">This license applies to our custom source code for the XSharp compiler.</para>
           <para styleclass="Body Text">Only registered members of the FOX program can access this source code in our private repository on <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpDev" target="_blank">GitHub</link></para>
-          <list id="31" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Body Text">Subscribers may download this code and make changes for internal use</li>
             <li styleclass="Body Text">If you have a contribution that you want to see included in the main source you can send a pull request on GitHub</li>
             <li styleclass="Body Text">XSharp decides which changes to the source code will be included in the main branch and which not</li>

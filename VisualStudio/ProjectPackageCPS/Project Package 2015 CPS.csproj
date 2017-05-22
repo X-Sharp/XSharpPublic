@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props')" />
+  <Import Project="..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
@@ -310,7 +310,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.VisualStudio.CoreUtility.14.3.25407\lib\net45\Microsoft.VisualStudio.CoreUtility.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.VisualStudio.CoreUtility.14.3.25420\lib\net45\Microsoft.VisualStudio.CoreUtility.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Designer.Interfaces, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
@@ -400,19 +400,19 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Text.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.Data.14.3.25407\lib\net45\Microsoft.VisualStudio.Text.Data.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.Data.14.3.25420\lib\net45\Microsoft.VisualStudio.Text.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.Logic.14.3.25407\lib\net45\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.Logic.14.3.25420\lib\net45\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Text.UI, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.UI.14.3.25407\lib\net45\Microsoft.VisualStudio.Text.UI.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.UI.14.3.25420\lib\net45\Microsoft.VisualStudio.Text.UI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.UI.Wpf.14.3.25407\lib\net45\Microsoft.VisualStudio.Text.UI.Wpf.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.UI.Wpf.14.3.25420\lib\net45\Microsoft.VisualStudio.Text.UI.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -482,9 +482,9 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="WindowsBase" />
-    <Reference Include="XSharp.CodeAnalysis, Version=0.2.5.2, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.CodeAnalysis.VS">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.VS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -520,10 +520,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\Packages\Microsoft.VisualStudio.ProjectSystem.SDK.Tools.14.0.50721-pre\build\Microsoft.VisualStudio.ProjectSystem.Sdk.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Packages\Microsoft.VisualStudio.ProjectSystem.SDK.Tools.14.0.50721-pre\build\Microsoft.VisualStudio.ProjectSystem.Sdk.Tools.targets'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.SDK.VsixSuppression.14.1.25\build\Microsoft.VisualStudio.SDK.VsixSuppression.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.SDK.VsixSuppression.14.1.25\build\Microsoft.VisualStudio.SDK.VsixSuppression.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.props'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.targets'))" />
   </Target>
   <Import Project="..\..\Packages\Microsoft.VisualStudio.ProjectSystem.SDK.Tools.14.0.50721-pre\build\Microsoft.VisualStudio.ProjectSystem.Sdk.Tools.targets" Condition="Exists('..\..\Packages\Microsoft.VisualStudio.ProjectSystem.SDK.Tools.14.0.50721-pre\build\Microsoft.VisualStudio.ProjectSystem.Sdk.Tools.targets')" />
   <Import Project="..\..\packages\Microsoft.VisualStudio.SDK.VsixSuppression.14.1.25\build\Microsoft.VisualStudio.SDK.VsixSuppression.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.SDK.VsixSuppression.14.1.25\build\Microsoft.VisualStudio.SDK.VsixSuppression.targets')" />
-  <Import Project="..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets')" />
+  <Import Project="..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.targets')" />
 </Project>

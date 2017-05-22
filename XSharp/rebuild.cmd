@@ -1,4 +1,6 @@
 @echo off
+Echo Cleaning Binaries folder
+rd Binaries /s /q
 Echo Building Compiler 
 msbuild Compiler.sln /fl1 /p:Configuration=Debug	/t:ReBuild /property:OfficialBuild=true /m /v:m /nologo
 msbuild Compiler.sln /fl2 /p:Configuration=Release	/t:ReBuild /property:OfficialBuild=true /m /v:m /nologo

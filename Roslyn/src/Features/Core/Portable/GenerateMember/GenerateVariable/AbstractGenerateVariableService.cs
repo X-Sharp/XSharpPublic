@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,9 +29,9 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateVariable
         protected abstract bool TryInitializeExplicitInterfaceState(SemanticDocument document, SyntaxNode node, CancellationToken cancellationToken, out SyntaxToken identifierToken, out IPropertySymbol propertySymbol, out INamedTypeSymbol typeToGenerateIn);
         protected abstract bool TryInitializeIdentifierNameState(SemanticDocument document, TSimpleNameSyntax identifierName, CancellationToken cancellationToken, out SyntaxToken identifierToken, out TExpressionSyntax simpleNameOrMemberAccessExpression, out bool isInExecutableBlock, out bool isinConditionalAccessExpression);
 
-        protected abstract bool TryConvertToLocalDeclaration(ITypeSymbol type, SyntaxToken identifierToken, OptionSet options, out SyntaxNode newRoot);
+        protected abstract bool TryConvertToLocalDeclaration(ITypeSymbol type, SyntaxToken identifierToken, OptionSet options, SemanticModel semanticModel, CancellationToken cancellationToken,  out SyntaxNode newRoot);
 
-        public async Task<IEnumerable<CodeAction>> GenerateVariableAsync(
+        public async Task<ImmutableArray<CodeAction>> GenerateVariableAsync(
             Document document,
             SyntaxNode node,
             CancellationToken cancellationToken)
@@ -42,10 +43,10 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateVariable
                 var state = await State.GenerateAsync((TService)this, semanticDocument, node, cancellationToken).ConfigureAwait(false);
                 if (state == null)
                 {
-                    return SpecializedCollections.EmptyEnumerable<CodeAction>();
+                    return ImmutableArray<CodeAction>.Empty;
                 }
 
-                var result = new List<CodeAction>();
+                var actions = ArrayBuilder<CodeAction>.GetInstance();
 
                 var canGenerateMember = CodeGenerator.CanAdd(document.Project.Solution, state.TypeToGenerateIn, cancellationToken);
 
@@ -56,24 +57,33 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateVariable
                 {
                     if (canGenerateMember)
                     {
-                        AddPropertyCodeActions(result, document, state);
-                        AddFieldCodeActions(result, document, state);
+                        AddPropertyCodeActions(actions, document, state);
+                        AddFieldCodeActions(actions, document, state);
                     }
 
-                    AddLocalCodeActions(result, document, state);
+                    AddLocalCodeActions(actions, document, state);
                 }
                 else
                 {
                     if (canGenerateMember)
                     {
-                        AddFieldCodeActions(result, document, state);
-                        AddPropertyCodeActions(result, document, state);
+                        AddFieldCodeActions(actions, document, state);
+                        AddPropertyCodeActions(actions, document, state);
                     }
 
-                    AddLocalCodeActions(result, document, state);
+                    AddLocalCodeActions(actions, document, state);
                 }
 
-                return result;
+                if (actions.Count > 1)
+                {
+                    // Wrap the generate variable actions into a single top level suggestion
+                    // so as to not clutter the list.
+                    return ImmutableArray.Create<CodeAction>(new MyCodeAction(
+                        string.Format(FeaturesResources.Generate_variable_0, state.IdentifierToken.ValueText),
+                        actions.ToImmutableAndFree()));
+                }
+
+                return actions.ToImmutableAndFree();
             }
         }
 
@@ -82,7 +92,7 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateVariable
             return false;
         }
 
-        private void AddPropertyCodeActions(List<CodeAction> result, Document document, State state)
+        private void AddPropertyCodeActions(ArrayBuilder<CodeAction> result, Document document, State state)
         {
             if (state.IsInRefContext || state.IsInOutContext)
             {
@@ -107,7 +117,7 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateVariable
             }
         }
 
-        private void AddFieldCodeActions(List<CodeAction> result, Document document, State state)
+        private void AddFieldCodeActions(ArrayBuilder<CodeAction> result, Document document, State state)
         {
             if (state.TypeToGenerateIn.TypeKind != TypeKind.Interface)
             {
@@ -129,11 +139,19 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateVariable
             }
         }
 
-        private void AddLocalCodeActions(List<CodeAction> result, Document document, State state)
+        private void AddLocalCodeActions(ArrayBuilder<CodeAction> result, Document document, State state)
         {
             if (state.CanGenerateLocal())
             {
                 result.Add(new GenerateLocalCodeAction((TService)this, document, state));
+            }
+        }
+
+        private class MyCodeAction : CodeAction.CodeActionWithNestedActions
+        {
+            public MyCodeAction(string title, ImmutableArray<CodeAction> nestedActions)
+                : base(title, nestedActions, isInlinable: true)
+            {
             }
         }
     }

@@ -1,23 +1,31 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.IO
-Imports System.Runtime.InteropServices
-Imports Microsoft.CodeAnalysis.Scripting.VisualBasic
+Imports System.Reflection
+Imports Microsoft.CodeAnalysis.Scripting.Hosting
 
-Namespace Microsoft.CodeAnalysis.Scripting.Hosting.VisualBasic
+Namespace Microsoft.CodeAnalysis.VisualBasic.Scripting.Hosting
 
     Friend NotInheritable Class Vbi
         Friend Const InteractiveResponseFileName As String = "vbi.rsp"
 
         Public Shared Function Main(args As String()) As Integer
             Try
-                Dim responseFile = Path.Combine(AppContext.BaseDirectory, InteractiveResponseFileName)
+                ' Note that AppContext.BaseDirectory isn't necessarily the directory containing vbi.exe.
+                ' For example, when executed via corerun it's the directory containing corerun.
+                Dim vbiDirectory = Path.GetDirectoryName(GetType(Vbi).GetTypeInfo().Assembly.ManifestModule.FullyQualifiedName)
+
+                Dim buildPaths = New BuildPaths(
+                    clientDir:=vbiDirectory,
+                    workingDir:=Directory.GetCurrentDirectory(),
+                    sdkDir:=RuntimeMetadataReferenceResolver.GetDesktopFrameworkDirectory(),
+                    tempDir:=Path.GetTempPath())
 
                 Dim compiler = New VisualBasicInteractiveCompiler(
-                    responseFile,
-                    AppContext.BaseDirectory,
-                    args,
-                    New NotImplementedAnalyzerLoader())
+                    responseFile:=Path.Combine(vbiDirectory, InteractiveResponseFileName),
+                    buildPaths:=buildPaths,
+                    args:=args,
+                    analyzerLoader:=New NotImplementedAnalyzerLoader())
 
                 Dim runner = New CommandLineRunner(
                     ConsoleIO.Default,
@@ -32,5 +40,6 @@ Namespace Microsoft.CodeAnalysis.Scripting.Hosting.VisualBasic
             End Try
         End Function
     End Class
+
 End Namespace
 

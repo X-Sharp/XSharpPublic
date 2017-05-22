@@ -9,15 +9,15 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Suggestions
     /// <summary>
     /// Represents light bulb menu item for code refactorings.
     /// </summary>
-    internal class CodeRefactoringSuggestedAction : SuggestedActionWithFlavors
+    internal sealed class CodeRefactoringSuggestedAction : SuggestedActionWithNestedFlavors
     {
         public CodeRefactoringSuggestedAction(
+            SuggestedActionsSourceProvider sourceProvider,
             Workspace workspace,
             ITextBuffer subjectBuffer,
-            ICodeActionEditHandlerService editHandler,
-            CodeAction codeAction,
-            CodeRefactoringProvider provider)
-            : base(workspace, subjectBuffer, editHandler, codeAction, provider)
+            CodeRefactoringProvider provider,
+            CodeAction codeAction)
+            : base(sourceProvider, workspace, subjectBuffer, provider, codeAction)
         {
         }
     }

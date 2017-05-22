@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.Notification;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Roslyn.Utilities;
 
@@ -102,6 +103,17 @@ namespace Microsoft.CodeAnalysis.Editor.Shared.Tagging
         public static ITaggerEventSource OnWorkspaceRegistrationChanged(ITextBuffer subjectBuffer, TaggerDelay delay)
         {
             return new WorkspaceRegistrationChangedEventSource(subjectBuffer, delay);
+        }
+
+        public static ITaggerEventSource OnViewSpanChanged(ITextView textView, TaggerDelay textChangeDelay, TaggerDelay scrollChangeDelay)
+        {
+            return new ViewSpanChangedEventSource(textView, textChangeDelay, scrollChangeDelay);
+        }
+
+        public static ITaggerEventSource OnEditorFormatMapChanged(
+            IEditorFormatMap editorFormatMap, TaggerDelay delay)
+        {
+            return new EditorFormatMapChangedEventSource(editorFormatMap, delay);
         }
     }
 }

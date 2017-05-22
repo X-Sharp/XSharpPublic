@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
@@ -73,7 +74,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var index = new BoundLiteral(node, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32)) { WasCompilerGenerated = true };
                         var ptrtype = new PointerTypeSymbol(targetType);
                         HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                        var newConv = Conversions.ClassifyConversionForCast(operand, ptrtype, ref useSiteDiagnostics);
+                        //var newConv = Conversions.ClassifyConversionForCast(operand, ptrtype, ref useSiteDiagnostics);
+                        var newConv = Conversions.ClassifyConversionFromExpression(operand, ptrtype, ref useSiteDiagnostics, forCast: true);
                         var ptrconv = new BoundConversion(node, operand, newConv, true, true, null, ptrtype) { WasCompilerGenerated = true };
                         expression = new BoundPointerElementAccess(node, ptrconv, index, false, targetType) { WasCompilerGenerated = true };
                         return true;
@@ -133,7 +135,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // when ! ArrayZero then subtract one from the index
                             var right = new BoundLiteral(arg.Syntax, ConstantValue.Create(1), arg.Type) { WasCompilerGenerated = true };
                             // when the argument is a literal then we may be able to fold the subtract expression.
-                            var resultConstant = FoldBinaryOperator(arg.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
+                            var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)arg.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
                             var sig = this.Compilation.builtInOperators.GetSignature(opKind);
                             newarg = new BoundBinaryOperator(arg.Syntax, BinaryOperatorKind.Subtraction,
                                 left, right,
@@ -220,7 +222,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
 
-                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
+                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
             }
@@ -253,7 +255,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         analyzedArguments.Arguments[i] = arg;
                     }
 
-                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
+                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
             }

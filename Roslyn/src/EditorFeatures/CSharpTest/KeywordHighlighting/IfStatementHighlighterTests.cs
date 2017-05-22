@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.CSharp.KeywordHighlighting;
 using Roslyn.Test.Utilities;
 using Xunit;
@@ -13,12 +14,11 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.KeywordHighlighting
             return new IfStatementHighlighter();
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithIfAndSingleElse1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithIfAndSingleElse1()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -32,16 +32,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithIfAndSingleElse2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithIfAndSingleElse2()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -55,16 +53,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithIfAndElseIfAndElse1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithIfAndElseIfAndElse1()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -82,16 +78,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithIfAndElseIfAndElse2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithIfAndElseIfAndElse2()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -109,16 +103,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithIfAndElseIfAndElse3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithIfAndElseIfAndElse3()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -136,8 +128,7 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
         private const string Code3 = @"
@@ -162,12 +153,11 @@ public class C
     }
 }";
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithElseIfOnDifferentLines1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithElseIfOnDifferentLines1()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -176,7 +166,7 @@ public class C
         {
             // blah
         }
-        [|else|] 
+        [|else|]
         [|if|] (a == 10)
         {
             // blah
@@ -186,16 +176,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithElseIfOnDifferentLines2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithElseIfOnDifferentLines2()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -204,7 +192,7 @@ public class C
         {
             // blah
         }
-        {|Cursor:[|else|]|} 
+        {|Cursor:[|else|]|}
         [|if|] (a == 10)
         {
             // blah
@@ -214,16 +202,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithElseIfOnDifferentLines3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithElseIfOnDifferentLines3()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -232,7 +218,7 @@ public class C
         {
             // blah
         }
-        [|else|] 
+        [|else|]
         {|Cursor:[|if|]|} (a == 10)
         {
             // blah
@@ -242,16 +228,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithElseIfOnDifferentLines4()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithElseIfOnDifferentLines4()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -260,7 +244,7 @@ public class C
         {
             // blah
         }
-        [|else|] 
+        [|else|]
         [|if|] (a == 10)
         {
             // blah
@@ -270,8 +254,7 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
         private const string Code4 = @"
@@ -292,146 +275,151 @@ public class C
     }
 }";
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithIfAndElseIfAndElseTouching1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithIfAndElseIfAndElseTouching1()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
         int a = 10;
-        {|Cursor:[|if|]|}(a < 5) {
+        {|Cursor:[|if|]|}(a < 5)
+        {
             // blah
         }
-        [|else if|](a == 10) {
+        [|else if|](a == 10)
+        {
             // blah
         }
         [|else|]{
-            // blah
-        }
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithIfAndElseIfAndElseTouching2()
-        {
-            Test(
-        @"
-public class C
-{
-    public void Foo()
-    {
-        int a = 10;
-        [|if|](a < 5) {
-            // blah
-        }
-        {|Cursor:[|else if|]|}(a == 10) {
-            // blah
-        }
-        [|else|]{
-            // blah
-        }
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestIfStatementWithIfAndElseIfAndElseTouching3()
-        {
-            Test(
-        @"
-public class C
-{
-    public void Foo()
-    {
-        int a = 10;
-        [|if|](a < 5) {
-            // blah
-        }
-        [|else if|](a == 10) {
-            // blah
-        }
-        {|Cursor:[|else|]|}{
-            // blah
-        }
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExtraSpacesBetweenElseAndIf1()
-        {
-            Test(
-        @"
-public class C
-{
-    public void Foo()
-    {
-        int a = 10;
-        {|Cursor:[|if|]|} (a < 5) {
-            // blah
-        }
-        [|else      if|] (a == 10) {
-            // blah
-        }
-        [|else|] {
-            // blah
-        }
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExtraSpacesBetweenElseAndIf2()
-        {
-            Test(@"
-public class C
-{
-    public void Foo()
-    {
-        int a = 10;
-        [|if|] (a < 5) {
-            // blah
-        }
-        {|Cursor:[|else      if|]|} (a == 10) {
-            // blah
-        }
-        [|else|] {
             // blah
         }
     }
 }");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExtraSpacesBetweenElseAndIf3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithIfAndElseIfAndElseTouching2()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
         int a = 10;
-        [|if|] (a < 5) {
+        [|if|](a < 5)
+        {
             // blah
         }
-        [|else      if|] (a == 10) {
+        {|Cursor:[|else if|]|}(a == 10)
+        {
             // blah
         }
-        {|Cursor:[|else|]|} {
+        [|else|]{
             // blah
         }
     }
-}
-");
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestIfStatementWithIfAndElseIfAndElseTouching3()
+        {
+            await TestAsync(
+@"public class C
+{
+    public void Foo()
+    {
+        int a = 10;
+        [|if|](a < 5)
+        {
+            // blah
+        }
+        [|else if|](a == 10)
+        {
+            // blah
+        }
+        {|Cursor:[|else|]|}{
+            // blah
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExtraSpacesBetweenElseAndIf1()
+        {
+            await TestAsync(
+@"public class C
+{
+    public void Foo()
+    {
+        int a = 10;
+        {|Cursor:[|if|]|} (a < 5)
+        {
+            // blah
+        }
+        [|else if|] (a == 10)
+        {
+            // blah
+        }
+        [|else|]
+        {
+            // blah
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExtraSpacesBetweenElseAndIf2()
+        {
+            await TestAsync(
+@"public class C
+{
+    public void Foo()
+    {
+        int a = 10;
+        [|if|] (a < 5)
+        {
+            // blah
+        }
+        {|Cursor:[|else if|]|} (a == 10)
+        {
+            // blah
+        }
+        [|else|]
+        {
+            // blah
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExtraSpacesBetweenElseAndIf3()
+        {
+            await TestAsync(
+@"public class C
+{
+    public void Foo()
+    {
+        int a = 10;
+        [|if|] (a < 5)
+        {
+            // blah
+        }
+        [|else if|] (a == 10)
+        {
+            // blah
+        }
+        {|Cursor:[|else|]|}
+        {
+            // blah
+        }
+    }
+}");
         }
 
         private const string Code6 = @"
@@ -455,12 +443,11 @@ public class C
     }
 }";
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestCommentBetweenElseIf1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestCommentBetweenElseIf1()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -478,16 +465,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestCommentBetweenElseIf2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestCommentBetweenElseIf2()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -505,16 +490,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestCommentBetweenElseIf3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestCommentBetweenElseIf3()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -532,16 +515,14 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestCommentBetweenElseIf4()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestCommentBetweenElseIf4()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
@@ -559,8 +540,7 @@ public class C
             // blah
         }
     }
-}
-");
+}");
         }
 
         private const string Code7 = @"
@@ -586,179 +566,202 @@ public class C
     }
 }";
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedIfDoesNotHighlight1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedIfDoesNotHighlight1()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
         int a = 10;
         int b = 15;
-        {|Cursor:[|if|]|} (a < 5) {
+        {|Cursor:[|if|]|} (a < 5)
+        {
             // blah
             if (b < 15)
                 b = 15;
             else
                 b = 14;
         }
-        [|else if|] (a == 10) {
+        [|else if|] (a == 10)
+        {
             // blah
         }
-        [|else|] {
+        [|else|]
+        {
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedIfDoesNotHighlight2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedIfDoesNotHighlight2()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
         int a = 10;
         int b = 15;
-        [|if|] (a < 5) {
+        [|if|] (a < 5)
+        {
             // blah
             if (b < 15)
                 b = 15;
             else
                 b = 14;
         }
-        {|Cursor:[|else if|]|} (a == 10) {
+        {|Cursor:[|else if|]|} (a == 10)
+        {
             // blah
         }
-        [|else|] {
+        [|else|]
+        {
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedIfDoesNotHighlight3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedIfDoesNotHighlight3()
         {
-            Test(
-        @"
-public class C
+            await TestAsync(
+@"public class C
 {
     public void Foo()
     {
         int a = 10;
         int b = 15;
-        [|if|] (a < 5) {
+        [|if|] (a < 5)
+        {
             // blah
             if (b < 15)
                 b = 15;
             else
                 b = 14;
         }
-        [|else if|] (a == 10) {
+        [|else if|] (a == 10)
+        {
             // blah
         }
-        {|Cursor:[|else|]|} {
+        {|Cursor:[|else|]|}
+        {
             // blah
         }
     }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample1_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample1_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        {|Cursor:[|if|]|} (x) {
-    if (y) {
-        F();
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        {|Cursor:[|if|]|} (x)
+        {
+            if (y)
+            {
+                F();
+            }
+            else if (z)
+            {
+                G();
+            }
+            else
+            {
+                H();
+            }
+        }
     }
-    else if (z) {
-        G();
-    }
-    else {
-        H();
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        if (x) {
-    {|Cursor:[|if|]|} (y) {
-        F();
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        if (x)
+        {
+            {|Cursor:[|if|]|} (y)
+            {
+                F();
+            }
+            [|else if|] (z)
+            {
+                G();
+            }
+            [|else|]
+            {
+                H();
+            }
+        }
     }
-    [|else if|] (z) {
-        G();
-    }
-    [|else|] {
-        H();
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_2()
         {
-            Test(
-        @"class C {
-    void M() {
-        if (x) {
-    [|if|] (y) {
-        F();
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        if (x)
+        {
+            [|if|] (y)
+            {
+                F();
+            }
+            {|Cursor:[|else if|]|} (z)
+            {
+                G();
+            }
+            [|else|]
+            {
+                H();
+            }
+        }
     }
-    {|Cursor:[|else if|]|} (z) {
-        G();
-    }
-    [|else|] {
-        H();
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_3()
         {
-            Test(
-        @"class C {
-    void M() {
-        if (x) {
-    [|if|] (y) {
-        F();
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        if (x)
+        {
+            [|if|] (y)
+            {
+                F();
+            }
+            [|else if|] (z)
+            {
+                G();
+            }
+            {|Cursor:[|else|]|}
+            {
+                H();
+            }
+        }
     }
-    [|else if|] (z) {
-        G();
-    }
-    {|Cursor:[|else|]|} {
-        H();
-    }
-}
-    }
-}
-");
+}");
         }
     }
 }

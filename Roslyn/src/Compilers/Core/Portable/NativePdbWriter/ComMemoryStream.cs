@@ -149,9 +149,9 @@ namespace Roslyn.Utilities
             _length = (int)libNewSize;
         }
 
-        void IUnsafeComStream.Stat(out STATSTG pstatstg, int grfStatFlag)
+        void IUnsafeComStream.Stat(out System.Runtime.InteropServices.ComTypes.STATSTG pstatstg, int grfStatFlag)
         {
-            pstatstg = new STATSTG()
+            pstatstg = new System.Runtime.InteropServices.ComTypes.STATSTG()
             {
                 cbSize = _length
             };

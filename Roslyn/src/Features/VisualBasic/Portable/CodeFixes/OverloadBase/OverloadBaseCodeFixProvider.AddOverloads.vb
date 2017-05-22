@@ -1,4 +1,4 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Threading
 Imports Microsoft.CodeAnalysis.CodeActions
@@ -16,13 +16,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.OverloadBase
 
             Public Overrides ReadOnly Property Title As String
                 Get
-                    Return VBFeaturesResources.AddOverloadsKeyword
+                    Return VBFeaturesResources.Add_Overloads
                 End Get
             End Property
 
             Public Overrides ReadOnly Property EquivalenceKey As String
                 Get
-                    Return VBFeaturesResources.AddOverloadsKeyword
+                    Return VBFeaturesResources.Add_Overloads
                 End Get
             End Property
 
@@ -34,13 +34,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.OverloadBase
             Protected Overrides Async Function GetChangedDocumentAsync(cancellationToken As CancellationToken) As Task(Of Document)
                 Dim root = Await _document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(False)
 
-                Dim newNode = GetNewNode(_document, _node, cancellationToken)
+                Dim newNode = Await GetNewNodeAsync(_document, _node, cancellationToken).ConfigureAwait(False)
                 Dim newRoot = root.ReplaceNode(_node, newNode)
 
                 Return _document.WithSyntaxRoot(newRoot)
             End Function
 
-            Private Function GetNewNode(document As Document, node As SyntaxNode, cancellationToken As CancellationToken) As SyntaxNode
+            Private Async Function GetNewNodeAsync(document As Document, node As SyntaxNode, cancellationToken As CancellationToken) As Task(Of SyntaxNode)
                 Dim newNode As SyntaxNode = Nothing
 
                 Dim propertyStatement = TryCast(node, PropertyStatementSyntax)
@@ -60,7 +60,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeFixes.OverloadBase
                 Dim cleanupService = document.GetLanguageService(Of ICodeCleanerService)
 
                 If cleanupService IsNot Nothing AndAlso newNode IsNot Nothing Then
-                    newNode = cleanupService.Cleanup(newNode, {newNode.Span}, document.Project.Solution.Workspace, cleanupService.GetDefaultProviders(), cancellationToken)
+                    newNode = Await cleanupService.CleanupAsync(newNode, {newNode.Span}, document.Project.Solution.Workspace, cleanupService.GetDefaultProviders(), cancellationToken).ConfigureAwait(False)
                 End If
 
                 Return newNode.WithAdditionalAnnotations(Formatter.Annotation)

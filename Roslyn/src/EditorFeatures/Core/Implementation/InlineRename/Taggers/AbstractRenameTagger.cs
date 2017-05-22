@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis.Rename.ConflictEngine;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Text.Shared.Extensions;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -75,11 +73,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
 
         private void RaiseTagsChangedForEntireBuffer()
         {
-            var tagsChanged = TagsChanged;
-            if (tagsChanged != null)
-            {
-                tagsChanged(this, new SnapshotSpanEventArgs(_buffer.CurrentSnapshot.GetFullSpan()));
-            }
+            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(_buffer.CurrentSnapshot.GetFullSpan()));
         }
 
         public void Dispose()
@@ -110,8 +104,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename
                     var span = renameSpan.TrackingSpan.GetSpan(snapshot);
                     if (spans.OverlapsWith(span))
                     {
-                        TagSpan<T> tagSpan;
-                        if (TryCreateTagSpan(span, renameSpan.Type, out tagSpan))
+                        if (TryCreateTagSpan(span, renameSpan.Type, out var tagSpan))
                         {
                             yield return tagSpan;
                         }

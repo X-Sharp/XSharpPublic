@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService;
 using Roslyn.Test.Utilities;
@@ -12,168 +13,179 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.UnitTests.F1Help
 {
     public class F1HelpTests
     {
-        private void Test(string markup, string expectedText)
+        private async Task TestAsync(string markup, string expectedText)
         {
-            using (var workspace = CSharpWorkspaceFactory.CreateWorkspaceFromFile(markup))
+            using (var workspace = await TestWorkspace.CreateCSharpAsync(markup))
             {
                 var caret = workspace.Documents.First().CursorPosition;
 
                 var service = new CSharpHelpContextService();
-                var actualText = service.GetHelpTermAsync(workspace.CurrentSolution.Projects.First().Documents.First(), workspace.Documents.First().SelectedSpans.First(), CancellationToken.None).WaitAndGetResult(CancellationToken.None);
+                var actualText = await service.GetHelpTermAsync(workspace.CurrentSolution.Projects.First().Documents.First(), workspace.Documents.First().SelectedSpans.First(), CancellationToken.None);
                 Assert.Equal(expectedText, actualText);
             }
         }
 
-        private void Test_Keyword(string markup, string expectedText)
+        private async Task Test_KeywordAsync(string markup, string expectedText)
         {
-            Test(markup, expectedText + "_CSharpKeyword");
+            await TestAsync(markup, expectedText + "_CSharpKeyword");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestVoid()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestVoid()
         {
-            Test_Keyword(@"
-class C
+            await Test_KeywordAsync(
+@"class C
 {
-    vo[||]id foo() { }
+    vo[||]id foo()
+    {
+    }
 }", "void");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestReturn()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestReturn()
         {
-            Test_Keyword(@"
-class C
+            await Test_KeywordAsync(
+@"class C
 {
-    void foo() 
-    { 
-        ret[||]urn; 
+    void foo()
+    {
+        ret[||]urn;
     }
 }", "return");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestPartialType()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestPartialType()
         {
-            Test_Keyword(@"
-part[||]ial class C
+            await Test_KeywordAsync(
+@"part[||]ial class C
 {
     partial void foo();
 }", "partialtype");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestPartialMethod()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestPartialMethod()
         {
-            Test_Keyword(@"
-partial class C
+            await Test_KeywordAsync(
+@"partial class C
 {
     par[||]tial void foo();
 }", "partialmethod");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestWhereClause()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestWhereClause()
         {
-            Test_Keyword(@"
-using System.Linq;
-class Program<T> where T : class {
+            await Test_KeywordAsync(
+@"using System.Linq;
+
+class Program<T> where T : class
+{
     void foo(string[] args)
     {
-        var x = from a in args whe[||]re a.Length > 0 select a;
+        var x = from a in args
+                whe[||]re a.Length > 0
+                select a;
     }
 }", "whereclause");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestWhereConstraint()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestWhereConstraint()
         {
-            Test_Keyword(@"
-using System.Linq;
-class Program<T> wh[||]ere T : class {
+            await Test_KeywordAsync(
+@"using System.Linq;
+
+class Program<T> wh[||]ere T : class
+{
     void foo(string[] args)
     {
-        var x = from a in args where a.Length > 0 select a;
+        var x = from a in args
+                where a.Length > 0
+                select a;
     }
 }", "whereconstraint");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestPreprocessor()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestPreprocessor()
         {
-            Test(@"
-#regi[||]on
+            await TestAsync(
+@"#regi[||]on
 #endregion", "#region");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestConstructor()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestConstructor()
         {
-            Test(@"
-namespace N
+            await TestAsync(
+@"namespace N
 {
-class C
-{
-    void foo()
+    class C
     {
-        var x = new [|C|]();
+        void foo()
+        {
+            var x = new [|C|]();
+        }
     }
-}
 }", "N.C.#ctor");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestGenericClass()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestGenericClass()
         {
-            Test(@"
-namespace N
+            await TestAsync(
+@"namespace N
 {
-class C<T>
-{
-    void foo()
+    class C<T>
     {
-        [|C|]<int> c;
+        void foo()
+        {
+            [|C|]<int> c;
+        }
     }
-}
 }", "N.C`1");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestGenericMethod()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestGenericMethod()
         {
-            Test(@"
-namespace N
+            await TestAsync(
+@"namespace N
 {
-class C<T>
-{
-    void foo<T, U, V>(T t, U u, V v)
+    class C<T>
     {
-        C<int> c;
-        c.f[|oo|](1, 1, 1);
+        void foo<T, U, V>(T t, U u, V v)
+        {
+            C<int> c;
+            c.f[|oo|](1, 1, 1);
+        }
     }
-}
 }", "N.C`1.foo``3");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestOperator()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestOperator()
         {
-            Test(@"
-namespace N
+            await TestAsync(
+@"namespace N
 {
-class C
-{
-    void foo()
+    class C
     {
-        var two = 1 [|+|] 1;
-    }
-}", "+_CSharpKeyword");
+        void foo()
+        {
+            var two = 1 [|+|] 1;
+        }
+    }", "+_CSharpKeyword");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestVar()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestVar()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -187,10 +199,11 @@ class Program
 }", "var_CSharpKeyword");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestEquals()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestEquals()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -204,10 +217,11 @@ class Program
 }", "=_CSharpKeyword");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestFromIn()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestFromIn()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -216,15 +230,19 @@ class Program
 {
     static void Main(string[] args)
     {
-        var x = from n i[||]n { 1} select n
+        var x = from n i[||]n {
+            1}
+
+        select n
     }
 }", "from_CSharpKeyword");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestProperty()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestProperty()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -238,10 +256,11 @@ class Program
 }", "System.UriBuilder.Fragment");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestForeachIn()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestForeachIn()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -250,19 +269,19 @@ class Program
 {
     static void Main(string[] args)
     {
-        foreach (var x in[||] { 1} )
+        foreach (var x in[||] {
+            1} )
         {
-
         }
     }
 }", "in_CSharpKeyword");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestRegionDescription()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestRegionDescription()
         {
-            Test(@"
-class Program
+            await TestAsync(
+@"class Program
 {
     static void Main(string[] args)
     {
@@ -272,10 +291,11 @@ class Program
 }", "#region");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestGenericAngle()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestGenericAngle()
         {
-            Test(@"class Program
+            await TestAsync(
+@"class Program
 {
     static void generic<T>(T t)
     {
@@ -284,10 +304,11 @@ class Program
 }", "Program.generic``1");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestLocalReferenceIsType()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestLocalReferenceIsType()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -302,11 +323,12 @@ class Program
 }", "System.Int32");
         }
 
-        [WorkItem(864266)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestConstantField()
+        [WorkItem(864266, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/864266")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestConstantField()
         {
-            Test(@"class Program
+            await TestAsync(
+@"class Program
 {
     static void Main(string[] args)
     {
@@ -315,73 +337,77 @@ class Program
 }", "System.Int32.MaxValue");
         }
 
-        [WorkItem(862420)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestParameter()
+        [WorkItem(862420, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/862420")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestParameter()
         {
-            Test(@"class Class2
+            await TestAsync(
+@"class Class2
+{
+    void M1(int par[||]ameter)  // 1
     {
-        void M1(int par[||]ameter)  // 1
-        {
-        }
-        void M2()
-        {
-            int argument = 1;
-            M1(parameter: argument);   // 2
-        }
     }
-", "System.Int32");
+
+    void M2()
+    {
+        int argument = 1;
+        M1(parameter: argument);   // 2
+    }
+}", "System.Int32");
         }
 
-        [WorkItem(862420)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestArgumentType()
+        [WorkItem(862420, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/862420")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestArgumentType()
         {
-            Test(@"class Class2
+            await TestAsync(
+@"class Class2
+{
+    void M1(int pa[||]rameter)  // 1
     {
-        void M1(int pa[||]rameter)  // 1
-        {
-        }
-        void M2()
-        {
-            int argument = 1;
-            M1(parameter: argument);   // 2
-        }
     }
-", "System.Int32");
+
+    void M2()
+    {
+        int argument = 1;
+        M1(parameter: argument);   // 2
+    }
+}", "System.Int32");
         }
 
-        [WorkItem(862396)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestNoToken()
+        [WorkItem(862396, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/862396")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestNoToken()
         {
-            Test(@"class Program
+            await TestAsync(
+@"class Program
 {
     static void Main(string[] args)
     {
-        [||]
     }
-}", "");
+}[||]", "");
         }
 
-        [WorkItem(862328)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestLiteral()
+        [WorkItem(862328, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/862328")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestLiteral()
         {
-            Test(@"class Program
+            await TestAsync(
+@"class Program
 {
     static void Main(string[] args)
     {
         Main(new string[] { ""fo[||]o"" });
     }
-    }", "System.String");
+}", "System.String");
         }
 
-        [WorkItem(862478)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestColonColon()
+        [WorkItem(862478, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/862478")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestColonColon()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -390,16 +416,17 @@ class Program
 {
     static void Main(string[] args)
     {
-    global:[||]:System.Console.Write("");
+        global:[||]:System.Console.Write("");
     }
 }", "::_CSharpKeyword");
         }
 
-        [WorkItem(864658)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestNullable()
+        [WorkItem(864658, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/864658")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestNullable()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -409,17 +436,17 @@ class Program
     static void Main(string[] args)
     {
         int?[||] a = int.MaxValue;
-a.Value.GetHashCode();
-
+        a.Value.GetHashCode();
     }
 }", "System.Nullable`1");
         }
 
-        [WorkItem(863517)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestAfterLastToken()
+        [WorkItem(863517, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/863517")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestAfterLastToken()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -435,10 +462,11 @@ class Program
 }", "");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestConditional()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestConditional()
         {
-            Test(@"class Program
+            await TestAsync(
+@"class Program
 {
     static void Main(string[] args)
     {
@@ -447,10 +475,11 @@ class Program
 }", "?_CSharpKeyword");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestLocalVar()
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestLocalVar()
         {
-            Test(@"class C
+            await TestAsync(
+@"class C
 {
     void M()
     {
@@ -460,45 +489,51 @@ class Program
 }", "System.Int32");
         }
 
-        [WorkItem(867574)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestFatArrow()
+        [WorkItem(867574, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/867574")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestFatArrow()
         {
-            Test(@"class C
+            await TestAsync(
+@"class C
 {
     void M()
     {
-        var a = new System.Action(() =[||]> { });
+        var a = new System.Action(() =[||]> {
+        });
     }
 }", "=>_CSharpKeyword");
         }
 
-        [WorkItem(867572)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestSubscription()
+        [WorkItem(867572, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/867572")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestSubscription()
         {
-            Test(@"class CCC
+            await TestAsync(
+@"class CCC
 {
     event System.Action e;
+
     void M()
     {
-        e +[||]= () => { };
+        e +[||]= () => {
+        };
     }
 }", "CCC.e.add");
         }
 
-        [WorkItem(867554)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestComment()
+        [WorkItem(867554, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/867554")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestComment()
         {
-            Test(@"// some comm[||]ents here", "comments");
+            await TestAsync(@"// some comm[||]ents here", "comments");
         }
 
-        [WorkItem(867529)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestDynamic()
+        [WorkItem(867529, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/867529")]
+        [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
+        public async Task TestDynamic()
         {
-            Test(@"class C
+            await TestAsync(
+@"class C
 {
     void M()
     {
@@ -508,9 +543,10 @@ class Program
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.F1Help)]
-        public void TestRangeVariable()
+        public async Task TestRangeVariable()
         {
-            Test(@"using System;
+            await TestAsync(
+@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -519,7 +555,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        var zzz = from y in args select [||]y;
+        var zzz = from y in args
+                  select [||]y;
     }
 }", "System.String");
         }

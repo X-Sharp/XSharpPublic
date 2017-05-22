@@ -87,7 +87,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeRefactorings.InvertIf
             End If
 
             context.RegisterRefactoring(
-                New MyCodeAction(VBFeaturesResources.InvertIfStatement, Function(c) InvertIfAsync(document, relevantIfBlockOrIfStatement, c)))
+                New MyCodeAction(VBFeaturesResources.Invert_If_statement, Function(c) InvertIfAsync(document, relevantIfBlockOrIfStatement, c)))
         End Function
 
         Private Function FindAncestor(Of T As SyntaxNode)(document As SyntacticDocument, startPosition As Integer, cancellationToken As CancellationToken) As T
@@ -241,7 +241,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeRefactorings.InvertIf
 
 #If False Then
         ' If we have a : following the outermost SingleLineIf, we'll want to remove it and use a statementterminator token instead.
-        ' This ensures that the following statement will stand alone instead of becoming part of the if, as dicussed in Bug 14259.
+        ' This ensures that the following statement will stand alone instead of becoming part of the if, as discussed in Bug 14259.
         Private Function UpdateStatementList(invertedIfNode As SingleLineIfStatementSyntax, originalIfNode As SingleLineIfStatementSyntax, cancellationToken As CancellationToken) As SyntaxList(Of StatementSyntax)
             Dim parentMultiLine = originalIfNode.GetContainingMultiLineExecutableBlocks().FirstOrDefault
             Dim statements = parentMultiLine.GetExecutableBlockStatements()

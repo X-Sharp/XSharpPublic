@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.CSharp.KeywordHighlighting.KeywordHighlighters;
 using Roslyn.Test.Utilities;
 using Xunit;
@@ -13,178 +14,215 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.KeywordHighlighting
             return new LoopHighlighter();
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample1_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample1_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        {|Cursor:[|while|]|} (true) {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        {|Cursor:[|while|]|} (true)
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
     }
-    else {
-        [|continue|];
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample1_2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample1_2()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|while|] (true) {
-    if (x) {
-        {|Cursor:[|break|]|};
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|while|] (true)
+        {
+            if (x)
+            {
+                {|Cursor:[|break|]|};
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
     }
-    else {
-        [|continue|];
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample1_3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample1_3()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|while|] (true) {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|while|] (true)
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                {|Cursor:[|continue|]|};
+            }
+        }
     }
-    else {
-        {|Cursor:[|continue|]|};
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        {|Cursor:[|do|]|} {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        {|Cursor:[|do|]|}
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
+        [|while|] (true);
     }
-    else {
-        [|continue|];
-    }
-}
-[|while|] (true);
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_2()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|do|] {
-    if (x) {
-        {|Cursor:[|break|]|};
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|do|]
+        {
+            if (x)
+            {
+                {|Cursor:[|break|]|};
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
+        [|while|] (true);
     }
-    else {
-        [|continue|];
-    }
-}
-[|while|] (true);
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_3()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|do|] {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|do|]
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                {|Cursor:[|continue|]|};
+            }
+        }
+        [|while|] (true);
     }
-    else {
-        {|Cursor:[|continue|]|};
-    }
-}
-[|while|] (true);
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_4()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_4()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|do|] {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|do|]
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
+        {|Cursor:[|while|]|} (true);
     }
-    else {
-        [|continue|];
-    }
-}
-{|Cursor:[|while|]|} (true);
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_5()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_5()
         {
-            Test(
-        @"class C {
-    void M() {
-        do {
-    if (x) {
-        break;
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        do
+        {
+            if (x)
+            {
+                break;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        while {|Cursor:(true)|};
     }
-    else {
-        continue;
-    }
-}
-while {|Cursor:(true)|};
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample2_6()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample2_6()
         {
-            Test(
-@"class C {
-    void M() {
-[|do|] {
-    if (x) {
-        [|break|];
-    }
-    else {
-        [|continue|];
-    }
-}
-[|while|] (true);{|Cursor:|}
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|do|]
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
+        [|while|] (true);{|Cursor:|}
     }
 }");
         }
@@ -198,310 +236,389 @@ while {|Cursor:(true)|};
     }
 }";
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample3_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample3_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        {|Cursor:[|for|]|} (int i = 0; i < 10; i++) {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        {|Cursor:[|for|]|} (int i = 0; i < 10; i++)
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
     }
-    else {
-        [|continue|];
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample3_2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample3_2()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|for|] (int i = 0; i < 10; i++) {
-    if (x) {
-        {|Cursor:[|break|];|}
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|for|] (int i = 0; i < 10; i++)
+        {
+            if (x)
+            {
+                {|Cursor:[|break|];|}
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
     }
-    else {
-        [|continue|];
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample3_3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample3_3()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|for|] (int i = 0; i < 10; i++) {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|for|] (int i = 0; i < 10; i++)
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                {|Cursor:[|continue|];|}
+            }
+        }
     }
-    else {
-        {|Cursor:[|continue|];|}
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample4_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample4_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        {|Cursor:[|foreach|]|} (var a in x) {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        {|Cursor:[|foreach|]|} (var a in x)
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
     }
-    else {
-        [|continue|];
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample4_2()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample4_2()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|foreach|] (var a in x) {
-    if (x) {
-        {|Cursor:[|break|];|}
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|foreach|] (var a in x)
+        {
+            if (x)
+            {
+                {|Cursor:[|break|];|}
+            }
+            else
+            {
+                [|continue|];
+            }
+        }
     }
-    else {
-        [|continue|];
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestExample4_3()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestExample4_3()
         {
-            Test(
-        @"class C {
-    void M() {
-        [|foreach|] (var a in x) {
-    if (x) {
-        [|break|];
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|foreach|] (var a in x)
+        {
+            if (x)
+            {
+                [|break|];
+            }
+            else
+            {
+                {|Cursor:[|continue|];|}
+            }
+        }
     }
-    else {
-        {|Cursor:[|continue|];|}
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_1()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        {|Cursor:[|foreach|]|} (var a in x) {
-    if (a) {
-        [|break|];
-    }
-    else {
-        switch (b) {
-            case 0:
-                while (true) {
-                    do {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        {|Cursor:[|foreach|]|} (var a in x)
+        {
+            if (a)
+            {
+                [|break|];
+            }
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        while (true)
+                        {
+                            do
+                            {
+                                break;
+                            }
+                            while (false);
+                            break;
+                        }
+
                         break;
-                    }
-                    while (false);
-                    break;
                 }
-                break;
-        }
-    }
+            }
 
-    for (int i = 0; i < 10; i++) {
-        break;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_2()
-        {
-            Test(
-        @"class C {
-    void M() {
-        [|foreach|] (var a in x) {
-    if (a) {
-        {|Cursor:[|break|];|}
-    }
-    else {
-        switch (b) {
-            case 0:
-                while (true) {
-                    do {
-                        break;
-                    }
-                    while (false);
-                    break;
-                }
-                break;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        break;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_3()
-        {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        break;
-    }
-    else {
-        switch (b) {
-            case 0:
-                while (true) {
-                    {|Cursor:[|do|]|} {
-                        [|break|];
-                    }
-                    [|while|] (false);
-                    break;
-                }
-                break;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        break;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_4()
-        {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        break;
-    }
-    else {
-        switch (b) {
-            case 0:
-                while (true) {
-                    [|do|] {
-                        {|Cursor:[|break|];|}
-                    }
-                    [|while|] (false);
-                    break;
-                }
-                break;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        break;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_5()
-        {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        break;
-    }
-    else {
-        switch (b) {
-            case 0:
-                while (true) {
-                    [|do|] {
-                        [|break|];
-                    }
-                    {|Cursor:[|while|]|} (false);
-                    break;
-                }
-                break;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        break;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_6()
-        {
-            Test(
-@"class C {
-    void M() {
-        foreach (var a in x) {
-            if (a) {
+            for (int i = 0; i < 10; i++)
+            {
                 break;
             }
-            else {
-                switch (b) {
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_2()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|foreach|] (var a in x)
+        {
+            if (a)
+            {
+                {|Cursor:[|break|];|}
+            }
+            else
+            {
+                switch (b)
+                {
                     case 0:
-                        while (true) {
-                            [|do|] {
+                        while (true)
+                        {
+                            do
+                            {
+                                break;
+                            }
+                            while (false);
+                            break;
+                        }
+
+                        break;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                break;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_3()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                break;
+            }
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        while (true)
+                        {
+                            {|Cursor:[|do|]|}
+                            {
+                                [|break|];
+                            }
+                            [|while|] (false);
+                            break;
+                        }
+
+                        break;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                break;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_4()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                break;
+            }
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        while (true)
+                        {
+                            [|do|]
+                            {
+                                {|Cursor:[|break|];|}
+                            }
+                            [|while|] (false);
+                            break;
+                        }
+
+                        break;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                break;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_5()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                break;
+            }
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        while (true)
+                        {
+                            [|do|]
+                            {
+                                [|break|];
+                            }
+                            {|Cursor:[|while|]|} (false);
+                            break;
+                        }
+
+                        break;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                break;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_6()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                break;
+            }
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        while (true)
+                        {
+                            [|do|]
+                            {
                                 [|break|];
                             }
                             [|while|] (false);{|Cursor:|}
                             break;
                         }
+
                         break;
                 }
             }
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 10; i++)
+            {
                 break;
             }
         }
@@ -509,442 +626,196 @@ while {|Cursor:(true)|};
 }");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_7()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_7()
         {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        break;
-    }
-    else {
-        switch (b) {
-            case 0:
-                {|Cursor:[|while|]|} (true) {
-                    do {
-                        break;
-                    }
-                    while (false);
-                    [|break|];
-                }
-                break;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        break;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_8()
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
         {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        break;
-    }
-    else {
-        switch (b) {
-            case 0:
-                [|while|] (true) {
-                    do {
-                        break;
-                    }
-                    while (false);
-                    {|Cursor:[|break|];|}
-                }
+            if (a)
+            {
                 break;
+            }
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        {|Cursor:[|while|]|} (true)
+                        {
+                            do
+                            {
+                                break;
+                            }
+                            while (false);
+                            [|break|];
+                        }
+
+                        break;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                break;
+            }
         }
     }
+}");
+        }
 
-    for (int i = 0; i < 10; i++) {
-        break;
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_8()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                break;
+            }
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        [|while|] (true)
+                        {
+                            do
+                            {
+                                break;
+                            }
+                            while (false);
+                            {|Cursor:[|break|];|}
+                        }
+
+                        break;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                break;
+            }
+        }
     }
-}
-    }
-}
-");
+}");
         }
 
         // TestNestedExample1 9-13 are in SwitchStatementHighlighterTests.cs
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_14()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_14()
         {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        break;
-    }
-    else {
-        switch (b) {
-            case 0:
-                while (true) {
-                    do {
-                        break;
-                    }
-                    while (false);
-                    break;
-                }
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
                 break;
-        }
-    }
+            }
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        while (true)
+                        {
+                            do
+                            {
+                                break;
+                            }
+                            while (false);
+                            break;
+                        }
 
-    {|Cursor:[|for|]|} (int i = 0; i < 10; i++) {
-        [|break|];
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample1_15()
-        {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        break;
-    }
-    else {
-        switch (b) {
-            case 0:
-                while (true) {
-                    do {
                         break;
-                    }
-                    while (false);
-                    break;
-                }
-                break;
-        }
-    }
-
-    [|for|] (int i = 0; i < 10; i++) {
-        {|Cursor:[|break|];|}
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_1()
-        {
-            Test(
-        @"class C {
-    void M() {
-        {|Cursor:[|foreach|]|} (var a in x) {
-    if (a) {
-        [|continue|];
-    }
-    else {
-        while (true) {
-            do {
-                continue;
-            }
-            while (false);
-            continue;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        continue;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_2()
-        {
-            Test(
-        @"class C {
-    void M() {
-        [|foreach|] (var a in x) {
-    if (a) {
-        {|Cursor:[|continue|];|}
-    }
-    else {
-        while (true) {
-            do {
-                continue;
-            }
-            while (false);
-            continue;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        continue;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_3()
-        {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        continue;
-    }
-    else {
-        while (true) {
-            {|Cursor:[|do|]|} {
-                [|continue|];
-            }
-            [|while|] (false);
-            continue;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        continue;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_4()
-        {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        continue;
-    }
-    else {
-        while (true) {
-            [|do|] {
-                {|Cursor:[|continue|];|}
-            }
-            [|while|] (false);
-            continue;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        continue;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_5()
-        {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        continue;
-    }
-    else {
-        while (true) {
-            [|do|] {
-                [|continue|];
-            }
-            {|Cursor:[|while|]|} (false);
-            continue;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        continue;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_6()
-        {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        continue;
-    }
-    else {
-        while (true) {
-            do {
-                continue;
-            }
-            while {|Cursor:(false)|};
-            continue;
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        continue;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_7()
-        {
-            Test(
-@"class C {
-    void M() {
-        foreach (var a in x) {
-            if (a) {
-                continue;
-            }
-            else {
-                while (true) {
-                    [|do|] {
-                        [|continue|];
-                    }
-                    [|while|] (false);{|Cursor:|}
-                    continue;
                 }
             }
 
-            for (int i = 0; i < 10; i++) {
-                continue;
+            {|Cursor:[|for|]|} (int i = 0; i < 10; i++)
+            {
+                [|break|];
             }
         }
     }
 }");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_8()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample1_15()
         {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        continue;
-    }
-    else {
-        {|Cursor:[|while|]|} (true) {
-            do {
-                continue;
-            }
-            while (false);
-            [|continue|];
-        }
-    }
-
-    for (int i = 0; i < 10; i++) {
-        continue;
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_9()
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
         {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        continue;
-    }
-    else {
-        [|while|] (true) {
-            do {
-                continue;
+            if (a)
+            {
+                break;
             }
-            while (false);
-            {|Cursor:[|continue|];|}
+            else
+            {
+                switch (b)
+                {
+                    case 0:
+                        while (true)
+                        {
+                            do
+                            {
+                                break;
+                            }
+                            while (false);
+                            break;
+                        }
+
+                        break;
+                }
+            }
+
+            [|for|] (int i = 0; i < 10; i++)
+            {
+                {|Cursor:[|break|];|}
+            }
         }
     }
-
-    for (int i = 0; i < 10; i++) {
-        continue;
-    }
-}
-    }
-}
-");
+}");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_10()
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_1()
         {
-            Test(
-        @"class C {
-    void M() {
-        foreach (var a in x) {
-    if (a) {
-        continue;
-    }
-    else {
-        while (true) {
-            do {
-                continue;
-            }
-            while (false);
-            continue;
-        }
-    }
-
-    {|Cursor:[|for|]|} (int i = 0; i < 10; i++) {
-        [|continue|];
-    }
-}
-    }
-}
-");
-        }
-
-        [WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
-        public void TestNestedExample2_11()
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        {|Cursor:[|foreach|]|} (var a in x)
         {
-            Test(
-@"class C {
-    void M() {
-        foreach (var a in x) {
-            if (a) {
-                continue;
+            if (a)
+            {
+                [|continue|];
             }
-            else {
-                while (true) {
-                    do {
+            else
+            {
+                while (true)
+                {
+                    do
+                    {
                         continue;
                     }
                     while (false);
@@ -952,13 +823,373 @@ while {|Cursor:(true)|};
                 }
             }
 
-            [|for|] (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_2()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        [|foreach|] (var a in x)
+        {
+            if (a)
+            {
+                {|Cursor:[|continue|];|}
+            }
+            else
+            {
+                while (true)
+                {
+                    do
+                    {
+                        continue;
+                    }
+                    while (false);
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_3()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                while (true)
+                {
+                    {|Cursor:[|do|]|}
+                    {
+                        [|continue|];
+                    }
+                    [|while|] (false);
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_4()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                while (true)
+                {
+                    [|do|]
+                    {
+                        {|Cursor:[|continue|];|}
+                    }
+                    [|while|] (false);
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_5()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                while (true)
+                {
+                    [|do|]
+                    {
+                        [|continue|];
+                    }
+                    {|Cursor:[|while|]|} (false);
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_6()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                while (true)
+                {
+                    do
+                    {
+                        continue;
+                    }
+                    while {|Cursor:(false)|};
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_7()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                while (true)
+                {
+                    [|do|]
+                    {
+                        [|continue|];
+                    }
+                    [|while|] (false);{|Cursor:|}
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_8()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                {|Cursor:[|while|]|} (true)
+                {
+                    do
+                    {
+                        continue;
+                    }
+                    while (false);
+                    [|continue|];
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_9()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                [|while|] (true)
+                {
+                    do
+                    {
+                        continue;
+                    }
+                    while (false);
+                    {|Cursor:[|continue|];|}
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                continue;
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_10()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                while (true)
+                {
+                    do
+                    {
+                        continue;
+                    }
+                    while (false);
+                    continue;
+                }
+            }
+
+            {|Cursor:[|for|]|} (int i = 0; i < 10; i++)
+            {
+                [|continue|];
+            }
+        }
+    }
+}");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)]
+        public async Task TestNestedExample2_11()
+        {
+            await TestAsync(
+@"class C
+{
+    void M()
+    {
+        foreach (var a in x)
+        {
+            if (a)
+            {
+                continue;
+            }
+            else
+            {
+                while (true)
+                {
+                    do
+                    {
+                        continue;
+                    }
+                    while (false);
+                    continue;
+                }
+            }
+
+            [|for|] (int i = 0; i < 10; i++)
+            {
                 {|Cursor:[|continue|];|}
             }
         }
     }
-}
-");
+}");
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             var names = new Dictionary<string, int>(n, CaseInsensitiveComparison.Comparer);
 #else
-            var names = new Dictionary<string, int>(n);
+            var names = new Dictionary<string, int>(n, StringOrdinalComparer.Instance);
 #endif
             foreach (var typeParameter in typeParameters)
             {

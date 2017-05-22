@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGeneration
             TypeDeclarationSyntax destination,
             INamedTypeSymbol namedType,
             CodeGenerationOptions options,
-            IList<bool> availableIndices, 
+            IList<bool> availableIndices,
             CancellationToken cancellationToken)
         {
             var declaration = GenerateNamedTypeDeclaration(service, namedType, GetDestination(destination), options, cancellationToken);
@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGeneration
             CompilationUnitSyntax destination,
             INamedTypeSymbol namedType,
             CodeGenerationOptions options,
-            IList<bool> availableIndices, 
+            IList<bool> availableIndices,
             CancellationToken cancellationToken)
         {
             var declaration = GenerateNamedTypeDeclaration(service, namedType, CodeGenerationDestination.CompilationUnit, options, cancellationToken);
@@ -60,12 +60,19 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGeneration
             ICodeGenerationService service,
             INamedTypeSymbol namedType,
             CodeGenerationDestination destination,
-            CodeGenerationOptions options, 
+            CodeGenerationOptions options,
             CancellationToken cancellationToken)
         {
             options = options ?? CodeGenerationOptions.Default;
 
             var declaration = GetDeclarationSyntaxWithoutMembers(namedType, destination, options);
+
+            if (namedType.IsComImport)
+            {
+                // If we're generating a ComImport type, then do not attempt to do any
+                // reordering of members.
+                options = options.With(autoInsertionLocation: false, sortMembers: false);
+            }
 
             // If we are generating members then make sure to exclude properties that cannot be generated.
             // Reason: Calling AddProperty on a propertysymbol that can't be generated (like one with params) causes
@@ -74,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGeneration
             declaration = options.GenerateMembers && namedType.TypeKind != TypeKind.Delegate
                 ? service.AddMembers(declaration,
                                      GetMembers(namedType).Where(s => s.Kind != SymbolKind.Property || PropertyGenerator.CanBeGenerated((IPropertySymbol)s)),
-                                     options, 
+                                     options,
                                      cancellationToken)
                 : declaration;
 

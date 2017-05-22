@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 #if XSHARP
         private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(CaseInsensitiveComparison.Comparer);
 #else
-        private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>();
+        private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(EmptyComparer.Instance);
 #endif
 
         private readonly NamespaceOrTypeSymbol _container;
@@ -439,7 +439,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     if (!token.IsNil)
                     {
                         TypeSymbol decodedType = new MetadataDecoder(moduleSymbol, this).GetTypeOfToken(token);
-                        return (NamedTypeSymbol)DynamicTypeDecoder.TransformType(decodedType, 0, _handle, moduleSymbol);
+                        decodedType = DynamicTypeDecoder.TransformType(decodedType, 0, _handle, moduleSymbol);
+                        return (NamedTypeSymbol)TupleTypeDecoder.DecodeTupleTypesIfApplicable(decodedType,
+                                                                                              _handle,
+                                                                                              moduleSymbol);
                     }
                 }
                 catch (BadImageFormatException mrEx)
@@ -468,6 +471,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     {
                         EntityHandle interfaceHandle = moduleSymbol.Module.MetadataReader.GetInterfaceImplementation(interfaceImpl).Interface;
                         TypeSymbol typeSymbol = tokenDecoder.GetTypeOfToken(interfaceHandle);
+
+                        typeSymbol = TupleTypeDecoder.DecodeTupleTypesIfApplicable(typeSymbol, interfaceImpl, moduleSymbol);
 
                         var namedTypeSymbol = typeSymbol as NamedTypeSymbol;
                         symbols[i++] = (object)namedTypeSymbol != null ? namedTypeSymbol : new UnsupportedMetadataTypeSymbol(); // interface tmpList contains a bad type
@@ -1337,7 +1342,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         if (((object)getOne != null) || ((object)setOne != null))
                         {
                             PropertyDefinitionHandle h = new PropertyDefinitionHandle();
-                            _vulcanArrayIndexerOne = new PEPropertySymbol(moduleSymbol, this, h, getOne, setOne);
+                            _vulcanArrayIndexerOne = PEPropertySymbol.Create(moduleSymbol, this, h, getOne, setOne);
                         }
                     }
                 }
@@ -1367,7 +1372,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         if (((object)getMany != null) || ((object)setMany != null))
                         {
                             PropertyDefinitionHandle h = new PropertyDefinitionHandle();
-                            _vulcanArrayIndexerMany = new PEPropertySymbol(moduleSymbol, this, h, getMany, setMany);
+                            _vulcanArrayIndexerMany = PEPropertySymbol.Create(moduleSymbol, this, h, getMany, setMany);
                         }
                     }
                 }
@@ -1532,7 +1537,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
         }
 
-        internal override bool HasTypeArgumentsCustomModifiers
+        internal sealed override bool HasTypeArgumentsCustomModifiers
         {
             get
             {
@@ -1540,12 +1545,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
         }
 
-        internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
+        public sealed override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
         {
-            get
-            {
-                return ImmutableArray<ImmutableArray<CustomModifier>>.Empty;
-            }
+            return GetEmptyTypeArgumentCustomModifiers(ordinal);
         }
 
         public override ImmutableArray<TypeParameterSymbol> TypeParameters
@@ -1662,10 +1664,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         {
             get
             {
-                if (_lazyKind == TypeKind.Unknown)
-                {
-                    TypeKind result;
+                TypeKind result = _lazyKind;
 
+                if (result == TypeKind.Unknown)
+                {
                     if (_flags.IsInterface())
                     {
                         result = TypeKind.Interface;
@@ -1680,22 +1682,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         {
                             SpecialType baseCorTypeId = @base.SpecialType;
 
-                            // Code is cloned from MetaImport::DoImportBaseAndImplements()
-                            if (baseCorTypeId == SpecialType.System_Enum)
+                            switch (baseCorTypeId)
                             {
-                                // Enum
-                                result = TypeKind.Enum;
-                            }
-                            else if (baseCorTypeId == SpecialType.System_MulticastDelegate)
-                            {
-                                // Delegate
-                                result = TypeKind.Delegate;
-                            }
-                            else if (baseCorTypeId == SpecialType.System_ValueType &&
-                                     this.SpecialType != SpecialType.System_Enum)
-                            {
-                                // Struct
-                                result = TypeKind.Struct;
+                                case SpecialType.System_Enum:
+                                    // Enum
+                                    result = TypeKind.Enum;
+                                    break;
+
+                                case SpecialType.System_MulticastDelegate:
+                                    // Delegate
+                                    result = TypeKind.Delegate;
+                                    break;
+
+                                case SpecialType.System_ValueType:
+                                    // System.Enum is the only class that derives from ValueType
+                                    if (this.SpecialType != SpecialType.System_Enum)
+                                    {
+                                        // Struct
+                                        result = TypeKind.Struct;
+                                    }
+                                    break;
                             }
                         }
                     }
@@ -1703,7 +1709,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     _lazyKind = result;
                 }
 
-                return _lazyKind;
+                return result;
             }
         }
 
@@ -1894,12 +1900,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         if (((object)getMethod != null) || ((object)setMethod != null))
                         {
 #if XSHARP
-                            var prop = new PEPropertySymbol(moduleSymbol, this, propertyDef, getMethod, setMethod);
+                            var prop = PEPropertySymbol.Create(moduleSymbol, this, propertyDef, getMethod, setMethod);
                             members.Add(prop);
                             if (prop.IsIndexerWithAccessibleName)
-                                members.Add(new PEPropertySymbol(moduleSymbol, prop));
+                                members.Add(PEPropertySymbol.Create(moduleSymbol, prop));
 #else
-                            members.Add(new PEPropertySymbol(moduleSymbol, this, propertyDef, getMethod, setMethod));
+                            members.Add(PEPropertySymbol.Create(moduleSymbol, this, propertyDef, getMethod, setMethod));
 #endif
                         }
                     }
@@ -1964,7 +1970,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 #if XSHARP
             return symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
 #else
-            return symbols.ToDictionary(s => s.Name);
+            return symbols.ToDictionary(s => s.Name, StringOrdinalComparer.Instance);
 #endif
         }
 
@@ -1978,7 +1984,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 #if XSHARP
             return symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
 #else
-            return symbols.ToDictionary(s => s.Name);
+            return symbols.ToDictionary(s => s.Name, StringOrdinalComparer.Instance);
 #endif
         }
 
@@ -2004,6 +2010,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 if (this.ContainingPEModule.Module.HasRequiredAttributeAttribute(_handle))
                 {
                     diagnostic = new CSDiagnosticInfo(ErrorCode.ERR_BogusType, this);
+                }
+                else if (TypeKind == TypeKind.Class && SpecialType != SpecialType.System_Enum)
+                {
+                    TypeSymbol @base = GetDeclaredBaseType(null);
+                    if (@base?.SpecialType == SpecialType.None && @base.ContainingAssembly?.IsMissing == true)
+                    {
+                        var missingType = @base as MissingMetadataTypeSymbol.TopLevel;
+                        if ((object)missingType != null && missingType.Arity == 0)
+                        {
+                            string emittedName = MetadataHelpers.BuildQualifiedName(missingType.NamespaceName, missingType.MetadataName);
+                            switch (SpecialTypes.GetTypeFromMetadataName(emittedName))
+                            {
+                                case SpecialType.System_Enum:
+                                case SpecialType.System_MulticastDelegate:
+                                case SpecialType.System_ValueType:
+                                    // This might be a structure, an enum, or a delegate
+                                    diagnostic = missingType.GetUseSiteDiagnostic();
+                                    break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -2347,22 +2374,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 {
                     // This is always the instance type, so the type arguments are the same as the type parameters.
                     return this.TypeParameters.Cast<TypeParameterSymbol, TypeSymbol>();
-                }
-            }
-
-            internal override bool HasTypeArgumentsCustomModifiers
-            {
-                get
-                {
-                    return false;
-                }
-            }
-
-            internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
-            {
-                get
-                {
-                    return CreateEmptyTypeArgumentsCustomModifiers();
                 }
             }
 

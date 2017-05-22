@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.IO;
+using System.Runtime.InteropServices;
+using System;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     public sealed partial class CSharpCompilationOptions
@@ -23,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; set; }
         public string SystemDir { get; set; }
         public bool VONullStrings { get; private set; }
-        public bool VirtualInstanceMethods { get; private set; }  
+        public bool VirtualInstanceMethods { get; private set; }
         //public bool VOAllowMissingReturns { get; private set; }  // Handled in the parser
         public bool VOArithmeticConversions { get; private set; }
         //public bool VOClipperCallingConvention { get; private set; }// Handled in the parser
@@ -45,8 +47,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool HasDefaultTree { get; set; } = false;
         public bool CreatingRuntime { get; private set; }
 
-        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan || this.Dialect == XSharpDialect.Harbour; } }
-        public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
+        public bool IsDialectVO { get { return this.Dialect.IsDialectVO(); } }
+        public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
 
         //public bool vo1 => VoInitAxitMethods;
         public bool vo2 => VONullStrings;
@@ -75,14 +77,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ArrayZero = opt.ArrayZero;
                 //VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
-                VirtualInstanceMethods = opt.Vo3;         
+                VirtualInstanceMethods = opt.Vo3;
                 VOSignedUnsignedConversion = opt.Vo4;
                 //VOClipperCallingConvention = opt.Vo5;     // Handled in the parser
                 VOResolveTypedFunctionPointersToPtr = opt.Vo6;
                 VOImplicitCastsAndConversions = opt.Vo7;
                 //VOPreprocessorBehaviour = opt.Vo8;        // Handled in the parser
                 //VOAllowMissingReturns = opt.Vo9;          // Handled in the parser
-                VOCompatibleIIF = opt.Vo10;               
+                VOCompatibleIIF = opt.Vo10;
                 VOArithmeticConversions = opt.Vo11;
                 //VOClipperIntegerDivisions = opt.Vo12;     // Handled in the parser
                 VOStringComparisons = opt.Vo13;
@@ -130,5 +132,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
             ConsoleOutput = opt.ConsoleOutput;
         }
+
+        internal static void FixResources(CommandLineArguments args)
+        {
+            if (!string.IsNullOrEmpty(args.Win32ResourceFile) ||
+                !string.IsNullOrEmpty(args.Win32Icon) ||
+                !string.IsNullOrEmpty(args.Win32Manifest))
+            {
+                var file = System.IO.Path.Combine(args.OutputDirectory, args.OutputFileName);
+                if (System.IO.File.Exists(file))
+                {
+                    var hRes = BeginUpdateResource(file, false);
+                    if (hRes != IntPtr.Zero)
+                    {
+                        var res = EndUpdateResource(hRes, false);
+                    }
+                }
+            }
+
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr BeginUpdateResource(string pFileName, [MarshalAs(UnmanagedType.Bool)]bool bDeleteExistingResources);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool EndUpdateResource(IntPtr hUpdate, bool fDiscard);
     }
 }

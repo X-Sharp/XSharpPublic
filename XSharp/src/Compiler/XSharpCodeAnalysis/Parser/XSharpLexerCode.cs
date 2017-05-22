@@ -390,7 +390,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         break;
                     case '*':
-                        if (/*_OldComment && */LastToken == NL)
+                        if (LastToken == NL)
                             break;
                         _type = MULT;
                         _textSb.Clear();
@@ -713,9 +713,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         if (KwIds.ContainsKey(text))
                         {
                             var kwid = KwIds[text];
-                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL)
+                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
                             {
-                                // #NIL or #NULL_STRING etc. 
+                                // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
                                 t.Text = "#";
                                 t.Type = NEQ2;
                                 t.StopIndex = t.StartIndex;
@@ -746,6 +746,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     t.Type = symtype;
                     _inPp = true;
                     _hasPPTokens = true;
+                }
+                else if (_isScript)
+                {
+                    if (Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer.Equals(t.Text, "#R"))
+                    {
+                        t.Type = SCRIPT_REF;
+                    }
+                    else if (Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer.Equals(t.Text, "#LOAD"))
+                    {
+                        t.Type = SCRIPT_LOAD;
+                    }
                 }
             }
             if (!_inId)
@@ -826,11 +837,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             get { return _Four; }
             set { _Four = value; }
         }
+        bool _SingleQuotedStrings = false;
+        public bool AllowSingleQuotedStrings
+        {
+            get { return _SingleQuotedStrings; }
+            set { _SingleQuotedStrings = value; }
+
+        }
         bool _OldComment = false;
         public bool AllowOldStyleComments
         {
             get { return _OldComment; }
             set { _OldComment = value; }
+        }
+        bool _isScript = false;
+        public bool IsScript
+        {
+            get { return _isScript; }
+            set { _isScript = value; }
         }
         static Object kwlock = new Object();
         static IDictionary<string, int> voKwIds = null;
@@ -1226,13 +1250,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             stream.name = fileName;
             var lexer = new XSharpLexer(stream);
             lexer.TokenFactory = XSharpTokenFactory.Default;
-            lexer.AllowFourLetterAbbreviations = false;
-            lexer.AllowOldStyleComments = false;
-            if (options != null && options.Dialect == XSharpDialect.VO) 
-            {
-                lexer.AllowOldStyleComments = true;
-                lexer.AllowFourLetterAbbreviations = true;
-            }
+            if (options == null)
+                options = CSharpParseOptions.Default;
+            lexer.AllowFourLetterAbbreviations = options.Dialect.AllowFourLetterAbbreviations();
+            lexer.AllowOldStyleComments = options.Dialect.AllowOldStyleComments();
+            lexer.AllowSingleQuotedStrings = options.Dialect.AllowStringsWithSingleQuotes();
+            lexer.IsScript = options.Kind == Microsoft.CodeAnalysis.SourceCodeKind.Script;
             return lexer;
         }
 

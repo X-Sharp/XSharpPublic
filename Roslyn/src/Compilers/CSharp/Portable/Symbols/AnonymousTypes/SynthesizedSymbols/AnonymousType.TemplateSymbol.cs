@@ -91,7 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         cbParameters[i] = manager.Vulcan_Usual;
                     }
-                    var cbDelegate = manager.SynthesizeDelegate(typeDescr.Fields.Length - 1, default(BitVector), false).Construct(cbParameters);
+                    var cbDelegate = manager.SynthesizeDelegate(typeDescr.Fields.Length - 1, default(BitVector), false, 0).Construct(cbParameters);
 
                     Symbol[] cbMembers = new Symbol[4];
                     int cbMemberIndex = 0;
@@ -294,12 +294,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
+            public override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
             {
-                get
-                {
-                    return CreateEmptyTypeArgumentsCustomModifiers();
-                }
+                return GetEmptyTypeArgumentCustomModifiers(ordinal);
             }
 
             public override ImmutableArray<Symbol> GetMembers(string name)

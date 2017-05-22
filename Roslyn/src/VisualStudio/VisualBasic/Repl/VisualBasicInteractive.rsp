@@ -7,10 +7,12 @@
 /R:System.Data.DataSetExtensions
 /R:System.Xml
 /R:System.Xml.Linq
+/R:System.ValueTuple.dll
 /Imports:Microsoft.VisualBasic
 /Imports:System
 /Imports:System.Collections
 /Imports:System.Collections.Generic
+/Imports:System.Console
 /Imports:System.Data
 /Imports:System.Diagnostics
 /Imports:System.Linq

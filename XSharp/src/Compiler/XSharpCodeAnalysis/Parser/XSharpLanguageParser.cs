@@ -31,6 +31,8 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+
     internal partial class XSharpLanguageParser : SyntaxParser
     {
         private readonly string _fileName;
@@ -39,6 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxListPool _pool = new SyntaxListPool(); // Don't need to reset this.
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
+        private readonly bool _isScript;
 
         private ITokenStream _lexerTokenStream;
         private ITokenStream _preprocessorTokenStream;
@@ -91,6 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _text = Text;
             _fileName = FileName;
             _options = options;
+            _isScript = options.Kind == SourceCodeKind.Script;
         }
 
         internal CompilationUnitSyntax ParseCompilationUnit()
@@ -152,30 +156,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ppStream.Fill();
             _preprocessorTokenStream = ppStream;
             var parser = new XSharpParser(ppStream);
+            parser.IsScript = _options.Kind == SourceCodeKind.Script;
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
             // for info about optimization flags such as the next line
             //parser.Interpreter.enable_global_context_dfa = true;    // default = false
             //parser.Interpreter.tail_call_preserves_sll = false;     // default = true
 
-            parser.AllowFunctionInsideClass = false;     // 
-            if (_options.Dialect == XSharpDialect.VO)
-            {
-                parser.AllowXBaseVariables = true;
-                parser.AllowNamedArgs = false;
-                parser.AllowGarbageAfterEnd = true;
-            }
-            else if (_options.Dialect == XSharpDialect.Vulcan)
-            {
-                parser.AllowXBaseVariables = false;
-                parser.AllowNamedArgs = false;
-                parser.AllowGarbageAfterEnd = true;
-            }
-            else
-            {                                      // memvar and private statements are not recognized in Vulcan
-                parser.AllowXBaseVariables = false;
-                parser.AllowNamedArgs = true;
-                parser.AllowGarbageAfterEnd = false;
-            }
+            parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
+            parser.AllowGarbageAfterEnd = _options.Dialect.AllowGarbage();
+            parser.AllowNamedArgs = _options.Dialect.AllowNamedArgs();
+            parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
 
 
 #if DEBUG && DUMP_TIMES
@@ -190,10 +180,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // When this fails, then we try again with LL mode and then we record errors
             parser.RemoveErrorListeners();
             parser.ErrorHandler = new BailErrorStrategy();
-            ParserRuleContext tree;
+            XSharpParserRuleContext tree;
             try
             {
-                tree = parser.source();
+                if (_isScript)
+                    tree = parser.script();
+                else
+                    tree = parser.source();
             }
             catch (ParseCanceledException e)
             {
@@ -221,7 +214,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 pp.Close();
                 parser.Reset();
-                tree = parser.source();
+                if (_isScript)
+                    tree = parser.script();
+                else
+                    tree = parser.source();
             }
 #if DEBUG && DUMP_TIMES
             {
@@ -271,7 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     treeTransform.GlobalEntities.Attributes,
                     treeTransform.GlobalEntities.Members,
                     eof);
-                result.XNode = (XSharpParser.SourceContext)tree;
+                result.XNode = tree;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
                 result.IncludedFiles = pp.IncludedFiles;
@@ -292,7 +288,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     treeTransform.GlobalEntities.Attributes, 
                     treeTransform.GlobalEntities.Members, eof);
                 // TODO nvk: add parser warnings to tree diagnostic info
-                result.XNode = (XSharpParser.SourceContext)tree;
+                result.XNode = tree;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
                 result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;

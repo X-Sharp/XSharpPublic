@@ -1,220 +1,258 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Completion
-Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
-Imports Microsoft.CodeAnalysis.Editor.VisualBasic.Completion.CompletionProviders
 Imports Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Completion.CompletionProviders
+Imports Microsoft.CodeAnalysis.VisualBasic.Completion.Providers
 
-Public Class XmlDocCommentCompletionProviderTests
-    Inherits AbstractVisualBasicCompletionProviderTests
+Namespace Tests
+    Public Class XmlDocCommentCompletionProviderTests
+        Inherits AbstractVisualBasicCompletionProviderTests
 
-    Public Sub New(workspaceFixture As VisualBasicTestWorkspaceFixture)
-        MyBase.New(workspaceFixture)
-    End Sub
+        Public Sub New(workspaceFixture As VisualBasicTestWorkspaceFixture)
+            MyBase.New(workspaceFixture)
+        End Sub
 
-    Friend Overrides Function CreateCompletionProvider() As CompletionListProvider
-        Return New XmlDocCommentCompletionProvider()
-    End Function
+        Friend Overrides Function CreateCompletionProvider() As CompletionProvider
+            Return New XmlDocCommentCompletionProvider()
+        End Function
 
-    Private Sub VerifyItemsExist(markup As String, ParamArray items() As String)
-        For Each item In items
-            VerifyItemExists(markup, item)
-        Next
-    End Sub
+        Protected Overrides Async Function VerifyWorkerAsync(
+                code As String, position As Integer,
+                expectedItemOrNull As String, expectedDescriptionOrNull As String,
+                sourceCodeKind As SourceCodeKind, usePreviousCharAsTrigger As Boolean,
+                checkForAbsence As Boolean, glyph As Integer?, matchPriority As Integer?) As Task
+            Await VerifyAtPositionAsync(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, glyph, matchPriority)
+            Await VerifyAtEndOfFileAsync(code, position, usePreviousCharAsTrigger, expectedItemOrNull, expectedDescriptionOrNull, sourceCodeKind, checkForAbsence, glyph, matchPriority)
+        End Function
 
-    Private Sub VerifyItemsAbsent(markup As String, ParamArray items() As String)
-        For Each item In items
-            VerifyItemIsAbsent(markup, item)
-        Next
-    End Sub
+        Private Async Function VerifyItemsExistAsync(markup As String, ParamArray items() As String) As Task
+            For Each item In items
+                Await VerifyItemExistsAsync(markup, item)
+            Next
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub AnyLevelTags1()
-        Dim text = <File>
+        Private Async Function VerifyItemsAbsentAsync(markup As String, ParamArray items() As String) As Task
+            For Each item In items
+                Await VerifyItemIsAbsentAsync(markup, item)
+            Next
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestAnyLevelTags1() As Task
+            Dim text = "
 Class C
-    ''' &lt;$$
+    ''' <$$
     Sub Foo()
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsExist(text, "see", "seealso", "![CDATA[", "!--")
-    End Sub
+            Await VerifyItemsExistAsync(text, "see", "seealso", "![CDATA[", "!--")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub AnyLevelTags2()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestAnyLevelTags2() As Task
+            Dim text = "
 Class C
-    ''' &lt;summary&gt;
-    ''' &lt;$$
-    ''' &lt;/summary&gt;
+    ''' <summary>
+    ''' <$$
+    ''' </summary>
     Sub Foo()
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsExist(text, "see", "seealso", "![CDATA[", "!--")
-    End Sub
+            Await VerifyItemsExistAsync(text, "see", "seealso", "![CDATA[", "!--")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub AnyLevelTags3()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestAnyLevelTags3() As Task
+            Dim text = "
 Class C
-    ''' &lt;summary&gt;
-    ''' &lt; &lt;see&gt;&lt;/see&gt;
-    ''' &lt;$$
-    ''' &lt;/summary&gt;
+    ''' <summary>
+    ''' <see></see>;
+    ''' <$$
+    ''' </summary>;
     Sub Foo()
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsExist(text, "see", "seealso", "![CDATA[", "!--")
-    End Sub
+            Await VerifyItemsExistAsync(text, "see", "seealso", "![CDATA[", "!--")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub RepeatableNestedTags1()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestRepeatableNestedTags1() As Task
+            Dim text = "
 Class C
-    ''' &lt;$$
+    ''' <$$
     Sub Foo()
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsAbsent(text, "code", "list", "para", "paramref", "typeparamref")
-    End Sub
+            Await VerifyItemsAbsentAsync(text, "code", "list", "para", "paramref", "typeparamref")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub RepeatableNestedTags2()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestRepeatableNestedTags2() As Task
+            Dim text = "
 Class C
-    ''' &lt;summary&gt;
-    ''' &lt;$$
-    ''' &lt;summary&gt;
+    ''' <summary>
+    ''' <$$
+    ''' </summary>
     Sub Foo()
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsExist(text, "code", "list", "para", "paramref", "typeparamref")
-    End Sub
+            Await VerifyItemsExistAsync(text, "code", "list", "para")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub RepeatableTopLevelOnlyTags1()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestRepeatableNestedParamRefAndTypeParamRefTagsOnMethod() As Task
+            Dim text = "
 Class C
-    ''' &lt;summary&gt;
-    ''' &lt;$$
-    ''' &lt;summary&gt;
-    Sub Foo()
+    ''' <summary>
+    ''' <$$
+    ''' </summary>
+    Sub Foo(Of T)(i as Integer)
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsAbsent(text, "exception", "include", "permission")
-    End Sub
+            Await VerifyItemsExistAsync(text, "paramref name=""i""", "typeparamref name=""T""")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub RepeatableTopLevelOnlyTags2()
-        Dim text = <File>
-Class C
-    ''' &lt;$$
-    Sub Foo()
-    End Sub
-End Class
-</File>.Value
-
-        VerifyItemsExist(text, "exception", "include", "permission")
-    End Sub
-
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub TopLevelOnlyTags1()
-        Dim text = <File>
-Class C
-    ''' &lt;summary&gt;
-    ''' &lt;$$
-    ''' &lt;summary&gt;
-    Sub Foo()
-    End Sub
-End Class
-</File>.Value
-
-        VerifyItemsAbsent(text, "example", "remarks", "summary", "value")
-    End Sub
-
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub TopLevelOnlyTags2()
-        Dim text = <File>
-Class C
-    ''' &lt;$$
-    Sub Foo()
-    End Sub
-End Class
-</File>.Value
-
-        VerifyItemsExist(text, "example", "remarks", "summary")
-    End Sub
-
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub TopLevelOnlyTags3()
-        Dim text = <File>
-Class C
-    ''' &lt;summary&gt;&lt;summary&gt;
-    ''' &lt;$$
-    Sub Foo()
-    End Sub
-End Class
-</File>.Value
-
-        VerifyItemsAbsent(text, "example", "remarks", "summary", "value")
-    End Sub
-
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub ListOnlyTags()
-        Dim text = <File>
-Class C
-    ''' &lt;list&gt;&lt;$$&lt;/list&gt;
-    Sub Foo()
-    End Sub
-End Class
-</File>.Value
-
-        VerifyItemsExist(text, "listheader", "item", "term", "description")
-    End Sub
-
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub ListHeaderTags()
-        Dim text = <File>
-Class C
-    ''' &lt;list&gt;  &lt;listheader&gt; &lt;$$  &lt;/listheader&gt;  &lt;/list&gt;
-    Sub Foo()
-    End Sub
-End Class
-</File>.Value
-
-        VerifyItemsExist(text, "term", "description")
-    End Sub
-
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub MethodParamTypeParam()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestRepeatableNestedTypeParamRefTagOnClass() As Task
+            Dim text = "
+''' <summary>
+''' <$$
+''' </summary>
 Class C(Of T)
-    ''' &lt;$$
+End Class
+"
+
+            Await VerifyItemsExistAsync(text, "typeparamref name=""T""")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestRepeatableTopLevelOnlyTags1() As Task
+            Dim text = "
+Class C
+    ''' <summary>
+    ''' <$$
+    ''' </summary>
+    Sub Foo()
+    End Sub
+End Class
+"
+
+            Await VerifyItemsAbsentAsync(text, "exception", "include", "permission")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestRepeatableTopLevelOnlyTags2() As Task
+            Dim text = "
+Class C
+    ''' <$$
+    Sub Foo()
+    End Sub
+End Class
+"
+
+            Await VerifyItemsExistAsync(text, "exception", "include", "permission")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestTopLevelOnlyTags1() As Task
+            Dim text = "
+Class C
+    ''' <summary>
+    ''' <$$
+    ''' </summary>
+    Sub Foo()
+    End Sub
+End Class
+"
+
+            Await VerifyItemsAbsentAsync(text, "example", "remarks", "summary", "value")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestTopLevelOnlyTags2() As Task
+            Dim text = "
+Class C
+    ''' <$$
+    Sub Foo()
+    End Sub
+End Class
+"
+
+            Await VerifyItemsExistAsync(text, "example", "remarks", "summary")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestTopLevelOnlyTags3() As Task
+            Dim text = "
+Class C
+    ''' <summary>
+    ''' <$$
+    Sub Foo()
+    End Sub
+End Class
+"
+
+            Await VerifyItemsAbsentAsync(text, "example", "remarks", "summary", "value")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestListOnlyTags() As Task
+            Dim text = "
+Class C
+    ''' <list><$$</list>
+    Sub Foo()
+    End Sub
+End Class
+"
+
+            Await VerifyItemsExistAsync(text, "listheader", "item", "term", "description")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestListHeaderTags() As Task
+            Dim text = "
+Class C
+    ''' <list>  <listheader> <$$  </listheader>  </list>
+    Sub Foo()
+    End Sub
+End Class
+"
+
+            Await VerifyItemsExistAsync(text, "term", "description")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestMethodParamTypeParam() As Task
+            Dim text = "
+Class C(Of T)
+    ''' <$$
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsExist(text, "param name=""bar""", "typeparam name=""T""")
-    End Sub
+            Await VerifyItemsExistAsync(text, "param name=""bar""", "typeparam name=""T""")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub IndexerParamTypeParam()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestIndexerParamTypeParam() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;$$
+    ''' <$$
     Default Public Property Item(bar as T)
         Get
         End Get
@@ -222,219 +260,287 @@ Class C(Of T)
         End Set
     End Sub
 End Property
-</File>.Value
+"
 
-        VerifyItemsExist(text, "param name=""bar""")
-    End Sub
+            Await VerifyItemsExistAsync(text, "param name=""bar""")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub TypeTypeParam()
-        Dim text = <File>
-    ''' &lt;$$
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestTypeTypeParam() As Task
+            Dim text = "
+    ''' <$$
 Class C(Of T)
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsExist(text, "typeparam name=""T""")
-    End Sub
+            Await VerifyItemsExistAsync(text, "typeparam name=""T""")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub NoRepeatParam()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNoRepeatParam() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;param name="bar"&gt;&lt;/param;&gt;
-    ''' &lt;$$
+    ''' <param name=""bar""></param>
+    ''' <$$
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemIsAbsent(text, "param name=""bar""")
-    End Sub
+            Await VerifyItemIsAbsentAsync(text, "param name=""bar""")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub AttributeAfterName()
-        Dim text = <File>
+        <WorkItem(11487, "https://github.com/dotnet/roslyn/issues/11487")>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNoRepeatTypeParam() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;exception $$
+    ''' <typeparam name=""T""></param>
+    ''' <$$
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemExists(text, "cref")
-    End Sub
+            Await VerifyItemIsAbsentAsync(text, "typeparam name=""T""")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub AttributeAfterNamePartiallyTyped()
-        Dim text = <File>
+        <WorkItem(11487, "https://github.com/dotnet/roslyn/issues/11487")>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNoNestedParam() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;exception c$$
+    ''' <summary>
+    ''' <$$
+    ''' </summary>
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemExists(text, "cref")
-    End Sub
+            Await VerifyItemIsAbsentAsync(text, "param name=""bar""")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub AttributeAfterAttribute()
-        Dim text = <File>
+        <WorkItem(11487, "https://github.com/dotnet/roslyn/issues/11487")>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNoNestedTypeParam() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;exception name="" $$
+    ''' <summary>
+    ''' <$$
+    ''' </summary>
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemExists(text, "cref")
-    End Sub
+            Await VerifyItemIsAbsentAsync(text, "typeparam name=""T""")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub ParameterNameInsideAttribute()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestAttributeAfterName() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;param name = "$$"
+    ''' <exception $$
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemExists(text, "bar")
-    End Sub
+            Await VerifyItemExistsAsync(text, "cref")
+        End Function
 
-    <WorkItem(623219)>
-    <WorkItem(746919)>
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub CommitParam()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestAttributeAfterNamePartiallyTyped() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;param$$
+    ''' <exception c$$
+    Sub Foo(Of T)(bar as T)
+    End Sub
+End Class
+"
+
+            Await VerifyItemExistsAsync(text, "cref")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestAttributeAfterAttribute() As Task
+            Dim text = "
+Class C(Of T)
+    ''' <exception name="""" $$
+    Sub Foo(Of T)(bar as T)
+    End Sub
+End Class
+"
+
+            Await VerifyItemExistsAsync(text, "cref")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestParameterNameInsideAttribute() As Task
+            Dim text = "
+Class C(Of T)
+    ''' <param name = ""$$""
+    Sub Foo(Of T)(bar as T)
+    End Sub
+End Class
+"
+
+            Await VerifyItemExistsAsync(text, "bar")
+        End Function
+
+        <WorkItem(623219, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/623219")>
+        <WorkItem(746919, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/746919")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestCommitParam() As Task
+            Dim text = "
+Class C(Of T)
+    ''' <param$$
     Sub Foo(Of T)(bar As T)
     End Sub
 End Class
-</File>.NormalizedValue
+"
 
-        Dim expected = <File>
+            Dim expected = "
 Class C(Of T)
-    ''' &lt;param name="bar"$$
+    ''' <param name=""bar""$$
     Sub Foo(Of T)(bar As T)
     End Sub
 End Class
-</File>.NormalizedValue
+"
 
-        VerifyCustomCommitProvider(text, "param name=""bar""", expected)
-    End Sub
+            Await VerifyCustomCommitProviderAsync(text, "param name=""bar""", expected)
+        End Function
 
-    <WorkItem(623158)>
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub CloseTag()
-        Dim text = <File>
+        <WorkItem(623158, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/623158")>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestCloseTag() As Task
+            Dim text = "
 Class C
-    ''' &lt;foo&gt;&lt;/$$
+    ''' <foo></$$
     Sub Foo()
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemExists(text, "foo", usePreviousCharAsTrigger:=True)
-    End Sub
+            Await VerifyItemExistsAsync(
+                text, "foo",
+                usePreviousCharAsTrigger:=True)
+        End Function
 
-    <WorkItem(638805)>
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub NoParentElement()
-        Dim text = <File><![CDATA[
+        <WorkItem(638805, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/638805")>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNoParentElement() As Task
+            Dim text = "
 ''' <summary>
 ''' </summary>
 ''' $$
 Module Program
-End Module]]></File>.Value
+End Module
+"
 
-        VerifyItemsExist(text, "see", "seealso", "![CDATA[", "!--")
-    End Sub
+            Await VerifyItemsExistAsync(text, "see", "seealso", "![CDATA[", "!--")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub NestedTagsOnSameLineAsCompletedTag()
-        Dim text = <File><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNestedTagsOnSameLineAsCompletedTag() As Task
+            Dim text = "
 ''' <summary>
 ''' <foo></foo>$$
 ''' 
 ''' </summary>
 Module Program
-End Module]]></File>.Value
+End Module
+"
 
-        VerifyItemsExist(text, "code", "list", "para", "paramref", "typeparamref")
-    End Sub
+            Await VerifyItemsExistAsync(text, "code", "list", "para")
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub NotInCref()
-        Dim text = <File><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNotInCref() As Task
+            Dim text = "
 ''' <summary>
-''' <see cref="$$
+''' <see cref=""$$
 ''' </summary>
 Module Program
-End Module]]></File>.Value
+End Module
+"
 
-        VerifyNoItemsExist(text)
-    End Sub
+            Await VerifyNoItemsExistAsync(text)
+        End Function
 
-    <WorkItem(638653)>
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub AllowTypingDoubleQuote()
-        Dim text = <File>
+        <WorkItem(638653, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/638653")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestAllowTypingDoubleQuote() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;param$$
+    ''' <param$$
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.NormalizedValue
+"
 
-        Dim expected = <File>$$
+            Dim expected = "$$
 Class C(Of T)
-    ''' &lt;param
+    ''' <param
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.NormalizedValue
+"
 
-        VerifyCustomCommitProvider(text, "param name=""bar""", expected, Microsoft.CodeAnalysis.SourceCodeKind.Regular, commitChar:=""""c)
-    End Sub
+            Await VerifyCustomCommitProviderAsync(text, "param name=""bar""", expected, Microsoft.CodeAnalysis.SourceCodeKind.Regular, commitChar:=""""c)
+        End Function
 
-    <WorkItem(638653)>
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub AllowTypingSpace()
-        Dim text = <File>
+        <WorkItem(638653, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/638653")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestAllowTypingSpace() As Task
+            Dim text = "
 Class C(Of T)
-    ''' &lt;param$$
+    ''' <param$$
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.NormalizedValue
+"
 
-        Dim expected = <File>$$
+            Dim expected = "$$
 Class C(Of T)
-    ''' &lt;param
+    ''' <param
     Sub Foo(Of T)(bar as T)
     End Sub
 End Class
-</File>.NormalizedValue
+"
 
-        VerifyCustomCommitProvider(text, "param name=""bar""", expected, Microsoft.CodeAnalysis.SourceCodeKind.Regular, commitChar:=" "c)
-    End Sub
+            Await VerifyCustomCommitProviderAsync(text, "param name=""bar""", expected, Microsoft.CodeAnalysis.SourceCodeKind.Regular, commitChar:=" "c)
+        End Function
 
-    <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-    Public Sub CompletionList()
-        Dim text = <File>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestCompletionList() As Task
+            Dim text = "
 Class C
-    ''' &lt;$$
+    ''' <$$
     Sub Foo()
     End Sub
 End Class
-</File>.Value
+"
 
-        VerifyItemsExist(text, "completionlist")
-    End Sub
+            Await VerifyItemsExistAsync(text, "completionlist")
+        End Function
+
+        <WorkItem(8546, "https://github.com/dotnet/roslyn/issues/8546")>
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestReturnsOnMethod() As Task
+            Dim text = "
+Class C
+    ''' <$$
+    Function M() As Integer
+    End Function
 End Class
+"
+
+            Await VerifyItemsExistAsync(text, "returns")
+        End Function
+
+    End Class
+End Namespace

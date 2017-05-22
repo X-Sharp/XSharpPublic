@@ -10,18 +10,18 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New NamespaceBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestNamespace1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestNamespace1() As Task
+            Await TestAsync(<Text>
 {|Cursor:[|Namespace|]|} N1
 [|End Namespace|]</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestNamespace2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestNamespace2() As Task
+            Await TestAsync(<Text>
 [|Namespace|] N1
 {|Cursor:[|End Namespace|]|}</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

@@ -181,18 +181,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             Return result.ToImmutableAndFree()
         End Function
 
-        Public Function GetTypeArgumentsCustomModifiersFor(originalDefinition As NamedTypeSymbol) As ImmutableArray(Of ImmutableArray(Of CustomModifier))
+        Public Function GetTypeArgumentsCustomModifiersFor(originalDefinition As TypeParameterSymbol) As ImmutableArray(Of CustomModifier)
             Debug.Assert(originalDefinition IsNot Nothing)
             Debug.Assert(originalDefinition.IsDefinition)
-            Debug.Assert(originalDefinition.Arity > 0)
 
             Dim current As TypeSubstitution = Me
-            Dim result = ArrayBuilder(Of ImmutableArray(Of CustomModifier)).GetInstance(originalDefinition.Arity, ImmutableArray(Of CustomModifier).Empty)
 
             Do
-                If current.TargetGenericDefinition Is originalDefinition Then
+                If current.TargetGenericDefinition Is originalDefinition.ContainingSymbol Then
                     For Each p In current.Pairs
-                        result(p.Key.Ordinal) = p.Value.CustomModifiers
+                        If p.Key.Ordinal = originalDefinition.Ordinal Then
+                            Return p.Value.CustomModifiers
+                        End If
                     Next
 
                     Exit Do
@@ -201,7 +201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                 current = current.Parent
             Loop While current IsNot Nothing
 
-            Return result.ToImmutableAndFree()
+            Return ImmutableArray(Of CustomModifier).Empty
         End Function
 
         Public Function HasTypeArgumentsCustomModifiersFor(originalDefinition As NamedTypeSymbol) As Boolean
@@ -475,7 +475,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         End Function
 
 
-        Private Shared ReadOnly _withoutModifiers As Func(Of TypeSymbol, TypeWithModifiers) = Function(arg) New TypeWithModifiers(arg)
+        Private Shared ReadOnly s_withoutModifiers As Func(Of TypeSymbol, TypeWithModifiers) = Function(arg) New TypeWithModifiers(arg)
 
         Public Shared Function Create(
             targetGenericDefinition As Symbol,
@@ -485,7 +485,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ) As TypeSubstitution
             Return Create(targetGenericDefinition,
                           params,
-                          args.SelectAsArray(_withoutModifiers),
+                          args.SelectAsArray(s_withoutModifiers),
                           allowAlphaRenamedTypeParametersAsArguments)
         End Function
 
@@ -497,7 +497,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ) As TypeSubstitution
             Return Create(parent,
                           targetGenericDefinition,
-                          args.SelectAsArray(_withoutModifiers),
+                          args.SelectAsArray(s_withoutModifiers),
                           allowAlphaRenamedTypeParametersAsArguments)
         End Function
 
@@ -861,7 +861,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             Return Concat(parent, targetGenericDefinition, pairs.AsImmutableOrNull())
         End Function
 
-        Function SubstituteCustomModifiers(type As TypeSymbol, customModifiers As ImmutableArray(Of CustomModifier)) As ImmutableArray(Of CustomModifier)
+        Public Function SubstituteCustomModifiers(type As TypeSymbol, customModifiers As ImmutableArray(Of CustomModifier)) As ImmutableArray(Of CustomModifier)
             If type.IsTypeParameter() Then
                 Return New TypeWithModifiers(type, customModifiers).InternalSubstituteTypeParameters(Me).CustomModifiers
             End If
@@ -869,7 +869,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             Return SubstituteCustomModifiers(customModifiers)
         End Function
 
-        Function SubstituteCustomModifiers(customModifiers As ImmutableArray(Of CustomModifier)) As ImmutableArray(Of CustomModifier)
+        Public Function SubstituteCustomModifiers(customModifiers As ImmutableArray(Of CustomModifier)) As ImmutableArray(Of CustomModifier)
 
             If customModifiers.IsDefaultOrEmpty Then
                 Return customModifiers

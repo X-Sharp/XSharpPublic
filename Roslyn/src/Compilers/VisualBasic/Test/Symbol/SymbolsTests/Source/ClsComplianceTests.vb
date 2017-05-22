@@ -2579,7 +2579,7 @@ End Class
             Next
         End Sub
 
-        <WorkItem(697178, "DevDiv")>
+        <WorkItem(697178, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/697178")>
         <Fact>
         Public Sub ConstructedSpecialTypes()
             Dim source =
@@ -2631,7 +2631,7 @@ BC30002: Type 'Missing' is not defined.
 ]]></errors>)
         End Sub
 
-        <WorkItem(709317, "DevDiv")>
+        <WorkItem(709317, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/709317")>
         <Fact>
         Public Sub Repro709317()
             Dim libSource =
@@ -2671,7 +2671,7 @@ End Class
             comp.GetDiagnosticsForSyntaxTree(CompilationStage.Declare, tree)
         End Sub
 
-        <WorkItem(709317, "DevDiv")>
+        <WorkItem(709317, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/709317")>
         <Fact>
         Public Sub FilterTree()
             Dim sourceTemplate = <![CDATA[
@@ -2762,7 +2762,7 @@ BC40027: Return type of function 'P' is not CLS-compliant.
 ]]></errors>)
         End Sub
 
-        <WorkItem(718503, "DevDiv")>
+        <WorkItem(718503, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/718503")>
         <Fact>
         Public Sub ErrorTypeAccessibility()
             Dim source =
@@ -3579,7 +3579,7 @@ BC40027: Return type of function 'F' is not CLS-compliant.
             ]]></errors>)
         End Sub
 
-        <WorkItem(749432, "DevDiv")>
+        <WorkItem(749432, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/749432")>
         <Fact>
         Public Sub InvalidAttributeArgument()
             Dim source =
@@ -3611,7 +3611,7 @@ BC30059: Constant expression is required.
             ]]></errors>)
         End Sub
 
-        <WorkItem(749352, "DevDiv")>
+        <WorkItem(749352, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/749352")>
         <Fact>
         Public Sub Repro749352()
             Dim source =
@@ -3642,7 +3642,7 @@ BC40030: event 'Public Event Scen6(x As Integer)' cannot be marked CLS-compliant
             ]]></errors>)
         End Sub
 
-        <Fact, WorkItem(1026453, "DevDiv")>
+        <Fact, WorkItem(1026453, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1026453")>
         Public Sub Bug1026453()
             Dim source1 =
                 <compilation>
@@ -3682,6 +3682,105 @@ End Namespace
             Dim comp3 = comp2.WithOptions(TestOptions.ReleaseModule.WithConcurrentBuild(False))
             comp3.AssertNoDiagnostics()
             comp3.WithOptions(TestOptions.ReleaseModule.WithConcurrentBuild(True)).AssertNoDiagnostics()
+        End Sub
+
+        <Fact, WorkItem(9719, "https://github.com/dotnet/roslyn/issues/9719")>
+        Public Sub Bug9719()
+            ' repro was simpler than what's on the github issue - before any fixes, the below snippit triggered the crash
+            Dim source =
+                <compilation>
+                    <file name="a.vb">
+                        <![CDATA[
+Imports System
+
+<Assembly: CLSCompliant(True)>
+
+Public Class C
+    Public Sub Problem(item As DummyModule)
+    End Sub
+End Class
+
+Public Module DummyModule
+
+End Module
+                        ]]>
+                    </file>
+                </compilation>
+
+            CreateCompilationWithMscorlib45AndVBRuntime(source).AssertTheseDiagnostics(<errors><![CDATA[
+BC30371: Module 'DummyModule' cannot be used as a type.
+    Public Sub Problem(item As DummyModule)
+                               ~~~~~~~~~~~
+]]></errors>)
+        End Sub
+
+        <Fact>
+        Public Sub TupleDefersClsComplianceToUnderlyingType()
+            Dim libCompliant_vb = "
+Namespace System
+    <CLSCompliant(True)>
+    Public Structure ValueTuple(Of T1, T2)
+        Public Sub New(item1 As T1, item2 As T2)
+        End Sub
+    End Structure
+End Namespace
+"
+
+            Dim libNotCompliant_vb = "
+Namespace System
+    <CLSCompliant(False)>
+    Public Structure ValueTuple(Of T1, T2)
+        Public Sub New(item1 As T1, item2 As T2)
+        End Sub
+    End Structure
+End Namespace
+"
+            Dim source = "
+Imports System
+
+<assembly:CLSCompliant(true)>
+Public Class C
+    Public Function Method() As (Integer, Integer)
+        Throw New Exception()
+    End Function
+    Public Function Method2() As (Bad, Bad)
+        Throw New Exception()
+    End Function
+End Class
+
+<CLSCompliant(false)>
+Public Class Bad
+End Class
+"
+            Dim libCompliant = CreateCompilationWithMscorlib({libCompliant_vb}, options:=TestOptions.ReleaseDll).EmitToImageReference()
+            Dim compCompliant = CreateCompilationWithMscorlib({source}, {libCompliant}, TestOptions.ReleaseDll)
+            compCompliant.AssertTheseDiagnostics(
+                <errors>
+BC40041: Type 'Bad' is not CLS-compliant.
+    Public Function Method2() As (Bad, Bad)
+                    ~~~~~~~
+BC40041: Type 'Bad' is not CLS-compliant.
+    Public Function Method2() As (Bad, Bad)
+                    ~~~~~~~
+                </errors>)
+
+            Dim libNotCompliant = CreateCompilationWithMscorlib({libNotCompliant_vb}, options:=TestOptions.ReleaseDll).EmitToImageReference()
+            Dim compNotCompliant = CreateCompilationWithMscorlib({source}, {libNotCompliant}, TestOptions.ReleaseDll)
+            compNotCompliant.AssertTheseDiagnostics(
+                <errors>
+BC40027: Return type of function 'Method' is not CLS-compliant.
+    Public Function Method() As (Integer, Integer)
+                    ~~~~~~
+BC40027: Return type of function 'Method2' is not CLS-compliant.
+    Public Function Method2() As (Bad, Bad)
+                    ~~~~~~~
+BC40041: Type 'Bad' is not CLS-compliant.
+    Public Function Method2() As (Bad, Bad)
+                    ~~~~~~~
+BC40041: Type 'Bad' is not CLS-compliant.
+    Public Function Method2() As (Bad, Bad)
+                    ~~~~~~~
+                </errors>)
         End Sub
 
     End Class

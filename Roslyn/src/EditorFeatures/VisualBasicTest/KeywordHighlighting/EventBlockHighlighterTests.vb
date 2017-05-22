@@ -10,9 +10,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New EventBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventSample2_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventSample2_1() As Task
+            Await TestAsync(<Text>
 Class C
 {|Cursor:[|Public Custom Event|]|} Foo As EventHandler [|Implements|] IFoo.Foo
     AddHandler(value As EventHandler)
@@ -23,11 +23,11 @@ Class C
     End RaiseEvent
 [|End Event|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventSample2_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventSample2_2() As Task
+            Await TestAsync(<Text>
 Class C
 [|Public Custom Event|] Foo As EventHandler {|Cursor:[|Implements|]|} IFoo.Foo
     AddHandler(value As EventHandler)
@@ -38,11 +38,11 @@ Class C
     End RaiseEvent
 [|End Event|]
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventSample2_3()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventSample2_3() As Task
+            Await TestAsync(<Text>
 Class C
 [|Public Custom Event|] Foo As EventHandler [|Implements|] IFoo.Foo
     AddHandler(value As EventHandler)
@@ -53,6 +53,6 @@ Class C
     End RaiseEvent
 {|Cursor:[|End Event|]|}
 End Class</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

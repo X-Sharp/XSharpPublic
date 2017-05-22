@@ -27,7 +27,18 @@ options	{
         contextSuperClass=XSharpParserRuleContext;
         }
 
-source				: eos? (Entities+=entity)* EOF
+script				: ( SCRIPT_LOAD Includes+=STRING_CONST EOS | SCRIPT_REF References+=STRING_CONST EOS )*
+                    ( Entities+=scriptEntity )*
+					EOF
+                    ;
+
+scriptEntity        : Stmt=statement
+                    | Entity=entity
+					| Expr=expression
+                    ;
+
+source				: eos? (Entities+=entity )*
+					EOF
                     ;
 
 entity              : namespace_
@@ -346,7 +357,7 @@ constructor         :  (Attributes=attributes)?
                       (Modifiers=constructorModifiers)?
                       CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
 					  (CallingConvention=callingconvention)? 
-					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		
 					  end=eos
                       (Chain=(SELF | SUPER)
 					  (
@@ -365,7 +376,7 @@ declare				: DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMMA Ids+=id
 destructor          : (Attributes=attributes)?
                       (Modifiers=destructorModifiers)?
                       DESTRUCTOR (LPAREN RPAREN)? 
-					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		
 					   end=eos
                       StmtBlk=statementBlock							
                     ;
@@ -449,7 +460,7 @@ statement           : Decl=localdecl                                            
                     | Key=EXIT end=eos											#jumpStmt
                     | Key=LOOP end=eos											#jumpStmt
                     | Key=BREAK Expr=expression? end=eos						#jumpStmt
-                    | RETURN (Expr=expression)? end=eos							#returnStmt
+                    | RETURN (Void=VOID|Expr=expression)? end=eos				#returnStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)? end=eos	#qoutStmt
                     | BEGIN SEQUENCE end=eos
@@ -510,8 +521,8 @@ statement           : Decl=localdecl                                            
 
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                     | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
-                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
-                      Exprs+=expression (COMMA Exprs+=expression)* end=eos		#expressionStmt
+                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR )}?
+                      Exprs+=expression (COMMA Exprs+=expression)*  end=eos		#expressionStmt
                     ;
 
 garbage				: {_allowGarbage}? (~EOS)+
@@ -745,7 +756,7 @@ aliasedName			: Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifie
 simpleName			: Id=identifier	GenericArgList=genericArgumentList?
                     ;
 
-genericArgumentList : l=LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* r=GT
+genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
                     ;
 
 identifierName		: Id=identifier

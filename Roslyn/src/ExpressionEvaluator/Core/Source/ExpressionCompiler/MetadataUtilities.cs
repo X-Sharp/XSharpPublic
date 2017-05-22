@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.CodeAnalysis.Collections;
 using Microsoft.DiaSymReader;
 using Roslyn.Utilities;
@@ -42,11 +41,35 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
             // Windows.*.winmd into a single fake Windows.winmd at runtime.
             // All other (application) winmds are left as is.
             var runtimeWinMdBuilder = ArrayBuilder<ModuleMetadata>.GetInstance();
+            AssemblyIdentity corLibrary = null;
             foreach (var block in metadataBlocks)
             {
                 var metadata = ModuleMetadata.CreateFromMetadata(block.Pointer, block.Size, includeEmbeddedInteropTypes: true);
                 try
                 {
+                    var reader = metadata.MetadataReader;
+                    if (corLibrary == null)
+                    {
+                        bool hasNoAssemblyRefs = reader.AssemblyReferences.Count == 0;
+                        // .NET Native uses a corlib with references
+                        // (see https://github.com/dotnet/roslyn/issues/13275).
+                        if (hasNoAssemblyRefs || metadata.Name.Equals("System.Private.CoreLib.dll", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // If this assembly declares System.Object, assume it is the corlib.
+                            // (Note, it is order dependent which assembly we treat as corlib
+                            // if there are multiple assemblies that meet these requirements.
+                            // That should be acceptable for evaluating expressions in the EE though.) 
+                            if (reader.DeclaresTheObjectClass())
+                            {
+                                corLibrary = reader.ReadAssemblyIdentityOrThrow();
+                                // Compiler layer requires corlib to have no AssemblyRefs.
+                                if (!hasNoAssemblyRefs)
+                                {
+                                    metadata = ModuleMetadata.CreateFromMetadata(block.Pointer, block.Size, includeEmbeddedInteropTypes: true, ignoreAssemblyRefs: true);
+                                }
+                            }
+                        }
+                    }
                     if (IsWindowsComponent(metadata.MetadataReader, metadata.Name))
                     {
                         runtimeWinMdBuilder.Add(metadata);
@@ -86,7 +109,6 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
             // Build assembly references from modules in primary module manifests.
             var referencesBuilder = ArrayBuilder<MetadataReference>.GetInstance();
             var identitiesBuilder = (identityComparer == null) ? null : ArrayBuilder<AssemblyIdentity>.GetInstance();
-            AssemblyIdentity corLibrary = null;
             AssemblyIdentity intrinsicsAssembly = null;
 
             foreach (var metadata in metadataBuilder)
@@ -100,15 +122,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                     var reader = metadata.MetadataReader;
                     var identity = reader.ReadAssemblyIdentityOrThrow();
                     identitiesBuilder.Add(identity);
-                    // If this assembly has no references, and declares
-                    // System.Object, assume it is the COR library.
-                    if ((corLibrary == null) &&
-                        (reader.AssemblyReferences.Count == 0) &&
-                        reader.DeclaresTheObjectClass())
-                    {
-                        corLibrary = identity;
-                    }
-                    else if ((intrinsicsAssembly == null) &&
+                    if ((intrinsicsAssembly == null) &&
                         reader.DeclaresType((r, t) => r.IsPublicNonInterfaceType(t, ExpressionCompilerConstants.IntrinsicAssemblyNamespace, ExpressionCompilerConstants.IntrinsicAssemblyTypeName)))
                     {
                         intrinsicsAssembly = identity;
@@ -360,108 +374,21 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                 assemblyIdentity.ContentType == System.Reflection.AssemblyContentType.WindowsRuntime;
         }
 
-        internal static LocalInfo<TTypeSymbol> GetLocalInfo<TModuleSymbol, TTypeSymbol, TMethodSymbol, TFieldSymbol, TSymbol>(
-            this MetadataDecoder<TModuleSymbol, TTypeSymbol, TMethodSymbol, TFieldSymbol, TSymbol> metadataDecoder,
-                ImmutableArray<byte> signature)
-            where TModuleSymbol : class
-            where TTypeSymbol : class, TSymbol, ITypeSymbol
-            where TMethodSymbol : class, TSymbol, IMethodSymbol
-            where TFieldSymbol : class, TSymbol, IFieldSymbol
-            where TSymbol : class, ISymbol
-        {
-            unsafe
-            {
-                fixed (byte* ptr = signature.ToArray())
-                {
-                    var blobReader = new BlobReader(ptr, signature.Length);
-                    return metadataDecoder.DecodeLocalVariableOrThrow(ref blobReader);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns the local info for all locals indexed by slot.
-        /// </summary>
-        internal static ImmutableArray<LocalInfo<TTypeSymbol>> GetLocalInfo<TModuleSymbol, TTypeSymbol, TMethodSymbol, TFieldSymbol, TSymbol>(
-            this MetadataDecoder<TModuleSymbol, TTypeSymbol, TMethodSymbol, TFieldSymbol, TSymbol> metadataDecoder,
-            int localSignatureToken)
-            where TModuleSymbol : class
-            where TTypeSymbol : class, TSymbol, ITypeSymbol
-            where TMethodSymbol : class, TSymbol, IMethodSymbol
-            where TFieldSymbol : class, TSymbol, IFieldSymbol
-            where TSymbol : class, ISymbol
-        {
-            var handle = MetadataTokens.Handle(localSignatureToken);
-            if (handle.IsNil)
-            {
-                return ImmutableArray<LocalInfo<TTypeSymbol>>.Empty;
-            }
-            var reader = metadataDecoder.Module.MetadataReader;
-            var signature = reader.GetStandaloneSignature((StandaloneSignatureHandle)handle).Signature;
-            var blobReader = reader.GetBlobReader(signature);
-            return metadataDecoder.DecodeLocalSignatureOrThrow(ref blobReader);
-        }
-
-        /// <summary>
-        /// Get the set of nested scopes containing the
-        /// IL offset from outermost scope to innermost.
-        /// </summary>
-        internal static void GetScopes(
-            this ISymUnmanagedReader symReader,
-            int methodToken,
-            int methodVersion,
-            int ilOffset,
-            bool isScopeEndInclusive,
-            ArrayBuilder<ISymUnmanagedScope> allScopes,
-            ArrayBuilder<ISymUnmanagedScope> containingScopes)
-        {
-            if (symReader == null)
-            {
-                return;
-            }
-
-            var symMethod = symReader.GetMethodByVersion(methodToken, methodVersion);
-            if (symMethod == null)
-            {
-                return;
-            }
-
-            symMethod.GetAllScopes(allScopes, containingScopes, ilOffset, isScopeEndInclusive);
-        }
-
-        internal static MethodContextReuseConstraints GetReuseConstraints(this ArrayBuilder<ISymUnmanagedScope> scopes, Guid moduleVersionId, int methodToken, int methodVersion, int ilOffset, bool isEndInclusive)
-        {
-            var builder = new MethodContextReuseConstraints.Builder(moduleVersionId, methodToken, methodVersion, ilOffset, isEndInclusive);
-            foreach (ISymUnmanagedScope scope in scopes)
-            {
-                builder.AddRange((uint)scope.GetStartOffset(), (uint)scope.GetEndOffset());
-            }
-            return builder.Build();
-        }
-
         internal static ImmutableArray<string> GetLocalNames(this ArrayBuilder<ISymUnmanagedScope> scopes)
         {
             var builder = ArrayBuilder<string>.GetInstance();
             foreach (var scope in scopes)
             {
-                var locals = scope.GetLocals();
-                foreach (var local in locals)
+                foreach (var local in scope.GetLocals())
                 {
                     int attributes;
                     local.GetAttributes(out attributes);
-                    if (attributes == Cci.PdbWriter.HiddenLocalAttributesValue)
+                    if (attributes == (int)LocalVariableAttributes.DebuggerHidden)
                     {
                         continue;
                     }
-                    var slot = local.GetSlot();
-                    // Local slot may be less than the current count
-                    // if the array was padded with nulls earlier.
-                    while (builder.Count <= slot)
-                    {
-                        builder.Add(null);
-                    }
-                    Debug.Assert(builder[slot] == null);
-                    builder[slot] = local.GetName();
+
+                    builder.SetItem(local.GetSlot(), local.GetName());
                 }
             }
             return builder.ToImmutableAndFree();

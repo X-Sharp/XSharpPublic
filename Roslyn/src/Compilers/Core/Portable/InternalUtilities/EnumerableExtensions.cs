@@ -270,31 +270,41 @@ namespace Roslyn.Utilities
             return sequence.SelectMany(s => s);
         }
 
-        public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> source, IComparer<T> comparer)
+        public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source, IComparer<T> comparer)
         {
             return source.OrderBy(Functions<T>.Identity, comparer);
         }
 
-        public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> source, Comparison<T> compare)
+        public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source, Comparison<T> compare)
         {
-            return source.OrderBy(new ComparisonComparer<T>(compare));
+            return source.OrderBy(Comparer<T>.Create(compare));
         }
 
-        public static IEnumerable<T> Order<T>(this IEnumerable<T> source) where T : IComparable<T>
+        public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> source) where T : IComparable<T>
         {
             return source.OrderBy(Comparisons<T>.Comparer);
+        }
+
+        public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> source, IComparer<T> comparer)
+        {
+            return source.ThenBy(Functions<T>.Identity, comparer);
+        }
+
+        public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> source, Comparison<T> compare)
+        {
+            return source.ThenBy(Comparer<T>.Create(compare));
+        }
+
+        public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> source) where T : IComparable<T>
+        {
+            return source.ThenBy(Comparisons<T>.Comparer);
         }
 
         private static class Comparisons<T> where T : IComparable<T>
         {
             public static readonly Comparison<T> CompareTo = (t1, t2) => t1.CompareTo(t2);
 
-            public static readonly IComparer<T> Comparer = new ComparisonComparer<T>(CompareTo);
-        }
-
-        private static class Functions<T>
-        {
-            public static readonly Func<T, T> Identity = t => t;
+            public static readonly IComparer<T> Comparer = Comparer<T>.Create(CompareTo);
         }
 
         public static bool IsSorted<T>(this IEnumerable<T> enumerable, IComparer<T> comparer)
@@ -372,5 +382,20 @@ namespace Roslyn.Utilities
 
             return false;
         }
+
+        public static IComparer<T> ToComparer<T>(this Comparison<T> comparison)
+        {
+            return Comparer<T>.Create(comparison);
+        }
+    }
+
+    /// <summary>
+    /// Cached versions of commonly used delegates.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    internal static class Functions<T>
+    {
+        public static readonly Func<T, T> Identity = t => t;
+        public static readonly Func<T, bool> True = t => true;
     }
 }

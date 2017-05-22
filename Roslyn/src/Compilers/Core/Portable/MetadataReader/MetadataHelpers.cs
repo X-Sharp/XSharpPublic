@@ -656,6 +656,9 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// Calculates information about types and namespaces immediately contained within a namespace.
         /// </summary>
+        /// <param name="isGlobalNamespace">
+        /// Is current namespace a global namespace?
+        /// </param>
         /// <param name="namespaceNameLength">
         /// Length of the fully-qualified name of this namespace.
         /// </param>
@@ -682,11 +685,12 @@ namespace Microsoft.CodeAnalysis
         /// A sequence with information about namespaces immediately contained within this namespace.
         /// For each pair:
         ///   Key - contains simple name of a child namespace.
-        ///   Value – contains a sequence similar to the one passed to this function, but
+        ///   Value - contains a sequence similar to the one passed to this function, but
         ///           calculated for the child namespace. 
         /// </param>
         /// <remarks></remarks>
         public static void GetInfoForImmediateNamespaceMembers(
+            bool isGlobalNamespace,
             int namespaceNameLength,
             IEnumerable<IGrouping<string, TypeDefinitionHandle>> typesByNS,
             StringComparer nameComparer,
@@ -695,6 +699,7 @@ namespace Microsoft.CodeAnalysis
         {
             Debug.Assert(typesByNS != null);
             Debug.Assert(namespaceNameLength >= 0);
+            Debug.Assert(!isGlobalNamespace || namespaceNameLength == 0);
 
             // A list of groups of TypeDef row ids for types immediately contained within this namespace.
             var nestedTypes = new List<IGrouping<string, TypeDefinitionHandle>>();
@@ -705,6 +710,7 @@ namespace Microsoft.CodeAnalysis
             //   Value – contains a sequence similar to the one passed to this function, but
             //           calculated for the child namespace. 
             var nestedNamespaces = new List<KeyValuePair<string, IEnumerable<IGrouping<string, TypeDefinitionHandle>>>>();
+            bool possiblyHavePairsWithDuplicateKey = false;
 
             var enumerator = typesByNS.GetEnumerator();
 
@@ -737,7 +743,7 @@ namespace Microsoft.CodeAnalysis
                     }
 
                     // Account for the dot following THIS namespace name.
-                    if (namespaceNameLength != 0)
+                    if (!isGlobalNamespace)
                     {
                         namespaceNameLength++;
                     }
@@ -748,7 +754,8 @@ namespace Microsoft.CodeAnalysis
 
                         string childNamespaceName = ExtractSimpleNameOfChildNamespace(namespaceNameLength, pair.Key);
 
-                        if (nameComparer.Equals(childNamespaceName, lastChildNamespaceName))
+                        int cmp = nameComparer.Compare(lastChildNamespaceName, childNamespaceName);
+                        if (cmp == 0)
                         {
                             // We are still processing the same child namespace
                             typesInLastChildNamespace.Add(pair);
@@ -756,6 +763,12 @@ namespace Microsoft.CodeAnalysis
                         else
                         {
                             // This is a new child namespace
+                            if (cmp > 0)
+                            {
+                                // The sort order is violated for child namespace names. Obfuscation is the likely reason for this. 
+                                Debug.Assert((object)lastChildNamespaceName != null);
+                                possiblyHavePairsWithDuplicateKey = true;
+                            }
 
                             // Preserve information about previous child namespace.
                             if (typesInLastChildNamespace != null)
@@ -768,6 +781,7 @@ namespace Microsoft.CodeAnalysis
 
                             typesInLastChildNamespace = new List<IGrouping<string, TypeDefinitionHandle>>();
                             lastChildNamespaceName = childNamespaceName;
+                            Debug.Assert((object)lastChildNamespaceName != null);
 
                             typesInLastChildNamespace.Add(pair);
                         }
@@ -790,6 +804,37 @@ namespace Microsoft.CodeAnalysis
             } // using
 
             types = nestedTypes;
+
+            // Merge pairs with the same key
+            if (possiblyHavePairsWithDuplicateKey)
+            {
+                var names = new Dictionary<string, int>(nestedNamespaces.Count, nameComparer);
+
+                for (int i = nestedNamespaces.Count - 1; i >= 0; i--)
+                {
+                    names[nestedNamespaces[i].Key] = i;
+                }
+
+                if (names.Count != nestedNamespaces.Count) // nothing to merge otherwise
+                {
+                    for (int i = 1; i < nestedNamespaces.Count; i++)
+                    {
+                        var pair = nestedNamespaces[i];
+                        int keyIndex = names[pair.Key];
+                        if (keyIndex != i)
+                        {
+                            Debug.Assert(keyIndex < i);
+                            var primaryPair = nestedNamespaces[keyIndex];
+                            nestedNamespaces[keyIndex] = KeyValuePair.Create(primaryPair.Key, primaryPair.Value.Concat(pair.Value));
+                            nestedNamespaces[i] = default(KeyValuePair<string, IEnumerable<IGrouping<string, TypeDefinitionHandle>>>);
+                        }
+                    }
+
+                    int removed = nestedNamespaces.RemoveAll(pair => (object)pair.Key == null);
+                    Debug.Assert(removed > 0);
+                }
+            }
+
             namespaces = nestedNamespaces;
 
             Debug.Assert(types != null);
@@ -841,44 +886,57 @@ namespace Microsoft.CodeAnalysis
             return str == null || str.IsValidUnicodeString();
         }
 
-        internal static void ValidateAssemblyOrModuleName(string name, string argumentName)
+        internal static bool IsValidAssemblyOrModuleName(string name)
         {
-            var e = CheckAssemblyOrModuleName(name, argumentName);
-            if (e != null)
+            return GetAssemblyOrModuleNameErrorArgumentResourceName(name) == null;
+        }
+
+        internal static void CheckAssemblyOrModuleName(string name, CommonMessageProvider messageProvider, int code, DiagnosticBag diagnostics)
+        {
+            string errorArgumentResourceId = GetAssemblyOrModuleNameErrorArgumentResourceName(name);
+            if (errorArgumentResourceId != null)
             {
-                throw e;
+                diagnostics.Add(
+                    messageProvider.CreateDiagnostic(code, Location.None, 
+                        new CodeAnalysisResourcesLocalizableErrorArgument(errorArgumentResourceId)));
             }
         }
 
-        internal static bool IsValidAssemblyOrModuleName(string name)
+        internal static void CheckAssemblyOrModuleName(string name, CommonMessageProvider messageProvider, int code, ArrayBuilder<Diagnostic> builder)
         {
-            return CheckAssemblyOrModuleName(name, argumentName: null) == null;
+            string errorArgumentResourceId = GetAssemblyOrModuleNameErrorArgumentResourceName(name);
+            if (errorArgumentResourceId != null)
+            {
+                builder.Add(
+                    messageProvider.CreateDiagnostic(code, Location.None,
+                        new CodeAnalysisResourcesLocalizableErrorArgument(errorArgumentResourceId)));
+            }
         }
 
-        internal static Exception CheckAssemblyOrModuleName(string name, string argumentName)
+        private static string GetAssemblyOrModuleNameErrorArgumentResourceName(string name)
         {
             if (name == null)
             {
-                return new ArgumentNullException(argumentName);
+                return nameof(CodeAnalysisResources.NameCannotBeNull);
             }
 
             // Dev11 VB can produce assembly with no name (vbc /out:".dll" /target:library). 
             // We disallow it. PEVerify reports an error: Assembly has no name.
             if (name.Length == 0)
             {
-                return new ArgumentException(CodeAnalysisResources.NameCannotBeEmpty, argumentName);
+                return nameof(CodeAnalysisResources.NameCannotBeEmpty);
             }
 
             // Dev11 VB can produce assembly that starts with whitespace (vbc /out:" a.dll" /target:library). 
             // We disallow it. PEVerify reports an error: Assembly name contains leading spaces.
             if (char.IsWhiteSpace(name[0]))
             {
-                return new ArgumentException(CodeAnalysisResources.NameCannotStartWithWhitespace, argumentName);
+                return nameof(CodeAnalysisResources.NameCannotStartWithWhitespace);
             }
 
             if (!IsValidMetadataFileName(name))
             {
-                return new ArgumentException(CodeAnalysisResources.NameContainsInvalidCharacter, argumentName);
+                return nameof(CodeAnalysisResources.NameContainsInvalidCharacter);
             }
 
             return null;
@@ -915,138 +973,7 @@ namespace Microsoft.CodeAnalysis
                    fullyQualified.EndsWith(typeName, StringComparison.Ordinal);
         }
 
-        internal static bool IsValidPublicKey(ImmutableArray<byte> bytes)
-        {
-            return PublicKeyDecoder.TryDecode(bytes);
-        }
-
-        private static class PublicKeyDecoder
-        {
-            private enum AlgorithmClass
-            {
-                Signature = 1,
-                Hash = 4,
-            }
-
-            private enum AlgorithmSubId
-            {
-                Sha1Hash = 4,
-                MacHash = 5,
-                RipeMdHash = 6,
-                RipeMd160Hash = 7,
-                Ssl3ShaMD5Hash = 8,
-                HmacHash = 9,
-                Tls1PrfHash = 10,
-                HashReplacOwfHash = 11,
-                Sha256Hash = 12,
-                Sha384Hash = 13,
-                Sha512Hash = 14,
-            }
-
-            private struct AlgorithmId
-            {
-                // From wincrypt.h
-                private const int AlgorithmClassOffset = 13;
-                private const int AlgorithmClassMask = 0x7;
-                private const int AlgorithmSubIdOffset = 0;
-                private const int AlgorithmSubIdMask = 0x1ff;
-
-                private readonly uint _flags;
-
-                public bool IsSet
-                {
-                    get { return _flags != 0; }
-                }
-
-                public AlgorithmClass Class
-                {
-                    get { return (AlgorithmClass)((_flags >> AlgorithmClassOffset) & AlgorithmClassMask); }
-                }
-
-                public AlgorithmSubId SubId
-                {
-                    get { return (AlgorithmSubId)((_flags >> AlgorithmSubIdOffset) & AlgorithmSubIdMask); }
-                }
-
-                public AlgorithmId(uint flags)
-                {
-                    _flags = flags;
-                }
-            }
-
-            // From ECMAKey.h
-            private static readonly ImmutableArray<byte> s_ecmaKey = ImmutableArray.Create(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 });
-
-            // From strongname.h
-            //
-            // The public key blob has the following format as a little-endian packed C struct:
-            //
-            // struct
-            // {
-            //     uint32_t SigAlgId;      // Signature algorithm ID
-            //     uint32_t HashAlgId;     // Hash algorithm ID
-            //     uint32_t PublicKeySize; // Size of public key data in bytes, not including the header
-            //     uint8_t  PublicKey[0];  // PublicKeySize bytes of public key data
-            // }
-            //
-            // The offsets of each relevant field are recorded below.
-            private const int SigAlgIdOffset = 0;
-            private const int HashAlgIdOffset = SigAlgIdOffset + sizeof(uint);
-            private const int PublicKeySizeOffset = HashAlgIdOffset + sizeof(uint);
-            private const int PublicKeyDataOffset = PublicKeySizeOffset + sizeof(uint);
-            private const int HeaderSize = PublicKeyDataOffset;
-
-            // From wincrypt.h
-            private const byte PublicKeyBlob = 0x06;
-
-            private static uint ToUInt32(ImmutableArray<byte> bytes, int offset)
-            {
-                Debug.Assert((bytes.Length - offset) > sizeof(int));
-                return (uint)(bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24));
-            }
-
-            // From StrongNameInternal.cpp
-            public static bool TryDecode(ImmutableArray<byte> bytes)
-            {
-                // The number of public key bytes must be at least large enough for the header and one byte of data.
-                if (bytes.IsDefault || bytes.Length < HeaderSize + 1)
-                {
-                    return false;
-                }
-
-                // The number of public key bytes must be the same as the size of the header plus the size of the public key data.
-                var dataSize = ToUInt32(bytes, PublicKeySizeOffset);
-                if (bytes.Length != HeaderSize + dataSize)
-                {
-                    return false;
-                }
-
-                // Check for the ECMA key, which does not obey the invariants checked below.
-                if (ByteSequenceComparer.Equals(bytes, s_ecmaKey))
-                {
-                    return true;
-                }
-
-                var signatureAlgorithmId = new AlgorithmId(ToUInt32(bytes, 0));
-                if (signatureAlgorithmId.IsSet && signatureAlgorithmId.Class != AlgorithmClass.Signature)
-                {
-                    return false;
-                }
-
-                var hashAlgorithmId = new AlgorithmId(ToUInt32(bytes, 4));
-                if (hashAlgorithmId.IsSet && (hashAlgorithmId.Class != AlgorithmClass.Hash || hashAlgorithmId.SubId < AlgorithmSubId.Sha1Hash))
-                {
-                    return false;
-                }
-
-                if (bytes[PublicKeyDataOffset] != PublicKeyBlob)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-        }
+        internal static bool IsValidPublicKey(ImmutableArray<byte> bytes) => CryptoBlobParser.IsValidPublicKey(bytes);
 
         /// <summary>
         /// Given an input string changes it to be acceptable as a part of a type name.

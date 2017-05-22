@@ -176,7 +176,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Interop
 
             if (_table.ContainsKey(key))
             {
-                throw new InvalidOperationException("Key already exists in table.");
+                throw new InvalidOperationException($"Key already exists in table: {(key != null ? key.ToString() : "<null>")}.");
             }
 
             _itemsAddedSinceLastCleanUp++;
@@ -188,7 +188,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Interop
 
             InvalidateEnumerator();
 
-            this._table.Add(key, new WeakComHandle<TValue, TValue>(value));
+            _table.Add(key, new WeakComHandle<TValue, TValue>(value));
         }
 
         public TValue Remove(TKey key)
@@ -202,8 +202,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Interop
                 _deadKeySet.Remove(key);
             }
 
-            WeakComHandle<TValue, TValue> handle;
-            if (_table.TryGetValue(key, out handle))
+            if (_table.TryGetValue(key, out var handle))
             {
                 _table.Remove(key);
                 return handle.ComAggregateObject;
@@ -212,12 +211,17 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Interop
             return null;
         }
 
-        public bool TryGetValue(TKey key, out TValue value)
+        public bool ContainsKey(TKey key)
         {
             this.AssertIsForeground();
 
-            WeakComHandle<TValue, TValue> handle;
-            if (_table.TryGetValue(key, out handle))
+            return _table.ContainsKey(key);
+        }
+
+        public bool TryGetValue(TKey key, out TValue value)
+        {
+            this.AssertIsForeground();
+            if (_table.TryGetValue(key, out var handle))
             {
                 value = handle.ComAggregateObject;
                 return value != null;

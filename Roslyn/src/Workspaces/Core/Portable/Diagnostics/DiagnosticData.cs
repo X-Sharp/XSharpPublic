@@ -79,6 +79,8 @@ namespace Microsoft.CodeAnalysis.Diagnostics
 
     internal sealed class DiagnosticData
     {
+        private static readonly ImmutableDictionary<string, string> s_Properties = ImmutableDictionary<string, string>.Empty.Add(WellKnownDiagnosticPropertyNames.Origin, WellKnownDiagnosticTags.Build);
+
         public readonly string Id;
         public readonly string Category;
 
@@ -118,11 +120,13 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             string title = null,
             string description = null,
             string helpLink = null,
-            bool isSuppressed = false) :
+            bool isSuppressed = false,
+            IReadOnlyList<string> customTags = null,
+            ImmutableDictionary<string, string> properties = null) :
                 this(
                     id, category, message, enuMessageForBingSearch,
                     severity, severity, isEnabledByDefault, warningLevel,
-                    ImmutableArray<string>.Empty, ImmutableDictionary<string, string>.Empty,
+                    customTags ?? ImmutableArray<string>.Empty, properties ?? ImmutableDictionary<string, string>.Empty,
                     workspace, projectId, location, additionalLocations, title, description, helpLink, isSuppressed)
         {
         }
@@ -242,7 +246,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             var span = GetTextSpan(this.DataLocation, text);
             var newLocation = this.DataLocation.WithCalculatedSpan(span);
             return new DiagnosticData(this.Id, this.Category, this.Message, this.ENUMessageForBingSearch,
-                this.Severity, this.DefaultSeverity, this.IsEnabledByDefault, this.WarningLevel, 
+                this.Severity, this.DefaultSeverity, this.IsEnabledByDefault, this.WarningLevel,
                 this.CustomTags, this.Properties, this.Workspace, this.ProjectId,
                 newLocation, this.AdditionalLocations, this.Title, this.Description, this.HelpLink, this.IsSuppressed);
         }
@@ -272,8 +276,8 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 return new TextSpan(text.Length, 0);
             }
 
-            int startLine, startColumn, endLine, endColumn;
-            AdjustBoundaries(dataLocation, lines, out startLine, out startColumn, out endLine, out endColumn);
+            AdjustBoundaries(dataLocation, lines, 
+                out var startLine, out var startColumn, out var endLine, out var endColumn);
 
             var startLinePosition = new LinePosition(startLine, startColumn);
             var endLinePosition = new LinePosition(endLine, endColumn);
@@ -375,10 +379,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 return null;
             }
 
-            TextSpan sourceSpan;
-            FileLinePositionSpan mappedLineInfo;
-            FileLinePositionSpan originalLineInfo;
-            GetLocationInfo(document, location, out sourceSpan, out originalLineInfo, out mappedLineInfo);
+            GetLocationInfo(document, location, out var sourceSpan, out var originalLineInfo, out var mappedLineInfo);
 
             var mappedStartLine = mappedLineInfo.StartLinePosition.Line;
             var mappedStartColumn = mappedLineInfo.StartLinePosition.Character;
@@ -400,11 +401,13 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             var location = CreateLocation(document, diagnostic.Location);
 
             var additionalLocations = diagnostic.AdditionalLocations.Count == 0
-                ? (IReadOnlyCollection<DiagnosticDataLocation>)SpecializedCollections.EmptyArray<DiagnosticDataLocation>()
+                ? (IReadOnlyCollection<DiagnosticDataLocation>)Array.Empty<DiagnosticDataLocation>()
                 : diagnostic.AdditionalLocations.Where(loc => loc.IsInSource)
                                                 .Select(loc => CreateLocation(document.Project.GetDocument(loc.SourceTree), loc))
                                                 .WhereNotNull()
                                                 .ToReadOnlyCollection();
+
+            var properties = GetProperties(document, diagnostic);
 
             return new DiagnosticData(
                 diagnostic.Id,
@@ -416,7 +419,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 diagnostic.Descriptor.IsEnabledByDefault,
                 diagnostic.WarningLevel,
                 diagnostic.Descriptor.CustomTags.AsImmutableOrEmpty(),
-                diagnostic.Properties,
+                properties,
                 document.Project.Solution.Workspace,
                 document.Project.Id,
                 location,
@@ -425,6 +428,48 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 description: diagnostic.Descriptor.Description.ToString(CultureInfo.CurrentUICulture),
                 helpLink: diagnostic.Descriptor.HelpLinkUri,
                 isSuppressed: diagnostic.IsSuppressed);
+        }
+
+        private static ImmutableDictionary<string, string> GetProperties(
+            Document document, Diagnostic diagnostic)
+        {
+            var properties = diagnostic.Properties;
+            var service = document.GetLanguageService<IDiagnosticPropertiesService>();
+            var additionalProperties = service?.GetAdditionalProperties(diagnostic);
+
+            return additionalProperties == null
+                ? properties
+                : properties.AddRange(additionalProperties);
+            throw new NotImplementedException();
+        }
+
+        public static bool TryCreate(DiagnosticDescriptor descriptor, string[] messageArguments, ProjectId projectId, Workspace workspace, out DiagnosticData diagnosticData, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            diagnosticData = null;
+            var project = workspace.CurrentSolution.GetProject(projectId);
+            if (project == null)
+            {
+                return false;
+            }
+
+            var diagnostic = Diagnostic.Create(descriptor, Location.None, messageArguments);
+            if (project.SupportsCompilation)
+            {
+                // Get diagnostic with effective severity.
+                // Additionally, if the diagnostic was suppressed by a source suppression, effectiveDiagnostics will have a diagnostic with IsSuppressed = true.
+                var compilation = project.GetCompilationAsync(cancellationToken).WaitAndGetResult(cancellationToken);
+                var effectiveDiagnostics = CompilationWithAnalyzers.GetEffectiveDiagnostics(SpecializedCollections.SingletonEnumerable(diagnostic), compilation);
+                if (effectiveDiagnostics == null || effectiveDiagnostics.IsEmpty())
+                {
+                    // Rule is disabled by compilation options.
+                    return false;
+                }
+
+                diagnostic = effectiveDiagnostics.Single();
+            }
+
+            diagnosticData = diagnostic.ToDiagnosticData(project);
+            return true;
         }
 
         private static void GetLocationInfo(Document document, Location location, out TextSpan sourceSpan, out FileLinePositionSpan originalLineInfo, out FileLinePositionSpan mappedLineInfo)
@@ -439,6 +484,21 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             sourceSpan = location.SourceSpan;
             originalLineInfo = location.GetLineSpan();
             mappedLineInfo = location.GetMappedLineSpan();
+        }
+
+        /// <summary>
+        /// Properties for a diagnostic generated by an explicit build.
+        /// </summary>
+        internal static ImmutableDictionary<string, string> PropertiesForBuildDiagnostic => s_Properties;
+
+        /// <summary>
+        /// Returns true if the diagnostic was generated by an explicit build, not live analysis.
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsBuildDiagnostic()
+        {
+            return this.Properties.TryGetValue(WellKnownDiagnosticPropertyNames.Origin, out var value) &&
+                value == WellKnownDiagnosticTags.Build;
         }
     }
 }

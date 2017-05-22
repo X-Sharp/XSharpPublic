@@ -1,5 +1,7 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports System.Threading.Tasks
+
 Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.CodeModel
     Public MustInherit Class AbstractCodePropertyTests
         Inherits AbstractCodeElementTests(Of EnvDTE80.CodeProperty2)
@@ -100,26 +102,26 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.CodeModel
             Throw New NotSupportedException
         End Function
 
-        Protected Sub TestAutoImplementedPropertyExtender_IsAutoImplemented(code As XElement, expected As Boolean)
-            TestElement(code,
+        Protected Async Function TestAutoImplementedPropertyExtender_IsAutoImplemented(code As XElement, expected As Boolean) As Task
+            Await TestElement(code,
                 Sub(codeElement)
                     Assert.Equal(expected, AutoImplementedPropertyExtender_GetIsAutoImplemented(codeElement))
                 End Sub)
-        End Sub
+        End Function
 
-        Protected Sub TestGetter(code As XElement, verifier As Action(Of EnvDTE.CodeFunction))
-            TestElement(code,
+        Protected Async Function TestGetter(code As XElement, verifier As Action(Of EnvDTE.CodeFunction)) As Task
+            Await TestElement(code,
                 Sub(codeElement)
                     verifier(codeElement.Getter)
                 End Sub)
-        End Sub
+        End Function
 
-        Protected Sub TestSetter(code As XElement, verifier As Action(Of EnvDTE.CodeFunction))
-            TestElement(code,
+        Protected Async Function TestSetter(code As XElement, verifier As Action(Of EnvDTE.CodeFunction)) As Task
+            Await TestElement(code,
                 Sub(codeElement)
                     verifier(codeElement.Setter)
                 End Sub)
-        End Sub
+        End Function
 
     End Class
 End Namespace

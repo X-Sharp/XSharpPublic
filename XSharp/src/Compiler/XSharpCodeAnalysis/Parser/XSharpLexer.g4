@@ -76,8 +76,10 @@ DYNAMIC,
 //WAIT, ACCEPT, CANCEL, QUIT,
 
 // UDC Tokens that should be shown in the keyword color
-
 UDC_KEYWORD,
+
+// Scripting directives (pseudo-preprocessor handling)
+SCRIPT_REF, SCRIPT_LOAD,
 
 LAST_KEYWORD,
 
@@ -182,9 +184,11 @@ NEQ2			: NUMSIGN ;			// Alternatine NEQ but also use in _DLL rule for the DLL Hi
 
 
 // Char_Const is parsed as STRING_CONST in all but the core & vulcan dialect
-CHAR_CONST		: '\''   ESCAPED_CHARACTER '\''
+CHAR_CONST		: {!_SingleQuotedStrings}? '\''   ESCAPED_CHARACTER '\''
                 | C '"'  ESCAPED_STRING_CHARACTER '"'    
                 | C '\'' ESCAPED_CHARACTER '\''
+                | C '\'' NOT_SINGLE '\''		// an error will be produced later
+                | C '"'  NOT_DOUBLE '"'			// an error will be produced later
                 ;
                 
 

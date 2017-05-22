@@ -42,7 +42,7 @@ namespace Microsoft.CodeAnalysis.Host.UnitTests
         #region Dependency Sets
 
         [Fact, Trait(Traits.Feature, Traits.Features.Workspace)]
-        [WorkItem(542438, "DevDiv")]
+        [WorkItem(542438, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542438")]
         public void ProjectDependencyGraph_GetDependencySets()
         {
             VerifyDependencySets("A B:A C:A D E:D F:D", "ABC DEF");
@@ -157,8 +157,7 @@ namespace Microsoft.CodeAnalysis.Host.UnitTests
                 {
                     foreach (var referencedProjectName in referencedProjectNames)
                     {
-                        List<string> bucket;
-                        if (!references.TryGetValue(projectName, out bucket))
+                        if (!references.TryGetValue(projectName, out var bucket))
                         {
                             bucket = new List<string>();
                             references.Add(projectName, bucket);

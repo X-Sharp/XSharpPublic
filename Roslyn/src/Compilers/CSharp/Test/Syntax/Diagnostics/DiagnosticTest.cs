@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Test.Utilities;
 using Xunit;
@@ -13,12 +14,44 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
     public partial class DiagnosticTest : CSharpTestBase
     {
+        /// <summary>
+        /// Ensure string resources are included.
+        /// </summary>
+        [Fact]
+        public void Resources()
+        {
+            var excludedErrorCodes = new[]
+            {
+                ErrorCode.Void,
+                ErrorCode.Unknown,
+                ErrorCode.WRN_ALinkWarn, // Not reported, but retained to allow configuring class of related warnings. See CSharpDiagnosticFilter.Filter.
+            };
+            foreach (ErrorCode code in Enum.GetValues(typeof(ErrorCode)))
+            {
+                if (Array.IndexOf(excludedErrorCodes, code) >= 0)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    var message = ErrorFacts.GetMessage(code, CultureInfo.InvariantCulture);
+                    Assert.False(string.IsNullOrEmpty(message));
+                }
+                catch (Exception)
+                {
+                    System.Console.WriteLine($"Failed on {code}");
+                    throw;
+                }
+            }
+        }
+
         [Fact]
         public void TestDiagnostic()
         {
             MockMessageProvider provider = new MockMessageProvider();
             SyntaxTree syntaxTree = new MockSyntaxTree();
-            CultureInfo englishCulture = CultureInfo.GetCultureInfo("en");
+            CultureInfo englishCulture = CultureHelpers.EnglishCulture;
 
             DiagnosticInfo di1 = new DiagnosticInfo(provider, 1);
             Assert.Equal(1, di1.Code);
@@ -56,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             Assert.Equal("OtherSymbol", (d3.Info as CustomErrorInfo).OtherSymbol);
         }
 
-        [WorkItem(537801, "DevDiv")]
+        [WorkItem(537801, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/537801")]
         [Fact]
         public void MissingNamespaceOpenBracket()
         {
@@ -74,7 +107,7 @@ End namespace
             Assert.InRange(actualErrors.Count(), 1, int.MaxValue);
         }
 
-        [WorkItem(540086, "DevDiv")]
+        [WorkItem(540086, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540086")]
         [Fact]
         public void ErrorApplyIndexingToMethod()
         {
@@ -111,7 +144,7 @@ public class A
                 new ErrorDescription { Code = (int)ErrorCode.ERR_BadIndexLHS, Line = 10, Column = 34 });
         }
 
-        [WorkItem(540329, "DevDiv")]
+        [WorkItem(540329, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540329")]
         [Fact]
         public void ErrorMemberAccessOnLiteralToken()
         {
@@ -132,7 +165,7 @@ class X
                 Diagnostic(ErrorCode.ERR_BadUnaryOp, @"null.Length").WithArguments(".", "<null>"));
         }
 
-        [WorkItem(542911, "DevDiv")]
+        [WorkItem(542911, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542911")]
         [Fact]
         public void WarningLevel_1()
         {
@@ -153,7 +186,7 @@ class X
             }
         }
 
-        [WorkItem(542911, "DevDiv")]
+        [WorkItem(542911, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542911")]
         [Fact]
         public void WarningLevel_2()
         {
@@ -180,15 +213,8 @@ class X
                     Assert.True(ErrorFacts.IsWarning(errorCode));
                     switch (errorCode)
                     {
-                        case ErrorCode.WRN_MainIgnored:
-                            Assert.Equal(2, ErrorFacts.GetWarningLevel(errorCode));
-                            break;
                         case ErrorCode.WRN_DelaySignButNoKey:
-                            Assert.Equal(1, ErrorFacts.GetWarningLevel(errorCode));
-                            break;
-                        case ErrorCode.WRN_InvalidVersionFormat:
-                            Assert.Equal(4, ErrorFacts.GetWarningLevel(errorCode));
-                            break;
+                        case ErrorCode.WRN_AttributeIgnoredWhenPublicSigning:
                         case ErrorCode.WRN_UnimplementedCommandLineSwitch:
                         case ErrorCode.WRN_CallerFilePathPreferredOverCallerMemberName:
                         case ErrorCode.WRN_CallerLineNumberPreferredOverCallerMemberName:
@@ -196,25 +222,26 @@ class X
                         case ErrorCode.WRN_AssemblyAttributeFromModuleIsOverridden:
                         case ErrorCode.WRN_RefCultureMismatch:
                         case ErrorCode.WRN_ConflictingMachineAssembly:
-                            Assert.Equal(1, ErrorFacts.GetWarningLevel(errorCode));
-                            break;
-                        case ErrorCode.WRN_NubExprIsConstBool2:
-                        case ErrorCode.WRN_UnqualifiedNestedTypeInCref:
-                        case ErrorCode.WRN_NoRuntimeMetadataVersion:
-                            Assert.Equal(2, ErrorFacts.GetWarningLevel(errorCode));
-                            break;
                         case ErrorCode.WRN_FilterIsConstant:
-                            Assert.Equal(1, ErrorFacts.GetWarningLevel(errorCode));
-                            break;
-                        case ErrorCode.WRN_PdbLocalNameTooLong:
-                            Assert.Equal(3, ErrorFacts.GetWarningLevel(errorCode));
-                            break;
                         case ErrorCode.WRN_AnalyzerCannotBeCreated:
                         case ErrorCode.WRN_NoAnalyzerInAssembly:
                         case ErrorCode.WRN_UnableToLoadAnalyzer:
                         case ErrorCode.WRN_ReferencedAssemblyDoesNotHaveStrongName:
                         case ErrorCode.WRN_AlignmentMagnitude:
+                        case ErrorCode.WRN_TupleLiteralNameMismatch:
                             Assert.Equal(1, ErrorFacts.GetWarningLevel(errorCode));
+                            break;
+                        case ErrorCode.WRN_MainIgnored:
+                        case ErrorCode.WRN_NubExprIsConstBool2:
+                        case ErrorCode.WRN_UnqualifiedNestedTypeInCref:
+                        case ErrorCode.WRN_NoRuntimeMetadataVersion:
+                            Assert.Equal(2, ErrorFacts.GetWarningLevel(errorCode));
+                            break;
+                        case ErrorCode.WRN_PdbLocalNameTooLong:
+                            Assert.Equal(3, ErrorFacts.GetWarningLevel(errorCode));
+                            break;
+                        case ErrorCode.WRN_InvalidVersionFormat:
+                            Assert.Equal(4, ErrorFacts.GetWarningLevel(errorCode));
                             break;
                         default:
                             // If a new warning is added, this test will fail
@@ -1895,7 +1922,7 @@ public class C
                 Diagnostic(ErrorCode.WRN_IdentifierOrNumericLiteralExpected, ","));
         }
 
-        [WorkItem(546814, "DevDiv")]
+        [WorkItem(546814, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546814")]
         [Fact]
         public void PragmaWarning_NoValidationForErrorCodes4()
         {
@@ -1918,7 +1945,7 @@ class Program
             CreateCompilationWithMscorlib(text, options: commonoption).VerifyDiagnostics();
         }
 
-        [WorkItem(546814, "DevDiv")]
+        [WorkItem(546814, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546814")]
         [Fact]
         public void PragmaWarning_NoValidationForErrorCodes5()
         {
@@ -1993,7 +2020,7 @@ class Program
             Assert.Equal(ReportDiagnostic.Suppress, syntaxTree.GetPragmaDirectiveWarningState(MessageProvider.Instance.GetIdForErrorCode(219), GetSpanIn(syntaxTree, "var y").Start));
         }
 
-        [WorkItem(545407, "DevDiv")]
+        [WorkItem(545407, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545407")]
         [Fact]
         public void PragmaWarningDirectiveMapAtTheFirstLine()
         {
@@ -2017,7 +2044,7 @@ class Program
             return new TextSpan(index, textToFind.Length);
         }
 
-        [WorkItem(543705, "DevDiv")]
+        [WorkItem(543705, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543705")]
         [Fact]
         public void GetDiagnosticsCalledTwice()
         {
@@ -2059,6 +2086,276 @@ public class Test
 
             // (8,10): error CS0119: 'Console' is a type, which is not valid in the given context
             AssertEx.Equal(CreateCompilationWithMscorlib(tree).GetDiagnostics(), CreateCompilationWithMscorlib(tree).GetDiagnostics());
+        }
+
+        /// <summary>
+        /// Test that invalid type argument lists produce clean error messages
+        /// with minimal noise
+        /// </summary>
+        [WorkItem(7177, "https://github.com/dotnet/roslyn/issues/7177")]
+        [Fact]
+        public void InvalidTypeArgumentList()
+        {
+            var text = @"using System;
+public class A
+{
+    static void Main(string[] args)
+    {
+        // Invalid type arguments
+        object a1 = typeof(Action<0>);
+        object a2 = typeof(Action<static>);
+
+        // Valid type arguments
+        object a3 = typeof(Action<string>);
+        object a4 = typeof(Action<>);
+
+        // Invalid with multiple types
+        object a5 = typeof(Func<0,1>);
+        object a6 = typeof(Func<0,bool>);
+        object a7 = typeof(Func<static,bool>);
+
+        // Valid with multiple types
+        object a8 = typeof(Func<string,bool>);
+        object a9 = typeof(Func<,>);
+
+        // Invalid with nested types
+        object a10 = typeof(Action<Action<0>>);
+        object a11 = typeof(Action<Action<static>>);
+        object a12 = typeof(Action<Action<>>);
+
+        // Valid with nested types
+        object a13 = typeof(Action<Action<string>>);
+    }
+}";
+
+            CSharpCompilationOptions options = TestOptions.ReleaseExe;
+            CreateCompilationWithMscorlib(text, options: options).VerifyDiagnostics(
+                // (7,35): error CS1031: Type expected
+                //         object a1 = typeof(Action<0>);
+                Diagnostic(ErrorCode.ERR_TypeExpected, "0").WithLocation(7, 35),
+                // (8,35): error CS1031: Type expected
+                //         object a2 = typeof(Action<static>);
+                Diagnostic(ErrorCode.ERR_TypeExpected, "static").WithLocation(8, 35),
+                // (15,33): error CS1031: Type expected
+                //         object a5 = typeof(Func<0,1>);
+                Diagnostic(ErrorCode.ERR_TypeExpected, "0").WithLocation(15, 33),
+                // (15,35): error CS1031: Type expected
+                //         object a5 = typeof(Func<0,1>);
+                Diagnostic(ErrorCode.ERR_TypeExpected, "1").WithLocation(15, 35),
+                // (16,33): error CS1031: Type expected
+                //         object a6 = typeof(Func<0,bool>);
+                Diagnostic(ErrorCode.ERR_TypeExpected, "0").WithLocation(16, 33),
+                // (17,33): error CS1031: Type expected
+                //         object a7 = typeof(Func<static,bool>);
+                Diagnostic(ErrorCode.ERR_TypeExpected, "static").WithLocation(17, 33),
+                // (24,43): error CS1031: Type expected
+                //         object a10 = typeof(Action<Action<0>>);
+                Diagnostic(ErrorCode.ERR_TypeExpected, "0").WithLocation(24, 43),
+                // (25,43): error CS1031: Type expected
+                //         object a11 = typeof(Action<Action<static>>);
+                Diagnostic(ErrorCode.ERR_TypeExpected, "static").WithLocation(25, 43),
+                // (26,36): error CS7003: Unexpected use of an unbound generic name
+                //         object a12 = typeof(Action<Action<>>);
+                Diagnostic(ErrorCode.ERR_UnexpectedUnboundGenericName, "Action<>").WithLocation(26, 36));
+        }
+
+        /// <summary>
+        ///    Tests if CS0075 - "To cast a negative value, you must enclose the value in parentheses" is correctly emitted.
+        /// </summary>
+        [Fact]
+        public void PossibleBadNegCast()
+        {
+            var source = @"using System;
+class Program
+{
+    static void Main()
+    {
+        var y = (ConsoleColor) - 1;
+        var z = (System.ConsoleColor) - 1;
+    }
+}";
+
+            var compilation = CreateCompilationWithMscorlib(source);
+            compilation.VerifyDiagnostics(new[]
+            {
+                // (6,18): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var y = (ConsoleColor) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(6, 18),
+                // (6,17): error CS0075: To cast a negative value, you must enclose the value in parentheses.
+                //         var y = (ConsoleColor) - 1;
+                Diagnostic(ErrorCode.ERR_PossibleBadNegCast, "(ConsoleColor) - 1").WithLocation(6, 17),
+                // (6,18): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var y = (ConsoleColor) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(6, 18),
+                // (7,18): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var z = (System.ConsoleColor) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "System.ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(7, 18),
+                // (7,17): error CS0075: To cast a negative value, you must enclose the value in parentheses.
+                //         var z = (System.ConsoleColor) - 1;
+                Diagnostic(ErrorCode.ERR_PossibleBadNegCast, "(System.ConsoleColor) - 1").WithLocation(7, 17),
+                // (7,18): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var z = (System.ConsoleColor) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "System.ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(7, 18)
+            });
+        }
+
+        /// <summary>
+        ///    Tests if fixing CS0075 - "To cast a negative value, you must enclose the value in parentheses" works. (fixed version of <see cref="PossibleBadNegCast"/>).
+        /// </summary>
+        [Fact]
+        public void PossibleBadNegCastFixed()
+        {
+            var source = @"using System;
+class Program
+{
+    static void Main()
+    {
+        var y = (ConsoleColor) (- 1);
+        var z = (System.ConsoleColor) (- 1);
+    }
+}";
+
+            var compilation = CreateCompilationWithMscorlib(source);
+            compilation.VerifyDiagnostics(new[]
+            {
+                // (6,13): warning CS0219: The variable 'y' is assigned but its value is never used
+                //         var y = (ConsoleColor) (- 1);
+                Diagnostic(ErrorCode.WRN_UnreferencedVarAssg, "y").WithArguments("y").WithLocation(6, 13),
+                // (7,13): warning CS0219: The variable 'z' is assigned but its value is never used
+                //         var z = (System.ConsoleColor) (- 1);
+                Diagnostic(ErrorCode.WRN_UnreferencedVarAssg, "z").WithArguments("z").WithLocation(7, 13)
+            });
+        }
+
+        /// <summary>
+        ///    Tests if CS0075 - "To cast a negative value, you must enclose the value in parentheses" is only emitted if the left side is (would be) a cast expression.
+        /// </summary>
+        [Fact]
+        public void PossibleBadNegCastNotEmitted()
+        {
+            var source = @"using System;
+
+class Program
+{
+    static void Main()
+    {
+        var w = ((ConsoleColor)) - 1;
+        var x = ConsoleColor - 1;
+        var y = ((System.ConsoleColor)) - 1;
+        var z = System.ConsoleColor - 1;
+    }
+}";
+
+            var compilation = CreateCompilationWithMscorlib(source);
+            compilation.VerifyDiagnostics(new[]
+            {
+                // (7,19): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var w = ((ConsoleColor)) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(7, 19),
+                // (7,19): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var w = ((ConsoleColor)) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(7, 19),
+                // (7,19): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var w = ((ConsoleColor)) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(7, 19),
+                // (8,17): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var x = ConsoleColor - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(8, 17),
+                // (9,19): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var y = ((System.ConsoleColor)) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "System.ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(9, 19),
+                // (9,19): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var y = ((System.ConsoleColor)) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "System.ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(9, 19),
+                // (9,19): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var y = ((System.ConsoleColor)) - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "System.ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(9, 19),
+                // (10,17): error CS0119: 'ConsoleColor' is a type, which is not valid in the given context
+                //         var z = System.ConsoleColor - 1;
+                Diagnostic(ErrorCode.ERR_BadSKunknown, "System.ConsoleColor").WithArguments("System.ConsoleColor", "type").WithLocation(10, 17)
+            });
+        }
+
+        /// <summary>
+        ///    Tests if CS0075 - "To cast a negative value, you must enclose the value in parentheses" is also emitted for dynamic casts.
+        /// </summary>
+        [Fact]
+        public void PossibleBadNegCastDynamic()
+        {
+            var source = @"class Program
+{
+    static void Main()
+    {
+        var y = (dynamic) - 1;
+        var z = (@dynamic) - 1;
+    }
+}";
+
+            var compilation = CreateCompilationWithMscorlib(source);
+            compilation.VerifyDiagnostics(new[]
+            {
+                // (5,18): error CS0103: The name 'dynamic' does not exist in the current context
+                //         var y = (dynamic) - 1;
+                Diagnostic(ErrorCode.ERR_NameNotInContext, "dynamic").WithArguments("dynamic").WithLocation(5, 18),
+                // (5,17): error CS0075: To cast a negative value, you must enclose the value in parentheses.
+                //         var y = (dynamic) - 1;
+                Diagnostic(ErrorCode.ERR_PossibleBadNegCast, "(dynamic) - 1").WithLocation(5, 17),
+                // (6,18): error CS0103: The name 'dynamic' does not exist in the current context
+                //         var z = (@dynamic) - 1;
+                Diagnostic(ErrorCode.ERR_NameNotInContext, "@dynamic").WithArguments("dynamic").WithLocation(6, 18),
+                // (6,17): error CS0075: To cast a negative value, you must enclose the value in parentheses.
+                //         var z = (@dynamic) - 1;
+                Diagnostic(ErrorCode.ERR_PossibleBadNegCast, "(@dynamic) - 1").WithLocation(6, 17)
+            });
+        }
+
+        /// <summary>
+        ///    Tests if CS0075 - "To cast a negative value, you must enclose the value in parentheses" is also emitted for dynamic casts when a local variable called 'dynamic' is defined.
+        /// </summary>
+        [Fact]
+        public void PossibleBadNegCastDynamicWithLocal()
+        {
+            var source = @"class Program
+{
+    static void Main()
+    {
+        var dynamic = 1;
+        var y = (dynamic) - 1;
+        var z = (@dynamic) - 1;
+    }
+}";
+
+            var compilation = CreateCompilationWithMscorlib(source);
+            compilation.VerifyDiagnostics();
+        }
+
+        /// <summary>
+        ///    Tests if CS0075 - "To cast a negative value, you must enclose the value in parentheses" is also emitted for dynamic casts when a method called 'dynamic' is defined.
+        /// </summary>
+        [Fact]
+        public void PossibleBadNegCastDynamicWithMethod()
+        {
+            var source = @"class Program
+{
+    static void Main()
+    {
+        var y = (dynamic) - 1;
+        var z = (@dynamic) - 1;
+    }
+
+    static void dynamic() {}
+}";
+
+            var compilation = CreateCompilationWithMscorlib(source);
+            compilation.VerifyDiagnostics(new[]
+            {
+                // (5,17): error CS0019: Operator '-' cannot be applied to operands of type 'method group' and 'int'
+                //         var y = (dynamic) - 1;
+                Diagnostic(ErrorCode.ERR_BadBinaryOps, "(dynamic) - 1").WithArguments("-", "method group", "int").WithLocation(5, 17),
+                // (6,17): error CS0019: Operator '-' cannot be applied to operands of type 'method group' and 'int'
+                //         var z = (@dynamic) - 1;
+                Diagnostic(ErrorCode.ERR_BadBinaryOps, "(@dynamic) - 1").WithArguments("-", "method group", "int").WithLocation(6, 17)
+            });
         }
 
         #region Mocks
@@ -2155,11 +2452,50 @@ public class Test
                 }
             }
 
-            public override string ConvertSymbolToString(int errorCode, ISymbol symbol)
+            public override string GetErrorDisplayString(ISymbol symbol)
             {
-                return MessageProvider.Instance.ConvertSymbolToString(errorCode, symbol);
+                return MessageProvider.Instance.GetErrorDisplayString(symbol);
             }
         }
+
+        #endregion
+
+        #region CoreCLR Signing Tests
+        // These aren't actually syntax tests, but this is in one of only two assemblies tested on linux
+        [ConditionalFact(typeof(UnixLikeOnly), typeof(NotMonoOnly)), WorkItem(9288, "https://github.com/dotnet/roslyn/issues/9288")]
+        public void Bug9288_keyfile()
+        {
+            var snk = Temp.CreateFile().WriteAllBytes(TestResources.General.snKey);
+            var snkPath = snk.Path;
+
+            const string source = "";
+
+            var ca = CreateCompilationWithMscorlib(source, options: TestOptions.ReleaseDll.WithStrongNameProvider(new DesktopStrongNameProvider()).WithCryptoKeyFile(snkPath));
+
+            ca.VerifyEmitDiagnostics(EmitOptions.Default.WithDebugInformationFormat(DebugInformationFormat.PortablePdb),
+                // error CS7027: Error signing output with public key from file '{temp path}' -- Assembly signing not supported.
+                Diagnostic(ErrorCode.ERR_PublicKeyFileFailure).WithArguments(snkPath, "Assembly signing not supported.").WithLocation(1, 1)
+            );
+        }
+
+        [ConditionalFact(typeof(UnixLikeOnly), typeof(NotMonoOnly)), WorkItem(9288, "https://github.com/dotnet/roslyn/issues/9288")]
+        public void Bug9288_keycontainer()
+        {
+            const string source = "";
+
+            var ca = CreateCompilationWithMscorlib(source, options: TestOptions.ReleaseDll.WithStrongNameProvider(new DesktopStrongNameProvider()).WithCryptoKeyContainer("bogus"));
+
+            ca.VerifyEmitDiagnostics(EmitOptions.Default.WithDebugInformationFormat(DebugInformationFormat.PortablePdb),
+                // error CS7028: Error signing output with public key from container 'bogus' -- Assembly signing not supported.
+                Diagnostic(ErrorCode.ERR_PublicKeyContainerFailure).WithArguments("bogus", "Assembly signing not supported.").WithLocation(1, 1)
+            );
+        }
+
+        // There are three places where we catch a ClrStrongNameMissingException,
+        // but the third cannot happen - only if a key is successfully retrieved
+        // from a keycontainer, and then we fail to get IClrStrongName afterwards
+        // for the actual signing. However, we error on the key read, and can never
+        // get to the third case (but there's still error handling if that changes)
 
         #endregion
     }

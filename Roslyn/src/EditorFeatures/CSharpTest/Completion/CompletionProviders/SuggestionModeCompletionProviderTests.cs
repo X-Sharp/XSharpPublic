@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.CSharp.Completion.SuggestionMode;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Roslyn.Test.Utilities;
 using Xunit;
+using System.Collections.Generic;
 
 namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionProviders
 {
@@ -15,25 +17,27 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionPr
         {
         }
 
-        internal override CompletionListProvider CreateCompletionProvider()
+        internal override CompletionProvider CreateCompletionProvider()
         {
             return new CSharpSuggestionModeCompletionProvider();
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void AfterFirstExplicitArgument()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task AfterFirstExplicitArgument()
         {
-            VerifyNotBuilder(AddInsideMethod(@"Func<int, int, int> f = (int x, i $$"));
+            // The right-hand-side parses like a possible deconstruction or tuple type
+            await VerifyBuilderAsync(AddInsideMethod(@"Func<int, int, int> f = (int x, i $$"));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void AfterFirstImplicitArgument()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task AfterFirstImplicitArgument()
         {
-            VerifyNotBuilder(AddInsideMethod(@"Func<int, int, int> f = (x, i $$"));
+            // The right-hand-side parses like a possible deconstruction or tuple type
+            await VerifyBuilderAsync(AddInsideMethod(@"Func<int, int, int> f = (x, i $$"));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void AfterFirstImplicitArgumentInMethodCall()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task AfterFirstImplicitArgumentInMethodCall()
         {
             var markup = @"class c
 {
@@ -45,11 +49,12 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionPr
     }
 }
 ";
-            VerifyNotBuilder(markup);
+            // The right-hand-side parses like a possible deconstruction or tuple type
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void AfterFirstExplicitArgumentInMethodCall()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task AfterFirstExplicitArgumentInMethodCall()
         {
             var markup = @"class c
 {
@@ -61,11 +66,12 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionPr
     }
 }
 ";
-            VerifyNotBuilder(markup);
+            // Could be a deconstruction expression
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void DelegateTypeExpected1()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task DelegateTypeExpected1()
         {
             var markup = @"using System;
 
@@ -79,17 +85,17 @@ class c
     }
 }
 ";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void DelegateTypeExpected2()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task DelegateTypeExpected2()
         {
-            VerifyBuilder(AddUsingDirectives("using System;", AddInsideMethod(@"Func<int, int, int> f = $$")));
+            await VerifyBuilderAsync(AddUsingDirectives("using System;", AddInsideMethod(@"Func<int, int, int> f = $$")));
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ObjectInitializerDelegateType()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ObjectInitializerDelegateType()
         {
             var markup = @"using System;
 using System.Collections.Generic;
@@ -107,11 +113,11 @@ class a
         var b = new Program() { myfunc = $$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, WorkItem(817145), Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ExplicitArrayInitializer()
+        [Fact, WorkItem(817145, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/817145"), Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ExplicitArrayInitializer()
         {
             var markup = @"using System;
 
@@ -122,11 +128,11 @@ class a
         Func<int, int>[] myfunc = new Func<int, int>[] { $$;
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ImplicitArrayInitializerUnknownType()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ImplicitArrayInitializerUnknownType()
         {
             var markup = @"using System;
 
@@ -137,11 +143,11 @@ class a
         var a = new [] { $$;
     }
 }";
-            VerifyNotBuilder(markup);
+            await VerifyNotBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ImplicitArrayInitializerKnownDelegateType()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ImplicitArrayInitializerKnownDelegateType()
         {
             var markup = @"using System;
 
@@ -152,11 +158,11 @@ class a
         var a = new [] { x => 2 * x, $$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void TernaryOperatorUnknownType()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task TernaryOperatorUnknownType()
         {
             var markup = @"using System;
 
@@ -167,11 +173,11 @@ class a
         var a = true ? $$
     }
 }";
-            VerifyNotBuilder(markup);
+            await VerifyNotBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void TernaryOperatorKnownDelegateType1()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task TernaryOperatorKnownDelegateType1()
         {
             var markup = @"using System;
 
@@ -182,11 +188,11 @@ class a
         var a = true ? x => x * 2 : $$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void TernaryOperatorKnownDelegateType2()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task TernaryOperatorKnownDelegateType2()
         {
             var markup = @"using System;
 
@@ -197,11 +203,11 @@ class a
         Func<int, int> a = true ? $$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void OverloadTakesADelegate1()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task OverloadTakesADelegate1()
         {
             var markup = @"using System;
 
@@ -215,11 +221,11 @@ class a
         this.foo($$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void OverloadTakesDelegate2()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task OverloadTakesDelegate2()
         {
             var markup = @"using System;
 
@@ -233,11 +239,11 @@ class a
         this.foo(1, $$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ExplicitCastToDelegate()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ExplicitCastToDelegate()
         {
             var markup = @"using System;
 
@@ -249,12 +255,12 @@ class a
         (Func<int, int>) ($$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        [WorkItem(860580)]
-        public void ReturnStatement()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        [WorkItem(860580, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/860580")]
+        public async Task ReturnStatement()
         {
             var markup = @"using System;
 
@@ -265,11 +271,11 @@ class a
         return $$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void BuilderInAnonymousType1()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task BuilderInAnonymousType1()
         {
             var markup = @"using System;
 
@@ -280,11 +286,11 @@ class a
         var q = new {$$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void BuilderInAnonymousType2()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task BuilderInAnonymousType2()
         {
             var markup = @"using System;
 
@@ -295,11 +301,11 @@ class a
         var q = new {$$ 1, 2 };
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void BuilderInAnonymousType3()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task BuilderInAnonymousType3()
         {
             var markup = @"using System;
 class a
@@ -309,11 +315,11 @@ class a
         var q = new {Name = 1, $$ };
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void BuilderInFromClause()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task BuilderInFromClause()
         {
             var markup = @"using System;
 using System.Linq;
@@ -325,12 +331,12 @@ class a
         var q = from $$
     }
 }";
-            VerifyBuilder(markup.ToString());
+            await VerifyBuilderAsync(markup.ToString());
         }
 
-        [WorkItem(823968)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void BuilderInJoinClause()
+        [WorkItem(823968, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/823968")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task BuilderInJoinClause()
         {
             var markup = @"using System;
 using System.Linq;
@@ -345,12 +351,12 @@ class a
                 join $$
     }
 }";
-            VerifyBuilder(markup.ToString());
+            await VerifyBuilderAsync(markup.ToString());
         }
 
-        [WorkItem(544290)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ParenthesizedLambdaArgument()
+        [WorkItem(544290, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544290")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ParenthesizedLambdaArgument()
         {
             var markup = @"using System;
 class Program
@@ -360,12 +366,12 @@ class Program
         Console.CancelKeyPress += new ConsoleCancelEventHandler((a$$, e) => { });
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WorkItem(544379)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void IncompleteParenthesizedLambdaArgument()
+        [WorkItem(544379, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544379")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task IncompleteParenthesizedLambdaArgument()
         {
             var markup = @"using System;
 class Program
@@ -375,12 +381,12 @@ class Program
         Console.CancelKeyPress += new ConsoleCancelEventHandler((a$$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WorkItem(544379)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void IncompleteNestedParenthesizedLambdaArgument()
+        [WorkItem(544379, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544379")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task IncompleteNestedParenthesizedLambdaArgument()
         {
             var markup = @"using System;
 class Program
@@ -390,12 +396,110 @@ class Program
         Console.CancelKeyPress += new ConsoleCancelEventHandler(((a$$
     }
 }";
-            VerifyNotBuilder(markup);
+            await VerifyNotBuilderAsync(markup);
         }
 
-        [WorkItem(546363)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void BuilderForLinqExpression()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ParenthesizedExpressionInVarDeclaration()
+        {
+            var markup = @"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        var x = (a$$
+    }
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task TupleExpressionInVarDeclaration()
+        {
+            var markup = @"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        var x = (a$$, b)
+    }
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task TupleExpressionInVarDeclaration2()
+        {
+            var markup = @"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        var x = (a, b$$)
+    }
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task IncompleteLambdaInActionDeclaration()
+        {
+            var markup = @"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        System.Action x = (a$$, b)
+    }
+}";
+            await VerifyBuilderAsync(markup);
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task TupleWithNamesInActionDeclaration()
+        {
+            var markup = @"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        System.Action x = (a$$, b: b)
+    }
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task TupleWithNamesInActionDeclaration2()
+        {
+            var markup = @"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        System.Action x = (a: a, b$$)
+    }
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task TupleWithNamesInVarDeclaration()
+        {
+            var markup = @"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        var x = (a: a, b$$)
+    }
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [WorkItem(546363, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546363")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task BuilderForLinqExpression()
         {
             var markup = @"using System;
 using System.Linq.Expressions;
@@ -407,12 +511,12 @@ public class Class
         Foo($$
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WorkItem(546363)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void NotInTypeParameter()
+        [WorkItem(546363, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546363")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NotInTypeParameter()
         {
             var markup = @"using System;
 using System.Linq.Expressions;
@@ -424,12 +528,12 @@ public class Class
         Enumerable.Empty<$$
     }
 }";
-            VerifyNotBuilder(markup);
+            await VerifyNotBuilderAsync(markup);
         }
 
-        [WorkItem(611477)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ExtensionMethodFaultTolerance()
+        [WorkItem(611477, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/611477")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ExtensionMethodFaultTolerance()
         {
             var markup = @"using System;
 using System.Collections;
@@ -471,12 +575,12 @@ namespace Outer
     }
 }
 ";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WorkItem(834609)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void LambdaWithAutomaticBraceCompletion()
+        [WorkItem(834609, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/834609")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task LambdaWithAutomaticBraceCompletion()
         {
             var markup = @"using System;
 using System;
@@ -488,24 +592,24 @@ public class Class
         EventHandler h = (s$$)
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WorkItem(858112)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ThisConstructorInitializer()
+        [WorkItem(858112, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/858112")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ThisConstructorInitializer()
         {
             var markup = @"using System;
 class X 
 { 
     X(Func<X> x) : this($$) { } 
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WorkItem(858112)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void BaseConstructorInitializer()
+        [WorkItem(858112, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/858112")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task BaseConstructorInitializer()
         {
             var markup = @"using System;
 class B
@@ -517,23 +621,23 @@ class D : B
 { 
     D() : base($$) { } 
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WorkItem(887842)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void PreprocessorExpression()
+        [WorkItem(887842, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/887842")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PreprocessorExpression()
         {
             var markup = @"class C
 {
 #if $$
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        [WorkItem(967254)]
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void ImplicitArrayInitializerAfterNew()
+        [WorkItem(967254, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/967254")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task ImplicitArrayInitializerAfterNew()
         {
             var markup = @"using System;
 
@@ -544,53 +648,173 @@ class a
         int[] a = new $$;
     }
 }";
-            VerifyBuilder(markup);
+            await VerifyBuilderAsync(markup);
         }
 
-        private void VerifyNotBuilder(string markup)
+        [WorkItem(7213, "https://github.com/dotnet/roslyn/issues/7213")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NamespaceDeclaration_Unqualified()
         {
-            VerifyWorker(markup, isBuilder: false);
+            var markup = @"namespace $$";
+            await VerifyBuilderAsync(markup);
         }
 
-        private void VerifyBuilder(string markup)
+        [WorkItem(7213, "https://github.com/dotnet/roslyn/issues/7213")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NamespaceDeclaration_Qualified()
         {
-            VerifyWorker(markup, isBuilder: true);
+            var markup = @"namespace A.$$";
+            await VerifyBuilderAsync(markup);
         }
 
-        private void VerifyWorker(string markup, bool isBuilder)
+        [WorkItem(7213, "https://github.com/dotnet/roslyn/issues/7213")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PartialClassName()
         {
-            string code;
-            int position;
-            MarkupTestFile.GetPosition(markup, out code, out position);
+            var markup = @"partial class $$";
+            await VerifyBuilderAsync(markup);
+        }
+
+        [WorkItem(7213, "https://github.com/dotnet/roslyn/issues/7213")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PartialStructName()
+        {
+            var markup = @"partial struct $$";
+            await VerifyBuilderAsync(markup);
+        }
+
+        [WorkItem(7213, "https://github.com/dotnet/roslyn/issues/7213")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task PartialInterfaceName()
+        {
+            var markup = @"partial interface $$";
+            await VerifyBuilderAsync(markup);
+        }
+
+        [WorkItem(12818, "https://github.com/dotnet/roslyn/issues/12818")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task UnwrapParamsArray()
+        {
+            var markup = @"
+using System;
+class C {
+    C(params Action<int>[] a) {
+        new C($$
+    }
+}";
+            await VerifyBuilderAsync(markup);
+        }
+
+        [WorkItem(12818, "https://github.com/dotnet/roslyn/issues/12818")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task DoNotUnwrapRegularArray()
+        {
+            var markup = @"
+using System;
+class C {
+    C(Action<int>[] a) {
+        new C($$
+    }
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [WorkItem(15443, "https://github.com/dotnet/roslyn/issues/15443")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NotBuilderWhenDelegateInferredRightOfDotInInvocation()
+        {
+            var markup = @"
+class C {
+	Action a = Task.$$
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [WorkItem(15443, "https://github.com/dotnet/roslyn/issues/15443")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NotBuilderInTypeArgument()
+        {
+            var markup = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        class N { }
+        static void Main(string[] args)
+        {
+            Program.N n = Load<Program.$$
+        }
+
+        static T Load<T>() => default(T);
+    }
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        [WorkItem(16176, "https://github.com/dotnet/roslyn/issues/16176")]
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NotBuilderForLambdaAfterNew()
+        {
+            var markup = @"
+class C {
+	Action a = new $$
+}";
+            await VerifyNotBuilderAsync(markup);
+        }
+
+        private async Task VerifyNotBuilderAsync(string markup)
+        {
+            await VerifyWorkerAsync(markup, isBuilder: false);
+        }
+
+        private async Task VerifyBuilderAsync(string markup)
+        {
+            await VerifyWorkerAsync(markup, isBuilder: true);
+        }
+
+        private async Task VerifyWorkerAsync(string markup, bool isBuilder)
+        {
+            MarkupTestFile.GetPosition(markup, out var code, out int position);
 
             using (var workspaceFixture = new CSharpTestWorkspaceFixture())
             {
-                var document1 = workspaceFixture.UpdateDocument(code, SourceCodeKind.Regular);
-                CheckResults(document1, position, isBuilder);
+                var document1 = await workspaceFixture.UpdateDocumentAsync(code, SourceCodeKind.Regular);
+                await CheckResultsAsync(document1, position, isBuilder);
 
-                if (CanUseSpeculativeSemanticModel(document1, position))
+                if (await CanUseSpeculativeSemanticModelAsync(document1, position))
                 {
-                    var document2 = workspaceFixture.UpdateDocument(code, SourceCodeKind.Regular, cleanBeforeUpdate: false);
-                    CheckResults(document2, position, isBuilder);
+                    var document2 = await workspaceFixture.UpdateDocumentAsync(code, SourceCodeKind.Regular, cleanBeforeUpdate: false);
+                    await CheckResultsAsync(document2, position, isBuilder);
                 }
             }
         }
 
-        private void CheckResults(Document document, int position, bool isBuilder)
+        private async Task CheckResultsAsync(Document document, int position, bool isBuilder)
         {
-            var triggerInfo = CompletionTriggerInfo.CreateTypeCharTriggerInfo('a');
-            var completionList = GetCompletionList(document, position, triggerInfo);
+            var triggerInfos = new List<CompletionTrigger>();
+            triggerInfos.Add(CompletionTrigger.CreateInsertionTrigger('a'));
+            triggerInfos.Add(CompletionTrigger.Default);
+            triggerInfos.Add(CompletionTrigger.CreateDeletionTrigger('z'));
 
-            if (isBuilder)
+            var service = GetCompletionService(document.Project.Solution.Workspace);
+
+            foreach (var triggerInfo in triggerInfos)
             {
-                Assert.NotNull(completionList);
-                Assert.NotNull(completionList.Builder);
-            }
-            else
-            {
-                if (completionList != null)
+                var completionList = await service.GetContextAsync(
+                    service.ExclusiveProviders?[0], document, position, triggerInfo,
+                    options: null, cancellationToken: CancellationToken.None);
+
+                if (isBuilder)
                 {
-                    Assert.True(completionList.Builder == null, "group.Builder == " + (completionList.Builder != null ? completionList.Builder.DisplayText : "null"));
+                    Assert.NotNull(completionList);
+                    Assert.NotNull(completionList.SuggestionModeItem);
+                }
+                else
+                {
+                    if (completionList != null)
+                    {
+                        Assert.True(completionList.SuggestionModeItem == null, "group.Builder == " + (completionList.SuggestionModeItem != null ? completionList.SuggestionModeItem.DisplayText : "null"));
+                    }
                 }
             }
         }

@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Threading;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
@@ -184,6 +182,13 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
         private static bool Match(char normalizedLeft, char right, bool caseSensitive)
         {
             return caseSensitive ? normalizedLeft == right : normalizedLeft == CaseInsensitiveComparison.ToLower(right);
+        }
+
+        public static bool AreOnSameLine(this SourceText text, SyntaxToken token1, SyntaxToken token2)
+        {
+            return token1.RawKind != 0 &&
+                token2.RawKind != 0 &&
+                text.Lines.IndexOf(token1.Span.End) == text.Lines.IndexOf(token2.SpanStart);
         }
     }
 }

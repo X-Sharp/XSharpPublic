@@ -11,66 +11,66 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.AutomaticCompletio
         Inherits AbstractAutomaticBraceCompletionTests
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.AutomaticCompletion)>
-        Public Sub Creation()
-            Using session = CreateSession("$$")
+        Public Async Function TestCreation() As Task
+            Using session = Await CreateSessionAsync("$$")
                 Assert.NotNull(session)
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.AutomaticCompletion)>
-        Public Sub InvalidLocation_String()
+        Public Async Function TestInvalidLocation_String() As Task
             Dim code = <code>Class C
     Dim s As String = "$$
 End Class</code>
 
-            Using session = CreateSession(code)
+            Using session = Await CreateSessionAsync(code)
                 Assert.Null(session)
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.AutomaticCompletion)>
-        Public Sub InvalidLocation_Comment()
+        Public Async Function TestInvalidLocation_Comment() As Task
             Dim code = <code>Class C
     ' $$
 End Class</code>
 
-            Using session = CreateSession(code)
+            Using session = Await CreateSessionAsync(code)
                 Assert.Null(session)
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.AutomaticCompletion)>
-        Public Sub InvalidLocation_DocComment()
+        Public Async Function TestInvalidLocation_DocComment() As Task
             Dim code = <code>Class C
     ''' $$
 End Class</code>
 
-            Using session = CreateSession(code)
+            Using session = Await CreateSessionAsync(code)
                 Assert.Null(session)
             End Using
-        End Sub
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.AutomaticCompletion)>
-        Public Sub AfterDollarSign()
+        Public Async Function TestAfterDollarSign() As Task
             Dim code = <code>Class C
     Sub M()
         Dim s = $$$
     End Sub
 End Class</code>
 
-            Using session = CreateSession(code)
+            Using session = Await CreateSessionAsync(code)
                 Assert.NotNull(session)
                 CheckStart(session.Session)
             End Using
-        End Sub
-
-        Friend Overloads Function CreateSession(code As XElement) As Holder
-            Return CreateSession(code.NormalizedValue())
         End Function
 
-        Friend Overloads Function CreateSession(code As String) As Holder
+        Friend Overloads Async Function CreateSessionAsync(code As XElement) As Threading.Tasks.Task(Of Holder)
+            Return Await CreateSessionAsync(code.NormalizedValue())
+        End Function
+
+        Friend Overloads Async Function CreateSessionAsync(code As String) As Threading.Tasks.Task(Of Holder)
             Return CreateSession(
-                VisualBasicWorkspaceFactory.CreateWorkspaceFromFile(code),
+                Await TestWorkspace.CreateVisualBasicAsync(code),
                 BraceCompletionSessionProvider.DoubleQuote.OpenCharacter, BraceCompletionSessionProvider.DoubleQuote.CloseCharacter)
         End Function
     End Class

@@ -21,7 +21,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
 #else
         private static readonly StringComparer s_nameComparer = StringComparer.Ordinal;
 #endif
-
         private readonly MatchDefs _defs;
         private readonly MatchSymbols _symbols;
 
@@ -117,7 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                         return null;
                     }
 
-                    return this.VisitTypeMembers(otherContainer, nestedType, GetNestedTypes, (a, b) => s_nameComparer.Equals(a.Name, b.Name));
+                    return VisitTypeMembers(otherContainer, nestedType, GetNestedTypes, (a, b) => StringOrdinalComparer.Equals(a.Name, b.Name));
                 }
 
                 var member = def as Cci.ITypeDefinitionMember;
@@ -132,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     var field = def as Cci.IFieldDefinition;
                     if (field != null)
                     {
-                        return this.VisitTypeMembers(otherContainer, field, GetFields, (a, b) => s_nameComparer.Equals(a.Name, b.Name));
+                        return VisitTypeMembers(otherContainer, field, GetFields, (a, b) => s_nameComparer.Equals(a.Name, b.Name));
                     }
                 }
 
@@ -179,7 +178,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                 return _lazyTopLevelTypes;
             }
 
-            private T VisitTypeMembers<T>(
+            private static T VisitTypeMembers<T>(
                 Cci.ITypeDefinition otherContainer,
                 T member,
                 Func<Cci.ITypeDefinition, IEnumerable<T>> getMembers,
@@ -317,41 +316,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
             public override Symbol DefaultVisit(Symbol symbol)
             {
                 // Symbol should have been handled elsewhere.
-                throw new NotImplementedException();
+                throw ExceptionUtilities.Unreachable;
             }
 
             public override Symbol Visit(Symbol symbol)
             {
                 Debug.Assert((object)symbol.ContainingAssembly != (object)_otherAssembly);
 
-                // If the symbol is not defined in any of the previous source assemblies and not a constructed symbol
-                // no matching is necessary, just return the symbol.
-                if (!(symbol.ContainingAssembly is SourceAssemblySymbol))
-                {
-                    switch (symbol.Kind)
-                    {
-                        case SymbolKind.ArrayType:
-                        case SymbolKind.PointerType:
-                        case SymbolKind.DynamicType:
-                            break;
-
-                        case SymbolKind.NamedType:
-                            if (symbol.IsDefinition)
-                            {
-                                return symbol;
-                            }
-                            break;
-
-                        default:
-                            Debug.Assert(symbol.IsDefinition);
-                            return symbol;
-                    }
-                }
-
                 // Add an entry for the match, even if there is no match, to avoid
                 // matching the same symbol unsuccessfully multiple times.
-                var otherSymbol = _matches.GetOrAdd(symbol, base.Visit);
-                return otherSymbol;
+                return _matches.GetOrAdd(symbol, base.Visit);
             }
 
             public override Symbol VisitArrayType(ArrayTypeSymbol symbol)
@@ -391,16 +365,69 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
 
             public override Symbol VisitModule(ModuleSymbol module)
             {
-                // Only map symbols from source assembly and its previous generations to the other assembly. 
-                // All other symbols should map to themselves.
-                if (module.ContainingAssembly.Identity.Equals(_sourceAssembly.Identity))
+                var otherAssembly = (AssemblySymbol)Visit(module.ContainingAssembly);
+                if ((object)otherAssembly == null)
                 {
-                    return _otherAssembly.Modules[module.Ordinal];
+                    return null;
                 }
-                else
+
+                // manifest module:
+                if (module.Ordinal == 0)
                 {
-                    return module;
+                    return otherAssembly.Modules[0];
                 }
+
+                // match non-manifest module by name:
+                for (int i = 1; i < otherAssembly.Modules.Length; i++)
+                {
+                    var otherModule = otherAssembly.Modules[i];
+
+                    // use case sensitive comparison -- modules whose names differ in casing are considered distinct:
+                    if (s_nameComparer.Equals(otherModule.Name, module.Name))
+                    {
+                        return otherModule;
+                    }
+                }
+
+                return null;
+            }
+
+            public override Symbol VisitAssembly(AssemblySymbol assembly)
+            {
+                if (assembly.IsLinked)
+                {
+                    return assembly;
+                }
+
+                // When we map synthesized symbols from previous generations to the latest compilation 
+                // we might encounter a symbol that is defined in arbitrary preceding generation, 
+                // not just the immediately preceding generation. If the source assembly uses time-based 
+                // versioning assemblies of preceding generations might differ in their version number.
+                if (IdentityEqualIgnoringVersionWildcard(assembly, _sourceAssembly))
+                {
+                    return _otherAssembly;
+                }
+
+                // find a referenced assembly with the same source identity (modulo assembly version patterns):
+                foreach (var otherReferencedAssembly in _otherAssembly.Modules[0].ReferencedAssemblySymbols)
+                {
+                    if (IdentityEqualIgnoringVersionWildcard(assembly, otherReferencedAssembly))
+                    {
+                        return otherReferencedAssembly;
+                    }
+                }
+
+                return null;
+            }
+
+            private static bool IdentityEqualIgnoringVersionWildcard(AssemblySymbol left, AssemblySymbol right)
+            {
+                var leftIdentity = left.Identity;
+                var rightIdentity = right.Identity;
+
+                return AssemblyIdentityComparer.SimpleNameComparer.Equals(leftIdentity.Name, rightIdentity.Name) &&
+                       (left.AssemblyVersionPattern ?? leftIdentity.Version).Equals(right.AssemblyVersionPattern ?? rightIdentity.Version) &&
+                       AssemblyIdentity.EqualIgnoringNameAndVersion(leftIdentity, rightIdentity);
             }
 
             public override Symbol VisitNamespace(NamespaceSymbol @namespace)
@@ -468,6 +495,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     var typeMap = new TypeMap(otherTypeParameters, otherTypeArguments, allowAlpha: true);
                     return typeMap.SubstituteNamedType(otherDef);
                 }
+                else if (sourceType.IsTupleType)
+                {
+                    var otherDef = (NamedTypeSymbol)this.Visit(sourceType.TupleUnderlyingType);
+                    if ((object)otherDef == null || !otherDef.IsTupleOrCompatibleWithTupleOfCardinality(sourceType.TupleElementTypes.Length))
+                    {
+                        return null;
+                    }
+
+                    return TupleTypeSymbol.Create(otherDef, sourceType.TupleElementNames);
+                }
 
                 Debug.Assert(sourceType.IsDefinition);
 
@@ -509,7 +546,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
             public override Symbol VisitParameter(ParameterSymbol parameter)
             {
                 // Should never reach here. Should be matched as a result of matching the container.
-                throw new InvalidOperationException();
+                throw ExceptionUtilities.Unreachable;
             }
 
             public override Symbol VisitPointerType(PointerTypeSymbol symbol)
@@ -531,6 +568,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
 
             public override Symbol VisitTypeParameter(TypeParameterSymbol symbol)
             {
+                var indexed = symbol as IndexedTypeParameterSymbol;
+                if ((object)indexed != null)
+                {
+                    return indexed;
+                }
+
                 ImmutableArray<TypeParameterSymbol> otherTypeParameters;
                 var otherContainer = this.Visit(symbol.ContainingSymbol);
                 Debug.Assert((object)otherContainer != null);
@@ -667,7 +710,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
 
                 return _comparer.Equals(method.ReturnType, other.ReturnType) &&
                     method.Parameters.SequenceEqual(other.Parameters, AreParametersEqual) &&
-                    method.TypeArguments.SequenceEqual(other.TypeArguments, AreTypesEqual);
+                    method.TypeParameters.SequenceEqual(other.TypeParameters, AreTypesEqual);
             }
 
             private static MethodSymbol SubstituteTypeParameters(MethodSymbol method)
@@ -690,6 +733,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                 // TODO: Test with overloads (from PE base class?) that have modifiers.
                 Debug.Assert(!type.HasTypeArgumentsCustomModifiers);
                 Debug.Assert(!other.HasTypeArgumentsCustomModifiers);
+
+                // Tuple types should be unwrapped to their underlying type before getting here (see MatchSymbols.VisitNamedType)
+                Debug.Assert(!type.IsTupleType);
+                Debug.Assert(!other.IsTupleType);
+
                 return type.TypeArgumentsNoUseSiteDiagnostics.SequenceEqual(other.TypeArgumentsNoUseSiteDiagnostics, AreTypesEqual);
             }
 
@@ -717,7 +765,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     property.Parameters.SequenceEqual(other.Parameters, AreParametersEqual);
             }
 
-            private bool AreTypeParametersEqual(TypeParameterSymbol type, TypeParameterSymbol other)
+            private static bool AreTypeParametersEqual(TypeParameterSymbol type, TypeParameterSymbol other)
             {
                 Debug.Assert(type.Ordinal == other.Ordinal);
                 Debug.Assert(s_nameComparer.Equals(type.Name, other.Name));
@@ -796,7 +844,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     var visitedSource = (TypeSymbol)_matcher.Visit(source);
                     var visitedOther = (_deepTranslatorOpt != null) ? (TypeSymbol)_deepTranslatorOpt.Visit(other) : other;
 
-                    return visitedSource?.Equals(visitedOther, ignoreDynamic: true) == true;
+                    return visitedSource?.Equals(visitedOther, TypeCompareKind.IgnoreDynamicAndTupleNames) == true;
                 }
             }
         }
@@ -815,7 +863,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
             public override Symbol DefaultVisit(Symbol symbol)
             {
                 // Symbol should have been handled elsewhere.
-                throw new NotImplementedException();
+                throw ExceptionUtilities.Unreachable;
             }
 
             public override Symbol Visit(Symbol symbol)
@@ -847,8 +895,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                 if ((object)originalDef != type)
                 {
                     HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                    var translatedTypeArguments = type.GetAllTypeArguments(ref useSiteDiagnostics).SelectAsArray((t, v) => new TypeWithModifiers((TypeSymbol)v.Visit(t.Type), 
-                                                                                                                                                  v.VisitCustomModifiers(t.CustomModifiers)), 
+                    var translatedTypeArguments = type.GetAllTypeArguments(ref useSiteDiagnostics).SelectAsArray((t, v) => new TypeWithModifiers((TypeSymbol)v.Visit(t.Type),
+                                                                                                                                                  v.VisitCustomModifiers(t.CustomModifiers)),
                                                                                                                  this);
 
                     var translatedOriginalDef = (NamedTypeSymbol)this.Visit(originalDef);

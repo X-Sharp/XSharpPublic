@@ -4,6 +4,7 @@
 ' Contains the definition of the Scanner, which produces tokens from text 
 '-----------------------------------------------------------------------------
 
+Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
@@ -31,7 +32,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             ' Another } may follow the close brace of an interpolation if the interpolation lacked a format clause.
             ' This is because the normal escaping rules only apply when parsing the format string.
-            Debug.Assert(Not CanGet(1) OrElse Peek(offset + 1) <> c OrElse IsRightCurlyBracket(c), "Escape sequence not detected.")
+            Debug.Assert(Not CanGet(offset + 1) OrElse Peek(offset + 1) <> c OrElse Not (IsLeftCurlyBracket(c) OrElse IsDoubleQuote(c)), "Escape sequence not detected.")
 
             Dim scanTrailingTrivia As Boolean
 
@@ -89,7 +90,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim text = GetText(length)
 
-            Dim trailingTrivia As SyntaxList(Of VisualBasicSyntaxNode) = If(scanTrailingTrivia, ScanSingleLineTrivia(), Nothing)
+            Dim trailingTrivia As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = If(scanTrailingTrivia, ScanSingleLineTrivia(), Nothing)
 
             Return MakePunctuationToken(kind, text, leadingTrivia, trailingTrivia.Node)
 

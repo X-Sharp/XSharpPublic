@@ -4,7 +4,6 @@ using System;
 using Microsoft.CodeAnalysis.Editor.Commands;
 using Microsoft.CodeAnalysis.Editor.Options;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
-using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Text;
 
@@ -16,21 +15,16 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion
         {
             AssertIsForeground();
 
-            var isEnabled = args.SubjectBuffer.GetOption(EditorCompletionOptions.UseSuggestionMode);
+            var isEnabled = args.SubjectBuffer.GetFeatureOnOffOption(EditorCompletionOptions.UseSuggestionMode);
             return new CommandState(isAvailable: true, isChecked: isEnabled);
         }
 
         void ICommandHandler<ToggleCompletionModeCommandArgs>.ExecuteCommand(ToggleCompletionModeCommandArgs args, Action nextHandler)
         {
-            Workspace workspace;
-
-            if (Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out workspace))
+            if (Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out var workspace))
             {
-                var optionService = workspace.Services.GetService<IOptionService>();
-                var optionSet = optionService.GetOptions();
-
-                var wasEnabled = optionService.GetOption(EditorCompletionOptions.UseSuggestionMode);
-                optionService.SetOptions(optionSet.WithChangedOption(EditorCompletionOptions.UseSuggestionMode, !wasEnabled));
+                var newState = !workspace.Options.GetOption(EditorCompletionOptions.UseSuggestionMode);
+                workspace.Options = workspace.Options.WithChangedOption(EditorCompletionOptions.UseSuggestionMode, newState);
 
                 // If we don't have a computation in progress, then we don't have to do anything here.
                 if (this.sessionOpt == null)
@@ -38,7 +32,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion
                     return;
                 }
 
-                this.sessionOpt.SetModelBuilderState(!wasEnabled);
+                this.sessionOpt.SetModelBuilderState(newState);
             }
         }
     }

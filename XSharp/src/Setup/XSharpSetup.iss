@@ -18,16 +18,16 @@
 
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.12.0"
+#define ProdVer         "XSharp 0.2.12.1"
 #define ProdBuild       "XSharp Beta 12"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
-#define VIVersion       "0.2.12.2112"
-#define VITextVersion   "0.2.12.2112 (Beta 12)"                                                                                            
-#define TouchDate       "2017-05-20"
-#define TouchTime       "02:12:00"
+#define VIVersion       "0.2.12.2113"
+#define VITextVersion   "0.2.12.2113 (Beta 12a)"                                                                                            
+#define TouchDate       "2017-05-22"
+#define TouchTime       "02:12:01"
 #define InstallPath     "XSharpPath"
 
 
@@ -188,80 +188,83 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; Main program
+; Text files, independent of Debug/Release and independent of Fox
+Source: "{#BinRFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}xsi.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}xsi.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+
+
 #ifdef FOX
 Source: "{#BinRFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
-Source: "{#BinRFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSCompiler.exe";                     DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; BeforeInstall: TaskKill('xscompiler.exe');
+Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}xsi.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}xsi.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}xsi.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 
 Source: "Baggage\DebugRelease.txt";                        DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 ; Release Folder
-Source: "{#BinRFolder}xsc.exe";          DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinRFolder}xsc.exe";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSCompiler.exe";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce; 
+Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce; 
 Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags};  
-Source: "{#BinRFolder}XSCompiler.exe.config";              DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}xsi.exe";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}xsi.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-Source: "{#BinRFolder}xsi.exe.config";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 Source: "{#BinRFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
 
 ; Debug Folder
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; 
-Source: "{#BinDFolder}XSCompiler.exe";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; 
+Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}XSCompiler.exe";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; BeforeInstall: TaskKill('xscompiler.exe');
+Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; 
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}xsc.exe.config";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}xsi.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}xsi.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}xsi.exe.config";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
 
 #else
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; 
-Source: "{#BinDFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}XSCompiler.exe";                     DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; 
+Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; 
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}xsc.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}  
-Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}xsi.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}xsi.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinDFolder}xsi.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}  
 Source: "{#BinDFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-
 #endif
 
-; GAC files in Bin folder
-Source: "{#BinDFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall}; components: main
-Source: "{#BinDFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall}; components: main
+; GAC files in Bin folder, must be found by intellisense as well
+Source: "{#BinDFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall};
+Source: "{#BinDFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall};
 
-; 'Normal' Ms Runtime DLLs
-Source: "{#BinDFolder}System.Security.Cryptography.Algorithms.Dll"; DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinDFolder}System.Text.Encoding.Codepages.Dll";          DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinDFolder}System.Valuetuple.Dll";                       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinDFolder}Microsoft.DiaSymReader.*.Dll";                DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+; 'Normal' Ms Runtime DLLs, not in the GAC
+Source: "{#BinDFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinDFolder}System.AppContext.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinDFolder}System.Composition.*.dll";           DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}System.Console.dll";                 DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}System.Diagnostics.*.dll";           DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}System.IO.*.dll";                    DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}System.Security.*.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}System.Text.*.dll";                  DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}System.Threading.*.dll";             DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}System.Xml.*.dll";                   DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+
+
+
 
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinPFolder}baggage\rcdll.dll";                 DestDir: "{app}\bin"; Flags: {#StdFlags}; 
@@ -315,11 +318,11 @@ Components: Xide; Source: "{#XIDEFolder}{#XIDESetup}";                      Dest
 Components: vs2015; Source: "{#BinPFolder}XSharpProject.vsix";            DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
 ; CodeAnalysis is used by project system and CodeDom provider
 #ifdef FOX
-Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
-Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
+Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.VS.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
+Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.VS.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
 #else
-Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
-Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
+Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.VS.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
+Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.VS.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
 #endif
 
 Components: vs2015; Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; 

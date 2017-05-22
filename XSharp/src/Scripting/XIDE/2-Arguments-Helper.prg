@@ -1,7 +1,0 @@
-CLASS ScriptApiType
-	
-END CLASS
-
-PUBLIC FUNCTION Distance(X AS REAL8,Y AS REAL8) AS REAL8
-	RETURN Math.Sqrt(X^2+Y^2)
-

@@ -13,10 +13,10 @@
     <RoslynBin>..\Roslyn\Binaries</RoslynBin>
     <SuppressRoslynBuildVersion>true</SuppressRoslynBuildVersion>
     <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
-    <ProjectGuid>{A472BFB0-1BC4-4F9A-B610-9E83F6292D57}</ProjectGuid>
+    <ProjectGuid>{F738FD65-FFAF-4F52-8EFC-5AFFD1C42846}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>
-    <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
+    <AssemblyName>XSharp.CodeAnalysis.VS</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
@@ -24,17 +24,14 @@
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <SyntaxDefinition>$(MSBuildThisFileDirectory)$(RoslynSrc)\Compilers\CSharp\Portable\Syntax\Syntax.xml</SyntaxDefinition>
     <CompilerGeneratorToolsDir>$(SolutionDir)$(RoslynBin)\$(Configuration)\Exes\DeployCompilerGeneratorToolsRuntime\</CompilerGeneratorToolsDir>
-    <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <RestorePackages>true</RestorePackages>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <DelaySign>false</DelaySign>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419</NoWarn>
-    <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
+    <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
     <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -350,7 +347,7 @@
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
     <Compile Include="Parser\XSharpVOTreeTransformation.cs" />
     <Compile Include="Parser\XSharpTreeTransformation.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfoVS.cs" />
     <Compile Include="Binder\Semantics\Conversions.cs" />
     <Compile Include="LiteralNames.cs" />
     <Compile Include="Symbols\ConstantValueSpecialized.cs" />
@@ -363,7 +360,7 @@
     <Compile Include="Syntax\CSharpSyntaxTree.cs" />
     <Compile Include="Syntax\DeclarationStatementSyntax.cs" />
     <Compile Include="Assembly.cs" />
-    <None Include="XSharpCodeAnalysis.project.json" />
+    <None Include="XSharpCodeAnalysis.VS.project.json" />
   </ItemGroup>
   <ItemGroup>
     <BoundTreeDefinition Include="$(RoslynSrc)\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
@@ -429,7 +426,6 @@ java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -pack
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).* \Xsharp\DevPublic\External\$(Configuration)\*.* /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

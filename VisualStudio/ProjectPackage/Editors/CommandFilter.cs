@@ -368,9 +368,9 @@ namespace XSharp.Project
         private void OnCompletionSessionCommitted(object sender, EventArgs e)
         {
             // it MUST be the case....
-            if (_completionSession.SelectedCompletionSet.Completions.Count > 0)
+            if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null )
             {
-                if (_completionSession.SelectedCompletionSet.Completions[0].InsertionText.EndsWith("("))
+                if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
                 {
                     StartSignatureSession();
                 }

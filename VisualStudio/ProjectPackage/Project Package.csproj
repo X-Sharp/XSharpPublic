@@ -394,6 +394,9 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.png" />
     <Content Include="XSharp.png" />
+    <VSCTCompile Include="XSharpProjectPackage.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -414,6 +417,7 @@
       <DependentUpon>XStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="Wix\XVsConstants.cs" />
+    <Compile Include="XSharpMenuItems.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />

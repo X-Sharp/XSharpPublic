@@ -16,7 +16,7 @@
 #define SetupExeName    "XSharpSetup0212Public"
 #endif
 
-
+; version info and similar stuff.
 #define Product         "XSharp"
 #define ProdVer         "XSharp 0.2.12.1"
 #define ProdBuild       "XSharp Beta 12"
@@ -37,9 +37,9 @@
 #define KeyPassword     "J1O39dGG6FPLXWj"
 #define Description     "XSharp, xBase compiler for .Net"
 
-;Folders
-#define BinDFolder      "\Xsharp\Dev7\XSharp\Binaries\Debug_AnyCPU\"
-#define BinRFolder      "\Xsharp\Dev7\XSharp\Binaries\Release_AnyCPU\"
+;Source Folders and other related stuff
+#define BinDFolder      "\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
+#define BinRFolder      "\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
 #define BinPFolder      "\Xsharp\DevPublic\Binaries\Debug\"
 #define CommonFolder    "\Xsharp\Dev\XSharp\src\Common\"
 #define ToolsFolder     "\Xsharp\Dev\XSharp\src\Tools\"
@@ -48,6 +48,7 @@
 #define OutPutFolder    "\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "\Xsharp\Dev\XSharp\Xide\"
+#define SnippetsSource  "\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
 #define XIDESetup       "XIDE_Set_up_1.09.exe"
 #define XIDEVersion     "1.09"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
@@ -55,20 +56,24 @@
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"
 #define ImmutableVersion "System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define MetadataVersion  "System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+
+; Registry name for prgx extension
+#define XSScript            "XSharpScript"
+
+; FOlders and registry keys defined by others
 #define VulcanEditorGuid "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
 #define VS14RegPath      "Software\Microsoft\VisualStudio\14.0"
 #define VS15RegPath      "Software\Microsoft\VisualStudio\15.0"
 #define VS14LocalDir     "{localappdata}\Microsoft\VisualStudio\14.0"
 #define VS15LocalDir     "{localappdata}\Microsoft\VisualStudio\15.0_"
 #define SnippetsPath     "\Snippets\1033"
-#define SnippetsSource   "\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
 
+; Snippets of code for the Help installer.
 #define HelpInstall1  "/operation install /catalogname "
 #define HelpInstall2  "/locale en-us /sourceuri """"{app}\help\XSharp.msha"""" /wait 0"
 #define HelpUninstall1 "/silent /operation uninstall /catalogname"
 #define HelpUninstall2 "/locale en-us /vendor """"XSharp"""" /productname """"X#"""" /booklist """"X# Documentation"""" /wait 0"
 
-#define XSScript            "XSharpScript"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.

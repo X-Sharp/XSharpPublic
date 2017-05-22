@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
 using Roslyn.Utilities;
+using System.Collections.Immutable;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -24,11 +25,319 @@ namespace Microsoft.CodeAnalysis.CSharp
             _currentRecursionDepth = currentRecursionDepth;
         }
 
-        protected abstract ConversionsBase CreateInstance(int currentRecursionDepth);
-
         public abstract Conversion GetMethodGroupConversion(BoundMethodGroup source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics);
 
+        protected abstract ConversionsBase CreateInstance(int currentRecursionDepth);
+
         protected abstract Conversion GetInterpolatedStringConversion(BoundInterpolatedString source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics);
+
+        protected abstract Conversion GetImplicitTupleLiteralConversion(BoundTupleLiteral source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics);
+
+        protected abstract Conversion GetExplicitTupleLiteralConversion(BoundTupleLiteral source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast);
+
+        internal AssemblySymbol CorLibrary {  get { return corLibrary; } }
+
+        /// <summary>
+        /// Determines if the source expression is convertible to the destination type via
+        /// any built-in or user-defined implicit conversion.
+        /// </summary>
+        public Conversion ClassifyImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert(sourceExpression != null);
+            Debug.Assert((object)destination != null);
+
+            var sourceType = sourceExpression.Type;
+
+            //PERF: identity conversion is by far the most common implicit conversion, check for that first
+            if ((object)sourceType != null && HasIdentityConversion(sourceType, destination))
+            {
+                return Conversion.Identity;
+            }
+
+            Conversion conversion = ClassifyImplicitBuiltInConversionFromExpression(sourceExpression, sourceType, destination, ref useSiteDiagnostics);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+
+            if ((object)sourceType != null)
+            {
+                // Try using the short-circuit "fast-conversion" path.
+                Conversion fastConversion = FastClassifyConversion(sourceType, destination);
+                if (fastConversion.Exists)
+                {
+                    return fastConversion.IsImplicit ? fastConversion : Conversion.NoConversion;
+                }
+                else
+                {
+                    conversion = ClassifyImplicitBuiltInConversionSlow(sourceType, destination, ref useSiteDiagnostics);
+                    if (conversion.Exists)
+                    {
+                        return conversion;
+                    }
+                }
+#if XSHARP
+                if (sourceType.SpecialType == SpecialType.System_Void)
+                {
+                    return Conversion.NoConversion;
+                }
+#endif
+            }
+
+            return GetImplicitUserDefinedConversion(sourceExpression, sourceType, destination, ref useSiteDiagnostics);
+        }
+
+        /// <summary>
+        /// Determines if the source type is convertible to the destination type via
+        /// any built-in or user-defined implicit conversion.
+        /// </summary>
+        public Conversion ClassifyImplicitConversionFromType(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            //PERF: identity conversions are very common, check for that first.
+            if (HasIdentityConversion(source, destination))
+            {
+                return Conversion.Identity;
+            }
+
+            // Try using the short-circuit "fast-conversion" path.
+            Conversion fastConversion = FastClassifyConversion(source, destination);
+            if (fastConversion.Exists)
+            {
+                return fastConversion.IsImplicit ? fastConversion : Conversion.NoConversion;
+            }
+            else
+            {
+                Conversion conversion = ClassifyImplicitBuiltInConversionSlow(source, destination, ref useSiteDiagnostics);
+                if (conversion.Exists)
+                {
+                    return conversion;
+                }
+            }
+
+            return GetImplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
+        }
+
+        /// <summary>
+        /// Determines if the source expression of given type is convertible to the destination type via
+        /// any built-in or user-defined conversion.
+        /// 
+        /// This helper is used in rare cases involving synthesized expressions where we know the type of an expression, but do not have the actual expression.
+        /// The reason for this helper (as opposed to ClassifyConversionFromType) is that conversions from expressions could be different
+        /// from conversions from type. For example expressions of dynamic type are implicitly convertable to any type, while dynamic type itself is not.
+        /// </summary>
+        public Conversion ClassifyConversionFromExpressionType(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            // since we are converting from expression, we may have implicit dynamic conversion
+            if (HasImplicitDynamicConversionFromExpression(source, destination))
+            {
+                return Conversion.ImplicitDynamic;
+            }
+
+            return ClassifyConversionFromType(source, destination, ref useSiteDiagnostics);
+        }
+
+        /// <summary>
+        /// Determines if the source expression is convertible to the destination type via
+        /// any conversion: implicit, explicit, user-defined or built-in.
+        /// </summary>
+        /// <remarks>
+        /// It is rare but possible for a source expression to be convertible to a destination type
+        /// by both an implicit user-defined conversion and a built-in explicit conversion.
+        /// In that circumstance, this method classifies the conversion as the implicit conversion or explicit depending on "forCast"
+        /// </remarks>
+        public Conversion ClassifyConversionFromExpression(BoundExpression sourceExpression, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast = false)
+        {
+            Debug.Assert(sourceExpression != null);
+            Debug.Assert((object)destination != null);
+
+            if (forCast)
+            {
+                return ClassifyConversionFromExpressionForCast(sourceExpression, destination, ref useSiteDiagnostics);
+            }
+
+            var result = ClassifyImplicitConversionFromExpression(sourceExpression, destination, ref useSiteDiagnostics);
+            if (result.Exists)
+            {
+                return result;
+            }
+
+            return ClassifyExplicitOnlyConversionFromExpression(sourceExpression, destination, ref useSiteDiagnostics, forCast: false);
+        }
+
+        /// <summary>
+        /// Determines if the source type is convertible to the destination type via
+        /// any conversion: implicit, explicit, user-defined or built-in.
+        /// </summary>
+        /// <remarks>
+        /// It is rare but possible for a source type to be convertible to a destination type
+        /// by both an implicit user-defined conversion and a built-in explicit conversion.
+        /// In that circumstance, this method classifies the conversion as the implicit conversion or explicit depending on "forCast"
+        /// </remarks>
+        public Conversion ClassifyConversionFromType(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast = false)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            if (forCast)
+            {
+                return ClassifyConversionFromTypeForCast(source, destination, ref useSiteDiagnostics);
+            }
+
+            // Try using the short-circuit "fast-conversion" path.
+            Conversion fastConversion = FastClassifyConversion(source, destination);
+            if (fastConversion.Exists)
+            {
+                return fastConversion;
+            }
+            else
+            {
+                Conversion conversion1 = ClassifyImplicitBuiltInConversionSlow(source, destination, ref useSiteDiagnostics);
+                if (conversion1.Exists)
+                {
+                    return conversion1;
+                }
+            }
+
+            Conversion conversion = GetImplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+
+            conversion = ClassifyExplicitBuiltInOnlyConversion(source, destination, ref useSiteDiagnostics, forCast: false);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+
+            return GetExplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
+        }
+
+        /// <summary>
+        /// Determines if the source expression is convertible to the destination type via
+        /// any conversion: implicit, explicit, user-defined or built-in.
+        /// </summary>
+        /// <remarks>
+        /// It is rare but possible for a source expression to be convertible to a destination type
+        /// by both an implicit user-defined conversion and a built-in explicit conversion.
+        /// In that circumstance, this method classifies the conversion as the built-in conversion.
+        /// 
+        /// An implicit conversion exists from an expression of a dynamic type to any type.
+        /// An explicit conversion exists from a dynamic type to any type. 
+        /// When casting we prefer the explicit conversion.
+        /// </remarks>
+        private Conversion ClassifyConversionFromExpressionForCast(BoundExpression source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert(source != null);
+            Debug.Assert((object)destination != null);
+
+            Conversion implicitConversion = ClassifyImplicitConversionFromExpression(source, destination, ref useSiteDiagnostics);
+            if (implicitConversion.Exists && !ExplicitConversionMayDifferFromImplicit(implicitConversion))
+            {
+                return implicitConversion;
+            }
+
+            Conversion explicitConversion = ClassifyExplicitOnlyConversionFromExpression(source, destination, ref useSiteDiagnostics, forCast: true);
+            if (explicitConversion.Exists)
+            {
+                return explicitConversion;
+            }
+
+            // It is possible for a user-defined conversion to be unambiguous when considered as
+            // an implicit conversion and ambiguous when considered as an explicit conversion.
+            // The native compiler does not check to see if a cast could be successfully bound as
+            // an unambiguous user-defined implicit conversion; it goes right to the ambiguous
+            // user-defined explicit conversion and produces an error. This means that in
+            // C# 5 it is possible to have:
+            //
+            // Y y = new Y();
+            // Z z1 = y;
+            // 
+            // succeed but
+            //
+            // Z z2 = (Z)y;
+            //
+            // fail.
+            //
+            // However, there is another interesting wrinkle. It is possible for both
+            // an implicit user-defined conversion and an explicit user-defined conversion
+            // to exist and be unambiguous. For example, if there is an implicit conversion
+            // double-->C and an explicit conversion from int-->C, and the user casts a short
+            // to C, then both the implicit and explicit conversions are applicable and
+            // unambiguous. The native compiler in this case prefers the explicit conversion,
+            // and for backwards compatibility, we match it.
+
+            return implicitConversion.Exists ? implicitConversion : Conversion.NoConversion;
+        }
+
+        /// <summary>
+        /// Determines if the source type is convertible to the destination type via
+        /// any conversion: implicit, explicit, user-defined or built-in.
+        /// </summary>
+        /// <remarks>
+        /// It is rare but possible for a source type to be convertible to a destination type
+        /// by both an implicit user-defined conversion and a built-in explicit conversion.
+        /// In that circumstance, this method classifies the conversion as the built-in conversion.
+        /// </remarks>
+        private Conversion ClassifyConversionFromTypeForCast(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            // Try using the short-circuit "fast-conversion" path.
+            Conversion fastConversion = FastClassifyConversion(source, destination);
+            if (fastConversion.Exists)
+            {
+                return fastConversion;
+            }
+
+            Conversion implicitBuiltInConversion = ClassifyImplicitBuiltInConversionSlow(source, destination, ref useSiteDiagnostics);
+            if (implicitBuiltInConversion.Exists && !ExplicitConversionMayDifferFromImplicit(implicitBuiltInConversion))
+            {
+                return implicitBuiltInConversion;
+            }
+
+            Conversion explicitBuiltInConversion = ClassifyExplicitBuiltInOnlyConversion(source, destination, ref useSiteDiagnostics, forCast: true);
+            if (explicitBuiltInConversion.Exists)
+            {
+                return explicitBuiltInConversion;
+            }
+
+            if (implicitBuiltInConversion.Exists)
+            {
+                return implicitBuiltInConversion;
+            }
+
+            // It is possible for a user-defined conversion to be unambiguous when considered as
+            // an implicit conversion and ambiguous when considered as an explicit conversion.
+            // The native compiler does not check to see if a cast could be successfully bound as
+            // an unambiguous user-defined implicit conversion; it goes right to the ambiguous
+            // user-defined explicit conversion and produces an error. This means that in
+            // C# 5 it is possible to have:
+            //
+            // Y y = new Y();
+            // Z z1 = y;
+            // 
+            // succeed but
+            //
+            // Z z2 = (Z)y;
+            //
+            // fail.
+
+            var conversion = GetExplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+
+            return GetImplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
+        }
 
         /// <summary>
         /// Attempt a quick classification of builtin conversions.  As result of "no conversion"
@@ -38,7 +347,337 @@ namespace Microsoft.CodeAnalysis.CSharp
         public static Conversion FastClassifyConversion(TypeSymbol source, TypeSymbol target)
         {
             ConversionKind convKind = ConversionEasyOut.ClassifyConversion(source, target);
-            return new Conversion(convKind);
+            if (convKind != ConversionKind.ImplicitNullable && convKind != ConversionKind.ExplicitNullable)
+            {
+                return Conversion.GetTrivialConversion(convKind);
+            }
+
+            return Conversion.MakeNullableConversion(convKind, FastClassifyConversion(source.StrippedType(), target.StrippedType()));
+        }
+
+        public Conversion ClassifyBuiltInConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            // Try using the short-circuit "fast-conversion" path.
+            Conversion fastConversion = FastClassifyConversion(source, destination);
+            if (fastConversion.Exists)
+            {
+                return fastConversion;
+            }
+            else
+            {
+                Conversion conversion = ClassifyImplicitBuiltInConversionSlow(source, destination, ref useSiteDiagnostics);
+                if (conversion.Exists)
+                {
+                    return conversion;
+                }
+            }
+
+            return ClassifyExplicitBuiltInOnlyConversion(source, destination, ref useSiteDiagnostics, forCast: false);
+        }
+
+        /// <summary>
+        /// Determines if the source type is convertible to the destination type via
+        /// any standard implicit or standard explicit conversion.
+        /// </summary>
+        /// <remarks>
+        /// Not all built-in explicit conversions are standard explicit conversions.
+        /// </remarks>
+        public Conversion ClassifyStandardConversion(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert(sourceExpression != null || (object)source != null);
+            Debug.Assert((object)destination != null);
+
+            // Note that the definition of explicit standard conversion does not include all explicit
+            // reference conversions! There is a standard implicit reference conversion from
+            // Action<Object> to Action<Exception>, thanks to contravariance. There is a standard
+            // implicit reference conversion from Action<Object> to Action<String> for the same reason.
+            // Therefore there is an explicit reference conversion from Action<Exception> to
+            // Action<String>; a given Action<Exception> might be an Action<Object>, and hence
+            // convertible to Action<String>.  However, this is not a *standard* explicit conversion. The
+            // standard explicit conversions are all the standard implicit conversions and their
+            // opposites. Therefore Action<Object>-->Action<String> and Action<String>-->Action<Object>
+            // are both standard conversions. But Action<String>-->Action<Exception> is not a standard
+            // explicit conversion because neither it nor its opposite is a standard implicit
+            // conversion.
+            //
+            // Similarly, there is no standard explicit conversion from double to decimal, because
+            // there is no standard implicit conversion between the two types.
+
+            // SPEC: The standard explicit conversions are all standard implicit conversions plus 
+            // SPEC: the subset of the explicit conversions for which an opposite standard implicit 
+            // SPEC: conversion exists. In other words, if a standard implicit conversion exists from
+            // SPEC: a type A to a type B, then a standard explicit conversion exists from type A to 
+            // SPEC: type B and from type B to type A.
+
+            Conversion conversion = ClassifyStandardImplicitConversion(sourceExpression, source, destination, ref useSiteDiagnostics);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+
+            if ((object)source != null)
+            {
+                return DeriveStandardExplicitFromOppositeStandardImplicitConversion(source, destination, ref useSiteDiagnostics);
+            }
+
+            return Conversion.NoConversion;
+        }
+
+        internal Conversion ClassifyStandardImplicitConversion(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert(sourceExpression != null || (object)source != null);
+            Debug.Assert(sourceExpression == null || (object)sourceExpression.Type == (object)source);
+            Debug.Assert((object)destination != null);
+
+            // SPEC: The following implicit conversions are classified as standard implicit conversions:
+            // SPEC: Identity conversions
+            // SPEC: Implicit numeric conversions
+            // SPEC: Implicit nullable conversions
+            // SPEC: Implicit reference conversions
+            // SPEC: Boxing conversions
+            // SPEC: Implicit constant expression conversions
+            // SPEC: Implicit conversions involving type parameters
+            //
+            // and in unsafe code:
+            //
+            // SPEC: From any pointer type to void*
+            //
+            // SPEC ERROR: 
+            // The specification does not say to take into account the conversion from
+            // the *expression*, only its *type*. But the expression may not have a type
+            // (because it is null, a method group, or a lambda), or the expression might
+            // be convertible to the destination type via a constant numeric conversion.
+            // For example, the native compiler allows "C c = 1;" to work if C is a class which
+            // has an implicit conversion from byte to C, despite the fact that there is
+            // obviously no standard implicit conversion from *int* to *byte*. 
+            // Similarly, if a struct S has an implicit conversion from string to S, then
+            // "S s = null;" should be allowed. 
+            // 
+            // We extend the definition of standard implicit conversions to include
+            // all of the implicit conversions that are allowed based on an expression.
+
+            Conversion conversion = ClassifyImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+
+            if ((object)source != null)
+            {
+                return ClassifyStandardImplicitConversion(source, destination, ref useSiteDiagnostics);
+            }
+
+            return Conversion.NoConversion;
+        }
+
+        private Conversion ClassifyStandardImplicitConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            if (HasIdentityConversion(source, destination))
+            {
+                return Conversion.Identity;
+            }
+
+            if (HasImplicitNumericConversion(source, destination))
+            {
+                return Conversion.ImplicitNumeric;
+            }
+
+            var nullableConversion = ClassifyImplicitNullableConversion(source, destination, ref useSiteDiagnostics);
+            if (nullableConversion.Exists)
+            {
+                return nullableConversion;
+            }
+
+            if (HasImplicitReferenceConversion(source, destination, ref useSiteDiagnostics))
+            {
+                return Conversion.ImplicitReference;
+            }
+
+            if (HasBoxingConversion(source, destination, ref useSiteDiagnostics))
+            {
+                return Conversion.Boxing;
+            }
+
+            if (HasImplicitPointerConversion(source, destination))
+            {
+                return Conversion.PointerToVoid;
+            }
+
+            var tupleConversion = ClassifyImplicitTupleConversion(source, destination, ref useSiteDiagnostics);
+            if (tupleConversion.Exists)
+            {
+                return tupleConversion;
+            }
+
+            return Conversion.NoConversion;
+        }
+
+        private Conversion ClassifyImplicitBuiltInConversionSlow(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            if (source.SpecialType == SpecialType.System_Void || destination.SpecialType == SpecialType.System_Void)
+            {
+                return Conversion.NoConversion;
+            }
+
+            Conversion conversion = ClassifyStandardImplicitConversion(source, destination, ref useSiteDiagnostics);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+
+            //if (HasImplicitDynamicConversion(source, destination))
+            //{
+            //    return Conversion.ImplicitDynamic;
+            //}
+
+            return Conversion.NoConversion;
+        }
+
+        private Conversion GetImplicitUserDefinedConversion(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            var conversionResult = AnalyzeImplicitUserDefinedConversions(sourceExpression, source, destination, ref useSiteDiagnostics);
+            return new Conversion(conversionResult, isImplicit: true);
+        }
+
+        private Conversion ClassifyExplicitBuiltInOnlyConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            if (source.SpecialType == SpecialType.System_Void || destination.SpecialType == SpecialType.System_Void)
+            {
+                return Conversion.NoConversion;
+            }
+
+            // The call to HasExplicitNumericConversion isn't necessary, because it is always tested
+            // already by the "FastConversion" code.
+            Debug.Assert(!HasExplicitNumericConversion(source, destination));
+
+            //if (HasExplicitNumericConversion(source, specialTypeSource, destination, specialTypeDest))
+            //{
+            //    return Conversion.ExplicitNumeric;
+            //}
+
+            if (HasSpecialIntPtrConversion(source, destination))
+            {
+                return Conversion.IntPtr;
+            }
+
+            if (HasExplicitEnumerationConversion(source, destination))
+            {
+                return Conversion.ExplicitEnumeration;
+            }
+
+            var nullableConversion = ClassifyExplicitNullableConversion(source, destination, ref useSiteDiagnostics, forCast);
+            if (nullableConversion.Exists)
+            {
+                return nullableConversion;
+            }
+
+            if (HasExplicitReferenceConversion(source, destination, ref useSiteDiagnostics))
+            {
+                return (source.Kind == SymbolKind.DynamicType) ? Conversion.ExplicitDynamic : Conversion.ExplicitReference;
+            }
+
+            if (HasUnboxingConversion(source, destination, ref useSiteDiagnostics))
+            {
+                return Conversion.Unboxing;
+            }
+
+            var tupleConversion = ClassifyExplicitTupleConversion(source, destination, ref useSiteDiagnostics, forCast);
+            if (tupleConversion.Exists)
+            {
+                return tupleConversion;
+            }
+
+            if (HasPointerToPointerConversion(source, destination))
+            {
+                return Conversion.PointerToPointer;
+            }
+
+            if (HasPointerToIntegerConversion(source, destination))
+            {
+                return Conversion.PointerToInteger;
+            }
+
+            if (HasIntegerToPointerConversion(source, destination))
+            {
+                return Conversion.IntegerToPointer;
+            }
+
+            if (HasExplicitDynamicConversion(source, destination))
+            {
+                return Conversion.ExplicitDynamic;
+            }
+
+            return Conversion.NoConversion;
+        }
+
+        private Conversion GetExplicitUserDefinedConversion(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            UserDefinedConversionResult conversionResult = AnalyzeExplicitUserDefinedConversions(sourceExpression, source, destination, ref useSiteDiagnostics);
+            return new Conversion(conversionResult, isImplicit: false);
+        }
+
+        private Conversion DeriveStandardExplicitFromOppositeStandardImplicitConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            var oppositeConversion = ClassifyStandardImplicitConversion(destination, source, ref useSiteDiagnostics);
+            Conversion impliedExplicitConversion;
+
+            switch (oppositeConversion.Kind)
+            {
+                case ConversionKind.Identity:
+                    impliedExplicitConversion = Conversion.Identity;
+                    break;
+                case ConversionKind.ImplicitNumeric:
+                    impliedExplicitConversion = Conversion.ExplicitNumeric;
+                    break;
+                case ConversionKind.ImplicitReference:
+                    impliedExplicitConversion = Conversion.ExplicitReference;
+                    break;
+                case ConversionKind.Boxing:
+                    impliedExplicitConversion = Conversion.Unboxing;
+                    break;
+                case ConversionKind.NoConversion:
+                    impliedExplicitConversion = Conversion.NoConversion;
+                    break;
+                case ConversionKind.PointerToVoid:
+                    impliedExplicitConversion = Conversion.PointerToPointer;
+                    break;
+
+                case ConversionKind.ImplicitTuple:
+                    // only implicit tuple conversions are standard conversions, 
+                    // having implicit conversion in the other direction does not help here.
+                    impliedExplicitConversion = Conversion.NoConversion;
+                    break;
+
+                case ConversionKind.ImplicitNullable:
+                    var strippedSource = source.StrippedType();
+                    var strippedDestination = destination.StrippedType();
+                    var underlyingConversion = DeriveStandardExplicitFromOppositeStandardImplicitConversion(strippedSource, strippedDestination, ref useSiteDiagnostics);
+
+                    // the opposite underlying conversion may not exist 
+                    // for example if underlying conversion is implicit tuple
+                    impliedExplicitConversion = underlyingConversion.Exists ?
+                        Conversion.MakeNullableConversion(ConversionKind.ExplicitNullable, underlyingConversion) :
+                        Conversion.NoConversion;
+
+                    break;
+
+                default:
+                    throw ExceptionUtilities.UnexpectedValue(oppositeConversion.Kind);
+            }
+
+            return impliedExplicitConversion;
         }
 
         /// <summary>
@@ -78,7 +717,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         // IsBaseClassOfClass determines whether the purported derived type is a class, and if so,
-        // if the purported base type is one of its base classes.
+        // if the purported base type is one of its base classes. 
         public static bool IsBaseClassOfClass(TypeSymbol baseType, TypeSymbol derivedType, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             Debug.Assert((object)baseType != null);
@@ -92,7 +731,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // * a class is not a base class of itself
         // * type parameters do not have base classes. (They have "effective base classes".)
         // * all base classes must be classes
-        // * dynamics are removed; if we have class D : B<dynamic> then B<object> is a
+        // * dynamics are removed; if we have class D : B<dynamic> then B<object> is a 
         //   base class of D. However, dynamic is never a base class of anything.
         public static bool IsBaseClass(TypeSymbol derivedType, TypeSymbol baseType, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
@@ -117,417 +756,612 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         /// <summary>
-        /// Determines if the source type is convertible to the destination type via
-        /// any conversion: implicit, explicit, user-defined or built-in.
+        /// returns true when implicit conversion is not necessarily the same as explicit conversion
         /// </summary>
-        /// <remarks>
-        /// It is rare but possible for a source type to be convertible to a destination type
-        /// by both an implicit user-defined conversion and a built-in explicit conversion.
-        /// In that circumstance, this method classifies the conversion as the implicit conversion.
-        /// </remarks>
-        public Conversion ClassifyConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool builtinOnly = false)
+        private static bool ExplicitConversionMayDifferFromImplicit(Conversion implicitConversion)
         {
-            Debug.Assert((object)source != null);
-            Debug.Assert((object)destination != null);
-
-            // Try using the short-circuit "fast-conversion" path.
-            Conversion fastConversion = FastClassifyConversion(source, destination);
-            if (fastConversion.Exists)
+            switch (implicitConversion.Kind)
             {
-                return fastConversion;
-            }
-            else
-            {
-                Conversion conversion1 = ClassifyImplicitBuiltInConversionSlow(source, destination, ref useSiteDiagnostics);
-                if (conversion1.Exists)
-                {
-                    return conversion1;
-                }
-            }
+                case ConversionKind.ImplicitUserDefined:
+                case ConversionKind.ImplicitDynamic:
+                case ConversionKind.ImplicitTuple:
+                case ConversionKind.ImplicitTupleLiteral:
+                case ConversionKind.ImplicitNullable:
+                    return true;
 
-            if (!builtinOnly)
-            {
-                Conversion conversion1 = GetImplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
-                if (conversion1.Exists)
-                {
-                    return conversion1;
-                }
+                default:
+                    return false;
             }
-
-            var conversion = ClassifyExplicitBuiltInOnlyConversion(source, destination, ref useSiteDiagnostics);
-            if (conversion.Exists)
-            {
-                return conversion;
-            }
-
-            return builtinOnly ? conversion : GetExplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
         }
 
-        /// <summary>
-        /// Determines if the source type is convertible to the destination type via
-        /// any conversion: implicit, explicit, user-defined or built-in.
-        /// </summary>
-        /// <remarks>
-        /// It is rare but possible for a source type to be convertible to a destination type
-        /// by both an implicit user-defined conversion and a built-in explicit conversion.
-        /// In that circumstance, this method classifies the conversion as the built-in conversion.
-        /// </remarks>
-        public Conversion ClassifyConversionForCast(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
-        {
-            Debug.Assert((object)source != null);
-            Debug.Assert((object)destination != null);
-
-            // Try using the short-circuit "fast-conversion" path.
-            Conversion fastConversion = FastClassifyConversion(source, destination);
-            if (fastConversion.Exists)
-            {
-                return fastConversion;
-            }
-            else
-            {
-                Conversion conversion1 = ClassifyImplicitBuiltInConversionSlow(source, destination, ref useSiteDiagnostics);
-                if (conversion1.Exists)
-                {
-                    return conversion1;
-                }
-            }
-
-            Conversion conversion = ClassifyExplicitBuiltInOnlyConversion(source, destination, ref useSiteDiagnostics);
-            if (conversion.Exists)
-            {
-                return conversion;
-            }
-
-            // It is possible for a user-defined conversion to be unambiguous when considered as
-            // an implicit conversion and ambiguous when considered as an explicit conversion.
-            // The native compiler does not check to see if a cast could be successfully bound as
-            // an unambiguous user-defined implicit conversion; it goes right to the ambiguous
-            // user-defined explicit conversion and produces an error. This means that in
-            // C# 5 it is possible to have:
-            //
-            // Y y = new Y();
-            // Z z1 = y;
-            //
-            // succeed but
-            //
-            // Z z2 = (Z)y;
-            //
-            // fail.
-
-            conversion = GetExplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
-            if (conversion.Exists)
-            {
-                return conversion;
-            }
-
-            return GetImplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
-        }
-
-        /// <summary>
-        /// Determines if the source type is convertible to the destination type via
-        /// any standard implicit or standard explicit conversion.
-        /// </summary>
-        /// <remarks>
-        /// Not all built-in explicit conversions are standard explicit conversions.
-        /// </remarks>
-        public Conversion ClassifyStandardConversion(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
-        {
-            Debug.Assert(sourceExpression != null || (object)source != null);
-            Debug.Assert((object)destination != null);
-
-            // Note that the definition of explicit standard conversion does not include all explicit
-            // reference conversions! There is a standard implicit reference conversion from
-            // Action<Object> to Action<Exception>, thanks to contravariance. There is a standard
-            // implicit reference conversion from Action<Object> to Action<String> for the same reason.
-            // Therefore there is an explicit reference conversion from Action<Exception> to
-            // Action<String>; a given Action<Exception> might be an Action<Object>, and hence
-            // convertible to Action<String>.  However, this is not a *standard* explicit conversion. The
-            // standard explicit conversions are all the standard implicit conversions and their
-            // opposites. Therefore Action<Object>-->Action<String> and Action<String>-->Action<Object>
-            // are both standard conversions. But Action<String>-->Action<Exception> is not a standard
-            // explicit conversion because neither it nor its opposite is a standard implicit
-            // conversion.
-            //
-            // Similarly, there is no standard explicit conversion from double to decimal, because
-            // there is no standard implicit conversion between the two types.
-
-            // SPEC: The standard explicit conversions are all standard implicit conversions plus
-            // SPEC: the subset of the explicit conversions for which an opposite standard implicit
-            // SPEC: conversion exists. In other words, if a standard implicit conversion exists from
-            // SPEC: a type A to a type B, then a standard explicit conversion exists from type A to
-            // SPEC: type B and from type B to type A.
-
-            Conversion conversion = ClassifyStandardImplicitConversion(sourceExpression, source, destination, ref useSiteDiagnostics);
-            if (conversion.Exists)
-            {
-                return conversion;
-            }
-
-            if ((object)source != null)
-            {
-                conversion = ClassifyStandardImplicitConversion(destination, source, ref useSiteDiagnostics);
-                switch (conversion.Kind)
-                {
-                    case ConversionKind.ImplicitNumeric:
-                        return Conversion.ExplicitNumeric;
-                    case ConversionKind.ImplicitNullable:
-                        return Conversion.ExplicitNullable;
-                    case ConversionKind.ImplicitReference:
-                        return Conversion.ExplicitReference;
-                    case ConversionKind.Boxing:
-                        return Conversion.Unboxing;
-                    case ConversionKind.NoConversion:
-                        return Conversion.NoConversion;
-                    case ConversionKind.PointerToVoid:
-                        return Conversion.PointerToPointer;
-
-                    default:
-                        throw ExceptionUtilities.UnexpectedValue(conversion.Kind);
-                }
-            }
-
-            return Conversion.NoConversion;
-        }
-
-        internal Conversion ClassifyStandardImplicitConversion(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        private Conversion ClassifyImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             Debug.Assert(sourceExpression != null || (object)source != null);
             Debug.Assert(sourceExpression == null || (object)sourceExpression.Type == (object)source);
             Debug.Assert((object)destination != null);
 
-            // SPEC: The following implicit conversions are classified as standard implicit conversions:
-            // SPEC: Identity conversions
-            // SPEC: Implicit numeric conversions
-            // SPEC: Implicit nullable conversions
-            // SPEC: Implicit reference conversions
-            // SPEC: Boxing conversions
-            // SPEC: Implicit constant expression conversions
-            // SPEC: Implicit conversions involving type parameters
-            //
-            // and in unsafe code:
-            //
-            // SPEC: From any pointer type to void*
-            //
-            // SPEC ERROR:
-            // The specification does not say to take into account the conversion from
-            // the *expression*, only its *type*. But the expression may not have a type
-            // (because it is null, a method group, or a lambda), or the expression might
-            // be convertible to the destination type via a constant numeric conversion.
-            // For example, the native compiler allows "C c = 1;" to work if C is a class which
-            // has an implicit conversion from byte to C, despite the fact that there is
-            // obviously no standard implicit conversion from *int* to *byte*.
-            // Similarly, if a struct S has an implicit conversion from string to S, then
-            // "S s = null;" should be allowed.
-            //
-            // We extend the definition of standard implicit conversions to include
-            // all of the implicit conversions that are allowed based on an expression.
-
-            Conversion conversion = ClassifyImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
-            if (conversion.Exists)
+            if (HasImplicitDynamicConversionFromExpression(source, destination))
             {
-                return conversion;
+                return Conversion.ImplicitDynamic;
             }
 
-            if ((object)source != null)
+            // The following conversions only exist for certain form of expressions, 
+            // if we have no expression none if them is applicable.
+            if (sourceExpression == null)
             {
-                return ClassifyStandardImplicitConversion(source, destination, ref useSiteDiagnostics);
+                return Conversion.NoConversion;
             }
 
+            if (HasImplicitEnumerationConversion(sourceExpression, destination))
+            {
+                return Conversion.ImplicitEnumeration;
+            }
+
+            var constantConversion = ClassifyImplicitConstantExpressionConversion(sourceExpression, destination);
+            if (constantConversion.Exists)
+            {
+                return constantConversion;
+            }
+
+            switch (sourceExpression.Kind)
+            {
+                case BoundKind.Literal:
+                    var nullLiteralConversion = ClassifyNullLiteralConversion(sourceExpression, destination);
+                    if (nullLiteralConversion.Exists)
+                    {
+                        return nullLiteralConversion;
+                    }
+                    break;
+
+                case BoundKind.TupleLiteral:
+                    var tupleConversion = ClassifyImplicitTupleLiteralConversion((BoundTupleLiteral)sourceExpression, destination, ref useSiteDiagnostics);
+                    if (tupleConversion.Exists)
+                    {
+                        return tupleConversion;
+                    }
+                    break;
+
+                case BoundKind.UnboundLambda:
+                    if (HasAnonymousFunctionConversion(sourceExpression, destination))
+                    {
+                        return Conversion.AnonymousFunction;
+                    }
+                    break;
+
+                case BoundKind.MethodGroup:
+                    Conversion methodGroupConversion = GetMethodGroupConversion((BoundMethodGroup)sourceExpression, destination, ref useSiteDiagnostics);
+                    if (methodGroupConversion.Exists)
+                    {
+                        return methodGroupConversion;
+                    }
+                    break;
+
+                case BoundKind.InterpolatedString:
+                    Conversion interpolatedStringConversion = GetInterpolatedStringConversion((BoundInterpolatedString)sourceExpression, destination, ref useSiteDiagnostics);
+                    if (interpolatedStringConversion.Exists)
+                    {
+                        return interpolatedStringConversion;
+                    }
+                    break;
+
+                case BoundKind.ThrowExpression:
+                    return Conversion.ImplicitThrow;
+            }
+
+#if !XSHARP
             return Conversion.NoConversion;
+#else
+            return ClassifyXSImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+#endif
         }
 
-        internal Conversion ClassifyStandardImplicitConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        private static Conversion ClassifyNullLiteralConversion(BoundExpression source, TypeSymbol destination)
         {
             Debug.Assert((object)source != null);
             Debug.Assert((object)destination != null);
 
-            if (HasIdentityConversion(source, destination))
+            if (!source.IsLiteralNull())
             {
-                return Conversion.Identity;
+                return Conversion.NoConversion;
             }
 
-            if (HasImplicitNumericConversion(source, destination))
+            // SPEC: An implicit conversion exists from the null literal to any nullable type. 
+            if (destination.IsNullableType())
             {
-                return Conversion.ImplicitNumeric;
+                // The spec defines a "null literal conversion" specifically as a conversion from
+                // null to nullable type.
+                return Conversion.NullLiteral;
             }
 
-            if (HasImplicitNullableConversion(source, destination))
-            {
-                return Conversion.ImplicitNullable;
-            }
+            // SPEC: An implicit conversion exists from the null literal to any reference type. 
+            // SPEC: An implicit conversion exists from the null literal to type parameter T, 
+            // SPEC: provided T is known to be a reference type. [...] The conversion [is] classified 
+            // SPEC: as implicit reference conversion. 
 
-            if (HasImplicitReferenceConversion(source, destination, ref useSiteDiagnostics))
+            if (destination.IsReferenceType)
             {
                 return Conversion.ImplicitReference;
             }
 
-            if (HasBoxingConversion(source, destination, ref useSiteDiagnostics))
-            {
-                return Conversion.Boxing;
-            }
+            // SPEC: The set of implicit conversions is extended to include...
+            // SPEC: ... from the null literal to any pointer type.
 
-            if (HasImplicitPointerConversion(source, destination))
+            if (destination is PointerTypeSymbol)
             {
-                return Conversion.PointerToVoid;
+                return Conversion.NullToPointer;
             }
 
             return Conversion.NoConversion;
         }
 
-        private Conversion ClassifyImplicitBuiltInConversionSlow(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        private static Conversion ClassifyImplicitConstantExpressionConversion(BoundExpression source, TypeSymbol destination)
         {
-            Debug.Assert((object)source != null);
-            Debug.Assert((object)destination != null);
-
-            if (source.SpecialType == SpecialType.System_Void || destination.SpecialType == SpecialType.System_Void)
+            if (HasImplicitConstantExpressionConversion(source, destination))
             {
-                return Conversion.NoConversion;
+                return Conversion.ImplicitConstant;
             }
 
-            Conversion conversion = ClassifyStandardImplicitConversion(source, destination, ref useSiteDiagnostics);
-            if (conversion.Exists)
+            // strip nullable from the destination
+            //
+            // the following should work and it is an ImplicitNullable conversion
+            //    int? x = 1;
+            if (destination.Kind == SymbolKind.NamedType)
             {
-                return conversion;
-            }
-
-            //if (HasImplicitDynamicConversion(source, destination))
-            //{
-            //    return Conversion.Dynamic;
-            //}
-
-            return Conversion.NoConversion;
-        }
-
-        private Conversion GetImplicitUserDefinedConversion(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
-        {
-            var conversionResult = AnalyzeImplicitUserDefinedConversions(sourceExpression, source, destination, ref useSiteDiagnostics);
-            return new Conversion(conversionResult, isImplicit: true);
-        }
-
-        /// <summary>
-        /// Determines if the source type is convertible to the destination type via
-        /// any user-defined or built-in implicit conversion.
-        /// </summary>
-        /// <remarks>
-        /// Not all built-in explicit conversions are standard explicit conversions.
-        /// </remarks>
-        public Conversion ClassifyImplicitConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
-        {
-            Debug.Assert((object)source != null);
-            Debug.Assert((object)destination != null);
-
-            //PERF: identity conversions are very common, check for that first.
-            if (HasIdentityConversion(source, destination))
-            {
-                return Conversion.Identity;
-            }
-
-            // Try using the short-circuit "fast-conversion" path.
-            Conversion fastConversion = FastClassifyConversion(source, destination);
-            if (fastConversion.Exists)
-            {
-                return fastConversion.IsImplicit ? fastConversion : Conversion.NoConversion;
-            }
-            else
-            {
-                Conversion conversion = ClassifyImplicitBuiltInConversionSlow(source, destination, ref useSiteDiagnostics);
-                if (conversion.Exists)
+                var nt = (NamedTypeSymbol)destination;
+                if (nt.OriginalDefinition.GetSpecialTypeSafe() == SpecialType.System_Nullable_T &&
+                    HasImplicitConstantExpressionConversion(source, nt.TypeArgumentsNoUseSiteDiagnostics[0]))
                 {
-                    return conversion;
+                    return new Conversion(ConversionKind.ImplicitNullable, Conversion.ImplicitConstantUnderlying);
+                }
+            }
+#if XSHARP
+            if (source.Type == null  &&
+                source.Kind != BoundKind.MethodGroup && 
+                (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr 
+                || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr ))
+                return Conversion.Identity;
+#endif                        
+
+            return Conversion.NoConversion;
+        }
+
+        private Conversion ClassifyImplicitTupleLiteralConversion(BoundTupleLiteral source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            var tupleConversion = GetImplicitTupleLiteralConversion(source, destination, ref useSiteDiagnostics);
+            if (tupleConversion.Exists)
+            {
+                return tupleConversion;
+            }
+
+            // strip nullable from the destination
+            //
+            // the following should work and it is an ImplicitNullable conversion
+            //    (int, double)? x = (1,2);
+            if (destination.Kind == SymbolKind.NamedType)
+            {
+                var nt = (NamedTypeSymbol)destination;
+                if (nt.OriginalDefinition.GetSpecialTypeSafe() == SpecialType.System_Nullable_T)
+                {
+                    var underlyingTupleConversion = GetImplicitTupleLiteralConversion(source, nt.TypeArgumentsNoUseSiteDiagnostics[0], ref useSiteDiagnostics);
+
+                    if (underlyingTupleConversion.Exists)
+                    {
+                        return new Conversion(ConversionKind.ImplicitNullable, ImmutableArray.Create(underlyingTupleConversion));
+                    }
                 }
             }
 
-            return GetImplicitUserDefinedConversion(null, source, destination, ref useSiteDiagnostics);
+            return Conversion.NoConversion;
         }
 
-        private Conversion ClassifyExplicitBuiltInOnlyConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        private Conversion ClassifyExplicitTupleLiteralConversion(BoundTupleLiteral source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast)
         {
-            Debug.Assert((object)source != null);
-            Debug.Assert((object)destination != null);
-
-            // The call to HasExplicitNumericConversion isn't necessary, because it is always tested
-            // already by the "FastConversion" code.
-            Debug.Assert(!HasExplicitNumericConversion(source, destination));
-
-            if (source.SpecialType == SpecialType.System_Void || destination.SpecialType == SpecialType.System_Void)
+            var tupleConversion = GetExplicitTupleLiteralConversion(source, destination, ref useSiteDiagnostics, forCast);
+            if (tupleConversion.Exists)
             {
-                return Conversion.NoConversion;
+                return tupleConversion;
             }
 
-            //if (HasExplicitNumericConversion(source, specialTypeSource, destination, specialTypeDest))
-            //{
-            //    return Conversion.ExplicitNumeric;
-            //}
-
-            if (HasSpecialIntPtrConversion(source, destination))
+            // strip nullable from the destination
+            //
+            // the following should work and it is an ExplicitNullable conversion
+            //    var x = ((byte, string)?)(1,null);
+            if (destination.Kind == SymbolKind.NamedType)
             {
-                return Conversion.IntPtr;
-            }
+                var nt = (NamedTypeSymbol)destination;
+                if (nt.OriginalDefinition.GetSpecialTypeSafe() == SpecialType.System_Nullable_T)
+                {
+                    var underlyingTupleConversion = GetExplicitTupleLiteralConversion(source, nt.TypeArgumentsNoUseSiteDiagnostics[0], ref useSiteDiagnostics, forCast);
 
-            if (HasExplicitEnumerationConversion(source, destination))
-            {
-                return Conversion.ExplicitEnumeration;
-            }
-
-            if (HasExplicitNullableConversion(source, destination))
-            {
-                return Conversion.ExplicitNullable;
-            }
-
-            if (HasExplicitReferenceConversion(source, destination, ref useSiteDiagnostics))
-            {
-                return (source.Kind == SymbolKind.DynamicType) ? Conversion.ExplicitDynamic : Conversion.ExplicitReference;
-            }
-
-            if (HasUnboxingConversion(source, destination, ref useSiteDiagnostics))
-            {
-                return Conversion.Unboxing;
-            }
-
-            if (HasPointerToPointerConversion(source, destination))
-            {
-                return Conversion.PointerToPointer;
-            }
-
-            if (HasPointerToIntegerConversion(source, destination))
-            {
-                return Conversion.PointerToInteger;
-            }
-
-            if (HasIntegerToPointerConversion(source, destination))
-            {
-                return Conversion.IntegerToPointer;
-            }
-
-            if (HasExplicitDynamicConversion(source, destination))
-            {
-                return Conversion.ExplicitDynamic;
+                    if (underlyingTupleConversion.Exists)
+                    {
+                        return new Conversion(ConversionKind.ExplicitNullable, ImmutableArray.Create(underlyingTupleConversion));
+                    }
+                }
             }
 
             return Conversion.NoConversion;
         }
 
-        private Conversion GetExplicitUserDefinedConversion(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        internal static bool HasImplicitConstantExpressionConversion(BoundExpression source, TypeSymbol destination)
         {
-            UserDefinedConversionResult conversionResult = AnalyzeExplicitUserDefinedConversions(sourceExpression, source, destination, ref useSiteDiagnostics);
-            return new Conversion(conversionResult, isImplicit: false);
+            var constantValue = source.ConstantValue;
+
+            if (constantValue == null)
+            {
+                return false;
+            }
+
+            // An implicit constant expression conversion permits the following conversions:
+
+            // A constant-expression of type int can be converted to type sbyte, byte, short, 
+            // ushort, uint, or ulong, provided the value of the constant-expression is within the
+            // range of the destination type.
+            var specialSource = source.Type.GetSpecialTypeSafe();
+
+            if (specialSource == SpecialType.System_Int32)
+            {
+                //if the constant value could not be computed, be generous and assume the conversion will work
+                int value = constantValue.IsBad ? 0 : constantValue.Int32Value;
+                switch (destination.GetSpecialTypeSafe())
+                {
+                    case SpecialType.System_Byte:
+                        return byte.MinValue <= value && value <= byte.MaxValue;
+                    case SpecialType.System_SByte:
+                        return sbyte.MinValue <= value && value <= sbyte.MaxValue;
+                    case SpecialType.System_Int16:
+                        return short.MinValue <= value && value <= short.MaxValue;
+                    case SpecialType.System_UInt32:
+                        return uint.MinValue <= value;
+                    case SpecialType.System_UInt64:
+                        return (int)ulong.MinValue <= value;
+                    case SpecialType.System_UInt16:
+                        return ushort.MinValue <= value && value <= ushort.MaxValue;
+#if XSHARP
+                    case SpecialType.System_IntPtr:
+                        return true;
+#endif
+                    default:
+                        return false;
+                }
+            }
+            else if (specialSource == SpecialType.System_Int64 && destination.GetSpecialTypeSafe() == SpecialType.System_UInt64 && (constantValue.IsBad || 0 <= constantValue.Int64Value))
+            {
+                // A constant-expression of type long can be converted to type ulong, provided the
+                // value of the constant-expression is not negative.
+                return true;
+            }
+
+#if !XSHARP
+            return false;
+#else
+            return HasImplicitVOConstantExpressionConversion(source, destination);
+#endif
+        }
+
+        private Conversion ClassifyExplicitOnlyConversionFromExpression(BoundExpression sourceExpression, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast)
+        {
+            Debug.Assert(sourceExpression != null);
+            Debug.Assert((object)destination != null);
+
+            var sourceType = sourceExpression.Type;
+
+            // NB: need to check for explicit tuple literal conversion before checking for explicit conversion from type
+            //     The same literal may have both explicit tuple conversion and explicit tuple literal conversion to the target type.
+            //     They are, however, observably different conversions via the order of argument evaluations and element-wise conversions
+            if (sourceExpression.Kind == BoundKind.TupleLiteral)
+            {
+                Conversion tupleConversion = ClassifyExplicitTupleLiteralConversion((BoundTupleLiteral)sourceExpression, destination, ref useSiteDiagnostics, forCast);
+                if (tupleConversion.Exists)
+                {
+                    return tupleConversion;
+                }
+            }
+
+            if ((object)sourceType != null)
+            {
+                // Try using the short-circuit "fast-conversion" path.
+                Conversion fastConversion = FastClassifyConversion(sourceType, destination);
+                if (fastConversion.Exists)
+                {
+                    return fastConversion;
+                }
+                else
+                {
+                    var conversion = ClassifyExplicitBuiltInOnlyConversion(sourceType, destination, ref useSiteDiagnostics, forCast);
+                    if (conversion.Exists)
+                    {
+                        return conversion;
+                    }
+                }
+#if XSHARP
+                if (sourceType.SpecialType == SpecialType.System_Void)
+                {
+                    return Conversion.NoConversion;
+                }
+#endif
+            }
+
+            return GetExplicitUserDefinedConversion(sourceExpression, sourceType, destination, ref useSiteDiagnostics);
+        }
+
+        private static bool HasImplicitEnumerationConversion(BoundExpression source, TypeSymbol destination)
+        {
+            Debug.Assert((object)source != null);
+            Debug.Assert((object)destination != null);
+
+            // SPEC: An implicit enumeration conversion permits the decimal-integer-literal 0 to be converted to any enum-type 
+            // SPEC: and to any nullable-type whose underlying type is an enum-type. 
+            //
+            // For historical reasons we actually allow a conversion from any *numeric constant
+            // zero* to be converted to any enum type, not just the literal integer zero.
+
+            bool validType = destination.IsEnumType() ||
+                destination.IsNullableType() && destination.GetNullableUnderlyingType().IsEnumType();
+
+            if (!validType)
+            {
+#if XSHARP
+                if(source.Type != null && (source.Type.IsEnumType() || source.Type.IsNullableType() && source.Type.GetNullableUnderlyingType().IsEnumType())) {
+                    return IsNumericType(destination.GetSpecialTypeSafe());
+                }
+#endif
+                return false;
+            }
+
+            var sourceConstantValue = source.ConstantValue;
+            return sourceConstantValue != null &&
+                IsNumericType(source.Type.GetSpecialTypeSafe()) &&
+                IsConstantNumericZero(sourceConstantValue);
+        }
+
+        private static LambdaConversionResult IsAnonymousFunctionCompatibleWithDelegate(UnboundLambda anonymousFunction, TypeSymbol type)
+        {
+            Debug.Assert((object)anonymousFunction != null);
+            Debug.Assert((object)type != null);
+
+            // SPEC: An anonymous-method-expression or lambda-expression is classified as an anonymous function. 
+            // SPEC: The expression does not have a type but can be implicitly converted to a compatible delegate 
+            // SPEC: type or expression tree type. Specifically, a delegate type D is compatible with an 
+            // SPEC: anonymous function F provided:
+
+            var delegateType = (NamedTypeSymbol)type;
+            var invokeMethod = delegateType.DelegateInvokeMethod;
+
+            if ((object)invokeMethod == null || invokeMethod.HasUseSiteError)
+            {
+                return LambdaConversionResult.BadTargetType;
+            }
+
+            var delegateParameters = invokeMethod.Parameters;
+
+            // SPEC: If F contains an anonymous-function-signature, then D and F have the same number of parameters.
+            // SPEC: If F does not contain an anonymous-function-signature, then D may have zero or more parameters 
+            // SPEC: of any type, as long as no parameter of D has the out parameter modifier.
+
+            if (anonymousFunction.HasSignature)
+            {
+                if (anonymousFunction.ParameterCount != invokeMethod.ParameterCount)
+                {
+                    return LambdaConversionResult.BadParameterCount;
+                }
+
+                // SPEC: If F has an explicitly typed parameter list, each parameter in D has the same type 
+                // SPEC: and modifiers as the corresponding parameter in F.
+                // SPEC: If F has an implicitly typed parameter list, D has no ref or out parameters.
+
+                if (anonymousFunction.HasExplicitlyTypedParameterList)
+                {
+                    for (int p = 0; p < delegateParameters.Length; ++p)
+                    {
+                        if (delegateParameters[p].RefKind != anonymousFunction.RefKind(p) ||
+                            !delegateParameters[p].Type.Equals(anonymousFunction.ParameterType(p), TypeCompareKind.AllIgnoreOptions))
+                        {
+                            return LambdaConversionResult.MismatchedParameterType;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int p = 0; p < delegateParameters.Length; ++p)
+                    {
+                        if (delegateParameters[p].RefKind != RefKind.None)
+                        {
+                            return LambdaConversionResult.RefInImplicitlyTypedLambda;
+                        }
+                    }
+
+                    // In C# it is not possible to make a delegate type
+                    // such that one of its parameter types is a static type. But static types are 
+                    // in metadata just sealed abstract types; there is nothing stopping someone in
+                    // another language from creating a delegate with a static type for a parameter,
+                    // though the only argument you could pass for that parameter is null.
+                    // 
+                    // In the native compiler we forbid conversion of an anonymous function that has
+                    // an implicitly-typed parameter list to a delegate type that has a static type
+                    // for a formal parameter type. However, we do *not* forbid it for an explicitly-
+                    // typed lambda (because we already require that the explicitly typed parameter not
+                    // be static) and we do not forbid it for an anonymous method with the entire
+                    // parameter list missing (because the body cannot possibly have a parameter that
+                    // is of static type, even though this means that we will be generating a hidden
+                    // method with a parameter of static type.)
+                    //
+                    // We also allow more exotic situations to work in the native compiler. For example,
+                    // though it is not possible to convert x=>{} to Action<GC>, it is possible to convert
+                    // it to Action<List<GC>> should there be a language that allows you to construct 
+                    // a variable of that type.
+                    //
+                    // We might consider beefing up this rule to disallow a conversion of *any* anonymous
+                    // function to *any* delegate that has a static type *anywhere* in the parameter list.
+
+                    for (int p = 0; p < delegateParameters.Length; ++p)
+                    {
+                        if (delegateParameters[p].Type.IsStatic)
+                        {
+                            return LambdaConversionResult.StaticTypeInImplicitlyTypedLambda;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int p = 0; p < delegateParameters.Length; ++p)
+                {
+                    if (delegateParameters[p].RefKind == RefKind.Out)
+                    {
+                        return LambdaConversionResult.MissingSignatureWithOutParameter;
+                    }
+                }
+            }
+
+            // Ensure the body can be converted to that delegate type
+            var bound = anonymousFunction.Bind(delegateType);
+            if (ErrorFacts.PreventsSuccessfulDelegateConversion(bound.Diagnostics))
+            {
+                return LambdaConversionResult.BindingFailed;
+            }
+
+            return LambdaConversionResult.Success;
+        }
+
+        private static LambdaConversionResult IsAnonymousFunctionCompatibleWithExpressionTree(UnboundLambda anonymousFunction, NamedTypeSymbol type)
+        {
+            Debug.Assert((object)anonymousFunction != null);
+            Debug.Assert((object)type != null);
+            Debug.Assert(type.IsExpressionTree());
+
+            // SPEC OMISSION:
+            // 
+            // The C# 3 spec said that anonymous methods and statement lambdas are *convertible* to expression tree
+            // types if the anonymous method/statement lambda is convertible to its delegate type; however, actually
+            // *using* such a conversion is an error. However, that is not what we implemented. In C# 3 we implemented
+            // that an anonymous method is *not convertible* to an expression tree type, period. (Statement lambdas
+            // used the rule described in the spec.)  
+            //
+            // This appears to be a spec omission; the intention is to make old-style anonymous methods not 
+            // convertible to expression trees.
+
+            var delegateType = type.TypeArgumentsNoUseSiteDiagnostics[0];
+            if (!delegateType.IsDelegateType())
+            {
+                return LambdaConversionResult.ExpressionTreeMustHaveDelegateTypeArgument;
+            }
+
+            if (anonymousFunction.Syntax.Kind() == SyntaxKind.AnonymousMethodExpression)
+            {
+                return LambdaConversionResult.ExpressionTreeFromAnonymousMethod;
+            }
+
+            return IsAnonymousFunctionCompatibleWithDelegate(anonymousFunction, delegateType);
+        }
+
+#if !XSHARP
+        public static LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+#else
+        public virtual LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+#endif
+        {
+            Debug.Assert((object)anonymousFunction != null);
+            Debug.Assert((object)type != null);
+
+            if (type.IsDelegateType())
+            {
+                return IsAnonymousFunctionCompatibleWithDelegate(anonymousFunction, type);
+            }
+            else if (type.IsExpressionTree())
+            {
+                return IsAnonymousFunctionCompatibleWithExpressionTree(anonymousFunction, (NamedTypeSymbol)type);
+            }
+
+            return LambdaConversionResult.BadTargetType;
+        }
+
+#if !XSHARP
+        private static bool HasAnonymousFunctionConversion(BoundExpression source, TypeSymbol destination)
+#else
+        private bool HasAnonymousFunctionConversion(BoundExpression source, TypeSymbol destination)
+#endif
+        {
+            Debug.Assert(source != null);
+            Debug.Assert((object)destination != null);
+
+            if (source.Kind != BoundKind.UnboundLambda)
+            {
+                return false;
+            }
+
+            return IsAnonymousFunctionCompatibleWithType((UnboundLambda)source, destination) == LambdaConversionResult.Success;
+        }
+
+        internal Conversion ClassifyImplicitUserDefinedConversionForV6SwitchGoverningType(TypeSymbol sourceType, out TypeSymbol switchGoverningType, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            // SPEC:    The governing type of a switch statement is established by the switch expression.
+            // SPEC:    1) If the type of the switch expression is sbyte, byte, short, ushort, int, uint,
+            // SPEC:       long, ulong, bool, char, string, or an enum-type, or if it is the nullable type
+            // SPEC:       corresponding to one of these types, then that is the governing type of the switch statement. 
+            // SPEC:    2) Otherwise, exactly one user-defined implicit conversion (§6.4) must exist from the
+            // SPEC:       type of the switch expression to one of the following possible governing types:
+            // SPEC:       sbyte, byte, short, ushort, int, uint, long, ulong, char, string, or, a nullable type
+            // SPEC:       corresponding to one of those types
+
+            // NOTE:    We should be called only if (1) is false for source type.
+            Debug.Assert((object)sourceType != null);
+            Debug.Assert(!sourceType.IsValidV6SwitchGoverningType());
+
+            UserDefinedConversionResult result = AnalyzeImplicitUserDefinedConversionForV6SwitchGoverningType(sourceType, ref useSiteDiagnostics);
+
+            if (result.Kind == UserDefinedConversionResultKind.Valid)
+            {
+                UserDefinedConversionAnalysis analysis = result.Results[result.Best];
+
+                switchGoverningType = analysis.ToType;
+                Debug.Assert(switchGoverningType.IsValidV6SwitchGoverningType(isTargetTypeOfUserDefinedOp: true));
+            }
+            else
+            {
+                switchGoverningType = null;
+            }
+
+            return new Conversion(result, isImplicit: true);
+        }
+
+        internal Conversion GetCallerLineNumberConversion(TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            var greenNode = new Syntax.InternalSyntax.LiteralExpressionSyntax(SyntaxKind.NumericLiteralExpression, new Syntax.InternalSyntax.SyntaxToken(SyntaxKind.NumericLiteralToken));
+            var syntaxNode = new LiteralExpressionSyntax(greenNode, null, 0);
+
+            TypeSymbol expectedAttributeType = corLibrary.GetSpecialType(SpecialType.System_Int32);
+            BoundLiteral intMaxValueLiteral = new BoundLiteral(syntaxNode, ConstantValue.Create(int.MaxValue), expectedAttributeType);
+            return ClassifyStandardImplicitConversion(intMaxValueLiteral, expectedAttributeType, destination, ref useSiteDiagnostics);
+        }
+
+        internal bool HasCallerLineNumberConversion(TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            return GetCallerLineNumberConversion(destination, ref useSiteDiagnostics).Exists;
+        }
+
+        internal bool HasCallerInfoStringConversion(TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            TypeSymbol expectedAttributeType = corLibrary.GetSpecialType(SpecialType.System_String);
+            Conversion conversion = ClassifyStandardImplicitConversion(expectedAttributeType, destination, ref useSiteDiagnostics);
+            return conversion.Exists;
         }
 
         public static bool HasIdentityConversion(TypeSymbol type1, TypeSymbol type2)
         {
             // Spec (6.1.1):
-            // An identity conversion converts from any type to the same type. This conversion exists
-            // such that an entity that already has a required type can be said to be convertible to
+            // An identity conversion converts from any type to the same type. This conversion exists 
+            // such that an entity that already has a required type can be said to be convertible to 
             // that type.
             //
-            // Because object and dynamic are considered equivalent there is an identity conversion
-            // between object and dynamic, and between constructed types that are the same when replacing
+            // Because object and dynamic are considered equivalent there is an identity conversion 
+            // between object and dynamic, and between constructed types that are the same when replacing 
             // all occurrences of dynamic with object.
 
             Debug.Assert((object)type1 != null);
             Debug.Assert((object)type2 != null);
 
-            return type1.Equals(type2, ignoreCustomModifiersAndArraySizesAndLowerBounds: true, ignoreDynamic: true);
+            return type1.Equals(type2, TypeCompareKind.AllIgnoreOptions);
         }
 
         public static bool HasIdentityConversionToAny<T>(T type, ArrayBuilder<T> targetTypes)
@@ -547,7 +1381,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public Conversion ConvertExtensionMethodThisArg(TypeSymbol parameterType, TypeSymbol thisType, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             Debug.Assert((object)thisType != null);
-            var conversion = this.ClassifyImplicitConversion(thisType, parameterType, ref useSiteDiagnostics);
+            var conversion = this.ClassifyImplicitConversionFromType(thisType, parameterType, ref useSiteDiagnostics);
             return IsValidExtensionMethodThisArgConversion(conversion) ? conversion : Conversion.NoConversion;
         }
 
@@ -561,6 +1395,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.Boxing:
                 case ConversionKind.ImplicitReference:
                     return true;
+
+                case ConversionKind.ImplicitTuple:
+                case ConversionKind.ImplicitTupleLiteral:
+                    // check if all element conversions satisfy the requirement
+                    foreach (var elementConversion in conversion.UnderlyingConversions)
+                    {
+                        if (!IsValidExtensionMethodThisArgConversion(elementConversion))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+
                 default:
                     return false;
             }
@@ -689,7 +1536,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static bool HasExplicitNumericConversion(TypeSymbol source, TypeSymbol destination)
         {
-            // SPEC: The explicit numeric conversions are the conversions from a numeric-type to another
+            // SPEC: The explicit numeric conversions are the conversions from a numeric-type to another 
             // SPEC: numeric-type for which an implicit numeric conversion does not already exist.
             Debug.Assert((object)source != null);
             Debug.Assert((object)destination != null);
@@ -776,22 +1623,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             // The specification says that you can put any *standard* implicit or explicit conversion
             // on "either side" of a user-defined explicit conversion, so the specification allows, say,
-            // UIntPtr --> byte because the conversion UIntPtr --> uint is user-defined and the
-            // conversion uint --> byte is "standard". It is "standard" because the conversion
+            // UIntPtr --> byte because the conversion UIntPtr --> uint is user-defined and the 
+            // conversion uint --> byte is "standard". It is "standard" because the conversion 
             // byte --> uint is an implicit numeric conversion.
 
             // This means that certain conversions should be illegal. For example, IntPtr --> ulong
-            // should be illegal because none of int --> ulong, long --> ulong and void* --> ulong
-            // are "standard" conversions.
+            // should be illegal because none of int --> ulong, long --> ulong and void* --> ulong 
+            // are "standard" conversions. 
 
-            // Similarly, some conversions involving IntPtr should be illegal because they are
+            // Similarly, some conversions involving IntPtr should be illegal because they are 
             // ambiguous. byte --> IntPtr?, for example, is ambiguous. (There are four possible
             // UD operators: int --> IntPtr and long --> IntPtr, and their lifted versions. The
             // best possible source type is int, the best possible target type is IntPtr?, and
-            // there is an ambiguity between the unlifted int --> IntPtr, and the lifted
+            // there is an ambiguity between the unlifted int --> IntPtr, and the lifted 
             // int? --> IntPtr? conversions.)
 
-            // In practice, the native compiler, and hence, the Roslyn compiler, allows all
+            // In practice, the native compiler, and hence, the Roslyn compiler, allows all 
             // these conversions. Any conversion from a numeric type to IntPtr, or from an IntPtr
             // to a numeric type, is allowed. Also, any conversion from a pointer type to IntPtr
             // or vice versa is allowed.
@@ -867,20 +1714,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        private static bool HasImplicitNullableConversion(TypeSymbol source, TypeSymbol destination)
+        private Conversion ClassifyImplicitNullableConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             Debug.Assert((object)source != null);
             Debug.Assert((object)destination != null);
 
-            // SPEC: Predefined implicit conversions that operate on non-nullable value types can also be used with
-            // SPEC: nullable forms of those types. For each of the predefined implicit identity and numeric conversions
-            // SPEC: that convert from a non-nullable value type S to a non-nullable value type T, the following implicit
+            // SPEC: Predefined implicit conversions that operate on non-nullable value types can also be used with 
+            // SPEC: nullable forms of those types. For each of the predefined implicit identity, numeric and tuple conversions
+            // SPEC: that convert from a non-nullable value type S to a non-nullable value type T, the following implicit 
             // SPEC: nullable conversions exist:
             // SPEC: * An implicit conversion from S? to T?.
             // SPEC: * An implicit conversion from S to T?.
             if (!destination.IsNullableType())
             {
-                return false;
+                return Conversion.NoConversion;
             }
 
             TypeSymbol unwrappedDestination = destination.GetNullableUnderlyingType();
@@ -888,30 +1735,92 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!unwrappedSource.IsValueType)
             {
-                return false;
+                return Conversion.NoConversion;
             }
 
             if (HasIdentityConversion(unwrappedSource, unwrappedDestination))
             {
-                return true;
+                return new Conversion(ConversionKind.ImplicitNullable, Conversion.IdentityUnderlying);
             }
 
             if (HasImplicitNumericConversion(unwrappedSource, unwrappedDestination))
             {
-                return true;
+                return new Conversion(ConversionKind.ImplicitNullable, Conversion.ImplicitNumericUnderlying);
             }
 
-            return false;
+            var tupleConversion = ClassifyImplicitTupleConversion(unwrappedSource, unwrappedDestination, ref useSiteDiagnostics);
+            if (tupleConversion.Exists)
+            {
+                return new Conversion(ConversionKind.ImplicitNullable, ImmutableArray.Create(tupleConversion));
+            }
+
+            return Conversion.NoConversion;
         }
 
-        private static bool HasExplicitNullableConversion(TypeSymbol source, TypeSymbol destination)
+        private Conversion ClassifyImplicitTupleConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            ImmutableArray<TypeSymbol> sourceTypes;
+            ImmutableArray<TypeSymbol> destTypes;
+
+            if (!source.TryGetElementTypesIfTupleOrCompatible(out sourceTypes) ||
+                !destination.TryGetElementTypesIfTupleOrCompatible(out destTypes) ||
+                sourceTypes.Length != destTypes.Length)
+            {
+                return Conversion.NoConversion;
+            }
+
+            var nestedConversions = ArrayBuilder<Conversion>.GetInstance(sourceTypes.Length);
+            for (int i = 0; i < sourceTypes.Length; i++)
+            {
+                var conversion = ClassifyImplicitConversionFromType(sourceTypes[i], destTypes[i], ref useSiteDiagnostics);
+                if (!conversion.Exists)
+                {
+                    nestedConversions.Free();
+                    return Conversion.NoConversion;
+                }
+
+                nestedConversions.Add(conversion);
+            }
+
+            return new Conversion(ConversionKind.ImplicitTuple, nestedConversions.ToImmutableAndFree());
+        }
+
+        private Conversion ClassifyExplicitTupleConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast)
+        {
+            ImmutableArray<TypeSymbol> sourceTypes;
+            ImmutableArray<TypeSymbol> destTypes;
+
+            if (!source.TryGetElementTypesIfTupleOrCompatible(out sourceTypes) ||
+                !destination.TryGetElementTypesIfTupleOrCompatible(out destTypes) ||
+                sourceTypes.Length != destTypes.Length)
+            {
+                return Conversion.NoConversion;
+            }
+
+            var nestedConversions = ArrayBuilder<Conversion>.GetInstance(sourceTypes.Length);
+            for (int i = 0; i < sourceTypes.Length; i++)
+            {
+                var conversion = ClassifyConversionFromType(sourceTypes[i], destTypes[i], ref useSiteDiagnostics, forCast);
+                if (!conversion.Exists)
+                {
+                    nestedConversions.Free();
+                    return Conversion.NoConversion;
+                }
+
+                nestedConversions.Add(conversion);
+            }
+
+            return new Conversion(ConversionKind.ExplicitTuple, nestedConversions.ToImmutableAndFree());
+        }
+
+        private Conversion ClassifyExplicitNullableConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool forCast)
         {
             Debug.Assert((object)source != null);
             Debug.Assert((object)destination != null);
 
-            // SPEC: Explicit nullable conversions permit predefined explicit conversions that operate on
-            // SPEC: non-nullable value types to also be used with nullable forms of those types. For
-            // SPEC: each of the predefined explicit conversions that convert from a non-nullable value type
+            // SPEC: Explicit nullable conversions permit predefined explicit conversions that operate on 
+            // SPEC: non-nullable value types to also be used with nullable forms of those types. For 
+            // SPEC: each of the predefined explicit conversions that convert from a non-nullable value type 
             // SPEC: S to a non-nullable value type T, the following nullable conversions exist:
             // SPEC: An explicit conversion from S? to T?.
             // SPEC: An explicit conversion from S to T?.
@@ -919,38 +1828,44 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!source.IsNullableType() && !destination.IsNullableType())
             {
-                return false;
+                return Conversion.NoConversion;
             }
 
-            TypeSymbol sourceUnderlying = source.StrippedType();
-            TypeSymbol destinationUnderlying = destination.StrippedType();
+            TypeSymbol unwrappedSource = source.StrippedType();
+            TypeSymbol unwrappedDestination = destination.StrippedType();
 
-            if (HasIdentityConversion(sourceUnderlying, destinationUnderlying))
+            if (HasIdentityConversion(unwrappedSource, unwrappedDestination))
             {
-                return true;
+                return new Conversion(ConversionKind.ExplicitNullable, Conversion.IdentityUnderlying);
             }
 
-            if (HasImplicitNumericConversion(sourceUnderlying, destinationUnderlying))
+            if (HasImplicitNumericConversion(unwrappedSource, unwrappedDestination))
             {
-                return true;
+                return new Conversion(ConversionKind.ExplicitNullable, Conversion.ImplicitNumericUnderlying);
             }
 
-            if (HasExplicitNumericConversion(sourceUnderlying, destinationUnderlying))
+            if (HasExplicitNumericConversion(unwrappedSource, unwrappedDestination))
             {
-                return true;
+                return new Conversion(ConversionKind.ExplicitNullable, Conversion.ExplicitNumericUnderlying);
             }
 
-            if (HasExplicitEnumerationConversion(sourceUnderlying, destinationUnderlying))
+            var tupleConversion = ClassifyExplicitTupleConversion(unwrappedSource, unwrappedDestination, ref useSiteDiagnostics, forCast);
+            if (tupleConversion.Exists)
             {
-                return true;
+                return new Conversion(ConversionKind.ExplicitNullable, ImmutableArray.Create(tupleConversion));
             }
 
-            if (HasPointerToIntegerConversion(sourceUnderlying, destinationUnderlying))
+            if (HasExplicitEnumerationConversion(unwrappedSource, unwrappedDestination))
             {
-                return true;
+                return new Conversion(ConversionKind.ExplicitNullable, Conversion.ExplicitEnumerationUnderlying);
             }
 
-            return false;
+            if (HasPointerToIntegerConversion(unwrappedSource, unwrappedDestination))
+            {
+                return new Conversion(ConversionKind.ExplicitNullable, Conversion.PointerToIntegerUnderlying);
+            }
+
+            return Conversion.NoConversion;
         }
 
         private bool HasCovariantArrayConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
@@ -995,7 +1910,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static bool HasExplicitDynamicConversion(TypeSymbol source, TypeSymbol destination)
         {
-            // SPEC: An explicit dynamic conversion exists from an expression of type dynamic to any type T.
+            // SPEC: An explicit dynamic conversion exists from an expression of type dynamic to any type T. 
             // ISSUE: Note that this is exactly the same as an implicit dynamic conversion. Conversion of
             // ISSUE: dynamic to int is both an explicit dynamic conversion and an implicit dynamic conversion.
 
@@ -1076,7 +1991,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // SPEC: The implicit reference conversions are:
 
-            // SPEC: UNDONE: From any reference-type to a reference-type T if it has an implicit identity
+            // SPEC: UNDONE: From any reference-type to a reference-type T if it has an implicit identity 
             // SPEC: UNDONE: or reference conversion to a reference-type T0 and T0 has an identity conversion to T.
             // UNDONE: Is the right thing to do here to strip dynamic off and check for convertibility?
 
@@ -1153,7 +2068,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //   convertible to T.
             // * From any interface type S to any interface type T provided S implements an interface
             //   convertible to T.
-            // * From any interface type S to any interface type T provided S is not T and S is
+            // * From any interface type S to any interface type T provided S is not T and S is 
             //   an interface convertible to T.
 
             if (source.IsClassType() && HasAnyBaseInterfaceConversion(source, destination, ref useSiteDiagnostics))
@@ -1223,12 +2138,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // * From any delegate type to System.Delegate
-            //
+            // 
             // SPEC OMISSION:
-            //
+            // 
             // The spec should actually say
             //
-            // * From any delegate type to System.Delegate
+            // * From any delegate type to System.Delegate 
             // * From any delegate type to System.MulticastDelegate
             // * From any delegate type to any interface implemented by System.MulticastDelegate
             var specialDestination = destination.GetSpecialTypeSafe();
@@ -1383,7 +2298,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ////////////////////////////////////////////////////////////////////////////////
         // The rules for variant interface and delegate conversions are the same:
         //
-        // An interface/delegate type S is convertible to an interface/delegate type T
+        // An interface/delegate type S is convertible to an interface/delegate type T 
         // if and only if T is U<S1, ... Sn> and T is U<T1, ... Tn> such that for all
         // parameters of U:
         //
@@ -1434,9 +2349,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool HasVariantConversion(NamedTypeSymbol source, NamedTypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             // We check for overflows in HasVariantConversion, because they are only an issue
-            // in the presence of contravariant type parameters, which are not involved in
+            // in the presence of contravariant type parameters, which are not involved in 
             // most conversions.
-            // See VarianceTests for examples (e.g. TestVarianceConversionCycle,
+            // See VarianceTests for examples (e.g. TestVarianceConversionCycle, 
             // TestVarianceConversionInfiniteExpansion).
             //
             // CONSIDER: A more rigorous solution would mimic the CLI approach, which uses
@@ -1572,8 +2487,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
 
-            // SPEC: From T to a reference type I if it has an implicit conversion to a reference
-            // SPEC: type S0 and S0 has an identity conversion to S. At run-time the conversion
+            // SPEC: From T to a reference type I if it has an implicit conversion to a reference 
+            // SPEC: type S0 and S0 has an identity conversion to S. At run-time the conversion 
             // SPEC: is executed the same way as the conversion to S0.
 
             // REVIEW: If T is not known to be a reference type then the only way this clause can
@@ -1618,15 +2533,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // A boxing conversion exists from any non-nullable value type to object and dynamic, to
             // System.ValueType, and to any interface type variance-compatible with one implemented
-            // by the non-nullable value type.
+            // by the non-nullable value type.  
 
             // Furthermore, an enum type can be converted to the type System.Enum.
 
             // We set the base class of the structs to System.ValueType, System.Enum, etc, so we can
             // just check here.
 
-            // There are a couple of exceptions. The very special types ArgIterator, ArgumentHandle and
-            // TypedReference are not boxable:
+            // There are a couple of exceptions. The very special types ArgIterator, ArgumentHandle and 
+            // TypedReference are not boxable: 
 
             if (source.IsRestrictedType())
             {
@@ -1730,7 +2645,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // SPEC: From any interface-type S to any interface-type T, provided S is not derived from T.
-            // ISSUE: This does not rule out identity conversions, which ought not to be classified as
+            // ISSUE: This does not rule out identity conversions, which ought not to be classified as 
             // ISSUE: explicit reference conversions.
             // ISSUE: IEnumerable<Mammal> and IEnumerable<Animal> do not derive from each other but this is
             // ISSUE: not an explicit reference conversion, this is an implicit reference conversion.
@@ -1774,7 +2689,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC: If T is known to be a reference type, the conversions are all classified as explicit reference conversions.
             // SPEC: If T is not known to be a reference type, the conversions are classified as unboxing conversions.
 
-            // SPEC: From the effective base class C of T to T and from any base class of C to T.
+            // SPEC: From the effective base class C of T to T and from any base class of C to T. 
             if ((object)t != null && t.IsReferenceType)
             {
                 for (var type = t.EffectiveBaseClass(ref useSiteDiagnostics); (object)type != null; type = type.BaseTypeWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics))
@@ -1786,7 +2701,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: From any interface type to T.
+            // SPEC: From any interface type to T. 
             if ((object)t != null && source.IsInterfaceType() && t.IsReferenceType)
             {
                 return true;
@@ -1821,7 +2736,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC: If T is known to be a reference type, the conversions are all classified as explicit reference conversions.
             // SPEC: If T is not known to be a reference type, the conversions are classified as unboxing conversions.
 
-            // SPEC: From the effective base class C of T to T and from any base class of C to T.
+            // SPEC: From the effective base class C of T to T and from any base class of C to T. 
             if ((object)t != null && !t.IsReferenceType)
             {
                 for (var type = t.EffectiveBaseClass(ref useSiteDiagnostics); (object)type != null; type = type.BaseTypeWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics))
@@ -1833,7 +2748,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: From any interface type to T.
+            // SPEC: From any interface type to T. 
             if (source.IsInterfaceType() && (object)t != null && !t.IsReferenceType)
             {
                 return true;
@@ -1874,7 +2789,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: From D<S1...Sn> to a D<T1...Tn> where D<X1...Xn> is a generic delegate type, D<S1...Sn> is not compatible with or identical to D<T1...Tn>,
+            // SPEC: From D<S1...Sn> to a D<T1...Tn> where D<X1...Xn> is a generic delegate type, D<S1...Sn> is not compatible with or identical to D<T1...Tn>, 
             // SPEC: and for each type parameter Xi of D the following holds:
             // SPEC: If Xi is invariant, then Si is identical to Ti.
             // SPEC: If Xi is covariant, then there is an implicit or explicit identity or reference conversion from Si to Ti.
@@ -1987,7 +2902,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC: From a single-dimensional array type S[] to System.Collections.Generic.IList<T> and its base interfaces
             // SPEC: provided that there is an explicit reference conversion from S to T.
 
-            // The framework now also allows arrays to be converted to IReadOnlyList<T> and IReadOnlyCollection<T>; we
+            // The framework now also allows arrays to be converted to IReadOnlyList<T> and IReadOnlyCollection<T>; we 
             // honor that as well.
 
             if ((object)sourceArray != null && sourceArray.IsSZArray && destination.IsPossibleArrayGenericInterface())
@@ -1998,7 +2913,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: From System.Collections.Generic.IList<S> and its base interfaces to a single-dimensional array type T[],
+            // SPEC: From System.Collections.Generic.IList<S> and its base interfaces to a single-dimensional array type T[], 
             // provided that there is an explicit identity or reference conversion from S to T.
 
             // Similarly, we honor IReadOnlyList<S> and IReadOnlyCollection<S> in the same way.
@@ -2045,8 +2960,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return false;
             }
 
-            // SPEC: An unboxing conversion permits a reference type to be explicitly converted to a value-type.
-            // SPEC: An unboxing conversion exists from the types object and System.ValueType to any non-nullable-value-type,
+            // SPEC: An unboxing conversion permits a reference type to be explicitly converted to a value-type. 
+            // SPEC: An unboxing conversion exists from the types object and System.ValueType to any non-nullable-value-type, 
             var specialTypeSource = source.SpecialType;
 
             if (specialTypeSource == SpecialType.System_Object || specialTypeSource == SpecialType.System_ValueType)
@@ -2057,7 +2972,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: and from any interface-type to any non-nullable-value-type that implements the interface-type.
+            // SPEC: and from any interface-type to any non-nullable-value-type that implements the interface-type. 
 
             if (source.IsInterfaceType() &&
                 destination.IsValueType &&
@@ -2073,8 +2988,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
 
-            // SPEC: An unboxing conversion exists from a reference type to a nullable-type if an unboxing
-            // SPEC: conversion exists from the reference type to the underlying non-nullable-value-type
+            // SPEC: An unboxing conversion exists from a reference type to a nullable-type if an unboxing 
+            // SPEC: conversion exists from the reference type to the underlying non-nullable-value-type 
             // SPEC: of the nullable-type.
             if (source.IsReferenceType &&
                 destination.IsNullableType() &&
@@ -2083,10 +2998,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
 
-            // SPEC: UNDONE A value type S has an unboxing conversion from an interface type I if it has an unboxing
+            // SPEC: UNDONE A value type S has an unboxing conversion from an interface type I if it has an unboxing 
             // SPEC: UNDONE conversion from an interface type I0 and I0 has an identity conversion to I.
 
-            // SPEC: UNDONE A value type S has an unboxing conversion from an interface type I if it has an unboxing conversion
+            // SPEC: UNDONE A value type S has an unboxing conversion from an interface type I if it has an unboxing conversion 
             // SPEC: UNDONE from an interface or delegate type I0 and either I0 is variance-convertible to I or I is variance-convertible to I0.
 
             if (HasUnboxingTypeParameterConversion(source, destination, ref useSiteDiagnostics))
@@ -2115,8 +3030,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return false;
             }
 
-            // SPEC OMISSION:
-            //
+            // SPEC OMISSION: 
+            // 
             // The spec should state that any pointer type is convertible to
             // sbyte, byte, ... etc, or any corresponding nullable type.
 

@@ -10,18 +10,18 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New EnumBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEnum1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEnum1() As Task
+            Await TestAsync(<Text>
 {|Cursor:[|Enum|]|} E1
 [|End Enum|]</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEnum2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEnum2() As Task
+            Await TestAsync(<Text>
 [|Enum|] E1
 {|Cursor:[|End Enum|]|}</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

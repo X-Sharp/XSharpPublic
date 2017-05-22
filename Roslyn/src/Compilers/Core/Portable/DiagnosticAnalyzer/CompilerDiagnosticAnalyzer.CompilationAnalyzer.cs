@@ -8,9 +8,9 @@ namespace Microsoft.CodeAnalysis.Diagnostics
 {
     internal abstract partial class CompilerDiagnosticAnalyzer : DiagnosticAnalyzer
     {
-        private const string Origin = "Origin";
-        private const string Syntactic = "Syntactic";
-        private const string Declaration = "Declaration";
+        private const string Origin = nameof(Origin);
+        private const string Syntactic = nameof(Syntactic);
+        private const string Declaration = nameof(Declaration);
 
         private static readonly ImmutableDictionary<string, string> s_syntactic = ImmutableDictionary<string, string>.Empty.Add(Origin, Syntactic);
         private static readonly ImmutableDictionary<string, string> s_declaration = ImmutableDictionary<string, string>.Empty.Add(Origin, Declaration);
@@ -85,6 +85,9 @@ namespace Microsoft.CodeAnalysis.Diagnostics
 #pragma warning disable RS0013 // we are delegating so it is okay here
                 public override DiagnosticDescriptor Descriptor => _original.Descriptor;
 #pragma warning restore RS0013 
+
+                internal override int Code => _original.Code;
+                internal override IReadOnlyList<object> Arguments => _original.Arguments;
 
                 public override string Id => _original.Id;
                 public override DiagnosticSeverity Severity => _original.Severity;

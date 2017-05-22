@@ -1,16 +1,8 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-Imports System
-Imports System.Collections.Generic
 Imports System.Collections.Immutable
-Imports System.Diagnostics
-Imports System.Linq
-Imports System.Runtime.InteropServices
-Imports Microsoft.CodeAnalysis.CodeGen
-Imports Microsoft.CodeAnalysis.Text
+Imports System.Reflection.Metadata
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
-Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
-Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
 
@@ -25,7 +17,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
 
             ' Mixed case where there are some initializers that are constants and
             ' there is enough of them so that it makes sense to use block initialization
-            ' followed by individual initialization of nonconstant elements
+            ' followed by individual initialization of non-constant elements
             Mixed
         End Enum
 
@@ -258,7 +250,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
 
         ''' <summary>
         ''' Produces a serialized blob of all constant initializers.
-        ''' Nonconstant initializers are matched with a zero of corresponding size.
+        ''' Non-constant initializers are matched with a zero of corresponding size.
         ''' </summary>
         Private Function GetRawData(initializers As ImmutableArray(Of BoundExpression)) As ImmutableArray(Of Byte)
             ' the initial size is a guess.
@@ -273,7 +265,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
             Return result
         End Function
 
-        Private Sub SerializeArrayRecursive(bw As Cci.BlobBuilder, inits As ImmutableArray(Of BoundExpression))
+        Private Sub SerializeArrayRecursive(bw As BlobBuilder, inits As ImmutableArray(Of BoundExpression))
             If inits.Length <> 0 Then
                 If inits(0).Kind = BoundKind.ArrayInitialization Then
                     For Each init In inits

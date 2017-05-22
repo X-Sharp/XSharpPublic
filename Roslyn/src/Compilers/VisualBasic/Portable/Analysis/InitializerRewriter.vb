@@ -120,7 +120,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                 Else
                                     'Dev10 always performs base call if event is in the base class. 
                                     'Even if Me/MyClass syntax was used. It seems to be somewhat of a bug 
-                                    'that noone cared about. For compat reasons we will do the same.
+                                    'that no-one cared about. For compat reasons we will do the same.
                                     receiver = New BoundMyBaseReference(syntax, meParam.Type).MakeCompilerGenerated()
                                 End If
                             End If
@@ -232,7 +232,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Function RewriteInitializerAsStatement(initializer As BoundInitializer) As BoundStatement
             Select Case initializer.Kind
-                Case BoundKind.FieldOrPropertyInitializer
+                Case BoundKind.FieldInitializer, BoundKind.PropertyInitializer
                     Return initializer
                 Case BoundKind.GlobalStatementInitializer
                     Return DirectCast(initializer, BoundGlobalStatementInitializer).Statement

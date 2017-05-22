@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             && constructedFrom != null
                             && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Array)
                             && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock)
-                            && constructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), true, ref useSiteDiagnostics) != true
+                            && constructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
                     }
                     else if (destination.IsPointerType())
@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
         }
 
-       protected override ConversionKind ClassifyVoNullLiteralConversion(BoundExpression source, TypeSymbol destination, out Conversion conv)
+        ConversionKind ClassifyVoNullLiteralConversion(BoundExpression source, TypeSymbol destination, out Conversion conv)
         {
             if (_binder.Compilation.Options.IsDialectVO && destination is NamedTypeSymbol)
             {
@@ -133,8 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return LambdaConversionResult.Success;
                 }
 
-                HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                var conv = ClassifyConversion(Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), type, ref useSiteDiagnostics);
+                var conv = Compilation.ClassifyConversion(Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), type);
                 if (conv.Exists)
                 {
                     return LambdaConversionResult.Success;
@@ -401,11 +400,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Convert Integral type -> Ptr Type 
             if (source.IsIntegralType() && destination.IsPointerType())
             {
-                if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() == 4)
+                if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() <= 4)
                 {
                     return Conversion.Identity;
                 }
-                if (Compilation.Options.Platform == Platform.X64 && srcType.SizeInBytes() == 8)
+                if (Compilation.Options.Platform == Platform.X64 && srcType.SizeInBytes() <= 8)
                 {
                     return Conversion.Identity;
                 }

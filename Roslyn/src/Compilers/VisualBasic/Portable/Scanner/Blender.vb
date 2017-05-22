@@ -6,12 +6,9 @@
 Option Compare Binary
 Option Strict On
 
-Imports System.Collections.ObjectModel
-Imports System.Text
+Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic
-Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
-Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend NotInheritable Class Blender
@@ -139,7 +136,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return node.GetTrailingTrivia().Any(SyntaxKind.EndOfLineTrivia)
                 Case SyntaxKind.SingleLineIfStatement,
                      SyntaxKind.SingleLineElseClause
-                    ' Steer clear of single-line if's because they they have custom handling of statement 
+                    ' Steer clear of single-line if's because they have custom handling of statement 
                     ' terminators that may make it difficult to reuse sub-statements.
                     Return False
                 Case Else
@@ -473,7 +470,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function ContainsLeadingLineBreaks(node As VisualBasicSyntaxNode) As Boolean
             Dim lt = node.GetLeadingTrivia
             If lt IsNot Nothing Then
-                If lt.Kind = SyntaxKind.EndOfLineTrivia Then
+                If lt.RawKind = SyntaxKind.EndOfLineTrivia Then
                     Return True
                 End If
 
@@ -538,7 +535,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             _lineBufferOffset = _lineBufferOffset + _curNodeLength
 
             ' this will just verify that we do not have any prefetched tokens, including current. 
-            ' otherwise advancing linebuffer offset could go out of sync with token stream.
+            ' otherwise advancing line buffer offset could go out of sync with token stream.
             MyBase.MoveToNextSyntaxNodeInTrivia()
 
             TryPopNode()

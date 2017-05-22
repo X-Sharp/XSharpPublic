@@ -12,6 +12,7 @@ Imports Microsoft.CodeAnalysis.LanguageServices
 Imports Microsoft.CodeAnalysis.Shared.Options
 Imports Microsoft.CodeAnalysis.Simplification
 Imports Microsoft.CodeAnalysis.Text
+Imports Microsoft.CodeAnalysis.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Extensions.ContextQuery
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.Utilities
@@ -29,7 +30,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.GenerateType
             End Get
         End Property
 
-        Protected Overrides Function GenerateParameterNames(semanticModel As SemanticModel, arguments As IList(Of ArgumentSyntax)) As IList(Of String)
+        Protected Overrides Function GenerateParameterNames(semanticModel As SemanticModel, arguments As IList(Of ArgumentSyntax)) As IList(Of ParameterName)
             Return semanticModel.GenerateParameterNames(arguments)
         End Function
 
@@ -416,7 +417,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.GenerateType
             Return compilation.ClassifyConversion(sourceType, targetType).IsWidening
         End Function
 
-        Public Overrides Async Function GetOrGenerateEnclosingNamespaceSymbol(namedTypeSymbol As INamedTypeSymbol, containers() As String, selectedDocument As Document, selectedDocumentRoot As SyntaxNode, cancellationToken As CancellationToken) As Task(Of Tuple(Of INamespaceSymbol, INamespaceOrTypeSymbol, Location))
+        Public Overrides Async Function GetOrGenerateEnclosingNamespaceSymbolAsync(namedTypeSymbol As INamedTypeSymbol, containers() As String, selectedDocument As Document, selectedDocumentRoot As SyntaxNode, cancellationToken As CancellationToken) As Task(Of Tuple(Of INamespaceSymbol, INamespaceOrTypeSymbol, Location))
             Dim compilationUnit = DirectCast(selectedDocumentRoot, CompilationUnitSyntax)
             Dim semanticModel = Await selectedDocument.GetSemanticModelAsync(cancellationToken).ConfigureAwait(False)
 
@@ -569,7 +570,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.GenerateType
 
             Dim node As SyntaxNode = expression
             While node IsNot Nothing
-                ' Types in BaseList, Type Constraint or Member Types cannot be of restricter accessibility than the declaring type
+                ' Types in BaseList, Type Constraint or Member Types cannot be of more restricted accessibility than the declaring type
                 If TypeOf node Is InheritsOrImplementsStatementSyntax AndAlso
                     node.Parent IsNot Nothing AndAlso
                     TypeOf node.Parent Is TypeBlockSyntax Then
@@ -622,16 +623,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.GenerateType
             Return TypeOf expression Is SimpleNameSyntax
         End Function
 
-        Friend Overrides Function TryAddUsingsOrImportToDocument(updatedSolution As Solution, modifiedRoot As SyntaxNode, document As Document, simpleName As SimpleNameSyntax, includeUsingsOrImports As String, cancellationToken As CancellationToken) As Solution
+        Friend Overrides Async Function TryAddUsingsOrImportToDocumentAsync(updatedSolution As Solution, modifiedRoot As SyntaxNode, document As Document, simpleName As SimpleNameSyntax, includeUsingsOrImports As String, cancellationToken As CancellationToken) As Task(Of Solution)
             ' Nothing to include
             If String.IsNullOrWhiteSpace(includeUsingsOrImports) Then
                 Return updatedSolution
             End If
 
-            Dim placeSystemNamespaceFirst = document.Project.Solution.Workspace.Options.GetOption(OrganizerOptions.PlaceSystemNamespaceFirst, document.Project.Language)
+            Dim documentOptions = Await document.GetOptionsAsync(cancellationToken).ConfigureAwait(False)
+            Dim placeSystemNamespaceFirst = documentOptions.GetOption(GenerationOptions.PlaceSystemNamespaceFirst)
+
             Dim root As SyntaxNode = Nothing
             If (modifiedRoot Is Nothing) Then
-                root = document.GetSyntaxRootAsync(cancellationToken).WaitAndGetResult(cancellationToken)
+                root = Await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(False)
             Else
                 root = modifiedRoot
             End If
@@ -663,7 +666,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.GenerateType
                 Next
 
                 ' Check if the GFU is triggered from the namespace same as the imports namespace
-                If IsWithinTheImportingNamespace(document, simpleName.SpanStart, includeUsingsOrImports, cancellationToken) Then
+                If Await IsWithinTheImportingNamespaceAsync(document, simpleName.SpanStart, includeUsingsOrImports, cancellationToken).ConfigureAwait(False) Then
                     Return updatedSolution
                 End If
 
@@ -706,14 +709,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.GenerateType
                                                       cancellationToken As CancellationToken,
                                                       ByRef propertySymbol As IPropertySymbol) As Boolean
             propertySymbol = Nothing
+
             Dim typeSymbol = GetPropertyType(propertyName, semanticModel, typeInferenceService, cancellationToken)
             If typeSymbol Is Nothing OrElse TypeOf typeSymbol Is IErrorTypeSymbol Then
                 propertySymbol = GenerateProperty(propertyName, semanticModel.Compilation.ObjectType)
-                Return True
+                Return propertySymbol IsNot Nothing
             End If
 
             propertySymbol = GenerateProperty(propertyName, typeSymbol)
-            Return True
+            Return propertySymbol IsNot Nothing
         End Function
 
         Friend Overrides Function GetDelegatingConstructor(document As SemanticDocument,

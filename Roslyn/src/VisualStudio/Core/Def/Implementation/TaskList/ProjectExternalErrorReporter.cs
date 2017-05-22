@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Editor.Implementation.Diagnostics;
 using Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem;
 using Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem.Extensions;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Venus;
@@ -20,12 +19,12 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TaskList
 {
     internal class ProjectExternalErrorReporter : IVsReportExternalErrors, IVsLanguageServiceBuildErrorReporter2
     {
-        internal static readonly ImmutableDictionary<string, string> Properties = ImmutableDictionary<string, string>.Empty.Add(WellKnownDiagnosticPropertyNames.Origin, WellKnownDiagnosticTags.Build);
         internal static readonly IReadOnlyList<string> CustomTags = ImmutableArray.Create(WellKnownDiagnosticTags.Telemetry);
         internal static readonly IReadOnlyList<string> CompilerDiagnosticCustomTags = ImmutableArray.Create(WellKnownDiagnosticTags.Compiler, WellKnownDiagnosticTags.Telemetry);
 
         private readonly ProjectId _projectId;
         private readonly string _errorCodePrefix;
+
         private readonly VisualStudioWorkspaceImpl _workspace;
         private readonly ExternalErrorDiagnosticUpdateSource _diagnosticProvider;
 
@@ -33,11 +32,23 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TaskList
         {
             _projectId = projectId;
             _errorCodePrefix = errorCodePrefix;
-            _diagnosticProvider = serviceProvider.GetMefService<ExternalErrorDiagnosticUpdateSource>();
-            _workspace = serviceProvider.GetMefService<VisualStudioWorkspaceImpl>();
 
-            Debug.Assert(_diagnosticProvider != null);
+            _workspace = serviceProvider.GetMefService<VisualStudioWorkspaceImpl>();
+            _diagnosticProvider = serviceProvider.GetMefService<ExternalErrorDiagnosticUpdateSource>();
+
             Debug.Assert(_workspace != null);
+            Debug.Assert(_diagnosticProvider != null);
+        }
+
+        private bool CanHandle(string errorId)
+        {
+            // we accept all compiler diagnostics
+            if (errorId.StartsWith(_errorCodePrefix))
+            {
+                return true;
+            }
+
+            return _diagnosticProvider.SupportedDiagnosticId(_projectId, errorId);
         }
 
         public int AddNewErrors(IVsEnumExternalErrors pErrors)
@@ -46,8 +57,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TaskList
             var documentErrorsMap = new Dictionary<DocumentId, HashSet<DiagnosticData>>();
 
             var errors = new ExternalError[1];
-            uint fetched;
-            while (pErrors.Next(1, errors, out fetched) == VSConstants.S_OK && fetched == 1)
+            while (pErrors.Next(1, errors, out var fetched) == VSConstants.S_OK && fetched == 1)
             {
                 var error = errors[0];
 
@@ -136,27 +146,19 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TaskList
         // TODO: Use PreserveSig instead of throwing these exceptions for common cases.
         public void ReportError2(string bstrErrorMessage, string bstrErrorId, [ComAliasName("VsShell.VSTASKPRIORITY")]VSTASKPRIORITY nPriority, int iStartLine, int iStartColumn, int iEndLine, int iEndColumn, string bstrFileName)
         {
+            // first we check whether given error is something we can take care.
+            if (!CanHandle(bstrErrorId))
+            {
+                // it is not, let project system takes care.
+                throw new NotImplementedException();
+            }
+
             if ((iEndLine >= 0 && iEndColumn >= 0) &&
-                ((iEndLine < iStartLine) ||
-                 (iEndLine == iStartLine && iEndColumn < iStartColumn)))
+               ((iEndLine < iStartLine) ||
+                (iEndLine == iStartLine && iEndColumn < iStartColumn)))
             {
-                throw new ArgumentException(ServicesVSResources.EndPositionMustBeGreaterThanStart);
+                throw new ArgumentException(ServicesVSResources.End_position_must_be_start_position);
             }
-
-            // We only handle errors that have positions.  For the rest, we punt back to the 
-            // project system.
-            if (iStartLine < 0 || iStartColumn < 0)
-            {
-                throw new NotImplementedException();
-            }
-
-            var hostProject = _workspace.GetHostProject(_projectId);
-            if (!hostProject.ContainsFile(bstrFileName))
-            {
-                throw new NotImplementedException();
-            }
-
-            var hostDocument = hostProject.GetCurrentDocumentFromPath(bstrFileName);
 
             var priority = (VSTASKPRIORITY)nPriority;
             DiagnosticSeverity severity;
@@ -172,8 +174,34 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TaskList
                     severity = DiagnosticSeverity.Info;
                     break;
                 default:
-                    throw new ArgumentException(ServicesVSResources.NotAValidValue, "nPriority");
+                    throw new ArgumentException(ServicesVSResources.Not_a_valid_value, nameof(nPriority));
             }
+
+            if (iStartLine < 0 || iStartColumn < 0)
+            {
+                // we now takes care of errors that is not belong to file as well.
+                var projectDiagnostic = GetDiagnosticData(
+                    null, bstrErrorId, bstrErrorMessage, severity,
+                    null, 0, 0, 0, 0,
+                    bstrFileName, 0, 0, 0, 0);
+
+                _diagnosticProvider.AddNewErrors(_projectId, projectDiagnostic);
+                return;
+            }
+
+            var hostProject = _workspace.GetHostProject(_projectId);
+            if (!hostProject.ContainsFile(bstrFileName))
+            {
+                var projectDiagnostic = GetDiagnosticData(
+                    null, bstrErrorId, bstrErrorMessage, severity,
+                    null, iStartLine, iStartColumn, iEndLine, iEndColumn,
+                    bstrFileName, iStartLine, iStartColumn, iEndLine, iEndColumn);
+
+                _diagnosticProvider.AddNewErrors(_projectId, projectDiagnostic);
+                return;
+            }
+
+            var hostDocument = hostProject.GetCurrentDocumentFromPath(bstrFileName);
 
             var diagnostic = GetDiagnosticData(
                 hostDocument.Id, bstrErrorId, bstrErrorMessage, severity,
@@ -210,7 +238,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TaskList
             if (id != null)
             {
                 // save error line/column (surface buffer location) as mapped line/column so that we can display
-                // right location on closed venus file.
+                // right location on closed Venus file.
                 return GetDiagnosticData(
                     id, GetErrorId(error), error.bstrText, GetDiagnosticSeverity(error),
                     null, error.iLine, error.iCol, error.iLine, error.iCol, error.bstrFileName, line, column, line, column);
@@ -228,8 +256,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TaskList
                 if (prefix.Equals("CS", StringComparison.OrdinalIgnoreCase) || prefix.Equals("BC", StringComparison.OrdinalIgnoreCase))
                 {
                     var suffix = errorId.Substring(2);
-                    int id;
-                    return int.TryParse(suffix, out id);
+                    return int.TryParse(suffix, out var id);
                 }
             }
 
@@ -257,7 +284,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.TaskList
                 isEnabledByDefault: true,
                 warningLevel: GetWarningLevel(severity),
                 customTags: GetCustomTags(errorId),
-                properties: Properties,
+                properties: DiagnosticData.PropertiesForBuildDiagnostic,
                 workspace: _workspace,
                 projectId: _projectId,
                 location: new DiagnosticDataLocation(id,

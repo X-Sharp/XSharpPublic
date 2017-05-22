@@ -29,6 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         PPUDCType _type;
         PPMatchToken[] _matchtokens;
         PPMatchToken[] _matchTokensFlattened;
+        int tokenCount = 0;
         PPResultToken[] _resulttokens;
         PPErrorMessages _errorMessages;
         internal bool CaseInsensitive = false;
@@ -81,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     errorMessages = _errorMessages;
                 }
             }
-
+            _matchTokensFlattened = null;
         }
         bool parseDefineTokens(XSharpToken udc, XSharpToken[] tokens)
         {
@@ -605,6 +606,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var linearlist = new List<PPMatchToken>();
                 addMatchTokens(mt, linearlist);
                 _matchTokensFlattened = linearlist.ToArray();
+                tokenCount = _matchTokensFlattened.Length;
             }
             return mt;
         }
@@ -1030,7 +1032,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // use Expression method to find the end of the list
                     // iEnd points to the next token after the expression
                     iEnd = matchExpression(iSource, tokens, null);
-                    matchInfo[mToken.Index].SetPos(iSource, iEnd - 1);
+                    int iLastUsed = iEnd - 1;
+                    // truncate spaces at the end
+                    iLastUsed = trimHiddenTokens(tokens, iSource, iLastUsed);
+
+                    matchInfo[mToken.Index].SetPos(iSource, iLastUsed);
                     iSource = iEnd;
                     iRule += 1;
                     found = true;
@@ -1102,6 +1108,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 iSource = iEnd;
                             }
                         }
+                        // truncate spaces at the end
+                        iEnd = trimHiddenTokens(tokens, iSource, iEnd);
                         matchInfo[mToken.Index].SetPos(iSource, iEnd);
                         for (int i = iSource; i <= iEnd; i++)
                         {
@@ -1112,7 +1120,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case PPTokenType.MatchWild:
-                    matchInfo[mToken.Index].SetPos(iSource, tokens.Count - 1);
+                    iEnd = tokens.Count - 1;
+                    // truncate spaces at the end
+                    iEnd = trimHiddenTokens(tokens, iSource, iEnd);
+                    matchInfo[mToken.Index].SetPos(iSource, iEnd);
                     iSource = tokens.Count;
                     iRule += 1;
                     found = true;                    // matches anything until the end of the list
@@ -1163,7 +1174,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             iRule += 1;
                         }
-                        matchInfo[mToken.Index].SetPos(iOriginal, iSource-1);
+                        iEnd = iSource - 1;
+                        // truncate spaces at the end
+                        iEnd = trimHiddenTokens(tokens, iSource, iEnd);
+                        matchInfo[mToken.Index].SetPos(iOriginal, iEnd);
                     }
                     else
                         iSource = iOriginal;
@@ -1171,11 +1185,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return found;
         }
+        int trimHiddenTokens(IList<XSharpToken> tokens, int start, int end)
+        {
+            while (tokens[end].Channel == XSharpLexer.Hidden && start < end)
+            {
+                end--;
+            }
+
+            return end;
+        }
         internal bool Matches(IList<XSharpToken> tokens,  out PPMatchRange[] matchInfo)
         {
             int iRule = 0;
             int iSource = 0;
-            matchInfo = new PPMatchRange[_matchTokensFlattened.Length];
+            matchInfo = new PPMatchRange[tokenCount];
             List<XSharpToken> matchedWithToken = new List<XSharpToken>();
             int firstOptional = -1;
             bool hasSkippedMarkers = false;
@@ -1188,7 +1211,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (!mtoken.IsOptional)
                         return false;
-                    matchInfo[iRule].SetSkipped();
+                    matchInfo[mtoken.Index].SetSkipped();
                     hasSkippedMarkers = true;
                     iRule++;
                 }
@@ -1253,13 +1276,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal IList<XSharpToken> Replace(IList<XSharpToken> tokens, PPMatchRange[] matchInfo)
         {
-            Debug.Assert(matchInfo.Length == _matchTokensFlattened.Length);
+            Debug.Assert(matchInfo.Length == tokenCount);
             return Replace(_resulttokens, tokens, matchInfo,0);
 
         }
         internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset)
         {
-            Debug.Assert(matchInfo.Length == _matchTokensFlattened.Length);
+            Debug.Assert(matchInfo.Length == tokenCount);
             List<XSharpToken> result = new List<XSharpToken>();
             foreach (var resultToken in resulttokens)
             {
@@ -1401,7 +1424,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
                 }
             }
-            if (range.Length > 4)
+            if (end - start > 4)
             {
                 if (tokens[start].Type == XSharpLexer.LCURLY &&
                     (tokens[start + 1].Type == XSharpLexer.PIPE  ||
@@ -1479,6 +1502,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
                 }
             }
+            
             switch (rule.RuleTokenType)
             {
                 // Handle 3 kind of stringifies:
@@ -1494,7 +1518,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // we cannot take an interval and the source stream. That will not work if a transformation has been done already
                         var sb = new System.Text.StringBuilder();
                         sb.Append('"');
-                        for (int i = range.Start; i <= range.End; i++)
+                        for (int i = start; i <= end; i++)
                         {
                             var token = tokens[i];
                             sb.Append(token.Text);
@@ -1519,7 +1543,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // we cannot take an interval and the source stream. That will not work if a transformation has been done already
                         var sb = new System.Text.StringBuilder();
                         sb.Append('"');
-                        for (int i = range.Start; i <= range.End; i++)
+                        for (int i = start; i <= end; i++)
                         {
                             var token = tokens[i];
                             sb.Append(token.Text);

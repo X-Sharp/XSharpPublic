@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using Microsoft.CodeAnalysis.VisualBasic.DocumentationCommentFormatting;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.VisualBasic.DocumentationComments;
 using Roslyn.Test.Utilities;
 using Xunit;
 
@@ -10,15 +11,15 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.MetadataAsSource
     {
         public class VisualBasic
         {
-            [WpfFact, WorkItem(530123), Trait(Traits.Feature, Traits.Features.MetadataAsSource)]
-            public void TestGenerateTypeInModule()
+            [Fact, WorkItem(530123, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530123"), Trait(Traits.Feature, Traits.Features.MetadataAsSource)]
+            public async Task TestGenerateTypeInModule()
             {
                 var metadataSource = @"
 Module M
     Public Class D
     End Class
 End Module";
-                GenerateAndVerifySource(metadataSource, "M+D", LanguageNames.VisualBasic, $@"
+                await GenerateAndVerifySourceAsync(metadataSource, "M+D", LanguageNames.VisualBasic, $@"
 #Region ""{FeaturesResources.Assembly} ReferencedAssembly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null""
 ' {CodeAnalysisResources.InMemoryAssembly}
 #End Region
@@ -30,13 +31,14 @@ Friend Module M
 End Module");
             }
 
-            [WorkItem(530526)]
-            [WpfFact, Trait(Traits.Feature, Traits.Features.MetadataAsSource)]
-            public void BracketedIdentifierSimplificationTest()
+            [WorkItem(530526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530526")]
+            [Fact, Trait(Traits.Feature, Traits.Features.MetadataAsSource)]
+            public async Task BracketedIdentifierSimplificationTest()
             {
                 var expected = $@"#Region ""{FeaturesResources.Assembly} mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089""
 ' mscorlib.v4_0_30319_17626.dll
 #End Region
+
 Imports System.Runtime
 Imports System.Runtime.InteropServices
 
@@ -51,20 +53,21 @@ Namespace System
         Public Sub New(message As String)
         <__DynamicallyInvokableAttribute> <TargetedPatchingOptOut(""Performance critical to inline this type of method across NGen image boundaries"")>
         Public Sub New(message As String, [error] As Boolean)
-        <__DynamicallyInvokableAttribute>
-        Public ReadOnly Property IsError As Boolean
+
         <__DynamicallyInvokableAttribute>
         Public ReadOnly Property Message As String
+        <__DynamicallyInvokableAttribute>
+        Public ReadOnly Property IsError As Boolean
     End Class
 End Namespace";
 
-                using (var context = new TestContext(LanguageNames.VisualBasic))
+                using (var context = await TestContext.CreateAsync(LanguageNames.VisualBasic))
                 {
-                    context.GenerateAndVerifySource("System.ObsoleteAttribute", expected);
+                    await context.GenerateAndVerifySourceAsync("System.ObsoleteAttribute", expected);
                 }
             }
 
-            [WpfFact, Trait(Traits.Feature, Traits.Features.MetadataAsSource)]
+            [Fact, Trait(Traits.Feature, Traits.Features.MetadataAsSource)]
             public void ExtractXMLFromDocComment()
             {
                 var docCommentText = @"''' <summary>

@@ -5,19 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Editor.Implementation.Outlining;
-using Microsoft.CodeAnalysis.Editor.Shared.Options;
+using Microsoft.CodeAnalysis.Editor.Implementation.Structure;
 using Microsoft.CodeAnalysis.Editor.Shared.Tagging;
 using Microsoft.CodeAnalysis.Editor.Tagging;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Shared.TestHooks;
 using Microsoft.CodeAnalysis.Text.Shared.Extensions;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Projection;
 using Microsoft.VisualStudio.Text.Tagging;
-using Moq;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
@@ -31,10 +28,10 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Tagging
         /// I'm leaving this test here because it covers that code path (as shown by code coverage)
         /// </summary>
         [WpfFact]
-        [WorkItem(530368)]
+        [WorkItem(530368, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530368")]
         public async Task LargeNumberOfSpans()
         {
-            using (var workspace = CSharpWorkspaceFactory.CreateWorkspaceFromFile(@"class Program
+            using (var workspace = await TestWorkspace.CreateCSharpAsync(@"class Program
 {
     void M()
     {
@@ -58,6 +55,8 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Tagging
                     };
                 var asyncListener = new TaggerOperationListener();
 
+                WpfTestCase.RequireWpfFact($"{nameof(AsynchronousTaggerTests)}.{nameof(LargeNumberOfSpans)} creates asynchronous taggers");
+
                 var notificationService = workspace.GetService<IForegroundNotificationService>();
 
                 var eventSource = CreateEventSource();
@@ -80,7 +79,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Tagging
 
                     eventSource.SendUpdateEvent();
 
-                    await asyncListener.CreateWaitTask().ConfigureAwait(true);
+                    await asyncListener.CreateWaitTask();
 
                     var tags = tagger.GetTags(snapshotSpans);
 
@@ -90,11 +89,13 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Tagging
         }
 
         [WpfFact]
-        public void TestSynchronousOutlining()
+        public async Task TestSynchronousOutlining()
         {
-            using (var workspace = CSharpWorkspaceFactory.CreateWorkspaceFromFile("class Program {\r\n\r\n}"))
+            using (var workspace = await TestWorkspace.CreateCSharpAsync("class Program {\r\n\r\n}"))
             {
-                var tagProvider = new OutliningTaggerProvider(
+                WpfTestCase.RequireWpfFact($"{nameof(AsynchronousTaggerTests)}.{nameof(TestSynchronousOutlining)} creates asynchronous taggers");
+
+                var tagProvider = new VisualStudio14StructureTaggerProvider(
                     workspace.GetService<IForegroundNotificationService>(),
                     workspace.GetService<ITextEditorFactoryService>(),
                     workspace.GetService<IEditorOptionsFactoryService>(),
@@ -117,13 +118,6 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Tagging
         private static TestTaggerEventSource CreateEventSource()
         {
             return new TestTaggerEventSource();
-        }
-
-        private static Mock<IOptionService> CreateFeatureOptionsMock()
-        {
-            var featureOptions = new Mock<IOptionService>(MockBehavior.Strict);
-            featureOptions.Setup(s => s.GetOption(EditorComponentOnOffOptions.Tagger)).Returns(true);
-            return featureOptions;
         }
 
         private sealed class TaggerOperationListener : AsynchronousOperationListener

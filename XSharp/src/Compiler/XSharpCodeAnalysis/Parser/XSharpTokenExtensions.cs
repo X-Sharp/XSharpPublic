@@ -22,9 +22,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
@@ -120,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static string StringValue(string text)
         {
-            return text.Substring(1, text.Length> 2 ? text.Length - 2 :0);
+            return text.Substring(1, text.Length > 2 ? text.Length - 2 : 0);
         }
 
         private static string EscapedStringValue(string text)
@@ -264,27 +266,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CHAR_CONST:
                     if (text.StartsWith("c", StringComparison.OrdinalIgnoreCase))
                     {
-                        text = text.Substring(1);
-                        r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
+                         text = text.Substring(1);
+                         r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
+                        if (text[1] != '\\' && text.Length > 3)     // c'\n' is allowed but not c'nn'
+                        {
+                            r = r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TooManyCharsInConst));
+                        }
                     }
                     else
                     {
-                        switch (options.Dialect)
-                        {
-                            case XSharpDialect.Core:
-                            case XSharpDialect.Vulcan:
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
-                                break;
-                            default:
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, text, StringValue(text), SyntaxFactory.WS);
-                                break;
-                        }
+                        // Dialects with a single quote are excluded with a predicate in the lexer
+                        r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
                     }
                     break;
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.INTERPOLATED_STRING_CONST:
                 case XSharpParser.INCOMPLETE_STRING_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, StringValue(text), SyntaxFactory.WS);
+                    if (text.StartsWith("'") && ! options.Dialect.AllowStringsWithSingleQuotes())
+                    {
+                        r = r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Single Quoted Strings", options.Dialect.ToString()));
+                    }
                     break;
                 case XSharpParser.ESCAPED_STRING_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, EscapedStringValue(text), SyntaxFactory.WS);
@@ -1476,7 +1478,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public static void AddCheckUnique(this SyntaxListBuilder list, SyntaxToken t)
         {
             if (t.Kind != SyntaxKind.None) {
-                if(list.Any(t.Kind)) {
+                if(list.Any((int)t.Kind)) {
                     t = t.WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(t.GetLeadingTriviaWidth(), t.Width, ErrorCode.ERR_DuplicateModifier, t.Text));
                 }
@@ -1488,7 +1490,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             for (int i = 0; i < list.Count; i++) {
                 var item = list[i];
-                if (SyntaxFacts.IsAccessibilityModifier(item.Kind))
+                if (SyntaxFacts.IsAccessibilityModifier((SyntaxKind)item.RawKind))
                     return;
             }
             list.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
@@ -1496,16 +1498,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static void FixDefaultVirtual(this SyntaxListBuilder list)
         {
-            if (list.Any(SyntaxKind.StaticKeyword) ||
-                list.Any(SyntaxKind.ExternKeyword) ||
-                list.Any(SyntaxKind.AbstractKeyword) ||
-                list.Any(SyntaxKind.PrivateKeyword))
+            if (list.Any((int)SyntaxKind.StaticKeyword) ||
+                list.Any((int)SyntaxKind.ExternKeyword) ||
+                list.Any((int)SyntaxKind.AbstractKeyword) ||
+                list.Any((int)SyntaxKind.PrivateKeyword))
                 return;
-            if (!list.Any(SyntaxKind.VirtualKeyword))
+            if (!list.Any((int)SyntaxKind.VirtualKeyword))
                 list.Add(SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword));
-            if (list.Any(SyntaxKind.NewKeyword) || list.Any(SyntaxKind.AbstractKeyword))
+            if (list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword))
                 return;
-            if (!list.Any(SyntaxKind.OverrideKeyword))
+            if (!list.Any((int)SyntaxKind.OverrideKeyword))
                 list.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
         }
 
@@ -1513,24 +1515,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             /*if (!list.Any(SyntaxKind.VirtualKeyword))
                 return;*/
-            if (list.Any(SyntaxKind.StaticKeyword) || list.Any(SyntaxKind.ExternKeyword) || list.Any(SyntaxKind.OverrideKeyword) || list.Any(SyntaxKind.NewKeyword) || list.Any(SyntaxKind.AbstractKeyword) || list.Any(SyntaxKind.PrivateKeyword))
+            if (list.Any((int)SyntaxKind.StaticKeyword) || list.Any((int)SyntaxKind.ExternKeyword) || list.Any((int)SyntaxKind.OverrideKeyword) || list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword) || list.Any((int)SyntaxKind.PrivateKeyword))
                 return;
             list.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
         }
 
         public static int GetVisibilityLevel(this SyntaxListBuilder list)
         {
-            if (list.Any(SyntaxKind.PublicKeyword))
+            if (list.Any((int)SyntaxKind.PublicKeyword))
                 return 0;
-            if (list.Any(SyntaxKind.ProtectedKeyword)) {
-                if (list.Any(SyntaxKind.InternalKeyword))
+            if (list.Any((int)SyntaxKind.ProtectedKeyword)) {
+                if (list.Any((int)SyntaxKind.InternalKeyword))
                     return 1;
                 else
                     return 2;
             }
-            if (list.Any(SyntaxKind.InternalKeyword))
+            if (list.Any((int)SyntaxKind.InternalKeyword))
                 return 2;
-            if (list.Any(SyntaxKind.PrivateKeyword))
+            if (list.Any((int)SyntaxKind.PrivateKeyword))
                 return 3;
             return 0;
         }

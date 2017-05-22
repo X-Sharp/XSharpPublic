@@ -10,39 +10,39 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New SingleLineIfBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestSinglelineIf1()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestSinglelineIf1() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 {|Cursor:[|If|]|} a < b [|Then|] a = b [|Else|] b = a
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestSinglelineIf2()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestSinglelineIf2() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 [|If|] a < b {|Cursor:[|Then|]|} a = b [|Else|] b = a
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestSinglelineIf3()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestSinglelineIf3() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 [|If|] a < b [|Then|] a = b {|Cursor:[|Else|]|} b = a
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestSinglelineIfNestedInMultilineIf1()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestSinglelineIfNestedInMultilineIf1() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 If a < b Then
@@ -54,11 +54,11 @@ Else
 End If
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestSinglelineIfNestedInMultilineIf2()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestSinglelineIfNestedInMultilineIf2() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 If a < b Then
@@ -70,11 +70,11 @@ Else
 End If
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestSinglelineIfNestedInMultilineIf3()
-            Test(<Text><![CDATA[
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestSinglelineIfNestedInMultilineIf3() As Task
+            Await TestAsync(<Text><![CDATA[
 Class C
 Sub M()
 If a < b Then
@@ -86,6 +86,6 @@ Else
 End If
 End Sub
 End Class]]></Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

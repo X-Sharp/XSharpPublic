@@ -12,13 +12,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Completion.Complet
             MyBase.New(workspaceFixture)
         End Sub
 
-        Friend Overrides Function CreateCompletionProvider() As CompletionListProvider
+        Friend Overrides Function CreateCompletionProvider() As CompletionProvider
             Return New ObjectCreationCompletionProvider()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        <WorkItem(827897)>
-        Public Sub InYieldReturn()
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        <WorkItem(827897, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/827897")>
+        Public Async Function TestInYieldReturn() As Task
             Dim markup = <Text><![CDATA[
 Imports System
 Imports System.Collections.Generic
@@ -30,12 +30,12 @@ Class C
 End Class
 ]]></Text>.Value
 
-            VerifyItemExists(markup, "EntryPointNotFoundException")
-        End Sub
+            Await VerifyItemExistsAsync(markup, "EntryPointNotFoundException")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        <WorkItem(827897)>
-        Public Sub InAsyncMethodReturnStatement()
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        <WorkItem(827897, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/827897")>
+        Public Async Function TestInAsyncMethodReturnStatement() As Task
             Dim markup = <Text><![CDATA[
 Imports System
 Imports System.Threading.Tasks
@@ -48,12 +48,12 @@ Class C
 End Class
 ]]></Text>.Value
 
-            VerifyItemExists(markup, "EntryPointNotFoundException")
-        End Sub
+            Await VerifyItemExistsAsync(markup, "EntryPointNotFoundException")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        <WorkItem(892209)>
-        Public Sub UnwrapNullable()
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        <WorkItem(892209, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/892209")>
+        Public Async Function TestUnwrapNullable() As Task
             Dim markup = <Text><![CDATA[
 Public Class C
   Sub M1(arg As N.S?)
@@ -73,11 +73,11 @@ End Namespace
 
 ]]></Text>.Value
 
-            VerifyItemExists(markup, "N.S")
-        End Sub
+            Await VerifyItemExistsAsync(markup, "N.S")
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        Public Sub NotInTrivia()
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNotInTrivia() As Task
             Dim markup = <Text><![CDATA[
 Public Class C
   Sub M1(arg As N.S?)
@@ -97,7 +97,7 @@ End Namespace
 
 ]]></Text>.Value
 
-            VerifyItemExists(markup, "N.S")
-        End Sub
+            Await VerifyItemExistsAsync(markup, "N.S")
+        End Function
     End Class
 End Namespace

@@ -77,14 +77,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
             }
 
-            return MakeStaticAssignmentOperator(node.Syntax, loweredLeft, loweredRight, node.Type, used);
+            return MakeStaticAssignmentOperator(node.Syntax, loweredLeft, loweredRight, node.RefKind, node.Type, used);
         }
 
         /// <summary>
         /// Generates a lowered form of the assignment operator for the given left and right sub-expressions.
         /// Left and right sub-expressions must be in lowered form.
         /// </summary>
-        private BoundExpression MakeAssignmentOperator(CSharpSyntaxNode syntax, BoundExpression rewrittenLeft, BoundExpression rewrittenRight, TypeSymbol type,
+        private BoundExpression MakeAssignmentOperator(SyntaxNode syntax, BoundExpression rewrittenLeft, BoundExpression rewrittenRight, TypeSymbol type,
             bool used, bool isChecked, bool isCompoundAssignment)
         {
             switch (rewrittenLeft.Kind)
@@ -116,7 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         isChecked).ToExpression();
 
                 default:
-                    return MakeStaticAssignmentOperator(syntax, rewrittenLeft, rewrittenRight, type, used);
+                    return MakeStaticAssignmentOperator(syntax, rewrittenLeft, rewrittenRight, RefKind.None, type, used);
             }
         }
 
@@ -147,7 +147,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// Generates a lowered form of the assignment operator for the given left and right sub-expressions.
         /// Left and right sub-expressions must be in lowered form.
         /// </summary>
-        private BoundExpression MakeStaticAssignmentOperator(CSharpSyntaxNode syntax, BoundExpression rewrittenLeft, BoundExpression rewrittenRight, TypeSymbol type, bool used)
+        private BoundExpression MakeStaticAssignmentOperator(SyntaxNode syntax, BoundExpression rewrittenLeft, BoundExpression rewrittenRight, RefKind refKind, TypeSymbol type, bool used)
         {
             switch (rewrittenLeft.Kind)
             {
@@ -157,6 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case BoundKind.PropertyAccess:
                     {
+                        Debug.Assert(refKind == RefKind.None);
                         BoundPropertyAccess propertyAccess = (BoundPropertyAccess)rewrittenLeft;
                         BoundExpression rewrittenReceiver = propertyAccess.ReceiverOpt;
                         PropertySymbol property = propertyAccess.PropertySymbol;
@@ -176,6 +177,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case BoundKind.IndexerAccess:
                     {
+                        Debug.Assert(refKind == RefKind.None);
                         BoundIndexerAccess indexerAccess = (BoundIndexerAccess)rewrittenLeft;
                         BoundExpression rewrittenReceiver = indexerAccess.ReceiverOpt;
                         ImmutableArray<BoundExpression> rewrittenArguments = indexerAccess.Arguments;
@@ -194,8 +196,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                             used);
                     }
 
+                case BoundKind.Local:
+                    {
+                        Debug.Assert(refKind == RefKind.None || ((BoundLocal)rewrittenLeft).LocalSymbol.RefKind != RefKind.None);
+                        return new BoundAssignmentOperator(
+                            syntax,
+                            rewrittenLeft,
+                            rewrittenRight,
+                            type,
+                            refKind: refKind);
+                    }
+
+                case BoundKind.DiscardExpression:
+                    {
+                        return rewrittenRight;
+                    }
+
                 default:
                     {
+                        Debug.Assert(refKind == RefKind.None);
                         return new BoundAssignmentOperator(
                             syntax,
                             rewrittenLeft,
@@ -206,7 +225,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private BoundExpression MakePropertyAssignment(
-            CSharpSyntaxNode syntax,
+            SyntaxNode syntax,
             BoundExpression rewrittenReceiver,
             PropertySymbol property,
             ImmutableArray<BoundExpression> rewrittenArguments,

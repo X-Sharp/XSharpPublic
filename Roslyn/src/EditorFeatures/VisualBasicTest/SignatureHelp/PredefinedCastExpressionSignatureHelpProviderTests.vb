@@ -2,7 +2,8 @@
 
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.SignatureHelp
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
-Imports Microsoft.CodeAnalysis.Editor.VisualBasic.SignatureHelp
+Imports Microsoft.CodeAnalysis.SignatureHelp
+Imports Microsoft.CodeAnalysis.VisualBasic.SignatureHelp
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.SignatureHelp
     Public Class PredefinedCastExpressionSignatureHelpProviderTests
@@ -17,7 +18,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.SignatureHelp
         End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
-        Public Sub TestInvocationForCBool()
+        Public Async Function TestInvocationForCBool() As Task
             Dim markup = <a><![CDATA[
 Class C
     Sub Foo()
@@ -28,11 +29,11 @@ End Class
 
             Dim expectedOrderedItems = New List(Of SignatureHelpTestItem)()
             expectedOrderedItems.Add(New SignatureHelpTestItem(
-                                     $"CBool({Expression1}) As Boolean",
-                                     String.Format(ConvertsToDataType, "Boolean"),
-                                     ExpressionToConvert,
+                                     $"CBool({VBWorkspaceResources.expression}) As Boolean",
+                                     String.Format(VBWorkspaceResources.Converts_an_expression_to_the_0_data_type, "Boolean"),
+                                     VBWorkspaceResources.The_expression_to_be_evaluated_and_converted,
                                      currentParameterIndex:=0))
-            Test(markup, expectedOrderedItems)
-        End Sub
+            Await TestAsync(markup, expectedOrderedItems)
+        End Function
     End Class
 End Namespace

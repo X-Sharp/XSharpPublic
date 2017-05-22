@@ -10,14 +10,14 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
     {
         protected abstract AbstractOptionPageControl CreateOptionPage(IServiceProvider serviceProvider);
 
-        private AbstractOptionPageControl _pageControl;
+        protected AbstractOptionPageControl pageControl;
         private bool _needsLoadOnNextActivate = true;
 
         private void EnsureOptionPageCreated()
         {
-            if (_pageControl == null)
+            if (pageControl == null)
             {
-                _pageControl = CreateOptionPage(this.Site);
+                pageControl = CreateOptionPage(this.Site);
             }
         }
 
@@ -26,7 +26,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             get
             {
                 EnsureOptionPageCreated();
-                return _pageControl;
+                return pageControl;
             }
         }
 
@@ -35,7 +35,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             if (_needsLoadOnNextActivate)
             {
                 EnsureOptionPageCreated();
-                _pageControl.LoadSettings();
+                pageControl.LoadSettings();
 
                 _needsLoadOnNextActivate = false;
             }
@@ -53,7 +53,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             //
             // This second one is tricky, because we don't actually want to update our controls
             // right then, because they'd be wrong the next time the page opens -- it's possible
-            // they may have been changed programatically. Therefore, we'll set a flag so we load
+            // they may have been changed programmatically. Therefore, we'll set a flag so we load
             // next time
             _needsLoadOnNextActivate = true;
         }
@@ -61,10 +61,10 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
         public override void SaveSettingsToStorage()
         {
             EnsureOptionPageCreated();
-            _pageControl.SaveSettings();
+            pageControl.SaveSettings();
 
             // Make sure we load the next time the page is activated, in case if options changed
-            // programatically between now and the next time the page is activated
+            // programmatically between now and the next time the page is activated
             _needsLoadOnNextActivate = true;
         }
 
@@ -72,9 +72,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
         {
             base.OnClosed(e);
 
-            if (_pageControl != null)
+            if (pageControl != null)
             {
-                _pageControl.Close();
+                pageControl.Close();
             }
         }
     }

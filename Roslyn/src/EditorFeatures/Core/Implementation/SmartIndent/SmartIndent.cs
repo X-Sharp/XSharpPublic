@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
 using Microsoft.CodeAnalysis.Internal.Log;
@@ -9,7 +8,6 @@ using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Editor.Implementation.SmartIndent
@@ -20,12 +18,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.SmartIndent
 
         public SmartIndent(ITextView textView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
-
-            _textView = textView;
+            _textView = textView ?? throw new ArgumentNullException(nameof(textView));
         }
 
         public int? GetDesiredIndentation(ITextSnapshotLine line)
@@ -47,24 +40,22 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.SmartIndent
             using (Logger.LogBlock(FunctionId.SmartIndentation_Start, cancellationToken))
             {
                 var document = lineToBeIndented.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
-                if (document == null)
+                var syncService = document?.GetLanguageService<ISynchronousIndentationService>();
+
+                if (syncService != null)
                 {
-                    return null;
+                    var result = syncService.GetDesiredIndentation(document, lineToBeIndented.LineNumber, cancellationToken);
+                    return result?.GetIndentation(_textView, lineToBeIndented);
                 }
 
-                var service = document.GetLanguageService<IIndentationService>();
-                if (service == null)
+                var asyncService = document?.GetLanguageService<IIndentationService>();
+                if (asyncService != null)
                 {
-                    return null;
+                    var result = asyncService.GetDesiredIndentation(document, lineToBeIndented.LineNumber, cancellationToken).WaitAndGetResult(cancellationToken);
+                    return result?.GetIndentation(_textView, lineToBeIndented);
                 }
 
-                var result = service.GetDesiredIndentationAsync(document, lineToBeIndented.LineNumber, cancellationToken).WaitAndGetResult(cancellationToken);
-                if (result == null)
-                {
-                    return null;
-                }
-
-                return result.Value.GetIndentation(_textView, lineToBeIndented);
+                return null;
             }
         }
     }

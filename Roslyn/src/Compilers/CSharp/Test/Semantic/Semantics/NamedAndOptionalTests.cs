@@ -121,9 +121,7 @@ abstract class Golf : Echo
 
 
 ";
-            var compilation = CreateCompilationWithMscorlib(source);
-            var diagnostics = compilation.GetDiagnostics();
-            Assert.Empty(diagnostics);
+            CreateCompilationWithMscorlib(source).VerifyDiagnostics();
         }
 
         [Fact]
@@ -170,10 +168,17 @@ class C : Middle
         c.Foo(optArg1: 3333, 11111);
     }
 }";
-
-            TestAllErrors(source,
-                "'optParam3' error CS1739: The best overload for 'Foo' does not have a parameter named 'optParam3'",
-                "'11111' error CS1738: Named argument specifications must appear after all fixed arguments have been specified");
+            CreateCompilationWithMscorlib(source).VerifyDiagnostics(
+                // (37,15): error CS1739: The best overload for 'Foo' does not have a parameter named 'optParam3'
+                //         c.Foo(optParam3: 333, reqParam1: 111 , optParam2: 222, optParam1: 1111); 
+                Diagnostic(ErrorCode.ERR_BadNamedArgument, "optParam3").WithArguments("Foo", "optParam3").WithLocation(37, 15),
+                // (39,30): error CS1738: Named argument specifications must appear after all fixed arguments have been specified
+                //         c.Foo(optArg1: 3333, 11111);
+                Diagnostic(ErrorCode.ERR_NamedArgumentSpecificationBeforeFixedArgument, "11111").WithLocation(39, 30),
+                // (39,15): error CS1739: The best overload for 'Foo' does not have a parameter named 'optArg1'
+                //         c.Foo(optArg1: 3333, 11111);
+                Diagnostic(ErrorCode.ERR_BadNamedArgument, "optArg1").WithArguments("Foo", "optArg1").WithLocation(39, 15)
+                );
         }
 
         [Fact]
@@ -185,9 +190,10 @@ class C
     //error CS1736 
     public void M(string s = new string('c',5)) {}
 }";
-
-            TestAllErrors(source,
-                "'new string('c',5)' error CS1736: Default parameter value for 's' must be a compile-time constant");
+            CreateCompilationWithMscorlib(source).VerifyDiagnostics(
+                // (5,30): error CS1736: Default parameter value for 's' must be a compile-time constant
+                //     public void M(string s = new string('c',5)) {}
+                Diagnostic(ErrorCode.ERR_DefaultValueMustBeConstant, "new string('c',5)").WithArguments("s").WithLocation(5, 30));
         }
 
         [Fact]
@@ -214,11 +220,16 @@ class C
         new C(0, cz : 456);
     }
 }";
-
-            TestAllErrors(source,
-"'f' error CS7036: There is no argument given that corresponds to the required formal parameter 'fg' of 'C.F'",
-"'M' error CS7036: There is no argument given that corresponds to the required formal parameter 'my' of 'C.M(int, int, int)'",
-"'C' error CS7036: There is no argument given that corresponds to the required formal parameter 'cy' of 'C.C(int, int, int)'");
+            CreateCompilationWithMscorlib(source).VerifyDiagnostics(
+                // (10,9): error CS7036: There is no argument given that corresponds to the required formal parameter 'fg' of 'C.F'
+                //         f(0, fz : 456);
+                Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "f").WithArguments("fg", "C.F").WithLocation(10, 9),
+                // (11,9): error CS7036: There is no argument given that corresponds to the required formal parameter 'my' of 'C.M(int, int, int)'
+                //         M(0, mz : 456);
+                Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "M").WithArguments("my", "C.M(int, int, int)").WithLocation(11, 9),
+                // (12,13): error CS7036: There is no argument given that corresponds to the required formal parameter 'cy' of 'C.C(int, int, int)'
+                //         new C(0, cz : 456);
+                Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "C").WithArguments("cy", "C.C(int, int, int)").WithLocation(12, 13));
         }
 
         [Fact]
@@ -226,7 +237,7 @@ class C
         {
             // This was never supposed to work and the spec does not require it, but
             // nevertheless, the native compiler allows this:
-            const string test = @"
+            const string source = @"
 class C
 {
   static void C(int q = 10, params int[] x) {}
@@ -239,14 +250,17 @@ class C
 }";
             // and so Roslyn does too. It seems likely that someone has taken a dependency
             // on the bad pattern.
-            TestErrors(test);
+            CreateCompilationWithMscorlib(source).VerifyDiagnostics(
+                // (4,15): error CS0542: 'C': member names cannot be the same as their enclosing type
+                //   static void C(int q = 10, params int[] x) {}
+                Diagnostic(ErrorCode.ERR_MemberNameSameAsType, "C").WithArguments("C").WithLocation(4, 15));
         }
 
         [Fact]
         public void TestNamedAndOptionalParamsCrazyError()
         {
             // Fortunately, however, this is still illegal:
-            const string test = @"
+            const string source = @"
 class C
 {
   static void C(int q = 10, params int[] x) {}
@@ -255,8 +269,13 @@ class C
     C(1, 2, 3, x:4);
   }
 }";
-            TestErrors(test,
-                "'x' error CS1744: Named argument 'x' specifies a parameter for which a positional argument has already been given");
+            CreateCompilationWithMscorlib(source).VerifyDiagnostics(
+                // (4,15): error CS0542: 'C': member names cannot be the same as their enclosing type
+                //   static void C(int q = 10, params int[] x) {}
+                Diagnostic(ErrorCode.ERR_MemberNameSameAsType, "C").WithArguments("C").WithLocation(4, 15),
+                // (7,16): error CS1744: Named argument 'x' specifies a parameter for which a positional argument has already been given
+                //     C(1, 2, 3, x:4);
+                Diagnostic(ErrorCode.ERR_NamedArgumentUsedInPositional, "x").WithArguments("x").WithLocation(7, 16));
         }
 
         [Fact]
@@ -763,7 +782,7 @@ unsafe class C
 }");
         }
 
-        [WorkItem(528783, "DevDiv")]
+        [WorkItem(528783, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/528783")]
         [Fact]
         public void TestNamedAndOptionalParametersArgumentName()
         {
@@ -795,7 +814,7 @@ namespace NS
             Assert.Equal("ss", symInfo.Symbol.Name);
         }
 
-        [WorkItem(542418, "DevDiv")]
+        [WorkItem(542418, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542418")]
         [Fact]
         public void OptionalValueInvokesInstanceMethod()
         {
@@ -830,8 +849,29 @@ namespace NS
                 Diagnostic(ErrorCode.ERR_DefaultValueMustBeConstant, "M2()").WithArguments("value").WithLocation(5, 37));
         }
 
-        [WorkItem(542411, "DevDiv")]
-        [WorkItem(542365, "DevDiv")]
+        [WorkItem(11638, "https://github.com/dotnet/roslyn/issues/11638")]
+        [Fact]
+        public void OptionalValueHasObjectInitializer()
+        {
+            var source =
+@"class C
+{
+    static void Test(Vector3 vector = new Vector3() { X = 1f, Y = 1f, Z = 1f}) { }
+}
+
+public struct Vector3
+{
+    public float X;
+    public float Y;
+    public float Z;
+}";
+            CreateCompilationWithMscorlib(source).VerifyDiagnostics(
+                // (3,39): error CS1736: Default parameter value for 'vector' must be a compile-time constant
+                Diagnostic(ErrorCode.ERR_DefaultValueMustBeConstant, "new Vector3() { X = 1f, Y = 1f, Z = 1f}").WithArguments("vector").WithLocation(3, 39));
+        }
+
+        [WorkItem(542411, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542411")]
+        [WorkItem(542365, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542365")]
         [Fact]
         public void GenericOptionalParameters()
         {
@@ -844,7 +884,7 @@ namespace NS
         }
 
 
-        [WorkItem(542458, "DevDiv")]
+        [WorkItem(542458, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542458")]
         [Fact]
         public void OptionalValueTypeFromReferencedAssembly()
         {
@@ -892,7 +932,7 @@ public class D
             CompileWithCustomILSource(source, ilSource);
         }
 
-        [WorkItem(542867, "DevDiv")]
+        [WorkItem(542867, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542867")]
         [Fact]
         public void OptionalParameterDeclaredWithAttributes()
         {
@@ -917,10 +957,16 @@ class Test{
 }
 ";
             CreateCompilationWithMscorlib(source, new[] { SystemRef }).VerifyDiagnostics(
-                // (5,21): error CS1745: Cannot specify default parameter value in conjunction with DefaultParameterAttribute or OptionalAttribute
-                Diagnostic(ErrorCode.ERR_DefaultValueUsedWithAttributes, "Optional"),
                 // (9,21): error CS1745: Cannot specify default parameter value in conjunction with DefaultParameterAttribute or OptionalAttribute
-                Diagnostic(ErrorCode.ERR_DefaultValueUsedWithAttributes, "DefaultParameterValue"));
+                //     public int Bar([DefaultParameterValue(1)]int i = 2) {
+                Diagnostic(ErrorCode.ERR_DefaultValueUsedWithAttributes, "DefaultParameterValue").WithLocation(9, 21),
+                // (9,54): error CS8017: The parameter has multiple distinct default values.
+                //     public int Bar([DefaultParameterValue(1)]int i = 2) {
+                Diagnostic(ErrorCode.ERR_ParamDefaultValueDiffersFromAttribute, "2").WithLocation(9, 54),
+                // (5,21): error CS1745: Cannot specify default parameter value in conjunction with DefaultParameterAttribute or OptionalAttribute
+                //     public int Foo([Optional]object i = null) {
+                Diagnostic(ErrorCode.ERR_DefaultValueUsedWithAttributes, "Optional").WithLocation(5, 21)
+                );
         }
 
         [WorkItem(10290, "DevDiv_Projects/Roslyn")]
@@ -940,7 +986,7 @@ public class Test
             CompileAndVerify(source, expectedOutput: "0");
         }
 
-        [WorkItem(543871, "DevDiv")]
+        [WorkItem(543871, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543871")]
         [Fact]
         public void RefParameterDeclaredWithOptionalAttribute()
         {
@@ -965,7 +1011,7 @@ public class Parent
  Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "Foo").WithArguments("x", "Parent.Foo(ref int)"));
         }
 
-        [Fact, WorkItem(544491, "DevDiv")]
+        [Fact, WorkItem(544491, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544491")]
         public void EnumAsDefaultParameterValue()
         {
             string source = @"
@@ -1161,7 +1207,7 @@ public static class ErrorCases
                 Diagnostic(ErrorCode.ERR_DefaultValueTypeMustMatch, "DefaultParameterValue"));
         }
 
-        [WorkItem(544440, "DevDiv")]
+        [WorkItem(544440, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544440")]
         [ClrOnlyFact]
         public void TestBug12768()
         {
@@ -1300,7 +1346,7 @@ System.Runtime.InteropServices.UnknownWrapper
             }
         }
 
-        [WorkItem(545329, "DevDiv")]
+        [WorkItem(545329, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545329")]
         [Fact()]
         public void ComOptionalRefParameter()
         {
@@ -1338,7 +1384,7 @@ class C
                 Diagnostic(ErrorCode.ERR_NoCorrespondingArgument, "M").WithArguments("o", "D.M(ref object)").WithLocation(25, 11));
         }
 
-        [WorkItem(545337, "DevDiv")]
+        [WorkItem(545337, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545337")]
         [ClrOnlyFact]
         public void TestVbDecimalAndDateTimeDefaultParameters()
         {
@@ -1482,7 +1528,7 @@ True";
             verifier.VerifyIL("D.Main", il);
         }
 
-        [WorkItem(545337, "DevDiv")]
+        [WorkItem(545337, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545337")]
         [Fact]
         public void TestCSharpDecimalAndDateTimeDefaultParameters()
         {
@@ -1875,7 +1921,7 @@ F1()
         }
 
         [Fact]
-        [WorkItem(546713, "DevDiv")]
+        [WorkItem(546713, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546713")]
         public void Test16631()
         {
             var source =
@@ -1931,7 +1977,7 @@ public class D : B
         }
 
         [Fact]
-        [WorkItem(529775, "DevDiv")]
+        [WorkItem(529775, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529775")]
         public void IsOptionalVsHasDefaultValue_PrimitiveStruct()
         {
             var source = @"
@@ -2013,7 +2059,7 @@ public class C
         }
 
         [Fact]
-        [WorkItem(529775, "DevDiv")]
+        [WorkItem(529775, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529775")]
         public void IsOptionalVsHasDefaultValue_UserDefinedStruct()
         {
             var source = @"
@@ -2064,7 +2110,7 @@ public struct S
         }
 
         [Fact]
-        [WorkItem(529775, "DevDiv")]
+        [WorkItem(529775, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529775")]
         public void IsOptionalVsHasDefaultValue_String()
         {
             var source = @"
@@ -2146,7 +2192,7 @@ public class C
         }
 
         [Fact]
-        [WorkItem(529775, "DevDiv")]
+        [WorkItem(529775, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529775")]
         public void IsOptionalVsHasDefaultValue_Decimal()
         {
             var source = @"
@@ -2229,7 +2275,7 @@ public class C
         }
 
         [Fact]
-        [WorkItem(529775, "DevDiv")]
+        [WorkItem(529775, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529775")]
         public void IsOptionalVsHasDefaultValue_DateTime()
         {
             var source = @"

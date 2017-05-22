@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return this.Manager.Vulcan_Codeblock;
             }
 
-            internal override bool Equals(TypeSymbol t2, bool ignoreCustomModifiersAndArraySizesAndLowerBounds, bool ignoreDynamic)
+            internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
             {
                 if (ReferenceEquals(this, t2))
                 {
@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 var other = t2 as CodeblockTypePublicSymbol;
-                return (object)other != null && this.TypeDescriptor.Equals(other.TypeDescriptor, ignoreCustomModifiersAndArraySizesAndLowerBounds, ignoreDynamic);
+                return (object)other != null && this.TypeDescriptor.Equals(other.TypeDescriptor, comparison);
             }
         }
 
@@ -90,6 +90,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             public override bool ReturnsVoid
             {
                 get { return false; }
+            }
+
+            internal override RefKind RefKind
+            {
+                get { return RefKind.None; }
             }
 
             public override TypeSymbol ReturnType
@@ -173,8 +178,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal sealed class SynthesizedParamsParameterSymbol: SynthesizedParameterSymbol
+        internal sealed class SynthesizedParamsParameterSymbol: SynthesizedParameterSymbolBase
         {
+            ImmutableArray<CustomModifier> _customModifiers;
+
             public SynthesizedParamsParameterSymbol(
                 MethodSymbol container,
                 TypeSymbol type,
@@ -182,14 +189,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 RefKind refKind,
                 string name = "",
                 ImmutableArray<CustomModifier> customModifiers = default(ImmutableArray<CustomModifier>))
-                    : base (container, type, ordinal, refKind, name, customModifiers)
+                    : base (container, type, ordinal, refKind, name)
             {
-
+                _customModifiers = customModifiers;
             }
 
             public override bool IsParams
             {
                 get { return true; }
+            }
+
+            public override ImmutableArray<CustomModifier> CustomModifiers
+            {
+                get { return _customModifiers.NullToEmpty(); }
+            }
+
+            public override ImmutableArray<CustomModifier> RefCustomModifiers
+            {
+                get { return ImmutableArray<CustomModifier>.Empty; }
             }
 
             internal sealed override void AddSynthesizedAttributes(ModuleCompilationState compilationState, ref ArrayBuilder<SynthesizedAttributeData> attributes)

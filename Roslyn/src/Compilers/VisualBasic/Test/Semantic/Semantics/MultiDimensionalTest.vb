@@ -270,7 +270,7 @@ End Module
 
         End Sub
 
-        <WorkItem(542531, "DevDiv")>
+        <WorkItem(542531, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542531")>
         <Fact>
         Public Sub AssignMultiDimArrayToArrayWithExplicitBounds()
             Dim compilation1 = CreateCompilationWithMscorlibAndVBRuntime(
@@ -382,7 +382,7 @@ VerifyDiagnostics(
 
 #End Region
 
-        Private Shared arraysOfRank1IlSource As String =
+        Private Shared s_arraysOfRank1IlSource As String =
         <![CDATA[
 .class public auto ansi beforefieldinit Test
        extends [mscorlib]System.Object
@@ -464,7 +464,7 @@ VerifyDiagnostics(
 ]]>.Value
 
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_GetElement()
 
@@ -480,7 +480,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -503,7 +503,7 @@ Test1
         End Sub
 
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_SetElement()
 
@@ -521,7 +521,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
             Dim verifier = CompileAndVerify(Compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -551,7 +551,7 @@ Test2
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_ElementAddress()
 
@@ -573,7 +573,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
             Dim verifier = CompileAndVerify(Compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -603,7 +603,7 @@ Test2
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_Overriding01()
 
@@ -619,7 +619,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
             compilation.AssertTheseDiagnostics(
 <expected>
 BC30437: 'Public Overrides Function Test1() As Double()' cannot override 'Public Overridable Overloads Function Test1() As Double(*)' because they differ by their return types.
@@ -629,7 +629,7 @@ BC30437: 'Public Overrides Function Test1() As Double()' cannot override 'Public
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_Overriding02()
 
@@ -645,7 +645,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
             compilation.AssertTheseDiagnostics(
 <expected>
 BC30284: function 'Test2' cannot be declared 'Overrides' because it does not override a function in a base class.
@@ -655,7 +655,7 @@ BC30284: function 'Test2' cannot be declared 'Overrides' because it does not ove
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_ArrayConversions()
 
@@ -680,7 +680,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe.WithOptionStrict(OptionStrict.On))
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe.WithOptionStrict(OptionStrict.On))
             compilation.AssertTheseDiagnostics(
 <expected>
 BC30311: Value of type 'Double(*)' cannot be converted to 'Double()'.
@@ -729,7 +729,7 @@ BC30311: Value of type 'IList(Of Double)' cannot be converted to 'Double(*)'.
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_StringConversions()
             Dim ilSource As String =
@@ -827,7 +827,7 @@ BC30311: Value of type 'String' cannot be converted to 'Char(*)'.
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_TypeArgumentInference01()
 
@@ -867,7 +867,23 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+
+            Dim m2 = compilation.GetTypeByMetadataName("Test").GetMember(Of MethodSymbol)("M2")
+            Dim szArray = DirectCast(m2.Parameters.First().Type, IArrayTypeSymbol)
+            Assert.Equal("T()", szArray.ToTestDisplayString())
+            Assert.True(szArray.IsSZArray)
+            Assert.Equal(1, szArray.Rank)
+            Assert.True(szArray.Sizes.IsEmpty)
+            Assert.True(szArray.LowerBounds.IsDefault)
+
+            Dim mdArray = DirectCast(m2.Parameters.Last().Type, IArrayTypeSymbol)
+            Assert.Equal("T(*)", mdArray.ToTestDisplayString())
+            Assert.False(mdArray.IsSZArray)
+            Assert.Equal(1, mdArray.Rank)
+            Assert.True(mdArray.Sizes.IsEmpty)
+            Assert.True(mdArray.LowerBounds.IsDefault)
+
             compilation.AssertTheseDiagnostics(
 <expected>
 BC36645: Data type(s) of the type parameter(s) in method 'Public Shared Sub M1(Of T)(a As T())' cannot be inferred from these arguments. Specifying the data type(s) explicitly might correct this error.
@@ -898,7 +914,7 @@ BC36645: Data type(s) of the type parameter(s) in method 'Public Shared Overload
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_TypeArgumentInference02()
 
@@ -924,7 +940,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
             CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -934,7 +950,7 @@ System.Double
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_TypeArgumentInference03()
 
@@ -1036,7 +1052,7 @@ BC32050: Type parameter 'T' for 'Public Shared Overloads Sub M3(Of T)(ParamArray
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_TypeArgumentInference04()
 
@@ -1122,7 +1138,7 @@ System.Double
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_ForEach()
 
@@ -1140,7 +1156,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe, includeVbRuntime:=True)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe, includeVbRuntime:=True)
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -1170,7 +1186,7 @@ Test1
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_Length()
 
@@ -1186,7 +1202,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -1207,7 +1223,7 @@ Test1
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_LongLength()
 
@@ -1223,7 +1239,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -1244,7 +1260,7 @@ Test1
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_ParamArray()
 
@@ -1262,7 +1278,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
             compilation.AssertTheseDiagnostics(
 <expected>
 BC31092: ParamArray parameters must have an array type.
@@ -1275,7 +1291,7 @@ BC31092: ParamArray parameters must have an array type.
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_Redim01()
 
@@ -1296,7 +1312,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -1330,7 +1346,7 @@ System.Double[]
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_Redim02()
 
@@ -1353,7 +1369,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe, includeVbRuntime:=True)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe, includeVbRuntime:=True)
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -1400,7 +1416,7 @@ System.Double[]
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_Redim03()
 
@@ -1417,7 +1433,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
             compilation.AssertTheseDiagnostics(
 <expected>
 BC30415: 'ReDim' cannot change the number of dimensions of an array.
@@ -1427,7 +1443,7 @@ BC30415: 'ReDim' cannot change the number of dimensions of an array.
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_Literals01()
 
@@ -1451,7 +1467,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe, includeVbRuntime:=True)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe, includeVbRuntime:=True)
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -1479,7 +1495,7 @@ Test1
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_Literals02()
 
@@ -1503,7 +1519,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe, includeVbRuntime:=True)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe, includeVbRuntime:=True)
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 Test1
@@ -1543,7 +1559,7 @@ Test1
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_Literals03()
 
@@ -1561,7 +1577,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseDll)
             compilation.AssertTheseDiagnostics(
 <expected>
 BC30311: Value of type 'Integer()' cannot be converted to 'Double(*)'.
@@ -1574,7 +1590,7 @@ BC30311: Value of type 'Double()' cannot be converted to 'Double(*)'.
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_Literals04()
 
@@ -1589,14 +1605,14 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithCustomILSource(source, arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithCustomILSource(source, s_arraysOfRank1IlSource, options:=TestOptions.ReleaseExe)
             CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
 System.Int32
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_Literals05()
 
@@ -1649,7 +1665,7 @@ System.Int32
 ]]>)
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <Fact>
         Public Sub ArraysOfRank1_Literals06()
 
@@ -1714,7 +1730,7 @@ BC32050: Type parameter 'T' for 'Public Shared Overloads Sub M3(Of T)(ParamArray
             )
         End Sub
 
-        <WorkItem(1211526, "DevDiv"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
+        <WorkItem(1211526, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1211526"), WorkItem(4924, "https://github.com/dotnet/roslyn/issues/4924")>
         <ClrOnlyFact(ClrOnlyReason.Ilasm)>
         Public Sub ArraysOfRank1_Literals07()
 
@@ -1975,6 +1991,17 @@ System.Int32
       IL_0007:  ldnull
       IL_000a:  ret
     } 
+
+    .method public hidebysig newslot virtual 
+            instance float64[1...5] Test17() cil managed
+    {
+      // Code size       11 (0xb)
+      .maxstack  4
+      IL_0000:  ldstr      "Test17"
+      IL_0005:  call       void [mscorlib]System.Console::WriteLine(string)
+      IL_0007:  ldnull
+      IL_000a:  ret
+    } 
 } // end of class Test
 ]]>.Value
 
@@ -2093,6 +2120,127 @@ End Class
 </compilation>
 
             Dim compilation = CreateCompilationWithCustomILSource(source, ilSource, options:=TestOptions.ReleaseExe)
+
+            Dim Test = compilation.GetTypeByMetadataName("Test")
+            Dim array = DirectCast(Test.GetMember(Of MethodSymbol)("Test1").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.True(array.Sizes.IsEmpty)
+            Assert.True(array.LowerBounds.IsEmpty)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test2").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.True(array.Sizes.IsEmpty)
+            Assert.True(array.LowerBounds.IsEmpty)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test3").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.True(array.Sizes.IsEmpty)
+            Assert.True(array.LowerBounds.IsEmpty)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test4").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5}, array.Sizes)
+            Assert.Equal({0}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test5").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5}, array.Sizes)
+            Assert.Equal({0}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test6").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5, 5}, array.Sizes)
+            Assert.True(array.LowerBounds.IsDefault)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test7").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5}, array.Sizes)
+            Assert.Equal({0, 2}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test8").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5, 7}, array.Sizes)
+            Assert.Equal({0, 2}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test9").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5}, array.Sizes)
+            Assert.Equal({1}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test10").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5}, array.Sizes)
+            Assert.Equal({1}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test11").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5, 5}, array.Sizes)
+            Assert.Equal({1, 0}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test12").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5}, array.Sizes)
+            Assert.Equal({1, 2}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test13").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.Equal({5, 7}, array.Sizes)
+            Assert.Equal({1, 2}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test14").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.True(array.Sizes.IsEmpty)
+            Assert.Equal({1}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test15").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.True(array.Sizes.IsEmpty)
+            Assert.Equal({1}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test16").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(,)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(2, array.Rank)
+            Assert.True(array.Sizes.IsEmpty)
+            Assert.Equal({1, 2}, array.LowerBounds)
+
+            array = DirectCast(Test.GetMember(Of MethodSymbol)("Test17").ReturnType, IArrayTypeSymbol)
+            Assert.Equal("System.Double(*)", array.ToTestDisplayString())
+            Assert.False(array.IsSZArray)
+            Assert.Equal(1, array.Rank)
+            Assert.Equal({5}, array.Sizes)
+            Assert.Equal({1}, array.LowerBounds)
+
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[Test1
 Test2

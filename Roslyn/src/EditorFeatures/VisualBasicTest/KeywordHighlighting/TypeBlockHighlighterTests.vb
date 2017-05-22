@@ -10,60 +10,60 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New TypeBlockHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestClass1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestClass1() As Task
+            Await TestAsync(<Text>
 {|Cursor:[|Class|]|} C1
 [|End Class|]</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestClass2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestClass2() As Task
+            Await TestAsync(<Text>
 [|Class|] C1
 {|Cursor:[|End Class|]|}</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestModule1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestModule1() As Task
+            Await TestAsync(<Text>
 {|Cursor:[|Module|]|} M1
 [|End Module|]</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestModule2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestModule2() As Task
+            Await TestAsync(<Text>
 [|Module|] M1
 {|Cursor:[|End Module|]|}</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestStructure1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestStructure1() As Task
+            Await TestAsync(<Text>
 {|Cursor:[|Structure|]|} S1
 [|End Structure|]</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestStructure2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestStructure2() As Task
+            Await TestAsync(<Text>
 [|Structure|] S1
 {|Cursor:[|End Structure|]|}</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestInterface1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestInterface1() As Task
+            Await TestAsync(<Text>
 {|Cursor:[|Interface|]|} I1
 [|End Interface|]</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestInterface2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestInterface2() As Task
+            Await TestAsync(<Text>
 [|Interface|] I1
 {|Cursor:[|End Interface|]|}</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

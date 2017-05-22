@@ -2,7 +2,6 @@
 
 using System;
 using System.Composition;
-using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 
 namespace Microsoft.CodeAnalysis.Editor
@@ -19,12 +18,7 @@ namespace Microsoft.CodeAnalysis.Editor
         public ExportContentTypeLanguageServiceAttribute(string defaultContentType, string language, string layer = ServiceLayer.Default)
             : base(typeof(IContentTypeLanguageService), language, layer)
         {
-            if (defaultContentType == null)
-            {
-                throw new ArgumentNullException(nameof(defaultContentType));
-            }
-
-            this.DefaultContentType = defaultContentType;
+            this.DefaultContentType = defaultContentType ?? throw new ArgumentNullException(nameof(defaultContentType));
         }
     }
 }

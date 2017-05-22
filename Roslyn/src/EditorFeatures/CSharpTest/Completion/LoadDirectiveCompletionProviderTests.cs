@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.Editor.CSharp.Completion.FileSystem;
 using Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionProviders;
@@ -18,7 +19,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion
         {
         }
 
-        internal override CompletionListProvider CreateCompletionProvider()
+        internal override CompletionProvider CreateCompletionProvider()
         {
             return new LoadDirectiveCompletionProvider();
         }
@@ -28,46 +29,50 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion
             return actualItem.Equals(expectedItem, StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override void VerifyWorker(string code, int position, string expectedItemOrNull, string expectedDescriptionOrNull, SourceCodeKind sourceCodeKind, bool usePreviousCharAsTrigger, bool checkForAbsence, bool experimental, int? glyph)
+        protected override Task VerifyWorkerAsync(
+            string code, int position, string expectedItemOrNull, string expectedDescriptionOrNull,
+            SourceCodeKind sourceCodeKind, bool usePreviousCharAsTrigger, bool checkForAbsence, 
+            int? glyph, int? matchPriority)
         {
-            BaseVerifyWorker(code,
+            return BaseVerifyWorkerAsync(code,
                 position,
                 expectedItemOrNull,
                 expectedDescriptionOrNull,
                 sourceCodeKind,
                 usePreviousCharAsTrigger,
                 checkForAbsence,
-                glyph);
+                glyph, 
+                matchPriority);
         }
 
-        private void VerifyItemExistsInScript(string markup, string expected)
+        private async Task VerifyItemExistsInScriptAsync(string markup, string expected)
         {
-            VerifyItemExists(markup, expected, expectedDescriptionOrNull: null, sourceCodeKind: SourceCodeKind.Script, usePreviousCharAsTrigger: false);
+            await VerifyItemExistsAsync(markup, expected, expectedDescriptionOrNull: null, sourceCodeKind: SourceCodeKind.Script, usePreviousCharAsTrigger: false);
         }
 
-        private void VerifyItemIsAbsentInInteractive(string markup, string expected)
+        private async Task VerifyItemIsAbsentInInteractiveAsync(string markup, string expected)
         {
-            VerifyItemIsAbsent(markup, expected, expectedDescriptionOrNull: null, sourceCodeKind: SourceCodeKind.Script, usePreviousCharAsTrigger: false);
+            await VerifyItemIsAbsentAsync(markup, expected, expectedDescriptionOrNull: null, sourceCodeKind: SourceCodeKind.Script, usePreviousCharAsTrigger: false);
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void NetworkPath()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NetworkPath()
         {
-            VerifyItemExistsInScript(
+            await VerifyItemExistsInScriptAsync(
                 @"#load ""$$",
                 @"\\");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void NetworkPathAfterInitialBackslash()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task NetworkPathAfterInitialBackslash()
         {
-            VerifyItemExistsInScript(
+            await VerifyItemExistsInScriptAsync(
                 @"#load ""\$$",
                 @"\\");
         }
 
-        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
-        public void UpOneDirectoryNotShownAtRoot()
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task UpOneDirectoryNotShownAtRoot()
         {
             // after so many ".." we should be at the root drive an should no longer suggest the parent.  we can determine
             // our current directory depth by counting the number of backslashes present in the current working directory
@@ -75,10 +80,10 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion
             int depth = Directory.GetCurrentDirectory().Count(c => c == Path.DirectorySeparatorChar);
             var pathToRoot = string.Concat(Enumerable.Repeat(@"..\", depth));
 
-            VerifyItemExistsInScript(
+            await VerifyItemExistsInScriptAsync(
                 @"#load ""$$",
                 "..");
-            VerifyItemIsAbsentInInteractive(
+            await VerifyItemIsAbsentInInteractiveAsync(
                 @"#load """ + pathToRoot + "$$",
                 "..");
         }

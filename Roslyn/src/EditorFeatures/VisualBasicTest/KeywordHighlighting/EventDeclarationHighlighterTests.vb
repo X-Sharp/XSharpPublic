@@ -10,20 +10,20 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.KeywordHighlightin
             Return New EventDeclarationHighlighter()
         End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventSample1_1()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventSample1_1() As Task
+            Await TestAsync(<Text>
 Class C
 {|Cursor:[|Public Event|]|} Foo() [|Implements|] I1.Foo
 End Class</Text>)
-        End Sub
+        End Function
 
-        <WpfFact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
-        Public Sub TestEventSample1_2()
-            Test(<Text>
+        <Fact, Trait(Traits.Feature, Traits.Features.KeywordHighlighting)>
+        Public Async Function TestEventSample1_2() As Task
+            Await TestAsync(<Text>
 Class C
 [|Public Event|] Foo() {|Cursor:[|Implements|]|} I1.Foo
 End Class</Text>)
-        End Sub
+        End Function
     End Class
 End Namespace

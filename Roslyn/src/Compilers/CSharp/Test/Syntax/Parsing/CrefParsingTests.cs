@@ -1,17 +1,18 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslyn.Test.Utilities;
 using System;
 using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using Roslyn.Test.Utilities;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
     public class CrefParsingTests : ParsingTests
     {
+        public CrefParsingTests(ITestOutputHelper output) : base(output) { }
+
         protected override SyntaxTree ParseTree(string text, CSharpParseOptions options)
         {
             throw new NotSupportedException();
@@ -434,7 +435,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 
         #region Ambiguities
 
-        [WorkItem(546992, "DevDiv")]
+        [WorkItem(546992, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546992")]
         [Fact]
         public void GreaterThanGreaterThan()
         {
@@ -783,7 +784,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             }
         }
 
-        [WorkItem(531157, "DevDiv")]
+        [WorkItem(531157, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531157")]
         [Fact]
         public void ParameterVoidPointerType()
         {
@@ -1016,7 +1017,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             }
         }
 
-        [WorkItem(531154, "DevDiv")]
+        [WorkItem(531154, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531154")]
         [Fact]
         public void NestedArrayTypes()
         {
@@ -1108,7 +1109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 
         #region Conversion operator return types
 
-        [WorkItem(531154, "DevDiv")]
+        [WorkItem(531154, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531154")]
         [Fact]
         public void PrimitiveArrayReturnType()
         {
@@ -1138,7 +1139,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             EOF();
         }
 
-        [WorkItem(531154, "DevDiv")]
+        [WorkItem(531154, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531154")]
         [Fact]
         public void NamedTypeArrayReturnType()
         {

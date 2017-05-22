@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.CodeGen
         };
 
 
-        [Fact, WorkItem(762316, "DevDiv")]
+        [Fact, WorkItem(762316, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/762316")]
         public void InheritFromTypeWithProjections()
         {
             var source = @"
@@ -84,7 +84,7 @@ b
 1
 0";
 
-            var verifier = CompileAndVerifyOnWin8Only(source, expectedOutput: expectedOutput);
+            var verifier = this.CompileAndVerifyOnWin8Only(source, expectedOutput: expectedOutput);
 
             verifier.VerifyIL("Class1.Main",
 @"{
@@ -182,7 +182,7 @@ public class Class1
     }
 }";
             var expectedOut = "param1test";
-            var verifier = CompileAndVerifyOnWin8Only(
+            var verifier = this.CompileAndVerifyOnWin8Only(
                 source,
                 expectedOutput: expectedOut);
 
@@ -247,7 +247,7 @@ testValue1
 testValue2
 testKey2testValue3
 ";
-            var verifier = CompileAndVerifyOnWin8Only(
+            var verifier = this.CompileAndVerifyOnWin8Only(
                 source,
                 expectedOutput: expectedOut);
 
@@ -7390,7 +7390,7 @@ namespace Test2
 }");
         }
 
-        [Fact, WorkItem(1034461, "DevDiv")]
+        [Fact, WorkItem(1034461, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1034461")]
         public void Bug1034461()
         {
             var source = @"

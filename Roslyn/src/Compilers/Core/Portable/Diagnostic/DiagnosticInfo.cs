@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis
     /// provide access to additional information about the error, such as what symbols were involved in the ambiguity.
     /// </remarks>
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
-    internal partial class DiagnosticInfo : IFormattable, IObjectWritable, IObjectReadable, IMessageSerializable
+    internal class DiagnosticInfo : IFormattable, IObjectWritable, IObjectReadable, IMessageSerializable
     {
         private readonly CommonMessageProvider _messageProvider;
         private readonly int _errorCode;
@@ -141,12 +141,12 @@ namespace Microsoft.CodeAnalysis
         protected virtual void WriteTo(ObjectWriter writer)
         {
             writer.WriteValue(_messageProvider);
-            writer.WriteCompressedUInt((uint)_errorCode);
+            writer.WriteUInt32((uint)_errorCode);
             writer.WriteInt32((int)_effectiveSeverity);
             writer.WriteInt32((int)_defaultSeverity);
 
             int count = _arguments?.Length ?? 0;
-            writer.WriteCompressedUInt((uint)count);
+            writer.WriteUInt32((uint)count);
 
             if (count > 0)
             {
@@ -170,14 +170,14 @@ namespace Microsoft.CodeAnalysis
         protected DiagnosticInfo(ObjectReader reader)
         {
             _messageProvider = (CommonMessageProvider)reader.ReadValue();
-            _errorCode = (int)reader.ReadCompressedUInt();
+            _errorCode = (int)reader.ReadUInt32();
             _effectiveSeverity = (DiagnosticSeverity)reader.ReadInt32();
             _defaultSeverity = (DiagnosticSeverity)reader.ReadInt32();
 
-            var count = (int)reader.ReadCompressedUInt();
+            var count = (int)reader.ReadUInt32();
             if (count == 0)
             {
-                _arguments = SpecializedCollections.EmptyObjects;
+                _arguments = Array.Empty<object>();
             }
             else if (count > 0)
             {
@@ -356,7 +356,7 @@ namespace Microsoft.CodeAnalysis
                 if (symbol != null)
                 {
                     argumentsToUse = InitializeArgumentListIfNeeded(argumentsToUse);
-                    argumentsToUse[i] = _messageProvider.ConvertSymbolToString(_errorCode, symbol);
+                    argumentsToUse[i] = _messageProvider.GetErrorDisplayString(symbol);
                 }
             }
 
@@ -404,7 +404,7 @@ namespace Microsoft.CodeAnalysis
                 this.GetMessage(formatProvider));
         }
 
-        public override int GetHashCode()
+        public sealed override int GetHashCode()
         {
             int hashCode = _errorCode;
             if (_arguments != null)
@@ -418,7 +418,7 @@ namespace Microsoft.CodeAnalysis
             return hashCode;
         }
 
-        public override bool Equals(object obj)
+        public sealed override bool Equals(object obj)
         {
             DiagnosticInfo other = obj as DiagnosticInfo;
 

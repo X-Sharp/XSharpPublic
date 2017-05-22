@@ -1,9 +1,11 @@
 ﻿/r:System
 /r:System.Core
 /r:Microsoft.CSharp
+/r:System.ValueTuple.dll
 /u:System
 /u:System.IO
 /u:System.Collections.Generic
+/u:System.Console
 /u:System.Diagnostics
 /u:System.Dynamic
 /u:System.Linq

@@ -2,6 +2,7 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -26,13 +27,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public static MergedNamespaceDeclaration Create(SingleNamespaceDeclaration declaration)
         {
             return new MergedNamespaceDeclaration(ImmutableArray.Create(declaration));
-        }
-
-        public static MergedNamespaceDeclaration Create(
-            MergedNamespaceDeclaration mergedDeclaration,
-            SingleNamespaceDeclaration declaration)
-        {
-            return new MergedNamespaceDeclaration(mergedDeclaration._declarations.Add(declaration));
         }
 
         public override DeclarationKind Kind
@@ -155,7 +149,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                     var namespaceGroups = namespaces.ToDictionary(n => n.Name, CaseInsensitiveComparison.Comparer);
 #else
-                    var namespaceGroups = namespaces.ToDictionary(n => n.Name);
+                    var namespaceGroups = namespaces.ToDictionary(n => n.Name, StringOrdinalComparer.Instance);
 #endif
                     namespaces.Free();
 

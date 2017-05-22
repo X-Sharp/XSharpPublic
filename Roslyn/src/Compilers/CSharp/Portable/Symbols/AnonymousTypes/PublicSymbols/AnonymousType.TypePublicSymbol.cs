@@ -109,7 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 this.Manager = manager;
                 this.TypeDescriptor = new AnonymousTypeDescriptor(codeblockParams.Select((t, i) => new AnonymousTypeField("Cb$Param$" + i, location, t))
                     .ToImmutableArray(), location);
-                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length-1, default(BitVector), false).Construct(codeblockParams);
+                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length-1, default(BitVector), false, 0).Construct(codeblockParams);
                 this.Properties = new[] { new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, codeblockDelegate)) }.AsImmutableOrNull();
 
                 Symbol[] members = new Symbol[3];
@@ -154,12 +154,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            internal override ImmutableArray<ImmutableArray<CustomModifier>> TypeArgumentsCustomModifiers
+            public override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
             {
-                get
-                {
-                    return ImmutableArray<ImmutableArray<CustomModifier>>.Empty;
-                }
+                return GetEmptyTypeArgumentCustomModifiers(ordinal);
             }
 
             public override ImmutableArray<Symbol> GetMembers(string name)
@@ -382,7 +379,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return ImmutableArray<NamedTypeSymbol>.Empty;
             }
 
-            internal override bool Equals(TypeSymbol t2, bool ignoreCustomModifiersAndArraySizesAndLowerBounds, bool ignoreDynamic)
+            internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
             {
                 if (ReferenceEquals(this, t2))
                 {
@@ -390,7 +387,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 var other = t2 as AnonymousTypePublicSymbol;
-                return (object)other != null && this.TypeDescriptor.Equals(other.TypeDescriptor, ignoreCustomModifiersAndArraySizesAndLowerBounds, ignoreDynamic);
+                return (object)other != null && this.TypeDescriptor.Equals(other.TypeDescriptor, comparison);
             }
 
             public override int GetHashCode()

@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return compilation.GetSymbolsWithName(predicate, filter);
         }
 
-        private static BoundExpressionStatement ClearGlobal(CSharpCompilation compilation, CSharpSyntaxNode node, FieldSymbol field)
+        private static BoundExpressionStatement ClearGlobal(CSharpCompilation compilation, SyntaxNode node, FieldSymbol field)
         {
             var lhs = new BoundFieldAccess(node, null, field, null) { WasCompilerGenerated = true };
             var rhs = new BoundDefaultOperator(node, field.Type) { WasCompilerGenerated = true };
@@ -42,7 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return stmt;
         }
 
-        private static bool ClearGlobals(CSharpCompilation compilation, CSharpSyntaxNode node, TypeSymbol functionClass, List<BoundStatement> statements )
+        private static bool ClearGlobals(CSharpCompilation compilation, SyntaxNode node, TypeSymbol functionClass, List<BoundStatement> statements )
         {
             var members = functionClass.GetMembers();
             bool added = false;
@@ -66,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return added;
         }
 
-        private static void CreateMethodCall(CSharpCompilation compilation, CSharpSyntaxNode node, 
+        private static void CreateMethodCall(CSharpCompilation compilation, SyntaxNode node, 
                                                 MethodSymbol sym, List<BoundStatement> statements)
         {
             var args = ImmutableArray<BoundExpression>.Empty;
@@ -101,11 +101,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var vcla = method.DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
             var newstatements = new List<BoundStatement>();
 
-            foreach (var r in refMan.ReferencedAssemblies)
+            foreach (var rkv in refMan.GetReferencedAssemblies())
             {
+                var r = rkv.Value;
                 foreach (var attr in r.GetAttributes())
                 {
-                    if (attr.AttributeClass.ConstructedFrom == vcla)
+                    if ((Symbol)attr.AttributeClass.ConstructedFrom == vcla)
                     {
                         var attargs = attr.CommonConstructorArguments;
                         if (attargs.Length == 2)
@@ -141,9 +142,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
             }
-            newstatements.Add(new BoundReturnStatement(statement.Syntax, null));
+            newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null));
             var oldbody = statement as BoundBlock;
-            var newbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
+            var newbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
             newbody.WasCompilerGenerated = true;
             return newbody;
         }
@@ -163,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 newstatements.Add(stmt);
             var initstmts = GetInitStatements(method.DeclaringCompilation, statement,false);
             newstatements.AddRange(initstmts);
-            tryblock = tryblock.Update(tryblock.Locals, newstatements.ToImmutableArray<BoundStatement>());
+            tryblock = tryblock.Update(tryblock.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
             tryblock.WasCompilerGenerated = true;
             trystmt = trystmt.Update(tryblock, trystmt.CatchBlocks, trystmt.FinallyBlockOpt, trystmt.PreferFaultHandler);
             trystmt.WasCompilerGenerated = true;
@@ -176,7 +177,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     newstatements.Add(stmt);
                 ++i;
             }
-            oldbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
+            oldbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
             oldbody.WasCompilerGenerated = true;
             return oldbody;
         }
@@ -191,11 +192,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var init3 = new List<ISymbol>();
             if (! localOnly)
             {
-                foreach (var r in refMan.ReferencedAssemblies)
+                foreach (var rkv in refMan.GetReferencedAssemblies())
                 {
+                    var r = rkv.Value;
                     foreach (var attr in r.GetAttributes())
                     {
-                        if (attr.AttributeClass.ConstructedFrom == vcla)
+                        if ((Symbol)attr.AttributeClass.ConstructedFrom == vcla)
                         {
                             var attargs = attr.CommonConstructorArguments;
                             if (attargs.Length == 2)
@@ -242,8 +244,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var newstatements = new List<BoundStatement>();
             var initstmts = GetInitStatements(method.DeclaringCompilation, statement,true);
             newstatements.AddRange(initstmts);
-            newstatements.Add(new BoundReturnStatement(statement.Syntax, null) { WasCompilerGenerated = true } );
-            oldbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
+            newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null) { WasCompilerGenerated = true } );
+            oldbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
             oldbody.WasCompilerGenerated = true;
             return oldbody;
         }

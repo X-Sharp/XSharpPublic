@@ -1,18 +1,19 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Option Strict Off
+Imports Microsoft.CodeAnalysis.CodeStyle
 Imports Microsoft.CodeAnalysis.Diagnostics
-Imports Microsoft.CodeAnalysis.Diagnostics.SimplifyTypeNames
+Imports Microsoft.CodeAnalysis.Options
 Imports Microsoft.CodeAnalysis.VisualBasic.CodeFixes.SimplifyTypeNames
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Diagnostics.SimplifyTypeNames
     Public Class SimplifyTypeNamesTests
         Inherits AbstractVisualBasicDiagnosticProviderBasedUserDiagnosticTest
 
-        <WpfFact>
+        <Fact>
         <Trait(Traits.Feature, Traits.Features.CodeActionsSimplifyTypeNames)>
         <Trait(Traits.Feature, Traits.Features.CodeActionsFixAllOccurrences)>
-        Public Sub TestFixAllInDocument()
+        Public Async Function TestFixAllInDocument() As Task
             Dim fixAllActionId = SimplifyTypeNamesCodeFixProvider.GetCodeActionId(IDEDiagnosticIds.SimplifyNamesDiagnosticId, "System.Int32")
 
             Dim input = <Workspace>
@@ -97,13 +98,13 @@ End Class]]>
                                </Project>
                            </Workspace>.ToString()
 
-            Test(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId)
-        End Sub
+            Await TestAsync(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId, options:=PreferIntrinsicPredefinedTypeEverywhere())
+        End Function
 
-        <WpfFact>
+        <Fact>
         <Trait(Traits.Feature, Traits.Features.CodeActionsSimplifyTypeNames)>
         <Trait(Traits.Feature, Traits.Features.CodeActionsFixAllOccurrences)>
-        Public Sub TestFixAllInProject()
+        Public Async Function TestFixAllInProject() As Task
             Dim fixAllActionId = SimplifyTypeNamesCodeFixProvider.GetCodeActionId(IDEDiagnosticIds.SimplifyNamesDiagnosticId, "System.Int32")
 
             Dim input = <Workspace>
@@ -188,13 +189,13 @@ End Class]]>
                                </Project>
                            </Workspace>.ToString()
 
-            Test(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId)
-        End Sub
+            Await TestAsync(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId, options:=PreferIntrinsicPredefinedTypeEverywhere())
+        End Function
 
-        <WpfFact>
+        <Fact>
         <Trait(Traits.Feature, Traits.Features.CodeActionsSimplifyTypeNames)>
         <Trait(Traits.Feature, Traits.Features.CodeActionsFixAllOccurrences)>
-        Public Sub TestFixAllInSolution()
+        Public Async Function TestFixAllInSolution() As Task
             Dim fixAllActionId = SimplifyTypeNamesCodeFixProvider.GetCodeActionId(IDEDiagnosticIds.SimplifyNamesDiagnosticId, "System.Int32")
 
             Dim input = <Workspace>
@@ -279,14 +280,14 @@ End Class]]>
                                </Project>
                            </Workspace>.ToString()
 
-            Test(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId)
-        End Sub
+            Await TestAsync(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId, options:=PreferIntrinsicPredefinedTypeEverywhere())
+        End Function
 
-        <WpfFact>
+        <Fact>
         <Trait(Traits.Feature, Traits.Features.CodeActionsSimplifyTypeNames)>
         <Trait(Traits.Feature, Traits.Features.CodeActionsFixAllOccurrences)>
-        Public Sub TestFixAllInSolution_RemoveMe()
-            Dim fixAllActionId = SimplifyTypeNamesCodeFixProvider.GetCodeActionId(IDEDiagnosticIds.SimplifyThisOrMeDiagnosticId, Nothing)
+        Public Async Function TestFixAllInSolution_RemoveMe() As Task
+            Dim fixAllActionId = SimplifyTypeNamesCodeFixProvider.GetCodeActionId(IDEDiagnosticIds.RemoveQualificationDiagnosticId, Nothing)
 
             Dim input = <Workspace>
                             <Project Language="Visual Basic" AssemblyName="Assembly1" CommonReferences="true">
@@ -486,13 +487,13 @@ End Class]]>
                                </Project>
                            </Workspace>.ToString()
 
-            Test(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId)
-        End Sub
+            Await TestAsync(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId)
+        End Function
 
-        <WpfFact>
+        <Fact>
         <Trait(Traits.Feature, Traits.Features.CodeActionsSimplifyTypeNames)>
         <Trait(Traits.Feature, Traits.Features.CodeActionsFixAllOccurrences)>
-        Public Sub TestFixAllInSolution_SimplifyMemberAccess()
+        Public Async Function TestFixAllInSolution_SimplifyMemberAccess() As Task
             Dim fixAllActionId = SimplifyTypeNamesCodeFixProvider.GetCodeActionId(IDEDiagnosticIds.SimplifyMemberAccessDiagnosticId, "System.Console")
 
             Dim input = <Workspace>
@@ -717,7 +718,87 @@ End Class]]>
                                </Project>
                            </Workspace>.ToString()
 
-            Test(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId)
-        End Sub
+            Await TestAsync(input, expected, compareTokens:=False, fixAllActionEquivalenceKey:=fixAllActionId)
+        End Function
+
+        <Fact>
+        <Trait(Traits.Feature, Traits.Features.CodeActionsQualifyMemberAccess)>
+        <Trait(Traits.Feature, Traits.Features.CodeActionsFixAllOccurrences)>
+        Public Async Function TestFixAllInSolution_RemoveMemberAccessQualification() As Task
+            Dim input =
+<Workspace>
+    <Project Language="Visual Basic" AssemblyName="Assembly1" CommonReferences="true">
+        <Document><![CDATA[
+Imports System
+
+Class C
+    Property SomeProperty As Integer
+    Property OtherProperty As Integer
+
+    Sub M()
+        {|FixAllInSolution:Me.SomeProperty|} = 1
+        Dim x = Me.OtherProperty
+    End Sub
+End Class]]>
+        </Document>
+        <Document><![CDATA[
+Imports System
+
+Class D
+    Property StringProperty As String
+    field As Integer
+
+    Sub N()
+        Me.StringProperty = String.Empty
+        Me.field = 0 ' ensure qualification isn't removed
+    End Sub
+End Class]]>
+        </Document>
+    </Project>
+</Workspace>.ToString()
+
+            Dim expected =
+<Workspace>
+    <Project Language="Visual Basic" AssemblyName="Assembly1" CommonReferences="true">
+        <Document><![CDATA[
+Imports System
+
+Class C
+    Property SomeProperty As Integer
+    Property OtherProperty As Integer
+
+    Sub M()
+        SomeProperty = 1
+        Dim x = OtherProperty
+    End Sub
+End Class]]>
+        </Document>
+        <Document><![CDATA[
+Imports System
+
+Class D
+    Property StringProperty As String
+    field As Integer
+
+    Sub N()
+        StringProperty = String.Empty
+        Me.field = 0 ' ensure qualification isn't removed
+    End Sub
+End Class]]>
+        </Document>
+    </Project>
+</Workspace>.ToString()
+
+            Dim options = OptionsSet(
+                SingleOption(CodeStyleOptions.QualifyPropertyAccess, False, NotificationOption.Suggestion),
+                SingleOption(CodeStyleOptions.QualifyFieldAccess, True, NotificationOption.Suggestion))
+            Await TestAsync(
+                initialMarkup:=input,
+                expectedMarkup:=expected,
+                options:=options,
+                compareTokens:=False,
+                fixAllActionEquivalenceKey:=VBFeaturesResources.Remove_Me_qualification)
+        End Function
+
     End Class
 End Namespace

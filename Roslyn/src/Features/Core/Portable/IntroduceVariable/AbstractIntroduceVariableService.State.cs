@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.LanguageServices;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Shared.Utilities;
 using Microsoft.CodeAnalysis.Text;
-using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.IntroduceVariable
 {
@@ -243,7 +242,7 @@ namespace Microsoft.CodeAnalysis.IntroduceVariable
                 // LValue location.  i.e. if you have: "a[1] = b" then you don't want to change that to
                 // "var c = a[1]; c = b", as that write is no longer happening into the right LValue.
                 //
-                // In essence, this says "i can be replaced with an expression as long as i'm not being
+                // In essence, this says "i can be replaced with an expression as long as I'm not being
                 // written to".
                 var semanticFacts = this.Document.Project.LanguageServices.GetService<ISemanticFactsService>();
                 return semanticFacts.CanReplaceWithRValue(this.Document.SemanticModel, this.Expression, cancellationToken);

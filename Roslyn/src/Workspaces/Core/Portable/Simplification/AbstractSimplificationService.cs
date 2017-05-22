@@ -22,7 +22,12 @@ namespace Microsoft.CodeAnalysis.Simplification
         where TStatementSyntax : SyntaxNode
         where TCrefSyntax : SyntaxNode
     {
-        protected abstract IEnumerable<AbstractReducer> GetReducers();
+        private ImmutableArray<AbstractReducer> _reducers;
+
+        protected AbstractSimplificationService(ImmutableArray<AbstractReducer> reducers)
+        {
+            _reducers = reducers;
+        }
 
         protected abstract ImmutableArray<NodeOrTokenToReduce> GetNodesAndTokensToReduce(SyntaxNode root, Func<SyntaxNodeOrToken, bool> isNodeOrTokenOutsideSimplifySpans);
         protected abstract SemanticModel GetSpeculativeSemanticModel(ref SyntaxNode nodeToSpeculate, SemanticModel originalSemanticModel, SyntaxNode originalNode);
@@ -36,7 +41,12 @@ namespace Microsoft.CodeAnalysis.Simplification
         public abstract SyntaxNode Expand(SyntaxNode node, SemanticModel semanticModel, SyntaxAnnotation annotationForReplacedAliasIdentifier, Func<SyntaxNode, bool> expandInsideNode, bool expandParameter, CancellationToken cancellationToken);
         public abstract SyntaxToken Expand(SyntaxToken token, SemanticModel semanticModel, Func<SyntaxNode, bool> expandInsideNode, CancellationToken cancellationToken);
 
-        public async Task<Document> ReduceAsync(Document document, IEnumerable<TextSpan> spans, OptionSet optionSet = null, IEnumerable<AbstractReducer> reducers = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> ReduceAsync(
+            Document document, 
+            IEnumerable<TextSpan> spans,
+            OptionSet optionSet = null,
+            ImmutableArray<AbstractReducer> reducers = default(ImmutableArray<AbstractReducer>), 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             using (Logger.LogBlock(FunctionId.Simplifier_ReduceAsync, cancellationToken))
             {
@@ -48,7 +58,7 @@ namespace Microsoft.CodeAnalysis.Simplification
                     return document;
                 }
 
-                optionSet = optionSet ?? document.Project.Solution.Workspace.Options;
+                optionSet = optionSet ?? await document.GetOptionsAsync(cancellationToken).ConfigureAwait(false);
 
                 var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
@@ -56,10 +66,10 @@ namespace Microsoft.CodeAnalysis.Simplification
                 // Hence make sure we always start working off of the actual SemanticModel instead of a speculative SemanticModel.
                 Contract.Assert(!semanticModel.IsSpeculativeSemanticModel);
 
-                var root = semanticModel.SyntaxTree.GetRoot(cancellationToken);
+                var root = await semanticModel.SyntaxTree.GetRootAsync(cancellationToken).ConfigureAwait(false);
 
 #if DEBUG
-                bool originalDocHasErrors = await document.HasAnyErrors(cancellationToken).ConfigureAwait(false);
+                bool originalDocHasErrors = await document.HasAnyErrorsAsync(cancellationToken).ConfigureAwait(false);
 #endif
 
                 var reduced = await this.ReduceAsyncInternal(document, spanList, optionSet, reducers, cancellationToken).ConfigureAwait(false);
@@ -82,7 +92,7 @@ namespace Microsoft.CodeAnalysis.Simplification
             Document document,
             List<TextSpan> spans,
             OptionSet optionSet,
-            IEnumerable<AbstractReducer> reducers,
+            ImmutableArray<AbstractReducer> reducers,
             CancellationToken cancellationToken)
         {
             // Create a simple interval tree for simplification spans.
@@ -92,7 +102,7 @@ namespace Microsoft.CodeAnalysis.Simplification
                 !spansTree.GetOverlappingIntervals(nodeOrToken.FullSpan.Start, nodeOrToken.FullSpan.Length).Any();
 
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-            var root = semanticModel.SyntaxTree.GetRoot(cancellationToken);
+            var root = await semanticModel.SyntaxTree.GetRootAsync(cancellationToken).ConfigureAwait(false);
 
             // prep namespace imports marked for simplification 
             var removeIfUnusedAnnotation = new SyntaxAnnotation();
@@ -104,7 +114,7 @@ namespace Microsoft.CodeAnalysis.Simplification
             {
                 document = document.WithSyntaxRoot(root);
                 semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-                root = semanticModel.SyntaxTree.GetRoot(cancellationToken);
+                root = await semanticModel.SyntaxTree.GetRootAsync(cancellationToken).ConfigureAwait(false);
             }
 
             // Get the list of syntax nodes and tokens that need to be reduced.
@@ -112,9 +122,9 @@ namespace Microsoft.CodeAnalysis.Simplification
 
             if (nodesAndTokensToReduce.Any())
             {
-                if (reducers == null)
+                if (reducers.IsDefault)
                 {
-                    reducers = this.GetReducers();
+                    reducers = _reducers;
                 }
 
                 var reducedNodesMap = new ConcurrentDictionary<SyntaxNode, SyntaxNode>();
@@ -280,7 +290,7 @@ namespace Microsoft.CodeAnalysis.Simplification
             CancellationToken cancellationToken)
         {
             var model = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-            var root = model.SyntaxTree.GetRoot();
+            var root = await model.SyntaxTree.GetRootAsync(cancellationToken).ConfigureAwait(false);
             var addedImports = root.GetAnnotatedNodes(removeIfUnusedAnnotation);
             var unusedImports = new HashSet<SyntaxNode>();
             this.GetUnusedNamespaceImports(model, unusedImports, cancellationToken);

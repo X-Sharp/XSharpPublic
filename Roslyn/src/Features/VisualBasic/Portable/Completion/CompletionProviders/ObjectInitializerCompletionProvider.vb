@@ -55,7 +55,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Completion.Providers
                 Return Nothing
             End If
 
-            ' We have the right tokens. Get the containing object intializer. Will we be able to walk
+            ' We have the right tokens. Get the containing object initializer. Will we be able to walk
             ' up and determine the type?
             Dim containingInitializer = commaOrBrace.Parent
             If containingInitializer Is Nothing OrElse
@@ -76,11 +76,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Completion.Providers
             Return Tuple.Create(symbol, initializerLocation)
         End Function
 
-        Protected Overrides Function GetTextChangeSpan(text As SourceText, position As Integer) As TextSpan
-            Return CompletionUtilities.GetTextChangeSpan(text, position)
-        End Function
-
-        Public Overrides Function IsTriggerCharacter(text As SourceText, characterPosition As Integer, options As OptionSet) As Boolean
+        Friend Overrides Function IsInsertionTrigger(text As SourceText, characterPosition As Integer, options As OptionSet) As Boolean
             Return text(characterPosition) = "."c
         End Function
 

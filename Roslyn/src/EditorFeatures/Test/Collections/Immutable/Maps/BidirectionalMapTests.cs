@@ -10,24 +10,21 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Collections.Immutable.Maps
 {
     public class BidirectionalMapTests
     {
-        [WpfFact]
+        [Fact]
         public void TestEmpty()
         {
             var map = BidirectionalMap<string, int>.Empty;
 
             Assert.Equal(map.Keys.Count(), 0);
             Assert.Equal(map.Values.Count(), 0);
-
-            string key;
-            int value;
-            Assert.False(map.TryGetKey(0, out key));
-            Assert.False(map.TryGetValue("0", out value));
+            Assert.False(map.TryGetKey(0, out var key));
+            Assert.False(map.TryGetValue("0", out var value));
 
             Assert.False(map.ContainsKey("0"));
             Assert.False(map.ContainsValue(0));
         }
 
-        [WpfFact]
+        [Fact]
         public void TestMap()
         {
             var map = BidirectionalMap<string, int>.Empty
@@ -37,17 +34,13 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Collections.Immutable.Maps
 
             Assert.Equal(map.Keys.Count(), 3);
             Assert.Equal(map.Values.Count(), 3);
-
-            string key;
-            Assert.True(map.TryGetKey(0, out key));
+            Assert.True(map.TryGetKey(0, out var key));
             Assert.Equal(key, "0");
             Assert.True(map.TryGetKey(1, out key));
             Assert.Equal(key, "1");
             Assert.True(map.TryGetKey(2, out key));
             Assert.Equal(key, "2");
-
-            int value;
-            Assert.True(map.TryGetValue("0", out value));
+            Assert.True(map.TryGetValue("0", out var value));
             Assert.Equal(value, 0);
             Assert.True(map.TryGetValue("1", out value));
             Assert.Equal(value, 1);
@@ -63,7 +56,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Collections.Immutable.Maps
             Assert.True(map.ContainsValue(2));
         }
 
-        [WpfFact]
+        [Fact]
         public void TestRemoveKey()
         {
             var map = BidirectionalMap<string, int>.Empty
@@ -90,7 +83,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Collections.Immutable.Maps
             Assert.True(map.ContainsValue(2));
         }
 
-        [WpfFact]
+        [Fact]
         public void TestRemoveValue()
         {
             var map = BidirectionalMap<string, int>.Empty

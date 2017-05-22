@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Semantics
     public class StructsTests : CompilingTestBase
     {
         // Cannot have instance field initializers in structs
-        [WorkItem(540982, "DevDiv")]
+        [WorkItem(540982, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540982")]
         [Fact()]
         public void TestInitFieldStruct()
         {
@@ -32,13 +32,13 @@ public struct A
     // (4,7): error CS0523: Struct member 'A.a' of type 'A' causes a cycle in the struct layout
     //     A a = new A();   // CS8036
     Diagnostic(ErrorCode.ERR_StructLayoutCycle, "a").WithArguments("A.a", "A").WithLocation(4, 7),
-    // (4,7): warning CS0414: The field 'A.a' is assigned but its value is never used
+    // (4,7): warning CS0169: The field 'A.a' is never used
     //     A a = new A();   // CS8036
-    Diagnostic(ErrorCode.WRN_UnreferencedFieldAssg, "a").WithArguments("A.a").WithLocation(4, 7)
+    Diagnostic(ErrorCode.WRN_UnreferencedField, "a").WithArguments("A.a").WithLocation(4, 7)
     );
         }
 
-        [WorkItem(1075325, "DevDiv"), WorkItem(343, "CodePlex")]
+        [WorkItem(1075325, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1075325"), WorkItem(343, "CodePlex")]
         [Fact()]
         public void TestInitEventStruct()
         {
@@ -59,7 +59,7 @@ struct S {
                 );
         }
 
-        [WorkItem(1075325, "DevDiv"), WorkItem(343, "CodePlex")]
+        [WorkItem(1075325, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1075325"), WorkItem(343, "CodePlex")]
         [Fact()]
         public void TestStaticInitInStruct()
         {
@@ -85,7 +85,7 @@ struct S {
         }
 
         // Test constructor forwarding works for structs
-        [WorkItem(540896, "DevDiv")]
+        [WorkItem(540896, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540896")]
         [Fact]
         public void TestConstructorStruct()
         {
@@ -110,7 +110,7 @@ struct  Foo
         }
 
         // Calling struct default constructor in another constructor
-        [WorkItem(540896, "DevDiv")]
+        [WorkItem(540896, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540896")]
         [Fact]
         public void TestConstructorStruct02()
         {
@@ -131,7 +131,7 @@ public struct Struct
         }
 
         // Test constructor forwarding works for structs
-        [WorkItem(540896, "DevDiv")]
+        [WorkItem(540896, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540896")]
         [Fact]
         public void TestConstructorStruct03()
         {
@@ -182,7 +182,7 @@ class Program
         }
 
         // Overriding base System.Object methods on struct
-        [WorkItem(540990, "DevDiv")]
+        [WorkItem(540990, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540990")]
         [ClrOnlyFact(ClrOnlyReason.MemberOrder)]
         public void TestOverridingBaseConstructorStruct()
         {
@@ -270,7 +270,7 @@ S::ToString";
         }
 
         // Test constructor for generic struct
-        [WorkItem(540993, "DevDiv")]
+        [WorkItem(540993, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540993")]
         [Fact]
         public void TestConstructorForGenericStruct()
         {
@@ -300,7 +300,7 @@ class Test
         }
 
         // Assign to decimal in struct constructor
-        [WorkItem(540994, "DevDiv")]
+        [WorkItem(540994, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540994")]
         [Fact]
         public void TestAssigntoDecimalInStructConstructor()
         {
@@ -458,7 +458,7 @@ public class C
 }");
         }
 
-        [WorkItem(541309, "DevDiv")]
+        [WorkItem(541309, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541309")]
         [Fact]
         public void PrivateParameterlessConstructorInMetadata()
         {
@@ -514,7 +514,7 @@ public class C
 }");
         }
 
-        [WorkItem(543934, "DevDiv")]
+        [WorkItem(543934, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543934")]
         [Fact]
         public void ObjectCreationExprStructTypeInstanceFieldAssign()
         {
@@ -538,7 +538,7 @@ public class TestClass
                 );
         }
 
-        [WorkItem(543896, "DevDiv")]
+        [WorkItem(543896, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543896")]
         [Fact]
         public void ObjectCreationExprStructTypePropertyAssign()
         {
@@ -566,7 +566,7 @@ public class mem033
         }
 
 
-        [WorkItem(545498, "DevDiv")]
+        [WorkItem(545498, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545498")]
         [Fact]
         public void StructMemberNullableTypeCausesCycle()
         {
@@ -602,7 +602,7 @@ public struct X1
 }
 
 ";
-            CreateExperimentalCompilationWithMscorlib45(source).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source).VerifyDiagnostics(
     // (11,5): error CS0568: Structs cannot contain explicit parameterless constructors
     //     X1()
     Diagnostic(ErrorCode.ERR_StructsCantContainDefaultConstructor, "X1").WithLocation(11, 5),

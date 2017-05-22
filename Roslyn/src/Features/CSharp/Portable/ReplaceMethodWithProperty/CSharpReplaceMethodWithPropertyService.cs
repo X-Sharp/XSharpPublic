@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -75,8 +75,8 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeRefactorings.ReplaceMethodWithProper
             var setAccessor = CreateSetAccessor(semanticModel, generator, getAndSetMethods);
 
             var property = SyntaxFactory.PropertyDeclaration(
-                getMethodDeclaration.AttributeLists, getMethodDeclaration.Modifiers, 
-                getMethodDeclaration.ReturnType, getMethodDeclaration.ExplicitInterfaceSpecifier, 
+                getMethodDeclaration.AttributeLists, getMethodDeclaration.Modifiers,
+                getMethodDeclaration.ReturnType, getMethodDeclaration.ExplicitInterfaceSpecifier,
                 GetPropertyName(getMethodDeclaration.Identifier, propertyName, nameChanged), accessorList: null);
 
             IEnumerable<SyntaxTrivia> trivia = getMethodDeclaration.GetLeadingTrivia();
@@ -190,7 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeRefactorings.ReplaceMethodWithProper
             private readonly SemanticModel _semanticModel;
             private readonly IParameterSymbol _parameter;
 
-            public Rewriter(SemanticModel semanticModel, IParameterSymbol parameter) 
+            public Rewriter(SemanticModel semanticModel, IParameterSymbol parameter)
             {
                 _semanticModel = semanticModel;
                 _parameter = parameter;
@@ -207,21 +207,31 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeRefactorings.ReplaceMethodWithProper
             }
         }
 
-        private static Action<SyntaxEditor, InvocationExpressionSyntax, SimpleNameSyntax, SimpleNameSyntax> replaceGetReferenceInvocation =
-            (editor, invocation, nameNode, newName) => editor.ReplaceNode(invocation, invocation.Expression.ReplaceNode(nameNode, newName));
+        // We use the callback form if "ReplaceNode" here because we want to see the
+        // invocation expression after any rewrites we already did when rewriting previous
+        // 'get' references.
+        private static Action<SyntaxEditor, InvocationExpressionSyntax, SimpleNameSyntax, SimpleNameSyntax> s_replaceGetReferenceInvocation =
+            (editor, invocation, nameNode, newName) => editor.ReplaceNode(invocation, (i, g) =>
+            {
+                var currentInvocation = (InvocationExpressionSyntax)i;
 
-        private static Action<SyntaxEditor, InvocationExpressionSyntax, SimpleNameSyntax, SimpleNameSyntax> replaceSetReferenceInvocation =
+                var currentName = currentInvocation.Expression.GetRightmostName();
+                return currentInvocation.Expression.ReplaceNode(currentName, newName);
+            });
+
+        private static Action<SyntaxEditor, InvocationExpressionSyntax, SimpleNameSyntax, SimpleNameSyntax> s_replaceSetReferenceInvocation =
             (editor, invocation, nameNode, newName) =>
             {
-                if (invocation.ArgumentList?.Arguments.Count != 1)
+                if (invocation.ArgumentList?.Arguments.Count != 1 ||
+                    invocation.ArgumentList.Arguments[0].Expression.Kind() == SyntaxKind.DeclarationExpression)
                 {
-                    var annotation = ConflictAnnotation.Create(FeaturesResources.OnlyMethodsWithASingleArgumentCanBeReplacedWithAProperty);
+                    var annotation = ConflictAnnotation.Create(FeaturesResources.Only_methods_with_a_single_argument_which_is_not_an_out_variable_declaration_can_be_replaced_with_a_property);
                     editor.ReplaceNode(nameNode, newName.WithIdentifier(newName.Identifier.WithAdditionalAnnotations(annotation)));
                     return;
                 }
 
                 // We use the callback form if "ReplaceNode" here because we want to see the
-                // invocation expressoin after any rewrites we already did when rewriting the
+                // invocation expression after any rewrites we already did when rewriting the
                 // 'get' references.
                 editor.ReplaceNode(invocation, (i, g) =>
                 {
@@ -244,12 +254,12 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeRefactorings.ReplaceMethodWithProper
 
         public void ReplaceGetReference(SyntaxEditor editor, SyntaxToken nameToken, string propertyName, bool nameChanged)
         {
-            ReplaceInvocation(editor, nameToken, propertyName, nameChanged, replaceGetReferenceInvocation);
+            ReplaceInvocation(editor, nameToken, propertyName, nameChanged, s_replaceGetReferenceInvocation);
         }
 
         public void ReplaceSetReference(SyntaxEditor editor, SyntaxToken nameToken, string propertyName, bool nameChanged)
         {
-            ReplaceInvocation(editor, nameToken, propertyName, nameChanged, replaceSetReferenceInvocation);
+            ReplaceInvocation(editor, nameToken, propertyName, nameChanged, s_replaceSetReferenceInvocation);
         }
 
         public void ReplaceInvocation(SyntaxEditor editor, SyntaxToken nameToken, string propertyName, bool nameChanged,
@@ -275,14 +285,13 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeRefactorings.ReplaceMethodWithProper
             if (!IsInvocationName(nameNode, invocationExpression))
             {
                 // Wasn't invoked.  Change the name, but report a conflict.
-                var annotation = ConflictAnnotation.Create(FeaturesResources.NonInvokedMethodCannotBeReplacedWithProperty);
+                var annotation = ConflictAnnotation.Create(FeaturesResources.Non_invoked_method_cannot_be_replaced_with_property);
                 editor.ReplaceNode(nameNode, newName.WithIdentifier(newName.Identifier.WithAdditionalAnnotations(annotation)));
                 return;
             }
 
             // It was invoked.  Remove the invocation, and also change the name if necessary.
             replace(editor, invocation, nameNode, newName);
-
         }
 
         private static bool IsInvocationName(IdentifierNameSyntax nameNode, ExpressionSyntax invocationExpression)

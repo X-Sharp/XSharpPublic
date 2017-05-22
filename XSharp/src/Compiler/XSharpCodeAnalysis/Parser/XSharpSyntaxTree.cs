@@ -16,6 +16,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Text;
+using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
@@ -99,12 +100,19 @@ namespace Microsoft.CodeAnalysis.CSharp
     using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
     public abstract partial class CSharpSyntaxNode
     {
-        internal IXParseTree XNode { get { return (((InternalSyntax.CSharpSyntaxNode)(Green)).XNode) ?? Parent?.XNode; } }
-        internal bool XVoDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoDecl; } }
-        internal bool XVoIsDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDecl; } }
-        internal bool XPCall { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XPCall; } }
-        internal bool XGenerated { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XGenerated; } }
-        internal bool XVoIsDim { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDim; } }
+        internal bool XVoDecl { get { return (CsGreen).XVoDecl; } }
+        internal bool XVoIsDecl { get { return (CsGreen).XVoIsDecl; } }
+        internal bool XPCall { get { return (CsGreen).XPCall; } }
+        internal bool XGenerated { get { return (CsGreen).XGenerated; } }
+        internal bool XVoIsDim { get { return (CsGreen).XVoIsDim; } }
+    }
+}
+
+namespace Microsoft.CodeAnalysis
+{
+    public abstract partial class SyntaxNode
+    {
+        internal IXParseTree XNode { get { return ((CSharp.CSharpSyntaxNode)this).CsGreen.XNode ?? ((CSharp.CSharpSyntaxNode)this).Parent?.XNode;  } }
         internal bool XIsMissingArgument
         {
             get
@@ -128,7 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 
     public sealed partial class CompilationUnitSyntax
     {
-        private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax)this.Green;
+        private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.CsGreen;
         public XSharpParser.SourceContext XSource => internalUnit.XNode as XSharpParser.SourceContext;
         public ITokenStream XTokenStream => internalUnit.XTokens;
         public ITokenStream XPPTokenStream => internalUnit.XPPTokens;

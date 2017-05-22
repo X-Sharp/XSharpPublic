@@ -223,4 +223,5 @@ XSharp/docs/Help/
 /Tests/Applications/C438/Prg/C438.ppo
 
 project.lock.json
+*.project.lock.json
 XSharp/src/Setup/Preprocessed.iss

@@ -68,7 +68,7 @@ namespace XSharp.CodeDom
         protected override void GenerateArgumentReferenceExpression(CodeArgumentReferenceExpression e)
         {
             // Be sure to write a correct string
-            this.OutputIdentifier(this.CreateEscapedIdentifier(e.ParameterName));
+            this.OutputIdentifier(e.ParameterName);
         }
 
         protected override void GenerateArrayCreateExpression(CodeArrayCreateExpression e)
@@ -1516,10 +1516,6 @@ namespace XSharp.CodeDom
 
                         base.Output.Write(prefix + ": ");
                     }
-                    else
-                    {
-                        base.Output.Write("@@");
-                    }
                     if (current.AttributeType != null)
                     {
                         base.Output.Write(this.GetTypeOutput(current.AttributeType));
@@ -1668,6 +1664,10 @@ namespace XSharp.CodeDom
             }
         }
 
+        protected override void OutputIdentifier(string ident)
+        {
+            base.OutputIdentifier(CreateEscapedIdentifier(ident));
+        }
         protected override void OutputMemberAccessModifier(MemberAttributes attributes)
         {
             switch ((attributes & MemberAttributes.AccessMask))

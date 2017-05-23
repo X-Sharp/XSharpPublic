@@ -1022,6 +1022,7 @@ namespace XSharpLanguage
             switch (member.MemberType)
             {
                 case MemberTypes.Constructor:
+                    this._name = "Constructor";
                     this._kind = Kind.Constructor;
                     ConstructorInfo constInfo = member as ConstructorInfo;
                     this._isStatic = constInfo.IsStatic;
@@ -1042,6 +1043,13 @@ namespace XSharpLanguage
                     else if (constInfo.IsFamily)
                     {
                         this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    //
+                    ParameterInfo[] constPars = constInfo.GetParameters();
+                    foreach (ParameterInfo p in constPars)
+                    {
+                        this._parameters.Add(new ParamInfo(p.Name, p.ParameterType.FullName));
                     }
                     //
                     declType = constInfo.DeclaringType;
@@ -1318,7 +1326,7 @@ namespace XSharpLanguage
                 //
                 String desc = modVis;
                 //
-                if (this.Kind != Kind.ClassVar)
+                if ( (this.Kind != Kind.ClassVar) && (this.Kind != Kind.Constructor))
                     desc += this.Kind.ToString() + " ";
                 desc += this.Prototype;
                 //
@@ -2261,14 +2269,17 @@ namespace XSharpLanguage
                         // so now try with right side of the string
                         startToken = currentToken.Substring(dotPos + 1);
                         cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
-                        if (!cType.IsEmpty())
-                            return cType;
+                        //if (!cType.IsEmpty())
+                        //    return cType;
                     }
-                    currentToken = currentToken.Substring(dotPos + 1);
-                    currentPos++;
-                    if (String.IsNullOrEmpty(currentToken))
+                    if (!cType.IsEmpty())
                     {
-                        continue;
+                        currentToken = currentToken.Substring(dotPos + 1);
+                        if (String.IsNullOrEmpty(currentToken))
+                        {
+                            currentPos += 2;
+                            continue;
+                        }
                     }
                 }
                 //
@@ -2303,14 +2314,7 @@ namespace XSharpLanguage
                     cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
                     if (!cType.IsEmpty())
                     {
-                        if (cType.XType != null)
-                        {
-                            foundElement = new CompletionElement(cType.XType);
-                        }
-                        else
-                        {
-                            foundElement = new CompletionElement(cType.SType);
-                        }
+                        SearchConstructorIn(cType, visibility, out foundElement);
                     }
                 }
                 else if (currentToken.EndsWith("()"))
@@ -2401,6 +2405,170 @@ namespace XSharpLanguage
                 }
             }
             return cType;
+        }
+
+        /// <summary>
+        /// Search for the Constructor in the corresponding Type,
+        /// no return value, the constructor is returned by foundElement
+        /// </summary>
+        /// <param name="cType"></param>
+        /// <param name="minVisibility"></param>
+        /// <param name="foundElement"></param>
+        private static void SearchConstructorIn(CompletionType cType, Modifiers minVisibility, out CompletionElement foundElement)
+        {
+            foundElement = null;
+            if (cType.XType != null)
+            {
+                // 
+                XTypeMember xMethod = cType.XType.Members.Find(x =>
+                {
+                    if ((x.Kind == Kind.Constructor))
+                    {
+                        return true;
+                    }
+                    return false;
+                });
+                //if (elt.IsStatic)
+                //    continue;
+                if ((xMethod != null) && (xMethod.Visibility < minVisibility))
+                {
+                    xMethod = null;
+                }
+                //
+                if (xMethod == null)
+                {
+                    // Hummm, we should look inside the Owner
+                    cType.XType.ForceComplete();
+                    //
+                    if (minVisibility == Modifiers.Private)
+                        minVisibility = Modifiers.Protected;
+                    if (cType.XType.Parent != null)
+                    {
+                        // Parent is a XElement, so one of our Types
+                        SearchConstructorIn(new CompletionType(cType.XType.Parent), minVisibility, out foundElement);
+                        return;
+                    }
+                    else if (cType.XType.ParentName != null)
+                    {
+                        // Parent has just a Name, so one of the System Types
+                        SearchConstructorIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), minVisibility, out foundElement);
+                        return;
+                    }
+                }
+                else
+                {
+                    foundElement = new CompletionElement(xMethod);
+                    return;
+                }
+            }
+            else if (cType.SType != null)
+            {
+                MemberInfo[] members;
+                //
+                if (minVisibility < Modifiers.Public)
+                {
+                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                }
+                else
+                {
+                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                }
+                //
+                MemberInfo method = null;
+                foreach (var member in members)
+                {
+                    if (member.MemberType == MemberTypes.Constructor)
+                    {
+                        method = member as MemberInfo;
+                        break;
+                    }
+                }
+                if (method == null)
+                {
+                    // In the parent ?
+                    if (cType.SType.BaseType != null)
+                    {
+                        SearchConstructorIn(new CompletionType(cType.SType.BaseType), Modifiers.Public, out foundElement);
+                        return;
+                    }
+                    else if (cType.SType.IsInterface)
+                    {
+                        SearchConstructorIn(new CompletionType(typeof(object)), Modifiers.Public, out foundElement);
+                        return;
+                    }
+                }
+                else
+                {
+                    foundElement = new CompletionElement(method);
+                    return;
+                }
+            }
+            else if (cType.CodeElement != null)
+            {
+                //
+                if ((cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+                {
+
+                    //
+                    EnvDTE.CodeElements members = null;
+                    EnvDTE.CodeElements bases = null; ;
+                    if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                    {
+                        EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)cType.CodeElement;
+                        members = envClass.Members;
+                        bases = envClass.Bases;
+                    }
+                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+                    {
+                        EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)cType.CodeElement;
+                        members = envEnum.Members;
+                        bases = envEnum.Bases;
+                    }
+                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+                    {
+                        EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)cType.CodeElement;
+                        members = envStruct.Members;
+                        bases = envStruct.Bases;
+                    }
+                    foreach (EnvDTE.CodeElement member in members)
+                    {
+                        if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                        {
+                            EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)member;
+                            if (method.FunctionKind == EnvDTE.vsCMFunction.vsCMFunctionConstructor)
+                            {
+                                //
+                                foundElement = new CompletionElement(member);
+                                EnvDTE.CodeTypeRef typeRef = method.Type;
+                                break;
+                            }
+                        }
+                    }
+                    // We will have to look in the Parents ?
+                    if ((foundElement == null) && (bases != null))
+                    {
+                        foreach (EnvDTE.CodeElement parent in bases)
+                        {
+                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                            {
+                                //
+                                if (minVisibility == Modifiers.Private)
+                                    minVisibility = Modifiers.Protected;
+                                // Parent is a CodeElement
+                                SearchConstructorIn(new CompletionType(parent), minVisibility, out foundElement);
+                                return;
+                            }
+                        }
+                    }
+                    //
+                    return;
+                }
+            }
+            return;
         }
 
 
@@ -2714,7 +2882,7 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                if (declType == null)
+                if (method == null)
                 {
                     // In the parent ?
                     if (cType.SType.BaseType != null)
@@ -2772,7 +2940,7 @@ namespace XSharpLanguage
                                 foundElement = new CompletionElement(member);
                                 EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)member;
                                 EnvDTE.CodeTypeRef typeRef = method.Type;
-                                declType = new CompletionType( (EnvDTE.CodeElement)typeRef.CodeType);
+                                declType = new CompletionType((EnvDTE.CodeElement)typeRef.CodeType);
                                 break;
                             }
                         }
@@ -2799,6 +2967,8 @@ namespace XSharpLanguage
             // Sorry, not found
             return new CompletionType();
         }
+
+
 
 
         internal static IToken ProcessBounds(ITokenStream tokens, IToken currentToken, int LeftElement, int RightElement)
@@ -2958,7 +3128,7 @@ namespace XSharpLanguage
             // Dummy call to a Lexer; just to copy the Keywords, Types, ...
             // Pass default options so this will be the core dialect and no 
             // 4 letter abbreviations will be in the list
-            var lexer = XSharpLexer.Create("", "",XSharpParseOptions.Default);
+            var lexer = XSharpLexer.Create("", "", XSharpParseOptions.Default);
             //
 
             _xTypes = new List<XType>();

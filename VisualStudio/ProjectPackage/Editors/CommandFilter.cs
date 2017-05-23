@@ -368,7 +368,7 @@ namespace XSharp.Project
         private void OnCompletionSessionCommitted(object sender, EventArgs e)
         {
             // it MUST be the case....
-            if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null )
+            if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
             {
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
                 {
@@ -429,7 +429,7 @@ namespace XSharp.Project
             //
             if ((gotoElement != null) && (gotoElement.IsInitialized))
             {
-
+                // Not sure that this if() is still necessary ...
                 if ((gotoElement.XSharpElement != null) && (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Class))
                 {
                     XSharpModel.XType xType = gotoElement.XSharpElement as XSharpModel.XType;
@@ -445,6 +445,7 @@ namespace XSharp.Project
                         }
                     }
                 }
+
                 SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
                 ITextSnapshot snapshot = caret.Snapshot;
                 //

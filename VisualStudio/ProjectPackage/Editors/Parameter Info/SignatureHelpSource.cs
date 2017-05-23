@@ -218,11 +218,11 @@ namespace XSharp.Project
                 if (analysis.IsInitialized)
                 {
                     signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                    // Any other member with the same name in the current Type and in the Parent(s) ?
+                    SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype);
+                    //
+                    m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
                 }
-                // Any other member with the same name in the current Type and in the Parent(s) ?
-                SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype);
-                //
-                m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
             }
             else if (elt is EnvDTE.CodeElement)
             {
@@ -231,35 +231,35 @@ namespace XSharp.Project
                 if (analysis.IsInitialized)
                 {
                     signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
-                }
-                //
-                if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
-                {
-                    EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
-                    if (method.Parent is EnvDTE.CodeElement)
+                    //
+                    if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
                     {
-                        EnvDTE.CodeElement owner = (EnvDTE.CodeElement)method.Parent;
-                        if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                        EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
+                        if (method.Parent is EnvDTE.CodeElement)
                         {
-                            EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
-                            StrangerNameSake(envClass, signatures, element.Name, analysis.Prototype);
-                            // Hey, we should also walk the Parent's parents, no ?
-                            EnvDTE.CodeElements bases = envClass.Bases;
-                            if (bases != null)
+                            EnvDTE.CodeElement owner = (EnvDTE.CodeElement)method.Parent;
+                            if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
                             {
-                                foreach (EnvDTE.CodeElement parent in bases)
+                                EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
+                                StrangerNameSake(envClass, signatures, element.Name, analysis.Prototype);
+                                // Hey, we should also walk the Parent's parents, no ?
+                                EnvDTE.CodeElements bases = envClass.Bases;
+                                if (bases != null)
                                 {
-                                    if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                                    foreach (EnvDTE.CodeElement parent in bases)
                                     {
-                                        StrangerNameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype);
+                                        if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                                        {
+                                            StrangerNameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    //
+                    m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
                 }
-                //
-                m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
             }
             session.Dismissed += OnSignatureHelpSessionDismiss;
         }

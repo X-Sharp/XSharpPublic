@@ -126,6 +126,7 @@ namespace XSharpLanguage
             }
             // The Completion list we are building
             CompletionList compList = new CompletionList();
+            CompletionList kwdList = new CompletionList();
             // The CompletionType we will use to fill the CompletionList
             CompletionType cType = null;
             // Start of Process
@@ -244,7 +245,7 @@ namespace XSharpLanguage
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
                             AddTypeNames(compList, file.Project, filterText, Usings);
                             //
-                            AddXSharpTypesTypeNames(compList, filterText);
+                            AddXSharpTypesTypeNames(kwdList, filterText);
                             break;
                         case XSharpLexer.IMPLEMENTS:
                             // It can be a namespace 
@@ -258,7 +259,7 @@ namespace XSharpLanguage
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
                             AddTypeNames(compList, file.Project, filterText, Usings);
                             //
-                            AddXSharpTypesTypeNames(compList, filterText);
+                            AddXSharpTypesTypeNames(kwdList, filterText);
                             // it can be a static Method/Property/Enum
                             if (cType != null)
                             {
@@ -330,7 +331,7 @@ namespace XSharpLanguage
                                 // we should also walk all the USINGs, and the current Namespace if any, to search Types
                                 AddTypeNames(compList, file.Project, filterText, Usings);
                                 //
-                                AddXSharpTypesTypeNames(compList, filterText);
+                                AddXSharpTypesTypeNames(kwdList, filterText);
                                 break;
                             case XSharpLexer.IMPLEMENTS:
                                 // It can be a namespace 
@@ -349,17 +350,19 @@ namespace XSharpLanguage
                                 // and Types
                                 AddTypeNames(compList, file.Project, filterText, Usings);
                                 //
-                                AddXSharpTypesTypeNames(compList, filterText);
+                                AddXSharpTypesTypeNames(kwdList, filterText);
                                 break;
                         }
                     }
                     break;
             }
-
             // Sort in alphabetical order
             compList.Sort((comp1, comp2) => comp1.DisplayText.CompareTo(comp2.DisplayText));
+            kwdList.Sort((comp1, comp2) => comp1.DisplayText.CompareTo(comp2.DisplayText));
             // and put in the SelectionList
             completionSets.Add(new CompletionSet("All", "All", applicableTo, compList, Enumerable.Empty<Completion>()));
+            if( kwdList.Count > 0 )
+                completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList, Enumerable.Empty<Completion>()));
         }
 
         private void AddTypeNames(CompletionList compList, XProject project, string startWith, HashSet<String> usings)

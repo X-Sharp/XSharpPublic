@@ -689,7 +689,10 @@ namespace XSharpModel
             if (this.BuildModel)
             {
                 XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
-                this._file.Usings.AddUnique(use.Name?.GetText());
+                if ( use.Static == null)
+                    this._file.Usings.AddUnique(use.Name?.GetText());
+                else
+                    this._file.UsingStatics.AddUnique(use.Name?.GetText());
             }
         }
 

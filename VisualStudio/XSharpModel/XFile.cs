@@ -17,6 +17,7 @@ namespace XSharpModel
     public class XFile
     {
         private List<String> _usings;
+        private List<String> _usingStatics;
         private string filePath;
         private Dictionary<string, XType> _typeList;
         private XType _globalType;
@@ -31,6 +32,7 @@ namespace XSharpModel
         {
             // TODO: Change to support Case Sensitive types
             _usings = new List<string>();
+            _usingStatics = new List<string>();
             this.filePath = fullPath;
             _xaml = System.IO.Path.GetExtension(fullPath).ToLower() == ".xaml";
             //
@@ -84,6 +86,15 @@ namespace XSharpModel
             get
             {
                 return _usings;
+            }
+
+        }
+
+        public List<string> UsingStatics
+        {
+            get
+            {
+                return _usingStatics;
             }
 
         }

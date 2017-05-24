@@ -457,7 +457,7 @@ namespace XSharpLanguage
             // First, get the project (s?)
             foreach (EnvDTE.ProjectItem prj in project.ProjectItems)
             {
-                EnvDTE.FileCodeModel filecodemodel = prj.FileCodeModel;
+                EnvDTE.FileCodeModel filecodemodel = null; // prj.FileCodeModel;
                 if (filecodemodel == null)
                     continue;
                 // Ok, now enumerate all Elements
@@ -627,7 +627,7 @@ namespace XSharpLanguage
             // get all the items in each project
             foreach (EnvDTE.ProjectItem item in project.ProjectItems)
             {
-                EnvDTE.FileCodeModel filecodemodel = item.FileCodeModel as EnvDTE.FileCodeModel;
+                EnvDTE.FileCodeModel filecodemodel = null; //  item.FileCodeModel as EnvDTE.FileCodeModel;
                 if (filecodemodel == null)
                     continue;
                 foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)

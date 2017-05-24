@@ -417,7 +417,7 @@ namespace XSharpModel
                 {
                     // Does this project provide a FileCodeModel ?
                     // XSharp is (currently) not providing such object
-                    EnvDTE.FileCodeModel fileCodeModel = item.FileCodeModel;
+                    EnvDTE.FileCodeModel fileCodeModel = null; // item.FileCodeModel;
                     if (fileCodeModel == null)
                         continue;
                     // First, search for Namespaces, this is where we will find Classes

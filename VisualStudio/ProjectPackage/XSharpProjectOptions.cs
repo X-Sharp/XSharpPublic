@@ -114,6 +114,11 @@ namespace XSharp.Project
                 tmp = _prjNode.GetProjectProperty("NoStandardDefs");
                 if (!String.IsNullOrEmpty(tmp) && tmp.ToLower() == "true")
                     args.Add("/nostddefs");
+
+                tmp = _prjNode.GetProjectProperty("INS");
+                if (!String.IsNullOrEmpty(tmp) && tmp.ToLower() == "true")
+                    args.Add("/ins");
+
                 if (this.TreatWarningsAsErrors)
                     args.Add("/warnaserror");
             }

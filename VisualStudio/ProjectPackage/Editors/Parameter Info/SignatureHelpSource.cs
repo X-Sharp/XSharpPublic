@@ -272,8 +272,11 @@ namespace XSharp.Project
             members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
                 | BindingFlags.Static | BindingFlags.DeclaredOnly);
             //
+            bool ctor = false;
             foreach (var member in members.Where(x => nameEquals(x.Name, elementName)))
             {
+                if (member.MemberType == MemberTypes.Constructor)
+                    ctor = true;
                 XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(member);
                 if (analysis.IsInitialized)
                 {
@@ -284,8 +287,8 @@ namespace XSharp.Project
                     }
                 }
             }
-            // fill members of parent class
-            if (sType.BaseType != null)
+            // fill members of parent class,but not for constructorsS
+            if (sType.BaseType != null && ! ctor)
             {
                 SystemNameSake(sType.BaseType, signatures, elementName, elementPrototype);
             }

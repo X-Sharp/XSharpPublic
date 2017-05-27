@@ -41,6 +41,12 @@ namespace XSharpModel
             this._currentNSpaces = new Stack<XType>();
             //
             this.tags = new List<ClassificationSpan>();
+            var options = file.Project.ProjectNode.ParseOptions;
+            // harde code vulcan.vo reference for now
+            if (options.CommandLineArguments.CompilationOptions.ImplicitNameSpace)
+            {
+                _file.Usings.AddUnique("Vulcan.VO");
+            }
         }
 
         private String currentNamespace

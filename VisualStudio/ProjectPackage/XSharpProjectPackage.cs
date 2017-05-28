@@ -184,6 +184,19 @@ namespace XSharp.Project
         {
             get { return XSharpProjectPackage.instance; }
         }
+
+        public void OpenInBrowser(string url)
+        {
+            IVsWebBrowsingService service = (IVsWebBrowsingService)GetService(typeof(SVsWebBrowsingService));
+            if (service != null)
+            {
+                IVsWindowFrame frame = null;
+                service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
+                frame.Show();
+            }
+
+        }
+
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place

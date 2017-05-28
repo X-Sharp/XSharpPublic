@@ -839,48 +839,61 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + fn + " " + e.Message));
                     continue;
                 }
-                try
+                if (File.Exists(fp))
                 {
-                    using (var data = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 1, options: FileOptions.None))
+                    cachedFile = getIncludeFile(fp);
+                    if (cachedFile != null)
                     {
-                        nfp = data.Name;
-                        cachedFile = getIncludeFile(nfp);
-                        if (cachedFile != null)
+                        nfp = fp;
+                        text = cachedFile.Text;
+                    }
+                    else
+                    {
+                        try
                         {
-                            text = cachedFile.Text;
+                            using (var data = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 1, options: FileOptions.None))
+                            {
+                                nfp = data.Name;
+                                cachedFile = getIncludeFile(nfp);
+                                if (cachedFile != null)
+                                {
+                                    text = cachedFile.Text;
+                                }
+                                else
+                                {
+                                    nfp = data.Name;
+                                    try
+                                    {
+                                        text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        text = null;
+                                    }
+                                    if (text == null)
+                                    {
+                                        // Encoding problem ?
+                                        text = EncodedStringText.Create(data);
+                                    }
+                                }
+                                if (!IncludedFiles.ContainsKey(nfp))
+                                {
+                                    IncludedFiles.Add(nfp, text);
+                                }
+                                break;
+                            }
                         }
-                        else
+                        catch (Exception e)
                         {
-                            nfp = data.Name;
-                            try
-                            {
-                                text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
-                            }
-                            catch (Exception)
-                            {
-                                text = null;
-                            }
-                            if (text == null)
-                            {
-                                // Encoding problem ?
-                                text = EncodedStringText.Create(data);
-                            }
+                            if (fileReadException == null)
+                                fileReadException = e;
+                            nfp = null;
                         }
-                        if (! IncludedFiles.ContainsKey(nfp))
-                        {
-                            IncludedFiles.Add(nfp, text);
-                        }
-                        break;
+                        if (rooted)
+                            break;
+
                     }
                 }
-                catch (Exception e)
-                {
-                    if (fileReadException == null)
-                        fileReadException = e;
-                    nfp = null;
-                }
-                if (rooted)
-                    break;
             }
             if (nfp == null)
             {

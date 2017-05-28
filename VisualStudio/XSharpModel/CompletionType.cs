@@ -254,6 +254,23 @@ namespace XSharpModel
 
         }
 
+        public CompletionType ParentType
+        {
+            get
+            {
+                if (_stype != null)
+                    return new CompletionType(_stype.BaseType);
+                if (_xtype != null)
+                {
+                    if (_xtype.Parent != null)
+                        return new CompletionType(_xtype.Parent);
+                    if (_xtype.ParentName != null)
+                        return new CompletionType(_xtype.ParentName, null);
+                }
+                return new CompletionType("System.Object",null);
+            }
+        }
+
         public CodeElement CodeElement
         {
             get

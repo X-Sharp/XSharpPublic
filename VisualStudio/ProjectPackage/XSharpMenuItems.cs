@@ -118,13 +118,16 @@ namespace XSharp.Project
         private void OpenWebsite(object sender, EventArgs e)
         {
             MenuCommand cmd = sender as MenuCommand;
+
+
             switch (cmd.CommandID.ID)
             {
                 case IdWebsite:
-                    System.Diagnostics.Process.Start("https://www.xsharp.info");
+                    //System.Diagnostics.Process.Start("https://www.xsharp.info");
+                    ((XSharpProjectPackage)package).OpenInBrowser("https://www.xsharp.info");
                     break;
                 case IdOnlineHelp:
-                    System.Diagnostics.Process.Start("https://www.xsharp.info/help");
+                    ((XSharpProjectPackage)package).OpenInBrowser("https://www.xsharp.info/help");
                     break;
             }
 

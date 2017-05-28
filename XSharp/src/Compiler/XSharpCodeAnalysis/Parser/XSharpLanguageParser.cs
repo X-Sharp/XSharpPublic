@@ -108,7 +108,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         new SyntaxList<MemberDeclarationSyntax>(),
                         SyntaxFactory.Token(SyntaxKind.EndOfFileToken)));
         }
+        XSharpParserRuleContext buildTree(XSharpParser parser)
+        {
+            XSharpParserRuleContext tree;
+            if (_isScript)
+                tree = parser.script();
+            else
+                tree = parser.source();
+            return tree;
 
+        }
         internal CompilationUnitSyntax ParseCompilationUnitCore()
         {
 
@@ -175,50 +184,59 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Preprocessing completed in {0}",ts);
             }
 #endif
-                parser.Interpreter.PredictionMode = PredictionMode.Sll;
-            // When parsing in Sll mode we do not record any parser errors.
-            // When this fails, then we try again with LL mode and then we record errors
-            parser.RemoveErrorListeners();
-            parser.ErrorHandler = new BailErrorStrategy();
-            XSharpParserRuleContext tree;
-            try
+            XSharpParserRuleContext tree = null;
+            if (_options.ParseOnly)
             {
-                if (_isScript)
-                    tree = parser.script();
-                else
-                    tree = parser.source();
-            }
-            catch (ParseCanceledException e)
-            {
+                // When parsing inside VS only we do not want to walk the tree twice.
+                // The code is most likely incomplete or not valid, so take the 'slow' route
+                // immediately
+                parser.RemoveErrorListeners();
+                parser.Interpreter.PredictionMode = PredictionMode.Ll;
+                parser.ErrorHandler = new XSharpErrorStrategy();
                 var errorListener = new XSharpErrorListener(_fileName, parseErrors);
                 parser.AddErrorListener(errorListener);
-                parser.ErrorHandler = new XSharpErrorStrategy();
-                parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                if (_options.Verbose)
-                {
-                    Exception ex;
-                    string msg = e.Message;
-                    ex = e;
-                    while (ex.InnerException != null)
-                    {
-                        ex = ex.InnerException;
-                        msg = ex.Message;
-                    }
-                    _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: "+msg+". Trying again in LL mode.");
-                }
+                tree = buildTree(parser);
 
-                ppStream.Reset();
-                if (_options.Verbose)
-                {
-                    pp.DumpStats();
-                }
-                pp.Close();
-                parser.Reset();
-                if (_isScript)
-                    tree = parser.script();
-                else
-                    tree = parser.source();
             }
+            else // !_options.ParseOnly
+            {
+                // When parsing in Sll mode we do not record any parser errors.
+                // When this fails, then we try again with LL mode and then we record errors
+                parser.RemoveErrorListeners();
+                parser.Interpreter.PredictionMode = PredictionMode.Sll;
+                parser.ErrorHandler = new BailErrorStrategy();
+                try
+                {
+                    tree = buildTree(parser);
+                }
+                catch (ParseCanceledException e)
+                {
+                    var errorListener = new XSharpErrorListener(_fileName, parseErrors);
+                    parser.AddErrorListener(errorListener);
+                    parser.ErrorHandler = new XSharpErrorStrategy();
+                    parser.Interpreter.PredictionMode = PredictionMode.Ll;
+                    if (_options.Verbose)
+                    {
+                        Exception ex;
+                        string msg = e.Message;
+                        ex = e;
+                        while (ex.InnerException != null)
+                        {
+                            ex = ex.InnerException;
+                            msg = ex.Message;
+                        }
+                        _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: " + msg + ". Trying again in LL mode.");
+                    }
+
+                    ppStream.Reset();
+                    if (_options.Verbose)
+                    {
+                        pp.DumpStats();
+                    }
+                    pp.Close();
+                    parser.Reset();
+                    tree = buildTree(parser);
+                }
 #if DEBUG && DUMP_TIMES
             {
                 var ts = DateTime.Now - t;
@@ -226,6 +244,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Parsing completed in {0}",ts);
             }
 #endif
+            }   // _options.ParseOnly
 
             var walker = new ParseTreeWalker();
 
@@ -412,7 +431,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (! _options.SyntaxCheck)
+                if (! _options.SyntaxCheck && ! _options.ParseOnly)
                 {
                     textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
                 }

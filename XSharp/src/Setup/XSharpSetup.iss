@@ -26,7 +26,7 @@
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
 #define VIVersion       "0.2.12.2121"
 #define VITextVersion   "0.2.12.2121 (Beta 12a)"                                                                                            
-#define TouchDate       "2017-05-22"
+#define TouchDate       "2017-05-26"
 #define TouchTime       "02:12:01"
 #define InstallPath     "XSharpPath"
 

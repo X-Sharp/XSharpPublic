@@ -2325,7 +2325,15 @@ namespace XSharpLanguage
                     // this a Method call
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     // Do we already know in which Type we are ?
-                    if (!cType.IsEmpty())
+                    if (currentToken.ToLower() == "self")
+                    {
+                        SearchConstructorIn(cType, visibility, out foundElement);
+                    }
+                    else if (currentToken.ToLower() == "super")
+                    {
+                        SearchConstructorIn(cType.ParentType, visibility, out foundElement);
+                    }
+                    else if (!cType.IsEmpty())
                     {
                         // Now, search for a Method
                         cType = SearchMethodTypeIn(cType, currentToken, visibility, out foundElement);

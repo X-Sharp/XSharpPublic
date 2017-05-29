@@ -225,3 +225,5 @@ XSharp/docs/Help/
 project.lock.json
 *.project.lock.json
 XSharp/src/Setup/Preprocessed.iss
+Tests/Applications/C493/Resources/NativeResources.rc
+Tests/Applications/C493/Resources/NativeResources.res

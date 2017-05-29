@@ -212,7 +212,6 @@ _Pvt_Extensions/
 ModelManifest.xml
 /XSharp/src/Runtime
 Tools/Converter/PrjConvert.exe
-/Runtime/XSharp.Runtime.Tests/XSharp.Runtime.Tests.xsproj.bak
-/Runtime/XSharp.Rdd/XSharp.RDD.xsproj.bak
-/Runtime/XSharp.Core/XSharp.Core.xsproj.bak
-/VisualStudio/XPorter/XPorter.xsproj.bak
+
+#Backup files
+*.bak

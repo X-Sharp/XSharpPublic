@@ -1,0 +1,19 @@
+using System.Threading
+
+const var usage := e"Delays the specified number of seconds.\nUsage: sleep <seconds>"
+
+if args:Count != 1
+	Console.WriteLine(usage)
+	return
+endif
+
+var seconds := 0
+
+try
+	seconds := Convert.ToInt32(args[0])
+catch
+	Console.WriteLine("Error: Invalid parameter")
+	return
+end try
+
+Thread.Sleep(seconds*1000)

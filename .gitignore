@@ -212,3 +212,6 @@ _Pvt_Extensions/
 ModelManifest.xml
 /XSharp/src/Runtime
 Tools/Converter/PrjConvert.exe
+
+#Backup files
+*.bak

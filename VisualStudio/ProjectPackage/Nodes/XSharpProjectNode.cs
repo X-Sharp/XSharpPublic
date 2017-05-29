@@ -78,6 +78,8 @@ namespace XSharp.Project
         private VSLangProj.VSProject vsProject;
         IErrorList errorList = null;
         bool isLoading = false;
+        private FileChangeManager filechangemanager = null;
+
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
         #endregion
@@ -108,6 +110,17 @@ namespace XSharp.Project
 
             object errlist = ((IServiceProvider)this.package).GetService(typeof(SVsErrorList));
             errorList = (IErrorList)errlist;
+
+        }
+
+        private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
+        {
+            if (IsXamlFile(e.FileName))
+            {
+                this.ProjectModel.RemoveFile(e.FileName);
+                this.ProjectModel.AddFile(e.FileName);
+                this.ProjectModel.Walk();
+            }
         }
 
 
@@ -251,8 +264,7 @@ namespace XSharp.Project
         /// <returns>This method returns a new instance of the ProjectOptions base class.</returns>
         public override ProjectOptions CreateProjectOptions()
         {
-            base.
-            options = new XSharpProjectOptions(this);
+            base.options = new XSharpProjectOptions(this);
             return options;
         }
 
@@ -805,6 +817,14 @@ namespace XSharp.Project
                 string.Compare(ext, XSharpConstants.FileExtension2, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
+        public bool IsXamlFile(string strFileName)
+        {
+            // Don't check errors here
+            if (string.IsNullOrEmpty(strFileName))
+                return false;
+            string ext = Path.GetExtension(strFileName);
+            return string.Compare(ext, ".xaml" , StringComparison.OrdinalIgnoreCase) == 0 ;
+        }
         /// <summary>
         /// Called by the project to know if the item is a file (that is part of the project)
         /// or an intermediate file used by the MSBuild tasks/targets
@@ -816,6 +836,7 @@ namespace XSharp.Project
         {
             if (String.Compare(type, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) == 0          // prg
                 || String.Compare(type, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase) == 0          // none
+                || String.Compare(type, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase) == 0           // resource file
                 || String.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx
                 || String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
                 || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
@@ -833,6 +854,12 @@ namespace XSharp.Project
         internal override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             base.OnAfterProjectOpen(sender, e);
+            if (filechangemanager == null)
+            {
+                filechangemanager = new FileChangeManager(this.Site);
+                filechangemanager.FileChangedOnDisk += Filechangemanager_FileChangedOnDisk;
+                
+            }
             if (this.isLoading)
             {
                 // Run the background Walker/Listener, to fill the Model
@@ -844,9 +871,15 @@ namespace XSharp.Project
                         var xnode = this.URLNodes[url] as XSharpFileNode;
                         if (xnode != null && !xnode.IsNonMemberItem)
                         {
-                            if (File.Exists(url) && IsCodeFile(url))
+                            if (File.Exists(url))
                             {
-                                this.ProjectModel.AddFile(url);
+                                if (IsCodeFile(url))
+                                    this.ProjectModel.AddFile(url);
+                                if (IsXamlFile(url))
+                                {
+                                    this.ProjectModel.AddFile(url);
+                                    filechangemanager.ObserveItem(url);
+                                }
                             }
                         }
                     }
@@ -877,6 +910,9 @@ namespace XSharp.Project
             this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
             CreateErrorListManager();
+
+            // Be sure we have External/system types for Intellisense
+            UpdateAssemblyReferencesModel();
 
         }
         #endregion
@@ -1100,15 +1136,8 @@ namespace XSharp.Project
                     projectModel = new XSharpModel.XProject(this);
                     // Set the backlink, so the walker can access the StatusBar
                     projectModel.ProjectNode = this;
-                    // Add all references to the Type Controller
-                    foreach (Reference reference in this.VSProject.References)
-                    {
-                        if (reference.Type == prjReferenceType.prjReferenceTypeAssembly)
-                        {
-                            string fullPath = reference.Path;
-                            SystemTypeController.LoadAssembly(fullPath);
-                        }
-                    }
+                    //
+                    UpdateAssemblyReferencesModel();
                     //
                     XSharpModel.XSolution.Add(projectModel);
                 }
@@ -1118,6 +1147,19 @@ namespace XSharp.Project
             private set
             {
                 projectModel = null;
+            }
+        }
+
+        public void UpdateAssemblyReferencesModel()
+        {
+            // Add all references to the Type Controller
+            foreach (Reference reference in this.VSProject.References)
+            {
+                if (reference.Type == prjReferenceType.prjReferenceTypeAssembly)
+                {
+                    string fullPath = reference.Path;
+                    SystemTypeController.LoadAssembly(fullPath);
+                }
             }
         }
 
@@ -1132,18 +1174,62 @@ namespace XSharp.Project
             // XSharpProjectReference
             // So, we will add files only (currently) => Don't forget RemoveURL
 #if CODEMODEL
-            if (!IsProjectFile(url) && this.IsProjectOpened)
+            if (IsProjectFile(url))
+            {
+                this.ProjectModel.AddProjectReference(url);
+            }
+            else if (IsStrangerProjectFile(url))
+            {
+                this.ProjectModel.AddStrangerProjectReference(url);
+            }
+            else if (this.IsProjectOpened)
             {
                 var xnode = node as XSharpFileNode;
                 if (xnode != null && !xnode.IsNonMemberItem)
                 {
-                    if (File.Exists(url) && IsCodeFile(url))
+                    if (File.Exists(url) )
                     {
-                        this.ProjectModel.AddFile(url);
+                        if (IsCodeFile(url))
+                            this.ProjectModel.AddFile(url);
+                        if (IsXamlFile(url))
+                        {
+                            this.ProjectModel.AddFile(url);
+                            if (filechangemanager != null)
+                            {
+                                filechangemanager.ObserveItem(url);
+                            }
+
+                        }
                     }
                 }
             }
 #endif
+        }
+
+
+        /// <summary>
+        /// Used in XProject to enumerate all projects in the current Solution, looking for a project using its name.
+        /// </summary>
+        /// <param name="sProject"></param>
+        /// <returns>The EnvDTE.Project found, or null</returns>
+        public EnvDTE.Project FindProject(String sProject)
+        {
+            EnvDTE.Project prj = null;
+            //
+            EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
+            if (dte != null)
+            {
+                foreach (EnvDTE.Project p in dte.Solution.Projects)
+                {
+                    if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        prj = p;
+                        break;
+                    }
+                }
+            }
+            //
+            return prj;
         }
 
         public override void RemoveURL(String url)
@@ -1151,8 +1237,22 @@ namespace XSharp.Project
             //
             //
 #if CODEMODEL
-            if (File.Exists(url) && IsCodeFile(url))
+            // We should remove the external projects entries
+            if (IsProjectFile(url))
             {
+                this.ProjectModel.RemoveProjectReference(url);
+            }
+            else if (IsStrangerProjectFile(url))
+            {
+                this.ProjectModel.RemoveStrangerProjectReference(url);
+            }
+            else 
+            {
+                if (filechangemanager != null && IsXamlFile(url))
+                {
+                    filechangemanager.StopObservingItem(url);
+                }
+
                 var node = this.FindChild(url) as XSharpFileNode;
                 if (node != null && !node.IsNonMemberItem)
                 {
@@ -1164,9 +1264,27 @@ namespace XSharp.Project
         }
 
 
+        /// <summary>
+        /// Check if fullpath points to a XSharp Project file.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
         private bool IsProjectFile(string fullPath)
         {
-            return (String.Compare(Path.GetExtension(fullPath), ".xsprj", StringComparison.OrdinalIgnoreCase) == 0);
+            string cExt = Path.GetExtension(fullPath);
+            return String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase) 
+                || String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase) ;
+        }
+
+        /// <summary>
+        /// Check if fullpath points to a file, whose extension ends with "proj" so it might be project file.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        private bool IsStrangerProjectFile(string fullPath)
+        {
+            string ext = Path.GetExtension(fullPath);
+            return ( ext.EndsWith( "proj", StringComparison.OrdinalIgnoreCase));
         }
 
         #region IXSharpProject Interface
@@ -1186,6 +1304,20 @@ namespace XSharp.Project
             }
         }
 
+        public string IntermediateOutputPath
+        {
+            get
+            {
+                if (this.BuildProject != null)
+                { 
+                    var result = this.BuildProject.GetPropertyValue("IntermediateOutputPath");
+                    if (!Path.IsPathRooted(result))
+                        result = Path.Combine(this.ProjectFolder, result);
+                    return result;
+                }
+                return "";
+            }
+        }
         public void OpenElement(string file, int line, int column)
         {
             IVsWindowFrame window;
@@ -1510,8 +1642,8 @@ namespace XSharp.Project
             // check to see required elements
             int len = str.Length;
             // /prebuildevent appears more than once.
-            if (str.ToLower().Replace("/prebuildevent", "").Length < str.Length - "/prebuildevent".Length)
-                ok = false;
+            //if (str.ToLower().Replace("/prebuildevent", "").Length < str.Length - "/prebuildevent".Length)
+            //    ok = false;
             if (ok && str.IndexOf("'Debug|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
@@ -1598,6 +1730,7 @@ namespace XSharp.Project
             bool hasImport2 = false;
             bool hasImport3 = false;
             // clean up the duplicate pre and post build events groups
+            /*
             Microsoft.Build.Construction.ProjectPropertyGroupElement group1 = null;
             Microsoft.Build.Construction.ProjectPropertyGroupElement group2 = null;
             foreach (var group in xml.PropertyGroups.Where(grp => grp.Condition?.Length > 0))
@@ -1622,6 +1755,7 @@ namespace XSharp.Project
                 group2.Parent.RemoveChild(group2);
                 changed = true;
             }
+            */
             foreach (var import in xml.Imports)
             {
                 var prj = import.Project;
@@ -1643,6 +1777,7 @@ namespace XSharp.Project
                 var import = xml.AddImport(import3);
                 changed = true;
             }
+            /*
             if (group1 != null)
             {
                 // this is removing the condition from the pre/post build event group
@@ -1653,6 +1788,7 @@ namespace XSharp.Project
                 parent.AppendChild(group1);
                 changed = true;
             }
+            */
             if (changed)
             {
                 File.Copy(filename, filename+".bak",true);

@@ -97,7 +97,7 @@ namespace XSharp.Project
                         String prgFileName = dd.Name;
                         // Build the Designer FileName
                         String designerPrgFile = XSharpCodeDomHelper.BuildDesignerFileName(prgFileName);
-                        if (File.Exists(designerPrgFile))
+                        if (!String.IsNullOrEmpty(designerPrgFile) && File.Exists(designerPrgFile))
                         {
                             // Ok, we have a candidate !!!
                             DocData docdata = new DocData((IServiceProvider)ddtr, designerPrgFile);

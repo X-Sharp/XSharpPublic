@@ -19,6 +19,14 @@ namespace XSharpModel
         private bool _loaded;
         //
         private SystemTypeController _typeController;
+        // List of external Projects, currently unloaded
+        private List<String> _unprocessedProjectReferences = new List<String>();
+        // List of external Projects, currently loaded
+        private List<XProject> _ReferencedProjects = new List<XProject>();
+
+        // See above
+        private List<String> _unprocessedStrangerProjectReferences = new List<String>();
+        private List<EnvDTE.Project> _StrangerProjects = new List<EnvDTE.Project>();
 
         public XProject(IXSharpProject project)
         {
@@ -112,6 +120,119 @@ namespace XSharpModel
             return false;
         }
 
+        public bool AddProjectReference(string url)
+        {
+            if (!_unprocessedProjectReferences.Contains(url))
+            {
+                _unprocessedProjectReferences.Add(url);
+                return true;
+            }
+            return false;
+        }
+
+        public bool RemoveProjectReference(string url)
+        {
+            if (_unprocessedProjectReferences.Contains(url))
+            {
+                _unprocessedProjectReferences.Remove(url);
+                return true;
+            }
+            else
+            {
+                // Does this url belongs to a project in the Solution ?
+                XProject prj = XSolution.FindProject(url);
+                if (_ReferencedProjects.Contains(prj))
+                {
+                    _ReferencedProjects.Remove(prj);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool AddStrangerProjectReference(string url)
+        {
+            if (!_unprocessedStrangerProjectReferences.Contains(url))
+            {
+                _unprocessedStrangerProjectReferences.Add(url);
+                return true;
+            }
+            return false;
+        }
+
+        public bool RemoveStrangerProjectReference(string url)
+        {
+            if (_unprocessedStrangerProjectReferences.Contains(url))
+            {
+                _unprocessedStrangerProjectReferences.Remove(url);
+                return true;
+            }
+            else
+            {
+                // Does this url belongs to a project in the Solution ?
+                EnvDTE.Project prj = this.ProjectNode.FindProject(url);
+                if (_StrangerProjects.Contains(prj))
+                {
+                    _StrangerProjects.Remove(prj);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// List of XSharp Projects that our "current" project is referencing
+        /// </summary>
+        public IList<XProject> ReferencedProjects
+        {
+            get
+            {
+                List<String> existing = new List<String>();
+                foreach (String s in _unprocessedProjectReferences)
+                {
+                    XProject p = XSolution.FindProject(s);
+                    if (p != null)
+                    {
+                        existing.Add(s);
+                        _ReferencedProjects.Add(p);
+                    }
+                }
+                foreach (String s in existing)
+                {
+                    _unprocessedProjectReferences.Remove(s);
+                }
+                return _ReferencedProjects;
+            }
+        }
+
+
+        /// <summary>
+        /// List of stranger Projects that our "current" project is referencing.
+        /// Could be any project that support EnvDTE.FileCodeModel (so CS, Vb.Net, ...)
+        /// </summary>
+        public IList<EnvDTE.Project> StrangerProjects
+        {
+            get
+            {
+                List<String> existing = new List<String>();
+                foreach (String s in _unprocessedStrangerProjectReferences)
+                {
+                    EnvDTE.Project p = this.ProjectNode.FindProject(s);
+                    if (p != null)
+                    {
+                        existing.Add(s);
+                        _StrangerProjects.Add(p);
+                    }
+                }
+                foreach (String s in existing)
+                {
+                    _unprocessedStrangerProjectReferences.Remove(s);
+                }
+                return _StrangerProjects;
+            }
+        }
+
+
         public XFile Find(string fileName)
         {
             return Files.Find(f => f.Name.ToLower() == fileName.ToLower());
@@ -168,7 +289,7 @@ namespace XSharpModel
                 if (caseInvariant)
                 {
                     file.TypeList.TryGetValue(typeName.ToLowerInvariant(), out xTemp);
-                        //file.TypeList.Find(x => x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant());
+                    //file.TypeList.Find(x => x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant());
                 }
                 else
                 {
@@ -196,6 +317,21 @@ namespace XSharpModel
                     }
                 }
             }
+            //
+            return xType;
+        }
+
+        public XType LookupReferenced(string typeName, bool caseInvariant)
+        {
+            XType xType = null;
+            // Ok, might be a good idea to look into References, no ?
+            foreach (var item in ReferencedProjects)
+            {
+                xType = item.Lookup(typeName, caseInvariant);
+                if (xType != null)
+                    break;
+            }
+            //
             return xType;
         }
 
@@ -213,7 +349,7 @@ namespace XSharpModel
                 {
                     if (caseInvariant)
                     {
-                        if ( x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant() )
+                        if (x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant())
                         {
                             xTemp = x;
                             break;
@@ -250,8 +386,98 @@ namespace XSharpModel
                     }
                 }
             }
+            //
             return xType;
         }
+
+        public XType LookupFullNameReferenced(string typeName, bool caseInvariant)
+        {
+            XType xType = null;
+            // Ok, might be a good idea to look into References, no ?
+            foreach (var item in ReferencedProjects)
+            {
+                xType = item.LookupFullName(typeName, caseInvariant);
+                if (xType != null)
+                    break;
+            }
+            //
+            return xType;
+        }
+
+        // Look for a TypeName in "stranger" projects
+        public EnvDTE.CodeElement LookupForStranger(string typeName, bool caseInvariant)
+        {
+            // If not found....
+            EnvDTE.CodeElement foundElement = null;
+            // Enumerate all referenced external Projects
+            foreach (EnvDTE.Project project in this.StrangerProjects)
+            {
+                // Retrieve items -> Projects
+                foreach (EnvDTE.ProjectItem item in project.ProjectItems)
+                {
+                    // Does this project provide a FileCodeModel ?
+                    // XSharp is (currently) not providing such object
+                    EnvDTE.FileCodeModel fileCodeModel = null; // item.FileCodeModel;
+                    if (fileCodeModel == null)
+                        continue;
+                    // First, search for Namespaces, this is where we will find Classes
+                    foreach (EnvDTE.CodeElement codeElementNS in fileCodeModel.CodeElements)
+                    {
+                        if (codeElementNS.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
+                        {
+                            // May be here, we could speed up search if the TypeName doesn't start with the Namespace name ??
+                            //
+                            // Classes are childs, so are Enums and Structs
+                            foreach (EnvDTE.CodeElement elt in codeElementNS.Children)
+                            {
+                                // TODO: And what about Enums, Structures, ... ???
+                                // is it a Class/Enum/Struct ?
+                                if ((elt.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                                    (elt.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                                    (elt.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+                                {
+                                    // So the element name is
+                                    string elementName = elt.FullName;
+                                    // !!!! WARNING !!! We may have nested types
+                                    elementName = elementName.Replace("+", ".");
+                                    // Got it ?
+                                    if (caseInvariant)
+                                    {
+                                        if (elementName.ToLowerInvariant() == typeName.ToLowerInvariant())
+                                        {
+                                            // Bingo !
+                                            foundElement = elt;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (elementName.ToLower() == typeName.ToLower())
+                                        {
+                                            // Bingo !
+                                            foundElement = elt;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            //
+                            if (foundElement != null)
+                                break;
+                        }
+                    }
+                    //
+                    if (foundElement != null)
+                        break;
+                }
+                //
+                if (foundElement != null)
+                    break;
+            }
+            //
+            return foundElement;
+        }
+
 
         public List<XType> Namespaces
         {
@@ -280,6 +506,7 @@ namespace XSharpModel
                 return ns;
             }
         }
+
 
     }
 }

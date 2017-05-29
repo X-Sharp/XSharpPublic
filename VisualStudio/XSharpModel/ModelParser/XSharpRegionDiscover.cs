@@ -39,7 +39,7 @@ namespace XSharpModel
         }
         private bool _reInitModel;
         private bool _buildModel;
-        private bool _buildLocals = false;
+        private bool _buildLocals = true;
 
         public bool BuildModel
         {

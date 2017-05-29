@@ -17,6 +17,8 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Tagging;
 
 namespace XSharp.Project
 {
@@ -47,6 +49,10 @@ namespace XSharp.Project
         [Import]
         ISignatureHelpBroker SignatureHelpBroker = null;
 
+        [Import]
+        IBufferTagAggregatorFactoryService aggregator = null;
+
+
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IVsTextLines textlines;
@@ -63,18 +69,21 @@ namespace XSharp.Project
                         Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);
                     }
+                    //
+                    // Only capturing keystroke for OUR languageService... ???
+                    //
+                    IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
+                    Debug.Assert(textView != null);
+
+                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator);
+
+                    IOleCommandTarget next;
+                    textViewAdapter.AddCommandFilter(filter, out next);
+                    filter.Next = next;
                 }
             }
-            //
-            IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
-            Debug.Assert(textView != null);
+            }
 
-            CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker);
-
-            IOleCommandTarget next;
-            textViewAdapter.AddCommandFilter(filter, out next);
-            filter.Next = next;
-        }
     }
 
 }

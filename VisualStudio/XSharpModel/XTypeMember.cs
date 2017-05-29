@@ -127,11 +127,6 @@ namespace XSharpModel
                     desc += this.Kind.ToString() + " ";
                 desc += this.Prototype;
                 //
-                if (this.Kind.HasReturnType())
-                {
-                    desc += " as " + this.TypeName;
-                }
-                //
                 return desc;
             }
         }
@@ -157,7 +152,11 @@ namespace XSharpModel
                 desc += vars;
                 desc += ")";
                 //
-
+                if (this.Kind.HasReturnType())
+                {
+                    desc += " as " + this.TypeName;
+                }
+                //
                 return desc;
             }
         }
@@ -198,6 +197,8 @@ namespace XSharpModel
                         }
                     }
                 }
+                // Hey, we should also walk the Parent's parents, no ?
+
             }
             return _namesake;
         }

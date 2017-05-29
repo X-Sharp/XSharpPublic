@@ -83,17 +83,17 @@ namespace XSharp.Project
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpModel.XElement gotoElement;
-            MemberInfo systemElement;
+            XSharpLanguage.CompletionElement gotoElement;
             String currentNS = "";
             if (currentNamespace != null)
             {
                 currentNS = currentNamespace.Name;
             }
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out systemElement);
+
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             //
             //
-            if ( (gotoElement != null) || (systemElement != null) )
+            if ((gotoElement != null) && (gotoElement.IsInitialized))
             {
                 // Ok, find it ! Let's go ;)
                 applicableToSpan = currentSnapshot.CreateTrackingSpan
@@ -102,23 +102,71 @@ namespace XSharp.Project
                                             extent.Span.Start, searchText.Length, SpanTrackingMode.EdgeInclusive
                     );
 
-                if (gotoElement != null)
+                if (gotoElement.XSharpElement != null)
                 {
-                    qiContent.Add(gotoElement.Description);
+                    if (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Constructor )
+                    {
+                        if ( gotoElement.XSharpElement.Parent != null )
+                        {
+                            qiContent.Add(gotoElement.XSharpElement.Parent.Description);
+                        }
+                    }
+                    else 
+                        qiContent.Add(gotoElement.XSharpElement.Description);
+                }
+                else if (gotoElement.SystemElement is TypeInfo)
+                {
+                    XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)gotoElement.SystemElement);
+                    qiContent.Add(analysis.Description);
                 }
                 else
                 {
-                    if ( systemElement is TypeInfo )
+                    // This works with System.MemberInfo AND 
+                    XSharpLanguage.MemberAnalysis analysis = null;
+                    if (gotoElement.SystemElement is MemberInfo)
                     {
-                        XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)systemElement);
-                        qiContent.Add(analysis.Description);
+                        analysis = new XSharpLanguage.MemberAnalysis(gotoElement.SystemElement);
+                        if (analysis.IsInitialized)
+                        {
+                            if (analysis.Kind == XSharpModel.Kind.Constructor)
+                            {
+                                XSharpLanguage.TypeAnalysis typeAnalysis;
+                                typeAnalysis = new XSharpLanguage.TypeAnalysis(cType.SType.GetTypeInfo());
+                                if (typeAnalysis.IsInitialized)
+                                {
+                                    qiContent.Add(typeAnalysis.Description);
+                                }
+                            }
+                            else
+                            {
+                                qiContent.Add(analysis.Description);
+                            }
+                        }
                     }
-                    else
+                    else if (gotoElement.CodeElement != null)
                     {
-                        XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(systemElement);
-                        qiContent.Add(analysis.Description);
+                        analysis = new XSharpLanguage.MemberAnalysis(gotoElement.CodeElement);
+                        if (analysis.IsInitialized)
+                        {
+                            if (analysis.Kind == XSharpModel.Kind.Constructor)
+                            {
+                                if (cType.CodeElement.IsCodeType)
+                                {
+                                    XSharpLanguage.TypeAnalysis typeAnalysis;
+                                    typeAnalysis = new XSharpLanguage.TypeAnalysis((EnvDTE.CodeType)cType.CodeElement);
+                                    if (typeAnalysis.IsInitialized)
+                                    {
+                                        qiContent.Add(typeAnalysis.Description);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                qiContent.Add(analysis.Description);
+                            }
+                        }
                     }
-
+                   
                 }
 
                 return;

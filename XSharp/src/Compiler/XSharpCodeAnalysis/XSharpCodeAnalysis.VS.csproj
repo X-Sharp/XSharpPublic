@@ -426,6 +426,6 @@ java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -pack
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).* \Xsharp\DevPublic\External\$(Configuration)\*.* /y</PostBuildEvent>
+    <PostBuildEvent>if "$(Configuration)" == "Debug" XCopy $(TargetDir)$(TargetName).* \Xsharp\DevPublic\External\$(Configuration)\*.* /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

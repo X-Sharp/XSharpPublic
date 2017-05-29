@@ -8,9 +8,10 @@
           <export-task name="Publish as CHM" format="CHM">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\Binaries\Help\XSharp.chm</task-config-value>
-              <task-config-value name="skin">$(HMSYS)Templates\HTML Skins\CHM Skin, Dark Blue Header, Feature Images.hmskin</task-config-value>
+              <task-config-value name="skin">$(HMSYS)Templates\HTML Skins\Premium Pack 3.30\CHM Skins\CHM_Dark.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
+              <task-config-value name="make0includeskin">OPT_HOME</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -47,13 +48,16 @@
     </export-task-groups>
     <helpwindows>
       <helpwindow name="Main" left="86" top="51" width="800" height="600">
-        <caption translate="true">X# BYOR Runtime Documentation</caption>
+        <caption translate="true">X# Documentation</caption>
         <window-options-chm navigation="true" navigationwidth="220" search="true" favorite="true" saveregistry="true" buttons="14462">
           <user-button name="jump1">
             <caption translate="true">jump1</caption>
           </user-button>
           <user-button name="jump2">
             <caption translate="true">jump2</caption>
+          </user-button>
+          <user-button name="Home">
+            <caption translate="true">Home</caption>
           </user-button>
         </window-options-chm>
       </helpwindow>
@@ -173,7 +177,7 @@
       <config-value name="make3include">HTML</config-value>
       <config-value name="make3status">*</config-value>
       <config-value name="tidyxml">1</config-value>
-      <config-group name="bookmarks"/>
+      <config-value name="make0includeskin">OPT_HOME</config-value>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -493,9 +497,10 @@
       <config-value name="imageconversion">1</config-value>
       <config-value name="jpgquality">90</config-value>
       <config-value name="htmlpopup">3</config-value>
-      <config-value name="skin">$(HMSYS)Templates\HTML Skins\CHM Skin, Dark Blue Header, Feature Images.hmskin</config-value>
+      <config-value name="skin">$(HMSYS)Templates\HTML Skins\Premium Pack 3.30\CHM Skins\CHM_Dark.hmskin</config-value>
       <config-value name="outputfile">..\Binaries\Help\XSharp.chm</config-value>
       <config-value name="deletetemp">1</config-value>
+      <config-value name="usesecondarywindows">0</config-value>
     </config-group>
     <config-group name="mshc">
       <config-value name="vendor">XSharp</config-value>
@@ -510,7 +515,7 @@
       <config-value name="namespace">XSharp</config-value>
       <config-value name="uniqueid">XSharp</config-value>
       <config-value name="outputfile">..\Binaries\Help\XSharp.mshc</config-value>
-      <config-value name="deletetemp">1</config-value>
+      <config-value name="deletetemp">0</config-value>
     </config-group>
     <config-group name="print">
       <config-value name="tocname">Table of Contents</config-value>

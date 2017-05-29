@@ -2446,6 +2446,8 @@ namespace XSharpLanguage
                     xMethod = null;
                 }
                 //
+                /*
+                 * No More search for Constructors in parent 
                 if (xMethod == null)
                 {
                     // Hummm, we should look inside the Owner
@@ -2467,6 +2469,7 @@ namespace XSharpLanguage
                     }
                 }
                 else
+                */
                 {
                     foundElement = new CompletionElement(xMethod);
                     return;
@@ -2496,6 +2499,8 @@ namespace XSharpLanguage
                         break;
                     }
                 }
+                /*
+                 * No More search for Constructors in parent
                 if (method == null)
                 {
                     // In the parent ?
@@ -2511,6 +2516,7 @@ namespace XSharpLanguage
                     }
                 }
                 else
+                */
                 {
                     foundElement = new CompletionElement(method);
                     return;
@@ -2559,6 +2565,8 @@ namespace XSharpLanguage
                             }
                         }
                     }
+                    /*
+                     * No More search for Constructors in parent
                     // We will have to look in the Parents ?
                     if ((foundElement == null) && (bases != null))
                     {
@@ -2575,6 +2583,7 @@ namespace XSharpLanguage
                             }
                         }
                     }
+                    */
                     //
                     return;
                 }

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -136,7 +136,7 @@ namespace XSharp.Project
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
-
+    // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
     [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension1, 0x42, DefaultName = EditorName, NameResourceID =109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), PpoExtension, 0x42, DefaultName = EditorName, NameResourceID = 109)]
@@ -166,6 +166,7 @@ namespace XSharp.Project
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
     {
         private uint m_componentID;
@@ -183,6 +184,19 @@ namespace XSharp.Project
         {
             get { return XSharpProjectPackage.instance; }
         }
+
+        public void OpenInBrowser(string url)
+        {
+            IVsWebBrowsingService service = (IVsWebBrowsingService)GetService(typeof(SVsWebBrowsingService));
+            if (service != null)
+            {
+                IVsWindowFrame frame = null;
+                service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
+                frame.Show();
+            }
+
+        }
+
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -190,10 +204,14 @@ namespace XSharp.Project
         /// </summary>
         protected override void Initialize()
         {
+            // Suspend walking until Solution is opened.
+            base.SolutionListeners.Add(new ModelScannerEvents(this));
             base.Initialize();
             XSharpProjectPackage.instance = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             this.settings = new XPackageSettings(this);
+
+
 
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
@@ -207,15 +225,6 @@ namespace XSharp.Project
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
 #endif
             // Register the language service
-            // Add our command handlers for menu (commands must exist in the .vsct file)
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs)
-            {
-                // Create the command for the menu item.
-                CommandID menuCommandID = new CommandID(GuidStrings.guidXSharpLanguageServiceCmdSet, (int)PkgCmdIDList.cmdidInsertSnippet);
-                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
-                mcs.AddCommand(menuItem);
-            }
 
             // Proffer the service.
             IServiceContainer serviceContainer = this as IServiceContainer;
@@ -241,8 +250,10 @@ namespace XSharp.Project
                 crinfo[0].uIdleTimeInterval = 1000;
                 int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
             }
+            // Initialize Custom Menu Items
+            XSharp.Project.XSharpMenuItems.Initialize(this);
 
-         }
+        }
 
         /// <summary>
         /// Gets the settings stored in the registry for this package.
@@ -255,25 +266,6 @@ namespace XSharp.Project
         public override string ProductUserContext
         {
             get { return "XSharp"; }
-        }
-        private void MenuItemCallback(object sender, EventArgs e)
-        {
-            // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-            Guid clsid = Guid.Empty;
-            int result;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                       0,
-                       ref clsid,
-                       "XSharp Language Service",
-                       string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.ToString()),
-                       string.Empty,
-                       0,
-                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                       OLEMSGICON.OLEMSGICON_INFO,
-                       0,        // false
-                       out result));
         }
 
 #endregion

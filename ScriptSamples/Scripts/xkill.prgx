@@ -1,0 +1,19 @@
+using System
+using System.Diagnostics
+
+const var usage := e"Terminates processes specified by name.\nUsage: xkill <process-name> [<process-name>] ..."
+
+if (args:Count == 0) || (args:Count == 1 && (args[0] == "?" || args[0] == "/?" || args[0] == "-?" || args[0]:ToLower() == "help"))
+	Console.WriteLine(usage)
+else
+	foreach var prName in args
+		try
+			var processByName := Process.GetProcessesByName(prName)
+			foreach var pr in processByName
+				pr.Kill()
+			next
+		catch
+			Console.WriteLine("Cannot terminate {0}\n", prName)
+		end try
+	next
+endif

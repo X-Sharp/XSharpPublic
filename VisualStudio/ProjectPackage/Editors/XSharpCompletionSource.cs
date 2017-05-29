@@ -63,7 +63,7 @@ namespace XSharpLanguage
         }
     }
 
-    class XSharpCompletionSource : ICompletionSource
+    partial class XSharpCompletionSource : ICompletionSource
     {
         private ITextBuffer _buffer;
         private String _fileName;
@@ -126,6 +126,7 @@ namespace XSharpLanguage
             }
             // The Completion list we are building
             CompletionList compList = new CompletionList();
+            CompletionList kwdList = new CompletionList();
             // The CompletionType we will use to fill the CompletionList
             CompletionType cType = null;
             // Start of Process
@@ -181,7 +182,7 @@ namespace XSharpLanguage
             // Check if we can get the member where we are
             XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._fileName);
             XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._fileName);
-            HashSet<String> Usings = new HashSet<String>(file.Usings,StringComparer.OrdinalIgnoreCase);
+            HashSet<String> Usings = new HashSet<String>(file.Usings, StringComparer.OrdinalIgnoreCase);
             if (currentNamespace != null)
             {
                 Usings.Add(currentNamespace.Name);
@@ -190,11 +191,11 @@ namespace XSharpLanguage
             {
                 var ns = member.Parent.Parent;
                 string nsName = "";
-                if (( ns != null) && (ns.Kind == Kind.Namespace) )
+                if ((ns != null) && (ns.Kind == Kind.Namespace))
                 {
-                    nsName = ns.Name+".";
+                    nsName = ns.Name + ".";
                 }
-                var name = nsName+member.Parent.Name;
+                var name = nsName + member.Parent.Name;
                 var pos = name.LastIndexOf(".");
                 if (pos >= 0)
                 {
@@ -212,14 +213,13 @@ namespace XSharpLanguage
                 tokenType = this._stopToken.Type;
             }
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XElement foundElement;
-            MemberInfo dummyElement;
-            String currentNS ="";
+            CompletionElement foundElement;
+            String currentNS = "";
             if (currentNamespace != null)
             {
                 currentNS = currentNamespace.Name;
             }
-            cType = XSharpTokenTools.RetrieveType(_fileName, tokenList, member, currentNS, null, out foundElement, out dummyElement);
+            cType = XSharpTokenTools.RetrieveType(_fileName, tokenList, member, currentNS, null, out foundElement);
             switch (typedChar)
             {
                 case '.':
@@ -245,7 +245,7 @@ namespace XSharpLanguage
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
                             AddTypeNames(compList, file.Project, filterText, Usings);
                             //
-                            AddXSharpTypeNames(compList, filterText);
+                            AddXSharpTypesTypeNames(kwdList, filterText);
                             break;
                         case XSharpLexer.IMPLEMENTS:
                             // It can be a namespace 
@@ -259,7 +259,7 @@ namespace XSharpLanguage
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
                             AddTypeNames(compList, file.Project, filterText, Usings);
                             //
-                            AddXSharpTypeNames(compList, filterText);
+                            AddXSharpTypesTypeNames(kwdList, filterText);
                             // it can be a static Method/Property/Enum
                             if (cType != null)
                             {
@@ -331,7 +331,7 @@ namespace XSharpLanguage
                                 // we should also walk all the USINGs, and the current Namespace if any, to search Types
                                 AddTypeNames(compList, file.Project, filterText, Usings);
                                 //
-                                AddXSharpTypeNames(compList, filterText);
+                                AddXSharpTypesTypeNames(kwdList, filterText);
                                 break;
                             case XSharpLexer.IMPLEMENTS:
                                 // It can be a namespace 
@@ -350,17 +350,19 @@ namespace XSharpLanguage
                                 // and Types
                                 AddTypeNames(compList, file.Project, filterText, Usings);
                                 //
-                                AddXSharpTypeNames(compList, filterText);
+                                AddXSharpTypesTypeNames(kwdList, filterText);
                                 break;
                         }
                     }
                     break;
             }
-
             // Sort in alphabetical order
             compList.Sort((comp1, comp2) => comp1.DisplayText.CompareTo(comp2.DisplayText));
+            kwdList.Sort((comp1, comp2) => comp1.DisplayText.CompareTo(comp2.DisplayText));
             // and put in the SelectionList
             completionSets.Add(new CompletionSet("All", "All", applicableTo, compList, Enumerable.Empty<Completion>()));
+            if( kwdList.Count > 0 )
+                completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList, Enumerable.Empty<Completion>()));
         }
 
         private void AddTypeNames(CompletionList compList, XProject project, string startWith, HashSet<String> usings)
@@ -384,53 +386,43 @@ namespace XSharpLanguage
             //
             foreach (AssemblyInfo assemblyInfo in stc.Assemblies)
             {
-                foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types)
+                foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
                 {
-                    if (typeInfo.Key.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                    {
-                        String realTypeName = typeInfo.Value.FullName;
-                        TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
-                        // remove the start
-                        if (startLen > 0)
-                            realTypeName = realTypeName.Substring(startLen);
-                        // Do we have another part file
-                        dotPos = realTypeName.IndexOf('.');
-                        // Then remove it
-                        if (dotPos > 0)
-                            realTypeName = realTypeName.Substring(0, dotPos);
-                        if ((realTypeName.Length > 2) && (realTypeName.StartsWith("__")))
-                            continue;
-                        //
-                        ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
-                        compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null));
-                    }
+                    String realTypeName = typeInfo.Value.FullName;
+                    TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
+                    // remove the start
+                    if (startLen > 0)
+                        realTypeName = realTypeName.Substring(startLen);
+                    // Do we have another part file
+                    dotPos = realTypeName.IndexOf('.');
+                    // Then remove it
+                    if (dotPos > 0)
+                        realTypeName = realTypeName.Substring(0, dotPos);
+                    if ((realTypeName.Length > 2) && (realTypeName.StartsWith("__")))
+                        continue;
+                    //
+                    ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
+                    compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null));
                 }
             }
             //
             // And our own Types
-            foreach (XFile file in project.Files)
+            AddXSharpTypeNames(compList, project, startWith);
+            // We should also add the external TypeNames
+            IList<XProject> prjs = project.ReferencedProjects;
+            foreach (var prj in prjs)
             {
-                foreach (XType typeInfo in file.TypeList.Values)
-                {
-                    if (typeInfo.FullName.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                    {
-                        String realTypeName = typeInfo.FullName;
-                        // remove the start
-                        if (startLen > 0)
-                            realTypeName = realTypeName.Substring(startLen);
-                        // Do we have another part 
-                        dotPos = realTypeName.IndexOf('.');
-                        // Then remove it
-                        if (dotPos > 0)
-                            realTypeName = realTypeName.Substring(0, dotPos);
-                        ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
-                        compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
-                    }
-                }
+                AddXSharpTypeNames(compList, prj, startWith);
+            }
+            // And Stranger Projects
+            IList<EnvDTE.Project> sprjs = project.StrangerProjects;
+            foreach (var prj in sprjs)
+            {
+                AddStrangerTypeNames(compList, prj, startWith);
             }
         }
 
-        private void AddXSharpTypeNames(CompletionList compList, string startWith)
+        private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith)
         {
             //
             int startLen = 0;
@@ -438,11 +430,9 @@ namespace XSharpLanguage
             if (dotPos != -1)
                 startLen = dotPos + 1;
             //
-            // And our own Types
-            List<XType> xsharpTypes = XSharpTypes.Get();
-            foreach (XType typeInfo in xsharpTypes)
+            foreach (XFile file in project.Files)
             {
-                if (typeInfo.FullName.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
+                foreach (XType typeInfo in file.TypeList.Values.Where(ti => nameStartsWith(ti.FullName, startWith)))
                 {
                     String realTypeName = typeInfo.FullName;
                     // remove the start
@@ -459,6 +449,110 @@ namespace XSharpLanguage
             }
         }
 
+        private void AddStrangerTypeNames(CompletionList compList, EnvDTE.Project project, string startWith)
+        {
+            //
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
+            //
+            // First, get the project (s?)
+            foreach (EnvDTE.ProjectItem prj in project.ProjectItems)
+            {
+                EnvDTE.FileCodeModel filecodemodel = null; // prj.FileCodeModel;
+                if (filecodemodel == null)
+                    continue;
+                // Ok, now enumerate all Elements
+                foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)
+                {
+                    // Types are in NameSpace
+                    if (codeElement.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
+                    {
+                        // Now, enumerate the Children of the Namespace : Class, Enum, ...
+                        foreach (EnvDTE.CodeElement child in codeElement.Children)
+                        {
+                            //
+                            String realTypeName = child.FullName;
+                            if (nameStartsWith(realTypeName, startWith))
+                            {
+                                // We are looking for Class
+                                if ((child.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                                (child.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                                (child.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+                                {
+                                    ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupClass, StandardGlyphItem.GlyphItemPublic);
+                                    String childType = "";
+                                    if (child.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                                    {
+                                        childType = "CLASS ";
+                                        EnvDTE.CodeClass objChild = (EnvDTE.CodeClass)child;
+                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
+                                            continue;
+                                    }
+                                    else if (child.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+                                    {
+                                        childType = "ENUM ";
+                                        EnvDTE.CodeEnum objChild = (EnvDTE.CodeEnum)child;
+                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
+                                            continue;
+                                        icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupEnum, StandardGlyphItem.GlyphItemPublic);
+                                    }
+                                    else if (child.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+                                    {
+                                        childType = "STRUCTURE ";
+                                        EnvDTE.CodeStruct objChild = (EnvDTE.CodeStruct)child;
+                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
+                                            continue;
+                                        icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupStruct, StandardGlyphItem.GlyphItemPublic);
+                                    }
+
+                                    // remove the start
+                                    if (startLen > 0)
+                                        realTypeName = realTypeName.Substring(startLen);
+                                    // Do we have another part 
+                                    dotPos = realTypeName.IndexOf('.');
+                                    // Then remove it
+                                    if (dotPos > 0)
+                                        realTypeName = realTypeName.Substring(0, dotPos);
+
+                                    compList.Add(new XSCompletion(realTypeName, realTypeName, childType + realTypeName, icon, null));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void AddXSharpTypesTypeNames(CompletionList compList, string startWith)
+        {
+            //
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
+            //
+            // And our own Types
+            List<XType> xsharpTypes = XSharpTypes.Get();
+            foreach (XType typeInfo in xsharpTypes.Where(ti => nameStartsWith(ti.FullName, startWith)))
+            {
+                String realTypeName = typeInfo.FullName;
+                // remove the start
+                if (startLen > 0)
+                    realTypeName = realTypeName.Substring(startLen);
+                // Do we have another part 
+                dotPos = realTypeName.IndexOf('.');
+                // Then remove it
+                if (dotPos > 0)
+                    realTypeName = realTypeName.Substring(0, dotPos);
+                ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
+                compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
+            }
+        }
+
+
         private void AddNamespaces(CompletionList compList, XProject project, String startWith)
         {
             // We are looking for NameSpaces, in References
@@ -471,345 +565,97 @@ namespace XSharpLanguage
                 startLen = dotPos + 1;
             XType fakeNS = new XType("fake", Kind.Namespace, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty);
             ImageSource icon = _provider.GlyphService.GetGlyph(fakeNS.GlyphGroup, fakeNS.GlyphItem);
-            foreach (String nameSpace in namespaces)
+            foreach (String nameSpace in namespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
-                if (nameSpace.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    String realNamespace = nameSpace;
-                    // remove the start
-                    if (startLen > 0)
-                        realNamespace = realNamespace.Substring(startLen);
-                    // Do we have another part 
-                    dotPos = realNamespace.IndexOf('.');
-                    // Then remove it
-                    if (dotPos > 0)
-                        realNamespace = realNamespace.Substring(0, dotPos);
-                    //
-                    compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null));
-                }
+                String realNamespace = nameSpace;
+                // remove the start
+                if (startLen > 0)
+                    realNamespace = realNamespace.Substring(startLen);
+                // Do we have another part 
+                dotPos = realNamespace.IndexOf('.');
+                // Then remove it
+                if (dotPos > 0)
+                    realNamespace = realNamespace.Substring(0, dotPos);
+                //
+                compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null));
             }
             //
             // And our own Namespaces
+            AddXSharpNamespaces(compList, project, startWith, icon);
+            // We should also add the external NameSpaces
+            IList<XProject> prjs = project.ReferencedProjects;
+            foreach (var prj in prjs)
+            {
+                AddXSharpNamespaces(compList, prj, startWith, icon);
+            }
+            // And Stranger Projects
+            IList<EnvDTE.Project> sprjs = project.StrangerProjects;
+            foreach (var prj in sprjs)
+            {
+                AddStrangerNamespaces(compList, prj, startWith, icon);
+            }
+        }
+
+        private void AddXSharpNamespaces(CompletionList compList, XProject project, String startWith, ImageSource icon)
+        {
+            // Calculate the length we must remove
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
+            // And our own Namespaces
             List<XType> xsNamespaces = project.Namespaces;
-            foreach (XType nameSpace in xsNamespaces)
+            foreach (XType nameSpace in xsNamespaces.Where(ns => nameStartsWith(ns.Name, startWith)))
             {
-                if (nameSpace.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    String realNamespace = nameSpace.Name;
-                    // remove the start
-                    if (startLen > 0)
-                        realNamespace = realNamespace.Substring(startLen);
-                    // Do we have another part 
-                    dotPos = realNamespace.IndexOf('.');
-                    // Then remove it
-                    if (dotPos > 0)
-                        realNamespace = realNamespace.Substring(0, dotPos);
-                    compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null));
-                }
+                String realNamespace = nameSpace.Name;
+                // remove the start
+                if (startLen > 0)
+                    realNamespace = realNamespace.Substring(startLen);
+                // Do we have another part 
+                dotPos = realNamespace.IndexOf('.');
+                // Then remove it
+                if (dotPos > 0)
+                    realNamespace = realNamespace.Substring(0, dotPos);
+                compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null));
             }
-
         }
 
-         /// <summary>
-        /// Search for a Property, in a CompletionType, based on the Visibility.
-        /// A Completion can have a XType (XSharp parsed type) or a SType (A System type or a Type found inside a library Reference)
-        /// </summary>
-        /// <param name="cType">The CompletionType to look into</param>
-        /// <param name="currentToken">The Property we are searching</param>
-        /// <param name="minVisibility"></param>
-        /// <returns>The CompletionType of the Property (If found).
-        /// If not found, the CompletionType.IsInitialized is false
-        /// </returns>
-        private CompletionType SearchPropertyTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility)
+        private void AddStrangerNamespaces(CompletionList compList, EnvDTE.Project project, String startWith, ImageSource icon)
         {
-            if (cType.XType != null)
+            // Calculate the length we must remove
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
+            // get all the items in each project
+            foreach (EnvDTE.ProjectItem item in project.ProjectItems)
             {
-                XTypeMember element = cType.XType.Members.Find(x =>
+                EnvDTE.FileCodeModel filecodemodel = null; //  item.FileCodeModel as EnvDTE.FileCodeModel;
+                if (filecodemodel == null)
+                    continue;
+                foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)
                 {
-                    if ((x.Kind == Kind.Property) || (x.Kind == Kind.Access) || (x.Kind == Kind.Assign))
+                    //
+                    if (codeElement.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
                     {
-                        return (StringEquals(x.Name, currentToken));
-                    }
-                    return false;
-                });
-                //
-                if ((element != null) && (element.Visibility < minVisibility))
-                {
-                    element = null;
-                }
-                //
-                if (element == null)
-                {
-                    // Hummm, we should look inside the Owner
-                    cType.XType.ForceComplete();
-                    if (cType.XType.Parent != null)
-                    {
-                        // Parent is a XElement, so one of our Types
-                        return SearchPropertyTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public);
-                    }
-                    else if (cType.XType.ParentName != null)
-                    {
-                        // Parent has just a Name, so one of the System Types
-                        return SearchPropertyTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, Modifiers.Public);
-                    }
-                }
-                else
-                {
-                    cType = new CompletionType((XTypeMember)element);
-                }
-            }
-            else if (cType.SType != null)
-            {
-                MemberInfo[] members;
-                //
-                if (minVisibility < Modifiers.Public)
-                {
-                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    members = cType.SType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                }
-                else
-                {
-                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    members = cType.SType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-                }
-                //
-                Type declType = null;
-                foreach (var member in members)
-                {
-                    if (StringEquals(member.Name, currentToken))
-                    {
-                        PropertyInfo prop = member as PropertyInfo;
-                        declType = prop.PropertyType;
-                        break;
-                    }
-                }
-                if (declType == null)
-                {
-                    // In the parent ?
-                    if (cType.SType.BaseType != null)
-                    {
-                        return SearchPropertyTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public);
-                    }
-                    // Not needed: no properties inside object type
-                    //else if (cType.SType.IsInterface)
-                    //{
-                    //    return SearchPropertyTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public);
-                    //}
-
-                }
-                else
-                {
-                    return new CompletionType(declType);
-                }
-            }
-            // Sorry, not found
-            return new CompletionType();
-        }
-
-        /// <summary>
-        /// Search for a Field, in a CompletionType, based on the Visibility.
-        /// A Completion can have a XType (XSharp parsed type) or a SType (A System type or a Type found inside a library Reference)
-        /// </summary>
-        /// <param name="cType">The CompletionType to look into</param>
-        /// <param name="currentToken">The Field we are searching</param>
-        /// <param name="minVisibility"></param>
-        /// <returns>The CompletionType of the Field (If found).
-        /// If not found, the CompletionType.IsInitialized is false
-        /// </returns>
-        private CompletionType SearchFieldTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility)
-        {
-            if (cType.XType != null)
-            {
-                XTypeMember element = cType.XType.Members.Find(x =>
-                {
-                    if ((x.Kind == Kind.ClassVar))
-                    {
-                        return StringEquals(x.Name, currentToken);
-                    }
-                    return false;
-                });
-                //
-                if ((element != null) && (element.Visibility < minVisibility))
-                {
-                    element = null;
-                }
-                //
-                if (element == null)
-                {
-                    // Hummm, we should look inside the Owner
-                    cType.XType.ForceComplete();
-                    if (cType.XType.Parent != null)
-                    {
-                        // Parent is a XElement, so one of our Types
-                        return SearchFieldTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public);
-                    }
-                    else if (cType.XType.ParentName != null)
-                    {
-                        // Parent has just a Name, so one of the System Types
-                        return SearchFieldTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, Modifiers.Public);
-                    }
-                }
-                else
-                {
-                    cType = new CompletionType((XTypeMember)element);
-                }
-            }
-            else if (cType.SType != null)
-            {
-                MemberInfo[] members;
-                //
-                if (minVisibility < Modifiers.Public)
-                {
-                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    members = cType.SType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                }
-                else
-                {
-                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    members = cType.SType.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-                }
-                //
-                Type declType = null;
-                foreach (var member in members)
-                {
-                    if (StringEquals(member.Name, currentToken))
-                    {
-                        FieldInfo field = member as FieldInfo;
-                        declType = field.FieldType;
-                        break;
-                    }
-                }
-                if (declType == null)
-                {
-                    // In the parent ?
-                    if (cType.SType.BaseType != null)
-                    {
-                        return SearchFieldTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public);
-                    }
-                    // not needed: no fields inside object type
-                    //else if (cType.SType.IsInterface)
-                    //{
-                    //    return SearchFieldTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public);
-                    //}
-
-                }
-                else
-                {
-                    return new CompletionType(declType);
-                }
-            }
-            // Sorry, not found
-            return new CompletionType();
-        }
-
-        /// <summary>
-        /// Search for a Method, in a CompletionType, based on the Visibility.
-        /// A Completion can have a XType (XSharp parsed type) or a SType (A System type or a Type found inside a library Reference)
-        /// </summary>
-        /// <param name="cType">The CompletionType to look into</param>
-        /// <param name="currentToken">The Method we are searching</param>
-        /// <param name="minVisibility"></param>
-        /// <returns>The CompletionType that the Method will return (If found).
-        /// If not found, the CompletionType.IsInitialized is false
-        /// </returns>
-        private CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility)
-        {
-            if (cType.XType != null)
-            {
-                // 
-                XTypeMember xMethod = cType.XType.Members.Find(x =>
-                {
-                    if ((x.Kind == Kind.Method))
-                    {
-                        return (StringEquals(x.Name, currentToken));
-                    }
-                    return false;
-                });
-                //if (elt.IsStatic)
-                //    continue;
-                if ((xMethod != null) && (xMethod.Visibility < minVisibility))
-                {
-                    xMethod = null;
-                }
-                //
-                if (xMethod == null)
-                {
-                    // Hummm, we should look inside the Owner
-                    cType.XType.ForceComplete();
-                    if (cType.XType.Parent != null)
-                    {
-                        // Parent is a XElement, so one of our Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public);
-                    }
-                    else if (cType.XType.ParentName != null)
-                    {
-                        // Parent has just a Name, so one of the System Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, Modifiers.Public);
-                    }
-                }
-                else
-                {
-                    if (xMethod.Parent != null)
-                    {
-                        // Parent is a XElement, so one of our Types
-                        return new CompletionType(xMethod.Parent);
-                    }
-                    else if (xMethod.ParentName != null)
-                    {
-                        // Parent has just a Name, so one of the System Types
-                        return new CompletionType(xMethod.ParentName, xMethod.FileUsings);
-                    }
-                }
-            }
-            else if (cType.SType != null)
-            {
-                MemberInfo[] members;
-                //
-                if (minVisibility < Modifiers.Public)
-                {
-                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    members = cType.SType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                }
-                else
-                {
-                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    members = cType.SType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-                }
-                //
-                Type declType = null;
-                foreach (var member in members)
-                {
-                    if (member.MemberType == MemberTypes.Method)
-                    {
-                        if (StringEquals(member.Name, currentToken))
+                        String realNamespace = codeElement.FullName;
+                        if (nameStartsWith(realNamespace, startWith))
                         {
-                            MethodInfo method = member as MethodInfo;
-                            declType = method.ReturnType;
-                            break;
+                            // remove the start
+                            if (startLen > 0)
+                                realNamespace = realNamespace.Substring(startLen);
+                            // Do we have another part 
+                            dotPos = realNamespace.IndexOf('.');
+                            // Then remove it
+                            if (dotPos > 0)
+                                realNamespace = realNamespace.Substring(0, dotPos);
+                            compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + codeElement.FullName, icon, null));
                         }
                     }
                 }
-                if (declType == null)
-                {
-                    // In the parent ?
-                    if (cType.SType.BaseType != null)
-                    {
-                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public);
-                    }
-                    // Look for methods in the object type
-                    if (cType.SType.IsInterface)
-                    {
-                        return SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public);
-                    }
-                }
-                else
-                {
-                    return new CompletionType(declType);
-                }
             }
-            // Sorry, not found
-            return new CompletionType();
         }
+
 
         private void BuildCompletionList(CompletionList compList, XTypeMember currentMember, String startWith)
         {
@@ -821,25 +667,19 @@ namespace XSharpLanguage
                 return;
             }
             // First, look after Parameters
-            foreach (XVariable paramVar in currentMember.Parameters)
+            foreach (XVariable paramVar in currentMember.Parameters.Where(p => nameStartsWith(p.Name, startWith)))
             {
                 //
-                if (paramVar.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.GlyphGroup, paramVar.GlyphItem);
-                    compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null));
-                }
+                ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.GlyphGroup, paramVar.GlyphItem);
+                compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null));
             }
             // Then, look for Locals
             // First, look after Parameters
-            foreach (XVariable localVar in currentMember.Locals)
+            foreach (XVariable localVar in currentMember.Locals.Where(l => nameStartsWith(l.Name, startWith)))
             {
                 //
-                if (localVar.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
-                    compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null));
-                }
+                ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
+                compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null));
             }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
             //BuildCompletionList(compList, currentMember.Parent, Modifiers.Private);
@@ -873,7 +713,7 @@ namespace XSharpLanguage
             //
             XType Owner = parent as XType;
             //
-            foreach (XTypeMember elt in Owner.Members)
+            foreach (XTypeMember elt in Owner.Members.Where(e => nameStartsWith(e.Name, startWith)))
             {
                 if (elt.Kind == Kind.Constructor)
                     continue;
@@ -882,16 +722,13 @@ namespace XSharpLanguage
                 if (elt.Visibility < minVisibility)
                     continue;
                 //
-                if (elt.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
-                {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
-                    String toAdd = "";
-                    if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
-                    {
-                        toAdd = "(";
-                    }
-                    compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
-                }
+                ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
+                String toAdd = "";
+                //if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
+                //{
+                //    toAdd = "(";
+                //}
+                compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
             }
             // Hummm, we should call for Owner of the Owner.. Super !
             Owner.ForceComplete();
@@ -932,6 +769,17 @@ namespace XSharpLanguage
                 // Now add Members for System types
                 FillMembers(compList, cType.SType, minVisibility, staticOnly, startWith);
             }
+            else if (cType.CodeElement != null)
+            {
+                // Now add Members for System types
+                FillMembers(compList, cType.CodeElement, minVisibility, staticOnly, startWith);
+            }
+        }
+
+
+        private bool nameStartsWith(string name, string startWith)
+        {
+            return name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -943,7 +791,7 @@ namespace XSharpLanguage
         private void FillMembers(CompletionList compList, XType xType, Modifiers minVisibility, bool staticOnly, String startWith)
         {
             // Add Members for our Project Types
-            foreach (XTypeMember elt in xType.Members)
+            foreach (XTypeMember elt in xType.Members.Where(x => nameStartsWith(x.Name, startWith)))
             {
                 if (elt.Kind == Kind.Constructor)
                     continue;
@@ -952,16 +800,13 @@ namespace XSharpLanguage
                 if (elt.Visibility < minVisibility)
                     continue;
                 //
-                if (elt.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
+                ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
+                String toAdd = "";
+                if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
                 {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
-                    String toAdd = "";
-                    if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
-                    {
-                        toAdd = "(";
-                    }
-                    compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
+                    toAdd = "(";
                 }
+                compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
             }
         }
 
@@ -978,7 +823,8 @@ namespace XSharpLanguage
             if (minVisibility < Modifiers.Public)
             {
                 // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+                members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+                    | BindingFlags.Static | BindingFlags.DeclaredOnly);
             }
             else
             {
@@ -986,29 +832,33 @@ namespace XSharpLanguage
                 members = sType.GetMembers();
             }
             //
-            foreach (var member in members)
+            foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
             {
-                if (member.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
+                MemberAnalysis analysis = new MemberAnalysis(member);
+                if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
                 {
-                    MemberAnalysis analysis = new MemberAnalysis(member);
-                    if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
+                    if (analysis.Kind == Kind.Constructor)
+                        continue;
+                    if (analysis.IsStatic != staticOnly)
                     {
-                        if (analysis.Kind == Kind.Constructor)
-                            continue;
-                        if (analysis.IsStatic != staticOnly)
-                        {
-                            continue;
-                        }
-                        String toAdd = "";
-                        if ((analysis.Kind == Kind.Method))
-                        {
-                            toAdd = "(";
-                        }
-                        //
-                        ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
-                        compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                        continue;
                     }
+                    String toAdd = "";
+                    if ((analysis.Kind == Kind.Method))
+                    {
+                        toAdd = "(";
+                    }
+                    //
+                    ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
+                    compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
                 }
+            }
+            // fill members of parent class
+            if (sType.BaseType != null)
+            {
+                if (minVisibility == Modifiers.Private)
+                    minVisibility = Modifiers.Protected;
+                FillMembers(compList, sType.BaseType, minVisibility, staticOnly, startWith);
             }
             // We will miss the System.Object members
             if (sType.IsInterface)
@@ -1036,7 +886,83 @@ namespace XSharpLanguage
             }
         }
 
-         public void Dispose()
+        /// <summary>
+        /// Add Members from External "unknown" project Types
+        /// </summary>
+        /// <param name="compList"></param>
+        /// <param name="sType"></param>
+        /// <param name="minVisibility"></param>
+        private void FillMembers(CompletionList compList, EnvDTE.CodeElement fType, Modifiers minVisibility, bool staticOnly, String startWith)
+        {
+            if ((fType.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                (fType.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                (fType.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+            {
+
+                //
+                EnvDTE.CodeElements members = null;
+                EnvDTE.CodeElements bases = null; ;
+                if (fType.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                {
+                    EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)fType;
+                    members = envClass.Members;
+                    bases = envClass.Bases;
+                }
+                else if (fType.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+                {
+                    EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)fType;
+                    members = envEnum.Members;
+                    bases = envEnum.Bases;
+                }
+                else if (fType.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+                {
+                    EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)fType;
+                    members = envStruct.Members;
+                    bases = envStruct.Bases;
+                }
+                foreach (EnvDTE.CodeElement member in members)
+                {
+                    if (nameStartsWith(member.Name, startWith))
+                    {
+                        //
+                        MemberAnalysis analysis = new MemberAnalysis(member);
+                        if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
+                        {
+                            if (analysis.Kind == Kind.Constructor)
+                                continue;
+                            if (analysis.IsStatic != staticOnly)
+                            {
+                                continue;
+                            }
+                            String toAdd = "";
+                            if ((analysis.Kind == Kind.Method))
+                            {
+                                toAdd = "(";
+                            }
+                            //
+                            ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
+                            compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                        }
+                    }
+                }
+                if (bases != null)
+                {
+                    foreach (EnvDTE.CodeElement parent in bases)
+                    {
+                        if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                        {
+                            //
+                            if (minVisibility == Modifiers.Private)
+                                minVisibility = Modifiers.Protected;
+                            FillMembers(compList, parent, minVisibility, staticOnly, startWith);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public void Dispose()
         {
             _disposed = true;
         }
@@ -1099,6 +1025,7 @@ namespace XSharpLanguage
             switch (member.MemberType)
             {
                 case MemberTypes.Constructor:
+                    this._name = "Constructor";
                     this._kind = Kind.Constructor;
                     ConstructorInfo constInfo = member as ConstructorInfo;
                     this._isStatic = constInfo.IsStatic;
@@ -1119,6 +1046,13 @@ namespace XSharpLanguage
                     else if (constInfo.IsFamily)
                     {
                         this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    //
+                    ParameterInfo[] constPars = constInfo.GetParameters();
+                    foreach (ParameterInfo p in constPars)
+                    {
+                        this._parameters.Add(new ParamInfo(p.Name, p.ParameterType.FullName));
                     }
                     //
                     declType = constInfo.DeclaringType;
@@ -1248,6 +1182,124 @@ namespace XSharpLanguage
             }
         }
 
+        internal MemberAnalysis(EnvDTE.CodeElement member)
+        {
+            EnvDTE.CodeTypeRef declType;
+            //
+            this._name = member.Name;
+            this._kind = Kind.Class;
+            this._modifiers = Modifiers.None;
+            this._visibility = Modifiers.Public;
+            this._typeName = "";
+            this._parameters = new List<ParamInfo>();
+            //
+            switch (member.Kind)
+            {
+                case EnvDTE.vsCMElement.vsCMElementEvent:
+                    this._kind = Kind.Event;
+                    EnvDTE80.CodeEvent evt = member as EnvDTE80.CodeEvent;
+                    //
+                    this._isStatic = evt.IsShared;
+                    //
+                    if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
+                    {
+                        this._visibility = Modifiers.Private;
+                    }
+                    else if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
+                    {
+                        this._visibility = Modifiers.Internal;
+                    }
+                    else if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
+                    {
+                        this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    declType = evt.Type;
+                    this._typeName = declType.AsFullName;
+                    break;
+                case EnvDTE.vsCMElement.vsCMElementVariable:
+                    this._kind = Kind.ClassVar;
+                    EnvDTE.CodeVariable field = member as EnvDTE.CodeVariable;
+                    //
+                    this._isStatic = field.IsShared;
+                    //
+                    if (field.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
+                    {
+                        this._visibility = Modifiers.Private;
+                    }
+                    else if (field.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
+                    {
+                        this._visibility = Modifiers.Internal;
+                    }
+                    else if (field.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
+                    {
+                        this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    declType = field.Type;
+                    this._typeName = declType.AsFullName;
+                    break;
+                case EnvDTE.vsCMElement.vsCMElementFunction:
+                    this.Kind = Kind.Method;
+                    EnvDTE.CodeFunction method = member as EnvDTE.CodeFunction;
+                    //
+                    if (method.FunctionKind == EnvDTE.vsCMFunction.vsCMFunctionConstructor)
+                    {
+                        this.Kind = Kind.Constructor;
+                    }
+                    //
+                    this._isStatic = method.IsShared;
+                    //
+                    if (method.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
+                    {
+                        this._visibility = Modifiers.Private;
+                    }
+                    else if (method.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
+                    {
+                        this._visibility = Modifiers.Internal;
+                    }
+                    else if (method.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
+                    {
+                        this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    EnvDTE.CodeElements pars = method.Parameters;
+                    foreach (EnvDTE.CodeParameter p in pars)
+                    {
+                        //
+                        this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName));
+                    }
+                    //
+                    declType = method.Type;
+                    this._typeName = declType.AsFullName;
+                    break;
+                case EnvDTE.vsCMElement.vsCMElementProperty:
+                    this.Kind = Kind.Property;
+                    EnvDTE.CodeProperty prop = member as EnvDTE.CodeProperty;
+                    //
+                    if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
+                    {
+                        this._visibility = Modifiers.Private;
+                    }
+                    else if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
+                    {
+                        this._visibility = Modifiers.Internal;
+                    }
+                    else if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
+                    {
+                        this._visibility = Modifiers.Protected;
+                    }
+                    //
+                    declType = prop.Type;
+                    this._typeName = declType.AsFullName;
+                    break;
+                default:
+                    // Mark as Not-Initialized
+                    this._name = null;
+                    break;
+            }
+        }
+
         public bool IsInitialized
         {
             get
@@ -1277,14 +1329,9 @@ namespace XSharpLanguage
                 //
                 String desc = modVis;
                 //
-                if (this.Kind != Kind.ClassVar)
+                if ( (this.Kind != Kind.ClassVar) && (this.Kind != Kind.Constructor))
                     desc += this.Kind.ToString() + " ";
                 desc += this.Prototype;
-                //
-                if ((this.Kind == Kind.Method) || (this.Kind == Kind.Function) || (this.Kind == Kind.Property) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
-                {
-                    desc += " as " + this.TypeName;
-                }
                 //
                 return desc;
             }
@@ -1310,6 +1357,11 @@ namespace XSharpLanguage
                 desc += "(";
                 desc += vars;
                 desc += ")";
+                //
+                if ((this.Kind == Kind.Method) || (this.Kind == Kind.Function) || (this.Kind == Kind.Property) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
+                {
+                    desc += " as " + this.TypeName;
+                }
                 //
                 return desc;
             }
@@ -1472,6 +1524,9 @@ namespace XSharpLanguage
         }
     }
 
+    /// <summary>
+    /// Process a TypeInfo in order to provide usable informations (TypeName, Glyph, ... )
+    /// </summary>
     internal class TypeAnalysis
     {
         private String _name;
@@ -1529,6 +1584,43 @@ namespace XSharpLanguage
             //    this._visibility = Modifiers.Protected;
             //}
             //
+        }
+
+        internal TypeAnalysis(EnvDTE.CodeType typeInfo)
+        {
+            //
+            this._name = typeInfo.Name;
+            this._kind = Kind.Class;
+            this._modifiers = Modifiers.None;
+            this._visibility = Modifiers.Public;
+            //
+            if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+            {
+                this._kind = Kind.Class;
+            }
+            else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+            {
+                this._kind = Kind.Enum;
+            }
+            else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementInterface)
+            {
+                this._kind = Kind.Interface;
+            }
+            else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+            {
+                this._kind = Kind.Structure;
+            }
+            //
+            /*
+            this._isStatic = (typeInfo.IsAbstract && typeInfo.IsSealed);
+            //
+            if (!this.IsStatic)
+            {
+                if (typeInfo.IsAbstract)
+                {
+                    this._modifiers = Modifiers.Abstract;
+                }
+            }*/
         }
 
         public bool IsInitialized
@@ -1764,6 +1856,10 @@ namespace XSharpLanguage
 
     }
 
+
+    /// <summary>
+    /// Static class Tools. Offer services to get TokenList, Search members, ...
+    /// </summary>
     public static class XSharpTokenTools
     {
 
@@ -1782,8 +1878,8 @@ namespace XSharpLanguage
         /// <param name="stopToken">The IToken that stops the move backwards</param>
         /// <param name="fromGotoDefn">Indicate if the call is due to Goto Definition</param>
         /// <returns></returns>
-        public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber, 
-            string bufferText, out IToken stopToken, bool fromGotoDefn, string fileName) 
+        public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
+            string bufferText, out IToken stopToken, bool fromGotoDefn, string fileName)
         {
             List<String> tokenList = new List<string>();
             String token;
@@ -1793,11 +1889,11 @@ namespace XSharpLanguage
             // lex the entire document
             // Get compiler options
             XFile file = XSolution.FindFile(fileName);
-            XSharpParseOptions parseoptions = null;
+            XSharpParseOptions parseoptions = XSharpParseOptions.Default;
             if (file != null)
             {
                 var prj = file.Project.ProjectNode;
-                parseoptions  = prj.ParseOptions;
+                parseoptions = prj.ParseOptions;
 
             }
             var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
@@ -1893,6 +1989,8 @@ namespace XSharpLanguage
                     case XSharpLexer.LPAREN:
                     case XSharpLexer.LCURLY:
                     case XSharpLexer.LBRKT:
+                    case XSharpLexer.SL_COMMENT:
+                    case XSharpLexer.ML_COMMENT:
                         // Stop here
                         stopToken = triggerToken;
                         token = null;
@@ -2128,10 +2226,9 @@ namespace XSharpLanguage
         /// <param name="foundElement"></param>
         /// <param name="sysFoundElement"></param>
         /// <returns></returns>
-        public static CompletionType RetrieveType(string fileName, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out XElement foundElement, out MemberInfo sysFoundElement)
+        public static CompletionType RetrieveType(string fileName, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out CompletionElement foundElement)
         {
             foundElement = null;
-            sysFoundElement = null;
             if (currentMember == null)
             {
                 // try to find the first member in the file
@@ -2173,16 +2270,19 @@ namespace XSharpLanguage
                     {
                         // could be namespace.Type
                         // so now try with right side of the string
-                        startToken = currentToken.Substring(dotPos+1);
+                        startToken = currentToken.Substring(dotPos + 1);
                         cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
-                        if (!cType.IsEmpty())
-                            return cType;
+                        //if (!cType.IsEmpty())
+                        //    return cType;
                     }
-                    currentToken = currentToken.Substring(dotPos + 1);
-                    currentPos++;
-                    if (String.IsNullOrEmpty(currentToken))
+                    if (!cType.IsEmpty())
                     {
-                        continue;
+                        currentToken = currentToken.Substring(dotPos + 1);
+                        if (String.IsNullOrEmpty(currentToken))
+                        {
+                            currentPos += 2;
+                            continue;
+                        }
                     }
                 }
                 //
@@ -2217,14 +2317,7 @@ namespace XSharpLanguage
                     cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
                     if (!cType.IsEmpty())
                     {
-                        if (cType.XType != null)
-                        {
-                            foundElement = cType.XType;
-                        }
-                        else
-                        {
-                            sysFoundElement = cType.SType;
-                        }
+                        SearchConstructorIn(cType, visibility, out foundElement);
                     }
                 }
                 else if (currentToken.EndsWith("()"))
@@ -2232,15 +2325,23 @@ namespace XSharpLanguage
                     // this a Method call
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     // Do we already know in which Type we are ?
-                    if (!cType.IsEmpty())
+                    if (currentToken.ToLower() == "self")
+                    {
+                        SearchConstructorIn(cType, visibility, out foundElement);
+                    }
+                    else if (currentToken.ToLower() == "super")
+                    {
+                        SearchConstructorIn(cType.ParentType, visibility, out foundElement);
+                    }
+                    else if (!cType.IsEmpty())
                     {
                         // Now, search for a Method
-                        cType = SearchMethodTypeIn(cType, currentToken, visibility, out foundElement, out sysFoundElement);
+                        cType = SearchMethodTypeIn(cType, currentToken, visibility, out foundElement);
                     }
                     if (cType.IsEmpty())
                     {
                         // check to see if this is a method from the Object Type, such as ToString().
-                        cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, out foundElement, out sysFoundElement);
+                        cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, out foundElement);
                         if (!cTemp.IsEmpty())
                         {
                             cType = cTemp;
@@ -2277,7 +2378,7 @@ namespace XSharpLanguage
                         if (element != null)
                         {
                             cType = new CompletionType((XVariable)element, currentNS);
-                            foundElement = element;
+                            foundElement = new CompletionElement(element);
                         }
                     }
                     else
@@ -2302,7 +2403,7 @@ namespace XSharpLanguage
                 }
                 //
                 visibility = Modifiers.Public;
-                if (foundElement != null)
+                if ((foundElement != null) && (foundElement.IsInitialized))
                 {
                     if (String.Compare(foundElement.Name, "self", true) == 0)
                     {
@@ -2317,6 +2418,170 @@ namespace XSharpLanguage
             return cType;
         }
 
+        /// <summary>
+        /// Search for the Constructor in the corresponding Type,
+        /// no return value, the constructor is returned by foundElement
+        /// </summary>
+        /// <param name="cType"></param>
+        /// <param name="minVisibility"></param>
+        /// <param name="foundElement"></param>
+        private static void SearchConstructorIn(CompletionType cType, Modifiers minVisibility, out CompletionElement foundElement)
+        {
+            foundElement = null;
+            if (cType.XType != null)
+            {
+                // 
+                XTypeMember xMethod = cType.XType.Members.Find(x =>
+                {
+                    if ((x.Kind == Kind.Constructor))
+                    {
+                        return true;
+                    }
+                    return false;
+                });
+                //if (elt.IsStatic)
+                //    continue;
+                if ((xMethod != null) && (xMethod.Visibility < minVisibility))
+                {
+                    xMethod = null;
+                }
+                //
+                if (xMethod == null)
+                {
+                    // Hummm, we should look inside the Owner
+                    cType.XType.ForceComplete();
+                    //
+                    if (minVisibility == Modifiers.Private)
+                        minVisibility = Modifiers.Protected;
+                    if (cType.XType.Parent != null)
+                    {
+                        // Parent is a XElement, so one of our Types
+                        SearchConstructorIn(new CompletionType(cType.XType.Parent), minVisibility, out foundElement);
+                        return;
+                    }
+                    else if (cType.XType.ParentName != null)
+                    {
+                        // Parent has just a Name, so one of the System Types
+                        SearchConstructorIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), minVisibility, out foundElement);
+                        return;
+                    }
+                }
+                else
+                {
+                    foundElement = new CompletionElement(xMethod);
+                    return;
+                }
+            }
+            else if (cType.SType != null)
+            {
+                MemberInfo[] members;
+                //
+                if (minVisibility < Modifiers.Public)
+                {
+                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                }
+                else
+                {
+                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                }
+                //
+                MemberInfo method = null;
+                foreach (var member in members)
+                {
+                    if (member.MemberType == MemberTypes.Constructor)
+                    {
+                        method = member as MemberInfo;
+                        break;
+                    }
+                }
+                if (method == null)
+                {
+                    // In the parent ?
+                    if (cType.SType.BaseType != null)
+                    {
+                        SearchConstructorIn(new CompletionType(cType.SType.BaseType), Modifiers.Public, out foundElement);
+                        return;
+                    }
+                    else if (cType.SType.IsInterface)
+                    {
+                        SearchConstructorIn(new CompletionType(typeof(object)), Modifiers.Public, out foundElement);
+                        return;
+                    }
+                }
+                else
+                {
+                    foundElement = new CompletionElement(method);
+                    return;
+                }
+            }
+            else if (cType.CodeElement != null)
+            {
+                //
+                if ((cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+                {
+
+                    //
+                    EnvDTE.CodeElements members = null;
+                    EnvDTE.CodeElements bases = null; ;
+                    if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                    {
+                        EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)cType.CodeElement;
+                        members = envClass.Members;
+                        bases = envClass.Bases;
+                    }
+                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+                    {
+                        EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)cType.CodeElement;
+                        members = envEnum.Members;
+                        bases = envEnum.Bases;
+                    }
+                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+                    {
+                        EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)cType.CodeElement;
+                        members = envStruct.Members;
+                        bases = envStruct.Bases;
+                    }
+                    foreach (EnvDTE.CodeElement member in members)
+                    {
+                        if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                        {
+                            EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)member;
+                            if (method.FunctionKind == EnvDTE.vsCMFunction.vsCMFunctionConstructor)
+                            {
+                                //
+                                foundElement = new CompletionElement(member);
+                                EnvDTE.CodeTypeRef typeRef = method.Type;
+                                break;
+                            }
+                        }
+                    }
+                    // We will have to look in the Parents ?
+                    if ((foundElement == null) && (bases != null))
+                    {
+                        foreach (EnvDTE.CodeElement parent in bases)
+                        {
+                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                            {
+                                //
+                                if (minVisibility == Modifiers.Private)
+                                    minVisibility = Modifiers.Protected;
+                                // Parent is a CodeElement
+                                SearchConstructorIn(new CompletionType(parent), minVisibility, out foundElement);
+                                return;
+                            }
+                        }
+                    }
+                    //
+                    return;
+                }
+            }
+            return;
+        }
+
 
         /// <summary>
         /// Search for a Property or a Field, in a CompletionType, based on the Visibility.
@@ -2328,7 +2593,7 @@ namespace XSharpLanguage
         /// <returns>The CompletionType of the Property (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchPropertyOrFieldIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement)
+        private static CompletionType SearchPropertyOrFieldIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
             CompletionType result = SearchPropertyTypeIn(cType, currentToken, minVisibility, out foundElement);
             if (result.IsEmpty())
@@ -2349,7 +2614,7 @@ namespace XSharpLanguage
         /// <returns>The CompletionType of the Property (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchPropertyTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement)
+        private static CompletionType SearchPropertyTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
             foundElement = null;
             if (cType.XType != null)
@@ -2386,7 +2651,7 @@ namespace XSharpLanguage
                 else
                 {
                     cType = new CompletionType((XTypeMember)element);
-                    foundElement = element;
+                    foundElement = new CompletionElement(element);
                     return cType;
                 }
             }
@@ -2447,7 +2712,7 @@ namespace XSharpLanguage
         /// <returns>The CompletionType of the Field (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchFieldTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement)
+        private static CompletionType SearchFieldTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
             foundElement = null;
             if (cType.XType != null)
@@ -2484,7 +2749,7 @@ namespace XSharpLanguage
                 else
                 {
                     cType = new CompletionType((XTypeMember)element);
-                    foundElement = element;
+                    foundElement = new CompletionElement(element);
                     return cType;
                 }
             }
@@ -2545,10 +2810,9 @@ namespace XSharpLanguage
         /// <returns>The CompletionType that the Method will return (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement, out MemberInfo systemElement)
+        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
             foundElement = null;
-            systemElement = null;
             if (cType.XType != null)
             {
                 // 
@@ -2571,20 +2835,23 @@ namespace XSharpLanguage
                 {
                     // Hummm, we should look inside the Owner
                     cType.XType.ForceComplete();
+                    //
+                    if (minVisibility == Modifiers.Private)
+                        minVisibility = Modifiers.Protected;
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement, out systemElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, minVisibility, out foundElement);
                     }
                     else if (cType.XType.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, Modifiers.Public, out foundElement, out systemElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, minVisibility, out foundElement);
                     }
                 }
                 else
                 {
-                    foundElement = xMethod;
+                    foundElement = new CompletionElement(xMethod);
                     if (xMethod.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
@@ -2626,27 +2893,93 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                if (declType == null)
+                if (method == null)
                 {
                     // In the parent ?
                     if (cType.SType.BaseType != null)
                     {
-                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement, out systemElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
                     }
                     else if (cType.SType.IsInterface)
                     {
-                        return SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, out foundElement, out systemElement);
+                        return SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, out foundElement);
                     }
                 }
                 else
                 {
-                    systemElement = method;
+                    foundElement = new CompletionElement(method);
                     return new CompletionType(declType);
+                }
+            }
+            else if (cType.CodeElement != null)
+            {
+                CompletionType declType = new CompletionType();
+                //
+                if ((cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+                {
+
+                    //
+                    EnvDTE.CodeElements members = null;
+                    EnvDTE.CodeElements bases = null; ;
+                    if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                    {
+                        EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)cType.CodeElement;
+                        members = envClass.Members;
+                        bases = envClass.Bases;
+                    }
+                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+                    {
+                        EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)cType.CodeElement;
+                        members = envEnum.Members;
+                        bases = envEnum.Bases;
+                    }
+                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+                    {
+                        EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)cType.CodeElement;
+                        members = envStruct.Members;
+                        bases = envStruct.Bases;
+                    }
+                    foreach (EnvDTE.CodeElement member in members)
+                    {
+                        if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                        {
+                            if (StringEquals(member.Name, currentToken))
+                            {
+                                //
+                                foundElement = new CompletionElement(member);
+                                EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)member;
+                                EnvDTE.CodeTypeRef typeRef = method.Type;
+                                declType = new CompletionType((EnvDTE.CodeElement)typeRef.CodeType);
+                                break;
+                            }
+                        }
+                    }
+                    // We will have to look in the Parents ?
+                    if ((foundElement == null) && (bases != null))
+                    {
+                        foreach (EnvDTE.CodeElement parent in bases)
+                        {
+                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                            {
+                                //
+                                if (minVisibility == Modifiers.Private)
+                                    minVisibility = Modifiers.Protected;
+                                // Parent is a CodeElement
+                                return SearchMethodTypeIn(new CompletionType(parent), currentToken, minVisibility, out foundElement);
+                            }
+                        }
+                    }
+                    //
+                    return declType;
                 }
             }
             // Sorry, not found
             return new CompletionType();
         }
+
+
 
 
         internal static IToken ProcessBounds(ITokenStream tokens, IToken currentToken, int LeftElement, int RightElement)
@@ -2707,8 +3040,96 @@ namespace XSharpLanguage
 
     }
 
+    /// <summary>
+    /// Class that contains informations about the Code Element we have found during
+    /// type searching.
+    /// Used by Goto Definition, Parameter Info, ...
+    /// </summary>
+    public class CompletionElement
+    {
+        XElement foundElement = null;
+        MemberInfo sysFoundElement = null;
+        EnvDTE.CodeElement envElement = null;
 
-    // TODO: Maybe it would be better to use XSharpLexer.kwIds, but it is protected...
+        public CompletionElement()
+        {
+
+        }
+        public CompletionElement(XElement XSharpElement)
+        {
+            this.foundElement = XSharpElement;
+        }
+
+        public CompletionElement(MemberInfo SystemElement)
+        {
+            this.sysFoundElement = SystemElement;
+        }
+
+        public CompletionElement(EnvDTE.CodeElement CodeElement)
+        {
+            this.envElement = CodeElement;
+        }
+
+        public bool IsInitialized
+        {
+            get
+            {
+                return ((this.sysFoundElement != null) || (this.foundElement != null) || (this.envElement != null));
+            }
+        }
+
+        public MemberInfo SystemElement
+        {
+            get
+            {
+                return sysFoundElement;
+            }
+
+        }
+
+        public XElement XSharpElement
+        {
+            get
+            {
+                return foundElement;
+            }
+
+        }
+
+        public String Name
+        {
+            get
+            {
+                String name = "";
+                if (IsInitialized)
+                {
+                    if (this.foundElement != null)
+                    {
+                        name = this.foundElement.Name;
+                    }
+                    else if (this.sysFoundElement != null)
+                    {
+                        name = this.sysFoundElement.Name;
+                    }
+                    else
+                    {
+                        name = this.envElement.Name;
+                    }
+                }
+                return name;
+            }
+        }
+
+        public EnvDTE.CodeElement CodeElement
+        {
+            get
+            {
+                return envElement;
+            }
+        }
+    }
+
+    // Build a list of all Keywords
     internal static class XSharpTypes
     {
         static List<XType> _xTypes;
@@ -2716,12 +3137,14 @@ namespace XSharpLanguage
         static XSharpTypes()
         {
             // Dummy call to a Lexer; just to copy the Keywords, Types, ...
-            var lexer = XSharpLexer.Create("","");
+            // Pass default options so this will be the core dialect and no 
+            // 4 letter abbreviations will be in the list
+            var lexer = XSharpLexer.Create("", "", XSharpParseOptions.Default);
             //
 
             _xTypes = new List<XType>();
             //
-            foreach( var keyword in lexer.KwIds )
+            foreach (var keyword in lexer.KwIds)
             {
                 _xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
             }

@@ -41,6 +41,12 @@ namespace XSharpModel
             this._currentNSpaces = new Stack<XType>();
             //
             this.tags = new List<ClassificationSpan>();
+            var options = file.Project.ProjectNode.ParseOptions;
+            // harde code vulcan.vo reference for now
+            if (options.CommandLineArguments.CompilationOptions.ImplicitNameSpace)
+            {
+                _file.Usings.AddUnique("Vulcan.VO");
+            }
         }
 
         private String currentNamespace
@@ -488,7 +494,7 @@ namespace XSharpModel
 
 
 
-        public override void EnterClsctor([NotNull] XSharpParser.ClsctorContext context)
+        public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
             if (this.BuildModel)
             {
@@ -503,7 +509,7 @@ namespace XSharpModel
             }
 
         }
-        public override void ExitClsctor([NotNull] XSharpParser.ClsctorContext context)
+        public override void ExitConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
             endMember(context);
         }
@@ -544,11 +550,10 @@ namespace XSharpModel
 
         public override void EnterPropertyAccessor([NotNull] XSharpParser.PropertyAccessorContext context)
         {
-            
+           
         }
         public override void ExitPropertyAccessor([NotNull] XSharpParser.PropertyAccessorContext context)
         {
-
         }
         public override void EnterProperty([NotNull] XSharpParser.PropertyContext context)
         {
@@ -581,7 +586,7 @@ namespace XSharpModel
         }
 
 
-        public override void EnterClsdtor([NotNull] XSharpParser.ClsdtorContext context)
+        public override void EnterDestructor([NotNull] XSharpParser.DestructorContext context)
         {
             XTypeMember newMethod = new XTypeMember("Destructor",
                 Kind.Destructor,
@@ -592,7 +597,7 @@ namespace XSharpModel
             addParameters(context.Params, newMethod);
             addMember(newMethod);
         }
-        public override void ExitClsdtor([NotNull] XSharpParser.ClsdtorContext context)
+        public override void ExitDestructor([NotNull] XSharpParser.DestructorContext context)
         {
             endMember(context);
         }
@@ -690,7 +695,10 @@ namespace XSharpModel
             if (this.BuildModel)
             {
                 XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
-                this._file.Usings.AddUnique(use.Name?.GetText());
+                if ( use.Static == null)
+                    this._file.Usings.AddUnique(use.Name?.GetText());
+                else
+                    this._file.UsingStatics.AddUnique(use.Name?.GetText());
             }
         }
 
@@ -771,7 +779,8 @@ namespace XSharpModel
             if (!this._buildLocals || ! this._buildModel)
                 return;
             // Don't forget to add Self and Super as Local vars
-            if ((context is XSharpParser.ClsctorContext) ||
+            if ((context is XSharpParser.ConstructorContext) ||
+			    (context is XSharpParser.DestructorContext) ||
                 (context is XSharpParser.MethodContext) ||
                 (context is XSharpParser.PropertyContext))
             {

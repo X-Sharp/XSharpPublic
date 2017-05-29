@@ -416,6 +416,7 @@ namespace XSharp.Build
             errorCount = 0;
             //hasShownMaxErrorMsg = false;
             VulcanCompatibleResources = false;
+            NoStandardDefs = true;
         }
 
         protected override string ToolName
@@ -492,10 +493,16 @@ namespace XSharp.Build
                 }
                 // Allow to override the path when developing.
                 // Please note that this must be a complete path, for example "d:\Xsharp\Dev\XSharp\Binaries\Debug"
+
                 string DevPath = System.Environment.GetEnvironmentVariable("XSHARPDEV");
-                if (!string.IsNullOrEmpty(DevPath))
+                if (!string.IsNullOrEmpty(DevPath) )
                 {
-                    CompilerPath = Utilities.AddSlash(DevPath);
+                    DevPath = Utilities.AddSlash(DevPath);
+                    string testPath = Path.Combine(Path.GetDirectoryName(DevPath), toolName);
+                    if (File.Exists(testPath))
+                    {
+                        CompilerPath = DevPath;
+                    }
                 }
                 if (string.IsNullOrEmpty(CompilerPath))
                 {

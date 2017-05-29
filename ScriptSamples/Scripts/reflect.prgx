@@ -1,0 +1,30 @@
+using System
+using System.Reflection
+
+const var usage := e"Prints assembly reflection info.\nUsage: reflect <assmbly-name>"
+
+if (args:Count == 0) || ((args:Count == 1 && (args[0] == "?" || args[0] == "/?" || args[0] == "-?" || args[0].ToLower() == "help")))
+	Console.WriteLine(usage)
+else
+	var a := Assembly.LoadFrom(args[0])
+	PrintReflectionData(a)
+endif
+
+function PrintReflectionData(assembly as Assembly) as void
+	Console.WriteLine("Assembly: {0}/{1}",assembly.FullName,assembly.GetName())
+	foreach var s in assembly.GetManifestResourceNames()
+		Console.WriteLine("Resource: {0}",s)
+	next
+	foreach var a in assembly.GetReferencedAssemblies()
+		Console.WriteLine("ReferencedAssembly: {0}",a.Name)
+	next
+	foreach var m in assembly.GetModules()
+		Console.WriteLine("Module: {0}",m)
+		foreach var t in m.GetTypes()
+			Console.WriteLine("Type: {0}",t)
+			foreach var mi in t.GetMembers()
+				Console.WriteLine(e"\t{0}: {1} ", mi.MemberType, mi.Name)
+			next
+		next
+	next
+	return

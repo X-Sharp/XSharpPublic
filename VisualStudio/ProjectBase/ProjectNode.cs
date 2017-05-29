@@ -589,9 +589,7 @@ namespace Microsoft.VisualStudio.Project
 
       private bool alreadyHandledOverwritePrompts = false;
 
-        private bool buildSystemKindCached = false;
 
-        private uint cachedBuildSystemKind = 0;
         #endregion
 
         #region abstract properties

@@ -12,6 +12,8 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
+using System.Reflection;
+using System.Linq;
 
 namespace XSharp.Project
 {
@@ -50,25 +52,13 @@ namespace XSharp.Project
             m_content = content;
             m_documentation = doc;
             m_parameters = parameters;
-            m_subjectBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+            //m_subjectBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
         }
 
         public event EventHandler<CurrentParameterChangedEventArgs> CurrentParameterChanged;
 
-        public IParameter CurrentParameter
-        {
-            get { return m_currentParameter; }
 
-            internal set
-            {
-                if (m_currentParameter != value)
-                {
-                    IParameter prevCurrentParameter = m_currentParameter;
-                    m_currentParameter = value;
-                    this.RaiseCurrentParameterChanged(prevCurrentParameter, m_currentParameter);
-                }
-            }
-        }
+        #region 
 
         private void RaiseCurrentParameterChanged(IParameter prevCurrentParameter, IParameter newCurrentParameter)
         {
@@ -119,11 +109,29 @@ namespace XSharp.Project
             this.ComputeCurrentParameter();
         }
 
+        #endregion
+
+        public IParameter CurrentParameter
+        {
+            get { return m_currentParameter; }
+
+            internal set
+            {
+                if (m_currentParameter != value)
+                {
+                    IParameter prevCurrentParameter = m_currentParameter;
+                    m_currentParameter = value;
+                    this.RaiseCurrentParameterChanged(prevCurrentParameter, m_currentParameter);
+                }
+            }
+        }
+
         public ITrackingSpan ApplicableToSpan
         {
             get { return (m_applicableToSpan); }
             internal set { m_applicableToSpan = value; }
         }
+
 
         public string Content
         {
@@ -156,7 +164,8 @@ namespace XSharp.Project
     {
 
         private ITextBuffer m_textBuffer;
-        //private ISignatureHelpSession m_session;
+        private ISignatureHelpSession m_session;
+        private ITrackingSpan m_applicableToSpan;
 
         public XSharpSignatureHelpSource(ITextBuffer textBuffer)
         {
@@ -170,14 +179,15 @@ namespace XSharp.Project
             int start = (int)session.Properties["Start"];
             int length = (int)session.Properties["Length"];
 
-            ITrackingSpan applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(
+            m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(
              new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
 
             object elt = session.Properties["Element"];
-            if ( elt is XSharpModel.XElement)
+            m_session = session;
+            if (elt is XSharpModel.XElement)
             {
                 XSharpModel.XElement element = elt as XSharpModel.XElement;
-                signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", applicableToSpan));
+                signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", ApplicableToSpan));
                 //
                 if (elt is XSharpModel.XTypeMember)
                 {
@@ -185,12 +195,128 @@ namespace XSharp.Project
                     List<XSharpModel.XTypeMember> namesake = xMember.Namesake();
                     foreach (var member in namesake)
                     {
-                        signatures.Add(CreateSignature(m_textBuffer, member.Prototype, "", applicableToSpan));
+                        signatures.Add(CreateSignature(m_textBuffer, member.Prototype, "", ApplicableToSpan));
                     }
                     //
                 }
+                // why not ?
+                int paramCount = int.MaxValue;
+                foreach (ISignature sig in signatures)
+                {
+                    if (sig.Parameters.Count < paramCount)
+                    {
+                        paramCount = sig.Parameters.Count;
+                    }
+                }
+                //
+                m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
             }
+            else if (elt is System.Reflection.MemberInfo)
+            {
+                System.Reflection.MemberInfo element = elt as System.Reflection.MemberInfo;
+                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
+                if (analysis.IsInitialized)
+                {
+                    signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                    // Any other member with the same name in the current Type and in the Parent(s) ?
+                    SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype);
+                    //
+                    m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+                }
+            }
+            else if (elt is EnvDTE.CodeElement)
+            {
+                EnvDTE.CodeElement element = elt as EnvDTE.CodeElement;
+                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
+                if (analysis.IsInitialized)
+                {
+                    signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                    //
+                    if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                    {
+                        EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
+                        if (method.Parent is EnvDTE.CodeElement)
+                        {
+                            EnvDTE.CodeElement owner = (EnvDTE.CodeElement)method.Parent;
+                            if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                            {
+                                EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
+                                StrangerNameSake(envClass, signatures, element.Name, analysis.Prototype);
+                                // Hey, we should also walk the Parent's parents, no ?
+                                EnvDTE.CodeElements bases = envClass.Bases;
+                                if (bases != null)
+                                {
+                                    foreach (EnvDTE.CodeElement parent in bases)
+                                    {
+                                        if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                                        {
+                                            StrangerNameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //
+                    m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+                }
+            }
+            session.Dismissed += OnSignatureHelpSessionDismiss;
+        }
 
+
+        private void SystemNameSake(System.Type sType, IList<ISignature> signatures, String elementName, String elementPrototype)
+        {
+            MemberInfo[] members;
+            // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+            members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+                | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            //
+            bool ctor = false;
+            foreach (var member in members.Where(x => nameEquals(x.Name, elementName)))
+            {
+                if (member.MemberType == MemberTypes.Constructor)
+                    ctor = true;
+                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(member);
+                if (analysis.IsInitialized)
+                {
+                    // But don't add the current one
+                    if (String.Compare(elementPrototype, analysis.Prototype, true) != 0)
+                    {
+                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                    }
+                }
+            }
+            // fill members of parent class,but not for constructorsS
+            if (sType.BaseType != null && ! ctor)
+            {
+                SystemNameSake(sType.BaseType, signatures, elementName, elementPrototype);
+            }
+        }
+
+        private void StrangerNameSake(EnvDTE.CodeClass envClass, IList<ISignature> signatures, String elementName, String elementPrototype)
+        {
+            EnvDTE.CodeElements members = envClass.Members;
+            foreach (EnvDTE.CodeElement member in members)
+            {
+                if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                {
+                    // Same Name ?
+                    if (XSharpLanguage.XSharpTokenTools.StringEquals(member.Name, elementName))
+                    {
+                        // Same Prototype
+                        XSharpLanguage.MemberAnalysis newAnalysis = new XSharpLanguage.MemberAnalysis(member);
+                        if (newAnalysis.IsInitialized)
+                        {
+                            // But don't add the current one
+                            if (String.Compare(elementPrototype, newAnalysis.Prototype, true) != 0)
+                            {
+                                signatures.Add(CreateSignature(m_textBuffer, newAnalysis.Prototype, "", ApplicableToSpan));
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private XSharpSignature CreateSignature(ITextBuffer textBuffer, string methodSig, string methodDoc, ITrackingSpan span)
@@ -239,6 +365,11 @@ namespace XSharp.Project
             return null;
         }
 
+        private bool nameEquals(string name, string compareWith)
+        {
+            return (name.ToLower().CompareTo(compareWith.ToLower()) == 0);
+        }
+
         private bool m_isDisposed;
         public void Dispose()
         {
@@ -246,6 +377,64 @@ namespace XSharp.Project
             {
                 GC.SuppressFinalize(this);
                 m_isDisposed = true;
+            }
+        }
+
+
+
+        public ITrackingSpan ApplicableToSpan
+        {
+            get { return (m_applicableToSpan); }
+            internal set { m_applicableToSpan = value; }
+        }
+
+        private void OnSignatureHelpSessionDismiss(object sender, EventArgs e)
+        {
+            m_textBuffer.Changed -= new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+        }
+
+        internal void OnSubjectBufferChanged(object sender, TextContentChangedEventArgs e)
+        {
+            //
+            this.ComputeCurrentParameter();
+        }
+
+        internal void ComputeCurrentParameter()
+        {
+
+            //the number of commas in the string is the index of the current parameter
+            string sigText = ApplicableToSpan.GetText(m_textBuffer.CurrentSnapshot);
+
+            int currentIndex = 0;
+            int commaCount = 0;
+            while (currentIndex < sigText.Length)
+            {
+                int commaIndex = sigText.IndexOf(',', currentIndex);
+                if (commaIndex == -1)
+                {
+                    break;
+                }
+                commaCount++;
+                currentIndex = commaIndex + 1;
+            }
+            //
+            List<ISignature> signatures = new List<ISignature>();
+            foreach (ISignature sig in this.m_session.Signatures)
+            {
+                if (sig.Parameters.Count > commaCount)
+                    signatures.Add(sig);
+            }
+            //
+            if (signatures.Count == 0)
+            {
+                XSharpSignature sig = this.m_session.SelectedSignature as XSharpSignature;
+                sig.CurrentParameter = null;
+            }
+            else
+            {
+                this.m_session.SelectedSignature = signatures[0];
+                XSharpSignature sig = this.m_session.SelectedSignature as XSharpSignature;
+                sig.CurrentParameter = signatures[0].Parameters[commaCount];
             }
         }
     }

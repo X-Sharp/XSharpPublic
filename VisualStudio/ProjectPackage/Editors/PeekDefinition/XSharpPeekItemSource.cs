@@ -40,18 +40,17 @@ namespace XSharp.Project
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.Position, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpModel.XElement gotoElement;
-            System.Reflection.MemberInfo dummyElement;
+            CompletionElement gotoElement;
             String currentNS = "";
             if (currentNamespace != null)
             {
                 currentNS = currentNamespace.Name;
             }
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out dummyElement);
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             //
-            if (gotoElement != null)
+            if ( (gotoElement != null) && ( gotoElement.XSharpElement != null ) )
             {
-                peekableItems.Add(new XSharpDefinitionPeekItem(gotoElement, _peekResultFactory));
+                peekableItems.Add(new XSharpDefinitionPeekItem(gotoElement.XSharpElement, _peekResultFactory));
             }
         }
 

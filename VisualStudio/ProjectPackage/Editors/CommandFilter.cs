@@ -21,6 +21,9 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.VisualStudio.Text.Operations;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 
 namespace XSharp.Project
 {
@@ -36,9 +39,10 @@ namespace XSharp.Project
         ISignatureHelpBroker SignatureBroker;
         ISignatureHelpSession _signatureSession;
         ITextStructureNavigator m_navigator;
+        IBufferTagAggregatorFactoryService Aggregator;
 
 
-        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker)
+        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator)
         {
             m_navigator = nav;
 
@@ -48,6 +52,7 @@ namespace XSharp.Project
             TextView = textView;
             CompletionBroker = completionBroker;
             SignatureBroker = signatureBroker;
+            Aggregator = aggregator;
         }
 
         private char GetTypeChar(IntPtr pvaIn)
@@ -66,6 +71,9 @@ namespace XSharp.Project
             {
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
+                    case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
+                        FormatDocument();
+                        break;
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
@@ -88,25 +96,30 @@ namespace XSharp.Project
                         char ch = GetTypeChar(pvaIn);
                         if (_completionSession != null)
                         {
-                            switch (ch)
-                            {
-                                case ' ':
-                                    CompleteCompletionSession(true);
-                                    break;
-                                case ':':
-                                case '.':
-                                    CompleteCompletionSession(true);
-                                    completeAndStart = true;
-                                    break;
-                                case '=':
-                                    CancelCompletionSession();
-                                    break;
-                                default:
-                                    Filter();
-                                    break;
-                            }
+                            if (Char.IsLetterOrDigit(ch) || ch == '_')
+                                Filter();
+                            else
+                                CancelCompletionSession();
                         }
-
+                        //{
+                        //    switch (ch)
+                        //    {
+                        //        case ' ':
+                        //            CompleteCompletionSession(true);
+                        //            break;
+                        //        case ':':
+                        //        case '.':
+                        //            CompleteCompletionSession(true);
+                        //            completeAndStart = true;
+                        //            break;
+                        //        case '=':
+                        //            CancelCompletionSession();
+                        //            break;
+                        //        default:
+                        //            Filter();
+                        //            break;
+                        //    }
+                        //}
                         break;
                 }
             }
@@ -190,6 +203,69 @@ namespace XSharp.Project
             return hresult;
         }
 
+        private void FormatDocument()
+        {
+            var buffer = this.TextView.TextBuffer;
+            //
+            var tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(buffer);
+            SnapshotSpan docSpan = new SnapshotSpan(buffer.CurrentSnapshot, 0, buffer.CurrentSnapshot.Length);
+            var tags = tagAggregator.GetTags(docSpan);
+            //
+            Stack<Span> regionStarts = new Stack<Microsoft.VisualStudio.Text.Span>();
+            List<Tuple<Span, Span>> regions = new List<Tuple<Microsoft.VisualStudio.Text.Span, Microsoft.VisualStudio.Text.Span>>();
+            //
+            foreach (var tag in tags)
+            {
+                var name = tag.Tag.ClassificationType.Classification.ToLower();
+                //
+                if (name.Contains(XSharpModel.ColorizerConstants.XSharpRegionStartFormat))
+                {
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        System.Diagnostics.Debugger.Break();
+                    //
+                    var spans = tag.Span.GetSpans(this.TextView.TextSnapshot);
+                    if (spans.Count > 0)
+                        regionStarts.Push(spans[0]);
+                }
+                else if (name.Contains(XSharpModel.ColorizerConstants.XSharpRegionStopFormat))
+                {
+                    var spans = tag.Span.GetSpans(this.TextView.TextSnapshot);
+                    if (spans.Count > 0)
+                    {
+                        if (regionStarts.Count > 0)
+                        {
+                            var start = regionStarts.Pop();
+                            //
+                            regions.Add(new Tuple<Span, Span>(start, spans[0]));
+                        }
+                    }
+                }
+            }
+            //Now, we have a list of Regions Start/Stop
+            var editor = buffer.CreateEdit();
+            //
+            int tabSize = this.TextView.Options.GetTabSize();
+            //
+            //foreach( var region in regions )
+            //{
+            //    SnapshotPoint pt = new SnapshotPoint(this.TextView.TextSnapshot, region.Item1.Start);
+            //    var snapLine = pt.GetContainingLine();
+            //    snapLine.
+            //}
+            //var lines = this.TextView.TextViewLines;
+            //foreach( var twLine in lines )
+            //{
+            //    var fullSpan = new SnapshotSpan(twLine.Snapshot, Span.FromBounds(twLine.Start, twLine.End));
+            //    var snapLine = fullSpan.Start.GetContainingLine();
+            //    int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
+            //    string text = snapLine.GetText();
+            //    //
+            //    lines.
+            //    //
+            //}
+
+        }
+
         private void GotoDefn()
         {
             // First, where are we ?
@@ -207,19 +283,18 @@ namespace XSharp.Project
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpModel.XElement gotoElement;
-            MemberInfo dummyElement;
+            XSharpLanguage.CompletionElement gotoElement;
             String currentNS = "";
             if (currentNamespace != null)
             {
                 currentNS = currentNamespace.Name;
             }
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out dummyElement);
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             //
-            if (gotoElement != null)
+            if ((gotoElement != null) && (gotoElement.XSharpElement != null))
             {
                 // Ok, find it ! Let's go ;)
-                gotoElement.OpenEditor();
+                gotoElement.XSharpElement.OpenEditor();
             }
             //
         }
@@ -257,6 +332,7 @@ namespace XSharp.Project
             }
             else
             {
+                //
                 _completionSession.Commit();
                 return true;
             }
@@ -280,12 +356,26 @@ namespace XSharp.Project
             }
 
             _completionSession.Dismissed += OnCompletionSessionDismiss;
+            _completionSession.Committed += OnCompletionSessionCommitted;
 
             _completionSession.Properties["Command"] = nCmdId;
             _completionSession.Properties["Char"] = typedChar;
             _completionSession.Start();
 
             return true;
+        }
+
+        private void OnCompletionSessionCommitted(object sender, EventArgs e)
+        {
+            // it MUST be the case....
+            if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
+            {
+                if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
+                {
+                    StartSignatureSession();
+                }
+            }
+            //
         }
 
         private void OnCompletionSessionDismiss(object sender, EventArgs e)
@@ -329,33 +419,33 @@ namespace XSharp.Project
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpModel.XElement gotoElement;
-            MemberInfo systemElement;
+            XSharpLanguage.CompletionElement gotoElement;
             String currentNS = "";
             if (currentNamespace != null)
             {
                 currentNS = currentNamespace.Name;
             }
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement, out systemElement);
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             //
-            if ((gotoElement != null) || (systemElement != null))
+            if ((gotoElement != null) && (gotoElement.IsInitialized))
             {
-
-                if ((gotoElement != null) && (gotoElement.Kind == XSharpModel.Kind.Class))
+                // Not sure that this if() is still necessary ...
+                if ((gotoElement.XSharpElement != null) && (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Class))
                 {
-                    XSharpModel.XType xType = gotoElement as XSharpModel.XType;
+                    XSharpModel.XType xType = gotoElement.XSharpElement as XSharpModel.XType;
                     if (xType != null)
                     {
                         foreach (XSharpModel.XTypeMember mbr in xType.Members)
                         {
                             if (String.Compare(mbr.Name, "constructor", true) == 0)
                             {
-                                gotoElement = mbr;
+                                gotoElement = new XSharpLanguage.CompletionElement(mbr);
                                 break;
                             }
                         }
                     }
                 }
+
                 SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
                 ITextSnapshot snapshot = caret.Snapshot;
                 //
@@ -369,13 +459,17 @@ namespace XSharp.Project
                 }
 
                 _signatureSession.Dismissed += OnSignatureSessionDismiss;
-                if (gotoElement != null)
+                if (gotoElement.XSharpElement != null)
                 {
-                    _signatureSession.Properties["Element"] = gotoElement;
+                    _signatureSession.Properties["Element"] = gotoElement.XSharpElement;
                 }
-                else if (systemElement != null)
+                else if (gotoElement.SystemElement != null)
                 {
-                    _signatureSession.Properties["Element"] = systemElement;
+                    _signatureSession.Properties["Element"] = gotoElement.SystemElement;
+                }
+                else if (gotoElement.CodeElement != null)
+                {
+                    _signatureSession.Properties["Element"] = gotoElement.CodeElement;
                 }
                 _signatureSession.Properties["Line"] = startLineNumber;
                 _signatureSession.Properties["Start"] = ssp.Position;

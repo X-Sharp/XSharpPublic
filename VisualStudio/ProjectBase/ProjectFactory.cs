@@ -206,34 +206,5 @@ namespace Microsoft.VisualStudio.Project
         }
 
         #endregion
-        #region IVsProjectUpgradeViaFactory
-        private string m_lastUpgradedProjectFile;
-        private const string SCC_PROJECT_NAME = "SccProjectName";
-        private string m_sccProjectName;
-        private const string SCC_AUX_PATH = "SccAuxPath";
-        private string m_sccAuxPath;
-        private const string SCC_LOCAL_PATH = "SccLocalPath";
-        private string m_sccLocalPath;
-        private const string SCC_PROVIDER = "SccProvider";
-        private string m_sccProvider;
-        public virtual int GetSccInfo(string projectFileName, out string sccProjectName, out string sccAuxPath, out string sccLocalPath, out string provider)
-        {
-            // we should only be asked for SCC info on a project that we have just upgraded.
-            if (!String.Equals(this.m_lastUpgradedProjectFile, projectFileName, StringComparison.OrdinalIgnoreCase))
-            {
-                sccProjectName = "";
-                sccAuxPath = "";
-                sccLocalPath = "";
-                provider = "";
-                return VSConstants.E_FAIL;
-            }
-            sccProjectName = this.m_sccProjectName;
-            sccAuxPath = this.m_sccAuxPath;
-            sccLocalPath = this.m_sccLocalPath;
-            provider = this.m_sccProvider;
-            return VSConstants.S_OK;
-        }
-
-            #endregion
     }
 }

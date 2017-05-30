@@ -863,7 +863,6 @@ namespace XSharp.Project
             if (this.isLoading)
             {
                 // Run the background Walker/Listener, to fill the Model
-
                 this.isLoading = false;
                 foreach (var url in this.URLNodes.Keys)
                 {
@@ -914,7 +913,6 @@ namespace XSharp.Project
 
             // Be sure we have External/system types for Intellisense
             UpdateAssemblyReferencesModel();
-
 
         }
         #endregion

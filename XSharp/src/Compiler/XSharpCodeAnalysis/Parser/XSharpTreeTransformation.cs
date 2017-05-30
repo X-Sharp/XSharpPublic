@@ -5385,9 +5385,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     return true;
                 }
-                else
+                else 
                 {
-                    return NeedsBreak(ifelsestmt.ElseBlock._Stmts);
+                    return NeedsBreak(elsestmt._Stmts);
                 }
             }
             if (stmt is XP.CaseStmtContext)

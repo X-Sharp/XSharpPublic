@@ -512,9 +512,12 @@ Components: main\ngen;  Filename: "{app}\uninst\uninstngen.cmd";  Flags: Runhidd
 ; Also the CodeDom provider from the GAC
 
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\XSharpCodeDomProvider";
-
 Type: files;          Name: "{app}\License.rtf"; 
 Type: filesandordirs; Name: "{app}\Xide"; 
+#ifdef FOX
+Type: filesandordirs; Name: "{app}\Bin\Debug"; 
+Type: filesandordirs; Name: "{app}\Bin\Release"; 
+#endif
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            
 Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";       
@@ -524,8 +527,6 @@ Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017I
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId}\ComponentModelCache";            
 Components: vs2017; Type: filesandordirs; Name: "{code:Getvs2017IdeDir}\Extensions\XSharp";       
 
-; remove the old uninstaller because the uninstall file format has changed in one of the previous builds
-Type: filesandordirs; Name: "{app}\Uninst"
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\Assemblies"                    ; 

@@ -3,13 +3,11 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup Label="Globals">
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
-    <Unsafe>true</Unsafe>
+    <Unsafe>false</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
     <VO1>false</VO1>
@@ -26,54 +24,53 @@
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>false</VO14>
-    <VO15>true</VO15>
+    <TargetFrameworkProfile />
     <StartupObject />
     <ApplicationIcon />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectGuid>e83c6c8c-773f-4b01-a597-3d38398a9362</ProjectGuid>
+    <ProjectGuid>a2376bbc-9ff4-47eb-bf57-913cbd850dad</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharp.Rdd</RootNamespace>
-    <AssemblyName>XSharp.Rdd</AssemblyName>
+    <RootNamespace>XSharp.Runtime.Tests</RootNamespace>
+    <AssemblyName>XSharp.Runtime.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <Name>XSharp.RDD</Name>
+    <Name>XSharp.Runtime.Tests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugSymbols>false</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9001;1591</DisabledWarnings>
+    <DisabledWarnings>165</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -81,39 +78,40 @@
     <CommandLineOption>/creatingruntime</CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <IncludePaths />
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputPath>bin\Release\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DocumentationFile>false</DocumentationFile>
     <Optimize>true</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9001</DisabledWarnings>
+    <DisabledWarnings />
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>/unsafe</CommandLineOption>
+    <CommandLineOption />
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <IncludePaths />
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9001;1591</DisabledWarnings>
+    <DisabledWarnings>165</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -121,11 +119,17 @@
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <IncludePaths />
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>Microsoft.VisualStudio.QualityTools.UnitTestFramework</Name>
+      <AssemblyName>Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</AssemblyName>
+      <HintPath>..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\ReferenceAssemblies\v2.0\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -135,61 +139,45 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Advantage\ACE.prg" />
-    <Compile Include="Advantage\AceEnums.prg" />
-    <Compile Include="Advantage\AceUnpublished.prg" />
-    <Compile Include="Advantage\AdsADT.prg" />
-    <Compile Include="Advantage\AdsRDD.prg" />
-    <Compile Include="Advantage\AxDBFCDX.prg" />
-    <Compile Include="Advantage\AxDBFNTX.prg" />
-    <Compile Include="Advantage\AxDBFVFP.prg" />
-    <Compile Include="Advantage\AXSqlRDD.prg" />
-    <Compile Include="Advantage\DBFAXS.prg" />
-    <Compile Include="RddError.prg" />
-    <Compile Include="_Dummy.prg" />
-    <Compile Include="Types\BaseIndex.prg" />
-    <Compile Include="Types\BaseMemo.prg" />
-    <Compile Include="Types\DBF.prg" />
-    <Compile Include="Types\DbfBlob.prg" />
-    <Compile Include="Types\DbfCdx.prg" />
-    <Compile Include="Types\DbfDbt.prg" />
-    <Compile Include="Types\DbfFpt.prg" />
-    <Compile Include="Types\DbfMemo.prg" />
-    <Compile Include="Types\DbfNsx.prg" />
-    <Compile Include="Types\DbfNtx.prg" />
-    <Compile Include="Types\DbfSmt.prg" />
-    <Compile Include="Types\DbMemo.prg" />
-    <Compile Include="Types\Defines.prg" />
-    <Compile Include="Types\DELIM.prg" />
-    <Compile Include="Types\Enums.prg" />
-    <Compile Include="Types\FileStream.prg" />
-    <Compile Include="Types\SDF.prg" />
-    <Compile Include="Types\Support.prg" />
-    <Compile Include="Types\Workarea.prg" />
-    <Compile Include="Types\Workareas.prg" />
-    <Compile Include="Interfaces\IOrder.prg" />
-    <Compile Include="Interfaces\IMemo.prg" />
-    <Compile Include="Interfaces\IRDD.prg" />
+    <Compile Include="DynamicTest.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RuntimeArrayTests.prg" />
+    <Compile Include="RuntimeByteTests.prg" />
+    <Compile Include="RuntimeDateTests.prg" />
+    <Compile Include="RuntimeIOTests.prg" />
+    <Compile Include="RuntimeMiscTests.prg" />
+    <Compile Include="RuntimeNumericTest.prg" />
+    <Compile Include="RuntimeStringTests.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RuntimeUsualTests.prg" />
+    <Compile Include="SymbolTests.prg" />
+    <Compile Include="Usual.prg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Advantage\" />
-    <Folder Include="Types" />
-    <Folder Include="Interfaces" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>Properties\commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>Properties\constants.prg</Link>
-    </Compile>
     <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">
       <Name>XSharp.Base</Name>
       <Project>{214b74ac-5fc9-4256-9e10-6bdfe5b12ce0}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Vulcan\XSharp.Vulcan.xsproj">
+      <Name>XSharp.Vulcan</Name>
+      <Project>{4e1bc90b-3696-4715-b7a4-17521172979c}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

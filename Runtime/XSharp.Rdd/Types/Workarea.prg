@@ -12,6 +12,7 @@ CLASS Workarea IMPLEMENTS IRdd
 	#region Fields
 	PROTECT _Area			AS LONG		// Workarea Number (1 based)
 	PROTECT _Alias			AS STRING	// Unique Alias
+	PROTECT _FileName		AS STRING
 	PROTECT _Fields			AS RddFieldInfo[]	// List of Fields
 	PROTECT _Bof			AS LOGIC	// Is BOF ?
 	PROTECT _Bottom			AS LOGIC	// Is at Bottom ?
@@ -51,6 +52,7 @@ CLASS Workarea IMPLEMENTS IRdd
 	CONSTRUCTOR() 
 		SELF:_FilterInfo := DbFilterInfo{}
 		SELF:_ScopeInfo  := DbScopeInfo{}            
+        SELF:_OrderCondInfo := DbOrderCondInfo{}
 		SELF:_Parents	 := 0   
 		SELF:_Memo		 := BaseMemo{SELF}
 		SELF:_Order		 := BaseIndex{SELF}          
@@ -376,6 +378,7 @@ VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
 
 VIRTUAL METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC
 	RETURN SELF:_Order:Seek(info)
+#endregion
 
 
 #region Relations
@@ -507,6 +510,8 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	VIRTUAL PROPERTY BoF AS LOGIC GET _Bof
 
 	VIRTUAL PROPERTY Deleted AS LOGIC GET FALSE
+
+    VIRTUAL PROPERTY Driver AS STRING GET "Workarea"
 
 	VIRTUAL PROPERTY EoF AS LOGIC GET _Eof
 

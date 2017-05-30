@@ -1,0 +1,29 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+
+USING System
+USING System.Collections.Generic
+USING System.Text
+USING XSharp.RDD
+USING AdvantageClientEngine
+
+CLASS XSharp.RDD.AXDBFCDX INHERIT ADSRDD
+    CONSTRUCTOR()
+        SUPER()
+        SUPER:m_usTableType := ACE.ADS_CDX
+        SUPER:m_strDriver := "Advantage.AXDBFCDX"
+        SUPER:MAX_KEY_SIZE := 240
+END CLASS
+
+CLASS XSharp.RDD.AXSQLCDX INHERIT AXSQLRDD 
+    CONSTRUCTOR()
+        SUPER()
+        SUPER:m_usTableType := ACE.ADS_CDX
+        SUPER:m_strDriver := "Advantage.AXSQLCDX"
+        SUPER:MAX_KEY_SIZE := 240
+
+END CLASS

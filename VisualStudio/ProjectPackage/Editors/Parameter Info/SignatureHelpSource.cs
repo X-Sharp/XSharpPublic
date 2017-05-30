@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using System.Reflection;
 using System.Linq;
+using System.Diagnostics;
 
 namespace XSharp.Project
 {
@@ -174,94 +175,102 @@ namespace XSharp.Project
 
         public void AugmentSignatureHelpSession(ISignatureHelpSession session, IList<ISignature> signatures)
         {
-            ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
-            int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
-            int start = (int)session.Properties["Start"];
-            int length = (int)session.Properties["Length"];
-
-            m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(
-             new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
-
-            object elt = session.Properties["Element"];
-            m_session = session;
-            if (elt is XSharpModel.XElement)
+            try
             {
-                XSharpModel.XElement element = elt as XSharpModel.XElement;
-                signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", ApplicableToSpan));
                 //
-                if (elt is XSharpModel.XTypeMember)
+                ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
+                int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
+                int start = (int)session.Properties["Start"];
+                int length = (int)session.Properties["Length"];
+
+                m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(
+                 new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
+
+                object elt = session.Properties["Element"];
+                m_session = session;
+                if (elt is XSharpModel.XElement)
                 {
-                    XSharpModel.XTypeMember xMember = elt as XSharpModel.XTypeMember;
-                    List<XSharpModel.XTypeMember> namesake = xMember.Namesake();
-                    foreach (var member in namesake)
-                    {
-                        signatures.Add(CreateSignature(m_textBuffer, member.Prototype, "", ApplicableToSpan));
-                    }
+                    XSharpModel.XElement element = elt as XSharpModel.XElement;
+                    signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", ApplicableToSpan));
                     //
-                }
-                // why not ?
-                int paramCount = int.MaxValue;
-                foreach (ISignature sig in signatures)
-                {
-                    if (sig.Parameters.Count < paramCount)
+                    if (elt is XSharpModel.XTypeMember)
                     {
-                        paramCount = sig.Parameters.Count;
-                    }
-                }
-                //
-                m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
-            }
-            else if (elt is System.Reflection.MemberInfo)
-            {
-                System.Reflection.MemberInfo element = elt as System.Reflection.MemberInfo;
-                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
-                if (analysis.IsInitialized)
-                {
-                    signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
-                    // Any other member with the same name in the current Type and in the Parent(s) ?
-                    SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype);
-                    //
-                    m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
-                }
-            }
-            else if (elt is EnvDTE.CodeElement)
-            {
-                EnvDTE.CodeElement element = elt as EnvDTE.CodeElement;
-                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
-                if (analysis.IsInitialized)
-                {
-                    signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
-                    //
-                    if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
-                    {
-                        EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
-                        if (method.Parent is EnvDTE.CodeElement)
+                        XSharpModel.XTypeMember xMember = elt as XSharpModel.XTypeMember;
+                        List<XSharpModel.XTypeMember> namesake = xMember.Namesake();
+                        foreach (var member in namesake)
                         {
-                            EnvDTE.CodeElement owner = (EnvDTE.CodeElement)method.Parent;
-                            if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                            {
-                                EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
-                                StrangerNameSake(envClass, signatures, element.Name, analysis.Prototype);
-                                // Hey, we should also walk the Parent's parents, no ?
-                                EnvDTE.CodeElements bases = envClass.Bases;
-                                if (bases != null)
-                                {
-                                    foreach (EnvDTE.CodeElement parent in bases)
-                                    {
-                                        if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                                        {
-                                            StrangerNameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype);
-                                        }
-                                    }
-                                }
-                            }
+                            signatures.Add(CreateSignature(m_textBuffer, member.Prototype, "", ApplicableToSpan));
+                        }
+                        //
+                    }
+                    // why not ?
+                    int paramCount = int.MaxValue;
+                    foreach (ISignature sig in signatures)
+                    {
+                        if (sig.Parameters.Count < paramCount)
+                        {
+                            paramCount = sig.Parameters.Count;
                         }
                     }
                     //
                     m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
                 }
+                else if (elt is System.Reflection.MemberInfo)
+                {
+                    System.Reflection.MemberInfo element = elt as System.Reflection.MemberInfo;
+                    XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
+                    if (analysis.IsInitialized)
+                    {
+                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                        // Any other member with the same name in the current Type and in the Parent(s) ?
+                        SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype);
+                        //
+                        m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+                    }
+                }
+                else if (elt is EnvDTE.CodeElement)
+                {
+                    EnvDTE.CodeElement element = elt as EnvDTE.CodeElement;
+                    XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
+                    if (analysis.IsInitialized)
+                    {
+                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan));
+                        //
+                        if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                        {
+                            EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
+                            if (method.Parent is EnvDTE.CodeElement)
+                            {
+                                EnvDTE.CodeElement owner = (EnvDTE.CodeElement)method.Parent;
+                                if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                                {
+                                    EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
+                                    StrangerNameSake(envClass, signatures, element.Name, analysis.Prototype);
+                                    // Hey, we should also walk the Parent's parents, no ?
+                                    EnvDTE.CodeElements bases = envClass.Bases;
+                                    if (bases != null)
+                                    {
+                                        foreach (EnvDTE.CodeElement parent in bases)
+                                        {
+                                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                                            {
+                                                StrangerNameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //
+                        m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+                    }
+                }
+                session.Dismissed += OnSignatureHelpSessionDismiss;
             }
-            session.Dismissed += OnSignatureHelpSessionDismiss;
+            catch (Exception ex)
+            {
+                Trace.WriteLine("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception : " + ex.Message);
+            }
         }
 
 

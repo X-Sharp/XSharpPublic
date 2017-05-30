@@ -2504,13 +2504,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Enums
         public override void ExitEnum_([NotNull] XP.Enum_Context context)
         {
-            //todo RvdH BaseType is not implemented
+            BaseListSyntax baselist = default(BaseListSyntax);
+            var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
+            if (context.Type != null)
+            {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(context.Type.Get<TypeSyntax>()));
+                baselist = _syntaxFactory.BaseList(
+                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes);
+                    
+            }
             MemberDeclarationSyntax m = _syntaxFactory.EnumDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                 enumKeyword: SyntaxFactory.MakeToken(SyntaxKind.EnumKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                baseList: default(BaseListSyntax),
+                baseList: baselist,
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: MakeSeparatedList<EnumMemberDeclarationSyntax>(context._Members),
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -2520,6 +2528,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
             context.Put(m);
+            _pool.Free(baseTypes);
         }
 
         public override void ExitEnummember([NotNull] XP.EnummemberContext context)

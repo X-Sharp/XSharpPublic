@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using LanguageService.SyntaxTree;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace XSharp.Project
 {
@@ -52,126 +53,132 @@ namespace XSharp.Project
 
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
-            applicableToSpan = null;
-            // Map the trigger point down to our buffer.
-            SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(m_subjectBuffer.CurrentSnapshot);
-            if (!subjectTriggerPoint.HasValue)
+            try
             {
                 applicableToSpan = null;
-                return;
-            }
-            ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
-            SnapshotSpan querySpan = new SnapshotSpan(subjectTriggerPoint.Value, 0);
-
-            //look for occurrences of our QuickInfo words in the span
-            ITextStructureNavigator navigator = m_provider.NavigatorService.GetTextStructureNavigator(m_subjectBuffer);
-            TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
-            string searchText = extent.Span.GetText();
-
-
-            // First, where are we ?
-            int caretPos = subjectTriggerPoint.Value.Position;
-            int lineNumber = subjectTriggerPoint.Value.GetContainingLine().LineNumber;
-            String currentText = session.TextView.TextBuffer.CurrentSnapshot.GetText();
-            if (String.IsNullOrEmpty(fileName))
-                return;
-            // Then, the corresponding Type/Element if possible
-            IToken stopToken;
-            //ITokenStream tokenStream;
-            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, fileName);
-            // Check if we can get the member where we are
-            XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
-            XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
-            // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpLanguage.CompletionElement gotoElement;
-            String currentNS = "";
-            if (currentNamespace != null)
-            {
-                currentNS = currentNamespace.Name;
-            }
-
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
-            //
-            //
-            if ((gotoElement != null) && (gotoElement.IsInitialized))
-            {
-                // Ok, find it ! Let's go ;)
-                applicableToSpan = currentSnapshot.CreateTrackingSpan
-                    (
-                                            //querySpan.Start.Add(foundIndex).Position, 9, SpanTrackingMode.EdgeInclusive
-                                            extent.Span.Start, searchText.Length, SpanTrackingMode.EdgeInclusive
-                    );
-
-                if (gotoElement.XSharpElement != null)
+                // Map the trigger point down to our buffer.
+                SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(m_subjectBuffer.CurrentSnapshot);
+                if (!subjectTriggerPoint.HasValue)
                 {
-                    if (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Constructor )
-                    {
-                        if ( gotoElement.XSharpElement.Parent != null )
-                        {
-                            qiContent.Add(gotoElement.XSharpElement.Parent.Description);
-                        }
-                    }
-                    else 
-                        qiContent.Add(gotoElement.XSharpElement.Description);
+                    applicableToSpan = null;
+                    return;
                 }
-                else if (gotoElement.SystemElement is TypeInfo)
+                ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
+                SnapshotSpan querySpan = new SnapshotSpan(subjectTriggerPoint.Value, 0);
+
+                //look for occurrences of our QuickInfo words in the span
+                ITextStructureNavigator navigator = m_provider.NavigatorService.GetTextStructureNavigator(m_subjectBuffer);
+                TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
+                string searchText = extent.Span.GetText();
+
+
+                // First, where are we ?
+                int caretPos = subjectTriggerPoint.Value.Position;
+                int lineNumber = subjectTriggerPoint.Value.GetContainingLine().LineNumber;
+                String currentText = session.TextView.TextBuffer.CurrentSnapshot.GetText();
+                if (String.IsNullOrEmpty(fileName))
+                    return;
+                // Then, the corresponding Type/Element if possible
+                IToken stopToken;
+                //ITokenStream tokenStream;
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, fileName);
+                // Check if we can get the member where we are
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
+                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
+                // LookUp for the BaseType, reading the TokenList (From left to right)
+                XSharpLanguage.CompletionElement gotoElement;
+                String currentNS = "";
+                if (currentNamespace != null)
                 {
-                    XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)gotoElement.SystemElement);
-                    qiContent.Add(analysis.Description);
+                    currentNS = currentNamespace.Name;
                 }
-                else
+
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
+                //
+                //
+                if ((gotoElement != null) && (gotoElement.IsInitialized))
                 {
-                    // This works with System.MemberInfo AND 
-                    XSharpLanguage.MemberAnalysis analysis = null;
-                    if (gotoElement.SystemElement is MemberInfo)
+                    // Ok, find it ! Let's go ;)
+                    applicableToSpan = currentSnapshot.CreateTrackingSpan
+                        (
+                                                //querySpan.Start.Add(foundIndex).Position, 9, SpanTrackingMode.EdgeInclusive
+                                                extent.Span.Start, searchText.Length, SpanTrackingMode.EdgeInclusive
+                        );
+
+                    if (gotoElement.XSharpElement != null)
                     {
-                        analysis = new XSharpLanguage.MemberAnalysis(gotoElement.SystemElement);
-                        if (analysis.IsInitialized)
+                        if (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Constructor)
                         {
-                            if (analysis.Kind == XSharpModel.Kind.Constructor)
+                            if (gotoElement.XSharpElement.Parent != null)
                             {
-                                XSharpLanguage.TypeAnalysis typeAnalysis;
-                                typeAnalysis = new XSharpLanguage.TypeAnalysis(cType.SType.GetTypeInfo());
-                                if (typeAnalysis.IsInitialized)
-                                {
-                                    qiContent.Add(typeAnalysis.Description);
-                                }
-                            }
-                            else
-                            {
-                                qiContent.Add(analysis.Description);
+                                qiContent.Add(gotoElement.XSharpElement.Parent.Description);
                             }
                         }
+                        else
+                            qiContent.Add(gotoElement.XSharpElement.Description);
                     }
-                    else if (gotoElement.CodeElement != null)
+                    else if (gotoElement.SystemElement is TypeInfo)
                     {
-                        analysis = new XSharpLanguage.MemberAnalysis(gotoElement.CodeElement);
-                        if (analysis.IsInitialized)
+                        XSharpLanguage.TypeAnalysis analysis = new XSharpLanguage.TypeAnalysis((TypeInfo)gotoElement.SystemElement);
+                        qiContent.Add(analysis.Description);
+                    }
+                    else
+                    {
+                        // This works with System.MemberInfo AND 
+                        XSharpLanguage.MemberAnalysis analysis = null;
+                        if (gotoElement.SystemElement is MemberInfo)
                         {
-                            if (analysis.Kind == XSharpModel.Kind.Constructor)
+                            analysis = new XSharpLanguage.MemberAnalysis(gotoElement.SystemElement);
+                            if (analysis.IsInitialized)
                             {
-                                if (cType.CodeElement.IsCodeType)
+                                if ((analysis.Kind == XSharpModel.Kind.Constructor) && (cType != null) && (cType.SType != null))
                                 {
                                     XSharpLanguage.TypeAnalysis typeAnalysis;
-                                    typeAnalysis = new XSharpLanguage.TypeAnalysis((EnvDTE.CodeType)cType.CodeElement);
+                                    typeAnalysis = new XSharpLanguage.TypeAnalysis(cType.SType.GetTypeInfo());
                                     if (typeAnalysis.IsInitialized)
                                     {
                                         qiContent.Add(typeAnalysis.Description);
                                     }
                                 }
-                            }
-                            else
-                            {
-                                qiContent.Add(analysis.Description);
+                                else
+                                {
+                                    qiContent.Add(analysis.Description);
+                                }
                             }
                         }
+                        else if (gotoElement.CodeElement != null)
+                        {
+                            analysis = new XSharpLanguage.MemberAnalysis(gotoElement.CodeElement);
+                            if (analysis.IsInitialized)
+                            {
+                                if ((analysis.Kind == XSharpModel.Kind.Constructor) && (cType != null) && (cType.CodeElement != null))
+                                {
+                                    if (cType.CodeElement.IsCodeType)
+                                    {
+                                        XSharpLanguage.TypeAnalysis typeAnalysis;
+                                        typeAnalysis = new XSharpLanguage.TypeAnalysis((EnvDTE.CodeType)cType.CodeElement);
+                                        if (typeAnalysis.IsInitialized)
+                                        {
+                                            qiContent.Add(typeAnalysis.Description);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    qiContent.Add(analysis.Description);
+                                }
+                            }
+                        }
+
                     }
-                   
+
+                    return;
                 }
-
-                return;
             }
-
+            catch ( Exception ex )
+            {
+                Trace.WriteLine("XSharpQuickInfo.AugmentQuickInfoSession Exception : " + ex.Message);
+            }
             applicableToSpan = null;
         }
 

@@ -631,6 +631,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return ((parent is XSharpParser.ClassmemberContext) && (parent.Parent is XSharpParser.Class_Context))
                 || (parent is XSharpParser.Class_Context);
         }
+        internal static bool isInStructure([NotNull] this RuleContext context)
+        {
+            var parent = context.Parent;
+            return ((parent is XSharpParser.ClassmemberContext) && (parent.Parent is XSharpParser.Structure_Context))
+                || (parent is XSharpParser.Structure_Context);
+        }
+
     }
 
 }

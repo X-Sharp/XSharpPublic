@@ -1546,7 +1546,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (!AccMet.isInInterface())
                 {
                     getMods.FixDefaultVisibility();
-                    if (_options.VirtualInstanceMethods)
+                    if (_options.VirtualInstanceMethods && !AccMet.isInStructure())
                     {
                         getMods.FixDefaultVirtual();
                     }
@@ -1568,7 +1568,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (!AssMet.isInInterface())
                 {
                     setMods.FixDefaultVisibility();
-                    if (_options.VirtualInstanceMethods)
+                    if (_options.VirtualInstanceMethods && !AssMet.isInStructure())
                     {
                         setMods.FixDefaultVirtual();
                     }
@@ -2548,7 +2548,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
             }
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface() || context.isInStructure());
             //if (context.ExplicitIface != null)
             {
                 var m = _pool.Allocate();
@@ -2656,7 +2656,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.Put(_syntaxFactory.EventFieldDeclaration(
                         attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface()),
+                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface() || context.isInStructure()),
                         eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                         declaration: _syntaxFactory.VariableDeclaration(
                             context.Type?.Get<TypeSyntax>() ?? MissingType(),
@@ -2873,7 +2873,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.AddError(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
             }
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface);
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface || context.isInStructure());
             context.SetSequencePoint(context.end);
             if (context.ExplicitIface != null)
             {
@@ -3240,7 +3240,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface);
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface || context.isInStructure());
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;
@@ -4560,7 +4560,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!context.Parent.isInInterface())
             {
                 modifiers.FixDefaultVisibility();
-                if (_options.VirtualInstanceMethods)
+                if (_options.VirtualInstanceMethods && ! context.Parent.isInStructure())
                     modifiers.FixDefaultVirtual();
                 else
                     modifiers.FixDefaultMethod();
@@ -4587,7 +4587,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!context.Parent.isInInterface())
             {
                 modifiers.FixDefaultVisibility();
-                if (_options.VirtualInstanceMethods)
+                if (_options.VirtualInstanceMethods && ! context.Parent.isInStructure())
                     modifiers.FixDefaultVirtual();
                 else
                     modifiers.FixDefaultMethod();

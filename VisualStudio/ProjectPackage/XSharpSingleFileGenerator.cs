@@ -21,58 +21,8 @@ namespace XSharp.Project
 {
     class XSharpSingleFileGenerator : SingleFileGenerator, ISingleFileGenerator, ISingleFileGenerator2, IVsGeneratorProgress
     {
-/*
-        static XSharpSingleFileGenerator()
-        {
-            using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration, true))
-            {
-                RegistryKey ourkey = null;
-                RegistryKey vbkey = null;
-                if (null != root)
-                {
-                    string regPath = "Generators\\" + GuidStrings.guidXSharpProjectPkgString;
-                    var key = root.OpenSubKey(regPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
-                    if (key == null)
-                    {
-                        key = root.CreateSubKey(regPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
-                    }
-                    ourkey = key;
-                    regPath = "Generators\\{164B10B9-B200-11D0-8C61-00A0C91E29D5}";
-                    vbkey = root.OpenSubKey(regPath);
 
-                }
-                if (ourkey != null && vbkey != null)
-                {
-                    var subkeys = vbkey.GetSubKeyNames();
-                    foreach (var name in subkeys)
-                    {
-                        var oursubkey = ourkey.OpenSubKey(name);
-                        if (oursubkey == null)
-                        {
-                            oursubkey = ourkey.CreateSubKey(name,RegistryKeyPermissionCheck.ReadWriteSubTree);
-                            var vbsubkey = vbkey.OpenSubKey(name);
-                            var entries = vbsubkey.GetValueNames();
-                            foreach (var entry in entries)
-                            {
-                                var value = vbsubkey.GetValue(entry);
-                                oursubkey.SetValue(entry, value);
-                            }
-                            oursubkey.Close();
-                            vbsubkey.Close();
-                        }
-                    }
-                }
-                if (ourkey != null)
-                    ourkey.Close();
-                if (vbkey != null)
-                    vbkey.Close();
-            }
-
-        }
-*/
         #region fields
-        //private bool gettingCheckoutStatus;
-        //private bool runningGenerator;
         private ProjectNode myProjectMgr;
         private static int anyGeneratorsRunning = 0;
         #endregion

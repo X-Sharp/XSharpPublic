@@ -16,6 +16,7 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
         SELF:m_hStatement := System.IntPtr.Zero
         SUPER:m_strDriver := "Advantage.AXSQLRDD"
 
+    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLRDD):ToString()
 
     VIRTUAL METHOD Close() AS Logic
         IF (! SUPER:Close())

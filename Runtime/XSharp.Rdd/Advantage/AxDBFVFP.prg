@@ -14,6 +14,7 @@ CLASS XSharp.RDD.AXDBFVFP INHERIT ADSRDD
         SUPER:m_usTableType := ACE.ADS_VFP
         SUPER:m_strDriver := "Advantage.AXDBFVFP"
         SUPER:MAX_KEY_SIZE := 240
+    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXDBFVFP):ToString()
 
 END CLASS
 
@@ -23,5 +24,6 @@ CLASS XSharp.RDD.AXSQLVFP INHERIT AXSQLRDD
         SUPER:m_usTableType := ACE.ADS_VFP
         SUPER:m_strDriver := "Advantage.AXSQLVFP"
         SUPER:MAX_KEY_SIZE := 240
+    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLVFP):ToString()
 
 END CLASS

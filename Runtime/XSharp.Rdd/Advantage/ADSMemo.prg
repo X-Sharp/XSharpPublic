@@ -24,36 +24,56 @@ CLASS XSharp.RDD.ADSMemo INHERIT BaseMemo
 	VIRTUAL METHOD Flush() 			AS LOGIC
 		RETURN oRDD:Flush()
 
-	VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
-        RETURN oRDD:GetValue(nFldPos)
     
 	VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
-        //Todo
-		THROW NotImplementedException{__ENTITY__}
+        LOCAL aFormat  AS Char[]
+        LOCAL wLength  AS WORD
+        LOCAL dwLength AS DWORD
+        nFldPos += 1
+        if oRDD:_Fields[nFldPos ]:fieldType == DbFieldType.Memo
+            oRDD:ACECALL(ACE.AdsGetFieldLength(oRDD:m_hTable, (DWord)(nFldPos + 1) , out dwLength))
+            return (int) dwLength
+        ELSE
+            IF oRDD:_Fields[nFldPos]:fieldType == DbFieldType.Date
+                aFormat := Char[]{ACE.ADS_MAX_DATEMASK}
+                wlength := (Word)aFormat:Length 
+                oRDD:ACECALL(ACE.AdsGetDateFormat(aFormat, ref wlength))
+                return (int) wLength
+            ELSE
+                return oRDD:_Fields[nFldPos]:Length
+            ENDIF
+        ENDIF
+        RETURN 0
 
-	VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
-	    RETURN oRDD:Unsupported("GetValueFile")
+ 
 
-	VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
-        RETURN oRDD:PutValue(nFldPos, oValue)
 
-	VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
-        // Not needed for Advantage. Handled externally
-	    RETURN oRDD:Unsupported("PutValueFile")
-
-	// Memo File Access 
-    
+    #region Unsupported
     VIRTUAL METHOD CloseMemFile( ) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CloseMemFile")
 
-	VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+    VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CreateMemFile")
+
+	VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
+	    RETURN oRDD:Unsupported("GetValue")
+
+	VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+	    RETURN oRDD:Unsupported("GetValueFile")
 
     VIRTUAL METHOD OpenMemFile( ) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("OpenMemFile")
 
+	VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+        RETURN oRDD:Unsupported("PutValue")
+
+	VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        // Not needed for Advantage. Handled externally
+	    RETURN oRDD:Unsupported("PutValueFile")
+
+    #endregion
 
 END CLASS

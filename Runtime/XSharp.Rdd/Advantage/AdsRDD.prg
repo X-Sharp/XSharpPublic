@@ -48,7 +48,7 @@ CONSTRUCTOR()
     SELF:m_dbfName      := String.Empty
 #region Helper Methods that check for error conditions
 
-    PROTECTED METHOD ACECALL(ulRetCode AS DWord) AS VOID
+    INTERNAL METHOD ACECALL(ulRetCode AS DWord) AS VOID
         IF (ulRetCode != 0)
             SELF:ADSERROR(ulRetCode, 27)
         ENDIF
@@ -380,9 +380,6 @@ CONSTRUCTOR()
         ENDIF
         RETURN SELF:RecordMovement()
 
-    VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS Logic
-        RETURN SELF:Unsupported("AppendLock")
-
     VIRTUAL METHOD DeleteRecord() AS Logic
         SELF:ACECALL(ACE.AdsDeleteRecord(SELF:m_hTable))
         RETURN TRUE
@@ -398,22 +395,46 @@ CONSTRUCTOR()
     PROPERTY EOF AS Logic GET SUPER:_Eof
     PROPERTY Found as LOGIC GET SUPER:_Found
     PRIVATE PROPERTY IsADT AS LOGIC GET m_usTableType == ACE.ADS_ADT
+    VIRTUAL PROPERTY SysName AS STRING GET typeof(ADSRDD):ToString()
+
+
+    PROPERTY Deleted as LOGIC
+    GET
+        LOCAL isDeleted AS Word
+        LOCAL ulRetCode AS DWord
+        //
+        ulRetCode := ACE.AdsIsRecordDeleted(SELF:m_hTable, out isDeleted)
+        IF (ulRetCode == ACE.AE_NO_CURRENT_RECORD)
+            IF (SUPER:_Eof)
+                return FALSE
+            ELSE
+                return TRUE
+            ENDIF
+        ELSE
+            SELF:ACECALL(ulRetCode)
+        ENDIF
+        RETURN isDeleted != 0
+
+    END GET 
+    END PROPERTY
+
 
 #endregion
 
 
 #region Locking
+ 
 
-VIRTUAL METHOD Lock(lockInfo AS DBLOCKINFO) AS Logic
+    VIRTUAL METHOD Lock(lockInfo AS DBLOCKINFO) AS Logic
     LOCAL lRecno := 0 AS DWord
-    LOCAL num2 AS DWord
-    LOCAL num3 AS Word
-    LOCAL num4 AS Word
+    LOCAL result := 0 AS DWord
+    LOCAL handleType AS Word
+    LOCAL isLocked  AS Word
     //
     lockInfo:Result := FALSE
     IF (lockInfo:recID == null)
         //
-        lRecno := SUPER:m_lRecno
+        lRecno := SELF:_Recno
     ELSE
         //
         TRY
@@ -422,56 +443,36 @@ VIRTUAL METHOD Lock(lockInfo AS DBLOCKINFO) AS Logic
             SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, "Lock", e:Message)
         END TRY
     ENDIF
-    IF (blockInfo:Method == LockInfo.File)
+    IF (lockInfo:@@Method == DBLockInfo.LockMethod.File)
         result := ACE.AdsLockTable(SELF:m_hTable)
         SELF:ACECALL(result);
 
     ENDIF
-    IF (! SELF:ACECALL(ACE.AdsGetHandleType(SELF:m_hTable, @(num3))))
+    SELF:ACECALL(ACE.AdsGetHandleType(SELF:m_hTable, out handleType))
+    IF lRecno == 0 .AND. handleType != ACE.ADS_CURSOR
         //
-        RETURN FALSE
-    ENDIF
-    IF ((lRecno == 0) .AND. (num3 != 5))
-        //
-        IF (! SELF:ACECALL(ACE.AdsIsTableLocked(SELF:m_hTable, @(num4))))
+        SELF:ACECALL(ACE.AdsIsTableLocked(SELF:m_hTable, out isLocked))
+        IF isLocked == 0
             //
-            RETURN FALSE
-        ENDIF
-        IF (num4 == 0)
-            //
-            num2 := ACE.AdsUnlockTable(SELF:m_hTable)
-            SWITCH num2
-            CASE  (  ( 0 .OR. 5087 )  .OR. 5064 ) 
-                //
-                goto Label_0107
-            END SWITCH
-            IF (! SELF:ACECALL(num2))
-                //
-                RETURN FALSE
+            result := ACE.AdsUnlockTable(SELF:m_hTable)
+            if result != ACE.AE_TABLE_NOT_LOCKED  .and. ;
+                result != ACE.AE_TABLE_NOT_SHARED
+                SELF:ACECALL(result)
+                result  := ACE.AdsLockRecord(SELF:m_hTable, lRecno)
             ENDIF
-            RETURN TRUE
         ENDIF
     ENDIF
 
-Label_0107:
-    num2 := ACE.AdsLockRecord(SELF:m_hTable, lRecno)
-
-Label_0114:
-    SWITCH num2
-    CASE  ( 0 .OR. 5064 ) 
-        //
-        lpdblockInfo:fResult := TRUE
-        RETURN TRUE
-    END SWITCH
-    SELF:ACECALL(num2)
-    RETURN FALSE
+    IF result != ACE.AE_TABLE_NOT_SHARED
+        SELF:ACECALL(result)
+        lockInfo:Result := TRUE
+    ENDIF
+    RETURN TRUE
 
  
 
  
-
- 
-  VIRTUAL METHOD Unlock(recordID AS Object) AS Logic
+    VIRTUAL METHOD Unlock(recordID AS Object) AS Logic
     LOCAL result AS DWord
     LOCAL numRecord := 0 AS DWord
     TRY
@@ -747,6 +748,33 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
     RETURN SUPER:Info(uiOrdinal, oNewValue)
 
      
+#endregion
+
+#region Unsupported
+    VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS Logic
+        RETURN SELF:Unsupported("AppendLock")
+
+
+    VIRTUAL METHOD BlobInfo(uiPos AS DWord, uiOrdinal AS DWord) AS OBJECT
+        SELF:Unsupported("BlobInfo")
+        RETURN NULL
+
+    VIRTUAL METHOD ForceRel() AS Logic
+        RETURN SELF:Unsupported("ForceRel")
+
+    VIRTUAL METHOD GetRec() AS Byte[]
+        SELF:Unsupported("GetRec")
+        RETURN NULL
+
+    VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC  
+        RETURN SELF:Unsupported("HeaderLock")
+
+
+ 
+
+
+ 
+
 #endregion
 
 END CLASS

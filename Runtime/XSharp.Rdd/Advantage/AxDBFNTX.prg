@@ -15,7 +15,7 @@ CLASS XSharp.RDD.AXDBFNTX INHERIT ADSRDD
         SUPER:m_usTableType := ACE.ADS_NTX
         SUPER:m_strDriver   := "Advantage.AXDBFNTX"
         SUPER:MAX_KEY_SIZE  := 256
-
+    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXDBFNTX):ToString()
 END CLASS
 
 
@@ -25,5 +25,5 @@ CLASS XSharp.RDD.AXSQLNTX INHERIT AXSQLRDD
         SUPER:m_usTableType := ACE.ADS_NTX
         SUPER:m_strDriver := "Advantage.AXSQLNTX"
         SUPER:MAX_KEY_SIZE := 256
-
+    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLNTX):ToString()
 END CLASS

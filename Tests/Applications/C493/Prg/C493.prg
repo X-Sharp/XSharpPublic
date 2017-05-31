@@ -5,6 +5,19 @@
 // for projects that get directly ported from VO.
 // Also there's a runtime crash when calling ListBox:EnableItemDrag()
 // but that's probably due to a similar issue in the already compiled in vulcan GUI classes
+#ifdef __XSHARP__
+	STATIC DEFINE DATAWIN_LISTBOX1 := 100 
+	STATIC DEFINE DATAWIN_TEST := 101 
+	STATIC DEFINE DATAWIN_LISTBOX2 := 102 
+	STATIC DEFINE DATAWIN_TEST2 := 103 
+#else 
+	#DEFINE DATAWIN_LISTBOX1  100 
+	#DEFINE DATAWIN_TEST  101 
+	#DEFINE DATAWIN_LISTBOX2  102 
+	#DEFINE DATAWIN_TEST2  103 
+
+#endif
+#undef VO
 
 FUNCTION Start() AS INT
 LOCAL oApp AS xApp
@@ -86,24 +99,25 @@ LOCAL ptAS AS _winPoint
 LOCAL nRes AS INT
 h := SELF:oDCListBox1:Handle()
 ptAS := MemAlloc(100) 
-ptAS.x := 200
-ptAS.y := 200 
-ptIS.x := 200
-ptIS.y := 200 
+ptAS:x := 200
+ptAS:y := 200 
+ptIS:x := 200
+ptIS:y := 200 
 
 // Next 2 statements compile in VO and return correct results:
 // IS local, AS param
-nRes := LBItemFromPt_AS(h , ptIS , FALSE)
-SELF:oDCListBox2:AddItem("LOCAL IS, FUNC AS: " + AsString(nRes))
-? nRes
-xAssert(nRes > 0)
-
-// IS local, IS param
-nRes := LBItemFromPt_IS(h , ptIS , FALSE)
-SELF:oDCListBox2:AddItem("LOCAL IS, FUNC IS: " + AsString(nRes))
-? nRes
-xAssert(nRes > 0)
-
+#ifdef VO
+	nRes := LBItemFromPt_AS(h , ptIS , FALSE)
+	SELF:oDCListBox2:AddItem("LOCAL IS, FUNC AS: " + AsString(nRes))
+	? nRes
+	xAssert(nRes > 0)
+	
+//	 IS local, IS param
+	nRes := LBItemFromPt_IS(h , ptIS , FALSE)
+	SELF:oDCListBox2:AddItem("LOCAL IS, FUNC IS: " + AsString(nRes))
+	? nRes
+	xAssert(nRes > 0)
+#endif
 
 // Next 2 statements compile in VO but do not return the listbox item
 // AS local, AS param
@@ -111,11 +125,12 @@ nRes := LBItemFromPt_AS(h , ptAS , FALSE)
 SELF:oDCListBox2:AddItem("LOCAL AS, FUNC AS: " + AsString(nRes))
 ? nRes
 
-// AS local, IS param
-nRes := LBItemFromPt_IS(h , ptAS , FALSE)
-SELF:oDCListBox2:AddItem("LOCAL AS, FUNC IS: " + AsString(nRes))
-? nRes
-
+// AS local, IS param 
+#ifdef VO
+	nRes := LBItemFromPt_IS(h , ptAS , FALSE)
+	SELF:oDCListBox2:AddItem("LOCAL AS, FUNC IS: " + AsString(nRes))
+	? nRes
+#endif
 
 // correct results as expected
 ? nRes := LB_AS(ptAS)
@@ -140,32 +155,34 @@ LOCAL nRes AS INT
 ptAS := MemAlloc(20)
 
 h := SELF:oDCListBox1:Handle() 
-ptAS.ptCursor.x := 200
-ptAS.ptCursor.y := 200 
-ptIS.ptCursor.x := 200
-ptIS.ptCursor.y := 200 
+ptAS:ptCursor:x := 200
+ptAS:ptCursor:y := 200 
+ptIS:ptCursor:x := 200
+ptIS:ptCursor:y := 200 
 
 // this compiles in VO and finds the item (AS local, AS param):
-nRes := LBItemFromPt_AS(h , ptAS.ptCursor , FALSE)
-SELF:oDCListBox2:AddItem("ptAS, AS: " + AsString(nRes))
-? nRes
-xAssert(nRes > 0)
-
+#ifdef VO
+	nRes := LBItemFromPt_AS(h , ptAS:ptCursor , FALSE)
+	SELF:oDCListBox2:AddItem("ptAS, AS: " + AsString(nRes))
+	? nRes
+	xAssert(nRes > 0)
+#endif
 
 // This compiles in VO, doesn't find the item (AS local, IS param)
-nRes := LBItemFromPt_IS(h , ptAS.ptCursor , FALSE)
+nRes := LBItemFromPt_IS(h , ptAS:ptCursor , FALSE)
 SELF:oDCListBox2:AddItem("ptAS, IS: " + AsString(nRes))
 
 
 
 // this compiles in VO and finds the item (IS local, AS param):
-nRes := LBItemFromPt_AS(h , ptIS.ptCursor , FALSE)
-SELF:oDCListBox2:AddItem("ptIS, AS: " + AsString(nRes))
-xAssert(nRes > 0)
-
+#ifdef VO
+	nRes := LBItemFromPt_AS(h , ptIS:ptCursor , FALSE)
+	SELF:oDCListBox2:AddItem("ptIS, AS: " + AsString(nRes))
+	xAssert(nRes > 0)
+#endif
 
 // This compiles in VO, doesn't find the item (IS local, IS param):
-nRes := LBItemFromPt_IS(h , ptIS.ptCursor , FALSE)
+nRes := LBItemFromPt_IS(h , ptIS:ptCursor , FALSE)
 SELF:oDCListBox2:AddItem("ptIS, IS: " + AsString(nRes))
 
 MemFree(ptAS)
@@ -178,23 +195,15 @@ _DLL FUNCTION LBItemFromPt_AS(hLB AS PTR, pt AS _winPoint, bAutoScroll AS LOGIC)
 _DLL FUNCTION LBItemFromPt_IS(hLB AS PTR, pt IS _winPoint, bAutoScroll AS LOGIC) AS INT STRICT:comctl32.LBItemFromPt
 
 FUNCTION LB_AS(pt AS _winPOINT) AS INT
-RETURN pt.x
+RETURN pt:x
 
 FUNCTION LB_IS(pt IS _winPOINT) AS INT
-RETURN pt.x
+RETURN pt:x
 
 
 
 VOSTRUCT _winTest
 MEMBER ptCursor IS _winPoint
-
-STATIC DEFINE DATAWIN_LISTBOX1 := 100 
-
-STATIC DEFINE DATAWIN_TEST := 101 
-
-STATIC DEFINE DATAWIN_LISTBOX2 := 102 
-
-STATIC DEFINE DATAWIN_TEST2 := 103 
 
 PROC xAssert(l AS LOGIC)
 IF .not. l

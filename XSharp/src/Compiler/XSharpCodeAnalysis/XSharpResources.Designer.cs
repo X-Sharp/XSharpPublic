@@ -11,8 +11,8 @@
 namespace LanguageService.CodeAnalysis {
     using System;
     using System.Reflection;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -12940,6 +12940,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_FinalizeMethod_Title {
             get {
                 return ResourceManager.GetString("WRN_FinalizeMethod_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A get accessor is automatically generated for a set accessor without body..
+        /// </summary>
+        internal static string WRN_GeneratingGetAccessor {
+            get {
+                return ResourceManager.GetString("WRN_GeneratingGetAccessor", resourceCulture);
             }
         }
         

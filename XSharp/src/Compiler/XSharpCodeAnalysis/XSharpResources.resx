@@ -5210,5 +5210,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ExpectedEndOfStatement" xml:space="preserve">
     <value>Expecting 'end of statement', found '{0}'</value>
   </data>
-
+  <data name="WRN_GeneratingGetAccessor" xml:space="preserve">
+    <value>A get accessor is automatically generated for a set accessor without body.</value>
+  </data>
 </root>

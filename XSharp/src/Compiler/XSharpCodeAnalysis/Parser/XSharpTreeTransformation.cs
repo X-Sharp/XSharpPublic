@@ -2898,6 +2898,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var type = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
             var atts = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var id = context.Id.Get<SyntaxToken>();
+            // check for a property with a just a set accessor and no get accessor
+            // when its body is empty then we cannot generate a property so we have to add
+            // the get accessor as well
+            if (!isInInterface)
+            {
+                if (context._LineAccessors?.Count == 1)
+                {
+                    var accessor = context._LineAccessors[0];
+                    if (accessor.Key.Type == XSharpLexer.SET && accessor.ExprList == null)
+                    {
+                        // create a Get Accessor
+                        var newaccessor = new XP.PropertyLineAccessorContext(context, 0);
+                        newaccessor.CopyFrom(accessor);
+                        newaccessor.Key = new XSharpToken(XSharpLexer.GET, "GET");
+                        var decl = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
+                            attributeLists: EmptyList<AttributeListSyntax>(),
+                            modifiers: EmptyList(),
+                            keyword: SyntaxFactory.Identifier("get"),
+                            body: null,
+                            expressionBody: null,
+                            semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GeneratingGetAccessor));
+                        newaccessor.Put(decl);
+                        context._LineAccessors.Add(newaccessor);
+                    }
+
+                }
+            }
+
             var accessorList = _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         (context.Auto != null) ?
                             ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
@@ -2913,22 +2942,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
 
             if (context.ParamList == null || context.ParamList._Params.Count == 0)
-                context.Put(_syntaxFactory.PropertyDeclaration(
-                    attributeLists: atts,
-                    modifiers: mods,
-                    type: type,
-                    explicitInterfaceSpecifier: explicitif,
-                    identifier: id,
-                    accessorList: accessorList,
-                    expressionBody: null,
-                    initializer: context.Initializer != null ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                        context.Initializer.Get<ExpressionSyntax>()) : null,
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            {
+
+                var propertydecl = _syntaxFactory.PropertyDeclaration(
+                     attributeLists: atts,
+                     modifiers: mods,
+                     type: type,
+                     explicitInterfaceSpecifier: explicitif,
+                     identifier: id,
+                     accessorList: accessorList,
+                     expressionBody: null,
+                     initializer: context.Initializer != null ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                         context.Initializer.Get<ExpressionSyntax>()) : null,
+                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                context.Put(propertydecl);
+            }
             else
             {
                 if (context.Auto != null)
                     context.AddError(new ParseErrorData(context.Auto, ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
-                context.Put(_syntaxFactory.IndexerDeclaration(
+                var indexer = 
+                _syntaxFactory.IndexerDeclaration(
                     attributeLists: atts,
                     modifiers: mods,
                     type: type,
@@ -2937,7 +2971,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     parameterList: context.ParamList?.Get<BracketedParameterListSyntax>(),
                     accessorList: accessorList,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                context.Put(indexer);
             }
         }
 

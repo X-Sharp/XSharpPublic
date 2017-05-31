@@ -1555,7 +1555,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_GetSetMustHaveBody = 9047,
         ERR_AssignMethodsMustHaveAParameter = 9048,
         ERR_NoClipperCallingConventionForAccessAssign = 9049,
-        ERR_ExpectedEndOfStatement=9050,
+        ERR_ExpectedEndOfStatement = 9050,
+        WRN_GeneratingGetAccessor = 9051,
         #endregion X#-only messages
     }
 }

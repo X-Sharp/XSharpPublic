@@ -713,14 +713,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool instance = false;
             if (node?.Parent is MemberAccessExpressionSyntax)
             {
-                var xnode = node.Parent.XNode as AccessMemberContext;
-                if (xnode != null && xnode.Op.Text == ":")
-                {
-                    instance = true;
-                    if (mustBeLHS)
+                var xnode = node.Parent.XNode;
+                if (xnode != null)
+                { 
+                    if (xnode is ArrayElementContext)
                     {
-                        var par = node.Parent as MemberAccessExpressionSyntax;
-                        instance = par.Expression == node;
+                        xnode = ((ArrayElementContext)xnode).Expr;
+                    }
+                    var amc = xnode as AccessMemberContext;
+                    if (amc != null && amc.Op.Text == ":")
+                    {
+                        instance = true;
+                        if (mustBeLHS)
+                        {
+                            var par = node.Parent as MemberAccessExpressionSyntax;
+                            instance = par.Expression == node;
+                        }
                     }
                 }
             }

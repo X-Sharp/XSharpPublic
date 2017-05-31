@@ -5,7 +5,9 @@
 //
 
 BEGIN NAMESPACE XSharp.RDD
+
 CLASS DBFMEMO INHERIT DbfNtx
+
 VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
 	THROW NotImplementedException{__ENTITY__}
 

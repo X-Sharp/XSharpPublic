@@ -4,7 +4,11 @@
 // See License.txt in the project root for license information.
 //
 
+
+// The classes below are simple. No properties, but all public fields.
+
 BEGIN NAMESPACE XSharp.RDD  
+
 CLASS DbEvalInfo  
 	PUBLIC ScopeInfo AS DbScopeInfo
 	PUBLIC Block	 AS ICodeBlock
@@ -33,7 +37,7 @@ END CLASS
                 
 STRUCTURE DbLockInfo
 	PUBLIC RecId		AS OBJECT
-	PUBLIC Method_		AS LockMethod
+	PUBLIC @@Method		AS LockMethod
 	PUBLIC Result		AS LOGIC
 	ENUM LockMethod
 		MEMBER Exclusive := 1
@@ -65,7 +69,7 @@ CLASS DbOrderCondInfo
 	PUBLIC Additive			AS LOGIC
 	PUBLIC All				AS LOGIC
 	PUBLIC Custom			AS LOGIC
-	PUBLIC Descending 		AS LOGIC
+	PUBLIC @@Descending 	AS LOGIC
 	PUBLIC EvalBlock		AS ICodeBlock 
 	PUBLIC ForBlock			AS ICodeBlock 
 	PUBLIC ForExpression	AS STRING    
@@ -160,8 +164,8 @@ END STRUCTURE
 CLASS DbSortInfo 
 	PUBLIC TransInfo AS DbTransInfo
 	PUBLIC Items	 AS DbSortItem[]
-	
 END CLASS
+
 STRUCTURE DbSortItem           
 	PUBLIC FieldNo 	AS LONG
 	PUBLIC OffSet	AS LONG
@@ -174,7 +178,6 @@ STRUCTURE DbSortItem
 	PUBLIC CONST SF_Long	   := 0x80 AS LONG
 	PUBLIC CONST SF_Descending := 0x100 AS LONG
 END STRUCTURE
-
 
 CLASS DbTransInfo  
 	PUBLIC Scope		AS DbScopeInfo

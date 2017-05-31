@@ -3,16 +3,9 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-BEGIN NAMESPACE XSharp.Rdd
+BEGIN NAMESPACE XSharp.RDD
 
-	CLASS RddError INHERIT Exception
-        PROPERTY SubSystem as STRING AUTO
-        PROPERTY Gencode as DWORD AUTO
-        PROPERTY SubCode as DWORD AUTO
-        PROPERTY FuncSym as STRING AUTO
-        PROPERTY FileName as STRING AUTO
-        PROPERTY Severity as DWORD AUTO
-        PROPERTY Description as STRING AUTO
+	CLASS RddError INHERIT XError
     CONSTRUCTOR()
          RETURN
 

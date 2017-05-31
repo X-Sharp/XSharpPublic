@@ -14,7 +14,7 @@ CLASS XSharp.RDD.ADSADT INHERIT ADSRDD
         SUPER()
         SUPER:m_usTableType := ACE.ADS_ADT
         SUPER:m_strDriver := "Advantage.ADSADT"
-        SUPER:MAX_KEY_SIZE := 4082
+        SUPER:MAX_KEY_SIZE := ACE.ADS_MAX_KEY_LENGTH
 
 END CLASS
 
@@ -23,6 +23,6 @@ CLASS XSharp.RDD.AXSQLADT INHERIT AXSQLRDD
         SUPER()
         SUPER:m_usTableType := ACE.ADS_ADT
         SUPER:m_strDriver := "Advantage.AXSQLADT"
-        SUPER:MAX_KEY_SIZE := 4082
+        SUPER:MAX_KEY_SIZE := ACE.ADS_MAX_KEY_LENGTH
 
 END CLASS

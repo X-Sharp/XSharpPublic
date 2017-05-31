@@ -7,12 +7,12 @@
 BEGIN NAMESPACE XSharp
 Enum Set
 	MEMBER EXACT       := 1	
-	MEMBER FIXED       := 2	
+	MEMBER @@FIXED     := 2	
 	MEMBER DECIMALS    := 3	
 	MEMBER DATEFORMAT  := 4	
 	MEMBER EPOCH       := 5	
 	MEMBER PATH        := 6	
-	MEMBER DEFAULT     := 7	
+	MEMBER @@DEFAULT   := 7	
 	MEMBER EXCLUSIVE   := 8	
 	MEMBER SOFTSEEK    := 9	
 	MEMBER UNIQUE      := 10	
@@ -54,12 +54,12 @@ Enum Set
 	MEMBER AUTOPEN     := 45  /* CA-Cl*pper 5.3 compatible */
 	MEMBER AUTORDER    := 46  /* CA-Cl*pper 5.3 compatible */
 	MEMBER AUTOSHARE   := 47  /* CA-Cl*pper 5.3 compatible */ 		
-
+    // 48 and 49 unused
 	MEMBER DIGITS      := 50	// Vulcan had 39
 	MEMBER NETERR      := 51	// Vulcan had 40
 	MEMBER HPLOCK      := 52    // Vulcan had 41
-	MEMBER ANSI        := 53	// Vulcan had 44
-	MEMBER YIELD       := 54	// Vulcan had 45
+	MEMBER @@ANSI      := 53	// Vulcan had 44
+	MEMBER @@YIELD     := 54	// Vulcan had 45
 	MEMBER LOCKTRIES   := 55	// Vulcan had 46
 	MEMBER AmExt	   := 56
 	MEMBER AmPm		   := 57
@@ -71,7 +71,7 @@ Enum Set
 	MEMBER TimeSep     := 62
 	MEMBER FieldStore  := 63
 	MEMBER Science     := 64
-
+    // 65 - 97 unused
 	MEMBER DICT        := 98	
 	MEMBER INTL        := 99	
 
@@ -94,9 +94,24 @@ Enum Set
 	MEMBER TIMEFORMAT     :=  116 /* Harbour extension */
 	MEMBER DBCODEPAGE     :=  117 /* Harbour extension */ 
 
+    // 118 - 149 unused
+    // Advantage extensions
+    MEMBER AXSLOCKING           := 150
+    MEMBER RIGHTSCHECKING       := 151
+    MEMBER CONNECTION_HANDLE    := 152
+    MEMBER EXACTKEYPOS          := 153
+    MEMBER SQL_QUERY            := 154
+    MEMBER SQL_TABLE_PASSWORDS  := 155
+    MEMBER COLLATION_NAME       := 156
+
+
+
+    // Start of user values
+    MEMBER User           := 200
+
 END Enum
 END NAMESPACE
-
+#region Defines
 DEFINE _SET_EXACT       := Set.Exact		
 DEFINE _SET_FIXED       := Set.Fixed 		
 DEFINE _SET_DECIMALS    := Set.Decimals		
@@ -189,3 +204,16 @@ DEFINE _SET_CODEPAGE       :=  Set.CODEPAGE
 DEFINE _SET_OSCODEPAGE     :=  Set.OSCODEPAGE    	
 DEFINE _SET_TIMEFORMAT     :=  Set.TIMEFORMAT    	
 DEFINE _SET_DBCODEPAGE     :=  Set.DBCODEPAGE    	
+
+// Advantage additions
+DEFINE _SET_AXSLOCKING           := Set.AXSLOCKING         
+DEFINE _SET_RIGHTSCHECKING       := Set.RIGHTSCHECKING     
+DEFINE _SET_CONNECTION_HANDLE    := Set.CONNECTION_HANDLE  
+DEFINE _SET_EXACTKEYPOS          := Set.EXACTKEYPOS        
+DEFINE _SET_SQL_QUERY            := Set.SQL_QUERY          
+DEFINE _SET_SQL_TABLE_PASSWORDS  := Set.SQL_TABLE_PASSWORDS
+DEFINE _SET_COLLATION_NAME       := Set.COLLATION_NAME     
+                                    
+
+
+#endregion

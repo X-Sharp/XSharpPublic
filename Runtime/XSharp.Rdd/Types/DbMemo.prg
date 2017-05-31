@@ -3,13 +3,13 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+using System.IO
 BEGIN NAMESPACE XSharp.RDD
 CLASS DbMemo                
 	#region Fields
 	PROTECTED _BlockSize	AS LONG
 	PROTECTED _NewSize		AS LONG
-	PROTECTED _Stream		AS WFileStream
+	PROTECTED _Stream		AS FileStream
 	PROTECTED _Extension	AS STRING
 	PROTECTED _Type			AS BYTE 
 	PROTECTED _Version		AS BYTE 

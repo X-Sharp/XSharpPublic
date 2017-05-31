@@ -37,9 +37,5 @@ VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
 VIRTUAL METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL PROPERTY Found as LOGIC	
-GET
-	THROW NotImplementedException{__ENTITY__}
-END GET
-END PROPERTY
+VIRTUAL PROPERTY Found as LOGIC	GET _oArea:Found
 END CLASS

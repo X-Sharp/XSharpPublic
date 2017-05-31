@@ -68,7 +68,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <PreBuildEvent />
     <PostBuildEvent />
@@ -78,11 +78,14 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>/creatingruntime</CommandLineOption>
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -108,7 +111,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <PreBuildEvent />
     <PostBuildEvent />
@@ -135,17 +138,22 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Advantage\ACE.prg" />
-    <Compile Include="Advantage\AceEnums.prg" />
-    <Compile Include="Advantage\AceUnpublished.prg" />
+    <Compile Include="ACE\ACE.prg" />
+    <Compile Include="ACE\ACE32.prg" />
+    <Compile Include="ACE\ACE64.prg" />
+    <Compile Include="ACE\AceEnums.prg" />
+    <Compile Include="ACE\AceUnpublished.prg" />
     <Compile Include="Advantage\AdsADT.prg" />
+    <Compile Include="Advantage\ADSIndex.prg" />
     <Compile Include="Advantage\AdsRDD.prg" />
     <Compile Include="Advantage\AxDBFCDX.prg" />
     <Compile Include="Advantage\AxDBFNTX.prg" />
     <Compile Include="Advantage\AxDBFVFP.prg" />
     <Compile Include="Advantage\AXSqlRDD.prg" />
-    <Compile Include="Advantage\DBFAXS.prg" />
+    <Compile Include="Advantage\ADSMemo.prg" />
+    <Compile Include="Advantage\Functions.prg" />
     <Compile Include="RddError.prg" />
+    <Compile Include="SubCodes.prg" />
     <Compile Include="_Dummy.prg" />
     <Compile Include="Types\BaseIndex.prg" />
     <Compile Include="Types\BaseMemo.prg" />
@@ -176,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Advantage\" />
+    <Folder Include="ACE" />
     <Folder Include="Types" />
     <Folder Include="Interfaces" />
     <Folder Include="Properties\" />

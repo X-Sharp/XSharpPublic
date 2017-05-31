@@ -1,6 +1,7 @@
 ﻿USING System.Collections.Generic
 USING System.Threading
 USING XSharp.Runtime
+USING XSharp
 
 CLASS XSharp.Runtime.State
 	// Static Fields
@@ -61,3 +62,28 @@ CLASS XSharp.Runtime.State
 		RETURN			
 
 END CLASS	
+
+
+STATIC CLASS XSharp.RuntimeState
+    STATIC PROPERTY Optimize AS LOGIC ;
+        GET XSharp.Runtime.State.GetInstance():GetValue<LOGIC>(Set.OPTIMIZE);
+        SET XSharp.Runtime.State.GetInstance():SetValue(Set.OPTIMIZE, value)
+    STATIC PROPERTY Deleted AS LOGIC ;
+        GET XSharp.Runtime.State.GetInstance():GetValue<LOGIC>(Set.DELETED);
+        SET XSharp.Runtime.State.GetInstance():SetValue(Set.DELETED, value)
+    STATIC PROPERTY Exact AS LOGIC ;
+        GET XSharp.Runtime.State.GetInstance():GetValue<LOGIC>(Set.EXACT);
+        SET XSharp.Runtime.State.GetInstance():SetValue(Set.EXACT, value)
+    STATIC PROPERTY Epoch AS DWORD ;
+        GET XSharp.Runtime.State.GetInstance():GetValue<DWORD>(Set.EPOCH);
+        SET XSharp.Runtime.State.GetInstance():SetValue(Set.EPOCH, value)
+    STATIC PROPERTY Decimals AS DWORD ;
+        GET XSharp.Runtime.State.GetInstance():GetValue<DWORD>(Set.DECIMALS);
+        SET XSharp.Runtime.State.GetInstance():SetValue(Set.DECIMALS, value)
+
+    STATIC PROPERTY DateFormat AS STRING ;
+        GET XSharp.Runtime.State.GetInstance():GetValue<STRING>(Set.DateFormat);
+        SET XSharp.Runtime.State.GetInstance():SetValue(Set.DateFormat, value)
+
+
+END CLASS

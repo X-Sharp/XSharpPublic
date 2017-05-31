@@ -248,6 +248,7 @@ ENUM AceValidate AS WORD
 	MEMBER RETURN_ERROR := ACE.ADS_VALIDATE_RETURN_ERROR 
 END ENUM
 end namespace
+
 begin namespace AdvantageClientEngine
 public enum AdsCharTypes AS WORD
 	MEMBER ADS_ANSI := 1

@@ -74,6 +74,11 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Severity.prg" />
+    <Compile Include="Gencode.prg" />
+    <Compile Include="XError.prg" />
+    <Compile Include="Set.prg" />
+    <Compile Include="State.prg" />
     <Compile Include="Types\Attributes.prg" />
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Interfaces.prg" />

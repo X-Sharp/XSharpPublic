@@ -22,9 +22,7 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
             RETURN FALSE
         ENDIF
         IF (SELF:m_hStatement != System.IntPtr.Zero)
-            IF (! SUPER:ACECALL(ACE.AdsCloseSQLStatement(SELF:m_hStatement)))
-                RETURN FALSE
-            ENDIF
+            SUPER:ACECALL(ACE.AdsCloseSQLStatement(SELF:m_hStatement))
             SELF:m_hStatement := System.IntPtr.Zero
         ENDIF
         RETURN TRUE
@@ -36,7 +34,7 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
     PROPERTY ACESQLStatementHandle AS System.IntPtr GET SELF:m_hStatement
 
     VIRTUAL METHOD Info(uiOrdinal AS Int, oNewValue as Object) AS Object
-        IF (uiOrdinal == ACE.DBI_GET_ACE_STMT_HANDLE )
+        IF (uiOrdinal == DBI_GET_ACE_STMT_HANDLE )
             Return SELF:m_hStatement
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
@@ -202,18 +200,12 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
         RETURN SUPER:RecInfo(iRecID, uiOrdinal, oNewValue)
     ENDIF
     IF ACEUNPUB.AdsSqlPeekStatement(SUPER:m_hTable, out isLive) == 0 .AND. isLive == 0
-        IF ! SUPER:ACECALL(ACE.AdsGetRecordNum(SUPER:m_hTable, ACE.ADS_IGNOREFILTERS, out recNum))
-            RETURN FALSE
-        ENDIF
-        IF ! SUPER:ACECALL(ACE.AdsGetRecordCRC(SUPER:m_hTable, out dwCRC, 1))
-            RETURN FALSE
-        ENDIF
+        SUPER:ACECALL(ACE.AdsGetRecordNum(SUPER:m_hTable, ACE.ADS_IGNOREFILTERS, out recNum))
+        SUPER:ACECALL(ACE.AdsGetRecordCRC(SUPER:m_hTable, out dwCRC, 1))
         ACE.AdsCloseTable(SUPER:m_hTable)
         SUPER:m_hTable := System.IntPtr.Zero
         SUPER:m_hIndex := System.IntPtr.Zero
-        IF ! SUPER:ACECALL(ACE.AdsExecuteSQL(SELF:m_hStatement, OUT SELF:m_hTable))
-            RETURN FALSE
-        ENDIF
+        SUPER:ACECALL(ACE.AdsExecuteSQL(SELF:m_hStatement, OUT SELF:m_hTable))
         IF ACE.AdsGotoRecord(SUPER:m_hTable, recNum) == 0
             IF ACE.AdsGetRecordCRC(SUPER:m_hTable, out dwCRC2, 1) == 0 .AND. dwCRC == dwCRC2
                 SUPER:RecordMovement()
@@ -222,18 +214,12 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
                 SUPER:RecordMovement()
             ENDIF
         ELSE
-            IF ! SUPER:ACECALL(ACE.AdsGotoTop(SUPER:m_hTable))
-                RETURN FALSE
-            ENDIF
+            SUPER:ACECALL(ACE.AdsGotoTop(SUPER:m_hTable))
             SUPER:RecordMovement()
         ENDIF
-        IF ! SUPER:ACECALL(ACE.AdsGetIndexHandle(SUPER:m_hTable, null, OUT SELF:m_hIndex))
-            RETURN FALSE
-        ENDIF
+        SUPER:ACECALL(ACE.AdsGetIndexHandle(SUPER:m_hTable, null, OUT SELF:m_hIndex))
     ELSE
-        IF ! SUPER:ACECALL(ACE.AdsRefreshRecord(SUPER:m_hTable))
-            RETURN FALSE
-        ENDIF
+        SUPER:ACECALL(ACE.AdsRefreshRecord(SUPER:m_hTable))
     ENDIF
     RETURN TRUE
 

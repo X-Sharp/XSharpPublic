@@ -204,8 +204,6 @@
     <Compile Include="Functions\functions_vodb.prg" />
     <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="Set-Defines.prg" />
-    <Compile Include="State.prg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">

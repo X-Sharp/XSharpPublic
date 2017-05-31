@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+#using System.IO
 
 BEGIN NAMESPACE XSharp.RDD
 
@@ -40,7 +41,7 @@ CLASS Workarea IMPLEMENTS IRdd
 	PROTECT _Separator	    AS STRING	// Field Separator
 	PROTECT _ReadOnly		AS LOGIC	// ReadOnly ?  
 	PROTECT _Shared			AS LOGIC	// Shared ?  
-	PROTECT _Stream			AS WFileStream // File. 
+	PROTECT _Stream			AS FileStream // File. 
 	PROTECT _Flush			AS LOGIC		// Must flush ? 
 
 	// Memo and Order Implementation

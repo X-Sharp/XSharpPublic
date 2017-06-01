@@ -454,6 +454,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             // so String.Compare will use different lookup options as SELF:ToString()
             var originalOptions = options;
 
+            // C267: XsTools.GetTrue() where XsTools is a class inside the namespace XsTools
+            if (node.Parent is QualifiedNameSyntax)
+            {
+                if (node.Parent.Parent is InvocationExpressionSyntax)
+                {
+                    options |= LookupOptions.MustNotBeNamespace;
+                }
+            }
+
             // Here we add XSharp Specific options
             if (!bindMethod)
             {
@@ -631,7 +640,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool noMethod = options.HasFlag(LookupOptions.MustNotBeMethod);
             bool onlyDef = options.HasFlag(LookupOptions.DefinesOnly);
-            if ((noMethod || onlyDef) && ! result.IsClear)
+            bool noNameSpace = options.HasFlag(LookupOptions.ExcludeNameSpaces);
+            bool noType = options.HasFlag(LookupOptions.MustNotBeType);
+            if ((noMethod || onlyDef || noNameSpace || noType ) && ! result.IsClear)
             {
                 LookupResult tmp = LookupResult.GetInstance();
                 foreach (var sym in result.Symbols)
@@ -655,9 +666,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                             add = true;
                             break;
                         case SymbolKind.Method:
-                            add = !noMethod;
+                        case SymbolKind.Property:
+                            add = !noMethod && !onlyDef;
+                            break;
+                        case SymbolKind.Namespace:
+                            add = !noNameSpace && !onlyDef;
+                            break;
+                        case SymbolKind.NamedType:
+                            add = !noType && ! onlyDef;
                             break;
                         default:
+                            add = true;
                             break;
                     }
                     if (add)

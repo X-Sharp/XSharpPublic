@@ -700,6 +700,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 (object)typeContainingConstructor != null ? ErrorCode.ERR_BadCtorArgCount :
                 (object)delegateTypeBeingInvoked != null ? ErrorCode.ERR_BadDelArgCount :
                 ErrorCode.ERR_BadArgCount;
+
+#if XSHARP
+            if (code == ErrorCode.ERR_BadArgCount)
+            {
+                // check to see if any of the parameters were missing
+                foreach (var arg in arguments.Arguments)
+                {
+                    if (arg.Syntax is DefaultExpressionSyntax)
+                    {
+                        code = ErrorCode.ERR_NoOverloadFoundThatAllowsMissingArguments;
+                    }
+                }
+
+            }
+#endif                        
+
             var target = (object)typeContainingConstructor ?? (object)delegateTypeBeingInvoked ?? name;
 
             int argCount = arguments.Arguments.Count;

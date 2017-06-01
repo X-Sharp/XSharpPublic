@@ -7001,6 +7001,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No overload for method &apos;{0}&apos; found with {1} arguments, which allows missing arguments.
+        /// </summary>
+        internal static string ERR_NoOverloadFoundThatAllowsMissingArguments {
+            get {
+                return ResourceManager.GetString("ERR_NoOverloadFoundThatAllowsMissingArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot embed interop types from assembly &apos;{0}&apos; because it is missing the &apos;{1}&apos; attribute..
         /// </summary>
         internal static string ERR_NoPIAAssemblyMissingAttribute {

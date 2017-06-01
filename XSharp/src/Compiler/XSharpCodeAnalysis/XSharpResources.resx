@@ -5216,4 +5216,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CannotTakeAddressOfFunctionOrMethod" xml:space="preserve">
     <value>In .Net you cannot take the address of a method or a function. For callback functions you need to use a delegate instead.</value>
   </data>
+  <data name="ERR_NoOverloadFoundThatAllowsMissingArguments" xml:space="preserve">
+    <value>No overload for method '{0}' found with {1} arguments and default values for one or more arguments</value>
+  </data>
+  
+
 </root>

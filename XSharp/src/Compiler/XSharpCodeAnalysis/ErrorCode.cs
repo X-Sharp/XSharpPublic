@@ -1560,6 +1560,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ExpectedEndOfStatement = 9050,
         WRN_GeneratingGetAccessor = 9051,
         ERR_CannotTakeAddressOfFunctionOrMethod = 9052,
+        ERR_NoOverloadFoundThatAllowsMissingArguments = 9053,
         #endregion X#-only messages
     }
 }

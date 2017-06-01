@@ -27,6 +27,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private readonly SyntaxReference _syntaxRef;
         private readonly ParameterSyntaxKind _parameterSyntaxKind;
+#if XSHARP
+        private bool hasParamsAttribute = false;
+#endif
 
         private CustomAttributesBag<CSharpAttributeData> _lazyCustomAttributesBag;
         private ThreeState _lazyHasOptionalAttribute;
@@ -585,6 +588,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 // error CS0674: Do not use 'System.ParamArrayAttribute'. Use the 'params' keyword instead.
                 arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitParamArray, arguments.AttributeSyntaxOpt.Name.Location);
+#if XSHARP
+                this.hasParamsAttribute = true;
+#endif
             }
             else if (attribute.IsTargetAttribute(this, AttributeDescription.InAttribute))
             {
@@ -1026,7 +1032,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
+#if XSHARP
+                bool isparam = (_parameterSyntaxKind & ParameterSyntaxKind.ParamsParameter) != 0;
+                return isparam | hasParamsAttribute;
+#else
                 return (_parameterSyntaxKind & ParameterSyntaxKind.ParamsParameter) != 0;
+#endif
             }
         }
 

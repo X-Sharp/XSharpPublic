@@ -56,6 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private string GetTypedPtrName(IXParseTree xNode)
         {
+            // GLobals and Instance variables are all of type ClassvarContext
             if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext)
             {
                 var cvl = xNode.Parent as XP.ClassVarListContext;
@@ -63,6 +64,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (pdtc != null)
                     return pdtc.TypeName.GetText();
 
+            }
+            // Locals are of type LocalVarContext
+            else if (xNode is XP.LocalvarContext)
+            {
+                var lvc = xNode as XP.LocalvarContext;
+                var pdtc = lvc.DataType as XP.PtrDatatypeContext;
+                if (pdtc != null)
+                    return pdtc.TypeName.GetText();
             }
             return null;
         }
@@ -73,24 +82,39 @@ namespace Microsoft.CodeAnalysis.CSharp
             string method = XNode.Expr.GetText();
             if (!ValidatePCallArguments(node, args, diagnostics, method))
                 return;
-            var bfa = args[0] as BoundFieldAccess;
-            if (bfa == null)
+            var kind = args[0].Kind;
+            if (kind != BoundKind.Local && kind != BoundKind.FieldAccess)
             {
-                Error(diagnostics, ErrorCode.ERR_PCallFirstArgument, node, method, "global typed function pointer");
+                Error(diagnostics, ErrorCode.ERR_PCallFirstArgument, node, method, "typed function pointer");
                 return ;
             }
-            
             string methodName = null;
-            if (bfa.ExpressionSymbol.DeclaringSyntaxReferences.Length > 0)
+            // Note that this does not get the syntax of the argument itself
+            // but the syntax of the place where the symbol (Global, Field or Local) that the argument points to was defined
+            SyntaxReference syntaxref = null; 
+            if (kind == BoundKind.FieldAccess)
             {
-                var syntaxref = bfa.ExpressionSymbol.DeclaringSyntaxReferences[0] as SyntaxReference;
-                if (syntaxref != null)
+                var bfa = args[0] as BoundFieldAccess;  // Global or Field
+                if (bfa != null && bfa.ExpressionSymbol.DeclaringSyntaxReferences.Length > 0)
                 {
-                    CSharpSyntaxNode syntaxnode = syntaxref.GetSyntax() as CSharpSyntaxNode;
-                    var xNode = syntaxnode?.XNode;
-                    methodName = GetTypedPtrName(xNode);
+                    syntaxref = bfa.ExpressionSymbol.DeclaringSyntaxReferences[0] as SyntaxReference;
                 }
             }
+            else if (kind == BoundKind.Local)
+            {
+                var bl = args[0] as BoundLocal;         // Local
+                if (bl != null && bl.LocalSymbol?.DeclaringSyntaxReferences.Length > 0)
+                {
+                    syntaxref = bl.LocalSymbol.DeclaringSyntaxReferences[0] as SyntaxReference;
+                }
+            }
+            if (syntaxref != null)
+            {
+                CSharpSyntaxNode syntaxnode = syntaxref.GetSyntax() as CSharpSyntaxNode;
+                var xNode = syntaxnode?.XNode;
+                methodName = GetTypedPtrName(xNode);
+            }
+
             if (methodName == null )
             {
                 // first argument for pcall must be typed ptr

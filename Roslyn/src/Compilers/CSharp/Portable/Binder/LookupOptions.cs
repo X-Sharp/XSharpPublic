@@ -114,6 +114,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
 
         MustNotBeMethod = 1 << 17,
+
+        /// <summary>
+        /// In VO/Vulcan compatibility mode we sometimes prefer namespaces over types
+        /// </summary>
+
+        MustNotBeType = 1 << 18,
+
+
 #endif
     }
 

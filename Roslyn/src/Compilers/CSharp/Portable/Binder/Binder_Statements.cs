@@ -1402,7 +1402,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Error(diagnostics, ErrorCode.ERR_BadSKknown, node, type.Type, MessageID.IDS_SK_TYPE.Localize(), MessageID.IDS_SK_VARIABLE.Localize());
                 return false;
             }
+#if XSHARP
+            if (expr.Kind == BoundKind.Call)
+            {
+                Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node);
+                return false;
 
+            }
+
+#endif
             // Cases 3, 4, 6:
             if ((expr.Kind == BoundKind.Lambda) ||
                 (expr.Kind == BoundKind.UnboundLambda) ||

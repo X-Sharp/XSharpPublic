@@ -10,12 +10,14 @@ RETURN FALSE
 FUNCTION Start() AS VOID
 	LOCAL hModule AS PTR
 	LOCAL icex IS _winINITCOMMONCONTROLSEX
+	LOCAL lpfnInitCommonControlsEx AS InitCommonControlsEx PTR
 
 	hModule := GetModuleHandle(String2Psz("COMCTL32.DLL"))
 	IF hModule == NULL_PTR
 		hModule := LoadLibrary(String2Psz("COMCTL32.DLL"))
 	ENDIF
 	gpfnInitCommonControlsEx := GetProcAddress(hModule, String2Psz("InitCommonControlsEx"))
+	lpfnInitCommonControlsEx := gpfnInitCommonControlsEx
 	
 	? gpfnInitCommonControlsEx
 
@@ -23,6 +25,7 @@ FUNCTION Start() AS VOID
 		icex:dwSize := _SIZEOF(_winINITCOMMONCONTROLSEX)
 		icex:dwICC := _OR(ICC_DATE_CLASSES, ICC_USEREX_CLASSES, ICC_COOL_CLASSES, ICC_INTERNET_CLASSES, ICC_LINK_CLASS)
 		? !PCALL(gpfnInitCommonControlsEx, @icex)
+		? !PCALL(lpfnInitCommonControlsEx, @icex)
 		// prints TRUE in vulcan
 	ENDIF
 

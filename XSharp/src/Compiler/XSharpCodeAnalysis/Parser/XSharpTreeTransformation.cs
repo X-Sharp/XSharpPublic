@@ -3280,6 +3280,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Data.MustBeVoid = context.T.Token.Type == XP.ASSIGN;
         }
 
+        protected bool hasAttribute(SyntaxList<AttributeListSyntax> attributes, string attributeName)
+        {
+            foreach (AttributeListSyntax al in attributes)
+            {
+                for (int iAttr = 0; iAttr < al.Attributes.Count; iAttr++)
+                {
+                    var attr = al.Attributes[iAttr];
+                    var name = attr.Name.ToFullString();
+                    var pos = name.LastIndexOf(".");
+                    if (pos > 0)
+                    {
+                        name = name.Substring(pos + 1).Trim();
+                    }
+                    if (String.Equals(name, attributeName, StringComparison.OrdinalIgnoreCase) ||
+                        String.Equals(name, attributeName+"Attribute", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        protected void removeAttribute(XP.AttributesContext attributes, string attributeName)
+        {
+            bool found = false;
+            foreach (var attrblock in attributes._AttrBlk)
+            {
+                foreach (var attr in attrblock._Attributes)
+                {
+                    var name = attr.Name.GetText();
+                    var pos = name.LastIndexOf(".");
+                    if (pos > 0)
+                        name = name.Substring(pos + 1).Trim();
+                    if (string.Equals(name, attributeName,StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(name, attributeName+"Attribute", StringComparison.OrdinalIgnoreCase))
+                    {
+                        attrblock._Attributes.Remove(attr);
+                        found = true;
+                        break;
+                    }
+                }
+                ExitAttributeBlock(attrblock);
+                if (found)
+                    break;
+            }
+            ExitAttributes(attributes);
+        }
+
         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
             var idName = context.Id.Get<SyntaxToken>();
@@ -3317,6 +3365,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.StmtBlk = null;
             }
+            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            bool hasExtensionAttribute = false;
             if (context.T.Token.Type != XP.METHOD)
             {
                 var vomods = _pool.Allocate();
@@ -3330,14 +3380,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (context.ParamList?._Params.Count > 0 && context.ParamList?._Params[0].Self != null && !mods.Any((int)SyntaxKind.StaticKeyword))
+                // Check for Extension Attribute. When found then set the self token for the first parameter
+                // and generate the parameters again
+
+                if (context.ParamList?._Params.Count > 0)
                 {
-                    var mTemp = _pool.Allocate();
-                    mTemp.AddRange(mods);
-                    mTemp.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-                    mods = mTemp.ToList<SyntaxToken>();
-                    _pool.Free(mTemp);
+                    bool hasSelf = context.ParamList?._Params[0].Self != null;
+                    if (attributes.Count > 0 && ! hasSelf)
+                    {
+                        if (hasAttribute(attributes, "Extension"))
+                        {
+                            hasExtensionAttribute = true;
+                            var par = context.ParamList._Params[0];
+                            par.Self = new XSharpToken(XSharpLexer.SELF,"SELF");
+                            hasSelf = true;
+                            par.Modifiers._Tokens.Add(par.Self);
+                            ExitParameterDeclMods(par.Modifiers);
+                            ExitParameter(par);
+                            ExitParameterList(context.ParamList);
+                            removeAttribute(context.Attributes,"Extension");
+                            attributes = context.Attributes.GetList<AttributeListSyntax>();
+                        }
+                    }
+
+                    if (hasSelf && !mods.Any((int)SyntaxKind.StaticKeyword))
+                    {
+                        var mTemp = _pool.Allocate();
+                        mTemp.AddRange(mods);
+                        mTemp.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+                        mods = mTemp.ToList<SyntaxToken>();
+                        _pool.Free(mTemp);
+                    }
                 }
+
             }
             if (context.ExplicitIface != null)
             {
@@ -3352,7 +3427,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = mTemp.ToList<SyntaxToken>();
                 _pool.Free(mTemp);
             }
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             if (!isExtern)
             {
                 isExtern = hasDllImport(attributes);
@@ -3420,6 +3494,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body: body,
                 expressionBody: null, // TODO: (grammar) expressionBody methods
                 semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            if (hasExtensionAttribute)
+            {
+                m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitExtension));
+            }
 
             if (context.ClassId != null)
             {
@@ -4506,6 +4584,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitParameter([NotNull] XP.ParameterContext context)
         {
+            bool hasParamArrayAttribute = false;
+            var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+
+            if (hasAttribute(attributeList, "ParamArray"))
+            {
+                hasParamArrayAttribute = true;
+                removeAttribute(context.Attributes, "ParamArray");
+                attributeList = context.Attributes.GetList<AttributeListSyntax>();
+                foreach (XSharpToken t in context.Modifiers._Tokens)
+                {
+                    // replace any AS, IS, REF or OUT with PARAMS. Leave CONST
+                    if (t.Type != XP.CONST)
+                    {
+                        t.Type = XP.PARAMS;
+                        t.Text = "PARAMS";
+                    }
+                }
+                ExitParameterDeclMods(context.Modifiers);
+            }
+
             if (context.Ellipsis != null)
             {
                 context.Put(_syntaxFactory.Parameter(
@@ -4526,14 +4624,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            context.Put(_syntaxFactory.Parameter(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+            var par = _syntaxFactory.Parameter(
+                attributeLists: attributeList,
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 type: type,
                 identifier: context.Id.Get<SyntaxToken>(),
                 @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    context.Default.Get<ExpressionSyntax>())));
+                    context.Default.Get<ExpressionSyntax>()));
+
+            if (hasParamArrayAttribute)
+            {
+                par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitParamArray));
+            }
+            context.Put(par);
         }
 
         #endregion

@@ -672,7 +672,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // There is no argument given that corresponds to the required formal parameter '{0}' of '{1}'
 
             object obj = (object)delegateTypeBeingInvoked ?? badMember;
-
+#if XSHARP
+            // No need to report an argument error when there already errors
+            // this could be someone taking the address of a function @Function()
+            if (!diagnostics.HasAnyErrors())
+#endif
             diagnostics.Add(new DiagnosticInfoWithSymbols(
                 ErrorCode.ERR_NoCorrespondingArgument,
                 new object[] { badParamName, obj },

@@ -2411,6 +2411,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In .Net you cannot take the address of a method or a function. For callback functions you need to use a delegate instead..
+        /// </summary>
+        internal static string ERR_CannotTakeAddressOfFunctionOrMethod {
+            get {
+                return ResourceManager.GetString("ERR_CannotTakeAddressOfFunctionOrMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos;: cannot explicitly call operator or accessor.
         /// </summary>
         internal static string ERR_CantCallSpecialMethod {

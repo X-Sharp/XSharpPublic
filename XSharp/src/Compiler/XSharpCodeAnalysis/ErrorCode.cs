@@ -1559,6 +1559,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_NoClipperCallingConventionForAccessAssign = 9049,
         ERR_ExpectedEndOfStatement = 9050,
         WRN_GeneratingGetAccessor = 9051,
+        ERR_CannotTakeAddressOfFunctionOrMethod = 9052,
         #endregion X#-only messages
     }
 }

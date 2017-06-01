@@ -2144,7 +2144,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             // in C# we do not need the @ sign. 
             // So when we detect that the Operand is a Field of the type SourceFixedFieldSymbol
             // we simply return the direct reference to the field without the AddressOf operator
+            if (node.Operand is InvocationExpressionSyntax)
+            {
+                Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node.Operand);
+            }
+
             var expr = this.BindExpression(node.Operand, diagnostics: diagnostics, invoked: false, indexed: false);
+
             if (expr.Kind == BoundKind.FieldAccess)
             {
                 if (expr.ExpressionSymbol is SourceFixedFieldSymbol)

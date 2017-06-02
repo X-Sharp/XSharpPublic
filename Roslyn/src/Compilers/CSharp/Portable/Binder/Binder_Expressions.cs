@@ -2137,7 +2137,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             for (int i = 0, l = arguments.Count; i < l; i++)
             {
                 var argumentSyntax = arguments[i];
-
+#if XSHARP
+                // Check for argument name - local name conflict
+                if (argumentSyntax.NameColon != null)
+                {
+                    var argName = argumentSyntax.NameColon.Name;
+                    DiagnosticBag tempDiagnostics = new DiagnosticBag();
+                    var local = BindExpression(argName, tempDiagnostics);
+                    if (local.Kind == BoundKind.Local)
+                    {
+                        // Generate warning
+                        Error(diagnostics, ErrorCode.WRN_ArgumentNameLocalNamePossibleConflict, argumentSyntax, argName);
+                    }
+                }
+#endif
                 hadError = BindArgumentAndName(result, diagnostics, hadError, argumentSyntax, allowArglist, isDelegateCreation: isDelegateCreation);
             }
         }

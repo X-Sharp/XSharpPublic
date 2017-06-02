@@ -115,6 +115,24 @@ namespace XSharpModel
             return oAssembly;
         }
 
+        public static void RemoveAssembly(string cFileName)
+        {
+            int FoundAt = -1;
+            //
+            for (int i = 0; i <= (assemblies.Count - 1); i++)
+            {
+                AssemblyInfo assembly2 = assemblies[i];
+                if (assembly2.FileName == cFileName.ToLower())
+                {
+                    FoundAt = i;
+                    break;
+                }
+            }
+            // Remove, so it will not appears in NameSpace and LookUp
+            if ( FoundAt > -1 )
+                assemblies.RemoveAt(FoundAt);
+        }
+
         public Type FindType(string typeName, IList<string> usings)
         {
             Type result = Lookup(typeName);

@@ -42,8 +42,8 @@ namespace XSharp.Project
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
     public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
         IVsDesignTimeAssemblyResolution, IVsProject5, IProjectTypeHelper
-        //, IVsReferenceManagerUser
-    { 
+    //, IVsReferenceManagerUser
+    {
 
         static Dictionary<string, string> dependencies;
         static XSharpProjectNode()
@@ -823,7 +823,7 @@ namespace XSharp.Project
             if (string.IsNullOrEmpty(strFileName))
                 return false;
             string ext = Path.GetExtension(strFileName);
-            return string.Compare(ext, ".xaml" , StringComparison.OrdinalIgnoreCase) == 0 ;
+            return string.Compare(ext, ".xaml", StringComparison.OrdinalIgnoreCase) == 0;
         }
         /// <summary>
         /// Called by the project to know if the item is a file (that is part of the project)
@@ -858,7 +858,7 @@ namespace XSharp.Project
             {
                 filechangemanager = new FileChangeManager(this.Site);
                 filechangemanager.FileChangedOnDisk += Filechangemanager_FileChangedOnDisk;
-                
+
             }
             if (this.isLoading)
             {
@@ -914,6 +914,38 @@ namespace XSharp.Project
             // Be sure we have External/system types for Intellisense
             UpdateAssemblyReferencesModel();
 
+            // Add EventHandler to handle adding / removing a Reference
+            VSProject.Events.ReferencesEvents.ReferenceAdded += ReferencesEvents_ReferenceAdded;
+            VSProject.Events.ReferencesEvents.ReferenceRemoved += ReferencesEvents_ReferenceRemoved;
+            VSProject.Events.ReferencesEvents.ReferenceChanged += ReferencesEvents_ReferenceChanged;
+        }
+
+
+        #endregion
+
+        #region References Management Events
+
+        private void ReferencesEvents_ReferenceRemoved(Reference pReference)
+        {
+            if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
+                (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
+            {
+                SystemTypeController.RemoveAssembly(pReference.Path);
+            }
+        }
+
+        private void ReferencesEvents_ReferenceAdded(Reference pReference)
+        {
+            UpdateAssemblyReferencesModel();
+        }
+
+        private void ReferencesEvents_ReferenceChanged(Reference pReference)
+        {
+            if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
+                (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
+            {
+                SystemTypeController.LoadAssembly(pReference.Path);
+            }
         }
         #endregion
 
@@ -1155,7 +1187,8 @@ namespace XSharp.Project
             // Add all references to the Type Controller
             foreach (Reference reference in this.VSProject.References)
             {
-                if (reference.Type == prjReferenceType.prjReferenceTypeAssembly)
+                if ((reference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
+                    (reference.Type == prjReferenceType.prjReferenceTypeActiveX))
                 {
                     string fullPath = reference.Path;
                     SystemTypeController.LoadAssembly(fullPath);
@@ -1187,7 +1220,7 @@ namespace XSharp.Project
                 var xnode = node as XSharpFileNode;
                 if (xnode != null && !xnode.IsNonMemberItem)
                 {
-                    if (File.Exists(url) )
+                    if (File.Exists(url))
                     {
                         if (IsCodeFile(url))
                             this.ProjectModel.AddFile(url);
@@ -1246,7 +1279,7 @@ namespace XSharp.Project
             {
                 this.ProjectModel.RemoveStrangerProjectReference(url);
             }
-            else 
+            else
             {
                 if (filechangemanager != null && IsXamlFile(url))
                 {
@@ -1272,8 +1305,8 @@ namespace XSharp.Project
         private bool IsProjectFile(string fullPath)
         {
             string cExt = Path.GetExtension(fullPath);
-            return String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase) 
-                || String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase) ;
+            return String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase)
+                || String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -1284,7 +1317,7 @@ namespace XSharp.Project
         private bool IsStrangerProjectFile(string fullPath)
         {
             string ext = Path.GetExtension(fullPath);
-            return ( ext.EndsWith( "proj", StringComparison.OrdinalIgnoreCase));
+            return (ext.EndsWith("proj", StringComparison.OrdinalIgnoreCase));
         }
 
         #region IXSharpProject Interface
@@ -1309,7 +1342,7 @@ namespace XSharp.Project
             get
             {
                 if (this.BuildProject != null)
-                { 
+                {
                     var result = this.BuildProject.GetPropertyValue("IntermediateOutputPath");
                     if (!Path.IsPathRooted(result))
                         result = Path.Combine(this.ProjectFolder, result);
@@ -1791,7 +1824,7 @@ namespace XSharp.Project
             */
             if (changed)
             {
-                File.Copy(filename, filename+".bak",true);
+                File.Copy(filename, filename + ".bak", true);
                 BuildProject.Xml.Save(filename);
                 BuildProject.ReevaluateIfNecessary();
             }

@@ -1561,6 +1561,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_GeneratingGetAccessor = 9051,
         ERR_CannotTakeAddressOfFunctionOrMethod = 9052,
         ERR_NoOverloadFoundThatAllowsMissingArguments = 9053,
+        WRN_ArgumentNameLocalNamePossibleConflict = 9054
         #endregion X#-only messages
     }
 }

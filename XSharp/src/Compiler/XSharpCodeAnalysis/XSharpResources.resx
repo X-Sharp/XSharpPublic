@@ -5219,6 +5219,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_NoOverloadFoundThatAllowsMissingArguments" xml:space="preserve">
     <value>No overload for method '{0}' found with {1} arguments and default values for one or more arguments</value>
   </data>
+  <data name="WRN_ArgumentNameLocalNamePossibleConflict" xml:space="preserve">
+    <value>Possible conflict between assignment to local variable {0} and named argument syntax. The compiler will assume the named argument syntax. Surround the expression with parentheses to resolve the problem.</value>
+  </data>
   
 
 </root>

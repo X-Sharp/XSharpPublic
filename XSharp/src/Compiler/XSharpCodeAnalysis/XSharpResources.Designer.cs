@@ -7001,7 +7001,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No overload for method &apos;{0}&apos; found with {1} arguments, which allows missing arguments.
+        ///   Looks up a localized string similar to No overload for method &apos;{0}&apos; found with {1} arguments and default values for one or more arguments.
         /// </summary>
         internal static string ERR_NoOverloadFoundThatAllowsMissingArguments {
             get {
@@ -11273,6 +11273,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_AnalyzerCannotBeCreated_Title {
             get {
                 return ResourceManager.GetString("WRN_AnalyzerCannotBeCreated_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Possible conflict between local variable {0} name and named argument name {0}.
+        /// </summary>
+        internal static string WRN_ArgumentNameLocalNamePossibleConflict {
+            get {
+                return ResourceManager.GetString("WRN_ArgumentNameLocalNamePossibleConflict", resourceCulture);
             }
         }
         

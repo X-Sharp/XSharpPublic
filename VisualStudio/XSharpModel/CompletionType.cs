@@ -115,6 +115,12 @@ namespace XSharpModel
             CheckType(typeName, xFile, defaultNS);
         }
 
+        public CompletionType(String typeName, XFile xFile, List<String> usings)
+        {
+            CheckType(typeName, xFile, usings);
+        }
+
+
         /// <summary>
         /// Check/Lookup for typeName, in the project owning xFile, eventually looking at the Usings including the Default Namespace
         /// </summary>
@@ -127,6 +133,12 @@ namespace XSharpModel
             List<String> usings = new List<String>(xFile.Usings);
             if (!String.IsNullOrEmpty(defaultNS))
                 usings.Add(defaultNS);
+            //
+            CheckType(typeName, xFile, usings);
+        }
+
+        private void CheckType(string typeName, XFile xFile, List<String> usings)
+        {
             // First, check the XProject corresponding to the xFile
             CheckProjectType(typeName, xFile.Project, usings);
             if (!this.IsInitialized)

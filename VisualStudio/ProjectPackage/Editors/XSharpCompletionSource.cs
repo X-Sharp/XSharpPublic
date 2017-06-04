@@ -124,6 +124,7 @@ namespace XSharpLanguage
                 // Uhh !??, Something went wrong
                 return;
             }
+            
             // The Completion list we are building
             CompletionList compList = new CompletionList();
             CompletionList kwdList = new CompletionList();
@@ -2242,10 +2243,11 @@ namespace XSharpLanguage
         public static CompletionType RetrieveType(string fileName, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out CompletionElement foundElement)
         {
             foundElement = null;
+            XFile file = null;
             if (currentMember == null)
             {
                 // try to find the first member in the file
-                var file = XSharpModel.XSolution.FindFile(fileName);
+                file = XSharpModel.XSolution.FindFile(fileName);
                 if (file != null)
                     currentMember = file.FirstMember();
                 if (currentMember == null)
@@ -2255,8 +2257,26 @@ namespace XSharpLanguage
 #endif
                     return null;
                 }
-
             }
+            else
+            {
+                file = currentMember.File;
+            }
+            //
+            // Retrieve the current parseOptions for the xFile
+            XSharpParseOptions parseoptions = XSharpParseOptions.Default;
+            var prj = file.Project.ProjectNode;
+            parseoptions = prj.ParseOptions;
+            // Ok, now set a "virtual" "Using Static", based on the Dialect
+            switch (parseoptions.Dialect)
+            {
+                case XSharpDialect.Vulcan:
+                case XSharpDialect.VO:
+                    //
+                    file.UsingStatics.AddUnique("VulcanRTFuncs.Functions");
+                    break;
+            }
+            //
             // we have to walk the tokenList, searching for the current Type
             // As we have separators every even token, we will walk by step 2
             int currentPos = 0;
@@ -2854,7 +2874,7 @@ namespace XSharpLanguage
                     return false;
                 });
                 //
-                if ( (xMethod!=null) && staticOnly && !xMethod.IsStatic)
+                if ((xMethod != null) && staticOnly && !xMethod.IsStatic)
                 {
                     xMethod = null;
                 }
@@ -2995,10 +3015,10 @@ namespace XSharpLanguage
                         }
                     }
                     //
-                    if ( (foundElement != null) && staticOnly )
+                    if ((foundElement != null) && staticOnly)
                     {
                         EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)foundElement.CodeElement;
-                        if ( !method.IsShared)
+                        if (!method.IsShared)
                             foundElement = null;
                     }
                     // We will have to look in the Parents ?
@@ -3038,7 +3058,7 @@ namespace XSharpLanguage
             foreach (string staticUsing in xFile.UsingStatics)
             {
                 // Provide an Empty Using list, so we are looking for FullyQualified-name only
-                CompletionType tempType = new CompletionType(staticUsing, xFile, emptyUsings );
+                CompletionType tempType = new CompletionType(staticUsing, xFile, emptyUsings);
                 //
                 cType = SearchMethodTypeIn(tempType, currentToken, Modifiers.Public, true, out foundElement);
                 if (!cType.IsEmpty())

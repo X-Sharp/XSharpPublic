@@ -268,6 +268,7 @@ namespace XSharpLanguage
                                 filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
                                 BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
                             }
+                            //
                             break;
                     }
                     break;
@@ -312,6 +313,7 @@ namespace XSharpLanguage
                         }
                         // Now, Fill the CompletionList with the available members, from there
                         BuildCompletionList(compList, cType, visibleAs, false, filterText);
+
                     }
                     else
                     {
@@ -351,6 +353,8 @@ namespace XSharpLanguage
                                 AddTypeNames(compList, file.Project, filterText, Usings);
                                 //
                                 AddXSharpTypesTypeNames(kwdList, filterText);
+                                //
+                                AddUsingStaticMembers(compList, file, filterText);
                                 break;
                         }
                     }
@@ -361,8 +365,17 @@ namespace XSharpLanguage
             kwdList.Sort((comp1, comp2) => comp1.DisplayText.CompareTo(comp2.DisplayText));
             // and put in the SelectionList
             completionSets.Add(new CompletionSet("All", "All", applicableTo, compList, Enumerable.Empty<Completion>()));
-            if( kwdList.Count > 0 )
+            if (kwdList.Count > 0)
                 completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList, Enumerable.Empty<Completion>()));
+        }
+
+        private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
+        {
+            //
+            foreach (string staticType in file.UsingStatics)
+            {
+                BuildCompletionList(compList, new CompletionType(staticType, file, ""), Modifiers.Public, true, filterText);
+            }
         }
 
         private void AddTypeNames(CompletionList compList, XProject project, string startWith, HashSet<String> usings)
@@ -1329,7 +1342,7 @@ namespace XSharpLanguage
                 //
                 String desc = modVis;
                 //
-                if ( (this.Kind != Kind.ClassVar) && (this.Kind != Kind.Constructor))
+                if ((this.Kind != Kind.ClassVar) && (this.Kind != Kind.Constructor))
                     desc += this.Kind.ToString() + " ";
                 desc += this.Prototype;
                 //
@@ -2336,16 +2349,22 @@ namespace XSharpLanguage
                     else if (!cType.IsEmpty())
                     {
                         // Now, search for a Method
-                        cType = SearchMethodTypeIn(cType, currentToken, visibility, out foundElement);
+                        cType = SearchMethodTypeIn(cType, currentToken, visibility, false, out foundElement);
                     }
                     if (cType.IsEmpty())
                     {
                         // check to see if this is a method from the Object Type, such as ToString().
-                        cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, out foundElement);
+                        cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, false, out foundElement);
                         if (!cTemp.IsEmpty())
                         {
                             cType = cTemp;
                         }
+                    }
+                    if (cType.IsEmpty())
+                    {
+                        // Could it be Static Method with "Using Static"
+                        // Now, search for a Method
+                        cType = SearchMethodStaticIn(currentMember.File, currentToken, out foundElement);
                     }
                     if (cType.IsEmpty())
                     {
@@ -2417,6 +2436,7 @@ namespace XSharpLanguage
             }
             return cType;
         }
+
 
         /// <summary>
         /// Search for the Constructor in the corresponding Type,
@@ -2819,7 +2839,7 @@ namespace XSharpLanguage
         /// <returns>The CompletionType that the Method will return (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
+        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, bool staticOnly, out CompletionElement foundElement)
         {
             foundElement = null;
             if (cType.XType != null)
@@ -2833,8 +2853,12 @@ namespace XSharpLanguage
                     }
                     return false;
                 });
-                //if (elt.IsStatic)
-                //    continue;
+                //
+                if ( (xMethod!=null) && staticOnly && !xMethod.IsStatic)
+                {
+                    xMethod = null;
+                }
+                //
                 if ((xMethod != null) && (xMethod.Visibility < minVisibility))
                 {
                     xMethod = null;
@@ -2850,12 +2874,12 @@ namespace XSharpLanguage
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, minVisibility, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, minVisibility, staticOnly, out foundElement);
                     }
                     else if (cType.XType.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, minVisibility, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, minVisibility, staticOnly, out foundElement);
                     }
                 }
                 else
@@ -2902,16 +2926,21 @@ namespace XSharpLanguage
                         }
                     }
                 }
+                //
+                if ((method != null) && staticOnly && !method.IsStatic)
+                {
+                    method = null;
+                }
                 if (method == null)
                 {
                     // In the parent ?
                     if (cType.SType.BaseType != null)
                     {
-                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, staticOnly, out foundElement);
                     }
                     else if (cType.SType.IsInterface)
                     {
-                        return SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, staticOnly, out foundElement);
                     }
                 }
                 else
@@ -2965,6 +2994,13 @@ namespace XSharpLanguage
                             }
                         }
                     }
+                    //
+                    if ( (foundElement != null) && staticOnly )
+                    {
+                        EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)foundElement.CodeElement;
+                        if ( !method.IsShared)
+                            foundElement = null;
+                    }
                     // We will have to look in the Parents ?
                     if ((foundElement == null) && (bases != null))
                     {
@@ -2976,7 +3012,7 @@ namespace XSharpLanguage
                                 if (minVisibility == Modifiers.Private)
                                     minVisibility = Modifiers.Protected;
                                 // Parent is a CodeElement
-                                return SearchMethodTypeIn(new CompletionType(parent), currentToken, minVisibility, out foundElement);
+                                return SearchMethodTypeIn(new CompletionType(parent), currentToken, minVisibility, staticOnly, out foundElement);
                             }
                         }
                     }
@@ -2989,7 +3025,28 @@ namespace XSharpLanguage
         }
 
 
-
+        private static CompletionType SearchMethodStaticIn(XFile xFile, string currentToken, out CompletionElement foundElement)
+        {
+            foundElement = null;
+            if (xFile == null)
+            {
+                return null;
+            }
+            //
+            CompletionType cType = null;
+            List<String> emptyUsings = new List<String>();
+            foreach (string staticUsing in xFile.UsingStatics)
+            {
+                // Provide an Empty Using list, so we are looking for FullyQualified-name only
+                CompletionType tempType = new CompletionType(staticUsing, xFile, emptyUsings );
+                //
+                cType = SearchMethodTypeIn(tempType, currentToken, Modifiers.Public, true, out foundElement);
+                if (!cType.IsEmpty())
+                    break;
+            }
+            //
+            return cType;
+        }
 
         internal static IToken ProcessBounds(ITokenStream tokens, IToken currentToken, int LeftElement, int RightElement)
         {

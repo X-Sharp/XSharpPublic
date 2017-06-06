@@ -53,9 +53,28 @@ namespace XSharpModel
             this._typeList = new Dictionary<string, XType>(StringComparer.InvariantCultureIgnoreCase);
             this._globalType = XType.CreateGlobalType(this);
             this._typeList.Add(_globalType.Name, _globalType);
-        }
+            _usings = new List<string>();
+            _usingStatics = new List<string>();
 
-        public XProject Project { get; internal set; }
+        }
+        private XProject project;
+        public XProject Project {
+
+            get
+            {
+                if (project == null)
+                {
+                    project = XSolution.OrphanedFilesProject;
+                    project.AddFile(this.filePath);
+                }
+                return project;
+            }
+
+            set
+            {
+                project = value;
+            }
+        }
 
         public String Name
         {
@@ -90,11 +109,27 @@ namespace XSharpModel
 
         }
 
-        public List<string> UsingStatics
+        public List<string> UsingStatics => _usingStatics;
+
+        public List<string> AllUsingStatics
         {
             get
             {
-                return _usingStatics;
+
+                List<String> statics = new List<String>();
+                statics.AddRange(_usingStatics);
+                if (this.Project != null && this.Project.ProjectNode != null && this.Project.ProjectNode.ParseOptions.IsDialectVO)
+                {
+                    foreach (var asm in this.Project.AssemblyReferences)
+                    {
+                        var globalclass = asm.GlobalClassName;
+                        if (! string.IsNullOrEmpty(globalclass))
+                        {
+                            statics.AddUnique(globalclass);
+                        }
+                    }
+                }
+                return statics;
             }
 
         }

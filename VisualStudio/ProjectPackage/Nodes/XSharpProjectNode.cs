@@ -930,13 +930,13 @@ namespace XSharp.Project
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
             {
-                SystemTypeController.RemoveAssembly(pReference.Path);
+                ProjectModel.RemoveAssemblyReference(pReference.Path);
             }
         }
 
         private void ReferencesEvents_ReferenceAdded(Reference pReference)
         {
-            UpdateAssemblyReferencesModel();
+            ProjectModel.AddAssemblyReference(pReference.Path);
         }
 
         private void ReferencesEvents_ReferenceChanged(Reference pReference)
@@ -944,7 +944,7 @@ namespace XSharp.Project
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
             {
-                SystemTypeController.LoadAssembly(pReference.Path);
+                ProjectModel.UpdateAssemblyReference(pReference.Path);
             }
         }
         #endregion
@@ -1185,13 +1185,14 @@ namespace XSharp.Project
         public void UpdateAssemblyReferencesModel()
         {
             // Add all references to the Type Controller
+            ProjectModel.ClearAssemblyReferences();
             foreach (Reference reference in this.VSProject.References)
             {
                 if ((reference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                     (reference.Type == prjReferenceType.prjReferenceTypeActiveX))
                 {
                     string fullPath = reference.Path;
-                    SystemTypeController.LoadAssembly(fullPath);
+                    ProjectModel.AddAssemblyReference(fullPath);
                 }
             }
         }
@@ -1464,7 +1465,7 @@ namespace XSharp.Project
                     return typeof(String);
             }
             var model = this.ProjectModel;
-            return model.TypeController.FindType(name, usings);
+            return model.FindSystemType(name, usings);
         }
         #endregion
         #region IVsSingleFileGeneratorFactory

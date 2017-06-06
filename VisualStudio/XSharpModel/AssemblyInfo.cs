@@ -17,7 +17,6 @@ namespace XSharpModel
         private Dictionary<string, Type> aTypes;
         private List<MethodInfo> aExtensions;
 
-        private string _DefaultNamespace;
         private string _FileName;
         private DateTime _Modified;
         private bool lLoadedTypes;
@@ -26,6 +25,7 @@ namespace XSharpModel
 
         private Hashtable _NameSpaces;
         private List<string> _NameSpaceTexts;
+        private List<string> _ImplicitNamespaces;
         private NameSpaceContainer _ZeroNamespace;
 
 
@@ -83,27 +83,23 @@ namespace XSharpModel
                 aTypes = value;
             }
         }
+        public List<string> ImplicitNamespaces => _ImplicitNamespaces;
+        public String GlobalClassName => _GlobalClassName;
 
-        public List<string> Namespaces
-        {
-            get
-            {
-                return _NameSpaceTexts;
-            }
-        }
+        public List<string> Namespaces => _NameSpaceTexts;
 
         public AssemblyInfo(string _cFileName, DateTime _dModified, Assembly _oAssembly)
         {
-            this._DefaultNamespace = "";
             this.FileName = _cFileName;
             this.Modified = _dModified;
             this.Assembly = _oAssembly;
             // A
-            this.aTypes = new Dictionary<string, Type>();
+            this.aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             this.aExtensions = new List<MethodInfo>();
-            this._NameSpaces = new Hashtable();
+            this._NameSpaces = new Hashtable(StringComparer.OrdinalIgnoreCase);
             this._NameSpaceTexts = new List<string>();
             this.aExtensions = new List<MethodInfo>();
+            this._ImplicitNamespaces = new List<string>();
             this._ZeroNamespace = new NameSpaceContainer("_");
 
             this.UpdateAssembly();
@@ -126,27 +122,31 @@ namespace XSharpModel
             this.aExtensions.Clear();
             this._ZeroNamespace.Types.Clear();
             this._GlobalClassName = "";
-            this._DefaultNamespace = "";
             this.lHasExtensions = false;
             //
             try
             {
-                object[] customAttributes = this.Assembly.GetCustomAttributes(false);
-                for (num = 1; num <= customAttributes.Length; num++)
+                if (this.Assembly != null)
                 {
-                    object obj2 = customAttributes[num - 1];
-                    switch (obj2.ToString())
+                    object[] customAttributes = this.Assembly.GetCustomAttributes(false);
+                    for (num = 1; num <= customAttributes.Length; num++)
                     {
-                        case "Vulcan.Internal.VulcanClassLibraryAttribute":
-                            {
-                                Type type = obj2.GetType();
-                                this._GlobalClassName = type.GetProperty("globalClassName").GetValue(obj2, null).ToString();
-                                this._DefaultNamespace = type.GetProperty("defaultNamespace").GetValue(obj2, null).ToString();
+                        object custattr = customAttributes[num - 1];
+                        Type type = custattr.GetType();
+                        switch (custattr.ToString())
+                        {
+                            case "Vulcan.Internal.VulcanClassLibraryAttribute":
+                                this._GlobalClassName = type.GetProperty("globalClassName").GetValue(custattr, null).ToString();
+                                this._ImplicitNamespaces.Add(type.GetProperty("defaultNamespace").GetValue(custattr, null).ToString());
                                 break;
-                            }
-                        case "System.Runtime.CompilerServices.ExtensionAttribute":
-                            this.lHasExtensions = true;
-                            break;
+                            case "System.Runtime.CompilerServices.ExtensionAttribute":
+                                this.lHasExtensions = true;
+                                break;
+                            case "Vulcan.VulcanImplicitNamespaceAttribute":
+                                this._ImplicitNamespaces.Add(type.GetProperty("Namespace").GetValue(custattr, null).ToString());
+                                break;
+
+                        }
                     }
                 }
             }
@@ -156,7 +156,10 @@ namespace XSharpModel
             // Load Types From Assembly, if possible
             try
             {
-                types = this.Assembly.GetTypes();
+                if (this.Assembly != null)
+                {
+                    types = this.Assembly.GetTypes();
+                }
             }
             catch
             {

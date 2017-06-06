@@ -23,6 +23,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Reflection;
 using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
+using System.Diagnostics;
 
 namespace XSharpLanguage
 {
@@ -402,8 +403,13 @@ namespace XSharpLanguage
             {
                 foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
                 {
-                    String realTypeName = typeInfo.Value.FullName;
                     TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
+                    String realTypeName = typeAnalysis.Name;
+                    // Nested Type ?
+                    if (realTypeName.Contains("+"))
+                    {
+                        realTypeName = realTypeName.Replace('+', '.');
+                    }
                     // remove the start
                     if (startLen > 0)
                         realTypeName = realTypeName.Substring(startLen);
@@ -412,8 +418,9 @@ namespace XSharpLanguage
                     // Then remove it
                     if (dotPos > 0)
                         realTypeName = realTypeName.Substring(0, dotPos);
-                    if ((realTypeName.Length > 2) && (realTypeName.StartsWith("__")))
+                    if ( IsHiddenName(realTypeName) )
                         continue;
+
                     //
                     ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
                     compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null));
@@ -434,6 +441,11 @@ namespace XSharpLanguage
             {
                 AddStrangerTypeNames(compList, prj, startWith);
             }
+        }
+
+        private bool IsHiddenName(string realTypeName)
+        {
+            return ((realTypeName.Length > 2) && (realTypeName.StartsWith("__")));
         }
 
         private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith)
@@ -813,6 +825,8 @@ namespace XSharpLanguage
                     continue;
                 if (elt.Visibility < minVisibility)
                     continue;
+                if (IsHiddenName(elt.Name))
+                    continue;
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
                 String toAdd = "";
@@ -857,6 +871,8 @@ namespace XSharpLanguage
                     {
                         continue;
                     }
+                    if (IsHiddenName(analysis.Name))
+                        continue;
                     String toAdd = "";
                     if ((analysis.Kind == Kind.Method))
                     {
@@ -948,6 +964,8 @@ namespace XSharpLanguage
                             {
                                 continue;
                             }
+                            if (IsHiddenName(analysis.Name))
+                                continue;
                             String toAdd = "";
                             if ((analysis.Kind == Kind.Method))
                             {
@@ -1553,7 +1571,7 @@ namespace XSharpLanguage
         internal TypeAnalysis(TypeInfo typeInfo)
         {
             //
-            this._name = typeInfo.Name;
+            this._name = typeInfo.FullName;
             this._kind = Kind.Class;
             this._modifiers = Modifiers.None;
             this._visibility = Modifiers.Public;
@@ -1583,6 +1601,29 @@ namespace XSharpLanguage
                 {
                     this._modifiers = Modifiers.Abstract;
                 }
+            }
+            //
+            if ( typeInfo.IsGenericType )
+            {
+                string genName = typeInfo.FullName;
+                int index = genName.IndexOf('`');
+                if (index != -1)
+                {
+                    genName = genName.Substring(0, index);
+                }
+                genName += "<";
+                int count =0;
+                int max = typeInfo.GenericTypeParameters.Length;
+                foreach ( Type genType in typeInfo.GenericTypeParameters )
+                {
+                    genName += genType.Name;
+                    count++;
+                    if ((count < max))
+                        genName += ", ";
+                }
+                genName += ">";
+                //
+                this._name = genName;
             }
             ////
             //if (typeInfo.IsPrivate)
@@ -1829,6 +1870,7 @@ namespace XSharpLanguage
     /// XSharp Completion class.
     /// Overload the Description property in order to add "overload" text at the end
     /// </summary>
+    [DebuggerDisplay("{DisplayText,nq}")]
     public class XSCompletion : Completion
     {
         public XSCompletion(string displayText, string insertionText, string description, ImageSource iconSource, string iconAutomationText)

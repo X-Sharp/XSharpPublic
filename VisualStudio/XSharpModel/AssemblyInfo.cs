@@ -162,7 +162,7 @@ namespace XSharpModel
             {
             }
             // Has Types ?
-            if (types != null && ! lLoadedTypes)
+            if (types != null && !lLoadedTypes)
             {
                 // Mark as Loaded
                 this.lLoadedTypes = true;
@@ -172,6 +172,10 @@ namespace XSharpModel
                     {
                         // First, Get Fullname ( for eg, System.Collections.Generic.List`1 )
                         fullName = types[num - 1].FullName;
+                        // Remove "special" Types
+                        if (fullName.StartsWith("$") || fullName.StartsWith("<"))
+                            continue;
+                        //
                         if (this.lHasExtensions && HasExtensionAttribute(types[num - 1]))
                         {
                             MethodInfo[] methods = types[num - 1].GetMethods(BindingFlags.Public | BindingFlags.Static);
@@ -232,7 +236,7 @@ namespace XSharpModel
                                     container.Types.Add(simpleName, this.GetTypeTypesFromType(types[num - 1]));
                                     this._NameSpaces.Add(str3, container);
                                     //this._NameSpaceTexts.Add(nspace + ".");
-                                    this._NameSpaceTexts.Add(nspace );
+                                    this._NameSpaceTexts.Add(nspace);
                                 }
                                 else
                                 {
@@ -245,7 +249,7 @@ namespace XSharpModel
                                 while (nspace.Contains("."))
                                 {
                                     nspace = nspace.Substring(0, nspace.LastIndexOf('.'));
-                                    if (!this._NameSpaceTexts.Contains(nspace ))
+                                    if (!this._NameSpaceTexts.Contains(nspace))
                                     {
                                         this._NameSpaceTexts.Add(nspace);
                                     }

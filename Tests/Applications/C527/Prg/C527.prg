@@ -11,7 +11,7 @@ oTestClassObjectFromArray := TestClass{}
 oTestClassProper:cb1 := {||TRUE}
 oTestClassObject:cb1 := {||TRUE}
 
-//When declared as a strongly typed variable, this works fine
+//When declared as a strongly typed variable, this works fine                        
 IF Eval(oTestClassProper:cb1)
     Console.WriteLine("oTestClassProper is TRUE")
 ENDIF 

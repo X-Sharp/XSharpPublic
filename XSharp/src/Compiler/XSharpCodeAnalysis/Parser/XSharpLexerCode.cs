@@ -44,6 +44,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return iToken == XSharpLexer.ID || iToken == XSharpLexer.KWID;
         }
+
+        public static bool IsType(int iToken)
+        {
+            return (iToken > XSharpLexer.FIRST_TYPE && iToken < XSharpLexer.LAST_TYPE);
+        }
+
+
         public static bool IsComment(int iToken)
         {
             return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;

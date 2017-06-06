@@ -92,6 +92,22 @@ namespace XSharp.Project
                     case VSConstants.VSStd2KCmdID.PARAMINFO:
                         StartSignatureSession();
                         break;
+                    case VSConstants.VSStd2KCmdID.BACKSPACE:
+                        if (_signatureSession != null)
+                        {
+                            int pos = TextView.Caret.Position.BufferPosition ;
+                            if (pos > 0)
+                            {
+                                // get previous char
+                                var previous = TextView.TextBuffer.CurrentSnapshot.GetText().Substring(pos - 1, 1);
+                                if (previous == "(" || previous == "{")
+                                {
+                                    _signatureSession.Dismiss();
+                                }
+                            }
+
+                        }
+                        break;
                     case VSConstants.VSStd2KCmdID.TYPECHAR:
                         char ch = GetTypeChar(pvaIn);
                         if (_completionSession != null)

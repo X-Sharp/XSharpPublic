@@ -1207,7 +1207,6 @@ namespace XSharp.Project
             // XSharpFolderNode
             // XSharpProjectReference
             // So, we will add files only (currently) => Don't forget RemoveURL
-#if CODEMODEL
             if (IsProjectFile(url))
             {
                 this.ProjectModel.AddProjectReference(url);
@@ -1237,7 +1236,6 @@ namespace XSharp.Project
                     }
                 }
             }
-#endif
         }
 
 
@@ -1270,7 +1268,6 @@ namespace XSharp.Project
         {
             //
             //
-#if CODEMODEL
             // We should remove the external projects entries
             if (IsProjectFile(url))
             {
@@ -1293,7 +1290,6 @@ namespace XSharp.Project
                     this.ProjectModel.RemoveFile(url);
                 }
             }
-#endif
             base.RemoveURL(url);
         }
 

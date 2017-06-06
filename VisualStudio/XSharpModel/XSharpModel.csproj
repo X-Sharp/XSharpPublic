@@ -82,7 +82,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="CompletionType.cs" />
     <Compile Include="IXSharpProject.cs" />
-    <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="ModelParser\ColorizerConstants.cs" />
     <Compile Include="ModelParser\TextSpanExtensions.cs" />
     <Compile Include="ModelParser\SourceWalker.cs" />

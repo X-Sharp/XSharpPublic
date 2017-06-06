@@ -42,11 +42,6 @@ namespace XSharpModel
             //
             this.tags = new List<ClassificationSpan>();
             var options = file.Project.ProjectNode.ParseOptions;
-            // harde code vulcan.vo reference for now
-            if (options.CommandLineArguments.CompilationOptions.ImplicitNameSpace)
-            {
-                _file.Usings.AddUnique("Vulcan.VO");
-            }
         }
 
         private String currentNamespace
@@ -698,7 +693,11 @@ namespace XSharpModel
                 if ( use.Static == null)
                     this._file.Usings.AddUnique(use.Name?.GetText());
                 else
-                    this._file.UsingStatics.AddUnique(use.Name?.GetText());
+                {
+                    string typeName = use.Name?.GetText();
+                    if (! string.IsNullOrEmpty(typeName))
+                        this._file.UsingStatics.AddUnique(typeName);
+                }
             }
         }
 

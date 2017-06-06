@@ -14,6 +14,7 @@ namespace XSharpModel
     public static class XSolution
     {
         static Dictionary<string, XProject> xProjects;
+        static XProject _orphanedFilesProject = null;
 
         static XSolution()
         {
@@ -30,7 +31,7 @@ namespace XSharpModel
             return true;
         }
 
-        public static bool Add( XProject project)
+        public static bool Add(XProject project)
         {
             string projectName = project.Name;
             return XSolution.Add(projectName, project);
@@ -68,8 +69,8 @@ namespace XSharpModel
                 {
                     break;
                 }
-                file = prj.Find( System.IO.Path.GetFileName(fileName) );
-                if ( file != null)
+                file = prj.Find(System.IO.Path.GetFileName(fileName));
+                if (file != null)
                 {
                     break;
                 }
@@ -92,7 +93,7 @@ namespace XSharpModel
             return file;
         }
 
-        public static XProject FindProject(string projectFile )
+        public static XProject FindProject(string projectFile)
         {
             XProject project;
             projectFile = System.IO.Path.GetFileNameWithoutExtension(projectFile);
@@ -101,6 +102,46 @@ namespace XSharpModel
                 return project;
             }
             return null;
+        }
+
+        public static void CloseAll()
+        {
+            xProjects.Clear();
+            SystemTypeController.Clear();
+            if (_orphanedFilesProject != null)
+            {
+                xProjects.Add(OrphanedFiles, _orphanedFilesProject);
+                foreach (var asm in _orphanedFilesProject.AssemblyReferences)
+                {
+                    SystemTypeController.LoadAssembly(asm.FileName);
+                }
+            }
+        }
+
+        public static XProject OrphanedFilesProject
+        {
+            get
+            {
+                if (_orphanedFilesProject == null)
+                {
+                    _orphanedFilesProject = new XProject(new OrphanedFilesProject());
+                    var prj = _orphanedFilesProject.ProjectNode as OrphanedFilesProject;
+                    prj.Project = _orphanedFilesProject;
+                    xProjects.Add(OrphanedFiles, _orphanedFilesProject);
+                    prj.Project.AddAssemblyReference(typeof(System.String).Assembly.Location);
+                }
+                return _orphanedFilesProject;
+            }
+        }
+        private const string OrphanedFiles = "(OrphanedFiles)";
+
+        public static void FileClose(string fileName)
+        {
+            var file = FindFile(fileName);
+            if (file.Project == _orphanedFilesProject)
+            {
+                _orphanedFilesProject.RemoveFile(fileName);
+            }
         }
     }
 }

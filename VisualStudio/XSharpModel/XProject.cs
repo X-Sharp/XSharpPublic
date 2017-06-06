@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EnvDTE;
+using LanguageService.CodeAnalysis;
+using LanguageService.CodeAnalysis.XSharp;
 
 namespace XSharpModel
 {
@@ -28,6 +31,9 @@ namespace XSharpModel
         private List<String> _unprocessedStrangerProjectReferences = new List<String>();
         private List<EnvDTE.Project> _StrangerProjects = new List<EnvDTE.Project>();
 
+        // List of assembly references
+        private List<AssemblyInfo> _AssemblyReferences = new List<AssemblyInfo>();
+
         public XProject(IXSharpProject project)
         {
             _projectNode = project;
@@ -36,6 +42,10 @@ namespace XSharpModel
             //
             this._typeController = new SystemTypeController();
             this._loaded = true;
+            if (_projectNode == null)
+            {
+
+            }
         }
 
         public String Name
@@ -52,6 +62,9 @@ namespace XSharpModel
             set { _loaded = value; }
         }
 
+
+        public List<AssemblyInfo> AssemblyReferences => _AssemblyReferences;
+
         public List<XFile> Files
         {
             get
@@ -59,6 +72,8 @@ namespace XSharpModel
                 return xFilesDict.Values.ToList();
             }
         }
+
+
 
         public IXSharpProject ProjectNode
         {
@@ -73,30 +88,34 @@ namespace XSharpModel
             }
         }
 
-        //public XType GlobalType
-        //{
-        //    get
-        //    {
-        //        return _globalType;
-        //    }
-
-        //    //set
-        //    //{
-        //    //    _globalType = value;
-        //    //}
-        //}
-
-        public SystemTypeController TypeController
+        public void ClearAssemblyReferences()
         {
-            get
-            {
-                return _typeController;
-            }
+            _AssemblyReferences.Clear();
+        }
 
-            set
+        public void AddAssemblyReference(string fileName)
+        {
+            var assemblyInfo = SystemTypeController.LoadAssembly(fileName);
+            _AssemblyReferences.Add(assemblyInfo);
+        }
+        public void UpdateAssemblyReference(string fileName)
+        {
+            var assemblyInfo = SystemTypeController.LoadAssembly(fileName);
+            assemblyInfo.UpdateAssembly();
+        }
+
+
+        public void RemoveAssemblyReference(string fileName)
+        {
+            foreach (var assemblyInfo in _AssemblyReferences)
             {
-                _typeController = value;
+                if (string.Equals(assemblyInfo.FileName, fileName, StringComparison.OrdinalIgnoreCase))
+                {
+                    _AssemblyReferences.Remove(assemblyInfo);
+                    break; 
+                }
             }
+            return;
         }
 
         public bool AddFile(string filePath)
@@ -243,6 +262,16 @@ namespace XSharpModel
             if (xFilesDict.ContainsKey(fullPath))
                 return xFilesDict[fullPath];
             return null;
+        }
+
+        public System.Type FindSystemType (string name, IList<String> usings)
+        {
+            return _typeController.FindType(name, usings, _AssemblyReferences);
+        }
+
+        public List<String> GetAssemblyNamespaces()
+        {
+            return _typeController.GetNamespaces(_AssemblyReferences);
         }
 
         public void Walk()
@@ -508,5 +537,63 @@ namespace XSharpModel
         }
 
 
+    }
+
+    public class OrphanedFilesProject : IXSharpProject
+    {
+
+        private XProject project;
+
+        internal XProject Project
+        {
+            get { return project; }
+            set { project = value; }
+        }
+        public string IntermediateOutputPath => "";
+        public XSharpParseOptions ParseOptions => XSharpParseOptions.Default;
+
+        public string RootNameSpace => "";
+        public string Url => "";
+
+        public void AddIntellisenseError(string file, int line, int column, int Length, string errCode, string message, DiagnosticSeverity sev)
+        {
+            return;
+        }
+
+        public void ClearIntellisenseErrors(string file)
+        {
+            return;
+        }
+
+        public Project FindProject(string sProject)
+        {
+            return null;
+        }
+
+        public List<IXErrorPosition> GetIntellisenseErrorPos(string fileName)
+        {
+            return new List<IXErrorPosition>();
+        }
+
+        public bool IsDocumentOpen(string file)
+        {
+            // Always open. We remove file from project when it is closed.
+            return true;
+        }
+
+        public void OpenElement(string file, int line, int column)
+        {
+            return;
+        }
+
+        public void SetStatusBarText(string message)
+        {
+            return;
+        }
+
+        public void ShowIntellisenseErrors()
+        {
+            return;
+        }
     }
 }

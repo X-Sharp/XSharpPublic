@@ -31,8 +31,8 @@ namespace XSharpLanguage
     [Name("XSharpCompletion")]
     class XSharpCompletionSourceProvider : ICompletionSourceProvider
     {
-        [Import]
-        internal SVsServiceProvider ServiceProvider = null;
+        //[Import]
+        //internal SVsServiceProvider ServiceProvider = null;
 
         [Import]
         internal IGlyphService GlyphService = null;
@@ -72,6 +72,8 @@ namespace XSharpLanguage
         private bool _settingIgnoreCase;
         // Keep a trace of the Context of the TokenList build
         private IToken _stopToken;
+
+        private XFile _file;
         internal static bool StringEquals(string lhs, string rhs)
         {
             if (String.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase))
@@ -124,7 +126,7 @@ namespace XSharpLanguage
                 // Uhh !??, Something went wrong
                 return;
             }
-            
+            _file = file;
             // The Completion list we are building
             CompletionList compList = new CompletionList();
             CompletionList kwdList = new CompletionList();
@@ -373,9 +375,9 @@ namespace XSharpLanguage
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
         {
             //
-            foreach (string staticType in file.UsingStatics)
+            foreach (string staticType in file.AllUsingStatics)
             {
-                BuildCompletionList(compList, new CompletionType(staticType, file, ""), Modifiers.Public, true, filterText);
+                BuildCompletionList(compList, new CompletionType(staticType, file,""), Modifiers.Public, true, filterText);
             }
         }
 
@@ -391,14 +393,12 @@ namespace XSharpLanguage
         private void AddTypeNames(CompletionList compList, XProject project, string startWith)
         {
             // We are looking for NameSpaces, in References
-            SystemTypeController stc = project.TypeController;
-            //
             int startLen = 0;
             int dotPos = startWith.LastIndexOf('.');
             if (dotPos != -1)
                 startLen = dotPos + 1;
             //
-            foreach (AssemblyInfo assemblyInfo in stc.Assemblies)
+            foreach (AssemblyInfo assemblyInfo in project.AssemblyReferences)
             {
                 foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
                 {
@@ -570,8 +570,7 @@ namespace XSharpLanguage
         private void AddNamespaces(CompletionList compList, XProject project, String startWith)
         {
             // We are looking for NameSpaces, in References
-            SystemTypeController stc = project.TypeController;
-            List<String> namespaces = stc.Namespaces;
+            List<String> namespaces = project.GetAssemblyNamespaces();
             // Calculate the length we must remove
             int startLen = 0;
             int dotPos = startWith.LastIndexOf('.');
@@ -775,7 +774,7 @@ namespace XSharpLanguage
                 else if (cType.XType.ParentName != null)
                 {
                     // Parent has just a Name, so one of the System Types
-                    BuildCompletionList(compList, new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), Modifiers.Protected, staticOnly, startWith);
+                    BuildCompletionList(compList, new CompletionType(cType.XType.ParentName, _file, cType.XType.FileUsings), Modifiers.Protected, staticOnly, startWith);
                 }
             }
             else if (cType.SType != null)
@@ -1014,7 +1013,13 @@ namespace XSharpLanguage
                 this.Name = n;
                 this.TypeName = t;
             }
+            internal ParamInfo(String n, System.Type t)
+            {
+                this.Name = n;
+                this.TypeName = t.GetXSharpTypeName();
+            }
         }
+
 
         private String _name;
         private Modifiers _modifiers;
@@ -1063,14 +1068,10 @@ namespace XSharpLanguage
                     }
                     //
                     //
-                    ParameterInfo[] constPars = constInfo.GetParameters();
-                    foreach (ParameterInfo p in constPars)
-                    {
-                        this._parameters.Add(new ParamInfo(p.Name, p.ParameterType.FullName));
-                    }
+                    addParameters(constInfo, constInfo.GetParameters());
                     //
                     declType = constInfo.DeclaringType;
-                    this._typeName = declType.FullName;
+                    this._typeName = declType.GetXSharpTypeName();
                     break;
                 case MemberTypes.Event:
                     this._kind = Kind.Event;
@@ -1102,7 +1103,7 @@ namespace XSharpLanguage
                     }
                     //
                     declType = evt.EventHandlerType;
-                    this._typeName = declType.FullName;
+                    this._typeName = declType.GetXSharpTypeName();
                     break;
                 case MemberTypes.Field:
                     this._kind = Kind.ClassVar;
@@ -1126,7 +1127,7 @@ namespace XSharpLanguage
                     }
                     //
                     declType = field.FieldType;
-                    this._typeName = declType.FullName;
+                    this._typeName = declType.GetXSharpTypeName();
                     break;
                 case MemberTypes.Method:
                     this.Kind = Kind.Method;
@@ -1153,14 +1154,10 @@ namespace XSharpLanguage
                         this._visibility = Modifiers.Protected;
                     }
                     //
-                    ParameterInfo[] pars = method.GetParameters();
-                    foreach (ParameterInfo p in pars)
-                    {
-                        this._parameters.Add(new ParamInfo(p.Name, p.ParameterType.FullName));
-                    }
+                    addParameters(method, method.GetParameters());
                     //
                     declType = method.ReturnType;
-                    this._typeName = declType.FullName;
+                    this._typeName = declType.GetXSharpTypeName();
                     break;
                 case MemberTypes.Property:
                     this.Kind = Kind.Property;
@@ -1186,14 +1183,62 @@ namespace XSharpLanguage
                         this._visibility = Modifiers.Protected;
                     }
                     //
+                    addParameters(propInfo, propInfo.GetParameters());
                     declType = prop.PropertyType;
-                    this._typeName = declType.FullName;
+                    this._typeName = declType.GetXSharpTypeName();
                     break;
+                    // Todo: Event ?
+
                 default:
                     // Mark as Not-Initialized
                     this._name = null;
                     break;
             }
+        }
+
+        private void addParameters(MemberInfo member, ParameterInfo[] parameters)
+        {
+            
+            if (parameters.Length == 1 )
+            {
+                try
+                {
+                    var atts = member.GetCustomAttributes(false);
+                    if (atts != null)
+                    {
+                        foreach (var custattr in atts)
+                        {
+                            if (custattr.ToString() == "Vulcan.Internal.ClipperCallingConventionAttribute")
+                            {
+                                string[] names = (string[])custattr.GetType().GetProperty("ParameterNames").GetValue(custattr, null);
+                                if (names.Length == 0)
+                                {
+                                    this._parameters.Add(new ParamInfo("[params", "USUAL]"));
+                                }
+                                else
+                                {
+                                    foreach (var param in names)
+                                    {
+                                        this._parameters.Add(new ParamInfo(param, "USUAL"));
+                                    }
+                                }
+                                return;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error reading Clipper params:" + e.Message);
+                }
+
+            }
+
+            foreach (ParameterInfo p in parameters)
+            {
+                this._parameters.Add(new ParamInfo(p.Name, p.ParameterType));
+            }
+
         }
 
         internal MemberAnalysis(EnvDTE.CodeElement member)
@@ -2039,6 +2084,9 @@ namespace XSharpLanguage
                     case XSharpLexer.SUPER:
                         break;
                     default:
+                        // allow FLoat{} or String{}
+                        if (XSharpLexer.IsType(triggerToken.Type))
+                            break;
                         if (XSharpLexer.IsKeyword(triggerToken.Type) ||
                             XSharpLexer.IsOperator(triggerToken.Type)
                             )
@@ -2263,19 +2311,8 @@ namespace XSharpLanguage
                 file = currentMember.File;
             }
             //
-            // Retrieve the current parseOptions for the xFile
-            XSharpParseOptions parseoptions = XSharpParseOptions.Default;
             var prj = file.Project.ProjectNode;
-            parseoptions = prj.ParseOptions;
-            // Ok, now set a "virtual" "Using Static", based on the Dialect
-            switch (parseoptions.Dialect)
-            {
-                case XSharpDialect.Vulcan:
-                case XSharpDialect.VO:
-                    //
-                    file.UsingStatics.AddUnique("VulcanRTFuncs.Functions");
-                    break;
-            }
+            XSharpParseOptions parseoptions = prj.ParseOptions;
             //
             // we have to walk the tokenList, searching for the current Type
             // As we have separators every even token, we will walk by step 2
@@ -2521,13 +2558,14 @@ namespace XSharpLanguage
                 //
                 if (minVisibility < Modifiers.Public)
                 {
-                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    members = cType.SType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                    // Get Public, Internal, Protected & Private Members, we also get Instance vars,  all that WITHOUT inheritance
+                    // But NO static constructors!
+                    members = cType.SType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance );
                 }
                 else
                 {
                     //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    members = cType.SType.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                    members = cType.SType.GetConstructors(BindingFlags.Public | BindingFlags.Instance );
                 }
                 //
                 MemberInfo method = null;
@@ -2694,7 +2732,7 @@ namespace XSharpLanguage
                     else if (cType.XType.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return SearchPropertyTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, Modifiers.Public, out foundElement);
+                        return SearchPropertyTypeIn(new CompletionType(cType.XType.ParentName, cType.File, cType.XType.FileUsings), currentToken, Modifiers.Public, out foundElement);
                     }
                 }
                 else
@@ -2792,7 +2830,7 @@ namespace XSharpLanguage
                     else if (cType.XType.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return SearchFieldTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, Modifiers.Protected, out foundElement);
+                        return SearchFieldTypeIn(new CompletionType(cType.XType.ParentName, cType.File, cType.XType.FileUsings), currentToken, Modifiers.Protected, out foundElement);
                     }
                 }
                 else
@@ -2899,7 +2937,7 @@ namespace XSharpLanguage
                     else if (cType.XType.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.FileUsings), currentToken, minVisibility, staticOnly, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.File, cType.XType.FileUsings), currentToken, minVisibility, staticOnly, out foundElement);
                     }
                 }
                 else
@@ -2913,7 +2951,7 @@ namespace XSharpLanguage
                     else if (xMethod.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return new CompletionType(xMethod.ParentName, xMethod.FileUsings);
+                        return new CompletionType(xMethod.ParentName, xMethod.File, xMethod.FileUsings);
                     }
                 }
             }
@@ -3055,7 +3093,7 @@ namespace XSharpLanguage
             //
             CompletionType cType = null;
             List<String> emptyUsings = new List<String>();
-            foreach (string staticUsing in xFile.UsingStatics)
+            foreach (string staticUsing in xFile.AllUsingStatics)
             {
                 // Provide an Empty Using list, so we are looking for FullyQualified-name only
                 CompletionType tempType = new CompletionType(staticUsing, xFile, emptyUsings);

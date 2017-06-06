@@ -19,11 +19,11 @@ namespace XSharpModel
     /// </summary>
     public class SystemTypeController
     {
-        internal static List<AssemblyInfo> assemblies;
+        internal static Dictionary<String, AssemblyInfo> assemblies;
 
         static SystemTypeController()
         {
-            assemblies = new List<AssemblyInfo>();
+            assemblies = new Dictionary<string, AssemblyInfo>(StringComparer.OrdinalIgnoreCase);
         }
 
         internal static Assembly RealLoadAssembly(string cFile)
@@ -69,91 +69,76 @@ namespace XSharpModel
             return assembly;
         }
 
-        public static Assembly LoadAssembly(string cFileName)
+        public static AssemblyInfo LoadAssembly(string cFileName)
         {
             Assembly oAssembly = null;
             if (!File.Exists(cFileName))
             {
                 return null;
             }
-            cFileName = cFileName.ToLower();
             DateTime lastWriteTime = File.GetLastWriteTime(cFileName);
-            for (int i = 0; i <= (assemblies.Count - 1); i++)
+            AssemblyInfo assembly;
+            if (assemblies.ContainsKey(cFileName))
             {
-                AssemblyInfo assembly2 = assemblies[i];
-                if (assembly2.FileName == cFileName)
-                {
-                    if (lastWriteTime == assembly2.Modified)
-                    {
-                        oAssembly = assembly2.Assembly;
-                    }
-                    else
-                    {
-                        oAssembly = RealLoadAssembly(cFileName);
-                        if (oAssembly != null)
-                        {
-                            assembly2.Assembly = oAssembly;
-                            assembly2.Modified = lastWriteTime;
-                            assembly2.UpdateAssembly();
-                        }
-                        else
-                        {
-                            oAssembly = assembly2.Assembly;
-                        }
-                    }
-                    break;
-                }
+                assembly = assemblies[cFileName];
             }
-            if (oAssembly == null)
+            else
+            {
+                assembly = new AssemblyInfo(cFileName, DateTime.MinValue, null);
+            }
+            if (lastWriteTime != assembly.Modified)
             {
                 oAssembly = RealLoadAssembly(cFileName);
                 if (oAssembly != null)
                 {
-                    assemblies.Add(new AssemblyInfo(cFileName.ToLower(), lastWriteTime, oAssembly));
+                    assembly.Assembly = oAssembly;
+                    assembly.Modified = lastWriteTime;
+                    assembly.UpdateAssembly();
                 }
             }
-            return oAssembly;
+            return assembly;
         }
 
         public static void RemoveAssembly(string cFileName)
         {
-            int FoundAt = -1;
-            //
-            for (int i = 0; i <= (assemblies.Count - 1); i++)
+            if (assemblies.ContainsKey(cFileName))
             {
-                AssemblyInfo assembly2 = assemblies[i];
-                if (assembly2.FileName == cFileName.ToLower())
-                {
-                    FoundAt = i;
-                    break;
-                }
+                assemblies.Remove(cFileName);
             }
-            // Remove, so it will not appears in NameSpace and LookUp
-            if ( FoundAt > -1 )
-                assemblies.RemoveAt(FoundAt);
         }
 
-        public Type FindType(string typeName, IList<string> usings)
+        public Type FindType(string typeName, IList<string> usings, IList<AssemblyInfo> assemblies)
         {
-            Type result = Lookup(typeName);
+            Type result = Lookup(typeName,assemblies);
             if (result != null)
                 return result;
+            // try to find with explicit usings
             foreach (var name in usings)
             {
                 var fullname = name + "." + typeName;
-                result = Lookup(fullname);
+                result = Lookup(fullname, assemblies);
                 if (result != null)
                     return result;
+            }
+            // try to find with implicit namespaces
+            foreach (var asm in assemblies)
+            {
+                foreach (var ns in asm.ImplicitNamespaces)
+                {
+                    var fullname = ns + "." + typeName;
+                    result = Lookup(fullname, assemblies);
+                    if (result != null)
+                        return result;
+
+                }
             }
             return null;
         }
 
-        public static Type Lookup(string typeName)
+        public static Type Lookup(string typeName, IList<AssemblyInfo> assemblies)
         {
             System.Type sType = null;
-            // We are searching for the type name in lower case
-            typeName = typeName.ToLowerInvariant();
-            foreach (AssemblyInfo assembly in SystemTypeController.assemblies)
+            foreach (AssemblyInfo assembly in assemblies)
             {
                 //
                 if (assembly.Types.TryGetValue(typeName, out sType))
@@ -164,27 +149,31 @@ namespace XSharpModel
             return sType;
         }
 
-        public List<String> Namespaces
+        public List<String> GetNamespaces (IList<AssemblyInfo> assemblies)
+        {
+            List<string> result = new List<string>();
+            //
+            foreach (AssemblyInfo assembly in assemblies)
+            {
+                foreach (var ns in assembly.Namespaces)
+                {
+                    result.AddUnique(ns);
+                }
+            }
+            return result;
+        }
+
+        public IEnumerable<AssemblyInfo> Assemblies
         {
             get
             {
-                List<string> ns = new List<string>();
-                //
-                foreach (AssemblyInfo assembly in SystemTypeController.assemblies)
-                {
-                    //
-                    ns.AddRange(assembly.Namespaces);
-                }
-                return ns;
+                return assemblies.Values;
             }
         }
 
-        public List<AssemblyInfo> Assemblies
+        public static void Clear()
         {
-            get
-            {
-                return SystemTypeController.assemblies;
-            }
+            assemblies.Clear();
         }
 
     }

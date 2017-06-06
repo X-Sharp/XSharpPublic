@@ -53272,7 +53272,7 @@ ExportResources = 0
 ExportImages = 0
 [C527 - Codeblock Latebound assign FileGroups]
 [C527 - Codeblock Latebound assign Files]
-File = %AppPath%\Prg\Start.prg
+File = %AppPath%\Prg\C527.prg
 FileGUID = B9ED89CA-B7DA-47F8-9ED1-2CB7A2C39B7A
 FileType = Code
 [C527 - Codeblock Latebound assign References]

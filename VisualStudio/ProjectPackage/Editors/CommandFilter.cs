@@ -77,6 +77,7 @@ namespace XSharp.Project
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
+                        CancelSignatureSession();
                         handled = StartCompletionSession(nCmdID, '\0');
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
@@ -90,7 +91,7 @@ namespace XSharp.Project
                         handled = CancelCompletionSession();
                         break;
                     case VSConstants.VSStd2KCmdID.PARAMINFO:
-                        StartSignatureSession();
+                        StartSignatureSession(false);
                         break;
                     case VSConstants.VSStd2KCmdID.BACKSPACE:
                         if (_signatureSession != null)
@@ -117,25 +118,11 @@ namespace XSharp.Project
                             else
                                 CancelCompletionSession();
                         }
-                        //{
-                        //    switch (ch)
-                        //    {
-                        //        case ' ':
-                        //            CompleteCompletionSession(true);
-                        //            break;
-                        //        case ':':
-                        //        case '.':
-                        //            CompleteCompletionSession(true);
-                        //            completeAndStart = true;
-                        //            break;
-                        //        case '=':
-                        //            CancelCompletionSession();
-                        //            break;
-                        //        default:
-                        //            Filter();
-                        //            break;
-                        //    }
-                        //}
+                        // Comma starts signature session
+                        if (ch == ',')
+                        {
+                            StartSignatureSession(true);
+                        }
                         break;
                 }
             }
@@ -174,11 +161,12 @@ namespace XSharp.Project
                                 {
                                     case ':':
                                     case '.':
+                                        CancelSignatureSession();
                                         StartCompletionSession(nCmdID, ch);
                                         break;
                                     case '(':
                                     case '{':
-                                        StartSignatureSession();
+                                        StartSignatureSession(false);
                                         break;
                                     case ')':
                                     case '}':
@@ -388,7 +376,7 @@ namespace XSharp.Project
             {
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
                 {
-                    StartSignatureSession();
+                    StartSignatureSession(false);
                 }
             }
             //
@@ -402,7 +390,7 @@ namespace XSharp.Project
 
 
         #region Signature Session
-        bool StartSignatureSession()
+        bool StartSignatureSession(bool comma)
         {
             if (_signatureSession != null)
                 return false;
@@ -490,7 +478,9 @@ namespace XSharp.Project
                 _signatureSession.Properties["Line"] = startLineNumber;
                 _signatureSession.Properties["Start"] = ssp.Position;
                 _signatureSession.Properties["Length"] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;
-                _signatureSession.Start();
+                _signatureSession.Properties["Comma"] = comma;
+
+            _signatureSession.Start();
             }
             //
             return true;

@@ -30,6 +30,7 @@ namespace XSharpModel
         private Stack<XSharpParser.LocalvarContext> _localDecls;
         private Modifiers _currentVarVisibility;
         private string _defaultNS;
+        private LanguageService.CodeAnalysis.XSharp.XSharpParseOptions _options;
 
         public XSharpModelRegionDiscover(XFile file)
         {
@@ -41,7 +42,7 @@ namespace XSharpModel
             this._currentNSpaces = new Stack<XType>();
             //
             this.tags = new List<ClassificationSpan>();
-            var options = file.Project.ProjectNode.ParseOptions;
+            this._options = file.Project.ProjectNode.ParseOptions;
         }
 
         private String currentNamespace
@@ -91,6 +92,11 @@ namespace XSharpModel
                 {
                     // Reset TypeList for this file
                     this.File.InitTypeList();
+                    // Default namespaces
+                    _file.Usings.AddUnique("System");
+                    if (_options != null && _options.IsDialectVO)
+                        _file.Usings.AddUnique("Vulcan");
+
                     _reInitModel = false;
                 }
             }

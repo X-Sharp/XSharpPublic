@@ -5,9 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace XSharpModel
 {
+    [DebuggerDisplay("{DisplayName,nq}")]
     public class AssemblyInfo
     {
         // Fields
@@ -31,7 +33,16 @@ namespace XSharpModel
 
         // Has Extensions Methods ?
         private bool lHasExtensions;
-
+        
+        public string DisplayName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_FileName))
+                    return "(Empty)";
+                return System.IO.Path.GetFileName(_FileName);
+            }
+        }
         public string FileName
         {
             get

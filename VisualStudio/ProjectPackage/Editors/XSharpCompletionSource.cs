@@ -32,19 +32,16 @@ namespace XSharpLanguage
     [Name("XSharpCompletion")]
     class XSharpCompletionSourceProvider : ICompletionSourceProvider
     {
-        //[Import]
-        //internal SVsServiceProvider ServiceProvider = null;
-
         [Import]
+        internal SVsServiceProvider ServiceProvider = null;
+
+         [Import]
         internal IGlyphService GlyphService = null;
 
         public ICompletionSource TryCreateCompletionSource(ITextBuffer textBuffer)
         {
-#if CODEMODEL
+
             return new XSharpCompletionSource(this, textBuffer, GetFileName(textBuffer));
-#else
-            return null;
-#endif
         }
 
         private string GetFileName(ITextBuffer buffer)

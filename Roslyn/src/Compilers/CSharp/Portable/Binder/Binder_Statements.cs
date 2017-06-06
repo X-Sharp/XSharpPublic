@@ -1789,7 +1789,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // Build bound conversion. The node might not be used if this is a dynamic conversion 
                 // but diagnostics should be reported anyways.
+#if XSHARP
+                var t1 = op1.Type;
+                var block = false;
+                if (op1.Kind == BoundKind.DynamicMemberAccess && 
+                    t1 == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                {
+                    t1 = Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock);
+                    block = true;
+                }
+                var conversion = GenerateConversionForAssignment(t1, op2, diagnostics);
+                if (block)
+                    op2 = conversion;
+
+#else
                 var conversion = GenerateConversionForAssignment(op1.Type, op2, diagnostics);
+#endif
 
                 // If the result is a dynamic assignment operation (SetMember or SetIndex), 
                 // don't generate the boxing conversion to the dynamic type.

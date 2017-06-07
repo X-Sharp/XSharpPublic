@@ -71,8 +71,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ReturnName = "Xs$Return";
 
         internal const string CoreFunctionsClass = VulcanFunctionNames.FunctionsClass;
-        internal const string VOExeFunctionsClass = "$.Exe.Functions";
-        internal const string VODllFunctionsClass = "$.Functions";
+        internal const string VOExeFunctionsClass = ".Exe.Functions";
+        internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
 
 

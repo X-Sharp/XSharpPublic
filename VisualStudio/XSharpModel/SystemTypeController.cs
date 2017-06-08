@@ -35,6 +35,12 @@ namespace XSharpModel
             }
             try
             {
+                //if (cFile.IndexOf("interop.", StringComparison.OrdinalIgnoreCase) > 0)
+                //{
+                //    var asm = Assembly.LoadFrom(cFile);
+                //    return asm;
+
+                //}
                 FileStream input = new FileStream(cFile, FileMode.Open, FileAccess.Read);
                 byte[] rawAssembly = new BinaryReader(input).ReadBytes((int)input.Length);
                 if (rawAssembly.Length != input.Length)

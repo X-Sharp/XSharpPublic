@@ -77,6 +77,11 @@ namespace XSharpModel
                 name = name.Substring(0, name.Length - 2);
                 suffix = "[]";
             }
+            if (name.EndsWith("&"))
+            {
+                name = name.Substring(0, name.Length - 1);
+                suffix = "";
+            }
             if (lookupTable.ContainsKey(name))
                 name = lookupTable[name];
             return name+suffix;

@@ -121,6 +121,10 @@ namespace XSharp.Project
                 this.ProjectModel.AddFile(e.FileName);
                 this.ProjectModel.Walk();
             }
+            else if (IsCodeFile(e.FileName))
+            {
+                XSharpModel.XSolution.WalkFile(e.FileName);
+            }
         }
 
 
@@ -495,7 +499,52 @@ namespace XSharp.Project
         public override int GetFile(int fileId, uint flags, out uint itemid, out string fileName)
         {
             bool fCreateInPropertiesFolder = false;
+            HierarchyNode propsFolder= null;
+            string props = "Properties";
+            fileName = _GetFilenameForSpecialFiles(fileId, out fCreateInPropertiesFolder);
+            string fullPath = Path.Combine(ProjectFolder, fileName);
 
+            if (fCreateInPropertiesFolder)
+            {
+                propsFolder = this.FindURL(Path.Combine(ProjectFolder ,props));
+                if (propsFolder == null)
+                {
+                    propsFolder = CreateFolderNode(props);
+                    AddChild(propsFolder);
+                }
+                fullPath = Path.Combine(propsFolder.Url) + fileName;
+            }
+            HierarchyNode fileNode = this.FindURL(fullPath);
+            if (fileNode == null && (flags & (uint)__PSFFLAGS.PSFF_CreateIfNotExist) != 0)
+            {
+                // Create a zero-length file if does not exist already.
+                //
+                if (!File.Exists(fullPath))
+                {
+                    File.WriteAllText(fullPath, string.Empty);
+                }
+                fileNode = CreateFileNode(fileName);
+                if (fCreateInPropertiesFolder && propsFolder != null)
+                {
+                    propsFolder.AddChild(fileNode);
+                }
+                else
+                {
+                    AddChild(fileNode);
+                }
+            }
+
+            itemid = fileNode != null ? fileNode.ID : uint.MaxValue;
+            if ((flags & (uint)__PSFFLAGS.PSFF_FullPath) != 0)
+                fileName = fullPath;
+
+            return VSConstants.S_OK;
+        }
+
+        private string _GetFilenameForSpecialFiles(int fileId, out bool fCreateInPropertiesFolder)
+        {
+            string fileName = "";
+            fCreateInPropertiesFolder = false;
             switch (fileId)
             {
                 case (int)__PSFFILEID.PSFFILEID_AppConfig:
@@ -533,55 +582,9 @@ namespace XSharp.Project
                 //    fileName = "App.manifest";
                 //    break;
                 default:
-                    return base.GetFile(fileId, flags, out itemid, out fileName);
+                    break;
             }
-
-            if (fCreateInPropertiesFolder)
-            {
-                string sPropFolder = ProjectFolder + "\\Properties";
-                if (!System.IO.Directory.Exists(sPropFolder))
-                {
-                    System.IO.Directory.CreateDirectory(sPropFolder);
-                }
-                fileName = "Properties\\" + fileName;
-            }
-
-            HierarchyNode fileNode = FindChild(fileName);
-            string fullPath = Path.Combine(ProjectFolder, fileName);
-            if (fCreateInPropertiesFolder)
-            {
-                fullPath = Path.Combine(ProjectFolder, fileName);
-            }
-
-            if (fileNode == null && (flags & (uint)__PSFFLAGS.PSFF_CreateIfNotExist) != 0)
-            {
-                // Create a zero-length file if does not exist already.
-                //
-                if (!File.Exists(fullPath))
-                    File.WriteAllText(fullPath, string.Empty);
-
-                fileNode = CreateFileNode(fileName);
-                if (fCreateInPropertiesFolder)
-                {
-                    var PropsFolder = FindChild("Properties");
-                    if (PropsFolder == null)
-                    {
-                        PropsFolder = CreateFolderNode("Properties");
-                        AddChild(PropsFolder);
-                    }
-                    PropsFolder.AddChild(fileNode);
-                }
-                else
-                {
-                    AddChild(fileNode);
-                }
-            }
-
-            itemid = fileNode != null ? fileNode.ID : 0;
-            if ((flags & (uint)__PSFFLAGS.PSFF_FullPath) != 0)
-                fileName = fullPath;
-
-            return VSConstants.S_OK;
+            return fileName;
         }
 
         /// <summary>
@@ -874,7 +877,14 @@ namespace XSharp.Project
                             if (File.Exists(url))
                             {
                                 if (IsCodeFile(url))
+                                {
                                     this.ProjectModel.AddFile(url);
+                                    // make sure generated code is updated when changed
+                                    if (xnode.IsDependent)
+                                    {
+                                        filechangemanager.ObserveItem(url);
+                                    }
+                                }
                                 if (IsXamlFile(url))
                                 {
                                     this.ProjectModel.AddFile(url);
@@ -1279,14 +1289,17 @@ namespace XSharp.Project
             }
             else
             {
-                if (filechangemanager != null && IsXamlFile(url))
-                {
-                    filechangemanager.StopObservingItem(url);
-                }
-
                 var node = this.FindChild(url) as XSharpFileNode;
                 if (node != null && !node.IsNonMemberItem)
                 {
+                    if (filechangemanager != null )
+                    {
+                        if (IsXamlFile(url) ||
+                            node.IsDependent)
+
+                        filechangemanager.StopObservingItem(url);
+                    }
+
                     this.ProjectModel.RemoveFile(url);
                 }
             }
@@ -1578,6 +1591,11 @@ namespace XSharp.Project
             return logger;
         }
 
+        public override BuildResult Build(string target)
+        {
+            ConfigCanonicalName config = new ConfigCanonicalName("Debug","AnyCPU");
+            return Build(config, target);
+        }
         public void ClearIntellisenseErrors(string fileName)
         {
             _errorListManager.DeleteIntellisenseErrorsFromFile(fileName);

@@ -251,10 +251,9 @@ namespace XSharpModel
             }
         }
 
-
-        public XFile Find(string fileName)
+        public XFile Find(string fullPath)
         {
-            return Files.Find(f => f.Name.ToLower() == fileName.ToLower());
+            return FindFullPath(fullPath);
         }
 
         public XFile FindFullPath(string fullPath)
@@ -287,14 +286,6 @@ namespace XSharpModel
             if (this.xFilesDict.ContainsKey(url))
             {
                 this.xFilesDict.Remove(url);
-            }
-            else
-            {
-                XFile xFile = this.Find(url);
-                if (xFile != null)
-                {
-                    this.xFilesDict.Remove(xFile.FullPath);
-                }
             }
         }
 

@@ -69,11 +69,6 @@ namespace XSharpModel
                 {
                     break;
                 }
-                file = prj.Find(System.IO.Path.GetFileName(fileName));
-                if (file != null)
-                {
-                    break;
-                }
             }
             return file;
         }
@@ -141,6 +136,15 @@ namespace XSharpModel
             if (file.Project == _orphanedFilesProject)
             {
                 _orphanedFilesProject.RemoveFile(fileName);
+            }
+        }
+
+        public static void WalkFile(string fileName)
+        {
+            var file = FindFile(fileName);
+            if (file != null)
+            {
+                ModelWalker.GetWalker().FileWalk(file);
             }
         }
     }

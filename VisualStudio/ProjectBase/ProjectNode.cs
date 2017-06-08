@@ -4451,7 +4451,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Overloaded method. Invokes MSBuild using the default configuration and does without logging on the output window pane.
         /// </summary>
-        public BuildResult Build(string target)
+        public virtual BuildResult Build(string target)
         {
             return this.Build(0, new ConfigCanonicalName(), null, target);
         }

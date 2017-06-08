@@ -23,6 +23,7 @@ namespace XSharp.Project
         public const int IdXporter = 0x0100;
         public const int IdWebsite = 0x0101;
         public const int IdOnlineHelp = 0x0102;
+        public const int IdVOXporter = 0x0103;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -53,6 +54,9 @@ namespace XSharp.Project
             {
                 var menuCommandID = new CommandID(CommandSet, IdXporter);
                 var menuItem = new MenuCommand(this.StartXPorter, menuCommandID);
+                commandService.AddCommand(menuItem);
+                menuCommandID = new CommandID(CommandSet, IdVOXporter);
+                menuItem = new MenuCommand(this.StartXPorter, menuCommandID);
                 commandService.AddCommand(menuItem);
                 // repeat this with different named event handlers and Ids for other menu points
                 menuCommandID = new CommandID(CommandSet, IdWebsite);
@@ -104,8 +108,23 @@ namespace XSharp.Project
         {
             string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
             string InstallPath = (string)Microsoft.Win32.Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
-            string xporterPath = System.IO.Path.Combine(InstallPath, @"Bin\Xporter.exe");
-            System.Diagnostics.Process.Start(xporterPath);
+            MenuCommand cmd = sender as MenuCommand;
+            string xporterPath = null;
+            if (cmd.CommandID.ID == IdXporter)
+            {
+                xporterPath = System.IO.Path.Combine(InstallPath, @"Bin\Xporter.exe");
+            }
+            else if (cmd.CommandID.ID == IdVOXporter)
+            {
+                xporterPath = System.IO.Path.Combine(InstallPath, @"Bin\VOXporter.exe");
+            }
+            if (!String.IsNullOrEmpty(xporterPath))
+            {
+                var info = new System.Diagnostics.ProcessStartInfo();
+                info.FileName = xporterPath;
+                info.WorkingDirectory = System.IO.Path.GetDirectoryName(xporterPath);
+                System.Diagnostics.Process.Start(info);
+            }
 
         }
         /// <summary>

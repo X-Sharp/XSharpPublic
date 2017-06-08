@@ -30,6 +30,10 @@ namespace XSharp.Project
     public abstract class XProjectNode : ProjectNode
     {
 
+        public XProjectNode(): base()
+        {
+            URLNodes = new Dictionary<string, HierarchyNode>(1000, StringComparer.OrdinalIgnoreCase);
+        }
         /// <summary>
         /// Initialize common project properties with default value if they are empty.
         /// </summary>
@@ -151,7 +155,7 @@ namespace XSharp.Project
 
         #endregion
         #region Cache URLs and other canonicalnames
-        protected Dictionary<string, HierarchyNode> URLNodes = new Dictionary<string, HierarchyNode>(1000);
+        protected Dictionary<string, HierarchyNode> URLNodes ;
 
         public string CleanURL(string url)
         {

@@ -20,6 +20,8 @@ namespace Microsoft.VisualStudio.Project.Automation
     [CLSCompliant(false), ComVisible(true)]
     public class OAComReference : OAReferenceBase<ComReferenceNode>
     {
+        private System.Reflection.Assembly assembly = null;
+        private bool tryLoad = false;
         internal OAComReference(ComReferenceNode comReference) :
             base(comReference)
         {
@@ -39,11 +41,11 @@ namespace Microsoft.VisualStudio.Project.Automation
                 {
                     // Do Nothing
                 }
-                if(0 == locale)
-                {
-                    return string.Empty;
-                }
-                CultureInfo culture = new CultureInfo(locale);
+				if(0 == locale)
+				{
+                    return "0";
+				}
+				CultureInfo culture = new CultureInfo(locale);
                 return culture.Name;
             }
         }
@@ -58,7 +60,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-				return string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\{2}\\{3}", BaseReferenceNode.TypeGuid.ToString("B"), this.Version, BaseReferenceNode.LCID, BaseReferenceNode.WrapperTool);
+                return string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\{2}\\{3}", BaseReferenceNode.TypeGuid.ToString("B").ToUpper(), this.Version, BaseReferenceNode.LCID, BaseReferenceNode.WrapperTool);
             }
         }
         public override int MajorVersion
@@ -71,16 +73,34 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
         public override string Name
         {
-            get { return BaseReferenceNode.Caption; }
+            //get { return BaseReferenceNode.Caption; }
+            get
+            {
+                // this needs to return the name as defined in the assembly
+                // Otherwise the form editor will not be able to load a saved activeX control
+                // the safest thing to do is to load the assembly and retrieve its name
+                if (assembly == null  && ! tryLoad)
+                {
+                    try
+                    {
+                        string path = this.Path;
+                        tryLoad = true;
+                        if (System.IO.File.Exists(path))
+                        {
+                            assembly = System.Reflection.Assembly.LoadFrom(path);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        assembly = null;
+                    }
+                }
+                if (assembly != null)
+                {
+                    return assembly.GetName().Name;
+                }
+                return System.IO.Path.GetFileNameWithoutExtension(this.Path); }
         }
-      public override string Path
-      {
-         get
-         {
-            return BaseReferenceNode.Url;
-            //return BaseReferenceNode.InstalledFilePath;
-         }
-      }
 
         public override VSLangProj.prjReferenceType Type
         {

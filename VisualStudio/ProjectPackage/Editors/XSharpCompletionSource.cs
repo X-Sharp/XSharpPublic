@@ -1022,16 +1022,34 @@ namespace XSharpLanguage
         {
             public String Name;
             public String TypeName;
+            public String Direction;
+            public bool Optional;
 
-            internal ParamInfo(String n, String t)
+            internal ParamInfo(String n, String t, String dir)
             {
                 this.Name = n;
                 this.TypeName = t;
+                this.Direction = dir;
             }
-            internal ParamInfo(String n, System.Type t)
+            internal ParamInfo(System.Reflection.ParameterInfo p)
             {
-                this.Name = n;
-                this.TypeName = t.GetXSharpTypeName();
+                this.Name = p.Name;
+                if (p.IsIn)
+                {
+                    Direction = "IN";
+                }
+                else if (p.IsOut)
+                {
+                    Direction = "OUT";
+                }
+                else
+                    Direction = "AS";
+                string type = p.ParameterType.FullName;
+                if (type.EndsWith("&"))
+                    Direction = "REF";
+                
+                this.TypeName = p.ParameterType.GetXSharpTypeName();
+                Optional = p.IsOptional;
             }
         }
 
@@ -1228,13 +1246,13 @@ namespace XSharpLanguage
                                 string[] names = (string[])custattr.GetType().GetProperty("ParameterNames").GetValue(custattr, null);
                                 if (names.Length == 0)
                                 {
-                                    this._parameters.Add(new ParamInfo("[params", "USUAL]"));
+                                    this._parameters.Add(new ParamInfo("[params", "USUAL]", "AS"));
                                 }
                                 else
                                 {
                                     foreach (var param in names)
                                     {
-                                        this._parameters.Add(new ParamInfo(param, "USUAL"));
+                                        this._parameters.Add(new ParamInfo(param, "USUAL", "AS"));
                                     }
                                 }
                                 return;
@@ -1251,7 +1269,7 @@ namespace XSharpLanguage
 
             foreach (ParameterInfo p in parameters)
             {
-                this._parameters.Add(new ParamInfo(p.Name, p.ParameterType));
+                this._parameters.Add(new ParamInfo(p));
             }
 
         }
@@ -1340,8 +1358,7 @@ namespace XSharpLanguage
                     EnvDTE.CodeElements pars = method.Parameters;
                     foreach (EnvDTE.CodeParameter p in pars)
                     {
-                        //
-                        this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName));
+                        this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName,"AS"));
                     }
                     //
                     declType = method.Type;
@@ -1418,26 +1435,30 @@ namespace XSharpLanguage
                 if ((this.Kind == Kind.Property) || (this.Kind == Kind.Access) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Enum) || (this.Kind == Kind.Event))
                     return this.Name;
                 //
-                String vars = "";
+                var sb = new StringBuilder();
                 foreach (var var in this.Parameters)
                 {
-                    if (vars.Length > 0)
-                        vars += ", ";
-                    vars += var.Name + " as " + var.TypeName;
+                    if (sb.Length > 0)
+                        sb.Append( ", ");
+                    sb.Append(var.Name);
+                    sb.Append(" ");
+                    sb.Append(" ");
+                    sb.Append(var.Direction);
+                    sb.Append(" ");
+                    sb.Append(var.TypeName);
                 }
                 //
-                String desc = "";
-                desc += this.Name;
-                desc += "(";
-                desc += vars;
-                desc += ")";
+                sb.Insert(0, "(");
+                sb.Insert(0, this.Name);
+                sb.Append(")");
                 //
                 if ((this.Kind == Kind.Method) || (this.Kind == Kind.Function) || (this.Kind == Kind.Property) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
                 {
-                    desc += " as " + this.TypeName;
+                    sb.Append(" AS ");
+                    sb.Append( this.TypeName);
                 }
                 //
-                return desc;
+                return sb.ToString();
             }
         }
 

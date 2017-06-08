@@ -45,7 +45,7 @@ namespace XSharp.Project
          : base(root, element)
       {
          BindReferenceData();
-      }
+       }
 
 
       public XSharpComReferenceNode(ProjectNode root, VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
@@ -78,23 +78,23 @@ namespace XSharp.Project
             {
                return wrapperFileName;
             }
-            //else if (!String.IsNullOrEmpty(this.wrapperFileName))
-            //{
-            //   string asm = this.ProjectMgr.GetOutputAssembly(null);
-            //   asm = Path.GetDirectoryName(asm) + Path.DirectorySeparatorChar + this.wrapperFileName;
-            //   return asm;
-            //}
-            //else 
-            //   return base.Url;
-            string result = this.ProjectMgr.ProjectInstance.GetPropertyValue("IntermediateOutputPath") + this.wrapperFileName;
+                //else if (!String.IsNullOrEmpty(this.wrapperFileName))
+                //{
+                //   string asm = this.ProjectMgr.GetOutputAssembly(null);
+                //   asm = Path.GetDirectoryName(asm) + Path.DirectorySeparatorChar + this.wrapperFileName;
+                //   return asm;
+                //}
+                //else 
+                //   return base.Url;
 
+                string result = this.ProjectMgr.GetProjectProperty("IntermediateOutputPath") + this.wrapperFileName;
             result = Path.Combine(this.ProjectMgr.ProjectFolder, result);
             return result;
          }
       }
       protected override NodeProperties CreatePropertiesObject()
       {
-         return new ReferenceNodeProperties(this);
+         return new XSharpComReferenceNodeProperties(this);
 
       }
       internal bool Matches(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool )

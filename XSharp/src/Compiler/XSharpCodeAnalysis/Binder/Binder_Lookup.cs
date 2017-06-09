@@ -42,6 +42,30 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(result.IsClear);
             Debug.Assert(options.AreValid());
 
+            // Try to look for functions first
+            if (Compilation.Options.IsDialectVO)
+            {
+                // check for function calls method calls outside the current class
+                bool check = (options.HasFlag(LookupOptions.MustNotBeInstance) && !options.HasFlag(LookupOptions.MustNotBeMethod));
+                if (check)
+                {
+                    Binder scope = this;
+                    while (scope != null)
+                    {
+                        if (scope is InContainerBinder && scope.ContainingType == null) // at the namespace level, so outside of all types
+                        {
+                            scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteDiagnostics);
+                            FilterResults(result, options);
+                            if (!result.IsClear)
+                            {
+                                return scope;
+                            }
+                        }
+                        scope = scope.Next;
+                    }
+                }
+            }
+
             Binder binder = null;
             for (var scope = this; scope != null && !result.IsMultiViable; scope = scope.Next)
             {

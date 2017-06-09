@@ -832,7 +832,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string fp;
                 try
                 {
-                    fp = rooted ? fn : Path.Combine(p, fn);
+                    fp = rooted || p == null ? fn : Path.Combine(p, fn);
                 }
                 catch (Exception e)
                 {

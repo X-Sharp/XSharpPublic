@@ -26382,7 +26382,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C266
 
-ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C267 - Name conflict between class and namespace *************
 Application = C267 - Name conflict between class and namespace
 IDEVersion = 1.06
@@ -40687,7 +40687,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C406 - Cannot convert USUAL to DateTime
 
-ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C407 - Name conflict between assembly name and class name *************
 Application = C407 - Name conflict between assembly name and class name
 IDEVersion = 1.06

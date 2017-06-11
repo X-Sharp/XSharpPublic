@@ -299,20 +299,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal NamespaceOrTypeSymbol BindNamespaceOrTypeSymbol(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<Symbol> basesBeingResolved, bool suppressUseSiteDiagnostics)
         {
-#if XSHARP
-            bool includeNameSpace = true;
-            if (syntax is IdentifierNameSyntax)
-            {
-                var qns = syntax.Parent as QualifiedNameSyntax;
-                if (qns != null)
-                {
-                    includeNameSpace = qns.Left == syntax;
-                }
-            }
-            var result = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics, includeNameSpace);
-#else
             var result = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics);
-#endif
             Debug.Assert((object)result != null);
 
             return (NamespaceOrTypeSymbol)UnwrapAlias(result, diagnostics, syntax, basesBeingResolved);
@@ -677,8 +664,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (!includeNameSpace)
                 options |= LookupOptions.ExcludeNameSpaces;
-            else
-                options |= LookupOptions.MustNotBeType;
 #endif
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;

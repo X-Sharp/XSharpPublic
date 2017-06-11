@@ -6895,6 +6895,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         case "\"__sig__\"":
                             replacement = GetEntityName(true);
                             break;
+                        case "\"__functions__\"":
+                            replacement = GlobalClassName;
+                            break;
                         default:
                             break;
                     }

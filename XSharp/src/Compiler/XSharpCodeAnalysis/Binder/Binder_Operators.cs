@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             SingleEqualsUsual,
             NotEqualsUsual,
             SubtractString,
-            UsualDate,
+            UsualOther,
             Shift,
             PSZCompare,
             SymbolCompare,
@@ -104,7 +104,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return opCall;
         }
 
-        private BoundExpression BindVOUsualDate(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
+        private BoundExpression BindVOUsualOther(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right)
         {
             var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
@@ -344,8 +344,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindVOSubtractString(node, diagnostics, left, right);
                 case VOOperatorType.CompareString:
                     return BindVOCompareString(node, diagnostics, left, right, ref compoundStringLength);
-                case VOOperatorType.UsualDate:
-                    return BindVOUsualDate(node, diagnostics, left, right);
+                case VOOperatorType.UsualOther:
+                    return BindVOUsualOther(node, diagnostics, left, right);
                 case VOOperatorType.PSZCompare:
                     return BindVOPszCompare(node, diagnostics, ref left, ref right);
                 case VOOperatorType.SymbolCompare:
@@ -382,7 +382,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var typePSZ = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
                 var typeSym = Compilation.GetWellKnownType(WellKnownType.Vulcan___Symbol);
                 NamedTypeSymbol typeDate;
-
+                NamedTypeSymbol typeFloat;
 
                 switch (xnode.Op.Type)
                 {
@@ -457,33 +457,52 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         break;
                     case XSharpParser.MINUS:
-                        if (leftType?.SpecialType == SpecialType.System_String)
+                    case XSharpParser.PLUS:
+                        if (xnode.Op.Type == XSharpParser.MINUS)
                         {
-                            if (rightType?.SpecialType == SpecialType.System_String || rightType == typeUsual)
+                            // String Subtract 
+                            // LHS    - RHS
+                            // STRING - STRING 
+                            // STRING -- USUAL
+                            // USUAL  - STRING
+                            if (leftType?.SpecialType == SpecialType.System_String)
+                            {
+                                if (rightType?.SpecialType == SpecialType.System_String || rightType == typeUsual)
+                                {
+                                    opType = VOOperatorType.SubtractString;
+                                }
+                            }
+                            else if (leftType == typeUsual && rightType?.SpecialType == SpecialType.System_String)
                             {
                                 opType = VOOperatorType.SubtractString;
                             }
                         }
-                        if (leftType == typeUsual && rightType?.SpecialType == SpecialType.System_String)
-                        {
-                            opType = VOOperatorType.SubtractString;
+                        if (opType == VOOperatorType.None)
+                        { 
+                            typeDate = Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
+                            typeFloat = Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
+
+                            // Add or Subtract USUAL with other type
+                            // LHS   - RHS 
+                            // Usual - Date
+                            // Date  - Usual
+                            // Usual - Float
+                            // Float - Usual
+                            if (leftType == typeUsual)
+                            { 
+                                if (rightType == typeDate || rightType == typeFloat)
+                                {
+                                    opType = VOOperatorType.UsualOther;
+                                }
+                            }
+                            if (rightType == typeUsual)
+                            {
+                                if (leftType == typeDate || leftType == typeFloat)
+                                {
+                                    opType = VOOperatorType.UsualOther;
+                                }
+                            }
                         }
-                        // usual - date
-                        // date - usual
-                        typeDate = Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
-                        if (leftType == typeUsual && rightType == typeDate)
-                            opType = VOOperatorType.UsualDate;
-                        if (leftType == typeDate && rightType == typeUsual)
-                            opType = VOOperatorType.UsualDate;
-                        break;
-                    case XSharpParser.ADD:
-                        // usual + date
-                        // date + usual
-                        typeDate = Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
-                        if (leftType == typeUsual && rightType == typeDate)
-                            opType = VOOperatorType.UsualDate;
-                        if (leftType == typeDate && rightType == typeUsual)
-                            opType = VOOperatorType.UsualDate;
                         break;
                     default:
                         switch (node.Kind())

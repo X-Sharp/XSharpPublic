@@ -946,7 +946,7 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION 
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SIZEOF | SUPER
-                    | TO | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
+                    | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
 					// The following new keywords cannot be in the keywordVN list because it will match an expression when used on their own
 					| REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY 
 					)
@@ -967,7 +967,7 @@ keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWA
 					// The following are never used 'alone' and are harmless as identifiers
 					| ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
 					| FASTCALL | FIELD | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
-					| STEP | STRICT | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
+					| STEP | STRICT | TO | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
 					//| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
 					)
                     ;

@@ -1143,6 +1143,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {"__DIALECT_HARBOUR__", MACRO},
             {"__ENTITY__", MACRO},
             {"__FILE__", MACRO},
+            {"__FUNCTIONS__", MACRO},
             {"__LINE__", MACRO},
             {"__MODULE__", MACRO},
             {"__SIG__", MACRO},

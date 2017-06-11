@@ -476,6 +476,16 @@ Components: main\script; Root: HKCR; Subkey: "{#XSScript}\DefaultIcon";         
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\open\command";   ValueData: """{app}\bin\xsi.exe"" ""%1"" %*";  ValueType: string;  ValueName: ""
 
 
+; todo - see registration from Vulcan
+; associate .xsproj extension
+; associate .xsprj extension
+; .prg 
+; .xs
+; .ppo
+; .vh
+; .xh
+
+
 [Ini]
 Components: vs2015; Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; 
 Components: vs2017; Filename: "{code:Getvs2017IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; 
@@ -498,10 +508,6 @@ Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Paramet
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2017"; Flags: waituntilidle;
 
 Components: main\ngen;  Filename: "{app}\uninst\uninstngen.cmd";  Flags: Runhidden;
-
-
-
-
 
 
 

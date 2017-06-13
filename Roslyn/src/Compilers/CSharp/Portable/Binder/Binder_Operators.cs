@@ -238,7 +238,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     GenerateImplicitConversionError(diagnostics, node, argumentConversion, right, delegateType);
                 }
             }
+#if XSHARP
+            if (right.Kind == BoundKind.UnboundLambda)
+            {
+                if (right.Syntax.XIsCodeBlock)
+                {
+                    Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, right.Syntax, delegateType);
+                }
+            }
 
+#endif
             BoundExpression argument = CreateConversion(right, argumentConversion, delegateType, diagnostics);
 
             bool isAddition = opKind == BinaryOperatorKind.Addition;

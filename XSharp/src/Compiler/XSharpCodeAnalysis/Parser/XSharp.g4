@@ -657,6 +657,7 @@ primary				: Key=SELF													#selfExpression
                     | LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
                     | AnonType=anonType											#anonTypeExpression		// { .id := expr [, .id := expr] }
                     | CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
+					| AnoExpr=anonymousMethodExpression 						#codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
                     | Query=linqQuery											#queryExpression        // LINQ
                     | Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY					#delegateCtorCall		// delegate{ obj , @func() }
@@ -795,20 +796,44 @@ anonMember			: Name=identifierName ASSIGN_OP Expr=expression
                     ;
 
 
-// Codeblocks
+// Codeblocks & Lambda Expressions
 
-codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE)
-                      ( Expr=expression?
-                      | eos StmtBlk=statementBlock
-                      | ExprList=codeblockExprList )
-                      RCURLY
+codeblock			: LCURLY (OR | PIPE LambdaParamList=lambdaParameterList? PIPE)	// Old codeblock Syntax
+                       Code=codeblockCode RCURLY
+					| LCURLY LambdaParamList=lambdaParameterList? lambda=UDCSEP		// Alternative Lambda Syntax
+                       Code=codeblockCode RCURLY
                     ;
+
+codeblockCode		  : Expr=expression? 
+					  | eos StmtBlk=statementBlock
+					  | ExprList=codeblockExprList 
+					  ;
+
+lambdaParameterList	: ImplicitParams=codeblockParamList 
+					| ExplicitParams=explicitAnonymousFunctionParamList
+					;
 
 codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
                     ;
 
 codeblockExprList	: (Exprs+=expression? COMMA)+ ReturnExpr=expression
                     ;
+
+// Anonymous methods 
+anonymousMethodExpression				: (Async=ASYNC)? Delegate=DELEGATE (LPAREN ParamList=explicitAnonymousFunctionParamList? RPAREN)? 
+										  LCURLY Code=codeblockCode RCURLY 
+										;
+
+explicitAnonymousFunctionParamList		: Params+=explicitAnonymousFunctionParameter (COMMA Params+=explicitAnonymousFunctionParameter)*
+										;
+
+explicitAnonymousFunctionParameter      : Id=identifier Mod=anonymousfunctionParameterModifier Type=datatype
+										;
+
+anonymousfunctionParameterModifier		: Tokens+= (AS | REF | OUT)
+										;
+
+
 
 // LINQ Support
 

@@ -35,6 +35,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             Debug.Assert(destination.IsCodeblock() || conv.Exists);
+            if (!syntax.XIsCodeBlock)
+            {
+                Error(diagnostics, ErrorCode.ERR_CodeblockWithLambdaSyntax, syntax);
+            }
 
             AnonymousTypeManager manager = this.Compilation.AnonymousTypeManager;
             var delegateSignature = new TypeSymbol[unboundLambda.ParameterCount + 1];

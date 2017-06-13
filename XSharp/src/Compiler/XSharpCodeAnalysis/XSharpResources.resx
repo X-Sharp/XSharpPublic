@@ -5222,6 +5222,12 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_ArgumentNameLocalNamePossibleConflict" xml:space="preserve">
     <value>Possible conflict between assignment to local variable {0} and named argument syntax. The compiler will assume the named argument syntax. Surround the expression with parentheses to resolve the problem.</value>
   </data>
-  
+  <data name="ERR_CodeblockWithLambdaSyntax" xml:space="preserve">
+    <value>Codeblocks cannot be declared with the Lambda Expression Syntax.</value>
+  </data>
+  <data name="ERR_LamdaWithCodeblockSyntax" xml:space="preserve">
+    <value>You cannot assign an untyped codeblock to a delegate of type {0}. Use the Lambda Expression syntax (=>) in stead.</value>
+  </data>
+
 
 </root>

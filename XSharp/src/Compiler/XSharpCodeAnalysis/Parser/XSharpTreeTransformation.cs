@@ -7058,17 +7058,51 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Codeblocks
         public override void ExitCodeblockExpression([NotNull] XP.CodeblockExpressionContext context)
         {
-            context.Put(context.CbExpr.Get<LambdaExpressionSyntax>());
+            if (context.CbExpr != null)
+                context.Put(context.CbExpr.Get<LambdaExpressionSyntax>());
+            else if (context.AnoExpr != null)
+                context.Put(context.AnoExpr.Get<AnonymousMethodExpressionSyntax>());
+        }
+
+        public override void ExitLambdaParameterList([NotNull] XP.LambdaParameterListContext context)
+        {
+            ParameterListSyntax paramList;
+            if (context.ImplicitParams != null)
+                paramList = context.ImplicitParams.Get<ParameterListSyntax>();
+            else
+                paramList = context.ExplicitParams.Get<ParameterListSyntax>();
+            context.Put(paramList);
+        }
+
+        public override void ExitCodeblockCode([NotNull] XP.CodeblockCodeContext context)
+        {
+            CSharpSyntaxNode  block;
+            // Convert everything to a stmt like block
+            // so it is easier to fix Void expressions as last expression in the list
+            if (context.Expr != null)
+            {
+                block = context.Expr?.Get<ExpressionSyntax>();
+            }
+            else
+            {
+               block = context.StmtBlk?.Get<BlockSyntax>()
+                        ?? context.ExprList?.Get<BlockSyntax>()
+                        ?? MakeBlock(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            context.Put(block);
         }
 
         public override void ExitCodeblock([NotNull] XP.CodeblockContext context)
         {
-            context.Put(_syntaxFactory.ParenthesizedLambdaExpression(
+            ParameterListSyntax paramList = context.LambdaParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            var node = _syntaxFactory.ParenthesizedLambdaExpression(
                 asyncKeyword: null,
-                parameterList: context.CbParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                parameterList: paramList,
                 arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                body: (CSharpSyntaxNode)context.Expr?.Get<ExpressionSyntax>() ?? context.StmtBlk?.Get<BlockSyntax>() ?? context.ExprList?.Get<BlockSyntax>() ?? MakeBlock(MakeList<StatementSyntax>())
-                ));
+                body: context.Code.Get<CSharpSyntaxNode>()
+                );
+            context.Put(node);
+
         }
 
         public override void ExitCodeblockParamList([NotNull] XP.CodeblockParamListContext context)
@@ -7103,6 +7137,67 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 GenerateReturn(context.ReturnExpr.Get<ExpressionSyntax>())
                 )));
         }
+        public override void ExitAnonymousfunctionParameterModifier([NotNull] XP.AnonymousfunctionParameterModifierContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                if (m.Type != XP.AS)
+                    modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitExplicitAnonymousFunctionParameter([NotNull] XP.ExplicitAnonymousFunctionParameterContext context)
+        {
+            var attributeList = EmptyList<AttributeListSyntax>();
+            var type = context.Type.Get<TypeSyntax>();
+            var par = _syntaxFactory.Parameter(
+                attributeLists: attributeList,
+                modifiers: context.Mod.GetList<SyntaxToken>() ,
+                type: type,
+                identifier: context.Id.Get<SyntaxToken>(),
+                @default: null 
+                );
+            context.Put(par);
+        }
+    
+        public override void ExitExplicitAnonymousFunctionParamList([NotNull] XP.ExplicitAnonymousFunctionParamListContext context)
+        {
+            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            foreach (XP.ExplicitAnonymousFunctionParameterContext param in context._Params)
+            {
+                if (@params.Count > 0)
+                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+
+                @params.Add(param.Get<ParameterSyntax>());
+            }
+            context.Put(_syntaxFactory.ParameterList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                @params,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+            _pool.Free(@params);
+        }
+
+
+        public override void ExitAnonymousMethodExpression([NotNull] XP.AnonymousMethodExpressionContext context)
+        {
+            var block = context.Code.CsNode as BlockSyntax;
+            if (block == null)
+            {
+                block = MakeBlock(GenerateExpressionStatement(context.Code.Get<ExpressionSyntax>()));
+            }
+            var ame = _syntaxFactory.AnonymousMethodExpression(
+                context.Async?.SyntaxKeyword(),
+                context.Delegate.SyntaxKeyword(),
+                context.ParamList.Get<ParameterListSyntax>(),
+                block);
+            context.Put(ame);
+
+
+        }
+
         #endregion
 
         #region LINQ

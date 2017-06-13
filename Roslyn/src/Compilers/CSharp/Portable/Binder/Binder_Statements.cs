@@ -2439,6 +2439,18 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+#if XSHARP
+            if (expression.Kind == BoundKind.UnboundLambda)
+            {
+                if (targetType.IsDelegateType())
+                {
+                    if (expression.Syntax.XIsCodeBlock)
+                    {
+                        Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, expression.Syntax, targetType);
+                    }
+                }
+            }
+#endif
             var conversion = this.Conversions.ClassifyConversionFromExpression(expression, targetType, ref useSiteDiagnostics);
             diagnostics.Add(expression.Syntax, useSiteDiagnostics);
 

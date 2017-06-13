@@ -2889,35 +2889,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         #endregion
- 
         #region Codeblocks
-        public override void ExitCodeblock([NotNull] XP.CodeblockContext context)
+        public override void ExitCodeblockCode([NotNull] XP.CodeblockCodeContext context)
         {
-            // Convert everything to a stmt like block
+            // Convert everything to a stmt block when it is a real codeblock and "just" an expression
             // so it is easier to fix Void expressions as last expression in the list
-            BlockSyntax body;
-            if (context.StmtBlk != null)
+            base.ExitCodeblockCode(context);
+            var block = context.CsNode as BlockSyntax;
+            if (block == null )
             {
-                body = context.StmtBlk.Get<BlockSyntax>();
+                var cbc = context.Parent as XP.CodeblockContext;
+                if (cbc.lambda == null)
+                {
+                    if (cbc.LambdaParamList == null || cbc.LambdaParamList.ImplicitParams != null)
+                    {
+                        block = MakeBlock(GenerateReturn((ExpressionSyntax)context.CsNode));
+                        context.Put<BlockSyntax>(block);
+                    }
+                }
             }
-            else if (context.ExprList != null)
-            {
-                body = context.ExprList.Get<BlockSyntax>();
-            }
-            else if (context.Expr != null)
-            {
-                var stmt = GenerateReturn(context.Expr.Get<ExpressionSyntax>());
-                body = MakeBlock(MakeList<StatementSyntax>(stmt));
-            }
-            else
-            {
-                body = MakeBlock(MakeList<StatementSyntax>());
-            }
-            context.Put(_syntaxFactory.ParenthesizedLambdaExpression(
-                asyncKeyword: null,
-                parameterList: context.CbParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
-                arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                body: body));
         }
         #endregion
 

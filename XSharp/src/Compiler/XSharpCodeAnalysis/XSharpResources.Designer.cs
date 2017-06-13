@@ -11,8 +11,8 @@
 namespace LanguageService.CodeAnalysis {
     using System;
     using System.Reflection;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2839,6 +2839,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_CmdOptionConflictsSource {
             get {
                 return ResourceManager.GetString("ERR_CmdOptionConflictsSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Codeblocks cannot be declared with the Lambda Expression Syntax..
+        /// </summary>
+        internal static string ERR_CodeblockWithLambdaSyntax {
+            get {
+                return ResourceManager.GetString("ERR_CodeblockWithLambdaSyntax", resourceCulture);
             }
         }
         
@@ -5944,6 +5953,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_LambdaInIsAs {
             get {
                 return ResourceManager.GetString("ERR_LambdaInIsAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot assign an untyped codeblock to a delegate of type {0}. Use the Lambda Expression syntax (=&gt;) in stead..
+        /// </summary>
+        internal static string ERR_LamdaWithCodeblockSyntax {
+            get {
+                return ResourceManager.GetString("ERR_LamdaWithCodeblockSyntax", resourceCulture);
             }
         }
         
@@ -11277,7 +11295,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Possible conflict between local variable {0} name and named argument name {0}.
+        ///   Looks up a localized string similar to Possible conflict between assignment to local variable {0} and named argument syntax. The compiler will assume the named argument syntax. Surround the expression with parentheses to resolve the problem..
         /// </summary>
         internal static string WRN_ArgumentNameLocalNamePossibleConflict {
             get {

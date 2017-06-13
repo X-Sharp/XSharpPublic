@@ -789,6 +789,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.DEFAULT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword, text);
                     break;
+                case XSharpParser.DELEGATE:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword, text);
+                    break;
                 case XSharpParser.OTHERWISE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword, text);
                     break;
@@ -937,7 +940,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.AUTO:
                 case XSharpParser.CONSTRUCTOR:
                 //case XSharpParser.CONST:
-                case XSharpParser.DELEGATE:
                 case XSharpParser.DESTRUCTOR:
                 case XSharpParser.ENUM:
                 case XSharpParser.EVENT:

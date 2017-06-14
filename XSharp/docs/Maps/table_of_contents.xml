@@ -118,6 +118,21 @@
       <topicref type="topic" id="428724207686309" build="ALL" modified="2017-05-17T10:00:44.864Z" icon="0" href="Who-is-the-X-team">
         <caption translate="true">Who is who in the X# team</caption>
       </topicref>
+      <topicref type="topic" id="428984094992566" build="ALL" modified="2017-06-12T12:42:21.816Z" icon="0" href="MigratingappsfromVOtoX">
+        <caption translate="true">Migrating apps from VO to X#</caption>
+        <topicref type="topic" id="428986318132862" build="ALL" modified="2017-06-12T12:54:17.469Z" icon="0" href="Exmple-1-The-VO-Explorer-Examp">
+          <caption translate="true">Example 1: The VO Explorer Example</caption>
+        </topicref>
+        <topicref type="topic" id="428986216317597" build="ALL" modified="2017-06-12T13:01:06.417Z" icon="0" href="Exmple-2-The-VOPAD-Example">
+          <caption translate="true">Example 2: The VOPAD Example</caption>
+        </topicref>
+        <topicref type="topic" id="428984468885707" build="ALL" modified="2017-06-12T13:01:28.742Z" icon="0" href="Example-3-The-Pizza-Example">
+          <caption translate="true">Example 3: The Pizza Example</caption>
+        </topicref>
+        <topicref type="topic" id="42897067116215" build="ALL" modified="2017-06-12T13:01:41.930Z" icon="0" href="Example-4-The-Email-Client-Exa">
+          <caption translate="true">Example 4: The Email Client Example</caption>
+        </topicref>
+      </topicref>
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
       <caption translate="true">Using X# in Visual Studio</caption>
@@ -240,6 +255,9 @@
       </topicref>
       <topicref type="topic" id="423891384096573" build="ALL" modified="2016-01-19T22:45:59.144Z" icon="0" href="XML-Documentation-Comments">
         <caption translate="true">XML Documentation Comments</caption>
+      </topicref>
+      <topicref type="topic" id="428997435733357" build="ALL" modified="2017-06-13T18:55:48.750Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
+        <caption translate="true">Codeblock, Lambda and Anonymous Method Expressions</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="428725168955982" build="ALL" modified="2017-05-17T09:41:40.642Z" icon="0" href="X-Scripting">

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Codeblock, Lambda and Anonymous Method Expressions</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Codeblock, Lambda and Anonymous Method Expressions</para>
+    </header>
+    <para styleclass="Normal">X# contains 3 language constructs that are fairly similar yet different.</para>
+    <para styleclass="Heading2">Codeblocks</para>
+    <para styleclass="Normal">Historically the XBase language has known the CodeBlock Type. A codeblock is specified as </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">{| params | expression }</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The parameters inside a codeblock are of type USUAL and its return value is also of type USUAL.<br/>To evaluate a codeblock you call the Eval() runtime function and pass this function the codeblock and parameters when needed</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code with box">FUNCTION Start() AS VOID<br/>LOCAL cb as CODEBLOCK<br/>cb := { |x, y| x * y}<br/>? Eval(cb, 2,3) &#160;// shows 6<br/>WAIT<br/>RETURN</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">In stead of a single expression, you can also use an expression list. The value of the last expression in the list is returned as the result of the codeblock.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code with box">FUNCTION Start() AS VOID<br/>LOCAL cb as CodeBlock<br/>cb := { |x, y| x += 1, x * y}<br/>? Eval(cb, 2,3) &#160;// shows 9<br/>WAIT<br/>RETURN</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Vulcan has also added the possibility to the language to include a list of statements as &quot;body&quot; of the codeblock. The result of the last statement is returned to the calling code. When the last statement is &quot;Void&quot; then a NIL will be returned:<br/>Note that the closing Curly must be on a line of its own and the first statement must appear on a new line as well.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code with box">FUNCTION Start() AS VOID<br/>LOCAL cb as CodeBlock<br/>cb := { |x, y| <br/><tab /><tab /><tab />x += 1<br/> &#160; &#160; &#160; &#160; &#160; &#160;? x<br/><tab /><tab /><tab />RETURN x * y<br/><tab /> &#160; &#160;}<br/>? Eval(cb, 2,3) &#160;// prints 3 and shows the result 9<br/>WAIT<br/>RETURN</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading2">Lambda Expressions</para>
+    <para styleclass="Normal">Lamda expressions look a lot like Codeblocks. They are usually used in combination with Delegates.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">DELEGATE MultiPlyInt( x as Int, y as Int) as Int<br/><br/>FUNCTION Start() AS VOID<br/>LOCAL lambda as MultiPlyInt<br/>lambda := { x, y =&gt; x * y}<br/>? Lambda(2,3) // shows 6<br/>RETURN</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Parameters are optional and the return type can be VOID, so this works as well</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">DELEGATE DoSomething( ) as VOID<br/><br/>FUNCTION Start() AS VOID<br/>LOCAL lambda as DoSomething<br/>lambda := { =&gt; Console.WriteLine(&quot;This is a Lambda&quot;)}<br/>Lambda() // prints the text<br/>RETURN</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The parameters of a Lambda expression may be typed. This can be convenient for documentation purposes but can also help the compiler to find the right overload for a method:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code with box">DELEGATE CalcInt( x AS INT, y AS INT) AS INT<br/><br/>DELEGATE CalcReal( x AS REAL8, y AS REAL8) AS REAL8<br/><br/>FUNCTION Start() AS VOID<br/>TestLambda( { x AS INT, y AS INT =&gt; x * y} )<br/>TestLambda( { x AS REAL8, y AS REAL8 =&gt; x + y} )<br/>TestLambda( { x , y &#160;=&gt; x - y } ) // Which one will be called ?<br/>RETURN<br/><br/>FUNCTION TestLambda (lambda AS CalcInt) AS VOID<br/>? &quot;Int&quot;, lambda(2,3)<br/>RETURN<br/><br/>FUNCTION TestLambda (lambda AS CalcReal) AS VOID<br/>? &quot;Real&quot;,lambda(2,3)<br/>RETURN</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The body of the Lambda may also be a single expression, expression list and a statement list.</para>
+    <para styleclass="Normal"><text style="font-weight:bold;">Anonymous Method Expressions</text></para>
+    <para styleclass="Normal">These work almost the same as Lambda Expressions. <br/>Take the example below:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">FUNCTION TestAnonymous() AS VOID<br/><tab />LOCAL oForm AS Form<br/><tab />oForm := Form{}<br/><tab />oForm:Click += DELEGATE(o AS System.Object, e AS System.EventArgs ) { &#160;<br/><tab /><tab /><tab /><tab /><tab /><tab />System.Windows.Forms.MessageBox.Show(&quot;Click from AME 1!&quot;) &#160; <br/><tab /><tab /><tab /><tab /><tab /><tab />System.Windows.Forms.MessageBox.Show(&quot;Click from AME 2!&quot;) &#160; <br/><tab /><tab /><tab /><tab /> &#160; } &#160; <br/><tab />oForm:Click += { o,e =&gt; System.Windows.Forms.MessageBox.Show(&quot;We can also do this with a Lambda!&quot;) } &#160; <br/><tab />oForm:ShowDialog()<br/><tab />RETURN &#160; &#160;</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The biggest difference between Lambda Expressions and <text styleclass="Normal">Anonymous Method Expressions</text> is that the parameters to Lambda Expressions do not have to be typed. They will be inferred from the usage. Parameters for Anonymous Method Expressions must always be typed.</para>
+  </body>
+</topic>

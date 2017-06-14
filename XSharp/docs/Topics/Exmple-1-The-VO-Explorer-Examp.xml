@@ -1,0 +1,418 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Example 1: The VO Explorer Example</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Example 1: The VO Explorer Example</para>
+    </header>
+    <para styleclass="Normal">As first example of XPorting VO apps we take the VO Explorer example.</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Start the VO Xporter program and point it to the VO Explorer example:</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><image src="xportexplorer.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:24px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">On my machine the VO installation is in the C:\Cavo28SP3 folder. That may be different on your machine of course. </text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">I have not changed any or the xPort options. &#160;The options are:</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="11" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Option</text></para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">RemoveClassClause</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">&#32;</text><text styleclass="Body Text">Remove the “Class Clause” for methods and accesses/assigns. This will group all methods inside a CLASS &#160;.. END CLASS block and then the CLASS clause at the method level is no longer required</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">ChangeInitAxitToCtorDtor</para>
+        </td>
+        <td>
+          <para styleclass="Code Example"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Init and Axit are reserved method names in VO. In DotNet these names are often used by classes. Vulcan has introduced new keywords CONSTRUCTOR and DESTRUCTOR. This option automatically renames the Init and Axit Methods. Example:</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">METHOD</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Init(oOwner) &#160;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> MyClass </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">becomes</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">CONSTRUCTOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">(oOwner)</text></para>
+          <para styleclass="Code Example"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">RemoveDeclareMethod</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">If you used strong &#160;typing in VO you needed to add DEC LARE METHOD statements and/or DECLARE ACCESS and DECLARE ASSIGN. The X# compiler still recognizes these statements but no longer requires them</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">RemoveInitAxitReturnClause</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">in VO you would get a compiler error if your init method did not return SELF. In Vulcan and X# this is no longer needed, or actually unwanted. Constructors cannot return anything and Axit/Destructor as well. This option will remove the return clauses for these methods.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">AllClassesArePartial</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Partial classes is a mechanism in Vulcan and X# that allows you to split a class over multiple source files. That may be convenient if your classes have become very big or if you want to separate generated code from hand written code (like what the Windows Forms Editor in Visual Studio does). You can choose to make all Xporter classes partial. We have disabled this because there is a (small) performance penalty when you use this. Especially if you have split the Accesses and Assigns from your class over separate files.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">AddMissingConstructors</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">VO allows you to declare a class without Init method / Constructor. In .Net this is also allowed., but then the compiler assumes you have a class with a constructor without parameters. <br/>This compiler option will automatically generate missing constructors. </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">IgnoreDuplicateDefines</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">&#32;If you select this then duplicate defines will simply be ignored and not written to the output files.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Don’tGenerateEmptyFiles</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Each module from your VO application will become a source file in X#. This option will suppress the generation of empty source files</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">AdjustCallbackFunctions</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Some (advanced) VO code contains callback functions where the address of a function is passed to another function and will get called. The Windows API uses that a lot, for example for enumerating windows or printers. That mechanism will not work in .Net. This option will change your code and will help you to get a working solution.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">ExportOnlyDefines</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This option allows you to generate a DLL with only the defines from the AEF(s) or files you have selected. That may be useful if you have ported your code before with the Vulcan Transporter and want to get rid of the header files with the defines.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">The XPorter will allow you to select a destination folder and names for your Visual Studio solution and project files.</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">After pressing xPort you will see the following folder s</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">C:\XporterOutput\Explorer</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">C:\XporterOutput\Explorer\Explorer</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">The first folder is the so called “Solution” folder</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">The subfolder contains the project</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">If you had selected multiple AEF files then each AEF would have its own subfolder under the Solution Folder</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">The solution folder contains the files:</text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2" style="width:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none;">
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Contains</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Explorer.sln</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">VS Solution file</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Explorer.viproj</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">XIDE project file</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">SDK_Defines.dll</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Helper file that contains the defines from the Vulcan VO SDK assemblies</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">The project folder contains the files</text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="2" style="width:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none;">
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Contains</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Customer Explorer.prg</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Data Servers.prg</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Explorer Shell.prg</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Explorer.viapp</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">XIDE Application file</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Explorer.xsproj</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">VS Project file</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Help About.HelpAboutDialog.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Form resource used by VS</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Help About.prg</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Help About.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Form resource used by XIDE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Icons.ICONONE.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Icon resource used by VS</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Icons.ICONTWO.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Icon resource used by VS</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Icons.prg</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Icons.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Icon resources used by XIDE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menus.IDA_CustomerExplorerMenu.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menu resource used by VS</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menus.IDA_EMPTYSHELLMENU.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menu resource used by VS</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menus.IDM_CustomerExplorerMenu.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menu resource used by VS</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menus.IDM_EMPTYSHELLMENU.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menu resource used by VS</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menus.IDM_OrdersListViewMenu.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menu resource used by VS</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menus.prg</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menus.rc</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Menu resources for XIDE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Start.prg</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Body Text">To compile and build the project we open the file Explorer.SLN in Visual Studio.<br/>Inside Visual Studio it looks like:</para>
+    <para styleclass="Body Text"><image src="explorer-error.png" scale="100.00%"></image></para>
+    <para styleclass="Body Text">The arrows in front of several modules show that there are subitems in these modules. Those subitems contain the Form, Menu and Icon resources.</para>
+    <para styleclass="Body Text">Now let’s try to build the solution inside Visual Studio. (Menu option Build – Build Solution)</para>
+    <para styleclass="Body Text">This compiles the application and builds a debuggable version in the c:\XporterOutput\Explorer\Debug folder. You will see that this folder contains an EXE, PDB (debug symbols) and copies of the VulcanVO runtime libraries:<br/>Explorer.exe<br/>Explorer.pdb<br/>SDK_Defines.dll<br/>VulcanVOGUIClasses.dll<br/>VulcanVORDDClasses.dll<br/>VulcanVOSystemClasses.dll<br/>VulcanVOWin32APILibrary.dll</para>
+    <para styleclass="Body Text">Now can try to run the app. This works, but as soon as we select the File/Open menu option we will get a runtime error:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="explorer-solutionexplorer.png" scale="100.00%"></image><br/></para>
+    <para styleclass="Body Text">The error message is clear: the app uses the splitwindow control and this requires the splitwindow support DLL.</para>
+    <para styleclass="Body Text">This DLL is located in the Redist folder of your VO installation. Simply copy the “Cato3spl.dll” file from your VO Redist folder to the output folder as well as the MSVCRT.DLL and try again.<br/>You can also add the DLLs to your project (Add Existing Item, and point to the DLLs in the Redist folder). This will copy them to the project folder. Then set the build action for the 2 DLLs to None and the “Copy to Output Directory” property to “Preserve Newest”. When you now build your app the DLL will be copied to the right folder.</para>
+    <para styleclass="Body Text">After that the code will run just like it did in VO with no code changes!</para>
+    <para styleclass="Body Text">Let’s have a closer look at what the xPorter has done:</para>
+    <list id="260" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Each module in VO has become a PRG file in the X# project</li>
+    </list>
+    <list id="261" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Source code has been grouped by class and put in a CLASS .. END CLASS construct</li>
+    </list>
+    <list id="262" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Init methods have been renamed to CONSTRUCTOR</li>
+      <li styleclass="Body Text">Compiler macros such as &quot;<text styleclass="" style="font-family:Consolas; font-size:12pt; color:#808080;">%CavoSamplesRootDir%\Explorer\</text>&quot; have been replaced with literal values: &quot;<text styleclass="" style="font-family:Consolas; font-size:9pt; color:#a31515;">C:\cavo28SP3\Samples\Explorer\</text>&quot;</li>
+    </list>
+    <list id="263" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Recourses have become “children” of the source file where they were defined</li>
+      <li styleclass="Body Text">Locations for resources have also been changed %CavoSamplesRootDir%\Explorer\TWO.ICO has been changed to ICONTWO Icon C:\cavo28SP3\Samples\Explorer\TWO.ICO. <br/>Also the RESOURCE keyword has been removed.</li>
+      <li styleclass="Body Text">The binaries for the forms and menus have not been included in this version of the XPorter (Beta 11). That will change.</li>
+    </list>
+    <list id="264" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The Start file has the biggest change. In VO there was a method in there App:Start(). However the App class is not defined in this application but part of the GUI Classes. There was also no Start function in the App. VO would call the Start function in the GUI classes and would merge the App:Start() method in the application with the rest of the App class in the GUI Classes.<br/>This is not allowed in .Net. Classes cannot be spread over more than one module.<br/>Therefore the XPorter has created a new class (xApp) and moved the Start method to this Xapp class. It has also added a Start() function which instantiates the App class and calls the Start method inside XApp. You can also see in the example below that a TRY .. CATCH .. END TRY construct is added which captures the errors that are not catched anywhere else and shows an error message in an ErrorBox object. This is the errorbox that was shown before because the CATO DLLs were missing.</li>
+    </list>
+    <list id="265" type="ul" listtype="bullet" formatstring="&#45;" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Calibri; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><image src="explorer-startmodule.png" scale="100.00%"></image></li>
+    </list>
+    <list id="266" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">If you look closer to the solution explorer in Visual Studio and clock on the References node in the tree you will see that the example has references to the Vulcan runtime and the VO Class libraries as well as the SDK defines library that was included with the XPorter.</li>
+      <li styleclass="Body Text">If you open the project properties you will see on the General page that the selected dialect is “Visual Object” , on the &#160;Language page are most VO options are set and on the Build page the platform target is x86 (because the Vulcan runtime is x86) and several warnings have been suppressed. These warnings are:</li>
+    </list>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="2" style="width:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none;">
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">Number</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">Meaning</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">162</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">Suppresses a warning about Unreachable code</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">618</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">Suppresses a warning about the use of obsolete functions, such as CollectForced</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">649</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">Suppresses a warning about unused private and/or internal fields.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">9025</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">Suppresses a warning about missing return statements</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">9032</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">Suppresses a warning about return values inside ASSIGN methods and/or constructors/destructors</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">9043</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Body Text">Suppresses a warning about ambiguous code, which could happen if two assemblies define a function with the same name.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">In this particular example only warning 618 is generated by the compiler because the CustomerExplorer:Close() method calls CollectForced. After commenting out that line you can remove all the “suppressed” warnings from the app and it will compile without any warnings.</para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

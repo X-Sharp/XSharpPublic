@@ -9,7 +9,7 @@
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="Heading2">Changes in RC 1</para>
     <para styleclass="Normal"><text style="font-weight:bold;">Compiler</text></para>
-    <list id="78" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed a problem with a late bound assign of a literal codeblock</li>
       <li styleclass="Normal">Resolved several name conflicts </li>
       <li styleclass="Normal">Typed local variables can now also be used for PCALL() calls</li>
@@ -21,10 +21,14 @@
       <li styleclass="Normal">Fix problem with virtual instance methods and structures</li>
       <li styleclass="Normal">Fixed name conflict foreach variables used in Array Literals</li>
       <li styleclass="Normal">Changed resolution for Functions and static methods with the same name. IN the VO/Vulcan dialect functions take precedence over static methods. If you want to call the static method then then you need to prefix the method call with the classname.</li>
-      <li styleclass="Normal"></li>
+      <li styleclass="Normal">We have added a separate syntax for Lambda Expressions</li>
+      <li styleclass="Normal">We have added support for Anonymous Method Expressions</li>
+      <li styleclass="Normal">We have added support for typed parameters for CodeBlocks</li>
+      <li styleclass="Normal">There is a separate topic in this documentation now that describes the syntax differences and similarities between Codeblocks, Lambda Expressions and Anonymous Method Expressions.</li>
     </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold;">Visual Studio</text></para>
-    <list id="78" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Added parameter tips for Functions and methods from &quot;Using Static&quot; classes</li>
       <li styleclass="Normal">Added parameter tips for Clipper Calling Convention functions and methods</li>
       <li styleclass="Normal">Parameter tips are now shown when a opening ( or { is typed as well as when the user types a comma</li>
@@ -41,7 +45,7 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold;">Tools</text></para>
-    <list id="78" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Added a first version of the VO Xporter tool</li>
     </list>
     <para styleclass="Heading2">Changes in 0.2.12</para>

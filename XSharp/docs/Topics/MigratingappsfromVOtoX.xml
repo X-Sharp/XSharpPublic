@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Migrating apps from VO to X#</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Migrating apps from VO to X#</para>
+    </header>
+    <para styleclass="Body Text">In this topic we will discuss how to migrate applications from VO to X# with the aid of the VO XPorter tool from X#.</para>
+    <para styleclass="Body Text">When you want to do this we strongly recommend you to start small. We will therefore start with a few VO example programs and describe the steps to take and the changes that need to be made after the conversion.</para>
+    <para styleclass="Heading2">Requirements</para>
+    <para styleclass="Body Text">Since X# does not have a runtime &#160;yet you need to have the Vulcan Runtime to be able to run your VO apps with minimal change in X#. &#160;You can use any Vulcan runtime, starting with Vulcan 2. Even the runtime from the evaluation version of Vulcan is sufficient.</para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

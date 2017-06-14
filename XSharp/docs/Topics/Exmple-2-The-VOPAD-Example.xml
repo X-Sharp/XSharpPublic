@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Example 2: The VOPAD Example</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Example 2: The VOPAD Example</para>
+    </header>
+    <para styleclass="Normal">This example converts the VOPAD AEF file from the C:\cavo28SP3\Samples\Controls\Richedit folder.</para>
+    <para styleclass="Normal">After converting it with the same options as the 1st example we will have a folder structure like </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">C:\XporterOutput\VoPad</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">C:\XporterOutput\VoPad\VoPad</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2" style="width:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none;">
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Contains</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">VoPad.sln</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">VS Solution file</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">VoPad.viproj</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">XIDE project file</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">SDK_Defines.dll</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Helper file that contains the defines from the Vulcan VO SDK assemblies</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">The project folder contains the files</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="25" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Contains</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">!Readme!.prg</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">image.IMAGE.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Image resource for VS</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">image.prg</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">image.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Image resource for XIDE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Manifest.CREATEPROCESS_MANIFEST_RESOURCE_ID.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Manifest resource for VS</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Manifest.prg</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Manifest.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Manifest resource for XIDE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadHelp About.HelpAbout.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Help about resource for VS</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadHelp About.POWVOBMP.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Splash resource for VS</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadHelp About.prg</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadHelp About.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Help resources for XIDE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadMenus.IDA_StandardPadMenu.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Accelerator resource for VS</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadMenus.IDM_StandardPadMenu.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Menu resource for VS</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadMenus.prg</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadMenus.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Resources for XIDE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadShell.IDI_VOPADICON.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">App Icon resource for VS</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadShell.prg</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadShell.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">App Icon resource for XIDE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadStart.prg</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadWin.oMarginDialog.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Form resource for VS</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadWin.prg</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Module source code</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">PadWin.rc</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Form resource for XIDE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Vopad.viapp</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XIDE Application</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Vopad.xsproj</para>
+        </td>
+        <td>
+          <para styleclass="Normal">VS Project</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Open the project in VS and compile. You will see the following errors / warnings</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadWin.prg(473,1): warning XS1030: #warning: &apos;The following method did not include a CLASS declaration&apos;</text></para>
+    <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadWin.prg(480,1): warning XS1030: #warning: &apos;The following method did not include a CLASS declaration&apos;</text></para>
+    <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadHelp About.prg(78,3): error XS9046: Cannot assign to &apos;font&apos; because it is a &apos;method&apos;</text></para>
+    <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadHelp About.prg(81,8): error XS0119: &apos;TextControl.Font(params __Usual[])&apos; is a method, which is not valid in the given context</text></para>
+    <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadHelp About.prg(88,3): error XS9046: Cannot assign to &apos;font&apos; because it is a &apos;method&apos;</text></para>
+    <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadHelp About.prg(91,8): error XS0119: &apos;TextControl.Font(params __Usual[])&apos; is a method, which is not valid in the given context</text></para>
+    <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadWin.prg(166,19): error XS1061: &apos;RichEdit&apos; does not contain a definition for &apos;RTFChangeFont&apos; and no extension method &apos;RTFChangeFont&apos; accepting a first argument of type &apos;RichEdit&apos; could be found (are you missing a using directive or an assembly reference?)</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">Let&apos;s examine this by double clickig on the errors / warnings:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">First the warnings. These are generated by a #warning preprocessor statement inserted by XPorter because it found problems in your code:</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">There was an ACCESS FilterIndex CLASS SaveAsDialog in the source. This adds an access to a class in the GUI Classes. This is not allowed in .Net. <br/>The XPorter has created a special subclass of SaveAsDialog to hold this extra property.<br/>Fortunately this ACCESS is no longer needed because it has been added to the GUI Classes already.<br/>So we can completely delete that code.</li>
+      <li styleclass="Body Text">There was a method RTFChangeFont CLASS RichEdit. The same problem as the SaveAsDialog:FilterIndex. In this case the method is necessary. It has been moved to a subclass of RichEdit already. However since the original code still points to the RichEdit class there could be a runtime problem because this method is not part of the richedit class.<br/>There are 2 possible solutions here:</li>
+    </list>
+    <list id="4" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <list id="4" level="1" type="ol" listtype="decimal" formatstring="&#37;&#49;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Body Text">Change the method to an extension method</li>
+        <li styleclass="Body Text">Change the code that uses the RichEdit class to use the changed class</li>
+      </list>
+    </list>
+    <para styleclass="Body Text" style="margin-left:13px;">Option 1 is the best here since we are not using any private or protected properties of the RichEdit class here. To achieve that change the code from </para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">CLASS</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> RichEdit_external_class </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">INHERIT</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> RichEdit</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">METHOD</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> RTFChangeFont() </text></para>
+    <para styleclass="Normal"><tab /><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">etc</text></para>
+    <para styleclass="Body Text"> to</para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">STATIC</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">CLASS</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> RichEditExtensions </text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">STATIC</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">METHOD</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> RTFChangeFont( </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">SELF</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> oEdit </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">as</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> RichEdit) </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">AS</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">VOID</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> &#160; </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">LOCAL</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> oFontDlg </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">AS</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> StandardFontDialog</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> &#160; oFontDlg := StandardFontDialog{oEdit:Owner}</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> &#160; oFontDlg:FontColor := oEdit:TextColor</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> &#160; oFontDlg:Font &#160; &#160; &#160;:= oEdit:Font</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> &#160; oFontDlg:Show()</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> &#160; oEdit:TextColor := oFontDlg:FontColor</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> &#160; oEdit:Font &#160; &#160; &#160;:= oFontDlg:Font</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">END</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">CLASS</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">Now we have added an extension method that can be used like a normal method.<br/>This change also solves the error in PadWin.prg </para>
+    <para styleclass="Body Text">Then look at the other problems: they all have to do with a Font property in the TextControl class. Unfortunately the VO class libraries have both a Font() method and a Font() Access/Assign for the TextControl class. Having a method and a property with the same name is not allowed in .Net.</para>
+    <para styleclass="Body Text">When the VO Gui classes were ported to Vulcan the decision has been made to rename the Font property to Controlfont. So we need to make that change. Simply double click on the errors and change :Font to :ControlFont (4 times)</para>
+    <para styleclass="Body Text">After that the code should compile and run. Clicking the Font button on the toolbar should show the font dialog (from the RTFChangeFont extension method)</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Some of the changes that were made to the code (omitting the ones that were also in example 1):</para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Manifest.prg is empty but included because it had a dependent resource.</li>
+      <li styleclass="Body Text">PadWin.prg contains a constructor that was generated for the SearchBox class</li>
+    </list>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#008000;">// constructor inserted by xPorter, remove superfluous arguments</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">CONSTRUCTOR</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9) </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">CLIPPER</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">SUPER</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

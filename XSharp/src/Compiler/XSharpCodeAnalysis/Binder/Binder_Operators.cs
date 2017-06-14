@@ -369,7 +369,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Minus Operator and LHS or  RHS is STRING and other side is USUAL     // STRING - USUAL or USUAL - STRING
             //
             VOOperatorType opType = VOOperatorType.None;
-            var xnode = node.XNode as XSharpParser.BinaryExpressionContext;
+            XSharpParser.BinaryExpressionContext xnode;
+            if (node.XNode is XSharpParser.CodeblockCodeContext)
+                xnode = ((XSharpParser.CodeblockCodeContext)node.XNode).Expr as XSharpParser.BinaryExpressionContext;
+            else
+                xnode = node.XNode as XSharpParser.BinaryExpressionContext;
             if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
                 return opType;
 

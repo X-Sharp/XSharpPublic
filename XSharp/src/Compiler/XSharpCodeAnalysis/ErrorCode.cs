@@ -1565,6 +1565,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_CodeblockWithLambdaSyntax = 9055,
         ERR_LamdaWithCodeblockSyntax = 9056,
         ERR_CodeBlockWithTypeParameters = 9057,
+        WRN_LamdaExpressionWithPipes = 9058,
         #endregion X#-only messages
     }
 }

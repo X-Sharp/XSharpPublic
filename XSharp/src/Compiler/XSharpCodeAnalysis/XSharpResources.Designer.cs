@@ -11,8 +11,8 @@
 namespace LanguageService.CodeAnalysis {
     using System;
     using System.Reflection;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2848,6 +2848,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_CodeblockWithLambdaSyntax {
             get {
                 return ResourceManager.GetString("ERR_CodeblockWithLambdaSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Typed parameters in codeblocks are not supported by the (Vulcan) runtime..
+        /// </summary>
+        internal static string ERR_CodeBlockWithTypeParameters {
+            get {
+                return ResourceManager.GetString("ERR_CodeBlockWithTypeParameters", resourceCulture);
             }
         }
         
@@ -13327,6 +13336,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_IsDynamicIsConfusing_Title {
             get {
                 return ResourceManager.GetString("WRN_IsDynamicIsConfusing_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lamda Expression should not contain pipe (&apos;|&apos;) characters..
+        /// </summary>
+        internal static string WRN_LamdaExpressionWithPipes {
+            get {
+                return ResourceManager.GetString("WRN_LamdaExpressionWithPipes", resourceCulture);
             }
         }
         

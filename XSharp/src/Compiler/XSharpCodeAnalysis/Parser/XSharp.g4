@@ -798,9 +798,9 @@ anonMember			: Name=identifierName ASSIGN_OP Expr=expression
 
 // Codeblocks & Lambda Expressions
 
-codeblock			: LCURLY (OR | PIPE LambdaParamList=lambdaParameterList? PIPE)	// Old codeblock Syntax
+codeblock			: LCURLY (Or=OR | P1=PIPE LambdaParamList=lambdaParameterList? P2=PIPE)	// Old codeblock Syntax
                        Code=codeblockCode RCURLY
-					| LCURLY LambdaParamList=lambdaParameterList? lambda=UDCSEP		// Alternative Lambda Syntax
+					| LCURLY (Or=OR | P1=PIPE? LambdaParamList=lambdaParameterList? P2=PIPE?) lambda=UDCSEP		// Alternative Lambda Syntax with pips that will trigger an error
                        Code=codeblockCode RCURLY
                     ;
 

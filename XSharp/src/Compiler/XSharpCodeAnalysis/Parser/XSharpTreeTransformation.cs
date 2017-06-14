@@ -7095,6 +7095,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCodeblock([NotNull] XP.CodeblockContext context)
         {
             ParameterListSyntax paramList = context.LambdaParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            if (context.lambda == null &&
+                context.LambdaParamList?.ExplicitParams != null)
+            {
+                paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CodeBlockWithTypeParameters));
+                
+            }
+            if (context.lambda != null )
+            {
+                bool bWarn;
+                if (context.Or == null && context.P1 == null && context.P2 == null)
+                {
+                    // correct lambda
+                    bWarn = false;
+                }
+                else if (context.Or != null)        // no parameters with 2 pipes  || =>
+                {
+                    bWarn = true;
+                }
+                else if (context.P1 != null && context.P2 != null) // params, or pipes separated with space | a | => or | | =>
+                {
+                    bWarn = true;
+                }
+                else // one of the pipes is missing
+                {
+                    bWarn = false;
+                    if (context.P1 == null)
+                    {
+                        paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_SyntaxError,"Opening Pipe ('|') character"));
+                    }
+                    if (context.P2 == null)
+                    {
+                        paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_SyntaxError, "Closing Pipe ('|') character"));
+                    }
+                }
+                if (bWarn)
+                {
+                    paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_LamdaExpressionWithPipes));
+                }
+            }
+
             var node = _syntaxFactory.ParenthesizedLambdaExpression(
                 asyncKeyword: null,
                 parameterList: paramList,

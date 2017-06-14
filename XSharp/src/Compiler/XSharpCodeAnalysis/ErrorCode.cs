@@ -1564,6 +1564,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_ArgumentNameLocalNamePossibleConflict = 9054,
         ERR_CodeblockWithLambdaSyntax = 9055,
         ERR_LamdaWithCodeblockSyntax = 9056,
+        ERR_CodeBlockWithTypeParameters = 9057,
         #endregion X#-only messages
     }
 }

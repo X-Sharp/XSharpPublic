@@ -93,9 +93,14 @@ namespace XSharpModel
             _AssemblyReferences.Clear();
         }
 
-        public void AddAssemblyReference(string fileName)
+        public void AddAssemblyReference(VSLangProj.Reference reference)
         {
-            var assemblyInfo = SystemTypeController.LoadAssembly(fileName);
+            var assemblyInfo = SystemTypeController.LoadAssembly(reference);
+            _AssemblyReferences.Add(assemblyInfo);
+        }
+        public void AddAssemblyReference(string path)
+        {
+            var assemblyInfo = SystemTypeController.LoadAssembly(path);
             _AssemblyReferences.Add(assemblyInfo);
         }
         public void UpdateAssemblyReference(string fileName)

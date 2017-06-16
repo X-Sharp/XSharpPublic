@@ -946,7 +946,7 @@ namespace XSharp.Project
 
         private void ReferencesEvents_ReferenceAdded(Reference pReference)
         {
-            ProjectModel.AddAssemblyReference(pReference.Path);
+            ProjectModel.AddAssemblyReference(pReference);
         }
 
         private void ReferencesEvents_ReferenceChanged(Reference pReference)
@@ -1201,8 +1201,7 @@ namespace XSharp.Project
                 if ((reference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                     (reference.Type == prjReferenceType.prjReferenceTypeActiveX))
                 {
-                    string fullPath = reference.Path;
-                    ProjectModel.AddAssemblyReference(fullPath);
+                    ProjectModel.AddAssemblyReference(reference);
                 }
             }
         }

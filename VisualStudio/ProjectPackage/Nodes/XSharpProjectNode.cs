@@ -1528,9 +1528,11 @@ namespace XSharp.Project
         #region IVsDesignTimeAssemblyResolution
 
         private DesignTimeAssemblyResolution designTimeAssemblyResolution;
+        private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", "AnyCPU");
 
         protected internal override void SetConfiguration(ConfigCanonicalName config)
         {
+            _config = config;
             base.SetConfiguration(config);
             if (this.designTimeAssemblyResolution == null)
             {
@@ -1593,8 +1595,7 @@ namespace XSharp.Project
 
         public override BuildResult Build(string target)
         {
-            ConfigCanonicalName config = new ConfigCanonicalName("Debug","AnyCPU");
-            return Build(config, target);
+            return Build(_config, target);
         }
         public void ClearIntellisenseErrors(string fileName)
         {

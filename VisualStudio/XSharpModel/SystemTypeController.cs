@@ -26,62 +26,18 @@ namespace XSharpModel
             assemblies = new Dictionary<string, AssemblyInfo>(StringComparer.OrdinalIgnoreCase);
         }
 
-        internal static Assembly RealLoadAssembly(string cFile)
+  
+        public static AssemblyInfo LoadAssembly(VSLangProj.Reference reference)
         {
-            Assembly assembly = null;
-            if (!File.Exists(cFile))
+            string path = reference.Path;
+            if (String.IsNullOrEmpty(path))
             {
-                return null;
+                return new AssemblyInfo(reference);
             }
-            try
-            {
-                //if (cFile.IndexOf("interop.", StringComparison.OrdinalIgnoreCase) > 0)
-                //{
-                //    var asm = Assembly.LoadFrom(cFile);
-                //    return asm;
-
-                //}
-                FileStream input = new FileStream(cFile, FileMode.Open, FileAccess.Read);
-                byte[] rawAssembly = new BinaryReader(input).ReadBytes((int)input.Length);
-                if (rawAssembly.Length != input.Length)
-                {
-                    //MessageBox.Show("Intellisense error 9");
-                }
-                input.Close();
-
-                // if the PDB file exists then this might put a lock on the pdb file.
-                // so we rename the pdb temporarily to prevent the lock
-                var cPdb = Path.ChangeExtension(cFile, ".pdb");
-                var cTmp = Path.ChangeExtension(cFile, ".p$$");
-                bool renamed = false;
-                if (File.Exists(cPdb))
-                {
-                    renamed = true;
-                    if (File.Exists(cTmp))
-                        File.Delete(cTmp);
-                    File.Move(cPdb, cTmp);
-                }
-                assembly = Assembly.Load(rawAssembly);
-                if (renamed && File.Exists(cTmp))
-                {
-                    File.Move(cTmp, cPdb);
-                }
-                input.Dispose();
-                rawAssembly = null;
-            }
-            catch
-            {
-            }
-            return assembly;
+            return LoadAssembly(path);
         }
-
         public static AssemblyInfo LoadAssembly(string cFileName)
         {
-            Assembly oAssembly = null;
-            if (!File.Exists(cFileName))
-            {
-                return null;
-            }
             DateTime lastWriteTime = File.GetLastWriteTime(cFileName);
             AssemblyInfo assembly;
             if (assemblies.ContainsKey(cFileName))
@@ -90,17 +46,12 @@ namespace XSharpModel
             }
             else
             {
-                assembly = new AssemblyInfo(cFileName, DateTime.MinValue, null);
+                assembly = new AssemblyInfo(cFileName, DateTime.MinValue);
+                assemblies.Add(cFileName, assembly);
             }
             if (lastWriteTime != assembly.Modified)
             {
-                oAssembly = RealLoadAssembly(cFileName);
-                if (oAssembly != null)
-                {
-                    assembly.Assembly = oAssembly;
-                    assembly.Modified = lastWriteTime;
-                    assembly.UpdateAssembly();
-                }
+                assembly.UpdateAssembly();
             }
             return assembly;
         }
@@ -147,7 +98,16 @@ namespace XSharpModel
             foreach (AssemblyInfo assembly in assemblies)
             {
                 //
+                if (assembly.Types.Count == 0)
+                {
+                    assembly.UpdateAssembly();
+                }
                 if (assembly.Types.TryGetValue(typeName, out sType))
+                {
+                    break;
+                }
+                sType = assembly.Assembly.GetType(typeName);
+                if (sType != null)
                 {
                     break;
                 }

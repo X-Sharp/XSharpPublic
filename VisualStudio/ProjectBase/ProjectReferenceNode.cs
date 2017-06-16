@@ -206,10 +206,15 @@ namespace Microsoft.VisualStudio.Project
 						return null;
 					}
 					InitReferencedProjectFromProjectItems(dte.Solution.Projects);
-					this.referencedProjectIsCached = true;
-				}
+                    // this may fail if the project is not loaded yet. We want to try
+                    // again later so do not set the IsCached flag !
+                    if (referencedProject != null)
+                    {
+                        this.referencedProjectIsCached = true;
+                    }
+                }
 
-				return this.referencedProject;
+                return this.referencedProject;
 			}
 		}
 

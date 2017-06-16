@@ -187,25 +187,16 @@ namespace XSharp.Project
             }
             // Rebuild the content of our list of output
             string outputType = this.TargetName + "Output";
+            if (TargetName == "BuiltProjectOutputGroup")
+                outputType = this.TargetName + "KeyOutput";
             this.Outputs.Clear();
-            foreach (MSBuildExecution.ProjectItemInstance assembly in MSBuildProjectInstance.GetItems(this.Project.ProjectInstance, outputType))
+            foreach (MSBuildExecution.ProjectItemInstance item in MSBuildProjectInstance.GetItems(this.Project.ProjectInstance, outputType))
             {
-                Output output = new Output(this.Project, assembly);
+                Output output = new Output(this.Project, item);
                 this.Outputs.Add(output);
 
                 // See if it is our key output
-                if (String.Compare(MSBuildItem.GetMetadataValue(assembly, "IsKeyOutput"), true.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
-                    KeyOutput = output;
-            }
-            // The standard class does not check for KeyOutPut
-            outputType = this.TargetName + "KeyOutput";
-            foreach (MSBuildExecution.ProjectItemInstance assembly in MSBuildProjectInstance.GetItems(this.Project.ProjectInstance, outputType))
-            {
-                Output output = new Output(this.Project, assembly);
-                this.Outputs.Add(output);
-
-                // See if it is our key output
-                if (String.Compare(MSBuildItem.GetMetadataValue(assembly, "IsKeyOutput"), true.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
+                if (String.Compare(MSBuildItem.GetMetadataValue(item, "IsKeyOutput"), true.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
                     KeyOutput = output;
             }
 

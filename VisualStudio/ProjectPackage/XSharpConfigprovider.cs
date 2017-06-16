@@ -13,7 +13,9 @@ using Microsoft.VisualStudio.Shell;
 
 using System.IO;
 using MSBuild = Microsoft.Build.Evaluation;
+using MSBuildExecution = Microsoft.Build.Execution;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace XSharp.Project
 {
@@ -149,6 +151,69 @@ namespace XSharp.Project
 
             return VSConstants.S_OK;
         }
+
+        internal override OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
+        {
+            OutputGroup outputGroup = new XSharpOutputGroup(group.Key, group.Value, project, this);
+            return outputGroup;
+        }
     }
 
+    internal class XSharpOutputGroup : OutputGroup
+    {
+        internal XSharpOutputGroup(string outputName, string msBuildTargetName, ProjectNode projectManager, ProjectConfig configuration)
+            : base(outputName, msBuildTargetName, projectManager, configuration)
+        {
+
+        }
+
+        // added to make sure our key output is picked up properly
+        protected override void Refresh()
+        {
+            // Let MSBuild know which configuration we are working with
+            this.Project.SetConfiguration(this.ProjectCfg.ConfigCanonicalName);
+
+            // Generate dependencies if such a task exist
+            if (this.Project.ProjectInstance.Targets.ContainsKey(ProjectFileConstants.AllProjectOutputGroups))
+            {
+                bool succeeded = false;
+                this.Project.BuildTarget(ProjectFileConstants.AllProjectOutputGroups, out succeeded);
+                if (!succeeded)
+                {
+                    Debug.WriteLine("Failed to build target {0}", this.TargetName);
+                    this.Outputs.Clear();
+                    return;
+                }
+            }
+            // Rebuild the content of our list of output
+            string outputType = this.TargetName + "Output";
+            this.Outputs.Clear();
+            foreach (MSBuildExecution.ProjectItemInstance assembly in MSBuildProjectInstance.GetItems(this.Project.ProjectInstance, outputType))
+            {
+                Output output = new Output(this.Project, assembly);
+                this.Outputs.Add(output);
+
+                // See if it is our key output
+                if (String.Compare(MSBuildItem.GetMetadataValue(assembly, "IsKeyOutput"), true.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
+                    KeyOutput = output;
+            }
+            // The standard class does not check for KeyOutPut
+            outputType = this.TargetName + "KeyOutput";
+            foreach (MSBuildExecution.ProjectItemInstance assembly in MSBuildProjectInstance.GetItems(this.Project.ProjectInstance, outputType))
+            {
+                Output output = new Output(this.Project, assembly);
+                this.Outputs.Add(output);
+
+                // See if it is our key output
+                if (String.Compare(MSBuildItem.GetMetadataValue(assembly, "IsKeyOutput"), true.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
+                    KeyOutput = output;
+            }
+
+            this.Project.SetCurrentConfiguration();
+
+            // Now that the group is built we have to check if it is invalidated by a property
+            // change on the project.
+            this.Project.OnProjectPropertyChanged += new EventHandler<ProjectPropertyChangedArgs>(OnProjectPropertyChanged);
+        }
+    }
 }

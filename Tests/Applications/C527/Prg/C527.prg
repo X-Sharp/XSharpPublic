@@ -23,6 +23,7 @@ TRY
     ENDIF 
 CATCH 
     Console.WriteLine("oTestClassObject:cb1 is NULL")
+    THROW Exception{"oTestClassObject:cb1 is NULL"}
 END TRY
 
 //Interestingly, this works. Assinging the codeblock from an array. 
@@ -37,11 +38,12 @@ TRY
     ENDIF 
 CATCH 
     Console.WriteLine("oTestClassObjectFromArray:cb1 is NULL")
+    THROW Exception{"oTestClassObjectFromArray:cb1 is NULL"}
 END CATCH
 
 
-Console.WriteLine("Press any key to continue...")
-Console.ReadKey()
+//Console.WriteLine("Press any key to continue...")
+//Console.ReadKey()
 
 CLASS TestClass
 

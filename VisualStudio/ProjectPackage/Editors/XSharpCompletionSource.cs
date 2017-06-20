@@ -2866,8 +2866,18 @@ namespace XSharpLanguage
                     // In the parent ?
                     if (cType.SType.BaseType != null)
                     {
-                        return SearchPropertyTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
+                        var result = SearchPropertyTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
+                        if (!result.IsEmpty())
+                            return result;
                     }
+
+                    foreach (var type in cType.SType.GetInterfaces())
+                    {
+                        var result = SearchPropertyTypeIn(new CompletionType(type), currentToken, Modifiers.Public, out foundElement);
+                        if (!result.IsEmpty())
+                            return result;
+                    }
+
                     // not needed: no properties in object type
                     //else if (cType.SType.IsInterface)
                     //{
@@ -3088,12 +3098,24 @@ namespace XSharpLanguage
                     // In the parent ?
                     if (cType.SType.BaseType != null)
                     {
-                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, staticOnly, out foundElement);
+                        var result = SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, staticOnly, out foundElement);
+                        if (!result.IsEmpty())
+                            return result;
                     }
-                    else if (cType.SType.IsInterface)
+                    foreach (var type in cType.SType.GetInterfaces())
                     {
-                        return SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, staticOnly, out foundElement);
+                        var result = SearchMethodTypeIn(new CompletionType(type), currentToken, Modifiers.Public, staticOnly, out foundElement);
+                        if (!result.IsEmpty())
+                            return result;
                     }
+                    if (cType.SType.IsInterface)
+                    {
+                        var result = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, staticOnly, out foundElement);
+                        if (!result.IsEmpty())
+                            return result;
+                    }
+
+
                 }
                 else
                 {

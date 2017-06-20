@@ -54343,8 +54343,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C537 - Problem with alias expression result stored in usual
 
 ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
-; ************** APPLICATION C538 - Problem passing codeblock as param to function *************
-Application = C538 - Problem passing codeblock as param to function
+; ************** APPLICATION C538 - Some problems with defining codeblocks *************
+Application = C538 - Some problems with defining codeblocks
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -54375,19 +54375,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C538 - Problem passing codeblock as param to function FileGroups]
-[C538 - Problem passing codeblock as param to function Files]
+[C538 - Some problems with defining codeblocks FileGroups]
+[C538 - Some problems with defining codeblocks Files]
 File = %AppPath%\Prg\C538.prg
 FileGUID = 08BABFAF-A45D-43AB-8D99-BFC009752B17
 FileType = Code
-[C538 - Problem passing codeblock as param to function References]
+[C538 - Some problems with defining codeblocks References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C538 - Problem passing codeblock as param to function Resources]
-[C538 - Problem passing codeblock as param to function Native Resources]
-[C538 - Problem passing codeblock as param to function License files]
-[C538 - Problem passing codeblock as param to function General Options]
+[C538 - Some problems with defining codeblocks Resources]
+[C538 - Some problems with defining codeblocks Native Resources]
+[C538 - Some problems with defining codeblocks License files]
+[C538 - Some problems with defining codeblocks General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -54413,7 +54413,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C538 - Problem passing codeblock as param to function Configurations]
+[C538 - Some problems with defining codeblocks Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -54440,7 +54440,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C538 - Problem passing codeblock as param to function
+ENDApplication = C538 - Some problems with defining codeblocks
 [EndApplications]
 
 [Configurations]

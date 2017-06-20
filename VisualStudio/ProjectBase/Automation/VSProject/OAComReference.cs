@@ -13,6 +13,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -100,6 +101,35 @@ namespace Microsoft.VisualStudio.Project.Automation
                     return assembly.GetName().Name;
                 }
                 return System.IO.Path.GetFileNameWithoutExtension(this.Path); }
+        }
+
+        Assembly asm = null;
+        public override string Path
+        {
+            get
+            {
+                try
+                {
+                    if (asm != null)
+                        return asm.Location;
+                    if (BaseReferenceNode.WrapperTool.ToLower() == "primary")
+                    {
+                        var key = Win32.Registry.ClassesRoot.OpenSubKey("Typelib\\" + BaseReferenceNode.TypeGuid.ToString("B") + "\\" + this.Version);
+                        if (key != null)
+                        {
+                            string asmName = (string)key.GetValue("PrimaryInteropAssemblyName");
+                            var name = new AssemblyName(asmName);
+                            asm = Assembly.Load(name);
+                            return asm.Location;
+                        }
+                    }
+                }
+                catch
+                {
+
+                }
+                return base.Path;
+            }
         }
 
         public override VSLangProj.prjReferenceType Type

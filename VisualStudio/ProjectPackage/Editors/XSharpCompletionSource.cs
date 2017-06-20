@@ -442,7 +442,24 @@ namespace XSharpLanguage
 
         private bool IsHiddenName(string realTypeName)
         {
-            return ((realTypeName.Length > 2) && (realTypeName.StartsWith("__")));
+            if (realTypeName.Length > 2 && realTypeName.StartsWith("__"))
+                return true;
+            if (realTypeName.Length > 4) 
+            {
+                // event add
+                if (realTypeName.StartsWith("add_"))
+                    return true;
+                // property get
+                if (realTypeName.StartsWith("get_"))
+                    return true;
+                // property set
+                if (realTypeName.StartsWith("set_"))
+                    return true;
+            }
+            // event remove
+            if (realTypeName.Length > 7 && realTypeName.StartsWith("remove_"))
+               return true;
+            return false;
         }
 
         private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith)
@@ -856,9 +873,16 @@ namespace XSharpLanguage
                 members = sType.GetMembers();
             }
             //
-            foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
+            foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith) ))
             {
                 MemberAnalysis analysis = new MemberAnalysis(member);
+                if (member is MethodInfo)
+                {
+                    var mi = member as MethodInfo;
+                    if (mi.IsSpecialName )
+                        continue;
+                    
+                }
                 if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
                 {
                     if (analysis.Kind == Kind.Constructor)
@@ -886,6 +910,12 @@ namespace XSharpLanguage
                     minVisibility = Modifiers.Protected;
                 FillMembers(compList, sType.BaseType, minVisibility, staticOnly, startWith);
             }
+
+            foreach (var _interf in sType.GetInterfaces())
+            {
+                FillMembers(compList, _interf, minVisibility, staticOnly, startWith);
+            }
+
             // We will miss the System.Object members
             if (sType.IsInterface)
             {
@@ -2395,12 +2425,16 @@ namespace XSharpLanguage
                 if (dotPos > -1)
                 {
                     String startToken = currentToken.Substring(0, dotPos);
+                    if (String.IsNullOrEmpty(startToken))
+                        continue; 
                     cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
                     if (cType.IsEmpty())
                     {
                         // could be namespace.Type
                         // so now try with right side of the string
                         startToken = currentToken.Substring(dotPos + 1);
+                        if (String.IsNullOrEmpty(startToken))
+                            break;
                         cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
                         //if (!cType.IsEmpty())
                         //    return cType;

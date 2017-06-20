@@ -1566,6 +1566,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_LamdaWithCodeblockSyntax = 9056,
         ERR_CodeBlockWithTypeParameters = 9057,
         WRN_LamdaExpressionWithPipes = 9058,
+        ERR_CannotConvertArrayIndexAccess = 9059
         #endregion X#-only messages
     }
 }

@@ -126,6 +126,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 break;
                             default:
                                 left = CreateConversion(left, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
+                                if (left.HasErrors)
+                                {
+                                    Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess,left.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                                }
                                 opKind = BinaryOperatorKind.IntSubtraction;
                                 break;
                         }

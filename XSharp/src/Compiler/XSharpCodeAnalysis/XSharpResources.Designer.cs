@@ -2384,6 +2384,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot convert Array Index Access to Int32..
+        /// </summary>
+        internal static string ERR_CannotConvertArrayIndexAccess {
+            get {
+                return ResourceManager.GetString("ERR_CannotConvertArrayIndexAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot deconstruct dynamic objects..
         /// </summary>
         internal static string ERR_CannotDeconstructDynamic {
@@ -13340,7 +13349,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lamda Expression should not contain pipe (&apos;|&apos;) characters..
+        ///   Looks up a localized string similar to Lamda Expression should not contain pipe (&apos;|&apos;) characters around the parameters..
         /// </summary>
         internal static string WRN_LamdaExpressionWithPipes {
             get {

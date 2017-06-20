@@ -1,6 +1,6 @@
 
-#define Compression     "lzma2/ultra64"
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra64"
+#define Compression     "none"
 
 ;
 ; preprocess the help cab files
@@ -285,6 +285,7 @@ Source: "Baggage\Whatsnew.rtf";                           DestDir: "{app}";   De
 
 Source: "Baggage\Redist.txt";                             DestDir: "{app}\Redist" ; Flags: {#StdFlags}; 
 Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Images"; Flags: touch {#StdFlags}; 
+Source: "Baggage\XSharpProject.ico";                      DestDir: "{app}\Images"; Flags: touch {#StdFlags}; 
 Source: "Baggage\License.txt";                            DestDir: "{app}";        Flags: touch {#StdFlags}; 
 
 ; Include Files
@@ -413,7 +414,7 @@ Components: vs2017; Source: "{#BinPFolder}extension.vsixmanifest";            De
 Components: vs2017; Source: "{#BinPFolder}Designers.pkgdef";                  DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 
 Components: vs2017; Source: "Baggage\XSharp.ico";                             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; 
-Components: vs2017; Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; 
+Components: vs2017; Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; 
 
 ; Examples
 Source: "{#ExamplesFolder}*.prg";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
@@ -470,7 +471,7 @@ Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGui
 
 ; associate prgx extension
 
-Components: main\script; Root: HKCR; Subkey: ".prgx";                            ValueData: "{#XSScript}";                Flags: uninsdeletevalue; ValueType: string;  ValueName: ""
+Components: main\script; Root: HKCR; Subkey: ".prgx";                            ValueData: "{#XSScript}";                Flags: uninsdeletekey;   ValueType: string;  ValueName: ""
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}";                      ValueData: "Program {#XSScript}";        Flags: uninsdeletekey;   ValueType: string;  ValueName: ""
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}\DefaultIcon";          ValueData: "{app}\Images\xsharp.ico,0";  ValueType: string;  ValueName: ""
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\open\command";   ValueData: """{app}\bin\xsi.exe"" ""%1"" %*";  ValueType: string;  ValueName: ""
@@ -484,6 +485,52 @@ Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\open\command";  
 ; .ppo
 ; .vh
 ; .xh
+
+;project
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xsproj";                              ValueData: "XSharp.xsprojfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xsproj";                              ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xsprj";                               ValueData: "XSharp.xsprojfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xsprj";                               ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.xsprojfile";                    ValueData: "XSharp Project File";       ValueType: string;  ValueName: "";   Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.xsprojfile\DefaultIcon";        ValueData: "{app}\Images\XSharpProject.ico,0"; ValueType: string;  ValueName: ""
+Components: vs2015;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\Open";         ValueData: "&Open in Visual Studio 2015";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
+Components: vs2015;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\open\command"; ValueData: """{code:GetVs2015IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.xsprojfile\shell\open\command"; ValueData: """{code:GetVs2017IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+
+; source
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".prg";                                 ValueData: "XSharp.sourcefile";             ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".prg";                                 ValueData: "text/plain";                    ValueType: string;  ValueName: "Content Type";
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xs";                                  ValueData: "XSharp.sourcefile";             ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xs";                                  ValueData: "text/plain";                    ValueType: string;  ValueName: "Content Type";
+Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.sourcefile";                    ValueData: "XSharp Source File";            ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.sourcefile\DefaultIcon";           ValueData: "{app}\Images\xsharp.ico,0";     ValueType: string;  ValueName: ""
+Components: vs2015;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\Open";         ValueData: "&Open in Visual Studio 2015";   ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\Open";         ValueData: "&Open in Visual Studio 2017";   ValueType: string;  ValueName: ""
+Components: vs2015;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\open\command"; ValueData: """{code:GetVs2015IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.sourcefile\shell\open\command"; ValueData: """{code:GetVs2017IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+
+;ppo
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".ppo";                              ValueData: "XSharp.ppofile";            ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".ppo";                              ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.ppofile";                    ValueData: "XSharp Preprocessor Output File";        ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.ppofile\DefaultIcon";        ValueData: "{app}\Images\xsharp.ico,0"; ValueType: string;  ValueName: ""
+Components: vs2015;           Root: HKCR; Subkey: "XSharp.ppofile\shell\Open";         ValueData: "&Open in Visual Studio 2015";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.ppofile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
+Components: vs2015;           Root: HKCR; Subkey: "XSharp.ppofile\shell\open\command"; ValueData: """{code:GetVs2015IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.ppofile\shell\open\command"; ValueData: """{code:GetVs2017IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+
+; headers
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".vh";                                  ValueData: "XSharp.headerfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".vh";                                  ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xh";                                  ValueData: "XSharp.headerfile";         ValueType: string;  ValueName: "";  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; SubKey: ".xh";                                  ValueData: "text/plain";                ValueType: string;  ValueName: "Content Type";
+Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.headerfile";                    ValueData: "XSharp Header File";        ValueType: string;  ValueName: "" ;  Flags: uninsdeletekey; 
+Components: vs2015 or vs2017; Root: HKCR; Subkey: "XSharp.headerfile\DefaultIcon";        ValueData: "{app}\Images\xsharp.ico,0"; ValueType: string;  ValueName: ""
+Components: vs2015;           Root: HKCR; Subkey: "XSharp.headerfile\shell\Open";         ValueData: "&Open in Visual Studio 2015";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.headerfile\shell\Open";         ValueData: "&Open in Visual Studio 2017";  ValueType: string;  ValueName: ""
+Components: vs2015;           Root: HKCR; Subkey: "XSharp.headerfile\shell\open\command"; ValueData: """{code:GetVs2015IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
+Components: vs2017;           Root: HKCR; Subkey: "XSharp.headerfile\shell\open\command"; ValueData: """{code:GetVs2017IdeDir}\devenv.exe""  ""%1""";  ValueType: string;  ValueName: ""
 
 
 [Ini]

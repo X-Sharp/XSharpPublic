@@ -129,8 +129,11 @@
         <topicref type="topic" id="428984468885707" build="ALL" modified="2017-06-12T13:01:28.742Z" icon="0" href="Example-3-The-Pizza-Example">
           <caption translate="true">Example 3: The Pizza Example</caption>
         </topicref>
-        <topicref type="topic" id="42897067116215" build="ALL" modified="2017-06-12T13:01:41.930Z" icon="0" href="Example-4-The-Email-Client-Exa">
-          <caption translate="true">Example 4: The Email Client Example</caption>
+        <topicref type="topic" id="429063907598028" build="ALL" modified="2017-06-20T09:37:57.133Z" icon="0" href="Example-4-Ole-Automation">
+          <caption translate="true">Example 4: Ole Automation - Excel</caption>
+        </topicref>
+        <topicref type="topic" id="42897067116215" build="ALL" modified="2017-06-20T09:23:11.986Z" icon="0" href="Example-4-The-Email-Client-Exa">
+          <caption translate="true">Example 5: OCX - The Email Client Example </caption>
         </topicref>
       </topicref>
     </topicref>

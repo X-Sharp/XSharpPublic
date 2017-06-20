@@ -9,9 +9,9 @@
     <para styleclass="Normal">This example converts the VOPAD AEF file from the C:\cavo28SP3\Samples\Controls\Richedit folder.</para>
     <para styleclass="Normal">After converting it with the same options as the 1st example we will have a folder structure like </para>
     <para styleclass="Normal"></para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">C:\XporterOutput\VoPad</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">C:\XporterOutput\VoPad\VoPad</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">C:\XporterOutput\Examples\VoPad</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">C:\XporterOutput\Examples\VoPad\VoPad</text></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2" style="width:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
@@ -290,9 +290,12 @@
     <para styleclass="Normal"></para>
     <para styleclass="Body Text">Now we have added an extension method that can be used like a normal method.<br/>This change also solves the error in PadWin.prg </para>
     <para styleclass="Body Text">Then look at the other problems: they all have to do with a Font property in the TextControl class. Unfortunately the VO class libraries have both a Font() method and a Font() Access/Assign for the TextControl class. Having a method and a property with the same name is not allowed in .Net.</para>
-    <para styleclass="Body Text">When the VO Gui classes were ported to Vulcan the decision has been made to rename the Font property to Controlfont. So we need to make that change. Simply double click on the errors and change :Font to :ControlFont (4 times)</para>
+    <para styleclass="Body Text">When the VO Gui classes were ported to Vulcan the decision has been made to rename the Font property to Controlfont. So we need to make that change. Simply double click on the errors and change </para>
+    <para styleclass="Body Text"><tab /><text styleclass="Code Example" style="font-size:10pt;">:Font</text><text style="font-size:10pt;">&#32;</text></para>
+    <para styleclass="Body Text">to<text styleclass="Code Example">&#32;</text></para>
+    <para styleclass="Body Text"><tab /><text styleclass="Code Example" style="font-size:10pt;">:ControlFont</text><text style="font-size:10pt;">&#32;</text></para>
+    <para styleclass="Body Text">(4 times)</para>
     <para styleclass="Body Text">After that the code should compile and run. Clicking the Font button on the toolbar should show the font dialog (from the RTFChangeFont extension method)</para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">Some of the changes that were made to the code (omitting the ones that were also in example 1):</para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Manifest.prg is empty but included because it had a dependent resource.</li>

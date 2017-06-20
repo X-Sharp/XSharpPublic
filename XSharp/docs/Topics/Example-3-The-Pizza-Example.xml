@@ -1,9 +1,45 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Example 3: The Pizza Example</title>
   <body>
-    <header><para styleclass="Heading1">Example 3: The Pizza Example</para></header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <header>
+      <para styleclass="Heading1">Example 3: The Pizza Example</para>
+    </header>
+    <para styleclass="Body Text">Our 3rd migration example is the Pizza Example. You can find this in the Samples\Controls\Buttons folder in your VO Installation.<br/>I have selected the same output folder (C:\XporterOutput\Examples\) and the XPorter will create a Pizza subfolder with the contents of the AEF and a Pizza solution in the Examples folder.</para>
+    <para styleclass="Body Text">There is no real need to list the files again. You get the idea.</para>
+    <para styleclass="Body Text">After opening Pizza.sln inside visual Studio and compiling you will find the following problems:</para>
+    <para styleclass="Body Text"><image src="pizza.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal">All three problems speak about a type name Exe and a type &apos;PIZZA&apos;, and they all point to the same problem.</para>
+    <list id="77" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The original VO program had an output name &apos;PIZZA.EXE&apos;. </li>
+      <li styleclass="Normal">The X# compiler uses the same logic as the Vulcan compiler and create a static class called Pizza.Exe.Functions that will hold the functions in the application, the globals and (new for X#) the defines.</li>
+      <li styleclass="Normal">The application also has an image called &apos;PIZZA&apos;. </li>
+      <li styleclass="Normal">When we compile this app there is now a conflict between the class named PIZZA and the namespace Pizza (from the class Pizza.Exe.Functions).</li>
+      <li styleclass="Normal">This is something that is not recommended by the DotNet standard. Vulcan ignores this and allows both a class Pizza and a namespace Pizza. X# follows the .Net guidelines more closely.</li>
+      <li styleclass="Normal">There are 2 solutions to this problem:</li>
+      <list id="77" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Normal">Rename the image class Pizza (inside Images.prg)</li>
+        <li styleclass="Normal">Rename the output filename</li>
+      </list>
+    </list>
+    <list id="77" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">In this case I choose to rename the PIZZA image. So open Images.PRG and rename</li>
+    </list>
+    <para styleclass="Code Example"><tab /><text styleclass="" style="font-family:Consolas; font-size:12pt; color:#000000; background-color:#ffffff;">CLASS PIZZA INHERIT Bitmap</text></para>
+    <para styleclass="Body Text" style="margin-left:13px;">to</para>
+    <para styleclass="Body Text" style="margin-left:13px;"><tab /><text styleclass="" style="font-family:Consolas; font-size:12pt; color:#000000; background-color:#ffffff;">CLASS ImgPIZZA INHERIT Bitmap</text></para>
+    <list id="78" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Then recompile again. Now one problem is left: </li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">C:\XporterOutput\Examples\Pizza\Order Dialog.prg(165,25): error XS0246: The type or namespace name &apos;PIZZA&apos; could not be found (are you missing a using directive or an assembly reference?)</text></para>
+    <para styleclass="Normal"></para>
+    <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">This is the place where the Pizza image is used in the example app. Click on the line in the code and rename PIZZA{ to ImgPIZZA{. </li>
+      <li styleclass="Body Text">Recompile and the program compiles.</li>
+      <li styleclass="Body Text">When we run the program we see that it works as expected:</li>
+    </list>
+    <para styleclass="Body Text"><image src="Pizza1.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Body Text"></para>
   </body>
 </topic>

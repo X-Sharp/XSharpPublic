@@ -435,6 +435,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // the try finally
             bool needsExtraReturn = false;
             bool needsReturnValue = false;
+            bool hasReturnVar = false;
             var newbody = new List<StatementSyntax>();     // contains the copied and adjusted statements
             var endbody = new List<StatementSyntax>();     // contains the cleanup code
             TryStatementSyntax trystmt = null;
@@ -456,6 +457,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 newbody.Add(GenerateLocalDecl(XSharpSpecialNames.ReturnName, context.Type.Get<TypeSyntax>()));
                 needsExtraReturn = true;
                 needsReturnValue = true;
+                hasReturnVar = true;
             }
             foreach (var stmt in body.Statements)
             {
@@ -464,8 +466,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     needsExtraReturn = true;
                     var retStmt = stmt as ReturnStatementSyntax;
                     var retExpr = retStmt.Expression;
-                    if (retExpr != null)
+                    if (retExpr != null && ! retExpr.XNode.IsLiteral())
                     {
+                        if (! hasReturnVar)
+                        {
+                            newbody.Add(GenerateLocalDecl(XSharpSpecialNames.ReturnName, _objectType));
+                            hasReturnVar = true;
+                        }
                         needsReturnValue = true;
                         var assignStmt = MakeSimpleAssignment(GenerateSimpleName(XSharpSpecialNames.ReturnName), retExpr);
                         newbody.Add(GenerateExpressionStatement(assignStmt));

@@ -1579,5 +1579,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-     }
+        public static bool IsLiteral(this IParseTree expr)
+        {
+            var token = expr.GetLiteralToken();
+            return token != null;
+        }
+    }
 }

@@ -10,207 +10,207 @@
     <para styleclass="Normal">You can find the public source code on Github in the XSharpPublic repository : <link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://github.com/X-Sharp/XSharpPublic</link><br/>The full text of this license is:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; Apache License</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; Version 2.0, January 2004</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;http://www.apache.org/licenses/</para>
+    <para styleclass="Code Example">&#32;<text style="font-size:10pt;">Apache License</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Version 2.0, January 2004</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> http://www.apache.org/licenses/</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 1. Definitions.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 1. Definitions.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;License&quot; shall mean the terms and conditions for use, reproduction,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;and distribution as defined by Sections 1 through 9 of this document.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;License&quot; shall mean the terms and conditions for use, reproduction,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> and distribution as defined by Sections 1 through 9 of this document.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;Licensor&quot; shall mean the copyright owner or entity authorized by</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;the copyright owner that is granting the License.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;Licensor&quot; shall mean the copyright owner or entity authorized by</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the copyright owner that is granting the License.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;Legal Entity&quot; shall mean the union of the acting entity and all</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;other entities that control, are controlled by, or are under common</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;control with that entity. For the purposes of this definition,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;control&quot; means (i) the power, direct or indirect, to cause the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;direction or management of such entity, whether by contract or</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;otherwise, or (ii) ownership of fifty percent (50%) or more of the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;outstanding shares, or (iii) beneficial ownership of such entity.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;Legal Entity&quot; shall mean the union of the acting entity and all</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> other entities that control, are controlled by, or are under common</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> control with that entity. For the purposes of this definition,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;control&quot; means (i) the power, direct or indirect, to cause the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> direction or management of such entity, whether by contract or</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> otherwise, or (ii) ownership of fifty percent (50%) or more of the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> outstanding shares, or (iii) beneficial ownership of such entity.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;You&quot; (or &quot;Your&quot;) shall mean an individual or Legal Entity</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;exercising permissions granted by this License.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;You&quot; (or &quot;Your&quot;) shall mean an individual or Legal Entity</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> exercising permissions granted by this License.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;Source&quot; form shall mean the preferred form for making modifications,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;including but not limited to software source code, documentation</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;source, and configuration files.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;Source&quot; form shall mean the preferred form for making modifications,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> including but not limited to software source code, documentation</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> source, and configuration files.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;Object&quot; form shall mean any form resulting from mechanical</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;transformation or translation of a Source form, including but</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;not limited to compiled object code, generated documentation,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;and conversions to other media types.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;Object&quot; form shall mean any form resulting from mechanical</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> transformation or translation of a Source form, including but</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> not limited to compiled object code, generated documentation,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> and conversions to other media types.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;Work&quot; shall mean the work of authorship, whether in Source or</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;Object form, made available under the License, as indicated by a</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;copyright notice that is included in or attached to the work</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(an example is provided in the Appendix below).</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;Work&quot; shall mean the work of authorship, whether in Source or</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Object form, made available under the License, as indicated by a</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> copyright notice that is included in or attached to the work</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (an example is provided in the Appendix below).</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;Derivative Works&quot; shall mean any work, whether in Source or Object</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;form, that is based on (or derived from) the Work and for which the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;editorial revisions, annotations, elaborations, or other modifications</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;represent, as a whole, an original work of authorship. For the purposes</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;of this License, Derivative Works shall not include works that remain</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;separable from, or merely link (or bind by name) to the interfaces of,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;the Work and Derivative Works thereof.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;Derivative Works&quot; shall mean any work, whether in Source or Object</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> form, that is based on (or derived from) the Work and for which the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> editorial revisions, annotations, elaborations, or other modifications</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> represent, as a whole, an original work of authorship. For the purposes</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> of this License, Derivative Works shall not include works that remain</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> separable from, or merely link (or bind by name) to the interfaces of,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the Work and Derivative Works thereof.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;Contribution&quot; shall mean any work of authorship, including</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;the original version of the Work and any modifications or additions</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;to that Work or Derivative Works thereof, that is intentionally</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;submitted to Licensor for inclusion in the Work by the copyright owner</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;or by an individual or Legal Entity authorized to submit on behalf of</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;the copyright owner. For the purposes of this definition, &quot;submitted&quot;</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;means any form of electronic, verbal, or written communication sent</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;to the Licensor or its representatives, including but not limited to</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;communication on electronic mailing lists, source code control systems,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;and issue tracking systems that are managed by, or on behalf of, the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;Licensor for the purpose of discussing and improving the Work, but</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;excluding communication that is conspicuously marked or otherwise</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;designated in writing by the copyright owner as &quot;Not a Contribution.&quot;</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;Contribution&quot; shall mean any work of authorship, including</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the original version of the Work and any modifications or additions</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> to that Work or Derivative Works thereof, that is intentionally</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> submitted to Licensor for inclusion in the Work by the copyright owner</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> or by an individual or Legal Entity authorized to submit on behalf of</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the copyright owner. For the purposes of this definition, &quot;submitted&quot;</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> means any form of electronic, verbal, or written communication sent</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> to the Licensor or its representatives, including but not limited to</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> communication on electronic mailing lists, source code control systems,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> and issue tracking systems that are managed by, or on behalf of, the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Licensor for the purpose of discussing and improving the Work, but</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> excluding communication that is conspicuously marked or otherwise</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> designated in writing by the copyright owner as &quot;Not a Contribution.&quot;</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;&quot;Contributor&quot; shall mean Licensor and any individual or Legal Entity</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;on behalf of whom a Contribution has been received by Licensor and</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;subsequently incorporated within the Work.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> &quot;Contributor&quot; shall mean Licensor and any individual or Legal Entity</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> on behalf of whom a Contribution has been received by Licensor and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> subsequently incorporated within the Work.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 2. Grant of Copyright License. Subject to the terms and conditions of</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;this License, each Contributor hereby grants to You a perpetual,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;worldwide, non-exclusive, no-charge, royalty-free, irrevocable</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;copyright license to reproduce, prepare Derivative Works of,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;publicly display, publicly perform, sublicense, and distribute the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;Work and such Derivative Works in Source or Object form.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 2. Grant of Copyright License. Subject to the terms and conditions of</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> this License, each Contributor hereby grants to You a perpetual,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> worldwide, non-exclusive, no-charge, royalty-free, irrevocable</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> copyright license to reproduce, prepare Derivative Works of,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> publicly display, publicly perform, sublicense, and distribute the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Work and such Derivative Works in Source or Object form.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 3. Grant of Patent License. Subject to the terms and conditions of</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;this License, each Contributor hereby grants to You a perpetual,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;worldwide, non-exclusive, no-charge, royalty-free, irrevocable</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(except as stated in this section) patent license to make, have made,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;use, offer to sell, sell, import, and otherwise transfer the Work,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;where such license applies only to those patent claims licensable</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;by such Contributor that are necessarily infringed by their</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;Contribution(s) alone or by combination of their Contribution(s)</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;with the Work to which such Contribution(s) was submitted. If You</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;institute patent litigation against any entity (including a</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;cross-claim or counterclaim in a lawsuit) alleging that the Work</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;or a Contribution incorporated within the Work constitutes direct</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;or contributory patent infringement, then any patent licenses</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;granted to You under this License for that Work shall terminate</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;as of the date such litigation is filed.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 3. Grant of Patent License. Subject to the terms and conditions of</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> this License, each Contributor hereby grants to You a perpetual,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> worldwide, non-exclusive, no-charge, royalty-free, irrevocable</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (except as stated in this section) patent license to make, have made,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> use, offer to sell, sell, import, and otherwise transfer the Work,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> where such license applies only to those patent claims licensable</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> by such Contributor that are necessarily infringed by their</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Contribution(s) alone or by combination of their Contribution(s)</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> with the Work to which such Contribution(s) was submitted. If You</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> institute patent litigation against any entity (including a</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> cross-claim or counterclaim in a lawsuit) alleging that the Work</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> or a Contribution incorporated within the Work constitutes direct</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> or contributory patent infringement, then any patent licenses</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> granted to You under this License for that Work shall terminate</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> as of the date such litigation is filed.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 4. Redistribution. You may reproduce and distribute copies of the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;Work or Derivative Works thereof in any medium, with or without</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;modifications, and in Source or Object form, provided that You</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;meet the following conditions:</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 4. Redistribution. You may reproduce and distribute copies of the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Work or Derivative Works thereof in any medium, with or without</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> modifications, and in Source or Object form, provided that You</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> meet the following conditions:</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(a) You must give any other recipients of the Work or</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;Derivative Works a copy of this License; and</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (a) You must give any other recipients of the Work or</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Derivative Works a copy of this License; and</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(b) You must cause any modified files to carry prominent notices</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;stating that You changed the files; and</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (b) You must cause any modified files to carry prominent notices</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> stating that You changed the files; and</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(c) You must retain, in the Source form of any Derivative Works</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;that You distribute, all copyright, patent, trademark, and</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;attribution notices from the Source form of the Work,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;excluding those notices that do not pertain to any part of</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;the Derivative Works; and</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (c) You must retain, in the Source form of any Derivative Works</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> that You distribute, all copyright, patent, trademark, and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> attribution notices from the Source form of the Work,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> excluding those notices that do not pertain to any part of</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the Derivative Works; and</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(d) If the Work includes a &quot;NOTICE&quot; text file as part of its</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;distribution, then any Derivative Works that You distribute must</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;include a readable copy of the attribution notices contained</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;within such NOTICE file, excluding those notices that do not</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;pertain to any part of the Derivative Works, in at least one</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;of the following places: within a NOTICE text file distributed</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;as part of the Derivative Works; within the Source form or</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;documentation, if provided along with the Derivative Works; or,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;within a display generated by the Derivative Works, if and</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;wherever such third-party notices normally appear. The contents</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;of the NOTICE file are for informational purposes only and</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;do not modify the License. You may add Your own attribution</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;notices within Derivative Works that You distribute, alongside</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;or as an addendum to the NOTICE text from the Work, provided</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;that such additional attribution notices cannot be construed</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; &#160; &#160;as modifying the License.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (d) If the Work includes a &quot;NOTICE&quot; text file as part of its</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> distribution, then any Derivative Works that You distribute must</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> include a readable copy of the attribution notices contained</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> within such NOTICE file, excluding those notices that do not</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> pertain to any part of the Derivative Works, in at least one</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> of the following places: within a NOTICE text file distributed</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> as part of the Derivative Works; within the Source form or</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> documentation, if provided along with the Derivative Works; or,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> within a display generated by the Derivative Works, if and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> wherever such third-party notices normally appear. The contents</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> of the NOTICE file are for informational purposes only and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> do not modify the License. You may add Your own attribution</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> notices within Derivative Works that You distribute, alongside</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> or as an addendum to the NOTICE text from the Work, provided</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> that such additional attribution notices cannot be construed</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> as modifying the License.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;You may add Your own copyright statement to Your modifications and</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;may provide additional or different license terms and conditions</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;for use, reproduction, or distribution of Your modifications, or</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;for any such Derivative Works as a whole, provided Your use,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;reproduction, and distribution of the Work otherwise complies with</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;the conditions stated in this License.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> You may add Your own copyright statement to Your modifications and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> may provide additional or different license terms and conditions</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> for use, reproduction, or distribution of Your modifications, or</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> for any such Derivative Works as a whole, provided Your use,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> reproduction, and distribution of the Work otherwise complies with</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the conditions stated in this License.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 5. Submission of Contributions. Unless You explicitly state otherwise,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;any Contribution intentionally submitted for inclusion in the Work</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;by You to the Licensor shall be under the terms and conditions of</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;this License, without any additional terms or conditions.</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;Notwithstanding the above, nothing herein shall supersede or modify</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;the terms of any separate license agreement you may have executed</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;with Licensor regarding such Contributions.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 5. Submission of Contributions. Unless You explicitly state otherwise,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> any Contribution intentionally submitted for inclusion in the Work</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> by You to the Licensor shall be under the terms and conditions of</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> this License, without any additional terms or conditions.</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Notwithstanding the above, nothing herein shall supersede or modify</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the terms of any separate license agreement you may have executed</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> with Licensor regarding such Contributions.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 6. Trademarks. This License does not grant permission to use the trade</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;names, trademarks, service marks, or product names of the Licensor,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;except as required for reasonable and customary use in describing the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;origin of the Work and reproducing the content of the NOTICE file.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 6. Trademarks. This License does not grant permission to use the trade</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> names, trademarks, service marks, or product names of the Licensor,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> except as required for reasonable and customary use in describing the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> origin of the Work and reproducing the content of the NOTICE file.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 7. Disclaimer of Warranty. Unless required by applicable law or</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;agreed to in writing, Licensor provides the Work (and each</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;Contributor provides its Contributions) on an &quot;AS IS&quot; BASIS,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;implied, including, without limitation, any warranties or conditions</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;PARTICULAR PURPOSE. You are solely responsible for determining the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;appropriateness of using or redistributing the Work and assume any</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;risks associated with Your exercise of permissions under this License.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 7. Disclaimer of Warranty. Unless required by applicable law or</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> agreed to in writing, Licensor provides the Work (and each</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Contributor provides its Contributions) on an &quot;AS IS&quot; BASIS,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> implied, including, without limitation, any warranties or conditions</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> PARTICULAR PURPOSE. You are solely responsible for determining the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> appropriateness of using or redistributing the Work and assume any</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> risks associated with Your exercise of permissions under this License.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 8. Limitation of Liability. In no event and under no legal theory,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;whether in tort (including negligence), contract, or otherwise,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;unless required by applicable law (such as deliberate and grossly</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;negligent acts) or agreed to in writing, shall any Contributor be</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;liable to You for damages, including any direct, indirect, special,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;incidental, or consequential damages of any character arising as a</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;result of this License or out of the use or inability to use the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;Work (including but not limited to damages for loss of goodwill,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;work stoppage, computer failure or malfunction, or any and all</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;other commercial damages or losses), even if such Contributor</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;has been advised of the possibility of such damages.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 8. Limitation of Liability. In no event and under no legal theory,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> whether in tort (including negligence), contract, or otherwise,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> unless required by applicable law (such as deliberate and grossly</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> negligent acts) or agreed to in writing, shall any Contributor be</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> liable to You for damages, including any direct, indirect, special,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> incidental, or consequential damages of any character arising as a</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> result of this License or out of the use or inability to use the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Work (including but not limited to damages for loss of goodwill,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> work stoppage, computer failure or malfunction, or any and all</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> other commercial damages or losses), even if such Contributor</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> has been advised of the possibility of such damages.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; 9. Accepting Warranty or Additional Liability. While redistributing</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;the Work or Derivative Works thereof, You may choose to offer,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;and charge a fee for, acceptance of support, warranty, indemnity,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;or other liability obligations and/or rights consistent with this</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;License. However, in accepting such obligations, You may act only</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;on Your own behalf and on Your sole responsibility, not on behalf</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;of any other Contributor, and only if You agree to indemnify,</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;defend, and hold each Contributor harmless for any liability</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;incurred by, or claims asserted against, such Contributor by reason</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;of your accepting any such warranty or additional liability.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> 9. Accepting Warranty or Additional Liability. While redistributing</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the Work or Derivative Works thereof, You may choose to offer,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> and charge a fee for, acceptance of support, warranty, indemnity,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> or other liability obligations and/or rights consistent with this</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> License. However, in accepting such obligations, You may act only</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> on Your own behalf and on Your sole responsibility, not on behalf</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> of any other Contributor, and only if You agree to indemnify,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> defend, and hold each Contributor harmless for any liability</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> incurred by, or claims asserted against, such Contributor by reason</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> of your accepting any such warranty or additional liability.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; END OF TERMS AND CONDITIONS</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> END OF TERMS AND CONDITIONS</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; APPENDIX: How to apply the Apache License to your work.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> APPENDIX: How to apply the Apache License to your work.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;To apply the Apache License to your work, attach the following</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;boilerplate notice, with the fields enclosed by brackets &quot;[]&quot;</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;replaced with your own identifying information. (Don&apos;t include</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;the brackets!) &#160;The text should be enclosed in the appropriate</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;comment syntax for the file format. We also recommend that a</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;file or class name and description of purpose be included on the</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;same &quot;printed page&quot; as the copyright notice for easier</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;identification within third-party archives.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> To apply the Apache License to your work, attach the following</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> boilerplate notice, with the fields enclosed by brackets &quot;[]&quot;</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> replaced with your own identifying information. (Don&apos;t include</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> the brackets!) The text should be enclosed in the appropriate</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> comment syntax for the file format. We also recommend that a</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> file or class name and description of purpose be included on the</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> same &quot;printed page&quot; as the copyright notice for easier</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> identification within third-party archives.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; Copyright [yyyy] [name of copyright owner]</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Copyright [yyyy] [name of copyright owner]</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</para>
-    <para styleclass="Code Example"> &#160; you may not use this file except in compliance with the License.</para>
-    <para styleclass="Code Example"> &#160; You may obtain a copy of the License at</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> you may not use this file except in compliance with the License.</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> You may obtain a copy of the License at</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; &#160; &#160; http://www.apache.org/licenses/LICENSE-2.0</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> http://www.apache.org/licenses/LICENSE-2.0</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; Unless required by applicable law or agreed to in writing, software</para>
-    <para styleclass="Code Example"> &#160; distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</para>
-    <para styleclass="Code Example"> &#160; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</para>
-    <para styleclass="Code Example"> &#160; See the License for the specific language governing permissions and</para>
-    <para styleclass="Code Example"> &#160; limitations under the License.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Unless required by applicable law or agreed to in writing, software</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> See the License for the specific language governing permissions and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> limitations under the License.</text></para>
     <para styleclass="Code Example"></para>
   </body>
 </topic>

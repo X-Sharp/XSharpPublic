@@ -467,7 +467,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">4</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">4</config-value>
@@ -518,12 +518,12 @@
       <config-value name="deletetemp">0</config-value>
     </config-group>
     <config-group name="print">
-      <config-value name="tocname">Table of Contents</config-value>
       <config-value name="include">PRINT</config-value>
       <config-value name="template">Standard_manual_A4Std.mnl</config-value>
       <config-value name="colortext">0</config-value>
       <config-value name="insertseealso">0</config-value>
       <config-value name="insertseealsostyle">-1</config-value>
+      <config-value name="defaultprinter">Microsoft Print to PDF</config-value>
     </config-group>
     <variables>
       <variable id="VERSION" type="text" translate="true">0.9.9.1</variable>

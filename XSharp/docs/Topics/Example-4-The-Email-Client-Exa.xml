@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Example 4: The Email Client Example</title>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Example 5: OCX - The Email Client Example </title>
   <body>
-    <header><para styleclass="Heading1">Example 4: The Email Client Example</para></header>
+    <header>
+      <para styleclass="Heading1">Example 5: OCX - The Email Client Example </para>
+    </header>
     <para styleclass="Normal">Enter topic text here.</para>
   </body>
 </topic>

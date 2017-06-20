@@ -8,272 +8,272 @@
     </header>
     <para styleclass="Body Text">The source code to the XSharp compiler is available to registered FOX subscribers.<br/>If you want access to this source code then please send an email to <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:&lt;%LINK_CAPTION%&gt;"> info@xsharp.eu</link>.<br/>We will then send you a personalized version of the license agreement below.<br/>We will grant you access to the closed source code repository on Github (<link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://github.com/X-Sharp/XSharpDev</link>) when we have received your signed version of this license agreement </para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">XSHARP COMPILER SOURCE CODE LICENSE - V 1.0</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">XSHARP COMPILER SOURCE CODE LICENSE - V 1.0</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">Version effective date: Sept 15, 2015</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Version effective date: Sept 15, 2015</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">The accompanying program is provided under the terms of this XSharp </para>
-    <para styleclass="Code Example">compiler source code license (&quot;agreement&quot;). Any use, reproduction or </para>
-    <para styleclass="Code Example">distribution of the program constitutes subscriber&apos;s acceptance of </para>
-    <para styleclass="Code Example">this agreement.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">The accompanying program is provided under the terms of this XSharp </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">compiler source code license (&quot;agreement&quot;). Any use, reproduction or </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">distribution of the program constitutes subscriber&apos;s acceptance of </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">this agreement.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">1. DEFINITIONS</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">1. DEFINITIONS</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">&quot;Program&quot; means the source code of the XSharp compiler</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&quot;Program&quot; means the source code of the XSharp compiler</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">&quot;Contribution&quot; means:</para>
-    <para styleclass="Code Example">a) in the case of the initial Contributor, the initial code and </para>
-    <para styleclass="Code Example">documentation distributed under this Agreement, and</para>
-    <para styleclass="Code Example">b) in the case of each subsequent Contributor:</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;i) changes to the Program, and</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;ii) additions to the Program;</para>
-    <para styleclass="Code Example">where such changes and/or additions to the Program originate from </para>
-    <para styleclass="Code Example">and are distributed by that particular Contributor. A Contribution </para>
-    <para styleclass="Code Example">&apos;originates&apos; from a Contributor if it was added to the Program by </para>
-    <para styleclass="Code Example">such Contributor itself or anyone acting on such Contributor&apos;s </para>
-    <para styleclass="Code Example">behalf. Contributions do not include additions to the Program which: </para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(i) are separate modules of software distributed in conjunction </para>
-    <para styleclass="Code Example">with the Program under their own license agreement, </para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(ii) are not derivative works of the Program or </para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;(iii) are not seen as substantial changes or additions by </para>
-    <para styleclass="Code Example">XSharp BV.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&quot;Contribution&quot; means:</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">a) in the case of the initial Contributor, the initial code and </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">documentation distributed under this Agreement, and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">b) in the case of each subsequent Contributor:</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> i) changes to the Program, and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> ii) additions to the Program;</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">where such changes and/or additions to the Program originate from </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">and are distributed by that particular Contributor. A Contribution </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&apos;originates&apos; from a Contributor if it was added to the Program by </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">such Contributor itself or anyone acting on such Contributor&apos;s </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">behalf. Contributions do not include additions to the Program which: </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (i) are separate modules of software distributed in conjunction </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">with the Program under their own license agreement, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (ii) are not derivative works of the Program or </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> (iii) are not seen as substantial changes or additions by </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">XSharp BV.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">&quot;Licensed Patents&quot; mean patent claims licensable by a Contributor </para>
-    <para styleclass="Code Example">which are necessarily infringed by the use or sale of its </para>
-    <para styleclass="Code Example">Contribution alone or when combined with the Program.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&quot;Licensed Patents&quot; mean patent claims licensable by a Contributor </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">which are necessarily infringed by the use or sale of its </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contribution alone or when combined with the Program.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">The &quot;Friends Of XSharp&quot; (FOX) community program is the subscription </para>
-    <para styleclass="Code Example">service under which the XSharp project, represented by XSharp BV, </para>
-    <para styleclass="Code Example">publishes the source code for the XSharp Compiler for its </para>
-    <para styleclass="Code Example">subscribers.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">The &quot;Friends Of XSharp&quot; (FOX) community program is the subscription </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">service under which the XSharp project, represented by XSharp BV, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">publishes the source code for the XSharp Compiler for its </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">subscribers.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">&quot;Binary Form&quot; means a compiled version of the Program.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&quot;Binary Form&quot; means a compiled version of the Program.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">2. PARTIES</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">2. PARTIES</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">&quot;XSharp BV&quot; is &quot;XSharp BV&quot;, a company from the Netherlands.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&quot;XSharp BV&quot; is &quot;XSharp BV&quot;, a company from the Netherlands.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">&quot;Contributor&quot; means any person or entity that contributes to the </para>
-    <para styleclass="Code Example">Program and whose contribution is included by XSharp BV in the </para>
-    <para styleclass="Code Example">official distribution of the Program.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&quot;Contributor&quot; means any person or entity that contributes to the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Program and whose contribution is included by XSharp BV in the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">official distribution of the Program.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">&quot;Subscriber&quot; means anyone who subscribes to the FOX program and </para>
-    <para styleclass="Code Example">receives the Program under this Agreement, including all </para>
-    <para styleclass="Code Example">Contributors and including XSharp BV.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&quot;Subscriber&quot; means anyone who subscribes to the FOX program and </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">receives the Program under this Agreement, including all </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributors and including XSharp BV.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">3. GRANT OF RIGHTS</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">3. GRANT OF RIGHTS</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">a) Subject to the terms of this Agreement, each Contributor hereby </para>
-    <para styleclass="Code Example">grants Subscriber a non-exclusive, worldwide, royalty-free copyright </para>
-    <para styleclass="Code Example">license to reproduce, prepare derivative works of, publicly display, </para>
-    <para styleclass="Code Example">publicly perform, distribute and sublicense the Contribution of such </para>
-    <para styleclass="Code Example">Contributor, if any, and such derivative works, in Binary Form. </para>
-    <para styleclass="Code Example">Disclosure of the program other than in binary form to non-</para>
-    <para styleclass="Code Example">Subscribers is explicitly forbidden. &#160;</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">a) Subject to the terms of this Agreement, each Contributor hereby </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">grants Subscriber a non-exclusive, worldwide, royalty-free copyright </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">license to reproduce, prepare derivative works of, publicly display, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">publicly perform, distribute and sublicense the Contribution of such </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributor, if any, and such derivative works, in Binary Form. </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Disclosure of the program other than in binary form to non-</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Subscribers is explicitly forbidden. </text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">b) Subject to the terms of this Agreement, each Contributor hereby </para>
-    <para styleclass="Code Example">grants Subscriber a non-exclusive, worldwide, royalty-free patent </para>
-    <para styleclass="Code Example">license under Licensed Patents to make, use, sell, offer to sell, </para>
-    <para styleclass="Code Example">import and otherwise transfer the Contribution of such Contributor, </para>
-    <para styleclass="Code Example">in Binary Form. This patent license shall apply to the combination </para>
-    <para styleclass="Code Example">of the Contribution and the Program if, at the time the Contribution </para>
-    <para styleclass="Code Example">is added by the Contributor, such addition of the Contribution </para>
-    <para styleclass="Code Example">causes such combination to be covered by the Licensed Patents. The </para>
-    <para styleclass="Code Example">patent license shall not apply to any other combinations which </para>
-    <para styleclass="Code Example">include the Contribution. No hardware per se is licensed hereunder.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">b) Subject to the terms of this Agreement, each Contributor hereby </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">grants Subscriber a non-exclusive, worldwide, royalty-free patent </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">license under Licensed Patents to make, use, sell, offer to sell, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">import and otherwise transfer the Contribution of such Contributor, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">in Binary Form. This patent license shall apply to the combination </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">of the Contribution and the Program if, at the time the Contribution </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">is added by the Contributor, such addition of the Contribution </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">causes such combination to be covered by the Licensed Patents. The </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">patent license shall not apply to any other combinations which </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">include the Contribution. No hardware per se is licensed hereunder.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">c) Subscriber understands that although each Contributor grants the </para>
-    <para styleclass="Code Example">licenses to its Contributions set forth herein, no assurances are </para>
-    <para styleclass="Code Example">provided by any Contributor that the Program does not infringe the </para>
-    <para styleclass="Code Example">patent or other intellectual property rights of any other entity. </para>
-    <para styleclass="Code Example">Each Contributor disclaims any liability to Subscriber for claims </para>
-    <para styleclass="Code Example">brought by any other entity based on infringement of intellectual </para>
-    <para styleclass="Code Example">property rights or otherwise. As a condition to exercising the </para>
-    <para styleclass="Code Example">rights and licenses granted hereunder, each Subscriber hereby </para>
-    <para styleclass="Code Example">assumes sole responsibility to secure any other intellectual </para>
-    <para styleclass="Code Example">property rights needed, if any. </para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">c) Subscriber understands that although each Contributor grants the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">licenses to its Contributions set forth herein, no assurances are </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">provided by any Contributor that the Program does not infringe the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">patent or other intellectual property rights of any other entity. </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Each Contributor disclaims any liability to Subscriber for claims </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">brought by any other entity based on infringement of intellectual </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">property rights or otherwise. As a condition to exercising the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">rights and licenses granted hereunder, each Subscriber hereby </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">assumes sole responsibility to secure any other intellectual </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">property rights needed, if any. </text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">d) Each Contributor represents that to its knowledge it has </para>
-    <para styleclass="Code Example">sufficient copyright rights in its Contribution, if any, to grant </para>
-    <para styleclass="Code Example">the copyright license set forth in this Agreement.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">d) Each Contributor represents that to its knowledge it has </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">sufficient copyright rights in its Contribution, if any, to grant </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">the copyright license set forth in this Agreement.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">4. RESTRICTIONS.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">4. RESTRICTIONS.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">A Contributor may choose to distribute the Program in Binary Form </para>
-    <para styleclass="Code Example">under its own license agreement, provided that:</para>
-    <para styleclass="Code Example">a) it complies with the terms and conditions of this Agreement; and</para>
-    <para styleclass="Code Example">b) its license agreement:</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;i) effectively disclaims on behalf of all Contributors all </para>
-    <para styleclass="Code Example">warranties and conditions, express and implied, including warranties </para>
-    <para styleclass="Code Example">or conditions of title and non-infringement, and implied warranties </para>
-    <para styleclass="Code Example">or conditions of merchantability and fitness for a particular </para>
-    <para styleclass="Code Example">purpose;</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;ii) effectively excludes on behalf of all Contributors all </para>
-    <para styleclass="Code Example">liability for damages, including direct, indirect, special, </para>
-    <para styleclass="Code Example">incidental and consequential damages, such as lost profits;</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;iii) states that any provisions which differ from this </para>
-    <para styleclass="Code Example">Agreement are offered by that Contributor alone and not by any other </para>
-    <para styleclass="Code Example">party; and</para>
-    <para styleclass="Code Example"> &#160; &#160; &#160;iv) states that source code for the Program is only available </para>
-    <para styleclass="Code Example">for Subscribers.</para>
-    <para styleclass="Code Example">Contributors may not remove or alter any copyright notices contained </para>
-    <para styleclass="Code Example">within the Program.</para>
-    <para styleclass="Code Example">Each Contributor must identify itself as the originator of its </para>
-    <para styleclass="Code Example">Contribution, if any, in a manner that reasonably allows others to </para>
-    <para styleclass="Code Example">identify the originator of the Contribution. </para>
-    <para styleclass="Code Example">A complete list of all Contributors will be included with the source </para>
-    <para styleclass="Code Example">code of the Program.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">A Contributor may choose to distribute the Program in Binary Form </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">under its own license agreement, provided that:</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">a) it complies with the terms and conditions of this Agreement; and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">b) its license agreement:</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> i) effectively disclaims on behalf of all Contributors all </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">warranties and conditions, express and implied, including warranties </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">or conditions of title and non-infringement, and implied warranties </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">or conditions of merchantability and fitness for a particular </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">purpose;</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> ii) effectively excludes on behalf of all Contributors all </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">liability for damages, including direct, indirect, special, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">incidental and consequential damages, such as lost profits;</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> iii) states that any provisions which differ from this </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Agreement are offered by that Contributor alone and not by any other </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">party; and</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> iv) states that source code for the Program is only available </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">for Subscribers.</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributors may not remove or alter any copyright notices contained </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">within the Program.</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Each Contributor must identify itself as the originator of its </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contribution, if any, in a manner that reasonably allows others to </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">identify the originator of the Contribution. </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">A complete list of all Contributors will be included with the source </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">code of the Program.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">5. COMMERCIAL DISTRIBUTION</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">5. COMMERCIAL DISTRIBUTION</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">Commercial distributors of software may accept certain </para>
-    <para styleclass="Code Example">responsibilities with respect to end users, business partners and </para>
-    <para styleclass="Code Example">the like. While this license is intended to facilitate the </para>
-    <para styleclass="Code Example">commercial use of the Program, the Contributor who includes the </para>
-    <para styleclass="Code Example">Program in a commercial product offering should do so in a manner </para>
-    <para styleclass="Code Example">which does not create potential liability for other Contributors. </para>
-    <para styleclass="Code Example">Therefore, if a Contributor includes the Program in a commercial </para>
-    <para styleclass="Code Example">product offering, such Contributor (&quot;Commercial Contributor&quot;) hereby </para>
-    <para styleclass="Code Example">agrees to defend and indemnify every other Contributor (&quot;Indemnified </para>
-    <para styleclass="Code Example">Contributor&quot;) against any losses, damages and costs (collectively </para>
-    <para styleclass="Code Example">&quot;Losses&quot;) arising from claims, lawsuits and other legal actions </para>
-    <para styleclass="Code Example">brought by a third party against the Indemnified Contributor to the </para>
-    <para styleclass="Code Example">extent caused by the acts or omissions of such Commercial </para>
-    <para styleclass="Code Example">Contributor in connection with its distribution of the Program in a </para>
-    <para styleclass="Code Example">commercial product offering. The obligations in this section do not </para>
-    <para styleclass="Code Example">apply to any claims or Losses relating to any actual or alleged </para>
-    <para styleclass="Code Example">intellectual property infringement. In order to qualify, an </para>
-    <para styleclass="Code Example">Indemnified Contributor must: a) promptly notify the Commercial </para>
-    <para styleclass="Code Example">Contributor in writing of such claim, and b) allow the Commercial </para>
-    <para styleclass="Code Example">Contributor to control, and cooperate with the Commercial </para>
-    <para styleclass="Code Example">Contributor in, the defense and any related settlement negotiations. </para>
-    <para styleclass="Code Example">The Indemnified Contributor may participate in any such claim at its </para>
-    <para styleclass="Code Example">own expense.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Commercial distributors of software may accept certain </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">responsibilities with respect to end users, business partners and </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">the like. While this license is intended to facilitate the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">commercial use of the Program, the Contributor who includes the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Program in a commercial product offering should do so in a manner </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">which does not create potential liability for other Contributors. </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Therefore, if a Contributor includes the Program in a commercial </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">product offering, such Contributor (&quot;Commercial Contributor&quot;) hereby </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">agrees to defend and indemnify every other Contributor (&quot;Indemnified </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributor&quot;) against any losses, damages and costs (collectively </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">&quot;Losses&quot;) arising from claims, lawsuits and other legal actions </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">brought by a third party against the Indemnified Contributor to the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">extent caused by the acts or omissions of such Commercial </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributor in connection with its distribution of the Program in a </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">commercial product offering. The obligations in this section do not </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">apply to any claims or Losses relating to any actual or alleged </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">intellectual property infringement. In order to qualify, an </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Indemnified Contributor must: a) promptly notify the Commercial </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributor in writing of such claim, and b) allow the Commercial </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributor to control, and cooperate with the Commercial </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributor in, the defense and any related settlement negotiations. </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">The Indemnified Contributor may participate in any such claim at its </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">own expense.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">For example, a Contributor might include the Program in a commercial </para>
-    <para styleclass="Code Example">product offering, Product X. That Contributor is then a Commercial </para>
-    <para styleclass="Code Example">Contributor. If that Commercial Contributor then makes performance </para>
-    <para styleclass="Code Example">claims, or offers warranties related to Product X, those performance </para>
-    <para styleclass="Code Example">claims and warranties are such Commercial Contributor&apos;s </para>
-    <para styleclass="Code Example">responsibility alone. Under this section, the Commercial Contributor </para>
-    <para styleclass="Code Example">would have to defend claims against the other Contributors related </para>
-    <para styleclass="Code Example">to those performance claims and warranties, and if a court requires </para>
-    <para styleclass="Code Example">any other Contributor to pay any damages as a result, the Commercial </para>
-    <para styleclass="Code Example">Contributor must pay those damages.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">For example, a Contributor might include the Program in a commercial </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">product offering, Product X. That Contributor is then a Commercial </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributor. If that Commercial Contributor then makes performance </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">claims, or offers warranties related to Product X, those performance </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">claims and warranties are such Commercial Contributor&apos;s </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">responsibility alone. Under this section, the Commercial Contributor </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">would have to defend claims against the other Contributors related </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">to those performance claims and warranties, and if a court requires </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">any other Contributor to pay any damages as a result, the Commercial </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributor must pay those damages.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">6. LIMITED WARRANTY</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">6. LIMITED WARRANTY</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">Except as expressly set forth in this agreement, the program is </para>
-    <para styleclass="Code Example">provided on an &quot;as is&quot; basis, without warranties or conditions of </para>
-    <para styleclass="Code Example">any kind, either express or implied including, without limitation, </para>
-    <para styleclass="Code Example">any warranties or conditions of title, non-infringement, </para>
-    <para styleclass="Code Example">merchantability or fitness for a particular purpose. Each Subscriber </para>
-    <para styleclass="Code Example">is solely responsible for determining the appropriateness of using </para>
-    <para styleclass="Code Example">and distributing the Program and assumes all risks associated with </para>
-    <para styleclass="Code Example">its exercise of rights under this Agreement, including but not </para>
-    <para styleclass="Code Example">limited to the risks and costs of program errors, compliance with </para>
-    <para styleclass="Code Example">applicable laws, damage to or loss of data, programs or equipment, </para>
-    <para styleclass="Code Example">and unavailability or interruption of operations.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Except as expressly set forth in this agreement, the program is </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">provided on an &quot;as is&quot; basis, without warranties or conditions of </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">any kind, either express or implied including, without limitation, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">any warranties or conditions of title, non-infringement, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">merchantability or fitness for a particular purpose. Each Subscriber </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">is solely responsible for determining the appropriateness of using </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">and distributing the Program and assumes all risks associated with </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">its exercise of rights under this Agreement, including but not </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">limited to the risks and costs of program errors, compliance with </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">applicable laws, damage to or loss of data, programs or equipment, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">and unavailability or interruption of operations.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">7. LIMITATION OF LIABILITY</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">7. LIMITATION OF LIABILITY</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">Except as expressly set forth in this agreement, neither subscriber </para>
-    <para styleclass="Code Example">nor any contributors shall have any liability for any direct, </para>
-    <para styleclass="Code Example">indirect, incidental, special, exemplary, or consequential damages </para>
-    <para styleclass="Code Example">(including without limitation lost profits), however caused and on </para>
-    <para styleclass="Code Example">any theory of liability, whether in contract, strict liability, or </para>
-    <para styleclass="Code Example">tort (including negligence or otherwise) arising in any way out of </para>
-    <para styleclass="Code Example">the use or distribution of the program or the exercise of any rights </para>
-    <para styleclass="Code Example">granted hereunder, even if advised of the possibility of such </para>
-    <para styleclass="Code Example">damages.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Except as expressly set forth in this agreement, neither subscriber </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">nor any contributors shall have any liability for any direct, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">indirect, incidental, special, exemplary, or consequential damages </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">(including without limitation lost profits), however caused and on </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">any theory of liability, whether in contract, strict liability, or </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">tort (including negligence or otherwise) arising in any way out of </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">the use or distribution of the program or the exercise of any rights </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">granted hereunder, even if advised of the possibility of such </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">damages.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">8. SEVERABILITY.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">8. SEVERABILITY.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">If any provision of this Agreement is invalid or unenforceable under </para>
-    <para styleclass="Code Example">applicable law, it shall not affect the validity or enforceability </para>
-    <para styleclass="Code Example">of the remainder of the terms of this Agreement, and without further </para>
-    <para styleclass="Code Example">action by the parties hereto, such provision shall be reformed to </para>
-    <para styleclass="Code Example">the minimum extent necessary to make such provision valid and </para>
-    <para styleclass="Code Example">enforceable.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">If any provision of this Agreement is invalid or unenforceable under </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">applicable law, it shall not affect the validity or enforceability </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">of the remainder of the terms of this Agreement, and without further </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">action by the parties hereto, such provision shall be reformed to </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">the minimum extent necessary to make such provision valid and </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">enforceable.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">9. PATENTS.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">9. PATENTS.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">If Subscriber institutes patent litigation against any entity </para>
-    <para styleclass="Code Example">(including a cross-claim or counterclaim in a lawsuit) alleging that </para>
-    <para styleclass="Code Example">the Program itself (excluding combinations of the Program with other </para>
-    <para styleclass="Code Example">software or hardware) infringes such Subscriber&apos;s patent(s), then </para>
-    <para styleclass="Code Example">such Subscriber&apos;s rights granted under Section 2(b) shall terminate </para>
-    <para styleclass="Code Example">as of the date such litigation is filed.</para>
-    <para styleclass="Code Example">All Subscriber&apos;s rights under this Agreement shall terminate if it </para>
-    <para styleclass="Code Example">fails to comply with any of the material terms or conditions of this </para>
-    <para styleclass="Code Example">Agreement and does not cure such failure in a reasonable period of </para>
-    <para styleclass="Code Example">time after becoming aware of such noncompliance. If all Subscriber&apos;s </para>
-    <para styleclass="Code Example">rights under this Agreement terminate, Subscriber agrees to cease </para>
-    <para styleclass="Code Example">use and distribution of the Program as soon as reasonably </para>
-    <para styleclass="Code Example">practicable. However, Subscriber&apos;s obligations under this Agreement </para>
-    <para styleclass="Code Example">and any licenses granted by Subscriber relating to the Program shall </para>
-    <para styleclass="Code Example">continue and survive.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">If Subscriber institutes patent litigation against any entity </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">(including a cross-claim or counterclaim in a lawsuit) alleging that </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">the Program itself (excluding combinations of the Program with other </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">software or hardware) infringes such Subscriber&apos;s patent(s), then </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">such Subscriber&apos;s rights granted under Section 2(b) shall terminate </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">as of the date such litigation is filed.</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">All Subscriber&apos;s rights under this Agreement shall terminate if it </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">fails to comply with any of the material terms or conditions of this </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Agreement and does not cure such failure in a reasonable period of </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">time after becoming aware of such noncompliance. If all Subscriber&apos;s </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">rights under this Agreement terminate, Subscriber agrees to cease </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">use and distribution of the Program as soon as reasonably </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">practicable. However, Subscriber&apos;s obligations under this Agreement </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">and any licenses granted by Subscriber relating to the Program shall </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">continue and survive.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">10. AGREEMENT STEWARD</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">10. AGREEMENT STEWARD</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">Everyone is permitted to copy and distribute copies of this </para>
-    <para styleclass="Code Example">Agreement, but in order to avoid inconsistency the Agreement is </para>
-    <para styleclass="Code Example">copyrighted and may only be modified in the following manner. The </para>
-    <para styleclass="Code Example">Agreement Steward reserves the right to publish new versions </para>
-    <para styleclass="Code Example">(including revisions) of this Agreement from time to time. No one </para>
-    <para styleclass="Code Example">other than the Agreement Steward has the right to modify this </para>
-    <para styleclass="Code Example">Agreement. XSharp BV is the initial Agreement Steward. XSharp BV may </para>
-    <para styleclass="Code Example">assign the responsibility to serve as the Agreement Steward to a </para>
-    <para styleclass="Code Example">suitable separate entity. Each new version of the Agreement will be </para>
-    <para styleclass="Code Example">given a distinguishing version number. The Program (including </para>
-    <para styleclass="Code Example">Contributions) may always be distributed subject to the version of </para>
-    <para styleclass="Code Example">the Agreement under which it was received. In addition, after a new </para>
-    <para styleclass="Code Example">version of the Agreement is published, Contributor may elect to </para>
-    <para styleclass="Code Example">distribute the Program (including its Contributions) under the new </para>
-    <para styleclass="Code Example">version. Except as expressly stated in Sections 2(a) and 2(b) above, </para>
-    <para styleclass="Code Example">Subscriber receives no rights or licenses to the intellectual </para>
-    <para styleclass="Code Example">property of any Contributor under this Agreement, whether expressly, </para>
-    <para styleclass="Code Example">by implication, estoppel or otherwise. All rights in the Program not </para>
-    <para styleclass="Code Example">expressly granted under this Agreement are reserved.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Everyone is permitted to copy and distribute copies of this </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Agreement, but in order to avoid inconsistency the Agreement is </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">copyrighted and may only be modified in the following manner. The </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Agreement Steward reserves the right to publish new versions </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">(including revisions) of this Agreement from time to time. No one </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">other than the Agreement Steward has the right to modify this </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Agreement. XSharp BV is the initial Agreement Steward. XSharp BV may </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">assign the responsibility to serve as the Agreement Steward to a </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">suitable separate entity. Each new version of the Agreement will be </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">given a distinguishing version number. The Program (including </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Contributions) may always be distributed subject to the version of </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">the Agreement under which it was received. In addition, after a new </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">version of the Agreement is published, Contributor may elect to </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">distribute the Program (including its Contributions) under the new </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">version. Except as expressly stated in Sections 2(a) and 2(b) above, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Subscriber receives no rights or licenses to the intellectual </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">property of any Contributor under this Agreement, whether expressly, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">by implication, estoppel or otherwise. All rights in the Program not </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">expressly granted under this Agreement are reserved.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">11. JURISDICTION AND VENUE.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">11. JURISDICTION AND VENUE.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">This Agreement is governed by the applicable laws of The </para>
-    <para styleclass="Code Example">Netherlands. No party to this Agreement will bring a legal action </para>
-    <para styleclass="Code Example">under this Agreement more than one year after the cause of action </para>
-    <para styleclass="Code Example">arose. Each party waives its rights to a jury trial in any resulting </para>
-    <para styleclass="Code Example">litigation.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">This Agreement is governed by the applicable laws of The </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Netherlands. No party to this Agreement will bring a legal action </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">under this Agreement more than one year after the cause of action </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">arose. Each party waives its rights to a jury trial in any resulting </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">litigation.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">END OF TERMS AND CONDITIONS</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">END OF TERMS AND CONDITIONS</text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">APPENDIX: How to apply the XSharp compiler source code license to </para>
-    <para styleclass="Code Example">your work.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">APPENDIX: How to apply the XSharp compiler source code license to </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">your work.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">To apply the XSharp compiler source code License to your work, </para>
-    <para styleclass="Code Example">attach the following boilerplate notice, with the fields enclosed by </para>
-    <para styleclass="Code Example">brackets &quot;[]&quot; replaced with your own identifying information. (Don&apos;t </para>
-    <para styleclass="Code Example">include the brackets!) &#160;The text should be enclosed in the </para>
-    <para styleclass="Code Example">appropriate comment syntax for the file format. We also recommend </para>
-    <para styleclass="Code Example">that a file or class name and description of purpose be included on </para>
-    <para styleclass="Code Example">the same &quot;printed page&quot; as the copyright notice for easier </para>
-    <para styleclass="Code Example">identification within third-party archives.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">To apply the XSharp compiler source code License to your work, </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">attach the following boilerplate notice, with the fields enclosed by </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">brackets &quot;[]&quot; replaced with your own identifying information. (Don&apos;t </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">include the brackets!) The text should be enclosed in the </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">appropriate comment syntax for the file format. We also recommend </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">that a file or class name and description of purpose be included on </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">the same &quot;printed page&quot; as the copyright notice for easier </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">identification within third-party archives.</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"> &#160; Copyright [yyyy] [name of copyright owner]</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;"> Copyright [yyyy] [name of copyright owner]</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">Licensed under the X# compiler source code License, Version 1.0 </para>
-    <para styleclass="Code Example">(the &quot;License&quot;);</para>
-    <para styleclass="Code Example">you may not use this file except in compliance with the License.</para>
-    <para styleclass="Code Example">You may obtain a copy of the License at</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Licensed under the X# compiler source code License, Version 1.0 </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">(the &quot;License&quot;);</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">you may not use this file except in compliance with the License.</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">You may obtain a copy of the License at</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">http://www.xsharp.info/licenses</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">http://www.xsharp.info/licenses</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">Unless required by applicable law or agreed to in writing, software</para>
-    <para styleclass="Code Example">Distributed under the License is distributed on an &quot;as is&quot; basis,</para>
-    <para styleclass="Code Example">without warranties or conditions of any kind, either express or </para>
-    <para styleclass="Code Example">implied.</para>
-    <para styleclass="Code Example">See the License for the specific language governing permissions and &#160; </para>
-    <para styleclass="Code Example">limitations under the License.</para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Unless required by applicable law or agreed to in writing, software</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">Distributed under the License is distributed on an &quot;as is&quot; basis,</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">without warranties or conditions of any kind, either express or </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">implied.</text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">See the License for the specific language governing permissions and </text></para>
+    <para styleclass="Code Example"><text style="font-size:10pt;">limitations under the License.</text></para>
     <para styleclass="Code Example"></para>
   </body>
 </topic>

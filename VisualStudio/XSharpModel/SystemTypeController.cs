@@ -106,7 +106,10 @@ namespace XSharpModel
                 {
                     break;
                 }
-                sType = assembly.Assembly.GetType(typeName);
+                if (assembly.Assembly != null)
+                {
+                    sType = assembly.Assembly.GetType(typeName);
+                }
                 if (sType != null)
                 {
                     break;

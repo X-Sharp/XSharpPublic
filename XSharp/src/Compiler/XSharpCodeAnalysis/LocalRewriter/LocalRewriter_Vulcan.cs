@@ -132,6 +132,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             }
                         }
+                        break;
                     }
                 }
             }
@@ -145,7 +146,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null));
             var oldbody = statement as BoundBlock;
             var newbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
-            newbody.WasCompilerGenerated = true;
             return newbody;
         }
         public static BoundStatement RewriteAppInit(

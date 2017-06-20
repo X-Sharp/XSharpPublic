@@ -5234,5 +5234,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_LamdaExpressionWithPipes" xml:space="preserve">
     <value>Lamda Expression should not contain pipe ('|') characters around the parameters.</value>
   </data>
-  
+  <data name="ERR_CannotConvertArrayIndexAccess" xml:space="preserve">
+    <value>Cannot convert Array Index from '{0}' to '{1}'.</value>
+  </data>
+
 </root>

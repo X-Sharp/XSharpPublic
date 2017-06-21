@@ -20,13 +20,23 @@ namespace XSharpModel
     public class SystemTypeController
     {
         internal static Dictionary<String, AssemblyInfo> assemblies;
+        internal static Assembly mscorlib ;
 
         static SystemTypeController()
         {
             assemblies = new Dictionary<string, AssemblyInfo>(StringComparer.OrdinalIgnoreCase);
+            mscorlib = null;
         }
 
-  
+        public static Assembly FindAssembly(string fullName)
+        {
+            foreach (var asm in assemblies.Values)
+            {
+                if (asm.Assembly != null && string.Compare(asm.Assembly.FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0)
+                    return asm.Assembly;
+            }
+            return null;
+        }
         public static AssemblyInfo LoadAssembly(VSLangProj.Reference reference)
         {
             string path = reference.Path;
@@ -49,9 +59,21 @@ namespace XSharpModel
                 assembly = new AssemblyInfo(cFileName, DateTime.MinValue);
                 assemblies.Add(cFileName, assembly);
             }
+            if (cFileName.EndsWith("mscorlib.dll",StringComparison.OrdinalIgnoreCase))
+            {
+                mscorlib = assembly.Assembly;
+            }
             if (lastWriteTime != assembly.Modified)
             {
                 assembly.UpdateAssembly();
+            }
+            if (Path.GetFileName(cFileName).ToLower() == "system.dll")
+            {
+                var mscorlib = Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll");
+                if (! assemblies.ContainsKey(mscorlib) && File.Exists(mscorlib))
+                {
+                    LoadAssembly(mscorlib);
+                }
             }
             return assembly;
         }
@@ -92,10 +114,10 @@ namespace XSharpModel
             return null;
         }
 
-        public static Type Lookup(string typeName, IList<AssemblyInfo> assemblies)
+        public static Type Lookup(string typeName, IList<AssemblyInfo> theirassemblies)
         {
             System.Type sType = null;
-            foreach (AssemblyInfo assembly in assemblies)
+            foreach (AssemblyInfo assembly in theirassemblies)
             {
                 //
                 if (assembly.Types.Count == 0)
@@ -113,6 +135,14 @@ namespace XSharpModel
                 if (sType != null)
                 {
                     break;
+                }
+            }
+            if (sType == null)
+            {
+                // check mscorlib 
+                if (mscorlib != null)
+                {
+                    sType = mscorlib.GetType(typeName);
                 }
             }
             return sType;

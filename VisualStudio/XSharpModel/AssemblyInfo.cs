@@ -126,28 +126,14 @@ namespace XSharpModel
         }
 
 
-        internal void LoadAssembly()
+        public static Assembly LoadAssemblyFromFile(string FileName)
         {
-            Assembly assembly = null;
-            if (String.IsNullOrEmpty(FileName))
-            {
-                if (_Reference != null)
-                {
-                    FileName = _Reference.Path;
-                }
-            }
             if (!System.IO.File.Exists(FileName))
             {
-                return ;
+                return null;
             }
             try
             {
-                //if (cFile.IndexOf("interop.", StringComparison.OrdinalIgnoreCase) > 0)
-                //{
-                //    var asm = Assembly.LoadFrom(cFile);
-                //    return asm;
-
-                //}
                 FileStream input = new FileStream(FileName, FileMode.Open, FileAccess.Read);
                 byte[] rawAssembly = new BinaryReader(input).ReadBytes((int)input.Length);
                 if (rawAssembly.Length != input.Length)
@@ -168,18 +154,35 @@ namespace XSharpModel
                         File.Delete(cTmp);
                     File.Move(cPdb, cTmp);
                 }
-                assembly = Assembly.Load(rawAssembly);
+                var assembly = Assembly.Load(rawAssembly);
                 if (renamed && File.Exists(cTmp))
                 {
                     File.Move(cTmp, cPdb);
                 }
                 input.Dispose();
-                rawAssembly = null;
+                return assembly;
             }
             catch
             {
             }
-            this.Assembly = assembly;
+            return null;
+
+        }
+
+        internal void LoadAssembly()
+        {
+            if (String.IsNullOrEmpty(FileName))
+            {
+                if (_Reference != null)
+                {
+                    FileName = _Reference.Path;
+                }
+            }
+            if (!System.IO.File.Exists(FileName))
+            {
+                return ;
+            }
+            this.Assembly = LoadAssemblyFromFile(FileName);
             this.Modified = File.GetLastWriteTime(FileName);
         }
 
@@ -369,7 +372,9 @@ namespace XSharpModel
             string assemblyPath = Path.Combine(folderPath, name);
             if (File.Exists(assemblyPath))
             {
-                return Assembly.LoadFrom(assemblyPath);
+                var asm = LoadAssemblyFromFile(assemblyPath);
+                if (asm != null)
+                    return asm;
             }
             folders.Add(folderPath);
             foreach (var path in SystemTypeController.assemblies.Keys)
@@ -380,7 +385,9 @@ namespace XSharpModel
                     assemblyPath = Path.Combine(folderPath, name);
                     if (File.Exists(assemblyPath))
                     {
-                        return Assembly.LoadFrom(assemblyPath);
+                        var asm = Assembly.LoadFrom(assemblyPath);
+                        if (asm != null)
+                            return asm;
                     }
                     folders.Add(folderPath);
                 }
@@ -453,15 +460,5 @@ namespace XSharpModel
                 this.Types = new SortedList<string, TypeTypes>();
             }
         }
-
-
-
-
-
-
-
-
-
-
     }
 }

@@ -10,23 +10,23 @@
 
 #define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetup0212Fox"
+#define SetupExeName    "XSharpSetupRC1Fox"
 #else
-#define SetupExeName    "XSharpSetup0212Public"
+#define SetupExeName    "XSharpSetupRC1Public"
 #endif
 
 ; version info and similar stuff.
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.12.2"
-#define ProdBuild       "XSharp Beta 12"
+#define ProdVer         "XSharp 0.9.9.1"
+#define ProdBuild       "XSharp RC1"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
-#define VIVersion       "0.2.12.2122"
-#define VITextVersion   "0.2.12.2122 (Beta 12)"                                                                                            
-#define TouchDate       "2017-05-29"
-#define TouchTime       "02:12:02"
+#define VIVersion       "0.9.9.1"
+#define VITextVersion   "0.9.9.1 (RC1)"                                                                                            
+#define TouchDate       "2017-06-21"
+#define TouchTime       "09:09:01"
 #define InstallPath     "XSharpPath"
 
 
@@ -42,6 +42,8 @@
 #define BinPFolder      "\Xsharp\DevPublic\Binaries\Debug\"
 #define CommonFolder    "\Xsharp\Dev\XSharp\src\Common\"
 #define ToolsFolder     "\Xsharp\Dev\XSharp\src\Tools\"
+#define VOXporterFolder "\XSharp\Dev\XSharp\src\Tools\VOXPorter\"
+#define VOXporterBinFolder "\XSharp\Dev\XSharp\src\Tools\VOXPorter\Bin\Debug\"
 #define ExamplesFolder  "\Xsharp\DevPublic\Samples\"
 #define ScriptFolder    "\XSharp\DevPublic\ScriptSamples\"
 #define OutPutFolder    "\XSharp\Dev\XSharp\Binaries\Setup"
@@ -268,11 +270,32 @@ Source: "{#BinRFolder}System.Threading.*.dll";             DestDir: "{app}\bin";
 Source: "{#BinRFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
 Source: "{#BinRFolder}System.Xml.*.dll";                   DestDir: "{app}\bin"; Flags: {#StdFlags} ;
 
-
+; native resource compiler
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinPFolder}baggage\rcdll.dll";                 DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+
+; Vulcan - VO Exporter
 Source: "{#BinPFolder}xporter.exe";                       DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; 
 Source: "{#BinPFolder}xporter.pdb";                       DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+;
+; VO XPorter
+;
+Source: "{#VOXPorterBinFolder}VOXporter.exe";             DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} signonce; 
+Source: "{#VOXPorterBinFolder}Fab_VO_Entities.dll";       DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterBinFolder}XICOMMON.dll";              DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterBinFolder}XIRES.dll";                 DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterBinFolder}SDK_DEFINES.dll";           DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterFolder}VOXporter.ini";                DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterFolder}ReadMe.rtf";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+; Templates
+Source: "{#VOXPorterFolder}\Templates\*";                 DestDir: "{app}\VOXPorter\Templates"; Flags: {#StdFlags} ; 
+
+; pdb files needed ?
+Source: "{#VOXPorterBinFolder}VOXporter.pdb";             DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterBinFolder}Fab_VO_Entities.pdb";       DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterBinFolder}XICOMMON.pdb";              DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterBinFolder}XIRES.pdb";                 DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterBinFolder}SDK_DEFINES.pdb";           DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 
 
 ; Support files
@@ -435,6 +458,7 @@ Source:"{#ToolsFolder}Various\RegisterProvider.exe";          DestDir: "{app}\To
 Name: "{group}\{cm:ProgramOnTheWeb,{#Product}}"; Filename: "{#XSharpURL}";IconFilename:{app}\Images\XSharp.ico;
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}";  Parameters: "/Log";
 Name: "{group}\{#Product} XPorter";  Filename: "{app}\bin\xporter.exe";
+Name: "{group}\{#Product} VOXPorter";  Filename: "{app}\VoXPorter\VoXPorter.exe";
 Name: "{group}\{#Product} Readme";  Filename: "{app}\Readme.rtf";
 Name: "{group}\{#Product} What's New";  Filename: "{app}\Whatsnew.rtf";
 Name: "{group}\{#Product} Documenation (CHM)"; Filename: "{app}\Help\XSharp.chm"; 

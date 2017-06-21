@@ -1,0 +1,29 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+%projects%
+;Project("{%solutionguid%}") = "%appname%", "%appfile%", "{%appguid%}"
+;EndProject
+;Project("{%solutionguid%}") = "%appname%", "%appfile%", "{%appguid%}"
+;EndProject
+
+;Global
+;	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+;		Debug|Any CPU = Debug|Any CPU
+;		Release|Any CPU = Release|Any CPU
+;	EndGlobalSection
+;	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+;		{87C1D108-4280-4809-8108-1424B044C7FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+;		{87C1D108-4280-4809-8108-1424B044C7FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+;		{87C1D108-4280-4809-8108-1424B044C7FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+;		{87C1D108-4280-4809-8108-1424B044C7FD}.Release|Any CPU.Build.0 = Release|Any CPU
+;		{6FD2E2BA-8A74-4C73-9692-111E4A30635A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+;		{6FD2E2BA-8A74-4C73-9692-111E4A30635A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+;		{6FD2E2BA-8A74-4C73-9692-111E4A30635A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+;		{6FD2E2BA-8A74-4C73-9692-111E4A30635A}.Release|Any CPU.Build.0 = Release|Any CPU
+;	EndGlobalSection
+;	GlobalSection(SolutionProperties) = preSolution
+;		HideSolutionNode = FALSE
+;	EndGlobalSection
+;EndGlobal

@@ -524,9 +524,10 @@
       <config-value name="insertseealso">0</config-value>
       <config-value name="insertseealsostyle">-1</config-value>
       <config-value name="defaultprinter">Microsoft Print to PDF</config-value>
+      <config-value name="tocname">Table of Contents</config-value>
     </config-group>
     <variables>
-      <variable id="VERSION" type="text" translate="true">0.9.9.1</variable>
+      <variable id="VERSION" type="text" translate="true"> Anjou RC1 (0.9.9.1)</variable>
     </variables>
     <helpcontext-numbers/>
   </config>

@@ -9,7 +9,7 @@
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="Heading2">Changes in RC 1</para>
     <para styleclass="Normal"><text style="font-weight:bold;">Compiler</text></para>
-    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed a problem with a late bound assign of a literal codeblock</li>
       <li styleclass="Normal">Resolved several name conflicts </li>
       <li styleclass="Normal">Typed local variables can now also be used for PCALL() calls</li>
@@ -20,19 +20,23 @@
       <li styleclass="Normal">Added support for ENUM Basetypes (ENUM Foo AS WORD)</li>
       <li styleclass="Normal">Fix problem with virtual instance methods and structures</li>
       <li styleclass="Normal">Fixed name conflict foreach variables used in Array Literals</li>
-      <li styleclass="Normal">Changed resolution for Functions and static methods with the same name. IN the VO/Vulcan dialect functions take precedence over static methods. If you want to call the static method then then you need to prefix the method call with the classname.</li>
+      <li styleclass="Normal">Changed resolution for Functions and static methods with the same name. <br/>In the VO/Vulcan dialect functions take precedence over static methods. If you want to call the static method then then you need to prefix the method call with the classname.</li>
       <li styleclass="Normal">We have added a separate syntax for Lambda Expressions</li>
       <li styleclass="Normal">We have added support for Anonymous Method Expressions</li>
-      <li styleclass="Normal">We have added support for typed parameters for CodeBlocks</li>
       <li styleclass="Normal">There is a separate topic in this documentation now that describes the syntax differences and similarities between Codeblocks, Lambda Expressions and Anonymous Method Expressions.</li>
+      <li styleclass="Normal">Fixed incorrect error message for Start() function with wrong prototype.</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold;">Visual Studio</text></para>
-    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Added parameter tips for Functions and methods from &quot;Using Static&quot; classes</li>
       <li styleclass="Normal">Added parameter tips for Clipper Calling Convention functions and methods</li>
-      <li styleclass="Normal">Parameter tips are now shown when a opening ( or { is typed as well as when the user types a comma</li>
-      <li styleclass="Normal">Added intellisense for COM references</li>
+      <li styleclass="Normal">Added support for generics in Intellisense</li>
+      <li styleclass="Normal">Intellisense will show keywords in stead of native type names (WORD in stead of System.UInt16 for example)</li>
+      <li styleclass="Normal">Parameter tips are now shown when a opening <text style="font-weight:bold;">&apos;(&apos;</text> or <text style="font-weight:bold;">&apos;{&apos;</text> is typed as well as when the user types a comma <text style="font-weight:bold;">&apos;,&apos;</text>.</li>
+      <li styleclass="Normal">Parameter tips will show REF OUT and AS modifiers</li>
+      <li styleclass="Normal">Added intellisense for COM references, both for normal COM references as well as for Primary Interop Assemblies. Also members from implemented interfaces are now included in intellisense code completion (this is very common for COM).</li>
+      <li styleclass="Normal">Improved intellisense for Project References from other languages, such as C# and VB.</li>
       <li styleclass="Normal">Added intellisense for Functions in referenced projects and referenced Vulcan and/or X# assemblies</li>
       <li styleclass="Normal">Suppress &quot;special type names&quot; in intellisense lists</li>
       <li styleclass="Normal">Added support for &quot;VulcanClassLibrary&quot; attribute to help find types and functions</li>
@@ -42,11 +46,28 @@
       <li styleclass="Normal">Fixed several issues with the Windows Form editor in relation to ActiveX controls</li>
       <li styleclass="Normal">Added a menu option to start the VO Xporter tool</li>
       <li styleclass="Normal">Added background scanning for dependent items, to make sure that newly generated code is scanned and available for intellisense.</li>
+      <li styleclass="Normal">Several changes to the Windows Forms editor and project system:</li>
+      <list id="79" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Normal">Added support for adding ActiveX controls</li>
+        <li styleclass="Normal">Added support for Form Inheritance. Our forms are also visible in the C# Inherited form wizard</li>
+        <li styleclass="Normal">Added support to add our Windows Forms Custom Controls to the ToolBox in Visual Studio</li>
+        <li styleclass="Normal">Some performance enhancements in the Codedom Parser that is used by the Windows Form Editor. You should notice this for larger forms.</li>
+      </list>
+    </list>
+    <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Fixed several crashes reported by users</li>
+      <li styleclass="Normal">Native Resource files (.rc) now open in the Source code editor</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold;">Tools</text></para>
-    <list id="39" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Added a first version of the VO Xporter tool</li>
+      <li styleclass="Normal">The installer now registers .xsproj files, .prg, .ppo. .vh, .xh and .xs files so they will be opened with Visual Studio</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="" style="font-family:&apos;Calibri Light&apos;; font-size:12pt; font-weight:bold; color:#000000;">Documentation</text></para>
+    <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">We have added some chapters on how to convert your VO AEF and/or PRG files to a XIDE project and/or a Visual Studio solution.</li>
     </list>
     <para styleclass="Heading2">Changes in 0.2.12</para>
     <para styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>

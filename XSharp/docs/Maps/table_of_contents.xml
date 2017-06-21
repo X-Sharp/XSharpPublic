@@ -4146,6 +4146,27 @@
         <topicref type="topic" id="42867228504395" build="ALL" modified="2017-05-12T16:26:58.985Z" icon="0" href="XS9049">
           <caption translate="true">XS9049</caption>
         </topicref>
+        <topicref type="topic" id="429077921610287" build="ALL" modified="2017-06-21T17:33:30.622Z" icon="0" href="XS9050">
+          <caption translate="true">XS9050</caption>
+        </topicref>
+        <topicref type="topic" id="429077721258857" build="ALL" modified="2017-06-21T17:33:30.803Z" icon="0" href="XS9052">
+          <caption translate="true">XS9052</caption>
+        </topicref>
+        <topicref type="topic" id="429077172904597" build="ALL" modified="2017-06-21T17:33:30.929Z" icon="0" href="XS9053">
+          <caption translate="true">XS9053</caption>
+        </topicref>
+        <topicref type="topic" id="429076608742785" build="ALL" modified="2017-06-21T17:33:31.051Z" icon="0" href="XS9055">
+          <caption translate="true">XS9055</caption>
+        </topicref>
+        <topicref type="topic" id="429079088337511" build="ALL" modified="2017-06-21T17:33:31.175Z" icon="0" href="XS9056">
+          <caption translate="true">XS9056</caption>
+        </topicref>
+        <topicref type="topic" id="429075309175056" build="ALL" modified="2017-06-21T17:33:31.299Z" icon="0" href="XS9057">
+          <caption translate="true">XS9057</caption>
+        </topicref>
+        <topicref type="topic" id="429078529588666" build="ALL" modified="2017-06-21T17:33:31.426Z" icon="0" href="XS9059">
+          <caption translate="true">XS9059</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="427607830537848" build="CHM,HTML,HXS" modified="2017-05-12T17:24:19.511Z" icon="0" href="X-Compiler-Warnings">
         <caption translate="true">X# Compiler Warnings</caption>
@@ -4776,6 +4797,12 @@
         <topicref type="topic" id="1009047" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9047">
           <caption translate="true">XS9047</caption>
         </topicref>
+        <topicref type="topic" id="429075601456677" build="ALL" modified="2017-06-21T17:32:48.719Z" icon="0" href="XS9054">
+          <caption translate="true">XS9054</caption>
+        </topicref>
+        <topicref type="topic" id="429079163728041" build="ALL" modified="2017-06-21T17:32:48.901Z" icon="0" href="XS9058">
+          <caption translate="true">XS9058</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="427443697979586" build="ALL" modified="2017-01-09T09:13:33.910Z" icon="0" href="Classes">
         <caption translate="true">Classes</caption>
@@ -4786,8 +4813,8 @@
     </topicref>
     <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
       <caption translate="true">X# Examples</caption>
-      <topicref type="topic" id="42424518616889" build="ALL" modified="2016-02-24T20:09:34.366Z" icon="0" href="Anonymous-Methods2">
-        <caption translate="true">Anonymous Methods</caption>
+      <topicref type="topic" id="42424518616889" build="ALL" modified="2017-06-21T18:24:42.073Z" icon="0" href="Anonymous-Methods2">
+        <caption translate="true">Anonymous Method Expressions</caption>
       </topicref>
       <topicref type="topic" id="426887977972070" build="ALL" modified="2016-11-14T19:59:48.184Z" icon="0" href="Anonymous-Types">
         <caption translate="true">Anonymous Types</caption>
@@ -4816,6 +4843,9 @@
       <topicref type="topic" id="424249105268691" build="ALL" modified="2016-02-24T20:04:41.119Z" icon="0" href="GENERICs-Example">
         <caption translate="true">GENERICs Example</caption>
       </topicref>
+      <topicref type="topic" id="429079409602691" build="ALL" modified="2017-06-21T18:23:59.158Z" icon="0" href="Lamda-Expressions">
+        <caption translate="true">Lamda Expressions</caption>
+      </topicref>
       <topicref type="topic" id="424249979841329" build="ALL" modified="2016-02-24T19:50:00.886Z" icon="0" href="LINQ-Example">
         <caption translate="true">LINQ Example</caption>
       </topicref>
@@ -4824,6 +4854,9 @@
       </topicref>
       <topicref type="topic" id="424266614671750" build="ALL" modified="2016-02-26T17:14:34.481Z" icon="0" href="SWITCH-Example">
         <caption translate="true">SWITCH Example</caption>
+      </topicref>
+      <topicref type="topic" id="429077405209086" build="ALL" modified="2017-06-21T18:25:04.287Z" icon="0" href="Typed-Enums">
+        <caption translate="true">Typed Enums</caption>
       </topicref>
       <topicref type="topic" id="424267820342591" build="ALL" modified="2016-02-26T16:55:26.201Z" icon="0" href="USING-Example">
         <caption translate="true">USING Example</caption>

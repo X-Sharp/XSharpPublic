@@ -615,6 +615,10 @@ namespace XSharp.Project
             {
                 viewGuid = VSConstants.LOGVIEWID.Code_guid;
             }
+            else if (XFileType.GetItemType(this.FileName) == XSharpProjectFileConstants.NativeResource)
+            {
+                viewGuid = VSConstants.LOGVIEWID.Code_guid;
+            }
             else
             {
                 viewGuid = VSConstants.LOGVIEWID.Primary_guid;

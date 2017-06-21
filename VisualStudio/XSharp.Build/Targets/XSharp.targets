@@ -152,8 +152,6 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   </ItemGroup>
 
 
-  <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />  
-  
   <PropertyGroup>
     <CoreCompileDependsOn>_ComputeNonExistentFileProperty</CoreCompileDependsOn>
   </PropertyGroup>

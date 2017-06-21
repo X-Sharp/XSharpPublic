@@ -206,7 +206,7 @@ namespace XSharpModel
             {
                 if (this.Assembly != null)
                 {
-                    object[] customAttributes = this.Assembly.GetCustomAttributes(false);
+                  object[] customAttributes = this.Assembly.GetCustomAttributes(false);
                     for (num = 1; num <= customAttributes.Length; num++)
                     {
                         object custattr = customAttributes[num - 1];
@@ -232,6 +232,9 @@ namespace XSharpModel
             {
             }
             // Load Types From Assembly, if possible
+            // register event handler to find missing assemblies
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             try
             {
                 if (this.Assembly != null)
@@ -248,11 +251,13 @@ namespace XSharpModel
                     var t = e.Types[i];
                     System.Diagnostics.Debug.WriteLine("Cannot load type {0}: {1}", t.Name, le.Message);
                 }
+                this.Assembly = null;
             }
             catch
             {
             }
             // Has Types ?
+            currentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
             if (types?.Length > 0 && (aTypes?.Count == 0  | ! lLoadedTypes))
             {
                 try
@@ -354,6 +359,35 @@ namespace XSharpModel
                     this.lLoadedTypes = false;
                 }
             }
+        }
+
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var folders = new List<String>();   // list of folders that we have tried
+            string folderPath = System.IO.Path.GetDirectoryName(this.FileName);
+            var name = new AssemblyName(args.Name).Name + ".dll";
+            string assemblyPath = Path.Combine(folderPath, name);
+            if (File.Exists(assemblyPath))
+            {
+                return Assembly.LoadFrom(assemblyPath);
+            }
+            folders.Add(folderPath);
+            foreach (var path in SystemTypeController.assemblies.Keys)
+            {
+                folderPath = System.IO.Path.GetDirectoryName(path);
+                if (! folders.Contains(folderPath))
+                {
+                    assemblyPath = Path.Combine(folderPath, name);
+                    if (File.Exists(assemblyPath))
+                    {
+                        return Assembly.LoadFrom(assemblyPath);
+                    }
+                    folders.Add(folderPath);
+                }
+            }
+
+
+            return null;
         }
 
         private static bool HasExtensionAttribute(MemberInfo oInfo)

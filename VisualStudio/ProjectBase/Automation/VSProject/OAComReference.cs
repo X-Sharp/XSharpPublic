@@ -21,8 +21,6 @@ namespace Microsoft.VisualStudio.Project.Automation
     [CLSCompliant(false), ComVisible(true)]
     public class OAComReference : OAReferenceBase<ComReferenceNode>
     {
-        private System.Reflection.Assembly assembly = null;
-        private bool tryLoad = false;
         internal OAComReference(ComReferenceNode comReference) :
             base(comReference)
         {
@@ -71,65 +69,6 @@ namespace Microsoft.VisualStudio.Project.Automation
         public override int MinorVersion
         {
             get { return BaseReferenceNode.MinorVersionNumber; }
-        }
-        public override string Name
-        {
-            //get { return BaseReferenceNode.Caption; }
-            get
-            {
-                // this needs to return the name as defined in the assembly
-                // Otherwise the form editor will not be able to load a saved activeX control
-                // the safest thing to do is to load the assembly and retrieve its name
-                if (assembly == null  && ! tryLoad)
-                {
-                    try
-                    {
-                        string path = this.Path;
-                        tryLoad = true;
-                        if (System.IO.File.Exists(path))
-                        {
-                            assembly = System.Reflection.Assembly.LoadFrom(path);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        assembly = null;
-                    }
-                }
-                if (assembly != null)
-                {
-                    return assembly.GetName().Name;
-                }
-                return System.IO.Path.GetFileNameWithoutExtension(this.Path); }
-        }
-
-        Assembly asm = null;
-        public override string Path
-        {
-            get
-            {
-                try
-                {
-                    if (asm != null)
-                        return asm.Location;
-                    if (BaseReferenceNode.WrapperTool.ToLower() == "primary")
-                    {
-                        var key = Win32.Registry.ClassesRoot.OpenSubKey("Typelib\\" + BaseReferenceNode.TypeGuid.ToString("B") + "\\" + this.Version);
-                        if (key != null)
-                        {
-                            string asmName = (string)key.GetValue("PrimaryInteropAssemblyName");
-                            var name = new AssemblyName(asmName);
-                            asm = Assembly.Load(name);
-                            return asm.Location;
-                        }
-                    }
-                }
-                catch
-                {
-
-                }
-                return base.Path;
-            }
         }
 
         public override VSLangProj.prjReferenceType Type

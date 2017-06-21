@@ -116,14 +116,21 @@ namespace XSharp.Project
             }
             else if (cmd.CommandID.ID == IdVOXporter)
             {
-                xporterPath = System.IO.Path.Combine(InstallPath, @"Bin\VOXporter.exe");
+                xporterPath = System.IO.Path.Combine(InstallPath, @"VOXPorter\VOXporter.exe");
             }
             if (!String.IsNullOrEmpty(xporterPath))
             {
-                var info = new System.Diagnostics.ProcessStartInfo();
-                info.FileName = xporterPath;
-                info.WorkingDirectory = System.IO.Path.GetDirectoryName(xporterPath);
-                System.Diagnostics.Process.Start(info);
+                if (System.IO.File.Exists(xporterPath))
+                {
+                    var info = new System.Diagnostics.ProcessStartInfo();
+                    info.FileName = xporterPath;
+                    info.WorkingDirectory = System.IO.Path.GetDirectoryName(xporterPath);
+                    System.Diagnostics.Process.Start(info);
+                }
+                else
+                {
+                    VsShellUtilities.ShowMessageBox(ServiceProvider, "Cannot find file \"" + xporterPath+"\"", "Can't start external program", OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                }
             }
 
         }

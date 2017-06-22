@@ -2915,6 +2915,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
+            if (context.Expr == null && context.ExprList == null && context.StmtBlk == null)
+            {
+                // empty codeblock ?
+                var cbcontext = context.Parent as XP.CodeblockContext;
+                if (cbcontext != null && cbcontext.lambda == null)
+                {
+                    block = MakeBlock(GenerateReturn(MakeDefault(_usualType)));
+                    context.Put<BlockSyntax>(block);
+                }
+            }
         }
         #endregion
 

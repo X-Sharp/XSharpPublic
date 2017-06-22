@@ -12,6 +12,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -1488,7 +1492,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                             type = localSymbol.Type;
                             if (IsBadLocalOrParameterCapture(localSymbol, localSymbol.RefKind))
                             {
+#if XSHARP
+                                Error(diagnostics, ErrorCode.ERR_StaticLocalInCodeBlock, node, localSymbol);
+#else
                                 Error(diagnostics, ErrorCode.ERR_AnonDelegateCantUseLocal, node, localSymbol);
+#endif
+
                             }
                         }
 

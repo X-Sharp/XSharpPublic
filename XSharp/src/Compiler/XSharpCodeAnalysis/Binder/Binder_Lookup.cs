@@ -43,7 +43,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(options.AreValid());
 
             // Try to look for functions first
-			/*
             if (Compilation.Options.IsDialectVO)
             {
                 // check for function calls method calls outside the current class
@@ -59,14 +58,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                             FilterResults(result, options);
                             if (!result.IsClear)
                             {
-                                return scope;
+           					    break;
                             }
                         }
                         scope = scope.Next;
                     }
                 }
             }
-			*/
+            LookupResult functionResults = LookupResult.GetInstance();
+
+            if (!result.IsClear)
+            {
+                functionResults.MergeEqual(result);
+                result.Clear();
+            }
             Binder binder = null;
             for (var scope = this; scope != null && !result.IsMultiViable; scope = scope.Next)
             {
@@ -85,6 +90,43 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (!result.IsClear)
                     {
                         binder = scope;
+                    }
+                }
+            }
+            if (!functionResults.IsClear)
+            {
+                // compare the original results with the results found 
+                Symbol funcSym, sym;
+                for (int i = 0; i < functionResults.Symbols.Count;i++)
+                {
+                    funcSym = functionResults.Symbols[i];
+                    var funcFound = false;
+                    for (int j = 0; j < result.Symbols.Count; j++)
+                    {
+                        sym = result.Symbols[j];
+                        if (funcSym == sym)
+                        {
+                            funcFound = true;
+                            break;
+                        }
+                    }
+                    if (! funcFound)
+                    {
+                        for (int j = 0; j < result.Symbols.Count; j++)
+                        {
+                            sym = result.Symbols[j];
+                            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
+                                new object[] {
+                                    funcSym.Name,
+                                    new FormattedSymbol(sym, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                    new FormattedSymbol(funcSym, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                    sym.Kind.ToString()});
+                            if (useSiteDiagnostics == null)
+                            {
+                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            }
+                            useSiteDiagnostics.Add(info);
+                        }
                     }
                 }
             }

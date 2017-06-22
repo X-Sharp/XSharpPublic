@@ -27,13 +27,17 @@ namespace XSharpModel
         public static TValue AddUnique<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
         {
             // Check if it already exist
-            if (!dict.ContainsKey(key))
+            if (dict != null && key != null)
             {
-                dict.Add(key, value);
-                return value;
+                if (!dict.ContainsKey(key))
+                {
+                    dict.Add(key, value);
+                    return value;
+                }
+                //
+                return dict[key];
             }
-            //
-            return dict[key];
+            return default(TValue);
         }
     }
     public static class TypeExtensions

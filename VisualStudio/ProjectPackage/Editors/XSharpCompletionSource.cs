@@ -130,6 +130,11 @@ namespace XSharpLanguage
             CompletionList kwdList = new CompletionList();
             // The CompletionType we will use to fill the CompletionList
             CompletionType cType = null;
+            if (session.Properties.ContainsProperty("Type"))
+            {
+                cType = (CompletionType)session.Properties["Type"];
+            }
+
             // Start of Process
             // Build a list with the tokens we have from the TriggerPoint to the start of the line
             //List<String> tokenList = this.GetTokenList(triggerPoint);
@@ -221,6 +226,10 @@ namespace XSharpLanguage
                 currentNS = currentNamespace.Name;
             }
             cType = XSharpTokenTools.RetrieveType(_fileName, tokenList, member, currentNS, null, out foundElement);
+            if (!cType.IsEmpty())
+            {
+                session.Properties["Type"] = cType;
+            }
             switch (typedChar)
             {
                 case '.':
@@ -1075,7 +1084,9 @@ namespace XSharpLanguage
                 else
                     Direction = "AS";
                 string type = p.ParameterType.FullName;
-                if (type.EndsWith("&"))
+                if (type == null)
+                    type = p.ParameterType.Name;
+                if (type != null && type.EndsWith("&"))
                     Direction = "REF";
                 
                 this.TypeName = p.ParameterType.GetXSharpTypeName();
@@ -1173,6 +1184,19 @@ namespace XSharpLanguage
                     if (member.DeclaringType.IsEnum)
                         this._kind = Kind.Enum;
                     FieldInfo field = member as FieldInfo;
+                    if (field.IsStatic)
+                    {
+                        if (field.DeclaringType.Name.ToLower() == "functions")
+                        {
+                            if (field.Attributes.HasFlag(FieldAttributes.InitOnly))
+                                this.Kind = Kind.VODefine;
+                            else if (field.Attributes.HasFlag(FieldAttributes.Literal))
+                                this.Kind = Kind.VODefine;
+                            else
+                                this.Kind = Kind.VOGlobal;
+                        }
+                    }
+
                     //
                     this._isStatic = field.IsStatic;
                     //
@@ -1195,6 +1219,16 @@ namespace XSharpLanguage
                 case MemberTypes.Method:
                     this.Kind = Kind.Method;
                     MethodInfo method = member as MethodInfo;
+                    if (method.IsStatic)
+                    {
+                        if (method.DeclaringType.Name.ToLower() == "functions")
+                        {
+                            if (method.ReturnType.FullName != "System.Void")
+                                this.Kind = Kind.Function;
+                            else
+                                this.Kind = Kind.Procedure;
+                        }
+                    }
                     if (method.IsSpecialName)
                     {
                         // The SpecialName bit is set to flag members that are treated in a special way by some compilers (such as property accessors and operator overloading methods).
@@ -2177,9 +2211,18 @@ namespace XSharpLanguage
                         // allow FLoat{} or String{}
                         if (XSharpLexer.IsType(triggerToken.Type))
                             break;
-                        if (XSharpLexer.IsKeyword(triggerToken.Type) ||
-                            XSharpLexer.IsOperator(triggerToken.Type)
-                            )
+                        if (XSharpLexer.IsKeyword(triggerToken.Type))
+                        {
+                            // new positional keywords should not abort
+                            if (triggerToken.Type < XSharpLexer.ABSTRACT 
+                                || triggerToken.Type > XSharpLexer.YIELD)
+                            {
+                                token = null;
+                                triggerToken = null;
+
+                            }
+                        }
+                        if (XSharpLexer.IsOperator(triggerToken.Type))
                         {
                             token = null;
                             triggerToken = null;
@@ -3001,7 +3044,7 @@ namespace XSharpLanguage
         /// <returns>The CompletionType that the Method will return (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, bool staticOnly, out CompletionElement foundElement)
+        internal static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, bool staticOnly, out CompletionElement foundElement)
         {
             foundElement = null;
             if (cType.XType != null)

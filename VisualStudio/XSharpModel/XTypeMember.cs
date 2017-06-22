@@ -135,22 +135,21 @@ namespace XSharpModel
         {
             get
             {
-                if ( !this.Kind.HasParameters())
-                    return this.Name;
-                //
                 String vars = "";
-                foreach (XVariable var in this.Parameters)
+                if ( this.Kind.HasParameters())
                 {
-                    if (vars.Length > 0)
-                        vars += ", ";
-                    vars += var.Name + " as " + var.TypeName;
+                    vars = "(";
+                    foreach (XVariable var in this.Parameters)
+                    {
+                        if (vars.Length > 1)
+                            vars += ", ";
+                        vars += var.Name + " as " + var.TypeName;
+                    }
+                    vars += ")";
                 }
                 //
-                String desc = "";
-                desc += this.Name;
-                desc += "(";
+                String desc = this.Name;
                 desc += vars;
-                desc += ")";
                 //
                 if (this.Kind.HasReturnType())
                 {

@@ -139,36 +139,43 @@ namespace XSharpModel
         {
             if (this.BuildModel)
             {
-                XType newClass = new XType(context.Id?.GetText(),
-                   Kind.Class,
-                   decodeModifiers(context.Modifiers?._Tokens),
-                   decodeVisibility(context.Modifiers?._Tokens),
-                   new TextRange(context), new TextInterval(context));
-                //
-                newClass.NameSpace = this.currentNamespace;
-                // and push into the current Namespace
-                //CurrentNamespace.Types.Add(newClass);
-                // Static Class ?
-                newClass.IsStatic = this.isStatic(context.Modifiers?._Tokens);
-                // Partial Class ?
-                newClass.IsPartial = this.isPartial(context.Modifiers?._Tokens);
-                // INHERIT from ?
-                if (context.BaseType != null)
+                try
                 {
-                    //newClass.BaseTypes.Add(new CodeTypeReference(context.BaseType.GetText()));
-                    newClass.ParentName = context.BaseType.GetText();
-                }
-                // IMPLEMENTS ?
-                if ((context._Implements != null) && (context._Implements.Count > 0))
-                {
-                    foreach (var interfaces in context._Implements)
+                    XType newClass = new XType(context.Id?.GetText(),
+                       Kind.Class,
+                       decodeModifiers(context.Modifiers?._Tokens),
+                       decodeVisibility(context.Modifiers?._Tokens),
+                       new TextRange(context), new TextInterval(context));
+                    //
+                    newClass.NameSpace = this.currentNamespace;
+                    // and push into the current Namespace
+                    //CurrentNamespace.Types.Add(newClass);
+                    // Static Class ?
+                    newClass.IsStatic = this.isStatic(context.Modifiers?._Tokens);
+                    // Partial Class ?
+                    newClass.IsPartial = this.isPartial(context.Modifiers?._Tokens);
+                    // INHERIT from ?
+                    if (context.BaseType != null)
                     {
-                        //newClass.BaseTypes.Add(new CodeTypeReference(interfaces.GetText()));
+                        //newClass.BaseTypes.Add(new CodeTypeReference(context.BaseType.GetText()));
+                        newClass.ParentName = context.BaseType.GetText();
+                    }
+                    // IMPLEMENTS ?
+                    if ((context._Implements != null) && (context._Implements.Count > 0))
+                    {
+                        foreach (var interfaces in context._Implements)
+                        {
+                            //newClass.BaseTypes.Add(new CodeTypeReference(interfaces.GetText()));
+                        }
+                    }
+                    if (newClass != null && newClass.FullName != null)
+                    {
+                        newClass = this._file.TypeList.AddUnique(newClass.FullName, newClass);
+                        // Set as Current working Class
+                        pushType(newClass);
                     }
                 }
-                newClass = this._file.TypeList.AddUnique(newClass.FullName, newClass);
-                // Set as Current working Class
-                pushType(newClass);
+                catch { }
             }
         }
         public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
@@ -445,11 +452,11 @@ namespace XSharpModel
                 type.Members.Add(member);
                 this._currentMethod = member;
             }
-            else
-            {
-                if (System.Diagnostics.Debugger.IsAttached)
-                    System.Diagnostics.Debugger.Break();
-            }
+            //else
+            //{
+            //    if (System.Diagnostics.Debugger.IsAttached)
+            //     System.Diagnostics.Debugger.Break();
+            //}
         }
         private void endMember(LanguageService.SyntaxTree.ParserRuleContext context)
         {
@@ -762,7 +769,10 @@ namespace XSharpModel
                             localType);
                         local.File = this._file;
                         //
-                        this._currentMethod.Locals.Add(local);
+                        if (this._currentMethod != null)
+                        {
+                            this._currentMethod.Locals.Add(local);
+                        }
                     }
                 }
                 else
@@ -781,7 +791,7 @@ namespace XSharpModel
 
         private void addVariables([NotNull] ParserRuleContext context)
         {
-            if (!this._buildLocals || ! this._buildModel)
+            if (!this._buildLocals || ! this._buildModel || this._currentMethod == null)
                 return;
             // Don't forget to add Self and Super as Local vars
             if ((context is XSharpParser.ConstructorContext) ||

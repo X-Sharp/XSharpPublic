@@ -288,7 +288,15 @@ namespace XSharpColorizer
                     }
                     else if (XSharpLexer.IsKeyword(tokenType))
                     {
-                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
+                        // new keywords
+                        if (tokenType >= XSharpLexer.ABSTRACT && tokenType <= XSharpLexer.YIELD)
+                        {
+                            newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpIdentifierType));
+                        }
+                        else  // Old Keywords
+                        {
+                            newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
+                        }
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {

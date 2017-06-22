@@ -88,6 +88,37 @@ namespace XSharpModel
 
         public Type FindType(string typeName, IList<string> usings, IList<AssemblyInfo> assemblies)
         {
+            // generic types
+            if (typeName.EndsWith(">"))
+            {
+                bool nested = typeName.Length > typeName.Replace(">", "").Length + 1;
+                if (! nested)
+                {
+                    string[] elements = typeName.Split("<,>".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    typeName = elements[0] + "`" + (elements.Length - 1).ToString();
+                }
+                else
+                {
+                    // something like Dictionary< String, Tuple<int, int> > 
+                    int pos = typeName.IndexOf("<");
+                    string baseName = typeName.Substring(0, pos);
+                    // remove the outer "<" and ">", so we have String, Tuple<int, int> left
+                    string typeParams = typeName.Substring(pos +1);
+                    typeParams = typeParams.Substring(0, typeParams.Length - 1).Trim();
+                    pos = typeParams.IndexOf("<");
+                    while (pos >= 0)
+                    {
+                        int pos2 = typeParams.LastIndexOf(">");
+                        // remove the type Params of the parameter
+                        typeParams = typeParams.Substring(0, pos) + typeParams.Substring(pos2 + 1);
+                        typeParams = typeParams.Trim();
+                        pos = typeParams.IndexOf("<");
+                    }
+                    // now we have left String, Tuple
+                    string[] elements = typeParams.Split(",".ToCharArray());
+                    typeName = baseName + "`" + elements.Length.ToString();
+                }
+            }
             Type result = Lookup(typeName,assemblies);
             if (result != null)
                 return result;

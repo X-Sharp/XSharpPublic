@@ -364,6 +364,7 @@ namespace XSharp.Project
 
             _completionSession.Properties["Command"] = nCmdId;
             _completionSession.Properties["Char"] = typedChar;
+            _completionSession.Properties["Type"] = null;
             _completionSession.Start();
 
             return true;
@@ -376,7 +377,14 @@ namespace XSharp.Project
             {
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
                 {
-                    StartSignatureSession(false);
+                    XSharpModel.CompletionType cType = null;
+                    if (_completionSession.Properties["Type"] != null)
+                    {
+                        cType = (XSharpModel.CompletionType)_completionSession.Properties["Type"];
+                    }
+                    string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
+                    method = method.Substring(0, method.Length - 1);
+                    StartSignatureSession(false, cType, method);
                 }
             }
             //
@@ -390,46 +398,59 @@ namespace XSharp.Project
 
 
         #region Signature Session
-        bool StartSignatureSession(bool comma)
+        bool StartSignatureSession(bool comma, XSharpModel.CompletionType cType = null, string methodName = null)
         {
             if (_signatureSession != null)
                 return false;
-
-            // First, where are we ?
-            int caretPos;
             int startLineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
             SnapshotPoint ssp = this.TextView.Caret.Position.BufferPosition;
-            int lineNumber = startLineNumber;
-            //
-            do
+            // when coming from the completionlist then there is no need to check a lot of stuff
+            // we can then simply lookup the method and that is it.
+            // Also no need to filter on visibility since that has been done in the completionlist already !
+            XSharpLanguage.CompletionElement gotoElement = null;
+            if (cType != null && methodName != null)
             {
-                ssp = ssp - 1;
-                char leftCh = ssp.GetChar();
-                if ((leftCh == '(') || (leftCh == '{'))
-                    break;
-                lineNumber = ssp.GetContainingLine().LineNumber;
-            } while (startLineNumber == lineNumber);
-            //
-            caretPos = ssp.Position;
-            String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
-            string fileName = EditorHelpers.GetDocumentFileName(this.TextView.TextBuffer);
-            if (String.IsNullOrEmpty(fileName))
-                return false;
-            // Then, the corresponding Type/Element if possible
-            IToken stopToken;
-            //ITokenStream tokenStream;
-            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, fileName);
-            // Check if we can get the member where we are
-            XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
-            XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
-            // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpLanguage.CompletionElement gotoElement;
-            String currentNS = "";
-            if (currentNamespace != null)
-            {
-                currentNS = currentNamespace.Name;
+                cType = XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement);
+
             }
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
+            else
+            {
+                // First, where are we ?
+                int caretPos;
+                int lineNumber = startLineNumber;
+                //
+                do
+                {
+                    ssp = ssp - 1;
+                    char leftCh = ssp.GetChar();
+                    if ((leftCh == '(') || (leftCh == '{'))
+                        break;
+                    lineNumber = ssp.GetContainingLine().LineNumber;
+                } while (startLineNumber == lineNumber);
+                //
+                caretPos = ssp.Position;
+                String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
+                string fileName = EditorHelpers.GetDocumentFileName(this.TextView.TextBuffer);
+                if (String.IsNullOrEmpty(fileName))
+                    return false;
+                // Then, the corresponding Type/Element if possible
+                IToken stopToken;
+                //ITokenStream tokenStream;
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, fileName);
+                // Check if we can get the member where we are
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
+                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
+                // LookUp for the BaseType, reading the TokenList (From left to right)
+                String currentNS = "";
+                if (currentNamespace != null)
+                {
+                    currentNS = currentNamespace.Name;
+                }
+                else
+                {
+                    cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
+                }
+            }
             //
             if ((gotoElement != null) && (gotoElement.IsInitialized))
             {

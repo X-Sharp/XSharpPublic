@@ -24,12 +24,28 @@ namespace XSharp.LanguageService
 
         public override string GetFormatFilterList()
         {
-            return "XSharp Source Files (*.prg)\n*.prg\nAll Files (*.*)\n*.*\n";
+            string[] files = { "Source Files (*.prg)\n*.prg\n",
+                               "Alternative Source Files (*.xs)\n*.xs\n",
+                               "Preprocessor Output (*.ppo)\n*.ppo\n",
+                               "Header files (*.?h)\n*.?h\n"
+            };
+
+            return string.Concat(files);
         }
 
+        public override int CurFileExtensionFormat(string fileName)
+        {
+            return base.CurFileExtensionFormat(fileName);
+        }
+        public override int GetFileExtensions(out string extensions)
+        {
+            extensions = ".prg;.vh;.ppo;.xs;.xh;";
+            return VSConstants.S_OK;
+        }
         public int GetFormatFilterList(out string pbstrFilterList)
         {
-            throw new NotImplementedException();
+            pbstrFilterList = GetFormatFilterList();
+            return VSConstants.S_OK;
         }
         public override LanguagePreferences GetLanguagePreferences()
         {

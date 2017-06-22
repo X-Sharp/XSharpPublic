@@ -255,22 +255,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (ctx is XP.Class_Context)
                 {
-                    name = ((XP.Class_Context)ctx).Id?.GetText() + "." + name;
+                    name = ((XP.Class_Context)ctx).Id.GetText() + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.Structure_Context)
                 {
-                    name = ((XP.Structure_Context)ctx).Id?.GetText() + "." + name;
+                    name = ((XP.Structure_Context)ctx).Id.GetText() + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.Namespace_Context)
                 {
-                    name = ((XP.Namespace_Context)ctx).Name?.GetText() + "." + name;
+                    name = ((XP.Namespace_Context)ctx).Name.GetText() + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.Interface_Context)
                 {
-                    name = ((XP.Interface_Context)ctx).Id?.GetText() + "." + name;
+                    name = ((XP.Interface_Context)ctx).Id.GetText() + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.PropertyContext)
@@ -279,7 +279,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (ctx is XP.Event_Context)
                 {
-                    name = ((XP.Event_Context)ctx).Id?.GetText() + "." + name;
+                    name = ((XP.Event_Context)ctx).Id.GetText() + "." + name;
                 }
                 ctx = ctx.Parent;
             }
@@ -509,16 +509,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(bool inInterface = false)
+        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(bool inInterface , bool inStructure )
         {
             var rb = _pool.Allocate();
             if (!inInterface)
             {
                 rb.FixDefaultVisibility();
-                if (_options.VirtualInstanceMethods)
-                    rb.FixDefaultVirtual();
-                else
-                    rb.FixDefaultMethod();
+                // structures do not get virtual or override modifiers
+                if (! inStructure)
+                {
+                    if (_options.VirtualInstanceMethods)
+                        rb.FixDefaultVirtual();
+                    else 
+                        rb.FixDefaultMethod();
+                }
             }
             var r = rb.ToList<SyntaxToken>();
             _pool.Free(rb);
@@ -2557,7 +2561,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
             }
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface() || context.isInStructure());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface() , context.isInStructure());
             //if (context.ExplicitIface != null)
             {
                 var m = _pool.Allocate();
@@ -2665,7 +2669,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.Put(_syntaxFactory.EventFieldDeclaration(
                         attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface() || context.isInStructure()),
+                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface() ,  context.isInStructure()),
                         eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                         declaration: _syntaxFactory.VariableDeclaration(
                             context.Type?.Get<TypeSyntax>() ?? MissingType(),
@@ -2882,7 +2886,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.AddError(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
             }
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface || context.isInStructure());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface , context.isInStructure());
             context.SetSequencePoint(context.end);
             if (context.ExplicitIface != null)
             {
@@ -3332,7 +3336,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface || context.isInStructure());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface , context.isInStructure());
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;

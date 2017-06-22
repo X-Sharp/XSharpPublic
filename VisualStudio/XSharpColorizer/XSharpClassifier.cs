@@ -289,7 +289,7 @@ namespace XSharpColorizer
                     else if (XSharpLexer.IsKeyword(tokenType))
                     {
                         // new keywords
-                        if (tokenType >= XSharpLexer.ABSTRACT && tokenType <= XSharpLexer.YIELD)
+                        if (tokenType >= XSharpLexer.FIRST_POSITIONAL_KEYWORD && tokenType <= XSharpLexer.LAST_POSITIONAL_KEYWORD)
                         {
                             newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpIdentifierType));
                         }

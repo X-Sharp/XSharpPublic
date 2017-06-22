@@ -657,7 +657,7 @@ primary				: Key=SELF													#selfExpression
                     | LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
                     | AnonType=anonType											#anonTypeExpression		// { .id := expr [, .id := expr] }
                     | CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
-					| AnoExpr=anonymousMethodExpression 						#codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
+                    | AnoExpr=anonymousMethodExpression 						#codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
                     | Query=linqQuery											#queryExpression        // LINQ
                     | Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY					#delegateCtorCall		// delegate{ obj , @func() }

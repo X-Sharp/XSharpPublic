@@ -9,20 +9,19 @@
     <header>
       <para styleclass="Heading1">X# (XSharp)</para>
     </header>
-    <para styleclass="Heading1 Black" style="text-align:center;">Welcome to X# (XSharp) version <var>&lt;%VERSION%&gt;</var></para>
+    <para styleclass="Heading1 Black" style="text-align:center;">Welcome to X# (XSharp) <var>&lt;%TXTVERSION%&gt;</var></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.jpg" scale="100.00%" styleclass="Image Caption"></image></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.jpg" scale="73.98%" width="436" height="343" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory">Click here for the version history</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues">Click here for the list of known issues</link></para>
     <para styleclass="Normal">X# is an open source development language for .NET, based on the xBase language.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">It comes in different flavors, such as Core, Visual Objects, Vulcan.NET, xBase++, Harbour, Foxpro and more.</para>
-    <para styleclass="Normal">The current version of X# supports the <text style="font-weight:bold;">Core</text> dialect as well as the <text style="font-weight:bold;">VO </text>and <text style="font-weight:bold;">Vulcan </text>dialect</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The current version of X# supports the <text style="font-weight:bold;">Core</text> dialect as well as the <text style="font-weight:bold;">VO, Vulcan and Harbour </text>dialect<br/>A separate X# runtime is not available yet. </para>
+    <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.05; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="Normal">This documentation is also still under development. Most sections in the documentation are incomplete. We have included it so you can see a list of the supported compiler options as well as the version history.</para>
-    <para styleclass="Normal">More information will follow </para>
+    <para styleclass="Normal">This documentation is still under development. Some sections in the documentation are incomplete. </para>
   </body>
 </topic>

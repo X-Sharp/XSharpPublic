@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Disclaimer</title>
   <body>
     <header>
       <para styleclass="Heading1">Disclaimer</para>
     </header>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.05; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#ff0000;">The VO &amp; Vulcan dialect is now supported in combination with the Vulcan runtime.</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#ff0000;">We have successfully compiled both the Vulcan SDK and applications that depend on this SDK.</text><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues" styleclass="" style="font-family:Calibri; font-size:11pt; color:#ff0000;">Click here for the complete (but short) list of known issues</link></para>
+    <para styleclass="Body Text">The VO &amp; Vulcan dialect is &#160;supported in combination with the Vulcan runtime.<br/>We have successfully compiled both the Vulcan SDK and applications that depend on this SDK.<br/>The Vulcan Runtime is part of the Vulcan.NET product. <br/>You can download a free trial version of Vulcan.NET from <link displaytype="text" defaultstyle="true" type="weblink" href="http://www.govulcan.net" target="_blank">www.govulcan.net</link> and use the runtime that comes with this trial version with X#. <br/>The runtime in the trial version does not have any technical restrictions<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues">Click here for the complete (but short) list of known issues</link></para>
   </body>
 </topic>

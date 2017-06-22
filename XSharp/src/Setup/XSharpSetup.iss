@@ -1,6 +1,6 @@
 
-;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
 
 ;
 ; preprocess the help cab files
@@ -17,14 +17,14 @@
 
 ; version info and similar stuff.
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.9.9.1"
-#define ProdBuild       "XSharp RC1"
+#define ProdVer         "XSharp 0.9.9.2"
+#define ProdBuild       "XSharp RC2"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
-#define VIVersion       "0.9.9.1"
-#define VITextVersion   "0.9.9.1 (RC1)"                                                                                            
+#define VIVersion       "0.9.9.2"
+#define VITextVersion   "0.9.9.2 (RC2)"                                                                                            
 #define TouchDate       "2017-06-21"
 #define TouchTime       "09:09:01"
 #define InstallPath     "XSharpPath"

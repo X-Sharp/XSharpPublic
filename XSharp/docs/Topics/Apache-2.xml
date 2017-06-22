@@ -6,8 +6,8 @@
     <header>
       <para styleclass="Heading1">Apache 2</para>
     </header>
-    <para styleclass="Normal">Both the source code to the public elements of X# and to Roslyn are published under the Apache 2.0 license.</para>
-    <para styleclass="Normal">You can find the public source code on Github in the XSharpPublic repository : <link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://github.com/X-Sharp/XSharpPublic</link><br/>The full text of this license is:</para>
+    <para styleclass="Body Text">Both the source code to the public elements of X# and to Roslyn are published under the Apache 2.0 license.</para>
+    <para styleclass="Body Text">You can find the public source code on Github in the XSharpPublic repository : <link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://github.com/X-Sharp/XSharpPublic</link><br/>The full text of this license is:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">&#32;<text style="font-size:10pt;">Apache License</text></para>

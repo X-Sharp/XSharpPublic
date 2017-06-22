@@ -31,10 +31,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">.AND.</para>
+          <para styleclass="Body Text">.AND.</para>
         </td>
         <td>
-          <para styleclass="Code Example">x .AND. y</para>
+          <para styleclass="Body Text">x .AND. y</para>
         </td>
         <td>
           <para styleclass="Body Text">Returns TRUE when both operands are TRUE, otherwise FALSE</para>
@@ -42,10 +42,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">.OR.</para>
+          <para styleclass="Body Text">.OR.</para>
         </td>
         <td>
-          <para styleclass="Code Example">x .OR. y</para>
+          <para styleclass="Body Text">x .OR. y</para>
         </td>
         <td>
           <para styleclass="Body Text">Returns TRUE with one or both operands are TRUE. Only when both operands are FALSE then FALSE is returned</para>
@@ -53,10 +53,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">.NOT. or !</para>
+          <para styleclass="Body Text">.NOT. or !</para>
         </td>
         <td>
-          <para styleclass="Code Example">.NOT. x</para>
+          <para styleclass="Body Text">.NOT. x</para>
         </td>
         <td>
           <para styleclass="Body Text">Reverses TRUE and FALSE.</para>

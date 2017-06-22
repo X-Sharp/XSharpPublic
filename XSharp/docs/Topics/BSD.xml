@@ -6,8 +6,8 @@
     <header>
       <para styleclass="Heading1">BSD</para>
     </header>
-    <para styleclass="Normal">The Antlr source that we have used in our product is published under the BSD license. The full text of this license is:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">The Antlr source that we have used in our product is published under the BSD license. The full text of this license is:</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Code Example"><text style="font-size:10pt;">[The &quot;BSD license&quot;]</text></para>
     <para styleclass="Code Example"><text style="font-size:10pt;">Copyright (c) 2015 Terence Parr, Sam Harwell</text></para>
     <para styleclass="Code Example"><text style="font-size:10pt;">All rights reserved.</text></para>

@@ -1,38 +1,38 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Dialects</title>
   <body>
     <header>
       <para styleclass="Heading1">Dialects</para>
     </header>
-    <para styleclass="Normal">The X# compiler can run in different dialects. The table below shows the differences between these dialects.<br/>You can use the /dialect compiler option to select the dialect that you want to use. The <text style="font-weight:bold;">Core dialect</text><text style="font-weight:normal;"> is default.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="40" colcount="5" style="width:auto;">
-      <tr style="vertical-align:top">
-        <td>
+    <para styleclass="Body Text">The X# compiler can run in different dialects. The table below shows the differences between these dialects.<br/>You can use the /dialect compiler option to select the dialect that you want to use. The Core dialect is default.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="40" colcount="5" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <thead style="vertical-align:top">
+        <td style="width:50%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
         </td>
         <td>
-          <para styleclass="Normal" style="text-indent:1px; margin-right:0px; margin-left:38px; tabstops:none;"><text style="font-weight:bold;">Core dialect</text></para>
+          <para styleclass="Normal" style="text-align:center; text-indent:1px; margin-right:0px; margin-left:38px; tabstops:none;"><text style="font-weight:bold;">Core </text></para>
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">VO Dialect 1,2</text></para>
+        <td style="width:12%;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO 1,2</text></para>
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Vulcan dialect 1,2</text></para>
+        <td style="width:12%;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Vulcan 1,2</text></para>
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Harbour 1,2</text></para>
+        <td style="width:12%;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Harbour 1,2</text></para>
         </td>
-      </tr>
+      </thead>
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">4 Letter </text><text style="font-weight:normal;">abbreviations of keywords</text></para>
           <para styleclass="Normal"><text style="font-weight:normal;">(FUNC, WHIL etc). </text></para>
         </td>
         <td>
-          <para styleclass="Normal">No</para>
+          <para styleclass="Body Text">No</para>
         </td>
         <td>
           <para styleclass="Normal">Yes, 11</para>
@@ -480,7 +480,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"> &#160;PCount(), _GetMParam(), _GetFParam()</para>
+          <para styleclass="Normal"> PCount(), _GetMParam(), _GetFParam()</para>
         </td>
         <td>
           <para styleclass="Normal">No</para>
@@ -497,7 +497,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"> &#160;SLen()</para>
+          <para styleclass="Normal"> SLen()</para>
         </td>
         <td>
           <para styleclass="Normal">No</para>
@@ -531,7 +531,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"> &#160;AltD()</para>
+          <para styleclass="Normal"> AltD()</para>
         </td>
         <td>
           <para styleclass="Normal">No</para>
@@ -548,7 +548,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"> &#160;PCall, PCallNative</para>
+          <para styleclass="Normal"> PCall, PCallNative</para>
         </td>
         <td>
           <para styleclass="Normal">No</para>
@@ -565,7 +565,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"> &#160;CCall, CCallNative</para>
+          <para styleclass="Normal"> CCall, CCallNative</para>
         </td>
         <td>
           <para styleclass="Normal">No</para>
@@ -601,7 +601,7 @@
           <para styleclass="Normal">Functions<br/>X$&lt;ModuleName&gt;$Functions for static functions and globals</para>
         </td>
         <td colspan="2">
-          <para styleclass="Normal">&lt;AssemblyName&gt;.Functions (DLLs) <br/>&lt;AssemblyName&gt;.Exe.Functions &#160;(EXEs)<br/>&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions for static functions and globals</para>
+          <para styleclass="Normal">&lt;AssemblyName&gt;.Functions (DLLs) <br/>&lt;AssemblyName&gt;.Exe.Functions (EXEs)<br/>&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions for static functions and globals</para>
         </td>
         <td>
         </td>
@@ -667,19 +667,19 @@
       </tr>
     </table></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Arial; font-size:10pt; color:#000000;">
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Requires VulcanRT.DLL</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Requires VulcanRTFuncs.DLL</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Missing types get translated to USUAL. With the new /vo15 compiler option you can tell the compiler that you do not want to allow missing types</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Only supported inside functions and methods with Clipper Calling convention</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">The Vulcan runtime does not have a SLen() function. The compiler translates this to accessing the Length property of the string</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">This gets translated to </text><br/><tab /><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">IF System.Diagnostics.Debugger.Attached</text><br/><tab /><tab /><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">System.Diagnostics.Debugger.Break()</text><br/><tab /><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">ENDIF</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">In the core dialect each of the expressions is casted to OBJECT. In the other dialects the expression is cast to USUAL when VulcanRTFuncs is included. Otherwise it is casted to OBJECT.</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:</text><br/><text styleclass="Code Example" style="font-size:10pt;">{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</text><br/><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">Typed literal arrays are prefixed with &lt;Type&gt; like this:</text><br/><text styleclass="Code Example" style="font-size:10pt;">&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</text><br/><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">This becomes a literal string array</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit)] attribute on the structure and the [FieldOffSet()] attribute on each field to explicitly define the location of the fields. </text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal" style="font-weight:normal;">Only for VO compatible keywords, not for keywords introduced in Vulcan or XSharp.</text></li>
-      <li styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal" style="font-weight:normal;">The true and false expressions for an IIF() are optional in Harbour</text></li>
+    <list id="8" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Segoe UI Light&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="List">Requires VulcanRT.DLL</li>
+      <li styleclass="List">Requires VulcanRTFuncs.DLL</li>
+      <li styleclass="List">Missing types get translated to USUAL. With the new /vo15 compiler option you can tell the compiler that you do not want to allow missing types</li>
+      <li styleclass="List">Only supported inside functions and methods with Clipper Calling convention</li>
+      <li styleclass="List">The Vulcan runtime does not have a SLen() function. The compiler translates this to accessing the Length property of the string</li>
+      <li styleclass="List">This gets translated to <br/><tab />IF System.Diagnostics.Debugger.Attached<br/><tab /><tab />System.Diagnostics.Debugger.Break()<br/><tab />ENDIF</li>
+      <li styleclass="List">In the core dialect each of the expressions is casted to OBJECT. In the other dialects the expression is cast to USUAL when VulcanRTFuncs is included. Otherwise it is casted to OBJECT.</li>
+      <li styleclass="List">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:<br/>{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>Typed literal arrays are prefixed with &lt;Type&gt; like this:<br/>&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>This becomes a literal string array</li>
+      <li styleclass="List">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</li>
+      <li styleclass="List">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit)] attribute on the structure and the [FieldOffSet()] attribute on each field to explicitly define the location of the fields. </li>
+      <li styleclass="List">Only for VO compatible keywords, not for keywords introduced in Vulcan or XSharp.</li>
+      <li styleclass="List">The true and false expressions for an IIF() are optional in Harbour</li>
     </list>
   </body>
 </topic>

@@ -43,6 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(options.AreValid());
 
             // Try to look for functions first
+			/*
             if (Compilation.Options.IsDialectVO)
             {
                 // check for function calls method calls outside the current class
@@ -65,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-
+			*/
             Binder binder = null;
             for (var scope = this; scope != null && !result.IsMultiViable; scope = scope.Next)
             {

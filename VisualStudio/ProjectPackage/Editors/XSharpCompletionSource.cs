@@ -2214,8 +2214,8 @@ namespace XSharpLanguage
                         if (XSharpLexer.IsKeyword(triggerToken.Type))
                         {
                             // new positional keywords should not abort
-                            if (triggerToken.Type < XSharpLexer.ABSTRACT 
-                                || triggerToken.Type > XSharpLexer.YIELD)
+                            if (triggerToken.Type < XSharpLexer.FIRST_POSITIONAL_KEYWORD 
+                                || triggerToken.Type > XSharpLexer.LAST_POSITIONAL_KEYWORD)
                             {
                                 token = null;
                                 triggerToken = null;

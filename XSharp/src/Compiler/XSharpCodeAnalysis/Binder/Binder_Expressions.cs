@@ -663,7 +663,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             add = !noMethod && !onlyDef;
                             break;
                         default:
-                            add = true;
+                            //add = true;
                             break;
                     }
                     if (add)

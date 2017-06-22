@@ -36,10 +36,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">:=</para>
+          <para styleclass="Body Text">:=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x := y</para>
+          <para styleclass="Body Text">x := y</para>
         </td>
         <td>
           <para styleclass="Body Text">Store the value of the second operand in the object specified by the first operand (simple assignment).</para>
@@ -47,10 +47,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">+=</para>
+          <para styleclass="Body Text">+=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x += y</para>
+          <para styleclass="Body Text">x += y</para>
         </td>
         <td>
           <para styleclass="Body Text">Add the value of the second operand to the value of the first operand; store the result in the object specified by the first operand</para>
@@ -58,10 +58,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">-=</para>
+          <para styleclass="Body Text">-=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x -= y</para>
+          <para styleclass="Body Text">x -= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Subtract the value of the second operand from the value of the first operand; store the result in the object specified by the first operand.</para>
@@ -69,10 +69,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">/=</para>
+          <para styleclass="Body Text">/=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x /= y</para>
+          <para styleclass="Body Text">x /= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Divide the value of the first operand by the value of the second operand; store the result in the object specified by the first operand</para>
@@ -80,10 +80,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">%=</para>
+          <para styleclass="Body Text">%=</para>
         </td>
         <td>
-          <para styleclass="Normal">x %= y</para>
+          <para styleclass="Body Text">x %= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Take modulus of the first operand specified by the value of the second operand; store the result in the object specified by the first operand.</para>
@@ -91,10 +91,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">*=</para>
+          <para styleclass="Body Text">*=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x *= y</para>
+          <para styleclass="Body Text">x *= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Multiply the value of the first operand by the value of the second operand; store the result in the object specified by the first operand.</para>
@@ -102,10 +102,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">^= or **=</para>
+          <para styleclass="Body Text">^= or **=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x ^= y</para>
+          <para styleclass="Body Text">x ^= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Calculate the exponent of the first operand and the second operand ; store the result in the object specified by the first operand.<br/><text style="font-weight:bold;">Please note that in languages such as C# the ^= operator performs a Bitwise XOR</text></para>
@@ -113,10 +113,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">|=<br/></para>
+          <para styleclass="Body Text">|=<br/></para>
         </td>
         <td>
-          <para styleclass="Code Example">x |= y</para>
+          <para styleclass="Body Text">x |= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Obtain the bitwise inclusive OR of the first and second operands; store the result in the object specified by the first operand.</para>
@@ -124,10 +124,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">&amp;= </para>
+          <para styleclass="Body Text">&amp;= </para>
         </td>
         <td>
-          <para styleclass="Code Example">x &amp;= y</para>
+          <para styleclass="Body Text">x &amp;= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Obtain the bitwise AND of the first and second operands; store the result in the object specified by the first operand.</para>
@@ -135,10 +135,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">~=</para>
+          <para styleclass="Body Text">~=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x ~= y</para>
+          <para styleclass="Body Text">x ~= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Obtain the bitwise exclusive OR of the first and second operands; store the result in the object specified by the first operand.</para>
@@ -146,10 +146,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">&lt;&lt;=</para>
+          <para styleclass="Body Text">&lt;&lt;=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x &lt;&lt;= y</para>
+          <para styleclass="Body Text">x &lt;&lt;= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Shift the value of the first operand left the number of bits specified by the value of the second operand; store the result in the object specified by the first operand.</para>
@@ -157,10 +157,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Code Example">&gt;&gt;=</para>
+          <para styleclass="Body Text">&gt;&gt;=</para>
         </td>
         <td>
-          <para styleclass="Code Example">x &gt;&gt;= y</para>
+          <para styleclass="Body Text">x &gt;&gt;= y</para>
         </td>
         <td>
           <para styleclass="Body Text">Shift the value of the first operand right the number of bits specified by the value of the second operand; store the result in the object specified by the first operand.</para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Primary Expressions</title>
   <body>
     <header>
@@ -28,27 +28,10 @@
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Self</para>
+          <para styleclass="Body Text">Self</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">SELF</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Super</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">SUPER</text></para>
+          <para styleclass="Body Text">SELF</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -62,44 +45,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">LiteralArray</para>
+          <para styleclass="Body Text">Super</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">{......}</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Anonymous Type</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">CLASS { .... }</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Codeblocks">CodeBlock</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
+          <para styleclass="Body Text">SUPER</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -113,44 +62,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ">LINQ query</link></para>
+          <para styleclass="Body Text">LiteralArray</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">DelegateConstructor call</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">datatype LCURLY expression COMMA, @ Identifier LPAREN RPAREN RCURLY</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Constructor call</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">datatype LCURLY argumentlist RCURLY</text></para>
+          <para styleclass="Body Text">{......}</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -164,67 +79,16 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Constructor call with initializer</para>
+          <para styleclass="Body Text">Anonymous Type</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">datatype LCURLY RCURLY LCURLY initializer RCURLY</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Checked </para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">CHECKED LPAREN expression RPAREN</text></para>
+          <para styleclass="Body Text">CLASS { .... }</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Unchecked </para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">UNCHECKED LPAREN expression RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typeof</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">(_typeof | TYPEOF) LPAREN expression RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -232,61 +96,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Sizeof</para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Codeblocks">CodeBlock</link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">(_sizeof | SIZEOF) LPAREN expression RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Nameof</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">(NAMEOF) LPAREN identifier RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Default</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">DEFAULT LPAREN expression RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Name</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">identifier</text></para>
+          <para styleclass="Body Text"></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -300,10 +113,44 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Conversion</para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ">LINQ query</link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">nativetype LPAREN expression RPAREN</text></para>
+          <para styleclass="Body Text"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">DelegateConstructor call</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">datatype LCURLY expression COMMA, @ Identifier LPAREN RPAREN RCURLY</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Constructor call</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">datatype LCURLY argumentlist RCURLY</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -317,10 +164,129 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">XBase Conversion</para>
+          <para styleclass="Body Text">Constructor call with initializer</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">xbasetype LPAREN expression RPAREN</text></para>
+          <para styleclass="Body Text">datatype LCURLY RCURLY LCURLY initializer RCURLY</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Checked </para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">CHECKED LPAREN expression RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Unchecked </para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">UNCHECKED LPAREN expression RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Typeof</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(_typeof | TYPEOF) LPAREN expression RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Sizeof</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(_sizeof | SIZEOF) LPAREN expression RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Nameof</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(NAMEOF) LPAREN identifier RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Default</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">DEFAULT LPAREN expression RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Name</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">identifier</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -334,27 +300,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">VOCast</para>
+          <para styleclass="Body Text">Conversion</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">datatype LPAREN _CAST COMMA exprsssion RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">VoCastPtr</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">PTR LPAREN datatype COMMA expression RPAREN</text></para>
+          <para styleclass="Body Text">nativetype LPAREN expression RPAREN</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -368,27 +317,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">VOTypeName</para>
+          <para styleclass="Body Text">XBase Conversion</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">typeName</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">IIF expression</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">(IIF|IF) LPAREN expression COMMA expression COMMA expression RPAREN</text></para>
+          <para styleclass="Body Text">xbasetype LPAREN expression RPAREN</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -402,27 +334,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">VOAnd</para>
+          <para styleclass="Body Text">VOCast</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">_AND LPAREN expressionlist RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">VOOr</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">_OR LPAREN expressionlist RPAREN</text></para>
+          <para styleclass="Body Text">datatype LPAREN _CAST COMMA exprsssion RPAREN</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -436,27 +351,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">AliasedField</para>
+          <para styleclass="Body Text">VoCastPtr</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">FIELD -&gt; identifier</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">| identifier -&gt; identifier</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Aliased Expression</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">FIELD -&gt; expression</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">| expression -&gt; expression</text></para>
+          <para styleclass="Body Text">PTR LPAREN datatype COMMA expression RPAREN</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -470,27 +368,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">MacroExpr</para>
+          <para styleclass="Body Text">VOTypeName</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">AMPERSAND LPAREN expression RPAREN</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">MacroVar</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">AMPERSAND identifier</text></para>
+          <para styleclass="Body Text">typeName</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -504,10 +385,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Parenthesized </para>
+          <para styleclass="Body Text">IIF expression</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">LPAREN expression RPAREN</text></para>
+          <para styleclass="Body Text">(IIF|IF) LPAREN expression COMMA expression COMMA expression RPAREN</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -521,10 +402,129 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">ArgList</para>
+          <para styleclass="Body Text">VOAnd</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">_ARGLIST</text></para>
+          <para styleclass="Body Text">_AND LPAREN expressionlist RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">VOOr</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">_OR LPAREN expressionlist RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">AliasedField</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">FIELD -&gt; identifier<br/>| identifier -&gt; identifier</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Aliased Expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">FIELD -&gt; expression<br/>| expression -&gt; expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">MacroExpr</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">AMPERSAND LPAREN expression RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">MacroVar</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">AMPERSAND identifier</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Parenthesized </para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">LPAREN expression RPAREN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">ArgList</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">_ARGLIST</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>

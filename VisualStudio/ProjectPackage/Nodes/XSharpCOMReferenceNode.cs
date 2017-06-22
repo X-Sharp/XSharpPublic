@@ -195,6 +195,7 @@ namespace XSharp.Project
     internal class XSharpOAComReference : Microsoft.VisualStudio.Project.Automation.OAComReference
     {
         private Assembly assembly = null;
+        private string assemblyPath = null;
         private bool tryLoad = false;
 
         internal XSharpOAComReference(ComReferenceNode comReference) : base(comReference)
@@ -231,6 +232,7 @@ namespace XSharp.Project
                         string path = base.Path;
                         tryLoad = true;
                         assembly = XSharpModel.AssemblyInfo.LoadAssemblyFromFile(path);
+                        assemblyPath = path;
                     }
                     catch (Exception)
                     {
@@ -265,7 +267,7 @@ namespace XSharp.Project
                     if (assembly == null)
                         LoadAssembly();
                     if (assembly != null)
-                        return assembly.Location;
+                        return assemblyPath;
                 }
                 catch
                 {

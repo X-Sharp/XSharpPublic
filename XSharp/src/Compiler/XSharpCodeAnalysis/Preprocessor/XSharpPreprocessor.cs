@@ -1365,7 +1365,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var token = line[i];
                     IList<XSharpToken> deflist = null;
-                    if (isDefineAllowed(line, i) && symbolDefines.TryGetValue(token.Text, out deflist))
+                    if (isDefineAllowed(line, i) && token.Text != null && symbolDefines.TryGetValue(token.Text, out deflist))
                     {
                         if (tempResult == null)
                         {

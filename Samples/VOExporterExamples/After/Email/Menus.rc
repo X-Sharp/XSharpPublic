@@ -1,0 +1,48 @@
+ EmailBrowserContextMenu MENU
+Begin
+	POPUP "Click"
+	BEGIN
+		MENUITEM "&Read This", 27398
+		MENUITEM "&Forward", 27399
+		MENUITEM "&Reply To", 27400
+		MENUITEM "Toggle &Read Status", 27401
+		MENUITEM SEPARATOR
+		MENUITEM "&Delete", 27403
+		MENUITEM "&Save As....", 27404
+		MENUITEM SEPARATOR
+		MENUITEM "Properties", 27406
+	END
+End
+ 
+
+ ComposeEmailContextmenu MENU
+Begin
+	POPUP "Click"
+	BEGIN
+		MENUITEM "&Add...", 10223
+		MENUITEM "&Delete...", 10224
+		MENUITEM "&Open...", 10225
+		MENUITEM "Sa&ve...", 10226
+		MENUITEM "&Select All...", 10227
+	END
+End
+ 
+ ReplyMenu MENU
+Begin
+	POPUP "Reply"
+	BEGIN
+		MENUITEM "&Reply to sender", 26766
+		MENUITEM "Reply to &all", 26767
+	END
+End
+ 
+ SaveAttachmentsContextMenu MENU
+Begin
+	POPUP "Click"
+	BEGIN
+		MENUITEM "&Open...", 27417
+		MENUITEM "&Save...", 27418
+		MENUITEM "Select &All", 27419
+	END
+End
+ 

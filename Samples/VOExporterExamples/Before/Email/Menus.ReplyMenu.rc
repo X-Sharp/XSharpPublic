@@ -1,0 +1,9 @@
+ ReplyMenu MENU
+Begin
+	POPUP "Reply"
+	BEGIN
+		MENUITEM "&Reply to sender", 26766
+		MENUITEM "Reply to &all", 26767
+	END
+End
+ 

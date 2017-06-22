@@ -8,21 +8,25 @@
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="Heading2">Changes in RC 1</para>
+    <para styleclass="Normal"><text style="font-weight:bold;">New Features</text></para>
+    <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">We have added support for ENUM Basetypes (ENUM Foo AS WORD)</li>
+      <li styleclass="Normal">We have added a separate syntax for Lambda Expressions</li>
+      <li styleclass="Normal">We have added support for Anonymous Method Expressions</li>
+      <li styleclass="Normal">Typed local variables can now also be used for PCALL() calls</li>
+      <li styleclass="Normal">Methods with the ExtensionAttribute and Parameters with the ParamArrayAttribute attributes now compile correctly, but with a warning</li>
+    </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold;">Compiler</text></para>
     <list id="79" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed a problem with a late bound assign of a literal codeblock</li>
       <li styleclass="Normal">Resolved several name conflicts </li>
-      <li styleclass="Normal">Typed local variables can now also be used for PCALL() calls</li>
       <li styleclass="Normal">Improved several of the error messages</li>
-      <li styleclass="Normal">Methods with the ExtensionAttribute and Parameters with the ParamArrayAttribute attributes now compile correctly, but with a warning</li>
       <li styleclass="Normal">Fixed compilation problem for Properties with only a SET accessor</li>
       <li styleclass="Normal">Fixed a crash in a switch block with an if .. endif statement</li>
-      <li styleclass="Normal">Added support for ENUM Basetypes (ENUM Foo AS WORD)</li>
       <li styleclass="Normal">Fix problem with virtual instance methods and structures</li>
       <li styleclass="Normal">Fixed name conflict foreach variables used in Array Literals</li>
       <li styleclass="Normal">Changed resolution for Functions and static methods with the same name. <br/>In the VO/Vulcan dialect functions take precedence over static methods. If you want to call the static method then then you need to prefix the method call with the classname.</li>
-      <li styleclass="Normal">We have added a separate syntax for Lambda Expressions</li>
-      <li styleclass="Normal">We have added support for Anonymous Method Expressions</li>
       <li styleclass="Normal">There is a separate topic in this documentation now that describes the syntax differences and similarities between Codeblocks, Lambda Expressions and Anonymous Method Expressions.</li>
       <li styleclass="Normal">Fixed incorrect error message for Start() function with wrong prototype.</li>
     </list>
@@ -784,7 +788,7 @@
     <list id="71" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Several errors have been demoted to warnings to be more compatible with VO/Vulcan</li>
       <li styleclass="Normal">Added support for Comment lines that start with an asterisk</li>
-      <li styleclass="Normal">Added support for the DEFINE statement. For now the DEFINE statement MUST have a type <br/><text styleclass="T_Code">DEFINE WM_USER := 0x0400 AS DWORD</text></li>
+      <li styleclass="Normal">Added support for the DEFINE statement. For now the DEFINE statement MUST have a type <br/><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">DEFINE WM_USER := 0x0400 AS DWORD</text></li>
       <li styleclass="Normal">Fixed problem with Single Line Properties with GET and SET reversed</li>
       <li styleclass="Normal">Several fixes for Virtual and Non virtual methods in combination with the /VO3 compatibility option</li>
     </list>

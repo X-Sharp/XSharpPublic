@@ -1,0 +1,10 @@
+ SaveAttachmentsContextMenu MENU
+Begin
+	POPUP "Click"
+	BEGIN
+		MENUITEM "&Open...", 27417
+		MENUITEM "&Save...", 27418
+		MENUITEM "Select &All", 27419
+	END
+End
+ 

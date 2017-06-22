@@ -1,0 +1,17 @@
+ EmailBrowserContextMenu MENU
+Begin
+	POPUP "Click"
+	BEGIN
+		MENUITEM "&Read This", 27398
+		MENUITEM "&Forward", 27399
+		MENUITEM "&Reply To", 27400
+		MENUITEM "Toggle &Read Status", 27401
+		MENUITEM SEPARATOR
+		MENUITEM "&Delete", 27403
+		MENUITEM "&Save As....", 27404
+		MENUITEM SEPARATOR
+		MENUITEM "Properties", 27406
+	END
+End
+ 
+

@@ -1,0 +1,7 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{4F9A8705-6579-4746-822D-4DCAAF627452}") = "Explorer", "Explorer\\Explorer.xsproj", "{68B268CA-0F94-486F-A997-011B64E57AD0}"
+EndProject
+

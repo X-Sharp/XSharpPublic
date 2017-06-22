@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Pizza", "Pizza\Pizza.xsproj", "{586A9E7D-64DE-4557-831D-4F228E16B010}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{586A9E7D-64DE-4557-831D-4F228E16B010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{586A9E7D-64DE-4557-831D-4F228E16B010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{586A9E7D-64DE-4557-831D-4F228E16B010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{586A9E7D-64DE-4557-831D-4F228E16B010}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

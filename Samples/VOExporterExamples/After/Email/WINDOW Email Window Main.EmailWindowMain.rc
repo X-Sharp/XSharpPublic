@@ -1,0 +1,11 @@
+ EmailWindowMain DIALOGEX  45, 41, 419, 222
+STYLE	1073741824
+FONT	8, "MS Shell Dlg"
+BEGIN
+	CONTROL	"Fixed Text", 100, "Static", 1073741824, 0, 0, 420, 27
+	CONTROL	"", 101, "SysListView32", 1|8|1073741824, 128, 27, 290, 194
+	CONTROL	"", 102, "SysTreeView32", 1|2|4|32|1073741824, 0, 39, 128, 182
+	CONTROL	"EMail - Folders", 103, "Static", 512|1073741824, 0, 27, 128, 12
+END
+
+

@@ -255,31 +255,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (ctx is XP.Class_Context)
                 {
-                    name = ((XP.Class_Context)ctx).Id.GetText() + "." + name;
+                    name = ((XP.Class_Context)ctx).Id?.GetText() + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.Structure_Context)
                 {
-                    name = ((XP.Structure_Context)ctx).Id.GetText() + "." + name;
+                    name = ((XP.Structure_Context)ctx).Id?.GetText() + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.Namespace_Context)
                 {
-                    name = ((XP.Namespace_Context)ctx).Name.GetText() + "." + name;
+                    name = ((XP.Namespace_Context)ctx).Name?.GetText() + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.Interface_Context)
                 {
-                    name = ((XP.Interface_Context)ctx).Id.GetText() + "." + name;
+                    name = ((XP.Interface_Context)ctx).Id?.GetText() + "." + name;
                     iNest++;
                 }
                 else if (ctx is XP.PropertyContext)
                 {
-                    name = ((XP.PropertyContext)ctx).Id.GetText() + "." + name;
+                    name = ((XP.PropertyContext)ctx).Id?.GetText() + "." + name;
                 }
                 else if (ctx is XP.Event_Context)
                 {
-                    name = ((XP.Event_Context)ctx).Id.GetText() + "." + name;
+                    name = ((XP.Event_Context)ctx).Id?.GetText() + "." + name;
                 }
                 ctx = ctx.Parent;
             }

@@ -638,6 +638,32 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 || (parent is XSharpParser.Structure_Context);
         }
 
+        internal static bool IsRealCodeBlock([NotNull] this IXParseTree context )
+        {
+
+            if (context is XSharpParser.ArrayElementContext)
+                return ((XSharpParser.ArrayElementContext)context).Expr.IsRealCodeBlock();
+            if (context is XSharpParser.PrimaryExpressionContext)
+                return ((XSharpParser.PrimaryExpressionContext)context).Expr.IsRealCodeBlock();
+            if (context is XSharpParser.CodeblockExpressionContext)
+                return ((XSharpParser.CodeblockExpressionContext)context).CbExpr.IsRealCodeBlock();
+            if (context is XSharpParser.AliasedExprContext)
+                return true;
+            if (context is XSharpParser.AliasedFieldContext)
+                return true;
+            if (context is XSharpParser.CodeblockCodeContext)
+                return ((IXParseTree) context.Parent).IsRealCodeBlock();
+            if (context is XSharpParser.CodeblockContext)
+            {
+                var cbc = context as XSharpParser.CodeblockContext;
+                if (cbc.lambda != null)
+                    return false;
+                // when no => operator and no explicit parameters
+                // then this is a true codeblock
+                return cbc.LambdaParamList == null || cbc.LambdaParamList.ImplicitParams != null;
+            }
+            return false;
+        }
     }
 
 }

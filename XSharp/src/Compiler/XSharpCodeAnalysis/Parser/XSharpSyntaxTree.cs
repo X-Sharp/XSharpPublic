@@ -135,24 +135,7 @@ namespace Microsoft.CodeAnalysis
                 var n = XNode;
                 if (n != null)
                 {
-                    if (n is XSharpParser.PrimaryExpressionContext)
-                    {
-                        n = ((XSharpParser.PrimaryExpressionContext)n).Expr;
-                    }
-                    if (n is XSharpParser.CodeblockExpressionContext)
-                    {
-                        n = ((XSharpParser.CodeblockExpressionContext)n).CbExpr;
-                    }
-
-                    if (n is XSharpParser.CodeblockContext)
-                    {
-                        var cbc = (XSharpParser.CodeblockContext)n;
-                        if (cbc.lambda != null)
-                            return false;
-                        // when no => operator and no explicit parameters
-                        // then this is a true codeblock
-                        return cbc.LambdaParamList == null || cbc.LambdaParamList.ImplicitParams != null;
-                    }
+                    return n.IsRealCodeBlock();
                 }
                 return false;
             }

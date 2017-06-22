@@ -224,11 +224,13 @@ END INTERFACE
 CLASS xPorter
 	STATIC EXPORT Options AS xPorterOptions
 	STATIC EXPORT uiForm AS xPorterUI
+	
 
 	STATIC PROPERTY OverWriteProjectFiles AS LOGIC AUTO
 
-	STATIC PROTECT aSDKDefines AS Dictionary<STRING,STRING>
-	STATIC PROPERTY SDKDefines AS Dictionary<STRING,STRING> GET aSDKDefines
+	STATIC PROTECT _aFoundDefines := SortedList<STRING,STRING>{} AS SortedList<STRING,STRING>
+	STATIC PROTECT _aSDKDefines AS Dictionary<STRING,STRING>
+	STATIC PROPERTY SDKDefines AS Dictionary<STRING,STRING> GET _aSDKDefines
 	
 	STATIC CONSTRUCTOR()
 		
@@ -246,17 +248,21 @@ CLASS xPorter
 			oType := oAssembly:GetType("Functions")
 			LOCAL aFields AS FieldInfo[]
 			aFields := oType:GetFields()
-			aSDKDefines := Dictionary<STRING,STRING>{aFields:Length}
+			_aSDKDefines := Dictionary<STRING,STRING>{aFields:Length}
 			FOREACH oField AS FieldInfo IN aFields
 				IF (oField:FieldType == TypeOf(INT) .or. oField:FieldType == TypeOf(DWORD)).and. ;
-					.not. aSDKDefines:ContainsKey(oField:Name:ToUpper())
-					aSDKDefines:Add(oField:Name:ToUpper() , oField:GetValue(NULL):ToString())
+					.not. _aSDKDefines:ContainsKey(oField:Name:ToUpper())
+					_aSDKDefines:Add(oField:Name:ToUpper() , oField:GetValue(NULL):ToString())
 				END IF
 			NEXT
 		CATCH e AS Exception
 			MessageBox.Show(e:ToString())
 		END TRY
 		
+	STATIC METHOD Reset() AS VOID
+		_aFoundDefines:Clear()
+	RETURN
+
 	STATIC METHOD Message(cMessage AS STRING) AS VOID
 		xPorter.uiForm:SetProgressText(cMessage)
 	STATIC METHOD Message(cMessage AS STRING , cMessage2 AS STRING) AS VOID
@@ -272,6 +278,8 @@ CLASS xPorter
 			cName := cName:Substring(nIndex + 1)
 		END IF*/
 		
+		xPorter.Reset()
+		
 		LOCAL oProject AS VOProjectDescriptor
 		oProject := VOProjectDescriptor{cSolutionName , NewGuid()}
 		LOCAL oApp AS ApplicationDescriptor
@@ -284,12 +292,11 @@ CLASS xPorter
 	RETURN
 
 	STATIC METHOD xPort_SDK_Defines(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING , cAppName AS STRING) AS VOID
+		xPorter.Reset()
+		
 		Options:ExportOnlyDefines := TRUE
 		Options:IgnoreDuplicateDefines := TRUE
 		Options:DontGenerateEmptyFiles := TRUE
-		
-/*		LOCAL cName AS STRING
-		cName := "SDK_Defines"*/
 		
 		LOCAL oProject AS VOProjectDescriptor
 		oProject := VOProjectDescriptor{cSolutionName , NewGuid()}
@@ -311,7 +318,7 @@ CLASS xPorter
 	RETURN
 		
 	STATIC METHOD xPort_AppFromAef(cAefFile AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING , cAppName AS STRING) AS VOID
-		
+		xPorter.Reset()		
 		xPorter.Options:IgnoreDuplicateDefines := FALSE
 		
 		LOCAL oApp AS ApplicationDescriptor
@@ -327,10 +334,11 @@ CLASS xPorter
 	RETURN
 
 	STATIC METHOD xPort_AppsFromAefsInFolder(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING) AS VOID
+		xPorter.Reset()
+		xPorter.Options:IgnoreDuplicateDefines := FALSE
+
 		LOCAL aAefs AS STRING[]
 		aAefs := Directory.GetFiles(cSourceFolder , "*.aef")
-		
-		xPorter.Options:IgnoreDuplicateDefines := FALSE
 		
 		LOCAL oProject AS VOProjectDescriptor
 //		oProject := VOProjectDescriptor{DirectoryInfo{cSourceFolder}:Name , NewGuid()}
@@ -348,6 +356,10 @@ CLASS xPorter
 	RETURN
 
 	STATIC METHOD xPort_VOSDK(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING) AS VOID
+		xPorter.Reset()
+		xPorter.Options:IgnoreDuplicateDefines := TRUE
+		xPorter.Options:AdjustCallbackFunctions := TRUE
+
 		LOCAL oProject AS VOProjectDescriptor
 //		oProject := VOProjectDescriptor{"VOSDK_xported" , VOSDK_GUID_Solution}
 		oProject := VOProjectDescriptor{cSolutionName , VOSDK_GUID_Solution}
@@ -355,9 +367,6 @@ CLASS xPorter
 		LOCAL aSDK AS Dictionary<VOSDK_Library , ApplicationDescriptor>
 		aSDK := Create_VOSDK_Structure(oProject)
 
-		xPorter.Options:IgnoreDuplicateDefines := TRUE
-		xPorter.Options:AdjustCallbackFunctions := TRUE
-		
 		FOREACH IMPLIED oPair IN aSDK
 			oProject:AddApplication(oPair:Value)
 		NEXT
@@ -430,13 +439,12 @@ CLASS xPorter
 	} AS STRING[]
 
 	STATIC METHOD AllowEntity(oEntity AS EntityObject , oModule AS ModuleDescriptor) AS LOGIC
-		STATIC LOCAL aDefines := SortedList<STRING,STRING>{} AS SortedList<STRING,STRING>
 		IF xPorter.Options:IgnoreDuplicateDefines
 			IF oEntity:eType == EntityType._Define
-				IF aDefines:ContainsKey(oEntity:cName:ToUpper())
+				IF _aFoundDefines:ContainsKey(oEntity:cName:ToUpper())
 					RETURN FALSE
 				ELSE
-					aDefines:Add(oEntity:cName:ToUpper() , oEntity:cName)
+					_aFoundDefines:Add(oEntity:cName:ToUpper() , oEntity:cName)
 	//				RETURN TRUE
 				END IF
 			END IF
@@ -1486,8 +1494,13 @@ CLASS ModuleDescriptor
 			oCode:Combine(oDefines)
 		ELSE
 			oCode:Combine(oTextblocks)
+			IF .not. oDefines:IsEmpty()
+				oCode:AddLine("#region DEFINES")
+				oCode:Combine(oDefines)
+				oCode:AddLine("#endregion")
+				oCode:AddLine("")
+			END IF
 			oCode:Combine(oGlobals)
-			oCode:Combine(oDefines)
 			oCode:Combine(oClasses)
 			oCode:Combine(oFuncs)
 			oCode:Combine(oRest)
@@ -1867,7 +1880,11 @@ CLASS EntityDescriptor
 			IF lCommentEntity
 				oCode:AddLine("// " + cLine)
 			ELSE
-				oCode:AddLine(cLine)
+				IF SELF:_eType == EntityType._Define .and. String.IsNullOrWhiteSpace(cLine)
+					NOP
+				ELSE
+					oCode:AddLine(cLine)
+				END IF
 			END IF
 
 			IF lAddEndif

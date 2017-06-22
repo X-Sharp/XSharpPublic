@@ -10,9 +10,9 @@
 
 #define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetupRC1Fox"
+#define SetupExeName    "XSharpSetupRC2Fox"
 #else
-#define SetupExeName    "XSharpSetupRC1Public"
+#define SetupExeName    "XSharpSetupRC2Public"
 #endif
 
 ; version info and similar stuff.
@@ -25,8 +25,8 @@
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
 #define VIVersion       "0.9.9.2"
 #define VITextVersion   "0.9.9.2 (RC2)"                                                                                            
-#define TouchDate       "2017-06-21"
-#define TouchTime       "09:09:01"
+#define TouchDate       "2017-06-22"
+#define TouchTime       "09:09:02"
 #define InstallPath     "XSharpPath"
 
 
@@ -441,12 +441,19 @@ Components: vs2017; Source: "{#BinPFolder}XSharpVSIXLogo.png ";               De
 
 ; Examples
 Source: "{#ExamplesFolder}*.prg";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}SDK_Defines.dll";                   DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.rc";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.resx";                            DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.txt";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.vh";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.?h";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.sln";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.dbf";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.ntx";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
-Source: "{#ExamplesFolder}*.xsproj";                          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.xs*";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.vi*";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.ico";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Source: "{#ExamplesFolder}*.bmp";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Source: "{#ExamplesFolder}*.cur";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 
 ; Scripting
 Source: "{#ScriptFolder}*.*";                                 DestDir: "{commondocs}\XSharp\Scripting";    Flags: recursesubdirs {#StdFlags};
@@ -560,6 +567,10 @@ Components: vs2017;           Root: HKCR; Subkey: "XSharp.headerfile\shell\open\
 [Ini]
 Components: vs2015; Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; 
 Components: vs2017; Filename: "{code:Getvs2017IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; 
+
+Filename: "{app}\VOXPorter\VoXporter.Ini";  Section:"General"; Key: "NOWARNINGSCREEN"; String: "0" ;
+Filename: "{app}\VOXPorter\VoXporter.Ini";  Section:"General"; Key: "SDKDEFINESDLL";   String: "{app}\VOXPorter\SDK_DEFINES.dll" ;
+
 
 [Run]
 Filename: "{app}\Tools\RegisterProvider.exe"; Flags: runhidden;

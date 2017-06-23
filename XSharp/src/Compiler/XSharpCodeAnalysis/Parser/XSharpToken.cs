@@ -44,7 +44,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             OriginalChannel = channel;
         }
 
-        internal XSharpToken Original
+        public XSharpToken Original
         {
             get
             {

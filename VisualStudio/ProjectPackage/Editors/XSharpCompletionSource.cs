@@ -2211,18 +2211,12 @@ namespace XSharpLanguage
                         // allow FLoat{} or String{}
                         if (XSharpLexer.IsType(triggerToken.Type))
                             break;
-                        if (XSharpLexer.IsKeyword(triggerToken.Type))
+                        else if (XSharpLexer.IsKeyword(triggerToken.Type))
                         {
-                            // new positional keywords should not abort
-                            if (triggerToken.Type < XSharpLexer.FIRST_POSITIONAL_KEYWORD 
-                                || triggerToken.Type > XSharpLexer.LAST_POSITIONAL_KEYWORD)
-                            {
-                                token = null;
-                                triggerToken = null;
-
-                            }
+                            token = null;
+                            triggerToken = null;
                         }
-                        if (XSharpLexer.IsOperator(triggerToken.Type))
+                        else if (XSharpLexer.IsOperator(triggerToken.Type))
                         {
                             token = null;
                             triggerToken = null;

@@ -88,28 +88,17 @@ namespace XSharpModel
                 {
                     TagRegion(context, context.ChildCount-1);
                 }
-                else if (context is XSharpParser.IdentifierContext)
-                {
-                    LanguageService.SyntaxTree.IToken sym = context.Start;
-                    // Add tag for Keyword that is used as Identifier
-                    if (XSharpLexer.IsKeyword(sym.Type))
-                    {
-                        TextSpan tokenSpan;
-                        tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
-                        tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpIdentifierType));
-                    }
-                }
                 else if (context is XSharpParser.StatementBlockContext)
                 {
-                    TagRegion((ParserRuleContext) context.Parent, context.Parent.ChildCount-1);
+                    TagRegion(context.Parent, context.Parent.ChildCount-1);
                 }
                 else if (context is XSharpParser.SwitchStmtContext)
                 {
-                    TagRegion((ParserRuleContext)context, context.ChildCount - 2);
+                    TagRegion(context, context.ChildCount - 2);
                 }
                 else if (context is XSharpParser.CaseStmtContext)
                 {
-                    TagRegion((ParserRuleContext)context, context.ChildCount - 2);
+                    TagRegion(context, context.ChildCount - 2);
                 }
 
                 else if (context is XSharpParser.Using_Context)
@@ -158,8 +147,9 @@ namespace XSharpModel
             }
         }
 
-        private void TagRegion(ParserRuleContext context, int endChild)
+        private void TagRegion(RuleContext _context, int endChild)
         {
+            var context = _context as XSharpParserRuleContext;
             var endToken = context.GetChild(endChild);
             if (endToken is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
             {
@@ -186,6 +176,5 @@ namespace XSharpModel
                 tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
             }
         }
-
     }
 }

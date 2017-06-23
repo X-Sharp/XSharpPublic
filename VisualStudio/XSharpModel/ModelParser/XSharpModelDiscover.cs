@@ -108,7 +108,27 @@ namespace XSharpModel
                 this.RegionExitEveryRule(context);
             }
         }
-
+        public override void ExitIdentifier([NotNull] XSharpParser.IdentifierContext context)
+        {
+            if (this.BuildRegionTags)
+            {
+                XSharpToken token = null;
+                // Mark the Lexer token as ID for Keywords used as Identifier
+                // so it gets colored properly in the editor
+                if (context.VnToken != null)
+                {
+                    token = context.VnToken.Token as XSharpToken;
+                }
+                else if (context.XsToken != null)
+                {
+                    token = context.XsToken.Token as XSharpToken;
+                }
+                if (token != null)
+                {
+                    token.Original.Type = XSharpLexer.ID;
+                }
+            }
+        }
         #region Types
 
         private XType currentType

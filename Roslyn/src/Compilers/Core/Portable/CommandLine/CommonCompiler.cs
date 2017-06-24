@@ -581,7 +581,7 @@ namespace Microsoft.CodeAnalysis
 
 #if XSHARP
                 var parseOptions = Arguments.ParseOptions as CSharp.CSharpParseOptions;
-                if (parseOptions.SyntaxCheck)
+                if (parseOptions.ParseLevel < CSharp.ParseLevel.Complete)
                 {
                     return Succeeded;
                 }

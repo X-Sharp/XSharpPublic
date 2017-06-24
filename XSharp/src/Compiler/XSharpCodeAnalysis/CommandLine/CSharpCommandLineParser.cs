@@ -137,8 +137,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         name = "checked-";
                     handled = false;
                     break;
+                case "lexonly":
+                    options.ParseLevel = ParseLevel.Lex;
+                    break;
                 case "parseonly":
-                    options.ParseOnly = positive;
+                    options.ParseLevel = ParseLevel.Parse;
                     break;
                 case "ppo":
                     options.PreProcessorOutput = positive;
@@ -181,7 +184,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     handled = false;
                     break;
                 case "s":
-                    options.SyntaxCheck = positive;
+                    options.ParseLevel = ParseLevel.SyntaxCheck;
                     break;
                 case "showdefs":
                 case "showdefines":

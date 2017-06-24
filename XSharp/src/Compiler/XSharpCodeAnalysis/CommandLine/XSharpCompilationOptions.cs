@@ -56,11 +56,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoRun { get; internal set; } = true;
         public bool NoStdDef { get; internal set; } = false;
         public string NameSpace { get; set; } = "";
-        public bool ParseOnly { get; internal set; } = false;
+        public ParseLevel ParseLevel { get;  set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
-        public bool SyntaxCheck { get; internal set; } = false;
         public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;
         public bool Vo2 { get; internal set; } = false;

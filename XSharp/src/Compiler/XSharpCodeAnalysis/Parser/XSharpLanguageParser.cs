@@ -185,7 +185,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             XSharpParserRuleContext tree = null;
-            if (_options.ParseOnly)
+            if (_options.ParseLevel == ParseLevel.Lex)
+            {
+                tree = new XSharpParserRuleContext();
+            }
+            else if (_options.ParseLevel == ParseLevel.Parse)
             {
                 // When parsing inside VS only we do not want to walk the tree twice.
                 // The code is most likely incomplete or not valid, so take the 'slow' route
@@ -196,9 +200,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var errorListener = new XSharpErrorListener(_fileName, parseErrors);
                 parser.AddErrorListener(errorListener);
                 tree = buildTree(parser);
-
             }
-            else // !_options.ParseOnly
+            else // ParseLevel.Complete
             {
                 // When parsing in Sll mode we do not record any parser errors.
                 // When this fails, then we try again with LL mode and then we record errors
@@ -244,7 +247,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Parsing completed in {0}",ts);
             }
 #endif
-            }   // _options.ParseOnly
+            }   // _options.ParseLevel < Complete
 
             var walker = new ParseTreeWalker();
 
@@ -253,7 +256,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parseErrors.Add(e);
             }
 
-            if (! _options.ParseOnly)
+            if ( _options.ParseLevel == ParseLevel.Complete)
             {
                 // check for parser errors, such as missing tokens
                 // This adds items to the parseErrors list for missing
@@ -273,7 +276,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
             }
 
-            if ( _options.ParseOnly ||
+            if ( _options.ParseLevel < ParseLevel.Complete||
                 parser.NumberOfSyntaxErrors != 0 || 
                 (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
@@ -431,7 +434,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (! _options.SyntaxCheck && ! _options.ParseOnly)
+                if (_options.ParseLevel == ParseLevel.Complete)
                 {
                     textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
                 }

@@ -59,12 +59,23 @@ namespace XSharp.CodeDom
                 var syntaxRoot = tree.GetRoot();
                 // Get the antlr4 parse tree root
                 var xtree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
-                //
-                var discover = new XSharpTreeDiscover(_projectNode);
+
+                // We need to d 2 steps here:
+                // 1 - Scan for the fields in te classes, so we know the difference between fields and properties when we perform step 2
+                // 2 - Scan for the rest. We pass the list of fields to the treediscover code so it will know the fields that 
+
+                var discoverFields = new XSharpFieldsDiscover(_projectNode);
+                discoverFields.SourceCode = source;
+                discoverFields.CurrentFile = this.FileName;
+
+                var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
+                walker.Walk(discoverFields, xtree);
+                // now the discoverFields class should contain a Dictionary with <context, FieldList>
+                var discover = new XSharpClassDiscover(_projectNode);
+                discover.FieldList = discoverFields.FieldList;
                 discover.SourceCode = source;
                 discover.CurrentFile = this.FileName;
                 //
-                var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
                 walker.Walk(discover, xtree);
                 //
                 ccu = discover.CodeCompileUnit;

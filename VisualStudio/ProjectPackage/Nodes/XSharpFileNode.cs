@@ -15,6 +15,10 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.IO;
+using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
+
+
 
 namespace XSharp.Project
 {
@@ -629,6 +633,53 @@ namespace XSharp.Project
             manager.Open(false, false, viewGuid, out frame, WindowFrameShowAction.Show);
         }
 
+        /// <summary>
+        /// Handles command status on a node. Should be overridden by descendant nodes. If a command cannot be handled then the base should be called.
+        /// </summary>
+        /// <param name="guidCmdGroup">A unique identifier of the command group. The pguidCmdGroup parameter can be NULL to specify the standard group.</param>
+        /// <param name="cmd">The command to query status for.</param>
+        /// <param name="pCmdText">Pointer to an OLECMDTEXT structure in which to return the name and/or status information of a single command. Can be NULL to indicate that the caller does not require this information.</param>
+        /// <param name="result">An out parameter specifying the QueryStatusResult of the command.</param>
+        /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
+        protected override int QueryStatusOnNode(Guid guidCmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        {
+            if (guidCmdGroup == Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet97)
+            {
+                switch ((VsCommands)cmd)
+                {
+                    // we shouldn't get these on a file node...
+                    //case VsCommands.AddNewItem:
+                    //case VsCommands.AddExistingItem:
+
+                    case VsCommands.ViewCode:
+                        if (this.IsNonMemberItem || this.IsVOBinary)
+                        {
+                            result = QueryStatusResult.NOTSUPPORTED;
+                            return (int)OleConstants.MSOCMDERR_E_NOTSUPPORTED;
+                        }
+                        else
+                        {
+                            result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+                            return VSConstants.S_OK;
+                        }
+
+                    case VsCommands.ViewForm:
+                        if (HasDesigner)
+                        {
+                            result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+                        }
+                        return VSConstants.S_OK;
+                }
+            }
+
+            int returnCode;
+            if (XHelperMethods.QueryStatusOnProjectSourceNode(this, guidCmdGroup, cmd, ref result, out returnCode))
+            {
+                return returnCode;
+            }
+
+            return base.QueryStatusOnNode(guidCmdGroup, cmd, pCmdText, ref result);
+        }
 
 
         #endregion

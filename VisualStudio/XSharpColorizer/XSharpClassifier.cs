@@ -27,7 +27,7 @@ namespace XSharpColorizer
     internal class XSharpClassifier : IClassifier, IDisposable
     {
         private ITextBuffer buffer;
-        public ITextSnapshot Snapshot { get; set; }
+        public ITextSnapshot Snapshot => buffer.CurrentSnapshot;
         private IClassificationType xsharpKeywordType;
         private IClassificationType xsharpIdentifierType;
         private IClassificationType xsharpCommentType;
@@ -41,15 +41,12 @@ namespace XSharpColorizer
         private IClassificationType xsharpRegionStart;
         private IClassificationType xsharpRegionStop;
         private IClassificationType xsharpInactiveType;
-        //private XSharpTagger xsTagger;
         private SourceWalker xsWalker;
         private List<ClassificationSpan> tags;
         internal List<ClassificationSpan> tagsRegion;
         private ITextDocumentFactoryService txtdocfactory;
-        private int versionNumber = 0;
-        private BackgroundWorker _bw = null;
-
-
+        private BackgroundWorker _bwLex = null;
+        private BackgroundWorker _bwParse = null;
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpClassifier"/> class.
         /// </summary>
@@ -57,11 +54,15 @@ namespace XSharpColorizer
         internal XSharpClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
             this.buffer = buffer;
+            this.buffer.Properties.AddProperty(typeof(XSharpClassifier), this);
+
             this.buffer.Changed += Buffer_Changed;
-            _bw = new BackgroundWorker();
-            _bw.RunWorkerCompleted += bw_RunWorkerCompleted;
-            _bw.DoWork += bw_DoWork;
-            _bw.WorkerSupportsCancellation = true;
+            _bwLex = new BackgroundWorker();
+            _bwLex.RunWorkerCompleted += LexCompleted;
+            _bwLex.DoWork += DoLex;
+            _bwParse = new BackgroundWorker();
+            _bwParse.RunWorkerCompleted += ParseCompleted;
+            _bwParse.DoWork += DoParse;
             txtdocfactory = factory;
             //xsTagger = new XSharpTagger(registry);
             xsWalker = new SourceWalker(registry);
@@ -80,59 +81,59 @@ namespace XSharpColorizer
             xsharpBraceOpenType = registry.GetClassificationType("punctuation");
             xsharpBraceCloseType = registry.GetClassificationType("punctuation");
 
+
             xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
             xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
             //
-            _snapshot = buffer.CurrentSnapshot;
-            _bw.RunWorkerAsync();
+            _bwLex.RunWorkerAsync(buffer.CurrentSnapshot);
         }
-        private ITextSnapshot _snapshot;
         private void Buffer_Changed(object sender, TextContentChangedEventArgs e)
         {
             var snapshot = e.After;
-            bool mustParse = snapshot.Version.VersionNumber != this.versionNumber;
-
-            if ( mustParse )
+            if (! _bwLex.IsBusy)
             {
-                lock (this)
+                _bwLex.RunWorkerAsync(snapshot);
+            }
+            // when busy then the parser run after the lexer will detect a new version and will take care of repainting
+        }
+
+        private void DoLex(object sender, DoWorkEventArgs e)
+        {
+            // Note this runs in the background
+            var snapshot = (ITextSnapshot)e.Argument;
+            System.Diagnostics.Debug.WriteLine("Starting lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            xsWalker.FullPath = GetFileName();
+            xsWalker.Snapshot = snapshot;
+            var TokenStream = xsWalker.LexFile();
+            System.Diagnostics.Debug.WriteLine("Ending lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            Colorize(TokenStream, snapshot);
+            e.Result = snapshot;
+        }
+
+        private void triggerRepaint(ITextSnapshot snapshot)
+        {
+            if (snapshot.Version == buffer.CurrentSnapshot.Version)
+            {
+                if (this.ClassificationChanged != null)
                 {
-                    if (!_bw.IsBusy)
-                    {
-                        _snapshot = snapshot;
-                        _bw.RunWorkerAsync();
-                    }
+                    this.ClassificationChanged(this, new ClassificationChangedEventArgs(
+                        new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
                 }
             }
-        }
 
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            this.versionNumber = _snapshot.Version.VersionNumber;
-            System.Diagnostics.Debug.WriteLine("Starting walk at {0}, version {1}", DateTime.Now, this.versionNumber.ToString());
-            Parse(_snapshot);
         }
-
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void LexCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (this.ClassificationChanged != null)
-                this.ClassificationChanged(this, new ClassificationChangedEventArgs(
-                    new SnapshotSpan(_snapshot, Span.FromBounds(0, _snapshot.Length))));
-            System.Diagnostics.Debug.WriteLine("Ending walk at {0}, version {1}", DateTime.Now, this.versionNumber.ToString());
-            if (buffer.CurrentSnapshot.Version != _snapshot.Version)
+            triggerRepaint((ITextSnapshot)e.Result);
+            if (!_bwParse.IsBusy)
             {
-                // Start again because they have continued typing while we were busy
-                _snapshot = buffer.CurrentSnapshot;
-                _bw.RunWorkerAsync();
+                _bwParse.RunWorkerAsync(buffer.CurrentSnapshot);
             }
         }
 
-        private void Parse(ITextSnapshot snapshot)
+
+        private string GetFileName()
         {
-            Snapshot = snapshot;
-            ITokenStream TokenStream = null;
-            // parse for positional keywords that change the colors
-            // and get a reference to the tokenstream
-            System.Diagnostics.Debug.WriteLine("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             string path = String.Empty;
             if (txtdocfactory != null)
             {
@@ -142,17 +143,48 @@ namespace XSharpColorizer
                     path = doc.FilePath;
                 }
             }
-            // Parse the source and get the (Lexer) Tokenstream to locate comments, keywords and other tokens.
-            // The parser will identify (positional) keywords that are used as identifier
-            //xsTagger.Parse(snapshot, out TokenStream, path);
-            // By setting the FullPath the system will also try to locate the project and its compiler options.
-            // when no project is found then the default parse options will be used
-            xsWalker.FullPath = path;
+            return path;            
+        }
+        private void DoParse(object sender, DoWorkEventArgs e)
+        {
+            // Note this runs in the background
+            var snapshot = (ITextSnapshot)e.Argument;
+            // parse for positional keywords that change the colors
+            // and get a reference to the tokenstream
+            System.Diagnostics.Debug.WriteLine("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            xsWalker.FullPath = GetFileName();
             xsWalker.Snapshot = snapshot;
             xsWalker.InitParse();
             xsWalker.BuildModelAndRegionTags();
             this.tagsRegion = xsWalker.Tags;
-            TokenStream = xsWalker.TokenStream;
+            var TokenStream = xsWalker.TokenStream;
+            System.Diagnostics.Debug.WriteLine("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            Colorize(TokenStream, snapshot);
+            e.Result = snapshot;
+        }
+
+        private void ParseCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var snapshot = (ITextSnapshot)e.Result;
+            if (snapshot.Version == buffer.CurrentSnapshot.Version)
+            {
+                triggerRepaint(snapshot);
+                if (buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
+                {
+                    var tagger = buffer.Properties[typeof(XSharpOutliningTagger)] as XSharpOutliningTagger;
+                    tagger.Update();
+                }
+            }
+            else
+            {
+                // trigger another parse because buffer was changed while we were busy
+                _bwParse.RunWorkerAsync(buffer.CurrentSnapshot);
+            }
+        }
+
+        private void Colorize(ITokenStream TokenStream, ITextSnapshot snapshot)
+        {
+            System.Diagnostics.Debug.WriteLine("Starting colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             if (TokenStream != null)
             {
                 IToken token = null;
@@ -163,8 +195,6 @@ namespace XSharpColorizer
                 List<ClassificationSpan> newtags = new List<ClassificationSpan>();
                 for (var iToken = 0; iToken < TokenStream.Size; iToken++)
                 {
-                    if (_bw.CancellationPending)
-                       break;
                     token = TokenStream.Get(iToken);
                     var tokenType = token.Type;
                     TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
@@ -305,7 +335,7 @@ namespace XSharpColorizer
                         switch (tokenType)
                         {
                             case XSharpLexer.STRING_CONST:
-                            case XSharpLexer.CHAR_CONST:            
+                            case XSharpLexer.CHAR_CONST:
                             case XSharpLexer.ESCAPED_STRING_CONST:
                             case XSharpLexer.INTERPOLATED_STRING_CONST:
                                 newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpStringType));
@@ -314,11 +344,11 @@ namespace XSharpColorizer
                                 newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpNumberType));
                                 break;
                         }
-                        
+
                     }
                     else if (XSharpLexer.IsKeyword(tokenType))
                     {
-                       newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
+                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {
@@ -347,13 +377,10 @@ namespace XSharpColorizer
                     newtags.Add(tag);
                 }
                 tags = newtags;
-                System.Diagnostics.Debug.WriteLine("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                if (ClassificationChanged != null)
-                {
-                    ClassificationChanged(this, new ClassificationChangedEventArgs(new SnapshotSpan(snapshot, 0, snapshot.Length)));
-                }
             }
+            System.Diagnostics.Debug.WriteLine("Ending colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
         }
+
         IToken ScanForLastToken(int type, int start, ITokenStream TokenStream, out int iLast)
         {
             var lastFound = TokenStream.Get(start);

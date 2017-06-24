@@ -139,6 +139,43 @@ namespace XSharpModel
             //
         }
 
+
+        public ITokenStream LexFile()
+        {
+            try
+            {
+                // create new parseoptions because we only lex.
+                var opts = XSharpParseOptions.Default;
+                opts.SetOptions(parseOptions.CommandLineArguments);
+                opts.ParseLevel = ParseLevel.Lex;
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, opts, _fullPath);
+                var syntaxRoot = tree.GetRoot();
+                _treeInit = false;
+                _TokenStream = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XTokenStream;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+            return _TokenStream;            
+        }
+        
+        XSharpParseOptions parseOptions
+        {
+            get
+            {
+                if (_prjNode == null)
+                {
+                    return XSharpParseOptions.Default;
+                }
+                else
+                {
+                    return _prjNode.ParseOptions;
+                }
+
+            }
+        }
+
         public void InitParse()
         {
             _treeInit = false;
@@ -146,24 +183,9 @@ namespace XSharpModel
 
             try
             {
-                // this gets at least the default include path     
-                // so we can process Vulcan and XSharp include files           
-                // get command line args and compare with old args
-                XSharpParseOptions parseoptions;
-                // file may be empty when opening a standalone PRG file
-                if (_prjNode == null)
-                {
-                    parseoptions = XSharpParseOptions.Default;
-                    //this.File.HashCode = _source.GetHashCode();
-                    // Put a Hash Tag on the File
-                }
-                else
-                {
-                    parseoptions = _prjNode.ParseOptions;
-                }
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, parseoptions, _fullPath);
+                
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, parseOptions, _fullPath);
                 var syntaxRoot = tree.GetRoot();
-
                
                 // Disabled for now . We may want to enable this for the current document only
                 // ShowErrorsAsync(syntaxRoot);

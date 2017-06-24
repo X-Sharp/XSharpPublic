@@ -28,6 +28,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         VulcanRTFuncs = 2
     }
 
+    [Flags]
+    public enum ParseLevel : byte
+    {
+        Lex = 1,
+        Parse = 2,
+        SyntaxCheck = 3,
+        Complete = 4
+    }
 
     public sealed partial class CSharpParseOptions
     {
@@ -46,8 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoStdDef { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
-        public bool SyntaxCheck { get; private set; }
-        public bool ParseOnly { get; private set; }
+        public ParseLevel ParseLevel { get;  set; }
         public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
@@ -107,10 +114,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 NoStdDef = opt.NoStdDef;
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
-                SyntaxCheck = opt.SyntaxCheck;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
-                ParseOnly = opt.ParseOnly;
+                ParseLevel = opt.ParseLevel;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
                 VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
@@ -156,10 +162,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             IncludePaths = opt.IncludePaths;
             ShowDefs = opt.ShowDefs;
             ShowIncludes = opt.ShowIncludes;
-            SyntaxCheck = opt.SyntaxCheck;
             NoStdDef = opt.NoStdDef;
             PreprocessorOutput = opt.PreprocessorOutput;
-            ParseOnly = opt.ParseOnly;
+            ParseLevel = opt.ParseLevel;
             Verbose = opt.Verbose;
 
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1

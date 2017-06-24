@@ -71,7 +71,6 @@ namespace XSharp.Project
             List<String> args = new List<String>();
             try
             {
-                args.Add("/parseonly");
                 args.Add("/dialect:" + _prjNode.GetProjectProperty("Dialect"));
                 // Add pseudo references so the Vulcan/VO dialect will be allowed
                 args.Add("/errorendlocation");
@@ -134,6 +133,7 @@ namespace XSharp.Project
                     var cmdlineargs = xsCmdLineparser.Parse(new string[0], null, null, null);
                     ParseOptions = cmdlineargs.ParseOptions;
                 }
+                ParseOptions.ParseLevel = ParseLevel.Parse;
             }
         }
 

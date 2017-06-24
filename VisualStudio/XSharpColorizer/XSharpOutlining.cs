@@ -56,29 +56,28 @@ namespace XSharpColorizer
         ITextBuffer buffer;
         //ITextSnapshot snapshot;
         //List<Region> regions;
-        private readonly IClassifier classifier;
         private IClassificationType xsharpRegionStartType;
         private IClassificationType xsharpRegionStopType;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
-        //private XSharpTagger xsTagger;
 
         public XSharpOutliningTagger(ITextBuffer buffer, IClassifierAggregatorService AggregatorFactory, IClassificationTypeRegistryService registry)
         {
             this.buffer = buffer;
-            //this.snapshot = buffer.CurrentSnapshot;
-            //
-            //xsTagger = new XSharpTagger(registry);
-            //xsTagger.Parse(this.snapshot);
-            //
-            //this.buffer.Changed += OnBufferChanged;
-
-            //this.classifier = AggregatorFactory.GetClassifier(buffer);
+            this.buffer.Properties.AddProperty(typeof(XSharpOutliningTagger), this);
             xsharpRegionStartType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
             xsharpRegionStopType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
         }
 
+        public void Update ()
+        {
+            if (TagsChanged != null)
+            {
+                TagsChanged.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(buffer.CurrentSnapshot, 0,
+                        buffer.CurrentSnapshot.Length)));
+            }
 
+        }
         public IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
             //yield break;
@@ -87,7 +86,12 @@ namespace XSharpColorizer
                 yield break;
             }
             // Try to retrieve an already parsed list of Tags
-            XSharpClassifier xsClassifier = XSharpClassifier.GetColorizer(buffer);
+            XSharpClassifier xsClassifier = null;
+            if (buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+            {
+                xsClassifier = buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
+            }
+
             if (xsClassifier != null)
             {
                 //

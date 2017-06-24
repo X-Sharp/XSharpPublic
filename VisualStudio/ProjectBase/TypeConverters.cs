@@ -188,6 +188,14 @@ namespace Microsoft.VisualStudio.Project
         {
             string s = value as string;
             if (s != null) return new BuildAction(s);
+            //SR.Compile;
+            //SR.EmbeddedResource;
+            //SR.None;
+            //SR.Content;
+            //SR.Page;
+            //SR.ApplicationDefinition;
+            //SR.Resource;
+
             return null;
         }
 

@@ -142,6 +142,7 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(XSharpEditorFactory), PpoExtension, 0x42, DefaultName = EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension1, 0x42, DefaultName = EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = EditorName, NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]

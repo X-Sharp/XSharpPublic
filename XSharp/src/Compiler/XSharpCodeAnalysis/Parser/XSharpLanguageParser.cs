@@ -168,9 +168,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             parser.IsScript = _options.Kind == SourceCodeKind.Script;
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
             // for info about optimization flags such as the next line
-            //parser.Interpreter.enable_global_context_dfa = true;    // default = false
-            //parser.Interpreter.tail_call_preserves_sll = false;     // default = true
 
+#if VSPARSER
+                parser.Interpreter.enable_global_context_dfa = true;    // default = false
+                parser.Interpreter.tail_call_preserves_sll = false;     // default = true
+#endif
+            //parser.Interpreter.enable_global_context_dfa = false;    // default = false
+            //parser.Interpreter.tail_call_preserves_sll = true;     // default = true
             parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
             parser.AllowGarbageAfterEnd = _options.Dialect.AllowGarbage();
             parser.AllowNamedArgs = _options.Dialect.AllowNamedArgs();
@@ -189,19 +193,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 tree = new XSharpParserRuleContext();
             }
-            else if (_options.ParseLevel == ParseLevel.Parse)
-            {
-                // When parsing inside VS only we do not want to walk the tree twice.
-                // The code is most likely incomplete or not valid, so take the 'slow' route
-                // immediately
-                parser.RemoveErrorListeners();
-                parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                parser.ErrorHandler = new XSharpErrorStrategy();
-                var errorListener = new XSharpErrorListener(_fileName, parseErrors);
-                parser.AddErrorListener(errorListener);
-                tree = buildTree(parser);
-            }
-            else // ParseLevel.Complete
+            else // ParseLevel.Parse and Complete
             {
                 // When parsing in Sll mode we do not record any parser errors.
                 // When this fails, then we try again with LL mode and then we record errors

@@ -148,7 +148,7 @@ namespace XSharpModel
                 var options = new ParallelOptions ();
 				if (System.Environment.ProcessorCount > 1)
 				{
-					options.MaxDegreeOfParallelism = System.Environment.ProcessorCount / 2;
+					options.MaxDegreeOfParallelism = (System.Environment.ProcessorCount * 3)/ 4;
 				}
                 Parallel.ForEach(aFiles, options, file =>
                 {

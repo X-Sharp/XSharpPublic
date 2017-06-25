@@ -340,7 +340,7 @@ namespace XSharp.Project.WPF
 
         public override bool RemoveHandlesForName(string elementName)
         {
-            return true; ;
+            return true; 
         }
 
         public override void AppendStatements(EventDescription eventDescription, string methodName, string statements, int relativePosition)

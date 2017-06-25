@@ -23,6 +23,9 @@ using static XSharp.Project.XSharpConstants;
 #if VODESIGNER
 using XSharp.VOEditors;
 #endif
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = "1.0.0.0")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis.VS", CodeBase = "XSharp.CodeAnalysis.VS.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
+
 namespace XSharp.Project
 {
 
@@ -168,6 +171,7 @@ namespace XSharp.Project
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideBindingPath]        // Tell VS to look in our path for assemblies
     public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
     {
         private uint m_componentID;

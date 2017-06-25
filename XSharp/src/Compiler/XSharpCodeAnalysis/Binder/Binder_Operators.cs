@@ -554,7 +554,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (!Compilation.Options.IsDialectVO)
                 return;
-            var xnode = node.XNode as XSharpParser.BinaryExpressionContext;
+            XSharpParser.BinaryExpressionContext xnode = null;
+            if (node.XNode is XSharpParser.BinaryExpressionContext)
+            {
+                xnode = node.XNode as XSharpParser.BinaryExpressionContext;
+            }
+            else if (node.XNode is XSharpParser.CodeblockCodeContext)
+            {
+                var cbc = node.XNode as XSharpParser.CodeblockCodeContext;
+                if (cbc.Expr is XSharpParser.BinaryExpressionContext)
+                    xnode = cbc.Expr as XSharpParser.BinaryExpressionContext;
+            }
             if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
                 return;
             // check for Logic operations with Usual. If that is the case then add a conversion to the expression

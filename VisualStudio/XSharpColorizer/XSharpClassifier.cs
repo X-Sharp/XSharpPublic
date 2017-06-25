@@ -24,7 +24,7 @@ namespace XSharpColorizer
     /// <summary>
     /// Classifier that classifies all text as an instance of the "XSharpClassifier" classification type.
     /// </summary>
-    internal class XSharpClassifier : IClassifier, IDisposable
+    internal class XSharpClassifier : IClassifier
     {
         private ITextBuffer buffer;
         public ITextSnapshot Snapshot => buffer.CurrentSnapshot;
@@ -106,7 +106,7 @@ namespace XSharpColorizer
             xsWalker.Snapshot = snapshot;
             var TokenStream = xsWalker.LexFile();
             System.Diagnostics.Debug.WriteLine("Ending lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            Colorize(TokenStream, snapshot);
+            BuildColorClassifications(TokenStream, snapshot);
             e.Result = snapshot;
         }
 
@@ -156,10 +156,10 @@ namespace XSharpColorizer
             xsWalker.Snapshot = snapshot;
             xsWalker.InitParse();
             xsWalker.BuildModelAndRegionTags();
-            this.tagsRegion = xsWalker.Tags;
+            this.tagsRegion = xsWalker.RegionTags;
             var TokenStream = xsWalker.TokenStream;
             System.Diagnostics.Debug.WriteLine("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            Colorize(TokenStream, snapshot);
+            BuildColorClassifications(TokenStream, snapshot);
             e.Result = snapshot;
         }
 
@@ -168,7 +168,6 @@ namespace XSharpColorizer
             var snapshot = (ITextSnapshot)e.Result;
             if (snapshot.Version == buffer.CurrentSnapshot.Version)
             {
-                triggerRepaint(snapshot);
                 if (buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
                 {
                     var tagger = buffer.Properties[typeof(XSharpOutliningTagger)] as XSharpOutliningTagger;
@@ -182,7 +181,7 @@ namespace XSharpColorizer
             }
         }
 
-        private void Colorize(ITokenStream TokenStream, ITextSnapshot snapshot)
+        private void BuildColorClassifications(ITokenStream TokenStream, ITextSnapshot snapshot)
         {
             System.Diagnostics.Debug.WriteLine("Starting colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             if (TokenStream != null)
@@ -372,13 +371,14 @@ namespace XSharpColorizer
                     }
                 }
                 // Add Region Tags
-                foreach (var tag in xsWalker.Tags)
+                foreach (var tag in xsWalker.RegionTags)
                 {
                     newtags.Add(tag);
                 }
                 tags = newtags;
             }
             System.Diagnostics.Debug.WriteLine("Ending colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+			triggerRepaint(snapshot);
         }
 
         IToken ScanForLastToken(int type, int start, ITokenStream TokenStream, out int iLast)
@@ -446,7 +446,6 @@ namespace XSharpColorizer
         /// <returns>A list of ClassificationSpans that represent spans identified to be of this classification.</returns>
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
-
             var result = new List<ClassificationSpan>();
             var originaltags = tags;        // create copy in case the tags property gets changed in the background
             foreach (var tag in originaltags)
@@ -467,60 +466,14 @@ namespace XSharpColorizer
 
         #endregion
 
-        static System.Collections.Generic.Dictionary<ITextBuffer, XSharpClassifier> hashtable;
         static internal XSharpClassifier GetColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
-            if (hashtable == null)
-                hashtable = new System.Collections.Generic.Dictionary<ITextBuffer, XSharpClassifier>();
-            if (hashtable.ContainsKey(buffer))
-                return hashtable[buffer];
-            var colorizer = new XSharpClassifier(buffer, registry, factory);
-            hashtable.Add(buffer, colorizer);
+            XSharpClassifier colorizer = buffer.Properties.GetOrCreateSingletonProperty<XSharpClassifier>(
+                () => new XSharpClassifier(buffer, registry, factory));
             return colorizer;
         }
 
-        static internal XSharpClassifier GetColorizer(ITextBuffer buffer )
-        {
-            if (hashtable != null)
-            {
-                if (hashtable.ContainsKey(buffer))
-                    return hashtable[buffer];
-            }
-            return null;
-        }
-
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    if (hashtable.ContainsKey(this.buffer))
-                    {
-                        hashtable.Remove(this.buffer);
-                    }
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        ~XSharpClassifier()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(false);
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        void IDisposable.Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-        }
-        #endregion
     }
+
 }
 

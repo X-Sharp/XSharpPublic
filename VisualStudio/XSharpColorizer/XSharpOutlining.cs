@@ -37,14 +37,12 @@ namespace XSharpColorizer
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             //create a single tagger for each buffer.
-            Func<ITagger<T>> outliner = delegate () { return new XSharpOutliningTagger(buffer, aggregator, ClassificationRegistry) as ITagger<T>; };
-            return buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(outliner);
+            ITagger<T> outliner = buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(
+                () =>  new XSharpOutliningTagger(buffer, aggregator, ClassificationRegistry) as ITagger<T>);
+            return outliner;
+
         }
     }
-
-
-
-
 
     internal sealed class XSharpOutliningTagger : ITagger<IOutliningRegionTag>
     {

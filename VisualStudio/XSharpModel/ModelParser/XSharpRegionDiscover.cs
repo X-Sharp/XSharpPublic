@@ -55,9 +55,6 @@ namespace XSharpModel
             }
         }
 
-        internal IClassificationType xsharpIdentifierType;
-        internal IClassificationType xsharpBraceOpenType;
-        internal IClassificationType xsharpBraceCloseType;
         internal IClassificationType xsharpRegionStartType;
         internal IClassificationType xsharpRegionStopType;
 
@@ -149,31 +146,38 @@ namespace XSharpModel
 
         private void TagRegion(RuleContext _context, int endChild)
         {
-            var context = _context as XSharpParserRuleContext;
-            var endToken = context.GetChild(endChild);
-            if (endToken is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
+            try
             {
-                LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)endToken).Symbol;
-                var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
-                tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
-                tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
-                tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
+                var context = _context as XSharpParserRuleContext;
+                var endToken = context.GetChild(endChild);
+                if (endToken is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
+                {
+                    LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)endToken).Symbol;
+                    var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
+                    tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
+                }
+                else if (endToken is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext)
+                {
+                    XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
+                    var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
+                    tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex - 1, 1);
+                    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
+                }
+                else if (endToken is ParserRuleContext)
+                {
+                    var lastTokenInContext = endToken as ParserRuleContext;
+                    var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
+                    tokenSpan = new TextSpan(lastTokenInContext.Stop.StartIndex - 1, 1);
+                    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
+                }
             }
-            else if (endToken is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext)
+            catch (Exception e)
             {
-                XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
-                var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
-                tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
-                tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex-1 , 1);
-                tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
-            }
-            else if (endToken is ParserRuleContext)
-            {
-                var  lastTokenInContext = endToken as ParserRuleContext;
-                var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
-                tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
-                tokenSpan = new TextSpan(lastTokenInContext.Stop.StartIndex - 1, 1);
-                tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
+                System.Diagnostics.Debug.WriteLine("Tagregion failed: " + e.Message);
             }
         }
     }

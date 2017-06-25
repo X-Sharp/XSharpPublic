@@ -22,16 +22,14 @@ namespace XSharpModel
     partial class XSharpModelRegionDiscover : XSharpBaseListener
     {
         //public List<XSharpParser.IEntityContext> entities = new List<XSharpParser.IEntityContext>();
-        private XFile _file;
-        private Stack<XType> _currentTypes;
-        private Stack<XType> _currentNSpaces;
+        private readonly Stack<XType> _currentTypes;
+        private readonly Stack<XType> _currentNSpaces;
+        private readonly Stack<XSharpParser.LocalvarContext> _localDecls;
 
+        private XFile _file;
         private XTypeMember _currentMethod;
-        private Stack<XSharpParser.LocalvarContext> _localDecls;
         private Modifiers _currentVarVisibility;
         private string _defaultNS;
-        private LanguageService.CodeAnalysis.XSharp.XSharpParseOptions _options;
-
         public XSharpModelRegionDiscover(XFile file)
         {
             // To store intermediate declarations
@@ -42,7 +40,6 @@ namespace XSharpModel
             this._currentNSpaces = new Stack<XType>();
             //
             this.tags = new List<ClassificationSpan>();
-            this._options = file.Project.ProjectNode.ParseOptions;
         }
 
         private String currentNamespace
@@ -94,8 +91,12 @@ namespace XSharpModel
                     this.File.InitTypeList();
                     // Default namespaces
                     _file.Usings.AddUnique("System");
-                    if (_options != null && _options.IsDialectVO)
-                        _file.Usings.AddUnique("Vulcan");
+                    if (_file?.Project?.ProjectNode?.ParseOptions != null)
+                    {
+                        if (_file.Project.ProjectNode.ParseOptions.IsDialectVO)
+                            _file.Usings.AddUnique("Vulcan");
+                    }
+
 
                     _reInitModel = false;
                 }

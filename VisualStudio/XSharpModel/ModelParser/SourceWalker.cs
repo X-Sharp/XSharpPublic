@@ -17,15 +17,12 @@ namespace XSharpModel
 {
     public class SourceWalker
     {
-        private IClassificationType _xsharpIdentifierType;
-        private IClassificationType _xsharpBraceOpenType;
-        private IClassificationType _xsharpBraceCloseType;
         private IClassificationType _xsharpRegionStartType;
         private IClassificationType _xsharpRegionStopType;
         private ITextSnapshot _snapshot;
         private string _source;
         private string _fullPath;
-        private List<ClassificationSpan> _tags;
+        private List<ClassificationSpan> _regionTags;
         private IXSharpProject _prjNode;
 
         private XFile _file;
@@ -88,11 +85,11 @@ namespace XSharpModel
             }
         }
 
-        public List<ClassificationSpan> Tags
+        public List<ClassificationSpan> RegionTags
         {
             get
             {
-                return _tags;
+                return _regionTags;
             }
 
         }
@@ -123,16 +120,13 @@ namespace XSharpModel
         public SourceWalker()
         {
             //
-            _tags = new List<ClassificationSpan>();
+            _regionTags = new List<ClassificationSpan>();
         }
 
         public SourceWalker(IClassificationTypeRegistryService registry):this()
         {
             if (registry != null)
             {
-                _xsharpIdentifierType = registry.GetClassificationType("identifier");
-                _xsharpBraceOpenType = registry.GetClassificationType("punctuation");
-                _xsharpBraceCloseType = registry.GetClassificationType("punctuation");
                 _xsharpRegionStartType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
                 _xsharpRegionStopType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
             }
@@ -254,16 +248,13 @@ namespace XSharpModel
                 var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
                 //
                 discover.Snapshot = _snapshot;
-                discover.xsharpBraceCloseType = _xsharpBraceCloseType;
-                discover.xsharpBraceOpenType = _xsharpBraceOpenType;
-                discover.xsharpIdentifierType = _xsharpIdentifierType;
                 discover.xsharpRegionStartType = _xsharpRegionStartType;
                 discover.xsharpRegionStopType = _xsharpRegionStopType;
                 // Walk the tree. The TreeDiscover class will collect the tags.
                 walker.Walk(discover, _xTree);
             }
             //
-            _tags = discover.tags;
+            _regionTags = discover.tags;
         }
 
         public void BuildModelOnly()
@@ -310,9 +301,6 @@ namespace XSharpModel
                 if (_snapshot != null)
                 {
                     discover.Snapshot = _snapshot;
-                    discover.xsharpBraceCloseType = _xsharpBraceCloseType;
-                    discover.xsharpBraceOpenType = _xsharpBraceOpenType;
-                    discover.xsharpIdentifierType = _xsharpIdentifierType;
                     discover.xsharpRegionStartType = _xsharpRegionStartType;
                     discover.xsharpRegionStopType = _xsharpRegionStopType;
                 }
@@ -330,7 +318,7 @@ namespace XSharpModel
             }
             if ( discover.BuildRegionTags )
             {
-                _tags = discover.tags;
+                _regionTags = discover.tags;
             }
         }
 

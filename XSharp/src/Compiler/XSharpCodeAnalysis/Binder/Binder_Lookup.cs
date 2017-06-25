@@ -49,12 +49,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool check = (options.HasFlag(LookupOptions.MustNotBeInstance) && !options.HasFlag(LookupOptions.MustNotBeMethod));
                 if (check)
                 {
+                    var funcOptions = options;
+                    funcOptions |= LookupOptions.MustBeInvocableIfMember;
                     Binder scope = this;
                     while (scope != null)
                     {
                         if (scope is InContainerBinder && scope.ContainingType == null) // at the namespace level, so outside of all types
                         {
-                            scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, options, this, diagnose, ref useSiteDiagnostics);
+                            scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, funcOptions, this, diagnose, ref useSiteDiagnostics);
                             FilterResults(result, options);
                             if (!result.IsClear)
                             {
@@ -110,22 +112,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                             break;
                         }
                     }
-                    if (! funcFound)
+                    if (! funcFound && funcSym.Kind == SymbolKind.Method)
                     {
                         for (int j = 0; j < result.Symbols.Count; j++)
                         {
                             sym = result.Symbols[j];
-                            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
-                                new object[] {
+                            if (sym.Kind == SymbolKind.Method)
+                            {
+                                var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
+                                    new object[] {
                                     funcSym.Name,
                                     new FormattedSymbol(sym, SymbolDisplayFormat.CSharpErrorMessageFormat),
                                     new FormattedSymbol(funcSym, SymbolDisplayFormat.CSharpErrorMessageFormat),
                                     sym.Kind.ToString()});
-                            if (useSiteDiagnostics == null)
-                            {
-                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                                if (useSiteDiagnostics == null)
+                                {
+                                    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                                }
+                                useSiteDiagnostics.Add(info);
                             }
-                            useSiteDiagnostics.Add(info);
                         }
                     }
                 }

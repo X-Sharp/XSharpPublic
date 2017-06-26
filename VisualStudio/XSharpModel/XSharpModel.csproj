@@ -11,7 +11,7 @@
     <RootNamespace>XSharpModel</RootNamespace>
     <AssemblyName>XSharpModel</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -103,9 +103,6 @@
     <Compile Include="XType.cs" />
     <Compile Include="XTypeMember.cs" />
     <Compile Include="XVariable.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

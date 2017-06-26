@@ -40,7 +40,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.Shell.Design, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -66,15 +66,11 @@
     <Compile Include="XSharpTreeDiscover.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="XSharp.snk" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ReadMe-MachineConfig.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SDK40ToolsPath)gacutil" /i $(TargetPath) /f
-copy $(TargetPath) "C:\program files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\PrivateAssemblies"</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetPath) "C:\program files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\PrivateAssemblies"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -11,7 +11,7 @@
     <RootNamespace>XSharp.Project</RootNamespace>
     <AssemblyName>XSharpProject</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.6</TargetFrameworkMoniker>
     <TargetFrameworkProfile />
@@ -496,7 +496,6 @@
     <None Include="Snippets\Snippets\tryf.snippet" />
     <None Include="Snippets\Snippets\vostruct.snippet" />
     <None Include="Snippets\Snippets\while.snippet" />
-    <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Wix\FolderBrowserTextBox.resx">

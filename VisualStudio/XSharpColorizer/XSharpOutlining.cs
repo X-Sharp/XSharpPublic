@@ -95,8 +95,8 @@ namespace XSharpColorizer
                 //
                 ITextSnapshot snapshot = buffer.CurrentSnapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                IList<ClassificationSpan> classifications = xsClassifier.tagsRegion;
-                //
+                IList<ClassificationSpan> classifications = xsClassifier.GetRegionTags(); ;
+                
                 SnapshotSpan fullSpan = new SnapshotSpan(spans[0].Start, spans[spans.Count - 1].End).TranslateTo(snapshot, SpanTrackingMode.EdgeExclusive);
                 int startLineNumber = fullSpan.Start.GetContainingLine().LineNumber;
                 int endLineNumber = fullSpan.End.GetContainingLine().LineNumber;
@@ -104,9 +104,11 @@ namespace XSharpColorizer
                 Stack<ClassificationSpan> startStack = new Stack<ClassificationSpan>();
                 // convert classifications to an array so there will be no crash when the classifications are changed
                 // in another thread.
-                var aclassifications = classifications.ToArray();
+                
+
+                
                 // Now, let's have a look at all the Classifications we have in the document
-                foreach (var tag in aclassifications)
+                foreach (var tag in classifications)
                 {
                     // Is it a Region ?
                     if (tag.ClassificationType.IsOfType(this.xsharpRegionStartType.Classification))

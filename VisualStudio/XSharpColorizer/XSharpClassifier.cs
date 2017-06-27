@@ -43,7 +43,8 @@ namespace XSharpColorizer
         private IClassificationType xsharpInactiveType;
         private SourceWalker xsWalker;
         private List<ClassificationSpan> tags;
-        internal List<ClassificationSpan> tagsRegion;
+        private List<ClassificationSpan> tagsRegion;
+        private object regionLock = new object();
         private ITextDocumentFactoryService txtdocfactory;
         private BackgroundWorker _bwLex = null;
         private BackgroundWorker _bwParse = null;
@@ -67,7 +68,10 @@ namespace XSharpColorizer
             //xsTagger = new XSharpTagger(registry);
             xsWalker = new SourceWalker(registry);
             tags = new List<ClassificationSpan>();
-            tagsRegion = new List<ClassificationSpan>();
+            lock (regionLock)
+            {
+                tagsRegion = new List<ClassificationSpan>();
+            }
             //
             xsharpKeywordType = registry.GetClassificationType("keyword"); 
             xsharpIdentifierType = registry.GetClassificationType("identifier"); 
@@ -155,7 +159,10 @@ namespace XSharpColorizer
             xsWalker.Snapshot = snapshot;
             xsWalker.InitParse();
             xsWalker.BuildModelAndRegionTags();
-            this.tagsRegion = xsWalker.RegionTags;
+            lock (regionLock)
+            {
+                this.tagsRegion = xsWalker.RegionTags;
+            }
             var TokenStream = xsWalker.TokenStream;
             System.Diagnostics.Debug.WriteLine("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             BuildColorClassifications(TokenStream, snapshot);
@@ -213,11 +220,17 @@ namespace XSharpColorizer
                         case XSharpLexer.PP_REGION:
                         case XSharpLexer.PP_IFDEF:
                         case XSharpLexer.PP_IFNDEF:
-                            tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                            lock (regionLock)
+                            {
+                                tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                            }
                             break;
                         case XSharpLexer.PP_ENDREGION:
                         case XSharpLexer.PP_ENDIF:
-                            tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
+                            lock (regionLock)
+                            {
+                                tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
+                            }
                             break;
                         default:
                             break;
@@ -233,8 +246,11 @@ namespace XSharpColorizer
                         result = Token2ClassificationSpan(token, snapshot, xsharpCommentType);
                         if (token.Type == XSharpLexer.ML_COMMENT)
                         {
-                            tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
-                            tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
+                            lock (regionLock)
+                            {
+                                tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                                tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
+                            }
                         }
                     }
                     break;
@@ -299,8 +315,11 @@ namespace XSharpColorizer
                 var lastToken = ScanForLastToken(token.Type, iToken, TokenStream, out iLast);
                 if (token != lastToken)
                 {
-                    tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
-                    tagsRegion.Add(Token2ClassificationSpan(lastToken, snapshot, xsharpRegionStop));
+                    lock (regionLock)
+                    {
+                        tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                        tagsRegion.Add(Token2ClassificationSpan(lastToken, snapshot, xsharpRegionStop));
+                    }
                 }
             }
         }
@@ -404,6 +423,14 @@ namespace XSharpColorizer
             return lastFound;
         }
 
+        internal IList<ClassificationSpan> GetRegionTags()
+        {
+            // return an array so we will not have locking issues
+            lock (regionLock)
+            {
+                return tagsRegion.ToArray();
+            }
+        }
 
         #region IClassifier
 

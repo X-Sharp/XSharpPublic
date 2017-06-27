@@ -857,6 +857,11 @@ namespace XSharp.Project
         internal override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             base.OnAfterProjectOpen(sender, e);
+
+            // initialize the parser
+            //var parser = new XSharpCodeParser(this);
+            //parser.Parse("CLASS Foo\n CONSTRUCTOR()\nEND CLASS\n");
+
             if (filechangemanager == null)
             {
                 filechangemanager = new FileChangeManager(this.Site);

@@ -18,7 +18,7 @@ using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using XSharpModel;
-
+using System.Linq;
 namespace XSharpColorizer
 {
     /// <summary>
@@ -347,7 +347,14 @@ namespace XSharpColorizer
                     }
                     else if (XSharpLexer.IsKeyword(tokenType))
                     {
-                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
+                        try
+                        {
+                            newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Debug.WriteLine($" Error converting token {tokenSpan.Start} {tokenSpan.End} " + e.Message);
+                        }
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {
@@ -448,23 +455,21 @@ namespace XSharpColorizer
         {
             var result = new List<ClassificationSpan>();
             var originaltags = tags;        // create copy in case the tags property gets changed in the background
-            foreach (var tag in originaltags)
+            for (int i = 0; i < originaltags.Count; i++)
             {
-                if (tag.Span.End.Position < span.Start.Position || tag.Span.Start.Position >= span.End.Position)
-                {
-                    // skip tags that are completely before or after the selected span;
-                }
-                else
+                var tag = originaltags[i];
+                // Use the Span.Span property to avoid the check for the same Snapshot
+                if (tag.Span.Span.OverlapsWith(span.Span))
                 {
                     result.Add(tag);
                 }
+                if (tag.Span.Start > span.Span.End)
+                    break;
             }
             return result;
         }
 
-
-
-        #endregion
+          #endregion
 
         static internal XSharpClassifier GetColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
@@ -474,6 +479,18 @@ namespace XSharpColorizer
         }
 
     }
+    internal class ClassificationSpanComparer : IComparer<ClassificationSpan>
+    {
+        public int Compare(ClassificationSpan x, ClassificationSpan y)
+        {
+            if (x.Span.Start < y.Span.Start)
+                return -1;
+            if (x.Span.Start > y.Span.Start)
+                return 1;
+            return x.Span.Length - y.Span.Length;
+            
 
+        }
+    }
 }
 

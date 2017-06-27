@@ -15,23 +15,41 @@ namespace XSharpColorizer
     {
         public static ITagSpan<IClassificationTag> ToTagSpan(this TextSpan span, ITextSnapshot snapshot, IClassificationType classificationType)
         {
-            return new TagSpan<IClassificationTag>(
-              new SnapshotSpan(snapshot, span.Start, span.Length),
-              new ClassificationTag(classificationType)
-              );
+            int start = span.Start;
+            int length = span.Length;
+            // validate
+            if (span.End > snapshot.Length)
+            {
+                length = snapshot.Length - start;
+            }
+            var sspan = new SnapshotSpan(snapshot, start, length);
+            var tag = new ClassificationTag(classificationType);
+            return new TagSpan<IClassificationTag>(sspan, tag);
         }
 
         public static ClassificationSpan ToClassificationSpan(this TextSpan span, ITextSnapshot snapshot, IClassificationType classificationType)
         {
-            return new ClassificationSpan(
-              new SnapshotSpan(snapshot,  span.Start, span.Length),
-              classificationType
-              );
+            int start = span.Start;
+            int length = span.Length;
+            // validate
+            if (span.End > snapshot.Length)
+            {
+                length = snapshot.Length - start;
+            }
+            SnapshotSpan sspan = new SnapshotSpan(snapshot, start, length);
+            return new ClassificationSpan(sspan, classificationType);
         }
 
         public static String GetText(this ITextSnapshot snapshot, TextSpan span)
         {
-            return snapshot.GetText(new Span(span.Start, span.Length));
+            int start = span.Start;
+            int length = span.Length;
+            // validate
+            if (span.End > snapshot.Length)
+            {
+                length = snapshot.Length - start;
+            }
+            return snapshot.GetText(new Span(start, length));
         }
     }
 }

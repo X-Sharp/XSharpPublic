@@ -23,9 +23,41 @@ using static XSharp.Project.XSharpConstants;
 #if VODESIGNER
 using XSharp.VOEditors;
 #endif
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = "1.0.0.0")]
+/*
+Substitution strings
+String	Description
+$=RegistryEntry$	The value of the RegistryEntry entry. If the registry entry string 
+                    ends in a backslash (\), then the default value of the registry subkey is used. 
+                    For example, the substitution string $=HKEY_CURRENT_USER\Environment\TEMP$ is expanded 
+                    to the temporary folder of the current user.
+$AppName$	        The qualified name of the application that is passed to the AppEnv.dll entry points. 
+                    The qualified name consists of the application name, an underscore, and the class identifier 
+                    (CLSID) of the application automation object, which is also recorded as the value of the 
+                    ThisVersionDTECLSID setting in the project .pkgdef file.
+$AppDataLocalFolder	The subfolder under %LOCALAPPDATA% for this application.
+$BaseInstallDir$	The full path of the location where Visual Studio was installed.
+$CommonFiles$	    The value of the %CommonProgramFiles% environment variable.
+$MyDocuments$	    The full path of the My Documents folder of the current user.
+$PackageFolder$	    The full path of the directory that contains the package assembly files for the application.
+$ProgramFiles$	    The value of the %ProgramFiles% environment variable.
+$RootFolder$	    The full path of the root directory of the application.
+$RootKey$	        The root registry key for the application. By default the root is in 
+                    HKEY_CURRENT_USER\Software\CompanyName\ProjectName\VersionNumber (when the application 
+                    is running, _Config is appended to this key). It is set by the RegistryRoot value in 
+                    the SolutionName.pkgdef file.
+                    The $RootKey$ string can be used to retrieve a registry value under the application subkey. 
+                    For example, the string "$=$RootKey$\AppIcon$" will return the value of the AppIcon entry 
+                    under the application root subkey.
+The parser processes the .pkgdef file sequentially, and can access a registry entry under the application subkey only if the entry has been previously defined
+$ShellFolder$	The full path of the location where Visual Studio was installed.
+$System$	The Windows\system32 folder.
+$WINDIR$	The Windows folder.
+*/
+          
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis.VS", CodeBase = "XSharp.CodeAnalysis.VS.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
-
+[assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
 namespace XSharp.Project
 {
 
@@ -171,7 +203,7 @@ namespace XSharp.Project
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideBindingPath]        // Tell VS to look in our path for assemblies
+    //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
     public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
     {
         private uint m_componentID;

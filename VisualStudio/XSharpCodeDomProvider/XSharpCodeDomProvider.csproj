@@ -53,6 +53,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
     <Compile Include="IProjectTypeHelper.cs" />
     <Compile Include="XSharpCodeCompiler.cs" />
     <Compile Include="XSharpCodeConstants.cs" />
@@ -70,7 +76,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) "C:\program files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\PrivateAssemblies"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

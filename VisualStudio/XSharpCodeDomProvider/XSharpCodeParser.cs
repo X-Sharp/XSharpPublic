@@ -51,18 +51,18 @@ namespace XSharp.CodeDom
             //
             try
             {
-                // Tab replace, in order to have the good position of Memebers (Line/col)
+                // Tab replace, in order to have the good position of Members (Line/col)
                 String TabSpace = new String(' ', TabSize);
                 source = source.Replace("\t", TabSpace);
                 //
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source);
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source, _projectNode.ParseOptions);
                 var syntaxRoot = tree.GetRoot();
                 // Get the antlr4 parse tree root
                 var xtree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
 
                 // We need to d 2 steps here:
-                // 1 - Scan for the fields in te classes, so we know the difference between fields and properties when we perform step 2
-                // 2 - Scan for the rest. We pass the list of fields to the treediscover code so it will know the fields that 
+                // 1 - Scan for the fields , so we know the difference between fields and properties when we perform step 2
+                // 2 - Scan for the rest. We pass the list of fields to the tree discover code so it "knows" about all fields
 
                 var discoverFields = new XSharpFieldsDiscover(_projectNode);
                 discoverFields.SourceCode = source;

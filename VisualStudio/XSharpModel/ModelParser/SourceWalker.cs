@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.CodeAnalysis.XSharp.Syntax;
 namespace XSharpModel
 {
     public class SourceWalker
@@ -27,9 +28,9 @@ namespace XSharpModel
 
         private XFile _file;
 
-        private LanguageService.SyntaxTree.ITokenStream _TokenStream;
-        private LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.SourceContext _xTree;
-        private bool _treeInit;
+        private ITokenStream _TokenStream;
+        private XSharpParser.SourceContext _xTree;
+        private bool _hasParseErrors;
 
         public ITextSnapshot Snapshot
         {
@@ -103,6 +104,8 @@ namespace XSharpModel
 
         }
 
+        public bool HasParseErrors => _hasParseErrors;
+
         // Unused ?
         //public string Source
         //{
@@ -144,8 +147,8 @@ namespace XSharpModel
                 opts.ParseLevel = ParseLevel.Lex;
                 LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, opts, _fullPath);
                 var syntaxRoot = tree.GetRoot();
-                _treeInit = false;
-                _TokenStream = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XTokenStream;
+                _xTree = null;
+                _TokenStream = ((CompilationUnitSyntax)syntaxRoot).XTokenStream;
             }
             catch (Exception e)
             {
@@ -172,7 +175,7 @@ namespace XSharpModel
 
         public void InitParse()
         {
-            _treeInit = false;
+            _xTree = null;
             //
 
             try
@@ -185,10 +188,10 @@ namespace XSharpModel
                 // ShowErrorsAsync(syntaxRoot);
 
                  // Get the antlr4 parse tree root
-                _xTree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
-                _TokenStream = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XTokenStream;
+                _xTree = ((CompilationUnitSyntax)syntaxRoot).XSource;
+                _TokenStream = ((CompilationUnitSyntax)syntaxRoot).XTokenStream;
+                _hasParseErrors = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).ContainsDiagnostics;
                 //
-                _treeInit = true;
             }
             catch (Exception e)
             {
@@ -238,24 +241,28 @@ namespace XSharpModel
 
         public void BuildRegionTagsOnly()
         {
-            var discover = new XSharpModelRegionDiscover(_file);
-            discover.BuildRegionTags = true;
-            discover.BuildLocals = true;
-            discover.BuildModel = false;
-            //
-            if ( _treeInit && ( _snapshot != null ) )
+            if (!_hasParseErrors)
             {
-                var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
+                var discover = new XSharpModelRegionDiscover(_file);
+                discover.BuildRegionTags = true;
+                discover.BuildLocals = true;
+                discover.BuildModel = false;
                 //
-                discover.Snapshot = _snapshot;
-                discover.xsharpRegionStartType = _xsharpRegionStartType;
-                discover.xsharpRegionStopType = _xsharpRegionStopType;
-                // Walk the tree. The TreeDiscover class will collect the tags.
-                walker.Walk(discover, _xTree);
+                if (_xTree != null && _snapshot != null)
+                {
+                    var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
+                    //
+                    discover.Snapshot = _snapshot;
+                    discover.xsharpRegionStartType = _xsharpRegionStartType;
+                    discover.xsharpRegionStopType = _xsharpRegionStopType;
+                    // Walk the tree. The TreeDiscover class will collect the tags.
+                    walker.Walk(discover, _xTree);
+                }
+                //
+                _regionTags = discover.tags;
             }
-            //
-            _regionTags = discover.tags;
         }
+
 
         public void BuildModelOnly()
         {
@@ -276,7 +283,7 @@ namespace XSharpModel
                 }
             }
             //
-            if (_treeInit )
+            if (_xTree != null )
             {
                 var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
                 //
@@ -289,12 +296,12 @@ namespace XSharpModel
         {
             //
             var discover = new XSharpModelRegionDiscover(_file);
-            discover.BuildRegionTags = (_snapshot != null);
+            discover.BuildRegionTags = (_snapshot != null && !_hasParseErrors);
             discover.BuildModel = true;
             discover.BuildLocals = true;
 
             //
-            if (_treeInit)
+            if (_xTree != null)
             {
                 var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
                 //
@@ -321,7 +328,5 @@ namespace XSharpModel
                 _regionTags = discover.tags;
             }
         }
-
-
     }
 }

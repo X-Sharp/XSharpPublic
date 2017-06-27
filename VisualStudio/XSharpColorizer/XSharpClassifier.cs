@@ -114,7 +114,7 @@ namespace XSharpColorizer
         {
             if (snapshot.Version == buffer.CurrentSnapshot.Version)
             {
-                if (this.ClassificationChanged != null)
+                if (this.ClassificationChanged != null )
                 {
                     this.ClassificationChanged(this, new ClassificationChangedEventArgs(
                         new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
@@ -130,7 +130,6 @@ namespace XSharpColorizer
                 _bwParse.RunWorkerAsync(buffer.CurrentSnapshot);
             }
         }
-
 
         private string GetFileName()
         {
@@ -168,10 +167,13 @@ namespace XSharpColorizer
             var snapshot = (ITextSnapshot)e.Result;
             if (snapshot.Version == buffer.CurrentSnapshot.Version)
             {
-                if (buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
+                if (!xsWalker.HasParseErrors)
                 {
-                    var tagger = buffer.Properties[typeof(XSharpOutliningTagger)] as XSharpOutliningTagger;
-                    tagger.Update();
+                    if (buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
+                    {
+                        var tagger = buffer.Properties[typeof(XSharpOutliningTagger)] as XSharpOutliningTagger;
+                        tagger.Update();
+                    }
                 }
             }
             else
@@ -181,153 +183,66 @@ namespace XSharpColorizer
             }
         }
 
-        private void BuildColorClassifications(ITokenStream TokenStream, ITextSnapshot snapshot)
+
+        private TextSpan Token2TextSpan(IToken token)
         {
-            System.Diagnostics.Debug.WriteLine("Starting colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            if (TokenStream != null)
+            TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
+            return tokenSpan;
+        }
+
+        private ClassificationSpan Token2ClassificationSpan(IToken token, ITextSnapshot snapshot, IClassificationType type)
+        {
+            TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
+            ClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
+            return span;
+        }
+
+
+        private ClassificationSpan ClassifyToken(IToken token, IList<ClassificationSpan> tagsRegion, ITextSnapshot snapshot)
+        {
+            var tokenType = token.Type;
+            ClassificationSpan result = null;
+            switch (token.Channel)
             {
-                IToken token = null;
-                int iLastInclude = -1;
-                int iLastDefine = -1;
-                int iLastSLComment = -1;
-                int iLastDocComment = -1;
-                List<ClassificationSpan> newtags = new List<ClassificationSpan>();
-                for (var iToken = 0; iToken < TokenStream.Size; iToken++)
-                {
-                    token = TokenStream.Get(iToken);
-                    var tokenType = token.Type;
-                    TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
-                    //
-                    if (token.Channel != 0)
+                case XSharpLexer.PRAGMACHANNEL:         // #pragma
+                case XSharpLexer.PREPROCESSORCHANNEL:
+                    // #define, #ifdef etc
+                    result = Token2ClassificationSpan(token, snapshot, xsharpPPType);
+                    switch (token.Type)
                     {
-                        switch (token.Channel)
-                        {
-                            case XSharpLexer.PREPROCESSORCHANNEL:          // #define, #ifdef etc
-                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPPType));
-                                switch (token.Type)
-                                {
-                                    //case XSharpLexer.PP_ELSE:
-                                    //    tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
-                                    //    tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
-                                    //    break;
-                                    case XSharpLexer.PP_REGION:
-                                    case XSharpLexer.PP_IFDEF:
-                                    case XSharpLexer.PP_IFNDEF:
-                                        tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
-                                        break;
-                                    case XSharpLexer.PP_ENDREGION:
-                                    case XSharpLexer.PP_ENDIF:
-                                        tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
-                                        break;
-                                    case XSharpLexer.PP_INCLUDE:
-                                        // scan for list of #includes and create a block
-                                        if (iToken > iLastInclude)
-                                        {
-                                            var lastToken = ScanForLastToken(XSharpLexer.PP_INCLUDE, iToken, TokenStream, out iLastInclude);
-                                            if (token != lastToken)
-                                            {
-                                                tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
-                                                var endSpan = new TextSpan(lastToken.StartIndex, lastToken.StopIndex - lastToken.StartIndex + 1);
-                                                tagsRegion.Add(endSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
-
-                                            }
-                                        }
-                                        break;
-                                    case XSharpLexer.PP_DEFINE:
-                                        // scan for list of #includes and create a block
-                                        if (iToken > iLastDefine)
-                                        {
-                                            var lastToken = ScanForLastToken(XSharpLexer.PP_DEFINE, iToken, TokenStream, out iLastDefine);
-                                            if (token != lastToken)
-                                            {
-                                                tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
-                                                var endSpan = new TextSpan(lastToken.StartIndex, lastToken.StopIndex - lastToken.StartIndex + 1);
-                                                tagsRegion.Add(endSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
-
-                                            }
-                                        }
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                break;
-                            case XSharpLexer.PRAGMACHANNEL:         // #pragma
-                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPPType));
-                                break;
-                            case XSharpLexer.DEFOUTCHANNEL:                // code in an inactive #ifdef
-                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpInactiveType));
-                                break;
-                            case XSharpLexer.XMLDOCCHANNEL:
-                            case XSharpLexer.Hidden:
-                                if (XSharpLexer.IsComment(token.Type))
-                                {
-                                    newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
-                                    if (token.Type == XSharpLexer.ML_COMMENT)
-                                    {
-                                        tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
-                                        tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
-                                    }
-                                    else if (token.Type == XSharpLexer.SL_COMMENT)
-                                    {
-                                        if (iToken > iLastSLComment)
-                                        {
-                                            var lastToken = ScanForLastToken(XSharpLexer.SL_COMMENT, iToken, TokenStream, out iLastSLComment);
-                                            if (token != lastToken)
-                                            {
-                                                tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
-                                                var endSpan = new TextSpan(lastToken.StartIndex, lastToken.StopIndex - lastToken.StartIndex + 1);
-                                                tagsRegion.Add(endSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
-
-                                            }
-                                        }
-                                    }
-                                    else if (token.Type == XSharpLexer.DOC_COMMENT)
-                                    {
-                                        if (iToken > iLastDocComment)
-                                        {
-                                            var lastToken = ScanForLastToken(XSharpLexer.DOC_COMMENT, iToken, TokenStream, out iLastDocComment);
-                                            if (token != lastToken)
-                                            {
-                                                tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
-                                                var endSpan = new TextSpan(lastToken.StartIndex, lastToken.StopIndex - lastToken.StartIndex + 1);
-                                                tagsRegion.Add(endSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
-
-                                            }
-                                        }
-
-                                    }
-                                }
-                                //
-                                // add code to create a region for a group of
-                                // SL_COMMENT and/or DOC_COMMENT lines
-                                // detect when we are on the last line of a comment block and then
-                                // find the first line of the block by scanning backwards
-                                // and when the line numbers are different then create region
-
-                                else if (token.Type == XSharpLexer.LINE_CONT ||
-                                        token.Type == XSharpLexer.LINE_CONT_OLD)
-                                {
-                                    // Semi colon followed by optional comment and whitespace
-                                    // if there is an embedded comment then mark that as comment
-                                    if (token.Text.Trim().Length > 1)
-                                    {
-                                        // Contains embedded comment
-                                        tokenSpan = new TextSpan(token.StartIndex + 1, token.StopIndex - token.StartIndex);
-                                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
-                                        // The semi colon
-                                        tokenSpan = new TextSpan(token.StartIndex, 1);
-                                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPunctuationType));
-                                        continue;
-                                    }
-
-                                }
-                                break;
-                        }
-                        continue;
+                        case XSharpLexer.PP_REGION:
+                        case XSharpLexer.PP_IFDEF:
+                        case XSharpLexer.PP_IFNDEF:
+                            tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                            break;
+                        case XSharpLexer.PP_ENDREGION:
+                        case XSharpLexer.PP_ENDIF:
+                            tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
+                            break;
+                        default:
+                            break;
                     }
-                    else if (XSharpLexer.IsIdentifier(tokenType))
+                    break;
+                case XSharpLexer.DEFOUTCHANNEL:                // code in an inactive #ifdef
+                    result = Token2ClassificationSpan(token, snapshot, xsharpInactiveType);
+                    break;
+                case XSharpLexer.XMLDOCCHANNEL:
+                case XSharpLexer.Hidden:
+                    if (XSharpLexer.IsComment(token.Type))
                     {
-                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpIdentifierType));
+                        result = Token2ClassificationSpan(token, snapshot, xsharpCommentType);
+                        if (token.Type == XSharpLexer.ML_COMMENT)
+                        {
+                            tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                            tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
+                        }
+                    }
+                    break;
+                default: // Normal channel
+                    IClassificationType type = null;
+                    if (XSharpLexer.IsIdentifier(tokenType))
+                    {
+                        type = xsharpIdentifierType;
                     }
                     else if (XSharpLexer.IsConstant(tokenType))
                     {
@@ -337,51 +252,115 @@ namespace XSharpColorizer
                             case XSharpLexer.CHAR_CONST:
                             case XSharpLexer.ESCAPED_STRING_CONST:
                             case XSharpLexer.INTERPOLATED_STRING_CONST:
-                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpStringType));
+                                type = xsharpStringType;
                                 break;
                             default:
-                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpNumberType));
+                                type = xsharpNumberType;
                                 break;
                         }
 
                     }
                     else if (XSharpLexer.IsKeyword(tokenType))
                     {
-                        try
-                        {
-                            newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
-                        }
-                        catch (Exception e)
-                        {
-                            System.Diagnostics.Debug.WriteLine($" Error converting token {tokenSpan.Start} {tokenSpan.End} " + e.Message);
-                        }
+                        type = xsharpKeywordType;
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {
                         switch (tokenType)
                         {
-                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LPAREN:
-                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LCURLY:
-                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LBRKT:
-                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpBraceOpenType));
+                            case XSharpLexer.LPAREN:
+                            case XSharpLexer.LCURLY:
+                            case XSharpLexer.LBRKT:
+                                type = xsharpBraceOpenType;
                                 break;
 
-                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RPAREN:
-                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RCURLY:
-                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RBRKT:
-                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpBraceCloseType));
+                            case XSharpLexer.RPAREN:
+                            case XSharpLexer.RCURLY:
+                            case XSharpLexer.RBRKT:
+                                type = xsharpBraceCloseType;
                                 break;
                             default:
-                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpOperatorType));
+                                type = xsharpOperatorType;
+                                break;
+                        }
+                    }
+                    if (type != null)
+                    {
+                        result = Token2ClassificationSpan(token, snapshot, type);
+                    }
+                    break;
+            }
+            return result;
+        }
+        private void scanForRegion(IToken token, int iToken, ITokenStream TokenStream, ref int iLast, ITextSnapshot snapshot, List<ClassificationSpan> tagsRegion)
+        {
+            if (iToken > iLast)
+            {
+                var lastToken = ScanForLastToken(token.Type, iToken, TokenStream, out iLast);
+                if (token != lastToken)
+                {
+                    tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                    tagsRegion.Add(Token2ClassificationSpan(lastToken, snapshot, xsharpRegionStop));
+                }
+            }
+        }
+
+        private void BuildColorClassifications(ITokenStream TokenStream, ITextSnapshot snapshot)
+        {
+            System.Diagnostics.Debug.WriteLine("Starting colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            if (TokenStream != null)
+            {
+                int iLastInclude = -1;
+                int iLastPPDefine = -1;
+                int iLastDefine = -1;
+                int iLastSLComment = -1;
+                int iLastDocComment = -1;
+                int iLastUsing = -1;
+                //int iLastGlobal = -1;
+                //int iLastLocal = -1;
+                List<ClassificationSpan> newtags = new List<ClassificationSpan>();
+                for (var iToken = 0; iToken < TokenStream.Size; iToken++)
+                {
+                    var token = TokenStream.Get(iToken);
+                    var span = ClassifyToken(token, tagsRegion, snapshot);
+                    if (span != null)
+                    {
+                        newtags.Add(span);
+                        // now look for Regions of similar code lines
+                        switch (token.Type)
+                        {
+                            case XSharpLexer.PP_INCLUDE:
+                                scanForRegion(token, iToken, TokenStream, ref iLastInclude, snapshot, tagsRegion);
+                                break;
+                            case XSharpLexer.PP_DEFINE:
+                                scanForRegion(token, iToken, TokenStream, ref iLastPPDefine, snapshot, tagsRegion);
+                                break;
+                            case XSharpLexer.DEFINE:
+                                scanForRegion(token, iToken, TokenStream, ref iLastDefine, snapshot, tagsRegion);
+                                break;
+                            //case XSharpLexer.GLOBAL:
+                            //    scanForRegion(token, iToken, TokenStream, ref iLastGlobal, snapshot, tagsRegion);
+                            //    break;
+                            //case XSharpLexer.LOCAL:
+                            //    scanForRegion(token, iToken, TokenStream, ref iLastLocal, snapshot, tagsRegion);
+                            //    break;
+                            case XSharpLexer.SL_COMMENT:
+                                scanForRegion(token, iToken, TokenStream, ref iLastSLComment, snapshot, tagsRegion);
+                                break;
+                            case XSharpLexer.DOC_COMMENT:
+                                scanForRegion(token, iToken, TokenStream, ref iLastDocComment, snapshot, tagsRegion);
+                                break;
+                            case XSharpLexer.USING:
+                                scanForRegion(token, iToken, TokenStream, ref iLastUsing, snapshot, tagsRegion);
+                                break;
+                            default:
                                 break;
                         }
                     }
                 }
-                // Add Region Tags
-                foreach (var tag in xsWalker.RegionTags)
-                {
-                    newtags.Add(tag);
-                }
+                // Make local copy
+                ClassificationSpan[] regionTags = xsWalker.RegionTags.ToArray();
+                newtags.AddRange(regionTags);
                 tags = newtags;
             }
             System.Diagnostics.Debug.WriteLine("Ending colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
@@ -453,6 +432,11 @@ namespace XSharpColorizer
         /// <returns>A list of ClassificationSpans that represent spans identified to be of this classification.</returns>
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
+            // Todo: 
+            // We can probably avoid building all tags in BuildColorClassifications.
+            // and directly create the necessary tags here from the List<XSharpToken>
+            // In that case we need to keep a reference to the tokenstream in stead of the tags
+            // There also must be a smart way to find the first matching tag.
             var result = new List<ClassificationSpan>();
             var originaltags = tags;        // create copy in case the tags property gets changed in the background
             for (int i = 0; i < originaltags.Count; i++)

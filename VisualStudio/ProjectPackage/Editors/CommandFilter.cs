@@ -446,10 +446,7 @@ namespace XSharp.Project
                 {
                     currentNS = currentNamespace.Name;
                 }
-                else
-                {
-                    cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
-                }
+                cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
             }
             //
             if ((gotoElement != null) && (gotoElement.IsInitialized))

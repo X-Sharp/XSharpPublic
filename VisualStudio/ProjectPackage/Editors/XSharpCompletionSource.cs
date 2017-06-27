@@ -2079,6 +2079,7 @@ namespace XSharpLanguage
                 parseoptions = prj.ParseOptions;
 
             }
+            //System.Threading.Thread.Sleep(500);
             var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
             var tokens = lexer.GetTokenStream();
 

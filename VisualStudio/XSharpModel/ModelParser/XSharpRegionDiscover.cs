@@ -3,17 +3,13 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using System;
+using System.Collections.Generic;
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
 using Microsoft.VisualStudio.Text.Classification;
-using Microsoft.VisualStudio.Text.Tagging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LanguageService.SyntaxTree.Tree;
 using Microsoft.VisualStudio.Text;
 
@@ -26,7 +22,6 @@ namespace XSharpModel
         public bool BuildRegionTags { get; internal set; }
         public bool BuildLocals
         {
-
             get
             {
                 return _buildLocals;
@@ -97,46 +92,6 @@ namespace XSharpModel
                 {
                     TagRegion(context, context.ChildCount - 2);
                 }
-
-                else if (context is XSharpParser.Using_Context)
-                {
-                    // if we are the first in a list of usings then mark the whole list
-                    // parent of using is Entity
-                    // parent above that is namespace or source
-                    var parent = context.Parent.Parent as ParserRuleContext;
-                    var index = parent.children.IndexOf(context.Parent);
-                    if (index > 0
-                        && parent.children[index - 1].ChildCount > 0
-                        && parent.children[index - 1].GetChild(0)  is XSharpParser.Using_Context)
-                    {
-                        ; // do nothing
-                    }
-                    else
-                    {
-                        index += 1;
-                        var last = context as XSharpParser.Using_Context;
-                        while (index < parent.children.Count)
-                        {
-                            var ent = parent.children[index];
-                            if (ent is XSharpParser.EntityContext && ent.ChildCount > 0 && ent.GetChild(0) is XSharpParser.Using_Context)
-                            {
-                                last = ent.GetChild(0) as XSharpParser.Using_Context;
-                                index += 1;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        if (last != context)
-                        {
-                            var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
-                            tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
-                            tokenSpan = new TextSpan(last.Stop.StartIndex - 1, 1);
-                            tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
-                        }
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -150,20 +105,20 @@ namespace XSharpModel
             {
                 var context = _context as XSharpParserRuleContext;
                 var endToken = context.GetChild(endChild);
-                if (endToken is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
+                if (endToken is TerminalNodeImpl)
                 {
-                    LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)endToken).Symbol;
+                    IToken sym = ((TerminalNodeImpl)endToken).Symbol;
                     var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
                     tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
                     tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
                     tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
                 }
-                else if (endToken is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext)
+                else if (endToken is XSharpParser.StatementBlockContext)
                 {
-                    XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
+                    XSharpParser.StatementBlockContext lastTokenInContext = endToken as XSharpParser.StatementBlockContext;
                     var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
                     tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
-                    tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex - 1, 1);
+                    tokenSpan = new TextSpan(lastTokenInContext.Stop.StartIndex - 1, 1);
                     tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
                 }
                 else if (endToken is ParserRuleContext)

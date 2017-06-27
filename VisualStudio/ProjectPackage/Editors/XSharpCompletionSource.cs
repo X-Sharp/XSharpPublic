@@ -2560,11 +2560,12 @@ namespace XSharpLanguage
                         cType = null;
                     }
                 }
-                //else if (currentToken.EndsWith("[]"))
-                //{
-                //}
                 else
                 {
+                    if (currentToken.EndsWith("[]"))
+                    {
+                        currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                    }
                     // First token, so it could be a parameter or a local var
                     if (currentPos == 0)
                     {

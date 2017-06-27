@@ -110,6 +110,7 @@ namespace XSharpModel
             }
         }
 
+        public bool IsArray { get; set; }
         public override String Description
         {
             get

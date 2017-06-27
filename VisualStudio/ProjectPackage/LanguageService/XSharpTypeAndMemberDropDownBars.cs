@@ -189,6 +189,15 @@ namespace XSharp.LanguageService
             ts.iStartIndex = tr.StartColumn - 1;
             ts.iEndLine = tr.EndLine - 1;
             ts.iEndIndex = tr.EndColumn - 1;
+            // validate values
+            if (ts.iStartLine < 0)
+                ts.iStartLine = 0;
+            if (ts.iStartIndex < 0)
+                ts.iStartIndex = 0;
+            if (ts.iEndLine < ts.iStartLine)
+                ts.iEndLine = ts.iStartLine;
+            if (ts.iEndIndex < ts.iStartLine && ts.iStartLine == ts.iEndLine)
+                ts.iEndIndex = ts.iStartIndex;
             return ts;
         }
 

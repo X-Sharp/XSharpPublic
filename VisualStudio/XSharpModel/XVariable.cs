@@ -50,7 +50,7 @@ namespace XSharpModel
         {
             get
             {
-                return this.Prototype + " as " + this.TypeName;
+                return this.Prototype + " as " + this.TypeName + (IsArray ? "[]" : "");
             }
         }
 
@@ -61,6 +61,7 @@ namespace XSharpModel
                 return this.Name;
             }
         }
+        public bool IsArray { get; set; }
 
     }
 }

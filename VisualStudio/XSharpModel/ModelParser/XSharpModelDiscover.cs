@@ -434,6 +434,7 @@ namespace XSharpModel
                 new TextRange(context), new TextInterval(context),
                 context.ReturnType == null ? "Void" : context.ReturnType.GetText());
             //
+            
             addGlobalMember(newMethod);
         }
         public override void ExitVoglobal([NotNull] XSharpParser.VoglobalContext context)
@@ -496,6 +497,7 @@ namespace XSharpModel
                         new TextRange(context), new TextInterval(context));
                 //
                 // Todo additional properties ?
+                newMember.IsArray = context.Dim != null; 
                 addMember(newMember);
             }
 
@@ -704,6 +706,7 @@ namespace XSharpModel
                         new TextRange(varContext.Start.Line, varContext.Start.Column, current.Stop.Line, current.Stop.Column),
                         new TextInterval(current), current.DataType.GetText());
                     newClassVar.File = this._file;
+                    newClassVar.IsArray = varContext.Dim != null;
                     //
                     var type = this.currentType;
                     if (type != null)
@@ -713,7 +716,6 @@ namespace XSharpModel
                     }
                 }
             }
-
         }
 
         #endregion
@@ -789,6 +791,7 @@ namespace XSharpModel
                             new TextRange(tmpContext), new TextInterval(tmpContext),
                             localType);
                         local.File = this._file;
+                        local.IsArray = tmpContext.Dim != null;
                         //
                         if (this._currentMethod != null)
                         {

@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace XSharpModel
 {
@@ -42,11 +43,11 @@ namespace XSharpModel
             return _walker;
         }
 
-        private Queue<XProject> _projects;
+        private ConcurrentQueue<XProject> _projects;
         private Thread _WalkerThread;
         private ModelWalker()
         {
-            _projects = new Queue<XProject>();
+            _projects = new ConcurrentQueue<XProject>();
         }
 
         internal void AddProject(XProject xProject)
@@ -86,8 +87,8 @@ namespace XSharpModel
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Cannot check Background walker Thread : ");
-                    Debug.WriteLine(e.Message);
+                    Support.Debug("Cannot check Background walker Thread : ");
+                    Support.Debug(e.Message);
                 }
                 return false;
 
@@ -110,8 +111,8 @@ namespace XSharpModel
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Cannot start Background walker Thread : ");
-                Debug.WriteLine(e.Message);
+                Support.Debug("Cannot start Background walker Thread : ");
+                Support.Debug(e.Message);
             }
             return;
         }
@@ -139,7 +140,10 @@ namespace XSharpModel
                     {
                         break;
                     }
-                    project = _projects.Dequeue();
+                    if (! _projects.TryDequeue( out project))
+                    {
+                        break;
+                    }
                     project.ProjectNode.SetStatusBarText($"Start scanning project {project.Name}");
                     //
                 }
@@ -150,6 +154,7 @@ namespace XSharpModel
 				{
 					options.MaxDegreeOfParallelism = (System.Environment.ProcessorCount * 3)/ 4;
 				}
+                project.ProjectNode.SetStatusBarAnimation(true, 0);
                 Parallel.ForEach(aFiles, options, file =>
                 {
                     // Detect project unload
@@ -161,6 +166,7 @@ namespace XSharpModel
                     }
                 });
                 project.ProjectNode.SetStatusBarText("");
+                project.ProjectNode.SetStatusBarAnimation(false, 0);
             } while (true);
         }
 
@@ -169,13 +175,12 @@ namespace XSharpModel
             DateTime dt = System.IO.File.GetLastWriteTime(file.FullPath);
             if (dt > file.LastWritten)
             {
-                SourceWalker sw = new SourceWalker();
+                SourceWalker sw = new SourceWalker(file);
                 //
-                sw.File = file;
                 try
                 {
-                    sw.InitParse();
-                    sw.BuildModelOnly();
+                    var xTree = sw.Parse();
+                    sw.BuildModel(xTree, false);
                     file.LastWritten= dt;
                     //
                 }
@@ -200,8 +205,8 @@ namespace XSharpModel
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Cannot stop Background walker Thread : ");
-                Debug.WriteLine(e.Message);
+                Support.Debug("Cannot stop Background walker Thread : ");
+                Support.Debug(e.Message);
             }
             _WalkerThread = null;
             return;

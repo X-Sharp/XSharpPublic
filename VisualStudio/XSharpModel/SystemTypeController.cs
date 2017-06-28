@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Immutable;
 
 namespace XSharpModel
 {
@@ -86,7 +87,7 @@ namespace XSharpModel
             }
         }
 
-        public Type FindType(string typeName, IList<string> usings, IList<AssemblyInfo> assemblies)
+        public Type FindType(string typeName, IReadOnlyList<string> usings, IReadOnlyList<AssemblyInfo> assemblies)
         {
             // generic types
             if (typeName.EndsWith(">"))
@@ -145,7 +146,7 @@ namespace XSharpModel
             return null;
         }
 
-        public static Type Lookup(string typeName, IList<AssemblyInfo> theirassemblies)
+        public static Type Lookup(string typeName, IReadOnlyList<AssemblyInfo> theirassemblies)
         {
             System.Type sType = null;
             foreach (AssemblyInfo assembly in theirassemblies)
@@ -179,7 +180,7 @@ namespace XSharpModel
             return sType;
         }
 
-        public List<String> GetNamespaces (IList<AssemblyInfo> assemblies)
+        public ImmutableList<String> GetNamespaces (IList<AssemblyInfo> assemblies)
         {
             List<string> result = new List<string>();
             //
@@ -190,14 +191,14 @@ namespace XSharpModel
                     result.AddUnique(ns);
                 }
             }
-            return result;
+            return result.ToImmutableList();
         }
 
-        public IEnumerable<AssemblyInfo> Assemblies
+        public ImmutableList<AssemblyInfo> Assemblies
         {
             get
             {
-                return assemblies.Values;
+                return assemblies.Values.ToImmutableList();
             }
         }
 

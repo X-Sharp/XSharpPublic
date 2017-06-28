@@ -24,7 +24,7 @@ using System.Reflection;
 using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
 using System.Diagnostics;
-
+using System.Collections.Immutable;
 namespace XSharpLanguage
 {
     [Export(typeof(ICompletionSourceProvider))]
@@ -436,13 +436,13 @@ namespace XSharpLanguage
             // And our own Types
             AddXSharpTypeNames(compList, project, startWith);
             // We should also add the external TypeNames
-            IList<XProject> prjs = project.ReferencedProjects;
+            var prjs = project.ReferencedProjects;
             foreach (var prj in prjs)
             {
                 AddXSharpTypeNames(compList, prj, startWith);
             }
             // And Stranger Projects
-            IList<EnvDTE.Project> sprjs = project.StrangerProjects;
+            var sprjs = project.StrangerProjects;
             foreach (var prj in sprjs)
             {
                 AddStrangerTypeNames(compList, prj, startWith);
@@ -584,7 +584,7 @@ namespace XSharpLanguage
                 startLen = dotPos + 1;
             //
             // And our own Types
-            List<XType> xsharpTypes = XSharpTypes.Get();
+            var xsharpTypes = XSharpTypes.Get();
             foreach (XType typeInfo in xsharpTypes.Where(ti => nameStartsWith(ti.FullName, startWith)))
             {
                 String realTypeName = typeInfo.FullName;
@@ -605,7 +605,7 @@ namespace XSharpLanguage
         private void AddNamespaces(CompletionList compList, XProject project, String startWith)
         {
             // We are looking for NameSpaces, in References
-            List<String> namespaces = project.GetAssemblyNamespaces();
+            var namespaces = project.GetAssemblyNamespaces();
             // Calculate the length we must remove
             int startLen = 0;
             int dotPos = startWith.LastIndexOf('.');
@@ -631,13 +631,13 @@ namespace XSharpLanguage
             // And our own Namespaces
             AddXSharpNamespaces(compList, project, startWith, icon);
             // We should also add the external NameSpaces
-            IList<XProject> prjs = project.ReferencedProjects;
+            var prjs = project.ReferencedProjects;
             foreach (var prj in prjs)
             {
                 AddXSharpNamespaces(compList, prj, startWith, icon);
             }
             // And Stranger Projects
-            IList<EnvDTE.Project> sprjs = project.StrangerProjects;
+            var sprjs = project.StrangerProjects;
             foreach (var prj in sprjs)
             {
                 AddStrangerNamespaces(compList, prj, startWith, icon);
@@ -652,7 +652,7 @@ namespace XSharpLanguage
             if (dotPos != -1)
                 startLen = dotPos + 1;
             // And our own Namespaces
-            List<XType> xsNamespaces = project.Namespaces;
+            var xsNamespaces = project.Namespaces;
             foreach (XType nameSpace in xsNamespaces.Where(ns => nameStartsWith(ns.Name, startWith)))
             {
                 String realNamespace = nameSpace.Name;
@@ -3411,7 +3411,7 @@ namespace XSharpLanguage
     // Build a list of all Keywords
     internal static class XSharpTypes
     {
-        static List<XType> _xTypes;
+        static ImmutableList<XType> _xTypes;
 
         static XSharpTypes()
         {
@@ -3421,20 +3421,19 @@ namespace XSharpLanguage
             var lexer = XSharpLexer.Create("", "", XSharpParseOptions.Default);
             //
 
-            _xTypes = new List<XType>();
+            var xTypes = new List<XType>();
             //
             foreach (var keyword in lexer.KwIds)
             {
-                _xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+                xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
             }
             //
+            _xTypes = xTypes.ToImmutableList();
         }
 
-        internal static List<XType> Get()
+        internal static ImmutableList<XType> Get()
         {
-            List<XType> retTypes = new List<XType>();
-            retTypes.AddRange(_xTypes);
-            return retTypes;
+            return _xTypes;
         }
     }
 }

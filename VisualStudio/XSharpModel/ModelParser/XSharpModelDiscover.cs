@@ -4,42 +4,53 @@
 // See License.txt in the project root for license information.
 //
 
-using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
-using LanguageService.SyntaxTree.Tree;
+using LanguageService.CodeAnalysis.XSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text.Classification;
-
+using System.Collections.Immutable;
 
 namespace XSharpModel
 {
-    partial class XSharpModelRegionDiscover : XSharpBaseListener
+    /// <summary>
+    /// This class finds the types, namespaces and regions <br/>
+    /// Internally it is NOT thread safe.
+    /// Its properties return Immutable Lists or Arrays.
+    /// </summary>
+    partial class XSharpModelDiscover : XSharpBaseListener
     {
         //public List<XSharpParser.IEntityContext> entities = new List<XSharpParser.IEntityContext>();
+        private readonly XFile _file;
         private readonly Stack<XType> _currentTypes;
         private readonly Stack<XType> _currentNSpaces;
         private readonly Stack<XSharpParser.LocalvarContext> _localDecls;
-
-        private XFile _file;
+        private readonly XSharpParseOptions _options;
         private XTypeMember _currentMethod;
         private Modifiers _currentVarVisibility;
         private string _defaultNS;
-        public XSharpModelRegionDiscover(XFile file)
+        private readonly bool _buildLocals;
+        public XSharpModelDiscover(XFile file, bool buildLocals)
         {
             // To store intermediate declarations
             this._file = file;
+            this._buildLocals = buildLocals;
             this._localDecls = new Stack<XSharpParser.LocalvarContext>();
             //
             this._currentTypes = new Stack<XType>();
             this._currentNSpaces = new Stack<XType>();
             //
-            this.tags = new List<ClassificationSpan>();
+            this._options = file.Project.ProjectNode.ParseOptions;
+            if (this._file != null && this._file.Project != null)
+            {
+                if (this._file.Project.Loaded)       // this will fail if the project file is already unloaded
+                {
+                    this._defaultNS = this._file.Project.ProjectNode.RootNameSpace;
+                }
+            }
         }
 
         private String currentNamespace
@@ -67,67 +78,18 @@ namespace XSharpModel
                 return _file;
             }
 
-            set
-            {
-                // Project may be null when this is a stand alone file
-                this._file = value;
-                if (this._file != null && this._file.Project != null)
-                {
-                    if (this._file.Project.Loaded)       // this will fail if the project file is already unloaded
-                    {
-                        this._defaultNS = this._file.Project.ProjectNode.RootNameSpace;
-                    }
-                }
-            }
         }
 
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
         {
-            if (this.BuildModel)
+            // Reset TypeList for this file
+            this.File.InitTypeList();
+            // Default namespaces
+            _file.AddUsing("System");
+            if (_file?.Project?.ProjectNode?.ParseOptions != null)
             {
-                if (_reInitModel)
-                {
-                    // Reset TypeList for this file
-                    this.File.InitTypeList();
-                    // Default namespaces
-                    _file.Usings.AddUnique("System");
-                    if (_file?.Project?.ProjectNode?.ParseOptions != null)
-                    {
-                        if (_file.Project.ProjectNode.ParseOptions.IsDialectVO)
-                            _file.Usings.AddUnique("Vulcan");
-                    }
-
-
-                    _reInitModel = false;
-                }
-            }
-        }
-        public override void ExitEveryRule([NotNull] ParserRuleContext context)
-        {
-            if (this.BuildRegionTags)
-            {
-                this.RegionExitEveryRule(context);
-            }
-        }
-        public override void ExitIdentifier([NotNull] XSharpParser.IdentifierContext context)
-        {
-            if (this.BuildRegionTags)
-            {
-                XSharpToken token = null;
-                // Mark the Lexer token as ID for Keywords used as Identifier
-                // so it gets colored properly in the editor
-                if (context.VnToken != null)
-                {
-                    token = context.VnToken.Token as XSharpToken;
-                }
-                else if (context.XsToken != null)
-                {
-                    token = context.XsToken.Token as XSharpToken;
-                }
-                if (token != null)
-                {
-                    token.Original.Type = XSharpLexer.ID;
-                }
+                if (_file.Project.ProjectNode.ParseOptions.IsDialectVO)
+                    _file.AddUsing("Vulcan");
             }
         }
         #region Types
@@ -144,8 +106,9 @@ namespace XSharpModel
 
         private void popType()
         {
-            if (this.BuildModel && _currentTypes.Count > 0)
+            if ( _currentTypes.Count > 0)
             {
+                
                 this._currentTypes.Pop();
             }
         }
@@ -158,69 +121,27 @@ namespace XSharpModel
 
         public override void EnterClass_([NotNull] XSharpParser.Class_Context context)
         {
-            if (this.BuildModel)
+            try
             {
-                try
-                {
-                    XType newClass = new XType(context.Id?.GetText(),
-                       Kind.Class,
-                       decodeModifiers(context.Modifiers?._Tokens),
-                       decodeVisibility(context.Modifiers?._Tokens),
-                       new TextRange(context), new TextInterval(context));
-                    //
-                    newClass.NameSpace = this.currentNamespace;
-                    // and push into the current Namespace
-                    //CurrentNamespace.Types.Add(newClass);
-                    // Static Class ?
-                    newClass.IsStatic = this.isStatic(context.Modifiers?._Tokens);
-                    // Partial Class ?
-                    newClass.IsPartial = this.isPartial(context.Modifiers?._Tokens);
-                    // INHERIT from ?
-                    if (context.BaseType != null)
-                    {
-                        //newClass.BaseTypes.Add(new CodeTypeReference(context.BaseType.GetText()));
-                        newClass.ParentName = context.BaseType.GetText();
-                    }
-                    // IMPLEMENTS ?
-                    if ((context._Implements != null) && (context._Implements.Count > 0))
-                    {
-                        foreach (var interfaces in context._Implements)
-                        {
-                            //newClass.BaseTypes.Add(new CodeTypeReference(interfaces.GetText()));
-                        }
-                    }
-                    if (newClass != null && newClass.FullName != null)
-                    {
-                        newClass = this._file.TypeList.AddUnique(newClass.FullName, newClass);
-                        // Set as Current working Class
-                        pushType(newClass);
-                    }
-                }
-                catch { }
-            }
-        }
-        public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
-        {
-            popType();
-        }
-  
-        public override void EnterStructure_([NotNull] XSharpParser.Structure_Context context)
-        {
-            if (this.BuildModel)
-            {
-                XType newStruct = new XType(context.Id.GetText(),
-                       Kind.Structure,
-                       decodeModifiers(context.Modifiers?._Tokens),
-                       decodeVisibility(context.Modifiers?._Tokens),
-                       new TextRange(context), new TextInterval(context));
+                XType newClass = new XType(context.Id?.GetText(),
+                   Kind.Class,
+                   decodeModifiers(context.Modifiers?._Tokens),
+                   decodeVisibility(context.Modifiers?._Tokens),
+                   new TextRange(context), new TextInterval(context));
                 //
-                newStruct.NameSpace = this.currentNamespace;
+                newClass.NameSpace = this.currentNamespace;
                 // and push into the current Namespace
                 //CurrentNamespace.Types.Add(newClass);
                 // Static Class ?
-                newStruct.IsStatic = this.isStatic(context.Modifiers?._Tokens);
+                newClass.IsStatic = this.isStatic(context.Modifiers?._Tokens);
                 // Partial Class ?
-                newStruct.IsPartial = this.isPartial(context.Modifiers?._Tokens);
+                newClass.IsPartial = this.isPartial(context.Modifiers?._Tokens);
+                // INHERIT from ?
+                if (context.BaseType != null)
+                {
+                    //newClass.BaseTypes.Add(new CodeTypeReference(context.BaseType.GetText()));
+                    newClass.ParentName = context.BaseType.GetText();
+                }
                 // IMPLEMENTS ?
                 if ((context._Implements != null) && (context._Implements.Count > 0))
                 {
@@ -229,12 +150,48 @@ namespace XSharpModel
                         //newClass.BaseTypes.Add(new CodeTypeReference(interfaces.GetText()));
                     }
                 }
-                
-                //
-                newStruct = this._file.TypeList.AddUnique(newStruct.FullName, newStruct);
-                // Set as Current working Class
-                pushType(newStruct);
+                if (newClass != null && newClass.FullName != null)
+                {
+                    newClass = this._file.AddType(newClass);
+                    // Set as Current working Class
+                    pushType(newClass);
+                }
             }
+            catch { }
+        }
+        public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
+        {
+            popType();
+        }
+  
+        public override void EnterStructure_([NotNull] XSharpParser.Structure_Context context)
+        {
+            XType newStruct = new XType(context.Id.GetText(),
+                   Kind.Structure,
+                   decodeModifiers(context.Modifiers?._Tokens),
+                   decodeVisibility(context.Modifiers?._Tokens),
+                   new TextRange(context), new TextInterval(context));
+            //
+            newStruct.NameSpace = this.currentNamespace;
+            // and push into the current Namespace
+            //CurrentNamespace.Types.Add(newClass);
+            // Static Class ?
+            newStruct.IsStatic = this.isStatic(context.Modifiers?._Tokens);
+            // Partial Class ?
+            newStruct.IsPartial = this.isPartial(context.Modifiers?._Tokens);
+            // IMPLEMENTS ?
+            if ((context._Implements != null) && (context._Implements.Count > 0))
+            {
+                foreach (var interfaces in context._Implements)
+                {
+                    //newClass.BaseTypes.Add(new CodeTypeReference(interfaces.GetText()));
+                }
+            }
+                
+            //
+            newStruct = this._file.AddType(newStruct);
+            // Set as Current working Class
+            pushType(newStruct);
         }
         public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
         {
@@ -243,26 +200,23 @@ namespace XSharpModel
 
         public override void EnterInterface_([NotNull] XSharpParser.Interface_Context context)
         {
-            if (this.BuildModel)
-            {
-                XType newIf = new XType(context.Id.GetText(),
-                    Kind.Structure,
-                    decodeModifiers(context.Modifiers?._Tokens),
-                    decodeVisibility(context.Modifiers?._Tokens),
-                    new TextRange(context), new TextInterval(context));
-                //
-                newIf.NameSpace = this.currentNamespace;
-                // and push into the current Namespace
-                //CurrentNamespace.Types.Add(newClass);
-                // Static Class ?
-                newIf.IsStatic = this.isStatic(context.Modifiers?._Tokens);
-                // Partial Class ?
-                newIf.IsPartial = this.isPartial(context.Modifiers?._Tokens);
-                //
-                newIf = this._file.TypeList.AddUnique(newIf.FullName, newIf);
-                // Set as Current working Interface
-                pushType(newIf);
-            }
+            XType newIf = new XType(context.Id.GetText(),
+                Kind.Structure,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context));
+            //
+            newIf.NameSpace = this.currentNamespace;
+            // and push into the current Namespace
+            //CurrentNamespace.Types.Add(newClass);
+            // Static Class ?
+            newIf.IsStatic = this.isStatic(context.Modifiers?._Tokens);
+            // Partial Class ?
+            newIf.IsPartial = this.isPartial(context.Modifiers?._Tokens);
+            //
+            newIf = this._file.AddType(newIf);
+            // Set as Current working Interface
+            pushType(newIf);
         }
         public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
         {
@@ -271,20 +225,17 @@ namespace XSharpModel
   
         public override void EnterEnum_([NotNull] XSharpParser.Enum_Context context)
         {
-            if (this.BuildModel)
-            {
-                XType newEnum = new XType(context.Id.GetText(),
-                    Kind.Enum,
-                    decodeModifiers(context.Modifiers?._Tokens),
-                    decodeVisibility(context.Modifiers?._Tokens),
-                    new TextRange(context), new TextInterval(context));
-                //
-                newEnum.NameSpace = this.currentNamespace;
-                //
-                newEnum = this._file.TypeList.AddUnique(newEnum.FullName, newEnum);
-                // Set as Current working Interface
-                pushType(newEnum);
-            }
+            XType newEnum = new XType(context.Id.GetText(),
+                Kind.Enum,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context));
+            //
+            newEnum.NameSpace = this.currentNamespace;
+            //
+            newEnum = this._file.AddType(newEnum);
+            // Set as Current working Interface
+            pushType(newEnum);
         }
         public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
         {
@@ -293,19 +244,16 @@ namespace XSharpModel
 
         public override void EnterVostruct([NotNull] XSharpParser.VostructContext context)
         {
-            if (this.BuildModel)
-            {
-                XType newStruct = new XType(context.Id.GetText(),
-                        Kind.VOStruct,
-                        decodeModifiers(context.Modifiers?._Tokens),
-                        decodeVisibility(context.Modifiers?._Tokens),
-                        new TextRange(context), new TextInterval(context));
-                //
-                // Todo additional properties ?
+            XType newStruct = new XType(context.Id.GetText(),
+                    Kind.VOStruct,
+                    decodeModifiers(context.Modifiers?._Tokens),
+                    decodeVisibility(context.Modifiers?._Tokens),
+                    new TextRange(context), new TextInterval(context));
+            //
+            // Todo additional properties ?
 
-                newStruct = this._file.TypeList.AddUnique(newStruct.FullName, newStruct);
-                pushType(newStruct);
-            }
+            newStruct = this._file.AddType(newStruct);
+            pushType(newStruct);
         }
         public override void ExitVostruct([NotNull] XSharpParser.VostructContext context)
         {
@@ -314,18 +262,15 @@ namespace XSharpModel
 
         public override void EnterVounion([NotNull] XSharpParser.VounionContext context)
         {
-            if (this.BuildModel)
-            {
-                XType newStruct = new XType(context.Id.GetText(),
-                        Kind.Union,
-                        decodeModifiers(context.Modifiers?._Tokens),
-                        decodeVisibility(context.Modifiers?._Tokens),
-                        new TextRange(context), new TextInterval(context));
-                //
-                // Todo additional properties ?
-                newStruct = this._file.TypeList.AddUnique(newStruct.FullName, newStruct);
-                pushType(newStruct);
-            }
+            XType newStruct = new XType(context.Id.GetText(),
+                    Kind.Union,
+                    decodeModifiers(context.Modifiers?._Tokens),
+                    decodeVisibility(context.Modifiers?._Tokens),
+                    new TextRange(context), new TextInterval(context));
+            //
+            // Todo additional properties ?
+            newStruct = this._file.AddType(newStruct);
+            pushType(newStruct);
         }
         public override void ExitVounion([NotNull] XSharpParser.VounionContext context)
         {
@@ -335,20 +280,15 @@ namespace XSharpModel
         // Delegate is strictly a type but handled as a GLobal method because it has parameters
         public override void EnterDelegate_([NotNull] XSharpParser.Delegate_Context context)
         {
-            
-            if (this.BuildModel)
-            {
-                XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
-                        Kind.Delegate,
-                        decodeModifiers(context.Modifiers?._Tokens),
-                        decodeVisibility(context.Modifiers?._Tokens),
-                        new TextRange(context), new TextInterval(context));
-                //
-                // Todo additional properties ?
-                addParameters(context.Params, newMethod);
-                addGlobalMember(newMethod);
-            }
-
+            XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
+                    Kind.Delegate,
+                    decodeModifiers(context.Modifiers?._Tokens),
+                    decodeVisibility(context.Modifiers?._Tokens),
+                    new TextRange(context), new TextInterval(context));
+            //
+            // Todo additional properties ?
+            addParameters(context.Params, newMethod);
+            addGlobalMember(newMethod);
         }
         public override void ExitDelegate_([NotNull] XSharpParser.Delegate_Context context)
         {
@@ -369,19 +309,15 @@ namespace XSharpModel
         }
         public override void EnterFunction([NotNull] XSharpParser.FunctionContext context)
         {
-            if (this.BuildModel)
-            {
-                XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
-                    Kind.Function,
-                    Modifiers.None,
-                    Modifiers.Public,
-                    new TextRange(context), new TextInterval(context),
-                    (context.Type == null) ? "Void" : context.Type.GetText());
-                //
-                addParameters(context.Params, newMethod);
-                addGlobalMember(newMethod);
-            }
-
+            XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
+                Kind.Function,
+                Modifiers.None,
+                Modifiers.Public,
+                new TextRange(context), new TextInterval(context),
+                (context.Type == null) ? "Void" : context.Type.GetText());
+            //
+            addParameters(context.Params, newMethod);
+            addGlobalMember(newMethod);
         }
 
         public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)
@@ -391,17 +327,14 @@ namespace XSharpModel
 
         public override void EnterProcedure([NotNull] XSharpParser.ProcedureContext context)
         {
-            if (this.BuildModel)
-            {
-                XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
-                    Kind.Procedure,
-                    Modifiers.None,
-                    Modifiers.Public,
-                    new TextRange(context), new TextInterval(context));
-                //
-                addParameters(context.Params, newMethod);
-                addGlobalMember(newMethod);
-            }
+            XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
+                Kind.Procedure,
+                Modifiers.None,
+                Modifiers.Public,
+                new TextRange(context), new TextInterval(context));
+            //
+            addParameters(context.Params, newMethod);
+            addGlobalMember(newMethod);
         }
         public override void ExitProcedure([NotNull] XSharpParser.ProcedureContext context)
         {
@@ -434,7 +367,6 @@ namespace XSharpModel
                 new TextRange(context), new TextInterval(context),
                 context.ReturnType == null ? "Void" : context.ReturnType.GetText());
             //
-            
             addGlobalMember(newMethod);
         }
         public override void ExitVoglobal([NotNull] XSharpParser.VoglobalContext context)
@@ -488,19 +420,15 @@ namespace XSharpModel
 
         public override void EnterVostructmember([NotNull] XSharpParser.VostructmemberContext context)
         {
-            if (this.BuildModel)
-            {
-                XTypeMember newMember = new XTypeMember(context.Id.GetText(),
-                        Kind.ClassVar,
-                        Modifiers.Public,
-                        Modifiers.Public,
-                        new TextRange(context), new TextInterval(context));
-                //
-                // Todo additional properties ?
-                newMember.IsArray = context.Dim != null; 
-                addMember(newMember);
-            }
-
+            XTypeMember newMember = new XTypeMember(context.Id.GetText(),
+                    Kind.ClassVar,
+                    Modifiers.Public,
+                    Modifiers.Public,
+                    new TextRange(context), new TextInterval(context));
+            //
+            // Todo additional properties ?
+            newMember.IsArray = context.Dim != null; 
+            addMember(newMember);
         }
         public override void ExitVostructmember([NotNull] XSharpParser.VostructmemberContext context)
         {
@@ -527,17 +455,14 @@ namespace XSharpModel
 
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
-            if (this.BuildModel)
-            {
-                XTypeMember newMethod = new XTypeMember("Constructor",
-                    Kind.Constructor,
-                    decodeModifiers(context.Modifiers?._Tokens),
-                    decodeVisibility(context.Modifiers?._Tokens),
-                    new TextRange(context), new TextInterval(context));
-                //
-                addParameters(context.Params, newMethod);
-                addMember(newMethod);
-            }
+            XTypeMember newMethod = new XTypeMember("Constructor",
+                Kind.Constructor,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context));
+            //
+            addParameters(context.Params, newMethod);
+            addMember(newMethod);
 
         }
         public override void ExitConstructor([NotNull] XSharpParser.ConstructorContext context)
@@ -548,29 +473,25 @@ namespace XSharpModel
 
         public override void EnterMethod([NotNull] XSharpParser.MethodContext context)
         {
-            if (this.BuildModel)
+            Kind kind = Kind.Method;
+            if (context.Name.Contains(":Access"))
             {
-                Kind kind = Kind.Method;
-                if (context.Name.Contains(":Access"))
-                {
-                    kind = Kind.Access;
-                }
-                else if (context.Name.Contains(":Assign"))
-                {
-                    kind = Kind.Assign;
-                }
-                //
-                XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
-                    kind,
-                    decodeModifiers(context.Modifiers?._Tokens),
-                    decodeVisibility(context.Modifiers?._Tokens),
-                    new TextRange(context), new TextInterval(context),
-                    (context.Type == null) ? "Void" : context.Type.GetText());
-                //
-                addParameters(context.Params, newMethod);
-                addMember(newMethod);
+                kind = Kind.Access;
             }
-
+            else if (context.Name.Contains(":Assign"))
+            {
+                kind = Kind.Assign;
+            }
+            //
+            XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
+                kind,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context),
+                (context.Type == null) ? "Void" : context.Type.GetText());
+            //
+            addParameters(context.Params, newMethod);
+            addMember(newMethod);
         }
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
@@ -588,27 +509,23 @@ namespace XSharpModel
         }
         public override void EnterProperty([NotNull] XSharpParser.PropertyContext context)
         {
-            if (this.BuildModel)
-            {
-                String name = "";
-                //
-                if (context.Id != null)
-                    name = context.Id.GetText();
-                if (context.SELF() != null)
-                    name = context.SELF()?.GetText();
+            String name = "";
+            //
+            if (context.Id != null)
+                name = context.Id.GetText();
+            if (context.SELF() != null)
+                name = context.SELF()?.GetText();
 
-                XTypeMember newMethod = new XTypeMember(name,
-                    Kind.Property,
-                    decodeModifiers(context.Modifiers?._Tokens),
-                    decodeVisibility(context.Modifiers?._Tokens),
-                    new TextRange(context), new TextInterval(context),
-                    (context.Type == null) ? "Void" : context.Type.GetText());
-                //
-                addParameters(context.Params, newMethod);
-                //
-                addMember(newMethod);
-            }
-
+            XTypeMember newMethod = new XTypeMember(name,
+                Kind.Property,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context),
+                (context.Type == null) ? "Void" : context.Type.GetText());
+            //
+            addParameters(context.Params, newMethod);
+            //
+            addMember(newMethod);
         }
 
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
@@ -723,17 +640,14 @@ namespace XSharpModel
         #region Namespaces
         public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
         {
-            if (this.BuildModel)
+            XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
+            if ( use.Static == null)
+                this._file.AddUsing(use.Name?.GetText());
+            else
             {
-                XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
-                if ( use.Static == null)
-                    this._file.Usings.AddUnique(use.Name?.GetText());
-                else
-                {
-                    string typeName = use.Name?.GetText();
-                    if (! string.IsNullOrEmpty(typeName))
-                        this._file.UsingStatics.AddUnique(typeName);
-                }
+                string typeName = use.Name?.GetText();
+                if (! string.IsNullOrEmpty(typeName))
+                    this._file.AddUsing(typeName);
             }
         }
 
@@ -743,23 +657,20 @@ namespace XSharpModel
 
         public override void EnterNamespace_([NotNull] XSharpParser.Namespace_Context context)
         {
-            if (this.BuildModel)
-            {
-                XSharpParser.Namespace_Context current = (XSharpParser.Namespace_Context)context;
-                //
-                XType nSpace = new XType(current.Name.GetText(), Kind.Namespace, Modifiers.None,
-                    Modifiers.Public, new TextRange(context), new TextInterval(context));
-                this._currentNSpaces.Push(nSpace);
-            }
+            XSharpParser.Namespace_Context current = (XSharpParser.Namespace_Context)context;
+            //
+            XType nSpace = new XType(current.Name.GetText(), Kind.Namespace, Modifiers.None,
+                Modifiers.Public, new TextRange(context), new TextInterval(context));
+            this._currentNSpaces.Push(nSpace);
         }
 
         public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
         {
-            if (this.BuildModel && this._currentNSpaces.Count > 0)
+            if (this._currentNSpaces.Count > 0)
             {
                 XType cNS = this._currentNSpaces.Peek();
                 // Is it necessary to Add the NameSpace in the TypeList ??
-                this._file.TypeList.AddUnique(cNS.Name, cNS);
+                this._file.AddType(cNS);
                 // Pop to support nested NameSpaces
                 this._currentNSpaces.Pop();
             }
@@ -770,7 +681,7 @@ namespace XSharpModel
         #region Method Body
         public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
         {
-            if (!this._buildLocals  || ! this._buildModel)
+            if (!this._buildLocals )
                 return;
             try
             {
@@ -809,13 +720,13 @@ namespace XSharpModel
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("EnterLocalvar : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
+                Support.Debug("EnterLocalvar : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
             }
         }
 
         private void addVariables([NotNull] ParserRuleContext context)
         {
-            if (!this._buildLocals || ! this._buildModel || this._currentMethod == null)
+            if (!this._buildLocals || this._currentMethod == null)
                 return;
             // Don't forget to add Self and Super as Local vars
             if ((context is XSharpParser.ConstructorContext) ||

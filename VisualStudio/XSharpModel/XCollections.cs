@@ -24,18 +24,7 @@ namespace XSharpModel
         /// <param name="item"></param>
         public new void Add(XTypeMember item)
         {
-            ////
-            //XTypeMember element = item.Parent.Members.Find(x =>
-            //{
-            //    if (x.File == item.File)
-            //    {
-            //        return (x.Prototype == item.Prototype);
-            //    }
-            //    return false;
-            //});
-            ////
-            //if ( element == null )
-                base.Add(item);
+            base.Add(item);
         }
     }
 }

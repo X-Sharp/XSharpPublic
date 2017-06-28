@@ -102,7 +102,7 @@ namespace XSharpModel
             }
         }
 
-        public CompletionType(String typeName, List<String> usings, XFile file)
+        public CompletionType(String typeName, IReadOnlyList<String> usings, XFile file)
         {
             _file = file;
             CheckSystemType(typeName, usings);
@@ -114,7 +114,7 @@ namespace XSharpModel
             CheckType(typeName, xFile, defaultNS);
         }
 
-        public CompletionType(String typeName, XFile xFile, List<String> usings)
+        public CompletionType(String typeName, XFile xFile, IReadOnlyList<String> usings)
         {
             CheckType(typeName, xFile, usings);
         }
@@ -136,7 +136,7 @@ namespace XSharpModel
             CheckType(typeName, xFile, usings);
         }
 
-        private void CheckType(string typeName, XFile xFile, List<String> usings)
+        private void CheckType(string typeName, XFile xFile, IReadOnlyList<String> usings)
         {
             // First, check the XProject corresponding to the xFile
             _file = xFile;
@@ -169,7 +169,7 @@ namespace XSharpModel
             }
         }
 
-        private void CheckProjectType(string typeName, XProject xprj, List<String> usings)
+        private void CheckProjectType(string typeName, XProject xprj, IReadOnlyList<String> usings)
         {
             // First, easy way..Use the simple name
             XType xType = xprj.Lookup(typeName, true);
@@ -195,7 +195,7 @@ namespace XSharpModel
             }
         }
 
-        private void CheckStrangerProjectType(string typeName, XProject xprj, List<String> usings)
+        private void CheckStrangerProjectType(string typeName, XProject xprj, IReadOnlyList<String> usings)
         {
             // First, easy way..Use the simple name
             CodeElement codeElt = xprj.LookupForStranger(typeName, true);
@@ -216,7 +216,7 @@ namespace XSharpModel
             }
         }
 
-        private void CheckSystemType(string typeName, List<string> usings)
+        private void CheckSystemType(string typeName, IReadOnlyList<string> usings)
         {
             // Could it be a "simple" Type ?
             Type sType = SimpleTypeToSystemType(typeName);

@@ -122,7 +122,10 @@ namespace XSharp.LanguageService
                 {
                     ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
                 }
-                DropDownMember elt = new DropDownMember(eltType.Name, sp, eltType.Glyph, ft);
+                string name = eltType.Name ;
+                if (string.IsNullOrEmpty(name))
+                    name = "?";
+                DropDownMember elt = new DropDownMember(name, sp, eltType.Glyph, ft);
                 nTemp = dropDownTypes.Add(elt);
                 if (bInSel)
                 {

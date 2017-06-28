@@ -16,6 +16,7 @@ using System.CodeDom;
 using System.Reflection;
 using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
+using System.Collections.Immutable;
 namespace XSharp.CodeDom
 {
 
@@ -1741,7 +1742,7 @@ namespace XSharp.CodeDom
             {
                 return _types[typeName];
             }
-            var type = _projectNode.ResolveType(typeName, _usings);
+            var type = _projectNode.ResolveType(typeName, _usings.ToImmutableArray());
             if (type != null)
                 _types.Add(typeName, type);
             return type;

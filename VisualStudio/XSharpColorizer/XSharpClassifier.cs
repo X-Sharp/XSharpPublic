@@ -12,13 +12,12 @@ using Microsoft.VisualStudio.Text.Classification;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
-using System.Windows.Threading;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using XSharpModel;
 using System.Linq;
+using System.Collections.Immutable;
+using System.Collections.Concurrent;
+
 namespace XSharpColorizer
 {
     /// <summary>
@@ -28,30 +27,33 @@ namespace XSharpColorizer
     {
         private ITextBuffer buffer;
         public ITextSnapshot Snapshot => buffer.CurrentSnapshot;
-        private IClassificationType xsharpKeywordType;
-        private IClassificationType xsharpIdentifierType;
-        private IClassificationType xsharpCommentType;
-        private IClassificationType xsharpOperatorType;
-        private IClassificationType xsharpPunctuationType;
-        private IClassificationType xsharpStringType;
-        private IClassificationType xsharpNumberType;
-        private IClassificationType xsharpPPType;
-        private IClassificationType xsharpBraceOpenType;
-        private IClassificationType xsharpBraceCloseType;
-        private IClassificationType xsharpRegionStart;
-        private IClassificationType xsharpRegionStop;
-        private IClassificationType xsharpInactiveType;
-        private SourceWalker xsWalker;
-        private List<ClassificationSpan> tags;
-        private List<ClassificationSpan> tagsRegion;
-        private object regionLock = new object();
+        private readonly IClassificationType xsharpKeywordType;
+        private readonly IClassificationType xsharpIdentifierType;
+        private readonly IClassificationType xsharpCommentType;
+        private readonly IClassificationType xsharpOperatorType;
+        private readonly IClassificationType xsharpPunctuationType;
+        private readonly IClassificationType xsharpStringType;
+        private readonly IClassificationType xsharpNumberType;
+        private readonly IClassificationType xsharpPPType;
+        private readonly IClassificationType xsharpBraceOpenType;
+        private readonly IClassificationType xsharpBraceCloseType;
+        private readonly IClassificationType xsharpRegionStart;
+        private readonly IClassificationType xsharpRegionStop;
+        private readonly IClassificationType xsharpInactiveType;
+        private readonly BackgroundWorker _bwLex = null;
+        private readonly BackgroundWorker _bwParse = null;
+        private readonly BackgroundWorker _bwRegions = null;
+
+        private IImmutableList<ClassificationSpan> _tags;
+        private IImmutableList<ClassificationSpan> _tagsRegion;
         private ITextDocumentFactoryService txtdocfactory;
-        private BackgroundWorker _bwLex = null;
-        private BackgroundWorker _bwParse = null;
+        private bool _hasPositionalKeywords;
+        private bool _hasParserErrors;
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpClassifier"/> class.
         /// </summary>
         /// <param name="registry">Classification registry.</param>
+
         internal XSharpClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
             this.buffer = buffer;
@@ -64,15 +66,15 @@ namespace XSharpColorizer
             _bwParse = new BackgroundWorker();
             _bwParse.RunWorkerCompleted += ParseCompleted;
             _bwParse.DoWork += DoParse;
+            _bwRegions = new BackgroundWorker();
+            _bwRegions.DoWork += DoRepaintRegions;
+
             txtdocfactory = factory;
-            //xsTagger = new XSharpTagger(registry);
-            xsWalker = new SourceWalker(registry);
-            tags = new List<ClassificationSpan>();
-            lock (regionLock)
+            lock (this)
             {
-                tagsRegion = new List<ClassificationSpan>();
+                _tags = ImmutableList.CreateBuilder<ClassificationSpan>().ToImmutableList();
+                _tagsRegion = ImmutableList.CreateBuilder<ClassificationSpan>().ToImmutableList();
             }
-            //
             xsharpKeywordType = registry.GetClassificationType("keyword"); 
             xsharpIdentifierType = registry.GetClassificationType("identifier"); 
             xsharpCommentType = registry.GetClassificationType("comment");
@@ -105,11 +107,12 @@ namespace XSharpColorizer
         {
             // Note this runs in the background
             var snapshot = (ITextSnapshot)e.Argument;
-            System.Diagnostics.Debug.WriteLine("Starting lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            xsWalker.FullPath = GetFileName();
-            xsWalker.Snapshot = snapshot;
+            Debug("Starting lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            string fileName = GetFileName();
+            var file = XSolution.FindFile(fileName);
+            var xsWalker = new SourceWalker(file, snapshot);
             var TokenStream = xsWalker.LexFile();
-            System.Diagnostics.Debug.WriteLine("Ending lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            Debug("Ending lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             BuildColorClassifications(TokenStream, snapshot);
             e.Result = snapshot;
         }
@@ -118,26 +121,26 @@ namespace XSharpColorizer
         {
             if (snapshot.Version == buffer.CurrentSnapshot.Version)
             {
-                if (this.ClassificationChanged != null )
-                {
-                    this.ClassificationChanged(this, new ClassificationChangedEventArgs(
+                 ClassificationChanged(this, new ClassificationChangedEventArgs(
                         new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
-                }
             }
 
         }
         private void LexCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            triggerRepaint((ITextSnapshot)e.Result);
-            if (!_bwParse.IsBusy)
+            if (e.Error == null)
             {
-                _bwParse.RunWorkerAsync(buffer.CurrentSnapshot);
+                triggerRepaint((ITextSnapshot)e.Result);
+                if (!_bwParse.IsBusy)
+                {
+                    _bwParse.RunWorkerAsync(buffer.CurrentSnapshot);
+                }
             }
         }
 
         private string GetFileName()
         {
-            string path = String.Empty;
+            string path = string.Empty;
             if (txtdocfactory != null)
             {
                 ITextDocument doc = null;
@@ -154,33 +157,71 @@ namespace XSharpColorizer
             var snapshot = (ITextSnapshot)e.Argument;
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
-            System.Diagnostics.Debug.WriteLine("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            xsWalker.FullPath = GetFileName();
-            xsWalker.Snapshot = snapshot;
-            xsWalker.InitParse();
-            xsWalker.BuildModelAndRegionTags();
-            lock (regionLock)
+            Debug("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            string fileName = GetFileName();
+            var file = XSolution.FindFile(fileName);
+            if (file != null)
             {
-                this.tagsRegion = xsWalker.RegionTags;
+                var xsWalker = new SourceWalker(file, snapshot);
+                var xTree = xsWalker.Parse();
+                _hasParserErrors = xsWalker.HasParseErrors;
+                var tokenStream = xsWalker.TokenStream;
+                xsWalker.BuildModel(xTree,true);
+                var regionTags = BuildRegionTags(xTree, snapshot, xsharpRegionStart, xsharpRegionStop);
+                BuildColorClassifications(tokenStream, snapshot,regionTags);
+                e.Result = xsWalker;
             }
-            var TokenStream = xsWalker.TokenStream;
-            System.Diagnostics.Debug.WriteLine("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            BuildColorClassifications(TokenStream, snapshot);
-            e.Result = snapshot;
+            Debug("Ending parse, modelbuild and regionTags builder at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
         }
+
+        private void DoRepaintRegions(object sender, DoWorkEventArgs e)
+        {
+            System.Threading.Thread.Sleep(1000);
+            if (!_hasParserErrors)
+            {
+                if (buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
+                {
+                    var tagger = buffer.Properties[typeof(XSharpOutliningTagger)] as XSharpOutliningTagger;
+                    tagger.Update();
+                }
+            }
+
+        }
+        public IImmutableList<ClassificationSpan> BuildRegionTags(XSharpParser.SourceContext xTree, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
+        {
+            IImmutableList<ClassificationSpan> regions = null;
+            if (xTree != null && snapshot != null)
+            {
+                var rdiscover = new XSharpRegionDiscover(snapshot);
+                //
+                try
+                {
+                    var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
+                    //
+                    rdiscover.xsharpRegionStartType = start;
+                    rdiscover.xsharpRegionStopType = stop;
+                    // Walk the tree. The XSharpRegionDiscover class will collect the tags.
+                    walker.Walk(rdiscover, xTree);
+                    _hasPositionalKeywords = rdiscover.HasPositionalKeyword;
+                    regions = rdiscover.GetRegionTags();
+                }
+                catch (Exception e)
+                {
+                    Debug("BuildRegionTags failed: " + e.Message);
+                }
+            }
+            return regions;
+        }
+
 
         private void ParseCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var snapshot = (ITextSnapshot)e.Result;
-            if (snapshot.Version == buffer.CurrentSnapshot.Version)
+            var xsWalker = (SourceWalker)e.Result;
+            if (xsWalker.Snapshot != null && xsWalker.Snapshot.Version == buffer.CurrentSnapshot.Version)
             {
-                if (!xsWalker.HasParseErrors)
+                if (!_bwRegions.IsBusy)
                 {
-                    if (buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
-                    {
-                        var tagger = buffer.Properties[typeof(XSharpOutliningTagger)] as XSharpOutliningTagger;
-                        tagger.Update();
-                    }
+                    _bwRegions.RunWorkerAsync(buffer.CurrentSnapshot);
                 }
             }
             else
@@ -205,7 +246,7 @@ namespace XSharpColorizer
         }
 
 
-        private ClassificationSpan ClassifyToken(IToken token, IList<ClassificationSpan> tagsRegion, ITextSnapshot snapshot)
+        private ClassificationSpan ClassifyToken(IToken token, IList<ClassificationSpan> regionTags, ITextSnapshot snapshot)
         {
             var tokenType = token.Type;
             ClassificationSpan result = null;
@@ -220,17 +261,11 @@ namespace XSharpColorizer
                         case XSharpLexer.PP_REGION:
                         case XSharpLexer.PP_IFDEF:
                         case XSharpLexer.PP_IFNDEF:
-                            lock (regionLock)
-                            {
-                                tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
-                            }
+                            regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
                             break;
                         case XSharpLexer.PP_ENDREGION:
                         case XSharpLexer.PP_ENDIF:
-                            lock (regionLock)
-                            {
-                                tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
-                            }
+                            regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
                             break;
                         default:
                             break;
@@ -246,11 +281,8 @@ namespace XSharpColorizer
                         result = Token2ClassificationSpan(token, snapshot, xsharpCommentType);
                         if (token.Type == XSharpLexer.ML_COMMENT)
                         {
-                            lock (regionLock)
-                            {
-                                tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
-                                tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
-                            }
+                            regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                            regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
                         }
                     }
                     break;
@@ -308,26 +340,31 @@ namespace XSharpColorizer
             }
             return result;
         }
-        private void scanForRegion(IToken token, int iToken, ITokenStream TokenStream, ref int iLast, ITextSnapshot snapshot, List<ClassificationSpan> tagsRegion)
+        private void scanForRegion(IToken token, int iToken, ITokenStream TokenStream, 
+            ref int iLast, ITextSnapshot snapshot, IList<ClassificationSpan> regionTags)
         {
             if (iToken > iLast)
             {
                 var lastToken = ScanForLastToken(token.Type, iToken, TokenStream, out iLast);
                 if (token != lastToken)
                 {
-                    lock (regionLock)
-                    {
-                        tagsRegion.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
-                        tagsRegion.Add(Token2ClassificationSpan(lastToken, snapshot, xsharpRegionStop));
-                    }
+                     regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                     regionTags.Add(Token2ClassificationSpan(lastToken, snapshot, xsharpRegionStop));
                 }
             }
         }
-
-        private void BuildColorClassifications(ITokenStream TokenStream, ITextSnapshot snapshot)
+        private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot)
         {
-            System.Diagnostics.Debug.WriteLine("Starting colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            if (TokenStream != null)
+            BuildColorClassifications(tokenStream, snapshot, null);
+        }
+            
+        private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot, 
+            IImmutableList<ClassificationSpan> parserRegionTags)
+        {
+            Debug("Starting colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            List<ClassificationSpan> newtags ;
+            var regionTags = new List<ClassificationSpan>();
+            if (tokenStream != null )
             {
                 int iLastInclude = -1;
                 int iLastPPDefine = -1;
@@ -335,13 +372,11 @@ namespace XSharpColorizer
                 int iLastSLComment = -1;
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
-                //int iLastGlobal = -1;
-                //int iLastLocal = -1;
-                List<ClassificationSpan> newtags = new List<ClassificationSpan>();
-                for (var iToken = 0; iToken < TokenStream.Size; iToken++)
+                newtags = new List<ClassificationSpan>();
+                for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
-                    var token = TokenStream.Get(iToken);
-                    var span = ClassifyToken(token, tagsRegion, snapshot);
+                    var token = tokenStream.Get(iToken);
+                    var span = ClassifyToken(token, regionTags, snapshot);
                     if (span != null)
                     {
                         newtags.Add(span);
@@ -349,40 +384,52 @@ namespace XSharpColorizer
                         switch (token.Type)
                         {
                             case XSharpLexer.PP_INCLUDE:
-                                scanForRegion(token, iToken, TokenStream, ref iLastInclude, snapshot, tagsRegion);
+                                scanForRegion(token, iToken, tokenStream, ref iLastInclude, snapshot, regionTags);
                                 break;
                             case XSharpLexer.PP_DEFINE:
-                                scanForRegion(token, iToken, TokenStream, ref iLastPPDefine, snapshot, tagsRegion);
-                                break;
+                                scanForRegion(token, iToken, tokenStream, ref iLastPPDefine, snapshot, regionTags);
+                                break; 
                             case XSharpLexer.DEFINE:
-                                scanForRegion(token, iToken, TokenStream, ref iLastDefine, snapshot, tagsRegion);
+                                scanForRegion(token, iToken, tokenStream, ref iLastDefine, snapshot, regionTags);
                                 break;
                             //case XSharpLexer.GLOBAL:
-                            //    scanForRegion(token, iToken, TokenStream, ref iLastGlobal, snapshot, tagsRegion);
+                            //    scanForRegion(token, iToken, tokenStream, ref iLastGlobal, snapshot, regionBuilder);
                             //    break;
                             //case XSharpLexer.LOCAL:
-                            //    scanForRegion(token, iToken, TokenStream, ref iLastLocal, snapshot, tagsRegion);
+                            //    scanForRegion(token, iToken, tokenStream, ref iLastLocal, snapshot, regionBuilder);
                             //    break;
                             case XSharpLexer.SL_COMMENT:
-                                scanForRegion(token, iToken, TokenStream, ref iLastSLComment, snapshot, tagsRegion);
+                                scanForRegion(token, iToken, tokenStream, ref iLastSLComment, snapshot, regionTags);
                                 break;
                             case XSharpLexer.DOC_COMMENT:
-                                scanForRegion(token, iToken, TokenStream, ref iLastDocComment, snapshot, tagsRegion);
+                                scanForRegion(token, iToken, tokenStream, ref iLastDocComment, snapshot, regionTags);
                                 break;
                             case XSharpLexer.USING:
-                                scanForRegion(token, iToken, TokenStream, ref iLastUsing, snapshot, tagsRegion);
+                                scanForRegion(token, iToken, tokenStream, ref iLastUsing, snapshot, regionTags);
                                 break;
                             default:
                                 break;
                         }
                     }
                 }
-                // Make local copy
-                ClassificationSpan[] regionTags = xsWalker.RegionTags.ToArray();
-                newtags.AddRange(regionTags);
-                tags = newtags;
             }
-            System.Diagnostics.Debug.WriteLine("Ending colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            else
+            {
+                newtags = _tags.ToList() ;
+            }
+            lock (this)
+            {
+                if (parserRegionTags != null)
+                {
+                    regionTags.AddRange(parserRegionTags);
+                }
+                _tags = newtags.ToImmutableList();
+                if (!_hasParserErrors && parserRegionTags != null)
+                {
+                    _tagsRegion = regionTags.ToImmutableList();
+                }
+            }
+            Debug("Ending colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
 			triggerRepaint(snapshot);
         }
 
@@ -423,12 +470,11 @@ namespace XSharpColorizer
             return lastFound;
         }
 
-        internal IList<ClassificationSpan> GetRegionTags()
+        internal IImmutableList<ClassificationSpan> GetRegionTags()
         {
-            // return an array so we will not have locking issues
-            lock (regionLock)
+            lock (this)
             {
-                return tagsRegion.ToArray();
+                return _tagsRegion;
             }
         }
 
@@ -465,7 +511,12 @@ namespace XSharpColorizer
             // In that case we need to keep a reference to the tokenstream in stead of the tags
             // There also must be a smart way to find the first matching tag.
             var result = new List<ClassificationSpan>();
-            var originaltags = tags;        // create copy in case the tags property gets changed in the background
+            IList<ClassificationSpan> originaltags;
+            lock (this)
+            {
+                // No need to copy. tags is only assigned to and never directly modified
+                originaltags = _tags.ToImmutableList();
+            }
             for (int i = 0; i < originaltags.Count; i++)
             {
                 var tag = originaltags[i];
@@ -484,24 +535,15 @@ namespace XSharpColorizer
 
         static internal XSharpClassifier GetColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
-            XSharpClassifier colorizer = buffer.Properties.GetOrCreateSingletonProperty<XSharpClassifier>(
+            XSharpClassifier colorizer = buffer.Properties.GetOrCreateSingletonProperty(
                 () => new XSharpClassifier(buffer, registry, factory));
             return colorizer;
         }
 
-    }
-    internal class ClassificationSpanComparer : IComparer<ClassificationSpan>
-    {
-        public int Compare(ClassificationSpan x, ClassificationSpan y)
+        internal static void Debug(string msg, params object[] o)
         {
-            if (x.Span.Start < y.Span.Start)
-                return -1;
-            if (x.Span.Start > y.Span.Start)
-                return 1;
-            return x.Span.Length - y.Span.Length;
-            
-
+            System.Diagnostics.Debug.WriteLine("XColorizer: " + msg, o);
         }
     }
-}
+ }
 

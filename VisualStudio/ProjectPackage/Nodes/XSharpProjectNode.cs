@@ -1350,6 +1350,20 @@ namespace XSharp.Project
                 statusBar.SetText(msg);
             }
         }
+        public void SetStatusBarAnimation(bool onoff, short idAnimation )
+        {
+            if (statusBar == null && !lTriedToGetStatusBar)
+            {
+                statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+                lTriedToGetStatusBar = true;
+            }
+
+            if (statusBar != null)
+            {
+                statusBar.Animation(onoff ? 1 : 0,  idAnimation);
+            }
+        }
+
 
         public string IntermediateOutputPath
         {
@@ -1460,7 +1474,7 @@ namespace XSharp.Project
             return bOk;
         }
         #region IProjectTypeHelper
-        public System.Type ResolveType(string name, IList<string> usings)
+        public System.Type ResolveType(string name, IReadOnlyList<string> usings)
         {
             switch (name.ToLower())
             {

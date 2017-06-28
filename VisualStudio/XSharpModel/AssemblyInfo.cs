@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Collections.Immutable;
 namespace XSharpModel
 {
     [DebuggerDisplay("{DisplayName,nq}")]
@@ -16,8 +14,8 @@ namespace XSharpModel
         /// <summary>
         /// A Dictionary of Type : The key is a string with the typeName in LowerCase
         /// </summary>
-        private Dictionary<string, Type> aTypes;
-        private List<MethodInfo> aExtensions;
+        private IDictionary<string, Type> _aTypes;
+        private IList<MethodInfo> _aExtensions;
 
         private string _FileName;
         private DateTime _Modified;
@@ -82,32 +80,26 @@ namespace XSharpModel
             }
         }
 
-        public Dictionary<string, Type> Types
+        public IDictionary<string, Type> Types
         {
             get
             {
-                return aTypes;
-            }
-
-            set
-            {
-                aTypes = value;
+                return _aTypes;
             }
         }
-        public List<string> ImplicitNamespaces => _ImplicitNamespaces;
+        public ImmutableList<string> ImplicitNamespaces => _ImplicitNamespaces.ToImmutableList();
         public String GlobalClassName => _GlobalClassName;
 
-        public List<string> Namespaces => _NameSpaceTexts;
+        public ImmutableList<string> Namespaces => _NameSpaceTexts.ToImmutableList();
 
 
         public AssemblyInfo()
         {
             // A
-            this.aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
-            this.aExtensions = new List<MethodInfo>();
+            this._aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+            this._aExtensions = new List<MethodInfo>();
             this._NameSpaces = new Hashtable(StringComparer.OrdinalIgnoreCase);
             this._NameSpaceTexts = new List<string>();
-            this.aExtensions = new List<MethodInfo>();
             this._ImplicitNamespaces = new List<string>();
             this._ZeroNamespace = new NameSpaceContainer("_");
             this._Assembly = null;
@@ -189,17 +181,17 @@ namespace XSharpModel
         internal void UpdateAssembly()
         {
             Type[] types = null;
+            var aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+            var aExtensions = new List<MethodInfo>();
             //
             int num;
             string nspace = "";
             string fullName = "";
             string simpleName = "";
             //
-            this.aTypes.Clear();
-            //
             this._NameSpaces.Clear();
             this._NameSpaceTexts.Clear();
-            this.aExtensions.Clear();
+            
             this._ZeroNamespace.Types.Clear();
             this._GlobalClassName = "";
             this.lHasExtensions = false;
@@ -247,12 +239,12 @@ namespace XSharpModel
             }
             catch (ReflectionTypeLoadException e)
             {
-                System.Diagnostics.Debug.WriteLine("Cannot load types from {0}", Assembly.GetName().Name);
+                Support.Debug("Cannot load types from {0}", Assembly.GetName().Name);
                 for (int i = 0; i < e.LoaderExceptions.Length; i++)
                 {
                     var le = e.LoaderExceptions[i];
                     var t = e.Types[i];
-                    System.Diagnostics.Debug.WriteLine("Cannot load type {0}: {1}", t.Name, le.Message);
+                    Support.Debug("Cannot load type {0}: {1}", t.Name, le.Message);
                 }
                 this.Assembly = null;
             }
@@ -280,7 +272,7 @@ namespace XSharpModel
                             {
                                 if (HasExtensionAttribute(info))
                                 {
-                                    this.aExtensions.Add(info);
+                                    aExtensions.Add(info);
                                 }
                             }
                         }
@@ -296,9 +288,9 @@ namespace XSharpModel
                             fullName = fullName.Substring(0, fullName.IndexOf("`") + 2);
                         }
                         // Add to the FullyQualified name
-                        if (!this.aTypes.ContainsKey(fullName))
+                        if (!aTypes.ContainsKey(fullName))
                         {
-                            this.aTypes.Add(fullName, types[num - 1]);
+                            aTypes.Add(fullName, types[num - 1]);
                         }
                         // Now, with Standard name
                         simpleName = types[num - 1].Name;
@@ -356,10 +348,16 @@ namespace XSharpModel
                     }
                     // Mark as Loaded
                     this.lLoadedTypes = true;
+                    this._aTypes = aTypes.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
+                    this._aExtensions = aExtensions.ToImmutableList();
                 }
                 catch
                 {
+                    // empty values
                     this.lLoadedTypes = false;
+                    aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+                    this._aTypes = aTypes.ToImmutableDictionary();
+                    this._aExtensions = new List<MethodInfo>();
                 }
             }
         }

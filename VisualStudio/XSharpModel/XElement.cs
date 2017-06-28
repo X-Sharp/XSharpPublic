@@ -4,14 +4,10 @@
 // See License.txt in the project root for license information.
 //
 using EnvDTE;
-using LanguageService.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections.Immutable;
 namespace XSharpModel
 {
     public class XElement
@@ -105,12 +101,10 @@ namespace XSharpModel
         {
             get
             {
-
                 // An internal type that has not been resolved yet ?
                 return _parent;
 
             }
-
             set
             {
                 _parent = value;
@@ -156,12 +150,16 @@ namespace XSharpModel
                 return this._interval;
             }
         }
-        public List<String> FileUsings
+        public IImmutableList<String> FileUsings
         {
             get
             {
                 if (_File == null)
-                    return new List<String>();
+                {
+                    var list = new List<String>();
+                    return list.ToImmutableList();                    
+
+                }
                 else
                     return _File.Usings;
             }
@@ -196,11 +194,6 @@ namespace XSharpModel
             {
                 return _Modifiers;
             }
-
-            set
-            {
-                _Modifiers = value;
-            }
         }
 
         public Modifiers Visibility
@@ -208,11 +201,6 @@ namespace XSharpModel
             get
             {
                 return _Visibility;
-            }
-
-            set
-            {
-                _Visibility = value;
             }
         }
 

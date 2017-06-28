@@ -5,11 +5,6 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EnvDTE;
-using LanguageService.CodeAnalysis.Text;
 using System.Diagnostics;
 
 namespace XSharpModel
@@ -18,7 +13,7 @@ namespace XSharpModel
     public class XTypeMember : XElement
     {
 
-        private String _typeName;
+        private string _typeName;
         private List<XVariable> _parameters;
         private List<XVariable> _locals;
         private bool _isStatic;
@@ -48,11 +43,6 @@ namespace XSharpModel
             {
                 return _typeName;
             }
-
-            set
-            {
-                _typeName = value;
-            }
         }
 
         public bool IsStatic
@@ -60,11 +50,6 @@ namespace XSharpModel
             get
             {
                 return _isStatic;
-            }
-
-            set
-            {
-                _isStatic = value;
             }
         }
 
@@ -87,11 +72,6 @@ namespace XSharpModel
             {
                 return _parameters;
             }
-
-            set
-            {
-                _parameters = value;
-            }
         }
 
         override public string FullName
@@ -111,18 +91,18 @@ namespace XSharpModel
         }
 
         public bool IsArray { get; set; }
-        public override String Description
+        public override string Description
         {
             get
             {
-                String modVis = "";
+                string modVis = "";
                 if (this.Modifiers != Modifiers.None)
                 {
                     modVis += this.Modifiers.ToString() + " ";
                 }
                 modVis += this.Visibility.ToString() + " ";
                 //
-                String desc = modVis;
+                string desc = modVis;
                 //
                 if ( this.Kind != Kind.ClassVar )
                     desc += this.Kind.ToString() + " ";
@@ -132,11 +112,11 @@ namespace XSharpModel
             }
         }
 
-        public override String Prototype
+        public override string Prototype
         {
             get
             {
-                String vars = "";
+                string vars = "";
                 if ( this.Kind.HasParameters())
                 {
                     vars = "(";
@@ -149,7 +129,7 @@ namespace XSharpModel
                     vars += ")";
                 }
                 //
-                String desc = this.Name;
+                string desc = this.Name;
                 desc += vars;
                 //
                 if (this.Kind.HasReturnType())
@@ -167,11 +147,6 @@ namespace XSharpModel
             {
                 return _locals;
             }
-
-            set
-            {
-                _locals = value;
-            }
         }
 
 
@@ -188,10 +163,10 @@ namespace XSharpModel
                 foreach( var member in Parent.Members )
                 {
                     // For Homonyms
-                    if ( String.Compare( member.FullName, this.FullName, true ) == 0 )
+                    if ( string.Compare( member.FullName, this.FullName, true ) == 0 )
                     {
                         // But don't add the current one
-                        if ( String.Compare( member.Prototype, this.Prototype, true) !=0 )
+                        if ( string.Compare( member.Prototype, this.Prototype, true) !=0 )
                         {
                             _namesake.Add(member);
                         }

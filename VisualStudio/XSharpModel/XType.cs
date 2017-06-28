@@ -56,7 +56,7 @@ namespace XSharpModel
         {
             get
             {
-                if (!String.IsNullOrEmpty(_nameSpace))
+                if (!string.IsNullOrEmpty(_nameSpace))
                 {
 
                     return this.NameSpace + "." + this.Name;
@@ -182,7 +182,7 @@ namespace XSharpModel
             return clone;
         }
 
-        public override String ParentName
+        public override string ParentName
         {
             get
             {
@@ -207,11 +207,11 @@ namespace XSharpModel
             }
         }
 
-        public override String Description
+        public override string Description
         {
             get
             {
-                String modVis = "";
+                string modVis = "";
                 if (this.Kind == Kind.Class)
                 {
                     if (this.Modifiers != Modifiers.None)
@@ -221,7 +221,7 @@ namespace XSharpModel
                     modVis += this.Visibility.ToString() + " ";
                 }
                 //
-                String desc = modVis;
+                string desc = modVis;
                 //
                 if (this.Kind == Kind.Keyword)
                 {
@@ -246,6 +246,6 @@ namespace XSharpModel
             return globalType;
         }
 
-        public const String GlobalName = "(Global Scope)";
+        public const string GlobalName = "(Global Scope)";
     }
 }

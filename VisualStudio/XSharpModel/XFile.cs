@@ -6,20 +6,18 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
+using System.Collections.Immutable;
+using System.Collections.Concurrent;
 namespace XSharpModel
 {
     [DebuggerDisplay("{FullPath,nq}")]
     public class XFile
     {
-        private List<String> _usings;
-        private List<String> _usingStatics;
+        private List<string> _usings;
+        private List<string> _usingStatics;
         private string filePath;
-        private Dictionary<string, XType> _typeList;
+        private ConcurrentDictionary<string, XType> _typeList;
+        
         private XType _globalType;
         // 
         private object _lock;
@@ -50,9 +48,9 @@ namespace XSharpModel
         /// </summary>
         public void InitTypeList()
         {
-            this._typeList = new Dictionary<string, XType>(StringComparer.InvariantCultureIgnoreCase);
+            this._typeList = new ConcurrentDictionary<string, XType>(StringComparer.InvariantCultureIgnoreCase);
             this._globalType = XType.CreateGlobalType(this);
-            this._typeList.Add(_globalType.Name, _globalType);
+            this._typeList.TryAdd(_globalType.Name, _globalType);
             _usings = new List<string>();
             _usingStatics = new List<string>();
 
@@ -76,7 +74,7 @@ namespace XSharpModel
             }
         }
 
-        public String Name
+        public string Name
         {
             get
             {
@@ -99,86 +97,100 @@ namespace XSharpModel
             }
         }
 
-        // 
-        public List<string> Usings
+        public void AddUsing(string name)
+        {
+            if (! string.IsNullOrEmpty(name))
+            {
+                lock (_lock)
+                {
+                    _usings.AddUnique(name);
+                }
+            }
+        }
+
+        public ImmutableList<string> Usings
         {
             get
             {
-                return _usings;
+                lock (_lock)
+                {
+                    return _usings.ToImmutableList();
+                }
             }
 
         }
 
-        public List<string> UsingStatics => _usingStatics;
+        public ImmutableList<string> UsingStatics
+        {
+            get
+            {
+                return _usingStatics.ToImmutableList();
+            }
+        }
 
-        public List<string> AllUsingStatics
+        public ImmutableList<string> AllUsingStatics
         {
             get
             {
 
-                List<String> statics = new List<String>();
-                statics.AddRange(_usingStatics);
-                if (this.Project != null && this.Project.ProjectNode != null && this.Project.ProjectNode.ParseOptions.IsDialectVO)
+                lock (_lock)
                 {
-                    foreach (var asm in this.Project.AssemblyReferences)
+                    List<string> statics = new List<string>();
+                    statics.AddRange(_usingStatics);
+                    if (this.Project != null && this.Project.ProjectNode != null && this.Project.ProjectNode.ParseOptions.IsDialectVO)
                     {
-                        var globalclass = asm.GlobalClassName;
-                        if (! string.IsNullOrEmpty(globalclass))
+                        foreach (var asm in this.Project.AssemblyReferences)
                         {
-                            statics.AddUnique(globalclass);
+                            var globalclass = asm.GlobalClassName;
+                            if (!string.IsNullOrEmpty(globalclass))
+                            {
+                                statics.AddUnique(globalclass);
+                            }
                         }
                     }
+                    return statics.ToImmutableList();
                 }
-                return statics;
             }
 
         }
 
-        public Dictionary<string, XType> TypeList
+        public XType AddType(XType newType)
+        {
+            lock (_lock)
+            {
+                if ( _typeList.TryAdd(newType.FullName, newType))
+                {
+                    return newType;
+                }
+                return _typeList[newType.FullName];
+            }
+        }
+
+        public IImmutableDictionary<string, XType> TypeList
         {
             get
             {
-                Dictionary<string, XType> retValue;
+                
                 lock (_lock)
                 {
-                    retValue = _typeList;
+                    return _typeList.ToImmutableDictionary();
                 }
-                return retValue;
             }
 
-            set
-            {
-                lock (_lock)
-                {
-                    _typeList = value;
-                }
-            }
         }
         public DateTime LastWritten
         {
             get { return _lastWritten; }
-            set { _lastWritten = value; }
+            set
+            {
+                lock (_lock)
+                {
+                    _lastWritten = value;
+                }
+
+            }
         }
 
-        ///// <summary>
-        ///// Set the XFile in parsing state : 
-        ///// </summary>
-        //public bool Parsing
-        //{
-        //    set
-        //    {
-        //        if (value == true)
-        //        {
-        //            _lock.WaitOne();
-        //            _parsedEvent.Reset();
-        //        }
-        //        else
-        //        {
-        //            _lock.ReleaseMutex();
-        //            _parsedEvent.Set();
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Flag indicating if File has been parsed at least once
@@ -197,21 +209,6 @@ namespace XSharpModel
 
         }
 
-        //public int HashCode
-        //{
-        //    get
-        //    {
-        //        return _hashCode;
-        //    }
-
-        //    set
-        //    {
-        //        if (_hashCode != value)
-        //            _parsed = false;
-        //        _hashCode = value;
-        //    }
-        //}
-
         /// <summary>
         /// Block the running Thread until the file has been parsed
         /// </summary>
@@ -223,51 +220,34 @@ namespace XSharpModel
                 if ( !Parsed )
                 {
                     //
-                    SourceWalker sw = new SourceWalker(null);
-                    //
-                    sw.File = this;
+                    SourceWalker sw = new SourceWalker(this);
                     try
                     {
-                        sw.InitParse();
-                        sw.BuildModelOnly();
+                        var xTree = sw.Parse();
+                        sw.BuildModel(xTree, false);
                         //
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
+                        Support.Debug("XFile.WaitParsing"+e.Message);
                     }
                 }
             }
         }
 
-        // Unused ?
-        //public void Parse( string contentText )
-        //{
-        //    XSharpModel.SourceWalker sw = new XSharpModel.SourceWalker();
-        //    //
-        //    sw.Source = contentText;
-        //    sw.File = this;
-        //    try
-        //    {
-        //        sw.InitParse();
-        //        sw.BuildModelOnly();
-        //        //
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine(e.Message);
-        //    }
-        //}
         public XTypeMember FirstMember()
         {
-            foreach (var type in TypeList.Values)
+            lock (_lock)
             {
-                foreach (var member in type.Members)
+                foreach (var type in TypeList.Values)
                 {
-                    return member;
+                    foreach (var member in type.Members)
+                    {
+                        return member;
+                    }
                 }
+                return null;
             }
-            return null;
         }
 
         public bool IsXaml => _xaml;

@@ -3,13 +3,10 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using LanguageService.CodeAnalysis.Text;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Classification;
-using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Immutable;
 namespace XSharpModel
 {
     public static class ListExtensions
@@ -42,7 +39,7 @@ namespace XSharpModel
     }
     public static class TypeExtensions
     {
-        static Dictionary<String, String> lookupTable;
+        static IDictionary<String, String> lookupTable;
         static TypeExtensions()
         {
             lookupTable = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -68,9 +65,10 @@ namespace XSharpModel
             lookupTable.Add("Vulcan.__VODate", "DATE");
             lookupTable.Add("Vulcan.__VOFloat", "FLOAT");
             lookupTable.Add("Vulcan.__WinBool", "LOGIC");
+            lookupTable = lookupTable.ToImmutableDictionary();
         }
 
-        public static String GetXSharpTypeName(this System.Type type)
+        public static string GetXSharpTypeName(this System.Type type)
         {
             string name = type.FullName;
             if (name == null)
@@ -109,6 +107,14 @@ namespace XSharpModel
                     return "Vulcan.__Usual";
             }
             return typename;
+        }
+
+    }
+    public class Support
+    {
+        internal static void Debug(string msg, params object[] o)
+        {
+            System.Diagnostics.Debug.WriteLine("XModel: " + msg, o);
         }
 
     }

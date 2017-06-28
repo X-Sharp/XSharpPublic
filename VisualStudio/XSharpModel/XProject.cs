@@ -11,24 +11,26 @@ using System.Threading.Tasks;
 using EnvDTE;
 using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
 
 namespace XSharpModel
 {
     public class XProject
     {
-        private Dictionary<string, XFile> xFilesDict;
+        private ConcurrentDictionary<string, XFile> xFilesDict;
         private IXSharpProject _projectNode;
         //private XType _globalType;
         private bool _loaded;
         //
         private SystemTypeController _typeController;
         // List of external Projects, currently unloaded
-        private List<String> _unprocessedProjectReferences = new List<String>();
+        private List<string> _unprocessedProjectReferences = new List<string>();
         // List of external Projects, currently loaded
         private List<XProject> _ReferencedProjects = new List<XProject>();
 
         // See above
-        private List<String> _unprocessedStrangerProjectReferences = new List<String>();
+        private List<string> _unprocessedStrangerProjectReferences = new List<string>();
         private List<EnvDTE.Project> _StrangerProjects = new List<EnvDTE.Project>();
 
         // List of assembly references
@@ -37,7 +39,7 @@ namespace XSharpModel
         public XProject(IXSharpProject project)
         {
             _projectNode = project;
-            xFilesDict = new Dictionary<String, XFile>(StringComparer.OrdinalIgnoreCase);
+            xFilesDict = new ConcurrentDictionary<string, XFile>(StringComparer.OrdinalIgnoreCase);
             //this._globalType = XType.CreateGlobalType();
             //
             this._typeController = new SystemTypeController();
@@ -48,7 +50,7 @@ namespace XSharpModel
             }
         }
 
-        public String Name
+        public string Name
         {
             get
             {
@@ -135,11 +137,11 @@ namespace XSharpModel
             {
                 if (xFilesDict.ContainsKey(xFile.FullPath))
                 {
-                    xFilesDict.Remove(xFile.FullPath);
+                    XFile fileOld;
+                    xFilesDict.TryRemove(xFile.FullPath, out fileOld);
                 }
-                xFilesDict.Add(xFile.FullPath, xFile);
                 xFile.Project = this;
-                return true;
+                return xFilesDict.TryAdd(xFile.FullPath, xFile);
             }
             return false;
         }
@@ -207,12 +209,12 @@ namespace XSharpModel
         /// <summary>
         /// List of XSharp Projects that our "current" project is referencing
         /// </summary>
-        public IList<XProject> ReferencedProjects
+        public IImmutableList<XProject> ReferencedProjects
         {
             get
             {
-                List<String> existing = new List<String>();
-                foreach (String s in _unprocessedProjectReferences)
+                List<string> existing = new List<string>();
+                foreach (string s in _unprocessedProjectReferences)
                 {
                     XProject p = XSolution.FindProject(s);
                     if (p != null)
@@ -221,11 +223,11 @@ namespace XSharpModel
                         _ReferencedProjects.Add(p);
                     }
                 }
-                foreach (String s in existing)
+                foreach (string s in existing)
                 {
                     _unprocessedProjectReferences.Remove(s);
                 }
-                return _ReferencedProjects;
+                return _ReferencedProjects.ToImmutableList();
             }
         }
 
@@ -234,12 +236,12 @@ namespace XSharpModel
         /// List of stranger Projects that our "current" project is referencing.
         /// Could be any project that support EnvDTE.FileCodeModel (so CS, Vb.Net, ...)
         /// </summary>
-        public IList<EnvDTE.Project> StrangerProjects
+        public IImmutableList<EnvDTE.Project> StrangerProjects
         {
             get
             {
-                List<String> existing = new List<String>();
-                foreach (String s in _unprocessedStrangerProjectReferences)
+                List<string> existing = new List<string>();
+                foreach (string s in _unprocessedStrangerProjectReferences)
                 {
                     EnvDTE.Project p = this.ProjectNode.FindProject(s);
                     if (p != null)
@@ -248,11 +250,11 @@ namespace XSharpModel
                         _StrangerProjects.Add(p);
                     }
                 }
-                foreach (String s in existing)
+                foreach (string s in existing)
                 {
                     _unprocessedStrangerProjectReferences.Remove(s);
                 }
-                return _StrangerProjects;
+                return _StrangerProjects.ToImmutableList();
             }
         }
 
@@ -268,12 +270,12 @@ namespace XSharpModel
             return null;
         }
 
-        public System.Type FindSystemType (string name, IList<String> usings)
+        public System.Type FindSystemType (string name, IReadOnlyList<string> usings)
         {
             return _typeController.FindType(name, usings, _AssemblyReferences);
         }
 
-        public List<String> GetAssemblyNamespaces()
+        public ImmutableList<string> GetAssemblyNamespaces()
         {
             return _typeController.GetNamespaces(_AssemblyReferences);
         }
@@ -290,7 +292,8 @@ namespace XSharpModel
         {
             if (this.xFilesDict.ContainsKey(url))
             {
-                this.xFilesDict.Remove(url);
+                XFile file;
+                this.xFilesDict.TryRemove(url, out file);
             }
         }
 
@@ -314,7 +317,6 @@ namespace XSharpModel
                 if (caseInvariant)
                 {
                     file.TypeList.TryGetValue(typeName.ToLowerInvariant(), out xTemp);
-                    //file.TypeList.Find(x => x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant());
                 }
                 else
                 {
@@ -504,7 +506,7 @@ namespace XSharpModel
         }
 
 
-        public List<XType> Namespaces
+        public ImmutableList<XType> Namespaces
         {
             get
             {
@@ -528,7 +530,7 @@ namespace XSharpModel
                         }
                     }
                 }
-                return ns;
+                return ns.ToImmutableList();
             }
         }
 
@@ -583,6 +585,10 @@ namespace XSharpModel
         }
 
         public void SetStatusBarText(string message)
+        {
+            return;
+        }
+        public void SetStatusBarAnimation(bool onoff, short id)
         {
             return;
         }

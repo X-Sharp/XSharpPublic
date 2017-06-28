@@ -365,8 +365,14 @@ namespace XSharp.Project
             _completionSession.Properties["Command"] = nCmdId;
             _completionSession.Properties["Char"] = typedChar;
             _completionSession.Properties["Type"] = null;
-            _completionSession.Start();
-
+            try
+            {
+                _completionSession.Start();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Startcompletion failed:" + e.Message);
+            }
             return true;
         }
 
@@ -498,7 +504,14 @@ namespace XSharp.Project
                 _signatureSession.Properties["Length"] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;
                 _signatureSession.Properties["Comma"] = comma;
 
-            _signatureSession.Start();
+                try
+                {
+                    _signatureSession.Start();
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Start Signature session failed:" + e.Message);
+                }
             }
             //
             return true;

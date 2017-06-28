@@ -60,6 +60,10 @@
     <Reference Include="Microsoft.VisualStudio.Text.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -90,7 +94,6 @@
     <Compile Include="ModelParser\TextSpanExtensions.cs" />
     <Compile Include="ModelParser\SourceWalker.cs" />
     <Compile Include="ModelParser\XSharpModelDiscover.cs" />
-    <Compile Include="ModelParser\XSharpRegionDiscover.cs" />
     <Compile Include="ModelWalker.cs" />
     <Compile Include="SystemTypeController.cs" />
     <Compile Include="TextRange.cs" />
@@ -104,7 +107,9 @@
     <Compile Include="XTypeMember.cs" />
     <Compile Include="XVariable.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

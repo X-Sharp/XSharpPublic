@@ -4,21 +4,18 @@
 // See License.txt in the project root for license information.
 //
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace XSharpModel
 {
     public static class XSolution
     {
-        static Dictionary<string, XProject> xProjects;
+        static readonly ConcurrentDictionary<string, XProject> xProjects;
         static XProject _orphanedFilesProject = null;
 
         static XSolution()
         {
-            xProjects = new Dictionary<string, XProject>(StringComparer.OrdinalIgnoreCase);
+            xProjects = new ConcurrentDictionary<string, XProject>(StringComparer.OrdinalIgnoreCase);
         }
 
         public static bool Add(string projectName, XProject project)
@@ -27,8 +24,7 @@ namespace XSharpModel
             {
                 return false;
             }
-            xProjects.Add(projectName, project);
-            return true;
+            return xProjects.TryAdd(projectName, project);
         }
 
         public static bool Add(XProject project)
@@ -42,11 +38,10 @@ namespace XSharpModel
             if (xProjects.ContainsKey(projectName))
             {
                 var project = xProjects[projectName];
-                // Flag as unloaded to make sure that a running filewalk 
+                // Flag as unloaded to make sure that a running file walker
                 // for the project gets aborted
                 project.Loaded = false;
-                xProjects.Remove(projectName);
-                return true;
+                return xProjects.TryRemove(projectName, out project);
             }
             return false;
         }
@@ -54,7 +49,9 @@ namespace XSharpModel
         public static bool Remove(XProject project)
         {
             if (project != null)
+            {
                 return Remove(project.Name);
+            }
             return false;
         }
 
@@ -76,7 +73,7 @@ namespace XSharpModel
         public static XFile FindFullPath(string fullPath)
         {
             XFile file = null;
-            foreach (KeyValuePair<string, XProject> project in xProjects)
+            foreach (var project in xProjects)
             {
                 XProject prj = project.Value;
                 file = prj.FindFullPath(fullPath);
@@ -105,10 +102,12 @@ namespace XSharpModel
             SystemTypeController.Clear();
             if (_orphanedFilesProject != null)
             {
-                xProjects.Add(OrphanedFiles, _orphanedFilesProject);
-                foreach (var asm in _orphanedFilesProject.AssemblyReferences)
+                if (xProjects.TryAdd(OrphanedFiles, _orphanedFilesProject))
                 {
-                    SystemTypeController.LoadAssembly(asm.FileName);
+                    foreach (var asm in _orphanedFilesProject.AssemblyReferences)
+                    {
+                        SystemTypeController.LoadAssembly(asm.FileName);
+                    }
                 }
             }
         }
@@ -122,8 +121,10 @@ namespace XSharpModel
                     _orphanedFilesProject = new XProject(new OrphanedFilesProject());
                     var prj = _orphanedFilesProject.ProjectNode as OrphanedFilesProject;
                     prj.Project = _orphanedFilesProject;
-                    xProjects.Add(OrphanedFiles, _orphanedFilesProject);
-                    prj.Project.AddAssemblyReference(typeof(System.String).Assembly.Location);
+                    if (xProjects.TryAdd(OrphanedFiles, _orphanedFilesProject))
+                    {
+                        prj.Project.AddAssemblyReference(typeof(string).Assembly.Location);
+                    }
                 }
                 return _orphanedFilesProject;
             }

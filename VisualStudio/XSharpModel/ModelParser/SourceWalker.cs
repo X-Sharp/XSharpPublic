@@ -14,86 +14,45 @@ using Microsoft.VisualStudio.Text.Classification;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.CodeAnalysis.XSharp.Syntax;
+using System.Collections.Immutable;
 namespace XSharpModel
 {
     public class SourceWalker
     {
-        private IClassificationType _xsharpRegionStartType;
-        private IClassificationType _xsharpRegionStopType;
-        private ITextSnapshot _snapshot;
         private string _source;
-        private string _fullPath;
-        private List<ClassificationSpan> _regionTags;
+        private readonly ITextSnapshot _snapshot;
         private IXSharpProject _prjNode;
 
         private XFile _file;
 
         private ITokenStream _TokenStream;
-        private XSharpParser.SourceContext _xTree;
         private bool _hasParseErrors;
-
-        public ITextSnapshot Snapshot
+        public SourceWalker(XFile file, ITextSnapshot snapshot)
         {
-            set
+            _file = file;
+            _prjNode = _file?.Project?.ProjectNode;
+            _snapshot = snapshot;
+            _source = snapshot.GetText();
+        }
+
+        public SourceWalker(XFile file)
+        {
+            _file = file;
+            _prjNode = _file?.Project?.ProjectNode;
+            string fullPath = _file.FullPath;
+            if (_file.IsXaml)
             {
-                _snapshot = value;
-                _source = _snapshot.GetText();
+                fullPath = System.IO.Path.Combine(_prjNode.IntermediateOutputPath, System.IO.Path.GetFileName(fullPath));
+                fullPath = System.IO.Path.ChangeExtension(fullPath, ".g.prg");
+            }
+            if (System.IO.File.Exists(fullPath))
+            {
+                _source = System.IO.File.ReadAllText(fullPath);
             }
         }
 
+        public ITextSnapshot Snapshot => _snapshot;
 
-        public string FullPath
-        {
-            set
-            {
-                _fullPath = value;
-                var file = XSolution.FindFullPath(value);
-                if (file == null)
-                    file = new XFile(_fullPath);
-                this.File = file;       // This also sets the _prjNode and _source
-
-            }
-        }
-
-        public XFile File
-        {
-            set
-            {
-                System.Diagnostics.Debug.Assert(value != null);
-                if (value != null)
-                {
-                    _file = value;
-                    _prjNode = _file?.Project?.ProjectNode;
-                    _fullPath = _file.FullPath;
-                    if (_source == null )
-                    {
-                        if (_file.IsXaml)
-                        {
-                            _fullPath = System.IO.Path.Combine(_prjNode.IntermediateOutputPath, System.IO.Path.GetFileName(_fullPath));
-                            _fullPath = System.IO.Path.ChangeExtension(_fullPath, ".g.prg");
-                        }
-                        if (System.IO.File.Exists(_fullPath))
-                        {
-                            _source = System.IO.File.ReadAllText(_fullPath);
-                        }
-                    }
-                }
-            }
-
-            get
-            {
-                return this._file;
-            }
-        }
-
-        public List<ClassificationSpan> RegionTags
-        {
-            get
-            {
-                return _regionTags;
-            }
-
-        }
 
         public ITokenStream TokenStream
         {
@@ -106,37 +65,6 @@ namespace XSharpModel
 
         public bool HasParseErrors => _hasParseErrors;
 
-        // Unused ?
-        //public string Source
-        //{
-        //    get
-        //    {
-        //        return _source;
-        //    }
-
-        //    set
-        //    {
-        //        _source = value;
-        //    }
-        //}
-
-        public SourceWalker()
-        {
-            //
-            _regionTags = new List<ClassificationSpan>();
-        }
-
-        public SourceWalker(IClassificationTypeRegistryService registry):this()
-        {
-            if (registry != null)
-            {
-                _xsharpRegionStartType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
-                _xsharpRegionStopType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
-            }
-            //
-        }
-
-
         public ITokenStream LexFile()
         {
             try
@@ -145,14 +73,13 @@ namespace XSharpModel
                 var opts = XSharpParseOptions.Default;
                 opts.SetOptions(parseOptions.CommandLineArguments);
                 opts.ParseLevel = ParseLevel.Lex;
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, opts, _fullPath);
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, opts, _file.FullPath);
                 var syntaxRoot = tree.GetRoot();
-                _xTree = null;
                 _TokenStream = ((CompilationUnitSyntax)syntaxRoot).XTokenStream;
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Support.Debug("SourceWalker.Lexfile: "+ e.Message);
             }
             return _TokenStream;            
         }
@@ -173,30 +100,40 @@ namespace XSharpModel
             }
         }
 
-        public void InitParse()
+        public XSharpParser.SourceContext Parse()
         {
-            _xTree = null;
-            //
-
+            XSharpParser.SourceContext xTree = null;
             try
             {
                 
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, parseOptions, _fullPath);
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, parseOptions, _file.FullPath);
                 var syntaxRoot = tree.GetRoot();
-               
+
                 // Disabled for now . We may want to enable this for the current document only
                 // ShowErrorsAsync(syntaxRoot);
 
-                 // Get the antlr4 parse tree root
-                _xTree = ((CompilationUnitSyntax)syntaxRoot).XSource;
-                _TokenStream = ((CompilationUnitSyntax)syntaxRoot).XTokenStream;
-                _hasParseErrors = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).ContainsDiagnostics;
-                //
+                // Get the antlr4 parse tree root
+                var cu = syntaxRoot as CompilationUnitSyntax;
+                xTree = cu.XSource;
+                _TokenStream = cu.XTokenStream;
+                if (cu.ContainsDiagnostics)
+                {
+                    var errors = cu.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);
+                    _hasParseErrors = errors.Count() > 0;
+                }
+                else
+                {
+                    _hasParseErrors = false;
+                }
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                xTree = null;
+                _TokenStream = null;
+                Support.Debug("SourceWalker.Parse: "+e.Message);
+                _hasParseErrors = true;
             }
+            return xTree;
         }
 
         IEnumerable<LanguageService.CodeAnalysis.Diagnostic> errors = null;
@@ -220,7 +157,7 @@ namespace XSharpModel
                 lock (_gate)
                 {
                     current = errors;
-                    string path = File.FullPath;
+                    string path = _file.FullPath;
                     _prjNode.ClearIntellisenseErrors(path);
                     if (current != null && _prjNode.IsDocumentOpen(path))
                     {
@@ -238,33 +175,7 @@ namespace XSharpModel
             //thread.Start();
         }
 
-
-        public void BuildRegionTagsOnly()
-        {
-            if (!_hasParseErrors)
-            {
-                var discover = new XSharpModelRegionDiscover(_file);
-                discover.BuildRegionTags = true;
-                discover.BuildLocals = true;
-                discover.BuildModel = false;
-                //
-                if (_xTree != null && _snapshot != null)
-                {
-                    var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
-                    //
-                    discover.Snapshot = _snapshot;
-                    discover.xsharpRegionStartType = _xsharpRegionStartType;
-                    discover.xsharpRegionStopType = _xsharpRegionStopType;
-                    // Walk the tree. The TreeDiscover class will collect the tags.
-                    walker.Walk(discover, _xTree);
-                }
-                //
-                _regionTags = discover.tags;
-            }
-        }
-
-
-        public void BuildModelOnly()
+        public void BuildModel(XSharpParser.SourceContext xTree, bool buildLocals )
         {
             // abort when the project is unloaded or when no project
             // because in these cases there is no need to build a model
@@ -272,61 +183,21 @@ namespace XSharpModel
                 return;
 
             //
-            var discover = new XSharpModelRegionDiscover(_file);
-            discover.BuildRegionTags = false;
-            discover.BuildModel = true;
-            if (_file != null)
+            if (xTree != null )
             {
-                if (_file.Project.Loaded)
-                {
-                    discover.BuildModel = !_file.Parsed;
-                }
-            }
-            //
-            if (_xTree != null )
-            {
-                var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
-                //
-                // Walk the tree. The TreeDiscover class will build the model.
-                walker.Walk(discover, _xTree);
-            }
-        }
-
-        public void BuildModelAndRegionTags()
-        {
-            //
-            var discover = new XSharpModelRegionDiscover(_file);
-            discover.BuildRegionTags = (_snapshot != null && !_hasParseErrors);
-            discover.BuildModel = true;
-            discover.BuildLocals = true;
-
-            //
-            if (_xTree != null)
-            {
-                var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
-                //
-                if (_snapshot != null)
-                {
-                    discover.Snapshot = _snapshot;
-                    discover.xsharpRegionStartType = _xsharpRegionStartType;
-                    discover.xsharpRegionStopType = _xsharpRegionStopType;
-                }
-                // Walk the tree. The TreeDiscover class will build the model.
-                // Make sure that when the is an error during the walking
-                // that we will not abort.
                 try
                 {
-                    walker.Walk(discover, _xTree);
-                }
+	        	    var mdiscover = new XSharpModelDiscover(_file, buildLocals);
+    	            var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
+                    //
+                    // Walk the tree. The XSharpModelDiscover class will build the model.
+                    walker.Walk(mdiscover, xTree);
+            	}
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    Support.Debug("SourceWalker.BuildModel failed: "+e.Message);
                 }
-            }
-            if ( discover.BuildRegionTags )
-            {
-                _regionTags = discover.tags;
-            }
-        }
+			}
+		}
     }
 }

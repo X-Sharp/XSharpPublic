@@ -427,6 +427,8 @@ namespace XSharp.Project
                 //
                 do
                 {
+                    if (ssp.Position == 0)
+                        break;
                     ssp = ssp - 1;
                     char leftCh = ssp.GetChar();
                     if ((leftCh == '(') || (leftCh == '{'))

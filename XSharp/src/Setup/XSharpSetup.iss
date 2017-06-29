@@ -510,6 +510,8 @@ Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}";
 Name: "{group}\{#Product} Examples"; Filename: "{commondocs}\XSharp\Examples";
 Name: "{commondesktop}\XSharp Examples";  Filename: "{commondocs}\XSharp\Examples";
 Name: "{commondesktop}\XSharp Script Examples";  Filename: "{commondocs}\XSharp\Scripting";
+Name: "{userdocs}\XSharp Examples";         Filename: "{commondocs}\XSharp\Examples";
+Name: "{userdocs}\XSharp Script Examples";  Filename: "{commondocs}\XSharp\Scripting";
 
 
 [Registry]
@@ -637,6 +639,7 @@ Components: main\ngen;  Filename: "{app}\uninst\uninstngen.cmd";  Flags: Runhidd
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\XSharpCodeDomProvider";
 Type: files;          Name: "{app}\License.rtf"; 
 Type: filesandordirs; Name: "{app}\Xide"; 
+Type: filesandordirs; Name: "{app}\VOXporter"; 
 #ifdef FOX
 Type: filesandordirs; Name: "{app}\Bin\Debug"; 
 Type: filesandordirs; Name: "{app}\Bin\Release"; 
@@ -670,12 +673,14 @@ Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"             ;
 Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";  
 Components: vs2017; Type: filesandordirs; Name: "{code:Getvs2017IdeDir}\Extensions\XSharp";  
 Type: filesandordirs; Name: "{commondocs}\XSharp\Examples";
+Type: filesandordirs; Name: "{commondocs}\XSharp\Scripting";
+Type: dirifempty;     Name: "{commondocs}\XSharp"; 
 Type: dirifempty;     Name: "{app}\Include"; 
-Type: dirifempty;     Name: "{app}"; 
 Type: filesandordirs; Name: "{app}\Xide"; 
 Type: dirifempty;     Name: "{app}\Snippets"     ; 
+Type: dirifempty;     Name: "{app}\VOXPorter\Templates"; 
 Type: dirifempty;     Name: "{app}\VOXPorter"    ; 
-Type: dirifempty;     Name: "{commondocs}\XSharp"; 
+Type: dirifempty;     Name: "{app}"; 
 
 ; Template cache and component cache
 ;vs2015

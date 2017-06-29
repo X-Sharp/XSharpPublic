@@ -2343,61 +2343,75 @@ namespace XSharpLanguage
             }
             // First, Check for Function/Procedure
             XType gbl = file.GlobalType;
-            int maxPosition = 0;
-            XTypeMember lastElt = null;
+            XTypeMember lastGlobalElement = null;
             //
             foreach (XTypeMember elt in gbl.Members)
             {
-                if (elt.Interval.Start < position)
-                {
-                    if (elt.Interval.Stop > maxPosition)
-                    {
-                        // Keep track of the last position, in the corresponding XType
-                        maxPosition = elt.Interval.Stop;
-                        lastElt = elt;
-                    }
-                }
                 if (elt.Interval.ContainsInclusive(position))
                 {
                     return elt;
+                }
+                if (lastGlobalElement == null && elt.Interval.Start < position)
+                {
+                    lastGlobalElement = elt;
+                }
+                else if (lastGlobalElement != null && elt.Interval.Stop > lastGlobalElement.Interval.Stop 
+                    && elt.Interval.Start < position)
+                {
+                    lastGlobalElement = elt;
                 }
             }
             // If we are here, we found nothing
             // but we might be after the code of the last Function in the file, so the parser don't know where we are
             // Keep it in lastElt, and check Members
-            XTypeMember lastElt2 = null;
+            XTypeMember lastTypeElement = null;
             foreach (XType eltType in file.TypeList.Values)
             {
                 if (eltType.Interval.ContainsInclusive(position))
                 {
-                    //
                     foreach (XTypeMember elt in eltType.Members)
                     {
-                        if (elt.Interval.Start < position)
-                        {
-                            if (elt.Interval.Stop > maxPosition)
-                            {
-                                // Keep track of the last position, in the corresponding XType
-                                maxPosition = elt.Interval.Stop;
-                                lastElt2 = elt;
-                            }
-                        }
                         if (elt.Interval.ContainsInclusive(position))
                         {
                             return elt;
                         }
+                        if (lastTypeElement == null && elt.Interval.Start < position)
+                        {
+                            lastTypeElement = elt;
+                        }
+                        else if (lastTypeElement != null && elt.Interval.Stop > lastTypeElement.Interval.Stop
+                            && elt.Interval.Start < position)
+                        {
+                            lastTypeElement = elt;
+                        }
                     }
-                    // We are in the right Type, but found no Member ?
-                    // So it must the Last Member, before the Closing-Keyword
-                    if ((lastElt != null) && (lastElt2 == null))
-                        return lastElt;
-                    //
-                    return lastElt2;
+                }
+                else
+                {
+                    // we simply want to find the last member that starts before the current position
+                    foreach (XTypeMember elt in eltType.Members)
+                    {
+                        if (lastTypeElement == null && elt.Interval.Start < position)
+                        {
+                            lastTypeElement = elt;
+                        }
+                        else if (lastTypeElement != null && elt.Interval.Stop > lastTypeElement.Interval.Stop
+                            && elt.Interval.Start < position)
+                        {
+                            lastTypeElement = elt;
+                        }
+                    }
+
                 }
             }
-            //
-            if (lastElt != null)
-                return lastElt;
+            if (lastGlobalElement != null)
+            {
+                return lastGlobalElement;
+            }
+            if (lastTypeElement != null)
+            {
+                return lastTypeElement;
+            }
             //
 #if DEBUG
             System.Diagnostics.Debug.WriteLine(String.Format("Cannot find member as position {0} in file {0} .", position, file.FullPath));

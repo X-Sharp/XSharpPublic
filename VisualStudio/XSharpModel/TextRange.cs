@@ -9,15 +9,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Diagnostics;
 namespace XSharpModel
 {
+    /// <summary>
+    /// 1 based TextRange
+    /// </summary>
+    [DebuggerDisplay("{StartLine}.{StartColumn}-{EndLine}.{EndColumn}")]
     public struct TextRange
     {
-        private int _StartLine;
-        private int _StartColumn;
-        private int _EndLine;
-        private int _EndColumn;
+        private readonly int _StartLine;
+        private readonly int _StartColumn;
+        private readonly int _EndLine;
+        private readonly int _EndColumn;
 
         public static TextRange Empty
         {
@@ -42,37 +46,22 @@ namespace XSharpModel
             _EndColumn = ec;
         }
 
-        public int StartLine
-        {
-            get
-            {
-                return _StartLine;
-            }
-        }
-
-        public int EndLine
-        {
-            get
-            {
-                return _EndLine;
-            }
-        }
-
-        public int StartColumn
-        {
-            get
-            {
-                return _StartColumn;
-            }
-        }
-
-        public int EndColumn
-        {
-            get
-            {
-                return _EndColumn;
-            }
-        }
+        /// <summary>
+        /// 1 based Start Line
+        /// </summary>
+        public int StartLine => _StartLine;
+        /// <summary>
+        /// 1 based End Line
+        /// </summary>
+        public int EndLine => _EndLine;
+        /// <summary>
+        /// 1 based Start Column
+        /// </summary>
+        public int StartColumn => _StartColumn;
+        /// <summary>
+        /// 1 based End Column
+        /// </summary>
+        public int EndColumn => _EndColumn;
 
         public bool ContainsExclusive(int line, int col)
         {
@@ -124,11 +113,14 @@ namespace XSharpModel
 
 
     }
-
+    /// <summary>
+    /// 0 based Text Interval
+    /// </summary>
+    [DebuggerDisplay("{Start}-{Stop}")]
     public struct TextInterval
     {
-        private int _StartIndex;
-        private int _StopIndex;
+        private readonly int _StartIndex;
+        private readonly int _StopIndex;
 
         public static TextInterval Empty
         {
@@ -149,29 +141,18 @@ namespace XSharpModel
             _StopIndex = stop;
         }
 
-        public int Start
-        {
-            get
-            {
-                return _StartIndex;
-            }
-        }
+        public bool IsEmpty() => _StartIndex == 0 && _StopIndex == 0;
+        /// <summary>
+        /// 0 based StartIndex
+        /// </summary>
+        public int Start => _StartIndex;
 
-        public int Stop
-        {
-            get
-            {
-                return _StopIndex;
-            }
-        }
+        /// <summary>
+        /// 0 based StopIndex
+        /// </summary>
+        public int Stop => _StopIndex;
 
-        public int Width
-        {
-            get
-            {
-                return (_StopIndex - _StartIndex) + 1;
-            }
-        }
+        public int Width => _StopIndex - _StartIndex + 1;
 
         public bool ContainsInclusive(int position)
         {

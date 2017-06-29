@@ -884,32 +884,40 @@ namespace XSharpLanguage
             //
             foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith) ))
             {
-                MemberAnalysis analysis = new MemberAnalysis(member);
-                if (member is MethodInfo)
+                try
                 {
-                    var mi = member as MethodInfo;
-                    if (mi.IsSpecialName )
-                        continue;
-                    
+                    MemberAnalysis analysis = new MemberAnalysis(member);
+                    if (member is MethodInfo)
+                    {
+                        var mi = member as MethodInfo;
+                        if (mi.IsSpecialName)
+                            continue;
+
+                    }
+                    if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
+                    {
+                        if (analysis.Kind == Kind.Constructor)
+                            continue;
+                        if (analysis.IsStatic != staticOnly)
+                        {
+                            continue;
+                        }
+                        if (IsHiddenName(analysis.Name))
+                            continue;
+                        String toAdd = "";
+                        if ((analysis.Kind == Kind.Method))
+                        {
+                            toAdd = "(";
+                        }
+                        //
+                        ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
+                        compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                    }
                 }
-                if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
+                catch (Exception e)
                 {
-                    if (analysis.Kind == Kind.Constructor)
-                        continue;
-                    if (analysis.IsStatic != staticOnly)
-                    {
-                        continue;
-                    }
-                    if (IsHiddenName(analysis.Name))
-                        continue;
-                    String toAdd = "";
-                    if ((analysis.Kind == Kind.Method))
-                    {
-                        toAdd = "(";
-                    }
-                    //
-                    ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
-                    compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                    
+                    System.Diagnostics.Debug.WriteLine("FillMembers error: " + e.Message);
                 }
             }
             // fill members of parent class
@@ -1115,6 +1123,7 @@ namespace XSharpLanguage
             this._typeName = "";
             this._parameters = new List<ParamInfo>();
             //
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             switch (member.MemberType)
             {
                 case MemberTypes.Constructor:
@@ -1251,7 +1260,7 @@ namespace XSharpLanguage
                         this._visibility = Modifiers.Protected;
                     }
                     //
-                    addParameters(method, method.GetParameters());
+                   addParameters(method, method.GetParameters());
                     //
                     declType = method.ReturnType;
                     this._typeName = declType.GetXSharpTypeName();
@@ -1291,6 +1300,16 @@ namespace XSharpLanguage
                     this._name = null;
                     break;
             }
+            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+        }
+
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            // return "OUR" copy of the assembly. Most likely we have it
+            var name = args.Name;
+            var request = args.RequestingAssembly;
+            var asm = SystemTypeController.FindAssembly(name);
+            return asm;
         }
 
         private void addParameters(MemberInfo member, ParameterInfo[] parameters)

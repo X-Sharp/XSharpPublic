@@ -10,18 +10,18 @@
 
 #define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetupRC4Fox"
+#define SetupExeName    "XSharpSetupRC5Fox"
 #else
-#define SetupExeName    "XSharpSetupRC4Public"
+#define SetupExeName    "XSharpSetupRC5Public"
 #endif
 
-#define Version         "0.9.9.4"
-#define VIVersion       "0.9.9.4"
-#define VITextVersion   "0.9.9.4 (RC4)"                                                                                            
+#define Version         "0.9.9.5"
+#define VIVersion       "0.9.9.5"
+#define VITextVersion   "0.9.9.5 (RC5)"
 
 ; version info and similar stuff.
 #define Product         "XSharp"
-#define ProdBuild       "XSharp RC4"
+#define ProdBuild       "XSharp RC5"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
@@ -38,19 +38,19 @@
 #define Description     "XSharp, xBase compiler for .Net"
 
 ;Source Folders and other related stuff
-#define BinDFolder      "\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
-#define BinRFolder      "\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
-#define BinPFolder      "\Xsharp\DevPublic\Binaries\Debug\"
-#define CommonFolder    "\Xsharp\Dev\XSharp\src\Common\"
-#define ToolsFolder     "\Xsharp\Dev\XSharp\src\Tools\"
-#define VOXporterFolder "\XSharp\Dev\XSharp\src\Tools\VOXPorter\"
-#define VOXporterBinFolder "\XSharp\Dev\XSharp\src\Tools\VOXPorter\Bin\Debug\"
-#define ExamplesFolder  "\Xsharp\DevPublic\Samples\"
-#define ScriptFolder    "\XSharp\DevPublic\ScriptSamples\"
-#define OutPutFolder    "\XSharp\Dev\XSharp\Binaries\Setup"
-#define DocFolder       "\Xsharp\Dev\XSharp\Binaries\Help\"
-#define XIDEFolder      "\Xsharp\Dev\XSharp\Xide\"
-#define SnippetsSource  "\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
+#define BinDFolder      "C:\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
+#define BinRFolder      "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
+#define BinPFolder      "C:\Xsharp\DevPublic\Binaries\Debug\"
+#define CommonFolder    "C:\Xsharp\Dev\XSharp\src\Common\"
+#define ToolsFolder     "C:\Xsharp\Dev\XSharp\src\Tools\"
+#define VOXporterFolder "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\"
+#define VOXporterBinFolder "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\Bin\Debug\"
+#define ExamplesFolder  "C:\Xsharp\DevPublic\Samples\"
+#define ScriptFolder    "C:\XSharp\DevPublic\ScriptSamples\"
+#define OutPutFolder    "C:\XSharp\Dev\XSharp\Binaries\Setup"
+#define DocFolder       "C:\Xsharp\Dev\XSharp\Binaries\Help\"
+#define XIDEFolder      "C:\Xsharp\Dev\XSharp\Xide\"
+#define SnippetsSource  "C:\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
 #define XIDESetup       "XIDE_Set_up_1.10.exe"
 #define XIDEVersion     "1.10"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"

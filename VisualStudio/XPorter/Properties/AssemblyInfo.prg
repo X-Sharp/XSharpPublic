@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #using System.Reflection
 #using System.Runtime.InteropServices
-#include "version.vh"
+#include "version.xh"
 [assembly: AssemblyTitleAttribute( "XSharp.XPorter" )]
 [assembly: AssemblyDescriptionAttribute( "XSharp.XPorter" )]
 

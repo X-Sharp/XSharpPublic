@@ -7,8 +7,10 @@ namespace XSharp
 {
     internal static class Constants
     {
+
         internal const string Company = "XSharpBV";
         internal const string Product = "XSharp";
+        // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE
         internal const string Version = "0.9.9.5";
         internal const string Copyright = "Copyright © XSharp BV 2015-2017"; 
 

@@ -361,7 +361,7 @@ namespace XSharp.Project
 
             commandlineoption= getCfgString(nameof(CommandLineOption),  "");
             ppo = getCfgLogic(nameof(PPO),  false);
-            nostandarddefs = getCfgLogic(nameof(NoStandardDefs),  true);
+            nostandarddefs = getCfgLogic(nameof(NoStandardDefs),  false);
             includepaths = getCfgString(nameof(IncludePaths),  "");
             defines = getCfgString(nameof(DefineConstants), "");
 

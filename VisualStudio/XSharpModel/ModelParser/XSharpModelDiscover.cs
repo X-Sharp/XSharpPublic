@@ -29,8 +29,14 @@ namespace XSharpModel
         private readonly Stack<XType> _currentNSpaces;
         private readonly Stack<XSharpParser.LocalvarContext> _localDecls;
         private readonly XSharpParseOptions _options;
+        private readonly Dictionary<string, XType> _types;
+        private readonly List<string> _usings;
+        private readonly List<string> _staticusings;
+        private readonly XType _globalType;
+        private readonly List<XTypeMember> _classVars;
         private XTypeMember _currentMethod;
         private Modifiers _currentVarVisibility;
+        private bool _currentVarStatic;
         private string _defaultNS;
         private readonly bool _buildLocals;
         public XSharpModelDiscover(XFile file, bool buildLocals)
@@ -44,6 +50,12 @@ namespace XSharpModel
             this._currentNSpaces = new Stack<XType>();
             //
             this._options = file.Project.ProjectNode.ParseOptions;
+            this._types = new Dictionary<string, XType>();
+            this._usings = new List<string>();
+            this._staticusings = new List<String>();
+            this._globalType = XType.CreateGlobalType(_file);
+            this._classVars = new List<XTypeMember>();
+            _types.Add(_globalType.Name, _globalType);
             if (this._file != null && this._file.Project != null)
             {
                 if (this._file.Project.Loaded)       // this will fail if the project file is already unloaded
@@ -82,16 +94,21 @@ namespace XSharpModel
 
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
         {
-            // Reset TypeList for this file
-            this.File.InitTypeList();
             // Default namespaces
-            _file.AddUsing("System");
+            addUsing("System", false);
             if (_file?.Project?.ProjectNode?.ParseOptions != null)
             {
                 if (_file.Project.ProjectNode.ParseOptions.IsDialectVO)
-                    _file.AddUsing("Vulcan");
+                    addUsing("Vulcan", false);
             }
         }
+        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
+        {
+            // Reset TypeList for this file
+            this.File.SetTypes(_types, _usings, _staticusings);
+        }
+
+
         #region Types
 
         private XType currentType
@@ -152,7 +169,7 @@ namespace XSharpModel
                 }
                 if (newClass != null && newClass.FullName != null)
                 {
-                    newClass = this._file.AddType(newClass);
+                    newClass = addType(newClass);
                     // Set as Current working Class
                     pushType(newClass);
                 }
@@ -163,7 +180,23 @@ namespace XSharpModel
         {
             popType();
         }
-  
+
+        public override void ExitClassvars([NotNull] XSharpParser.ClassvarsContext context)
+        {
+
+            var type = this.currentType;
+            if (type != null)
+            {
+                foreach (var v in _classVars)
+                {
+                    v.Parent = type;
+                    type.Members.Add(v);
+                }
+            }
+            _classVars.Clear();
+
+        }
+
         public override void EnterStructure_([NotNull] XSharpParser.Structure_Context context)
         {
             XType newStruct = new XType(context.Id.GetText(),
@@ -189,7 +222,7 @@ namespace XSharpModel
             }
                 
             //
-            newStruct = this._file.AddType(newStruct);
+            newStruct = addType(newStruct);
             // Set as Current working Class
             pushType(newStruct);
         }
@@ -214,7 +247,7 @@ namespace XSharpModel
             // Partial Class ?
             newIf.IsPartial = this.isPartial(context.Modifiers?._Tokens);
             //
-            newIf = this._file.AddType(newIf);
+            newIf = addType(newIf);
             // Set as Current working Interface
             pushType(newIf);
         }
@@ -233,7 +266,7 @@ namespace XSharpModel
             //
             newEnum.NameSpace = this.currentNamespace;
             //
-            newEnum = this._file.AddType(newEnum);
+            newEnum = addType(newEnum);
             // Set as Current working Interface
             pushType(newEnum);
         }
@@ -252,7 +285,7 @@ namespace XSharpModel
             //
             // Todo additional properties ?
 
-            newStruct = this._file.AddType(newStruct);
+            newStruct = addType(newStruct);
             pushType(newStruct);
         }
         public override void ExitVostruct([NotNull] XSharpParser.VostructContext context)
@@ -269,7 +302,7 @@ namespace XSharpModel
                     new TextRange(context), new TextInterval(context));
             //
             // Todo additional properties ?
-            newStruct = this._file.AddType(newStruct);
+            newStruct = addType(newStruct);
             pushType(newStruct);
         }
         public override void ExitVounion([NotNull] XSharpParser.VounionContext context)
@@ -302,8 +335,8 @@ namespace XSharpModel
         private void addGlobalMember(XTypeMember member)
         {
             member.File = this._file;
-            member.Parent = _file.GlobalType;
-            this._file.GlobalType.Members.Add(member);
+            member.Parent = _globalType;
+            _globalType.Members.Add(member);
             this._currentMethod = member;
 
         }
@@ -360,17 +393,21 @@ namespace XSharpModel
         }
         public override void EnterVoglobal([NotNull] XSharpParser.VoglobalContext context)
         {
-            XTypeMember newMethod = new XTypeMember(context.ShortName,
-                Kind.VOGlobal,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
-                new TextRange(context), new TextInterval(context),
-                context.ReturnType == null ? "Void" : context.ReturnType.GetText());
-            //
-            addGlobalMember(newMethod);
+            this._currentVarVisibility = decodeVisibility(context.Modifiers?._Tokens);
+            this._currentVarStatic = isStatic(context.Modifiers?._Tokens);
         }
         public override void ExitVoglobal([NotNull] XSharpParser.VoglobalContext context)
         {
+
+            foreach (var member in _classVars)
+            {
+                // convert from classvars to voglobal
+
+                var newMember = new XTypeMember(member.Name, Kind.VOGlobal, member.Modifiers,
+                    member.Visibility, member.Range, member.Interval, member.TypeName);
+                addGlobalMember(newMember);
+            }
+            _classVars.Clear();
             endMember(context);
         }
 
@@ -395,6 +432,31 @@ namespace XSharpModel
 
         #region Members
 
+        private XType addType (XType newType)
+        {
+            if (_types.ContainsKey(newType.FullName))
+                return newType;
+            _types.Add(newType.FullName, newType);
+            return newType;
+        }
+
+        private void addUsing(string name, bool staticUsing)
+        {
+            List<string> list;
+            if (staticUsing)
+                list = _staticusings;
+            else
+                list = _usings;
+
+            // check for duplicate usings
+            foreach (var u in list)
+            {
+                if (string.Compare(u, name, true) == 0)
+                    return;
+            }
+            list.Add(name);
+        }
+
         private void addMember(XTypeMember member)
         {
             var type = this.currentType;
@@ -406,12 +468,7 @@ namespace XSharpModel
                 type.Members.Add(member);
                 this._currentMethod = member;
             }
-            //else
-            //{
-            //    if (System.Diagnostics.Debugger.IsAttached)
-            //     System.Diagnostics.Debugger.Break();
-            //}
-        }
+         }
         private void endMember(LanguageService.SyntaxTree.ParserRuleContext context)
         {
             addVariables(context);
@@ -595,43 +652,57 @@ namespace XSharpModel
         {
             XSharpParser.ClassvarModifiersContext current = (XSharpParser.ClassvarModifiersContext)context;
             this._currentVarVisibility = decodeVisibility(current?._Tokens);
+            this._currentVarStatic = isStatic(current?._Tokens);
         }
         public override void EnterClassVarList([NotNull] XSharpParser.ClassVarListContext context)
         {
             XSharpParser.ClassVarListContext current = (XSharpParser.ClassVarListContext)context;
-            if (current.DataType != null)
+            //
+            // structure is:
+            /*
+            classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList eos
+                                ;
+
+            classVarList		: Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
+                                ;
+
+            classvar			: (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
+                                ;
+            */
+            // we want to include the stop position of the datatype in the classvar
+            // so we set the range to the whole classvarlist 
+            var parent = context.Parent as XSharpParserRuleContext;
+            int count, currentVar;
+            count = current._Var.Count;
+            currentVar = 0;
+            foreach (var varContext in current._Var)
             {
                 //
-                // structure is:
-                /*
-                classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList eos
-                                    ;
-
-                classVarList		: Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
-                                    ;
-
-                classvar			: (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
-                                    ;
-                */
-                // we want to include the stop position of the datatype in the classvar
-                // so we set the range to the whole classvarlist 
-                foreach (var varContext in current._Var)
+                var mods = _currentVarStatic ? Modifiers.Static : Modifiers.None;
+                // when many variables then the first one is from the start of the line until the 
+                // end of its name, and the others start with the start of their name
+                // the last one finishes at the end of the line
+                currentVar += 1;
+                var start = parent.Start;       // LOCAL keyword or GLOBAL keyword
+                var stop = current.Stop;        // end of this line (datatype clause)
+                if (currentVar > 1)
                 {
-                    //
-                    XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
-                        Kind.ClassVar, Modifiers.None, this._currentVarVisibility,
-                        new TextRange(varContext.Start.Line, varContext.Start.Column, current.Stop.Line, current.Stop.Column),
-                        new TextInterval(current), current.DataType.GetText());
-                    newClassVar.File = this._file;
-                    newClassVar.IsArray = varContext.Dim != null;
-                    //
-                    var type = this.currentType;
-                    if (type != null)
-                    {
-                        newClassVar.Parent = type;
-                        type.Members.Add(newClassVar);
-                    }
+                    start = varContext.Start; 
                 }
+                if (currentVar < count) // end at this variable name
+                {
+                    stop = varContext.Stop;
+                }
+                var interval = new TextInterval(start.StartIndex, stop.StopIndex);
+                string typeName = current.DataType != null ? current.DataType.GetText() : "USUAL";
+                XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
+                    Kind.ClassVar, mods, this._currentVarVisibility,
+                    new TextRange(start.Line, start.Column, stop.Line, stop.Column+stop.Text.Length),
+                    interval, typeName);
+                newClassVar.File = this._file;
+                newClassVar.IsArray = varContext.Dim != null;
+                //
+                this._classVars.Add(newClassVar);
             }
         }
 
@@ -641,14 +712,7 @@ namespace XSharpModel
         public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
         {
             XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
-            if ( use.Static == null)
-                this._file.AddUsing(use.Name?.GetText());
-            else
-            {
-                string typeName = use.Name?.GetText();
-                if (! string.IsNullOrEmpty(typeName))
-                    this._file.AddUsing(typeName);
-            }
+            addUsing(use.Name?.GetText(), use.Static != null);
         }
 
         public override void ExitUsing_([NotNull] XSharpParser.Using_Context context)
@@ -670,7 +734,7 @@ namespace XSharpModel
             {
                 XType cNS = this._currentNSpaces.Peek();
                 // Is it necessary to Add the NameSpace in the TypeList ??
-                this._file.AddType(cNS);
+                this.addType(cNS);
                 // Pop to support nested NameSpaces
                 this._currentNSpaces.Pop();
             }

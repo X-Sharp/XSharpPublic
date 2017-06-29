@@ -97,17 +97,6 @@ namespace XSharpModel
             }
         }
 
-        public void AddUsing(string name)
-        {
-            if (! string.IsNullOrEmpty(name))
-            {
-                lock (_lock)
-                {
-                    _usings.AddUnique(name);
-                }
-            }
-        }
-
         public ImmutableList<string> Usings
         {
             get
@@ -119,15 +108,6 @@ namespace XSharpModel
             }
 
         }
-
-        public ImmutableList<string> UsingStatics
-        {
-            get
-            {
-                return _usingStatics.ToImmutableList();
-            }
-        }
-
         public ImmutableList<string> AllUsingStatics
         {
             get
@@ -154,15 +134,30 @@ namespace XSharpModel
 
         }
 
-        public XType AddType(XType newType)
+
+        public void SetTypes(IDictionary<string, XType> types, IList<string> usings, IList<string> staticusings)
         {
-            lock (_lock)
+            lock (this)
             {
-                if ( _typeList.TryAdd(newType.FullName, newType))
+                _typeList.Clear();
+                _usings.Clear();
+                _usingStatics.Clear();
+                foreach (var type in types)
                 {
-                    return newType;
+                    bool ok = _typeList.TryAdd(type.Key, type.Value);
+                    if (XType.IsGlobalType(type.Value))
+                    {
+                        _globalType = type.Value;
+                    }
                 }
-                return _typeList[newType.FullName];
+                foreach (var u in usings)
+                {
+                    _usings.Add(u);
+                }
+                foreach (var su in staticusings)
+                {
+                    _usingStatics.Add(su);
+                }
             }
         }
 

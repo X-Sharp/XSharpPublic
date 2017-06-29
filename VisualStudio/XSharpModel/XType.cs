@@ -246,6 +246,11 @@ namespace XSharpModel
             return globalType;
         }
 
+        public static bool IsGlobalType(XType type)
+        {
+            return type.Name == XType.GlobalName;
+        }
+
         public const string GlobalName = "(Global Scope)";
     }
 }

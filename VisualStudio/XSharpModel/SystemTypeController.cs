@@ -29,6 +29,20 @@ namespace XSharpModel
             mscorlib = null;
         }
 
+        public static string FindAssemblyLocation(string fullName)
+        {
+            foreach (var pair in assemblies)
+            {
+                var asm = pair.Value;
+                if (asm.Assembly != null && string.Compare(asm.Assembly.FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    return pair.Key; ;
+                }
+            }
+            return null;
+
+        }
+
         public static Assembly FindAssembly(string fullName)
         {
             foreach (var asm in assemblies.Values)

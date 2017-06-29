@@ -147,12 +147,6 @@
     <EmbeddedResource Include="frmProgress.resx">
       <DependentUpon>frmProgress.prg</DependentUpon>
     </EmbeddedResource>
-    <None Include="..\..\Common\BuildNumber.h">
-      <Link>BuildNumber.h</Link>
-    </None>
-    <None Include="..\..\Common\version.vh">
-      <Link>version.vh</Link>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

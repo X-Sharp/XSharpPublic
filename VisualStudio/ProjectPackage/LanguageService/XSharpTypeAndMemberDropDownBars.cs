@@ -97,7 +97,7 @@ namespace XSharp.LanguageService
                 if (eltType.Kind == Kind.Namespace)
                     continue;
                 //
-                if (eltType.Name == XType.GlobalName)
+                if (XType.IsGlobalType(eltType))
                     typeGlobal = eltType;
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
                 //
@@ -127,7 +127,7 @@ namespace XSharp.LanguageService
                     name = "?";
                 DropDownMember elt = new DropDownMember(name, sp, eltType.Glyph, ft);
                 nTemp = dropDownTypes.Add(elt);
-                if (bInSel)
+                if (bInSel )
                 {
                     nSelType = nTemp;
                     typeAtPos = eltType;
@@ -139,8 +139,7 @@ namespace XSharp.LanguageService
                 typeAtPos = typeGlobal;
             if (typeAtPos != null)
             {
-                if (typeAtPos.Members.Count > 0)
-                    nSelMbr = 0;
+                nSelMbr = -1;
                 typeAtPos.Members.Sort(delegate (XTypeMember elt1, XTypeMember elt2)
                 {
                     return elt1.Name.CompareTo(elt2.Name);
@@ -167,7 +166,13 @@ namespace XSharp.LanguageService
                     {
                         nSelMbr = nTemp;
                     }
+                    else if (nSelMbr == -1 && TextSpanHelper.IsAfterEndOf(spM, line, col))
+                    {
+                        nSelMbr = nTemp;
+                    }
                 }
+                if (nSelMbr == -1 && typeAtPos.Members.Count > 0)
+                    nSelMbr = 0;
             }
             //
             //if (nSelType > -1)

@@ -139,7 +139,8 @@ namespace Microsoft.VisualStudio.Project
                 this.assemblyName = System.Reflection.AssemblyName.GetAssemblyName(assemblyPath);
                 this.assemblyPath = assemblyPath;
 
-                // We register with listeningto chnages onteh path here. The rest of teh cases will call into resolving the assembly and registration is done there.
+                // We register with listening to changes on the path here. 
+                // The rest of the cases will call into resolving the assembly and registration is done there.
                 this.fileChangeListener.ObserveItem(this.assemblyPath);
             }
             else
@@ -247,7 +248,8 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Checks if an assembly is already added. The method parses all references and compares the full assemblynames, or the location of the assemblies to decide whether two assemblies are the same.
+        /// Checks if an assembly is already added. The method parses all references and compares the full 
+        /// assembly names, or the location of the assemblies to decide whether two assemblies are the same.
         /// </summary>
         /// <returns>true if the assembly has already been added.</returns>
         protected internal override bool IsAlreadyAdded(out ReferenceNode existingReference)
@@ -261,7 +263,7 @@ namespace Microsoft.VisualStudio.Project
                 AssemblyReferenceNode assemblyReferenceNode = n as AssemblyReferenceNode;
                 if(null != assemblyReferenceNode)
                 {
-                    // We will check if the full assemblynames are the same or if the Url of the assemblies is the same.
+                    // We will check if the full assembly names are the same or if the Url of the assemblies is the same.
                     if(String.Compare(assemblyReferenceNode.AssemblyName.FullName, this.assemblyName.FullName, StringComparison.OrdinalIgnoreCase) == 0 ||
                         (shouldCheckPath && NativeMethods.IsSamePath(assemblyReferenceNode.Url, this.Url)))
                     {

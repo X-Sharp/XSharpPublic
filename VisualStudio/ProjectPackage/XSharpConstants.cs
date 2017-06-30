@@ -28,7 +28,7 @@ namespace XSharp.Project
         internal const string ProjectExtensions = "xsproj;xsprj";
         internal const string ProjectFileMask = LanguageName + " Project Files (*." + ProjectExtension + ");*." + ProjectExtension;
 
-        public const string EditorFactoryGuidString = "B4829761-2BFA-44B7-8F8F-D2625EBCF218";
+        public const string EditorFactoryGuidString = GuidStrings.EditorFactoryGuidString;
 
         public const string FileNodePropertiesGuidString = "B7971A68-EA46-4814-AC67-1424A59DC7EB";
 

@@ -32,11 +32,16 @@ namespace XSharpColorizer
         IClassifierAggregatorService aggregator = null;
 
         [Import]
+        ITextDocumentFactoryService factory = null;
+
+        [Import]
         internal IClassificationTypeRegistryService ClassificationRegistry = null; // Set via MEF
 
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             //create a single tagger for each buffer.
+            if (!SupportFunctions.IsXSharpDocument(factory, buffer))
+                return null;
             ITagger<T> outliner = buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(
                 () =>  new XSharpOutliningTagger(buffer, aggregator, ClassificationRegistry) as ITagger<T>);
             return outliner;
@@ -46,7 +51,6 @@ namespace XSharpColorizer
 
     internal sealed class XSharpOutliningTagger : ITagger<IOutliningRegionTag>
     {
-
         //string startHide = "[";     //the characters that start the outlining region
         //string endHide = "]";       //the characters that end the outlining region
         string ellipsis = "...";    //the characters that are displayed when the region is collapsed
@@ -56,16 +60,30 @@ namespace XSharpColorizer
         //List<Region> regions;
         private IClassificationType xsharpRegionStartType;
         private IClassificationType xsharpRegionStopType;
-
+        private XFile _file;
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         public XSharpOutliningTagger(ITextBuffer buffer, IClassifierAggregatorService AggregatorFactory, IClassificationTypeRegistryService registry)
         {
             this.buffer = buffer;
+            if (buffer.Properties.ContainsProperty(typeof(XFile)))
+            {
+                var file = (XFile) buffer.Properties.GetProperty(typeof(XFile)) ;
+                if (file == null)
+                    return;
+                _file = file;
+            }
+
+            if (! buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+            {
+                // should not happen we checked before we created the class
+                return;    
+            }
             this.buffer.Properties.AddProperty(typeof(XSharpOutliningTagger), this);
             xsharpRegionStartType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
             xsharpRegionStopType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
         }
+
 
         public void Update ()
         {

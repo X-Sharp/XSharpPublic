@@ -59,7 +59,7 @@ namespace XSharp.Project
             textViewAdapter.GetBuffer(out textlines);
             if (textlines != null)
             {
-                Guid langId ;
+                Guid langId;
                 textlines.GetLanguageServiceID(out langId);
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
@@ -68,21 +68,20 @@ namespace XSharp.Project
                     {
                         Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);
+                        return;
                     }
                     //
                     // Only capturing keystroke for OUR languageService... ???
                     //
                     IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
                     Debug.Assert(textView != null);
-
                     CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator);
-
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
                     filter.Next = next;
                 }
             }
-            }
+        }
 
     }
 

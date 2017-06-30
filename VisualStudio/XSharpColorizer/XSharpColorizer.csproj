@@ -69,6 +69,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\ProjectPackage\GuidStrings.cs">
+      <Link>GuidStrings.cs</Link>
+    </Compile>
     <Compile Include="ClassificationDefinitions.cs" />
     <Compile Include="ColorizerConstants.cs" />
     <Compile Include="EditorFormats.cs" />

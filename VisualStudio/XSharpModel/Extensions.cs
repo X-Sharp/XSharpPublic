@@ -112,10 +112,11 @@ namespace XSharpModel
     }
     public class Support
     {
-        internal static void Debug(string msg, params object[] o)
+        public static void Debug(string msg, params object[] o)
         {
-            System.Diagnostics.Debug.WriteLine("XModel: " + msg, o);
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(String.Format("XModel: " + msg, o));
+#endif
         }
-
     }
 }

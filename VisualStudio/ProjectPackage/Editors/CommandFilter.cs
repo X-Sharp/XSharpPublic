@@ -222,7 +222,7 @@ namespace XSharp.Project
             {
                 var name = tag.Tag.ClassificationType.Classification.ToLower();
                 //
-                if (name.Contains(XSharpModel.ColorizerConstants.XSharpRegionStartFormat))
+                if (name.Contains(XSharpColorizer.ColorizerConstants.XSharpRegionStartFormat))
                 {
                     if (System.Diagnostics.Debugger.IsAttached)
                         System.Diagnostics.Debugger.Break();
@@ -231,7 +231,7 @@ namespace XSharp.Project
                     if (spans.Count > 0)
                         regionStarts.Push(spans[0]);
                 }
-                else if (name.Contains(XSharpModel.ColorizerConstants.XSharpRegionStopFormat))
+                else if (name.Contains(XSharpColorizer.ColorizerConstants.XSharpRegionStopFormat))
                 {
                     var spans = tag.Span.GetSpans(this.TextView.TextSnapshot);
                     if (spans.Count > 0)
@@ -371,7 +371,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Startcompletion failed:" + e.Message);
+                Support.Debug("Startcompletion failed:" + e.Message);
             }
             return true;
         }
@@ -512,7 +512,7 @@ namespace XSharp.Project
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine("Start Signature session failed:" + e.Message);
+                    Support.Debug("Start Signature session failed:" + e.Message);
                 }
             }
             //

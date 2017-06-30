@@ -375,7 +375,8 @@ namespace XSharpModel
                     return asm;
             }
             folders.Add(folderPath);
-            foreach (var path in SystemTypeController.assemblies.Keys)
+            // try in the folder for the other assemblies
+            foreach (var path in SystemTypeController.AssemblyFileNames)
             {
                 folderPath = System.IO.Path.GetDirectoryName(path);
                 if (! folders.Contains(folderPath))

@@ -6,11 +6,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.Immutable;
+using System.Collections.Concurrent;
 
 namespace XSharpModel
 {
@@ -20,12 +18,12 @@ namespace XSharpModel
     /// </summary>
     public class SystemTypeController
     {
-        internal static Dictionary<String, AssemblyInfo> assemblies;
-        internal static Assembly mscorlib ;
+        static ConcurrentDictionary<String, AssemblyInfo> assemblies;
+        static Assembly mscorlib ;
 
         static SystemTypeController()
         {
-            assemblies = new Dictionary<string, AssemblyInfo>(StringComparer.OrdinalIgnoreCase);
+            assemblies = new ConcurrentDictionary<string, AssemblyInfo>(StringComparer.OrdinalIgnoreCase);
             mscorlib = null;
         }
 
@@ -72,7 +70,7 @@ namespace XSharpModel
             else
             {
                 assembly = new AssemblyInfo(cFileName, DateTime.MinValue);
-                assemblies.Add(cFileName, assembly);
+                assemblies.TryAdd(cFileName, assembly);
             }
             if (cFileName.EndsWith("mscorlib.dll",StringComparison.OrdinalIgnoreCase))
             {
@@ -97,7 +95,8 @@ namespace XSharpModel
         {
             if (assemblies.ContainsKey(cFileName))
             {
-                assemblies.Remove(cFileName);
+                AssemblyInfo asm;
+                assemblies.TryRemove(cFileName, out asm);
             }
         }
 
@@ -208,11 +207,11 @@ namespace XSharpModel
             return result.ToImmutableList();
         }
 
-        public ImmutableList<AssemblyInfo> Assemblies
+        public static ImmutableList<String> AssemblyFileNames
         {
             get
             {
-                return assemblies.Values.ToImmutableList();
+                return assemblies.Keys.ToImmutableList();
             }
         }
 

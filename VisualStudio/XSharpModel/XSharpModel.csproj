@@ -90,7 +90,6 @@
     <Compile Include="CompletionType.cs" />
     <Compile Include="IXSharpProject.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="ModelParser\ColorizerConstants.cs" />
     <Compile Include="ModelParser\TextSpanExtensions.cs" />
     <Compile Include="ModelParser\SourceWalker.cs" />
     <Compile Include="ModelParser\XSharpModelDiscover.cs" />

@@ -389,6 +389,8 @@ namespace Microsoft.VisualStudio.Project
 		internal static bool BuildInstance(ProjectNode projectNode, ProjectInstance instance, string target)
 		{
 			BuildSubmission submission = projectNode.DoMSBuildSubmission(BuildKind.Sync, target, ref instance, null);
+            if (submission == null)
+                return false;
 			return (submission.BuildResult.OverallResult == BuildResultCode.Success);
 		}
 

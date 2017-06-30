@@ -27,6 +27,7 @@ namespace XSharp.Project
         public const string guidXSharpLanguageServicePkgString = "e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050";
         public const string guidXSharpLanguageServiceCmdSetString = "6511ea00-4558-4ae7-84ee-0e2aebd40d88";
 
+        public const string EditorFactoryGuidString = "B4829761-2BFA-44B7-8F8F-D2625EBCF218";
 
         public static readonly Guid guidXSharpProjectCmdSet = new Guid(guidXSharpProjectCmdSetString);
         public static readonly Guid guidXSharpProjectFactory = new Guid(guidXSharpProjectFactoryString);
@@ -34,7 +35,7 @@ namespace XSharp.Project
         public static readonly Guid guidVOMenuEditorFactory= new Guid(guidXSharpVOMenuEditor);
         public static readonly Guid guidVOServerEditorFactory = new Guid(guidXSharpVOServerEditor);
         public static readonly Guid guidVOFieldSpecEditorFactory= new Guid(guidXSharpVOFieldSpecEditor);
-        public static readonly Guid guidSourcecodeEditorFactory = new Guid(XSharpConstants.EditorFactoryGuidString);
+        public static readonly Guid guidSourcecodeEditorFactory = new Guid(EditorFactoryGuidString);
         public static readonly Guid guidLanguageService = new Guid(guidXSharpLanguageServicePkgString);
         public static readonly Guid guidXSharpLanguageServiceCmdSet = new Guid(guidXSharpLanguageServiceCmdSetString);
         public static readonly Guid guidVulcanLanguageService  = new Guid(guidVulcanLanguageServiceString);

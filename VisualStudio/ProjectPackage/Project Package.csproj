@@ -437,7 +437,6 @@
     <Compile Include="Automation\OAXSharpFileItem.cs" />
     <Compile Include="Editors\XSharpProjectFactory.cs" />
     <Compile Include="Nodes\XSharpFileNode.cs" />
-    <Compile Include="GuidStrings.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Nodes\XSharpProjectNode.cs" />
     <Compile Include="XSharpProjectPackage.cs" />

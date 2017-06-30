@@ -49,6 +49,7 @@ namespace XSharpColorizer
         private ITextDocumentFactoryService txtdocfactory;
         private bool _hasPositionalKeywords;
         private bool _hasParserErrors;
+        XFile _file;
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpClassifier"/> class.
         /// </summary>
@@ -57,16 +58,27 @@ namespace XSharpColorizer
         internal XSharpClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
             this.buffer = buffer;
+            if (buffer.Properties.ContainsProperty(typeof(XFile)))
+            {
+                var file = (XFile)buffer.Properties.GetProperty(typeof(XFile));
+                if (file == null)
+                {
+                    return;
+                }
+                _file = file;
+            }
             this.buffer.Properties.AddProperty(typeof(XSharpClassifier), this);
-
             this.buffer.Changed += Buffer_Changed;
             _bwLex = new BackgroundWorker();
+            _bwLex.WorkerSupportsCancellation = true;
             _bwLex.RunWorkerCompleted += LexCompleted;
             _bwLex.DoWork += DoLex;
             _bwParse = new BackgroundWorker();
+            _bwParse.WorkerSupportsCancellation = true;
             _bwParse.RunWorkerCompleted += ParseCompleted;
             _bwParse.DoWork += DoParse;
             _bwRegions = new BackgroundWorker();
+            _bwRegions.WorkerSupportsCancellation = true;
             _bwRegions.DoWork += DoRepaintRegions;
 
             txtdocfactory = factory;
@@ -108,13 +120,20 @@ namespace XSharpColorizer
             // Note this runs in the background
             var snapshot = (ITextSnapshot)e.Argument;
             Debug("Starting lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            string fileName = GetFileName();
-            var file = XSolution.FindFile(fileName);
-            var xsWalker = new SourceWalker(file, snapshot);
-            var TokenStream = xsWalker.LexFile();
-            Debug("Ending lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            BuildColorClassifications(TokenStream, snapshot);
-            e.Result = snapshot;
+            var file = _file;
+            if (file != null)
+            {
+                var xsWalker = new SourceWalker(file, snapshot);
+                var TokenStream = xsWalker.LexFile();
+                Debug("Ending lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+                BuildColorClassifications(TokenStream, snapshot);
+                e.Result = snapshot;
+            }
+            else
+            {
+                _bwLex.CancelAsync();
+                e.Cancel = true;
+            }
         }
 
         private void triggerRepaint(ITextSnapshot snapshot)
@@ -128,7 +147,7 @@ namespace XSharpColorizer
         }
         private void LexCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Error == null)
+            if (e.Error == null && ! e.Cancelled)
             {
                 triggerRepaint((ITextSnapshot)e.Result);
                 if (!_bwParse.IsBusy)
@@ -138,19 +157,6 @@ namespace XSharpColorizer
             }
         }
 
-        private string GetFileName()
-        {
-            string path = string.Empty;
-            if (txtdocfactory != null)
-            {
-                ITextDocument doc = null;
-                if (txtdocfactory.TryGetTextDocument(this.buffer, out doc))
-                {
-                    path = doc.FilePath;
-                }
-            }
-            return path;            
-        }
         private void DoParse(object sender, DoWorkEventArgs e)
         {
             // Note this runs in the background
@@ -158,8 +164,7 @@ namespace XSharpColorizer
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
             Debug("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            string fileName = GetFileName();
-            var file = XSolution.FindFile(fileName);
+            var file = _file;
             if (file != null)
             {
                 var xsWalker = new SourceWalker(file, snapshot);
@@ -170,6 +175,11 @@ namespace XSharpColorizer
                 var regionTags = BuildRegionTags(xTree, snapshot, xsharpRegionStart, xsharpRegionStop);
                 BuildColorClassifications(tokenStream, snapshot,regionTags);
                 e.Result = xsWalker;
+            }
+            else
+            {
+                _bwParse.CancelAsync();
+                e.Cancel = true;
             }
             Debug("Ending parse, modelbuild and regionTags builder at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
         }
@@ -216,18 +226,21 @@ namespace XSharpColorizer
 
         private void ParseCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var xsWalker = (SourceWalker)e.Result;
-            if (xsWalker.Snapshot != null && xsWalker.Snapshot.Version == buffer.CurrentSnapshot.Version)
+            if (e.Error == null && ! e.Cancelled)
             {
-                if (!_bwRegions.IsBusy)
+                var xsWalker = (SourceWalker)e.Result;
+                if (xsWalker.Snapshot != null && xsWalker.Snapshot.Version == buffer.CurrentSnapshot.Version)
                 {
-                    _bwRegions.RunWorkerAsync(buffer.CurrentSnapshot);
+                    if (!_bwRegions.IsBusy)
+                    {
+                        _bwRegions.RunWorkerAsync(buffer.CurrentSnapshot);
+                    }
                 }
-            }
-            else
-            {
-                // trigger another parse because buffer was changed while we were busy
-                _bwParse.RunWorkerAsync(buffer.CurrentSnapshot);
+                else
+                {
+                    // trigger another parse because buffer was changed while we were busy
+                    _bwParse.RunWorkerAsync(buffer.CurrentSnapshot);
+                }
             }
         }
 

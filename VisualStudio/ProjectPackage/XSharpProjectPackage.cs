@@ -383,8 +383,18 @@ namespace XSharp.Project
         {
         }
 
-#endregion
+        #endregion
 
+
+    }
+    public class Support
+    {
+        public static void Debug(string msg, params object[] o)
+        {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(String.Format("XProject: " + msg, o));
+#endif
+        }
     }
 
 }

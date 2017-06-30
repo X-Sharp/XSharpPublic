@@ -710,7 +710,7 @@ namespace XSharpLanguage
             if (currentMember == null)
             {
 #if TRACE
-                System.Diagnostics.Debug.WriteLine(String.Format("Building Completion for {0} : Cannot find Member.", this._fileName));
+                Support.Debug(String.Format("Building Completion for {0} : Cannot find Member.", this._fileName));
 #endif
                 return;
             }
@@ -747,14 +747,14 @@ namespace XSharpLanguage
             if (parent == null)
             {
 #if TRACE
-                System.Diagnostics.Debug.WriteLine(String.Format("Building Completion for {0} : Cannot find Parent.", this._fileName));
+                Support.Debug(String.Format("Building Completion for {0} : Cannot find Parent.", this._fileName));
 #endif
                 return;
             }
             if (!(parent is XType))
             {
 #if TRACE
-                System.Diagnostics.Debug.WriteLine(String.Format("Building Completion for {0} : Parent {1} is NOT XType.", this._fileName, parent.Name));
+                Support.Debug(String.Format("Building Completion for {0} : Parent {1} is NOT XType.", this._fileName, parent.Name));
 #endif
                 return;
             }
@@ -791,7 +791,7 @@ namespace XSharpLanguage
             if (cType == null)
             {
 #if TRACE
-                System.Diagnostics.Debug.WriteLine(String.Format("Building Completion for {0} : Cannot find CompletionType.", this._fileName));
+                Support.Debug(String.Format("Building Completion for {0} : Cannot find CompletionType.", this._fileName));
 #endif
                 return;
             }
@@ -916,8 +916,8 @@ namespace XSharpLanguage
                 }
                 catch (Exception e)
                 {
-                    
-                    System.Diagnostics.Debug.WriteLine("FillMembers error: " + e.Message);
+
+                    Support.Debug("FillMembers error: " + e.Message);
                 }
             }
             // fill members of parent class
@@ -1345,7 +1345,7 @@ namespace XSharpLanguage
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine("Error reading Clipper params:" + e.Message);
+                    Support.Debug("Error reading Clipper params:" + e.Message);
                 }
 
             }
@@ -2303,7 +2303,7 @@ namespace XSharpLanguage
             {
                 // Uhh !??, Something went wrong
 #if TRACE
-                System.Diagnostics.Debug.WriteLine(String.Format("Cannot find file {0} .", fileName));
+                Support.Debug(String.Format("Cannot find file {0} .", fileName));
 #endif
                 return null;
             }
@@ -2344,7 +2344,7 @@ namespace XSharpLanguage
             }
 #if TRACE
             // a source file without a namespace is really not a problem
-            //System.Diagnostics.Debug.WriteLine(String.Format("Cannot find namespace at position {0} in file {0} .", position, fileName));
+            //Support.Debug(String.Format("Cannot find namespace at position {0} in file {0} .", position, fileName));
 #endif
             return null;
         }
@@ -2356,7 +2356,7 @@ namespace XSharpLanguage
             {
                 // Uhh !??, Something went wrong
 #if TRACE
-                System.Diagnostics.Debug.WriteLine(String.Format("Cannot find file {0} .", fileName));
+                Support.Debug(String.Format("Cannot find file {0} .", fileName));
 #endif
                 return null;
             }
@@ -2433,7 +2433,7 @@ namespace XSharpLanguage
             }
             //
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(String.Format("Cannot find member as position {0} in file {0} .", position, file.FullPath));
+            Support.Debug(String.Format("Cannot find member as position {0} in file {0} .", position, file.FullPath));
 #endif
             return null;
         }
@@ -2462,7 +2462,7 @@ namespace XSharpLanguage
                 if (currentMember == null)
                 {
 #if TRACE
-                    System.Diagnostics.Debug.WriteLine(String.Format("Retrieve current Type : Member cannot be null."));
+                    Support.Debug(String.Format("Retrieve current Type : Member cannot be null."));
 #endif
                     return null;
                 }

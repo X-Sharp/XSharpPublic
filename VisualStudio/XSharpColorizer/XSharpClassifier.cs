@@ -542,7 +542,9 @@ namespace XSharpColorizer
 
         internal static void Debug(string msg, params object[] o)
         {
-            System.Diagnostics.Debug.WriteLine("XColorizer: " + msg, o);
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(String.Format("XColorizer: " + msg, o));
+#endif
         }
     }
  }

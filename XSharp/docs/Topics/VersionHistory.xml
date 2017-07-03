@@ -7,7 +7,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
-    <para styleclass="Heading2">Changes in General Release</para>
+    <para styleclass="Heading2">Changes in General Release (1.0.1)</para>
     <para styleclass="Heading3">New Features</para>
     <list id="43" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">We have added support for ENUM Basetypes (ENUM Foo AS WORD)</li>

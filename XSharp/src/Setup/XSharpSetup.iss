@@ -8,26 +8,27 @@
 #expr Exec('c:\xsharp\dev\xsharp\src\setup\makecabs.cmd')
 
 
-#define FOX
+;#define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetupRC5Fox"
+#define SetupExeName    "XSharpSetup101Fox"
 #else
-#define SetupExeName    "XSharpSetupRC5Public"
+#define SetupExeName    "XSharpSetup101Public"
 #endif
 
-#define Version         "0.9.9.5"
-#define VIVersion       "0.9.9.5"
-#define VITextVersion   "0.9.9.5 (RC5)"
+#define Version         "1.0.1.0"
+#define VIVersion       "1.0.1.0"
+#define VITextVersion   "1.0.1.0"
+#define TouchDate       "2017-07-03"
+#define TouchTime       "01:01:01"
+
 
 ; version info and similar stuff.
 #define Product         "XSharp"
-#define ProdBuild       "XSharp RC5"
+#define ProdBuild       "XSharp General Release"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2017 XSharp B.V."
-#define TouchDate       "2017-06-27"
-#define TouchTime       "09:09:04"
 #define InstallPath     "XSharpPath"
 
 
@@ -289,7 +290,7 @@ Source: "{#VOXPorterBinFolder}SDK_DEFINES.dll";           DestDir: "{app}\VOXPor
 Source: "{#VOXPorterFolder}VOXporter.ini";                DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterFolder}ReadMe.rtf";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 ; Templates
-Source: "{#VOXPorterFolder}\Templates\*";                 DestDir: "{app}\VOXPorter\Templates"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterFolder}Templates\*";                 DestDir: "{app}\VOXPorter\Templates"; Flags: {#StdFlags} ; 
 
 ; pdb files needed ?
 Source: "{#VOXPorterBinFolder}VOXporter.pdb";             DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 

@@ -1352,15 +1352,22 @@ namespace XSharp.Project
         }
         public void SetStatusBarAnimation(bool onoff, short idAnimation )
         {
-            if (statusBar == null && !lTriedToGetStatusBar)
+            try
             {
-                statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
-                lTriedToGetStatusBar = true;
-            }
+                if (statusBar == null && !lTriedToGetStatusBar)
+                {
+                    statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+                    lTriedToGetStatusBar = true;
+                }
 
-            if (statusBar != null)
+                if (statusBar != null)
+                {
+                    statusBar.Animation(onoff ? 1 : 0, idAnimation);
+                }
+            }
+            catch //(Exception e)
             {
-                statusBar.Animation(onoff ? 1 : 0,  idAnimation);
+                //System.Diagnostics.Debug.WriteLine("Error showing animation " );
             }
         }
 

@@ -183,7 +183,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static SyntaxToken SyntaxKeywordIdentifier(this IToken token)
         {
-            var r = SyntaxFactory.Identifier(token.Text);
+            var r = SyntaxFactory.Identifier(token.Text.ToLower());
             r.XNode = new XTerminalNodeImpl(token);
             return r;
         }

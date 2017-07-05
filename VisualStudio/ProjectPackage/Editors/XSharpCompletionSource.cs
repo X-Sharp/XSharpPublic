@@ -376,7 +376,34 @@ namespace XSharpLanguage
             // and put in the SelectionList
             completionSets.Add(new CompletionSet("All", "All", applicableTo, compList, Enumerable.Empty<Completion>()));
             if (kwdList.Count > 0)
+            {
                 completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList, Enumerable.Empty<Completion>()));
+            }
+            var methods = compList.Where(item => item.Kind == Kind.Method);
+            if (methods.Count() > 0)
+            {
+                completionSets.Add(new CompletionSet("Methods", "Methods", applicableTo, methods, Enumerable.Empty<Completion>()));
+            }
+            var fields = compList.Where(item => item.Kind == Kind.Field || item.Kind == Kind.ClassVar);
+            if (fields.Count() > 0)
+            {
+                completionSets.Add(new CompletionSet("Fields", "Fields", applicableTo, fields, Enumerable.Empty<Completion>()));
+            }
+            var props = compList.Where(item => item.Kind == Kind.Property);
+            if (props.Count() > 0)
+            {
+                completionSets.Add(new CompletionSet("Properties", "Properties", applicableTo, props, Enumerable.Empty<Completion>()));
+            }
+            var events = compList.Where(item => item.Kind == Kind.Event);
+            if (events.Count() > 0)
+            {
+                completionSets.Add(new CompletionSet("Events", "Events", applicableTo, events, Enumerable.Empty<Completion>()));
+            }
+            var members = compList.Where(item => item.Kind == Kind.EnumMember);
+            if (members.Count() > 0)
+            {
+                completionSets.Add(new CompletionSet("Values", "Values", applicableTo, members, Enumerable.Empty<Completion>()));
+            }
         }
 
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
@@ -429,7 +456,8 @@ namespace XSharpLanguage
 
                     //
                     ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
-                    compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null));
+                    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null, Kind.Class)))
+                        break;
                 }
             }
             //
@@ -493,7 +521,8 @@ namespace XSharpLanguage
                     if (dotPos > 0)
                         realTypeName = realTypeName.Substring(0, dotPos);
                     ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
-                    compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
+                    if (compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
+                        break;
                 }
             }
         }
@@ -565,7 +594,9 @@ namespace XSharpLanguage
                                     if (dotPos > 0)
                                         realTypeName = realTypeName.Substring(0, dotPos);
 
-                                    compList.Add(new XSCompletion(realTypeName, realTypeName, childType + realTypeName, icon, null));
+                                    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, childType + realTypeName, icon, null, Kind.Class)))
+                                        break;
+
                                 }
                             }
                         }
@@ -597,7 +628,8 @@ namespace XSharpLanguage
                 if (dotPos > 0)
                     realTypeName = realTypeName.Substring(0, dotPos);
                 ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
-                compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
+                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
+                    break;
             }
         }
 
@@ -625,7 +657,8 @@ namespace XSharpLanguage
                 if (dotPos > 0)
                     realNamespace = realNamespace.Substring(0, dotPos);
                 //
-                compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null));
+                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null, Kind.Namespace)))
+                    break;
             }
             //
             // And our own Namespaces
@@ -664,7 +697,8 @@ namespace XSharpLanguage
                 // Then remove it
                 if (dotPos > 0)
                     realNamespace = realNamespace.Substring(0, dotPos);
-                compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null));
+                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null, Kind.Namespace)))
+                    break;
             }
         }
 
@@ -697,7 +731,8 @@ namespace XSharpLanguage
                             // Then remove it
                             if (dotPos > 0)
                                 realNamespace = realNamespace.Substring(0, dotPos);
-                            compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + codeElement.FullName, icon, null));
+                            if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + codeElement.FullName, icon, null, Kind.Namespace)))
+                                break;
                         }
                     }
                 }
@@ -719,7 +754,8 @@ namespace XSharpLanguage
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.GlyphGroup, paramVar.GlyphItem);
-                compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null));
+                if (!compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null, Kind.Parameter)))
+                    break;
             }
             // Then, look for Locals
             // First, look after Parameters
@@ -727,7 +763,8 @@ namespace XSharpLanguage
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
-                compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null));
+                if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null, Kind.Local)))
+                    break;
             }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
             //BuildCompletionList(compList, currentMember.Parent, Modifiers.Private);
@@ -776,7 +813,8 @@ namespace XSharpLanguage
                 //{
                 //    toAdd = "(";
                 //}
-                compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
+                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind)))
+                    break;
             }
             // Hummm, we should call for Owner of the Owner.. Super !
             Owner.ForceComplete();
@@ -856,7 +894,8 @@ namespace XSharpLanguage
                 {
                     toAdd = "(";
                 }
-                compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
+                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind)))
+                    break;
             }
         }
 
@@ -911,7 +950,8 @@ namespace XSharpLanguage
                         }
                         //
                         ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
-                        compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                        if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind)))
+                            break;
                     }
                 }
                 catch (Exception e)
@@ -941,9 +981,6 @@ namespace XSharpLanguage
             }
             if (sType.IsEnum)
             {
-                // todo:
-                // Fill enum members
-                var names = sType.GetEnumNames();
                 var scope = StandardGlyphItem.GlyphItemPublic;
                 // must be public or nested, otherwise we would not see it.
                 if (sType.IsNested)
@@ -951,9 +988,11 @@ namespace XSharpLanguage
                     scope = StandardGlyphItem.GlyphItemFriend;
                 }
                 ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupEnumMember, scope);
-                foreach (string name in names)
+                // Fill enum members
+                foreach (string name in sType.GetEnumNames())
                 {
-                    compList.Add(new XSCompletion(name, name, "", icon, null));
+                    if (!compList.Add(new XSCompletion(name, name, "", icon, null, Kind.EnumMember)))
+                        break;
                 }
 
             }
@@ -1016,7 +1055,8 @@ namespace XSharpLanguage
                             }
                             //
                             ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
-                            compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                            if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind)))
+                                break;
                         }
                     }
                 }
@@ -1191,7 +1231,7 @@ namespace XSharpLanguage
                 case MemberTypes.Field:
                     this._kind = Kind.ClassVar;
                     if (member.DeclaringType.IsEnum)
-                        this._kind = Kind.Enum;
+                        this._kind = Kind.EnumMember;
                     FieldInfo field = member as FieldInfo;
                     if (field.IsStatic)
                     {
@@ -1515,8 +1555,16 @@ namespace XSharpLanguage
         {
             get
             {
-                if ((this.Kind == Kind.Property) || (this.Kind == Kind.Access) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Enum) || (this.Kind == Kind.Event))
-                    return this.Name;
+                switch (this.Kind)
+                {
+                    case Kind.Property:
+                    case Kind.Access:
+                    case Kind.ClassVar:
+                    case Kind.Enum:
+                    case Kind.EnumMember:
+                    case Kind.Event:
+                        return this.Name;
+                }
                 //
                 var sb = new StringBuilder();
                 foreach (var var in this.Parameters)
@@ -1978,17 +2026,20 @@ namespace XSharpLanguage
     /// </summary>
     internal class CompletionList : List<XSCompletion>
     {
-        public new void Add(XSCompletion item)
+        private Dictionary<String, XSCompletion> dict = new Dictionary<string, XSCompletion>(StringComparer.OrdinalIgnoreCase);
+        public new bool Add(XSCompletion item)
         {
-            int overloads = 0;
             //
-            foreach (XSCompletion comp in this)
+            if (dict.ContainsKey(item.DisplayText))
             {
-                // Search for the same Name
-                if (comp.DisplayText == item.DisplayText)
+                // only methods have overloads 
+                // we do not want to the overloads message for partial classes that appear in more than 1 file
+                if (item.Kind == Kind.Method)
                 {
+                    int overloads = 0;
                     // Already exists in the List !!
                     // First Overload ?
+                    var comp = dict[item.DisplayText];
                     if (comp.Properties.ContainsProperty("overloads"))
                     {
                         // No ...
@@ -2002,13 +2053,14 @@ namespace XSharpLanguage
                     // Set the number of Overload(s)
                     comp.Properties["overloads"] = overloads;
                     // Now, hack the Description text
-
-                    // Ok, Forget about the newly added Completion please
-                    return;
                 }
+                // Ok, Forget about the newly added Completion please
+                return true;
+
             }
-            // Unknown, Standard behaviour
             base.Add(item);
+            dict.Add(item.DisplayText, item);
+            return true;
         }
     }
 
@@ -2019,9 +2071,11 @@ namespace XSharpLanguage
     [DebuggerDisplay("{DisplayText,nq}")]
     public class XSCompletion : Completion
     {
-        public XSCompletion(string displayText, string insertionText, string description, ImageSource iconSource, string iconAutomationText)
+        public XSharpModel.Kind Kind { get; set; }
+        public XSCompletion(string displayText, string insertionText, string description, ImageSource iconSource, string iconAutomationText, XSharpModel.Kind kind)
             : base(displayText, insertionText, description, iconSource, iconAutomationText)
         {
+            Kind = kind;
         }
 
         public override string Description

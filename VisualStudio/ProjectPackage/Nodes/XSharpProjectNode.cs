@@ -1203,10 +1203,15 @@ namespace XSharp.Project
             ProjectModel.ClearAssemblyReferences();
             foreach (Reference reference in this.VSProject.References)
             {
-                if ((reference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
-                    (reference.Type == prjReferenceType.prjReferenceTypeActiveX))
+                // Our project references should not be added as AssemblyReference
+                if (reference is OAProjectReference)
                 {
-                    ProjectModel.AddAssemblyReference(reference);
+                    // no need to add, AddUrl already adds these projects
+                }
+                else
+                {
+                    // OAAssemblyReference or OACOMReference
+                     ProjectModel.AddAssemblyReference(reference);
                 }
             }
         }

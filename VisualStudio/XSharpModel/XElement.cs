@@ -279,6 +279,9 @@ namespace XSharpModel
                     case Kind.Enum:
                         imgK = ImageListKind.Enum;
                         break;
+                    case Kind.EnumMember:
+                        imgK = ImageListKind.EnumValue;
+                        break;
                     case Kind.Interface:
                         imgK = ImageListKind.Interface;
                         break;
@@ -287,6 +290,7 @@ namespace XSharpModel
                         break;
                     case Kind.VOGlobal:
                     case Kind.Field:
+                    case Kind.ClassVar:
                         imgK = ImageListKind.Field;
                         break;
                     case Kind.Parameter:
@@ -363,6 +367,9 @@ namespace XSharpModel
                     case Kind.Enum:
                         imgG = StandardGlyphGroup.GlyphGroupEnum;
                         break;
+                    case Kind.EnumMember:
+                        imgG = StandardGlyphGroup.GlyphGroupEnumMember;
+                        break;
                     case Kind.Operator:
                         imgG = StandardGlyphGroup.GlyphGroupOperator;
                         break;
@@ -374,6 +381,7 @@ namespace XSharpModel
                         break;
                     case Kind.Field:
                     case Kind.VOGlobal:
+                    case Kind.ClassVar:
                         imgG = StandardGlyphGroup.GlyphGroupField;
                         break;
                     case Kind.Union:

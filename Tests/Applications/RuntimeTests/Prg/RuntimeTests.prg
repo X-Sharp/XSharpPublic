@@ -14,7 +14,7 @@ FUNCTION Start() AS VOID
 	 /*"C427",*/ "C433", "C434", "C435", "C437", "C441", "C444", "C445", /*"C446", */"C448", ;
 	 "C450", "C452", "C457", "C460", /*"C475",*/ "C478", "C479", "C484", "C499", "C504", ;
 	 "C505", "C506", "C507", "C508", "C509", "C515", "C519", "C520", "C521", "C527", ;
-	 "C528", "C536", "C538";
+	 "C528", "C536", "C538", "C541";
 	 }
 	
 	// TODO Must fail: "C135"
@@ -38,6 +38,7 @@ RETURN
 FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	LOCAL lSucces := FALSE AS LOGIC
 	LOCAL oAssembly AS Assembly
+	? "Running test" , cExe
 	oAssembly := Assembly.LoadFile(Application.StartupPath + "\" + cExe + ".exe")
 	LOCAL oType AS Type
 	oType := oAssembly:GetType(cExe + ".Exe.Functions")

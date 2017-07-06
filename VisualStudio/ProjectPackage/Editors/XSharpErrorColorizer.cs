@@ -57,7 +57,7 @@ namespace XSharp.Project
             }
             //
             layer = view.GetAdornmentLayer("XSharpErrorColorizer");
-            // Disable the Adorment painting
+            // Disable the Adornment painting
             this.view.LayoutChanged += OnLayoutChanged;
             //this.view.TextBuffer.ChangedLowPriority += TextBuffer_ChangedLowPriority;
             this.view.Closed += View_Closed;

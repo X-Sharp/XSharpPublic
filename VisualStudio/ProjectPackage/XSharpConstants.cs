@@ -30,6 +30,7 @@ namespace XSharp.Project
 
         public const string EditorFactoryGuidString = GuidStrings.EditorFactoryGuidString;
 
+        public const string IntellisenseOptionsPageGuidString = "FDE6E4C9-FA8A-4B93-8B6D-88D9D2A5063E";
         public const string FileNodePropertiesGuidString = "B7971A68-EA46-4814-AC67-1424A59DC7EB";
 
         public const string WPFProjectFactory = "5ADB76EC-7017-476A-A8E0-25D4202FFCF0";

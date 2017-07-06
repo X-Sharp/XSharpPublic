@@ -371,39 +371,48 @@ namespace XSharpLanguage
                     break;
             }
             // Sort in alphabetical order
-            compList.Sort((comp1, comp2) => comp1.DisplayText.CompareTo(comp2.DisplayText));
-            kwdList.Sort((comp1, comp2) => comp1.DisplayText.CompareTo(comp2.DisplayText));
             // and put in the SelectionList
-            completionSets.Add(new CompletionSet("All", "All", applicableTo, compList, Enumerable.Empty<Completion>()));
+            completionSets.Add(new CompletionSet("All", "All", applicableTo, compList.Values, Enumerable.Empty<Completion>()));
+            if (compList.HasEnumMembers)
+            {
+                var sub = compList.Values.Where(item => item.Kind == Kind.EnumMember);
+                completionSets.Add(new CompletionSet("Values", "Values", applicableTo, sub, Enumerable.Empty<Completion>()));
+            }
+            if (compList.HasMethods)
+            {
+                var sub = compList.Values.Where(item => item.Kind == Kind.Method);
+                completionSets.Add(new CompletionSet("Methods", "Methods", applicableTo, sub, Enumerable.Empty<Completion>()));
+            }
+            if (compList.HasFields)
+            {
+                var sub = compList.Values.Where(item => item.Kind.IsField());
+                completionSets.Add(new CompletionSet("Fields", "Fields", applicableTo, sub, Enumerable.Empty<Completion>()));
+            }
+            if (compList.HasProperties)
+            {
+                var sub = compList.Values.Where(item => item.Kind == Kind.Property);
+                completionSets.Add(new CompletionSet("Properties", "Properties", applicableTo, sub, Enumerable.Empty<Completion>()));
+            }
+            if (compList.HasEvents)
+            {
+                var sub = compList.Values.Where(item => item.Kind == Kind.Event);
+                completionSets.Add(new CompletionSet("Events", "Events", applicableTo, sub, Enumerable.Empty<Completion>()));
+            }
+            if (compList.HasTypes)
+            {
+                var sub = compList.Values.Where(item => item.Kind.IsType());
+                completionSets.Add(new CompletionSet("Types", "Types", applicableTo, sub, Enumerable.Empty<Completion>()));
+            }
+            if (compList.HasNamespaces)
+            {
+                var sub = compList.Values.Where(item => item.Kind == Kind.Namespace);
+                completionSets.Add(new CompletionSet("Namespaces", "Namespaces", applicableTo, sub, Enumerable.Empty<Completion>()));
+            }
             if (kwdList.Count > 0)
             {
-                completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList, Enumerable.Empty<Completion>()));
+                completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList.Values, Enumerable.Empty<Completion>()));
             }
-            var methods = compList.Where(item => item.Kind == Kind.Method);
-            if (methods.Count() > 0)
-            {
-                completionSets.Add(new CompletionSet("Methods", "Methods", applicableTo, methods, Enumerable.Empty<Completion>()));
-            }
-            var fields = compList.Where(item => item.Kind == Kind.Field || item.Kind == Kind.ClassVar);
-            if (fields.Count() > 0)
-            {
-                completionSets.Add(new CompletionSet("Fields", "Fields", applicableTo, fields, Enumerable.Empty<Completion>()));
-            }
-            var props = compList.Where(item => item.Kind == Kind.Property);
-            if (props.Count() > 0)
-            {
-                completionSets.Add(new CompletionSet("Properties", "Properties", applicableTo, props, Enumerable.Empty<Completion>()));
-            }
-            var events = compList.Where(item => item.Kind == Kind.Event);
-            if (events.Count() > 0)
-            {
-                completionSets.Add(new CompletionSet("Events", "Events", applicableTo, events, Enumerable.Empty<Completion>()));
-            }
-            var members = compList.Where(item => item.Kind == Kind.EnumMember);
-            if (members.Count() > 0)
-            {
-                completionSets.Add(new CompletionSet("Values", "Values", applicableTo, members, Enumerable.Empty<Completion>()));
-            }
+
         }
 
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
@@ -2024,13 +2033,23 @@ namespace XSharpLanguage
     /// XSharp CompletionList
     /// Overload the Add() Method to support "overloads"
     /// </summary>
-    internal class CompletionList : List<XSCompletion>
+    internal class CompletionList : SortedDictionary<string, XSCompletion>
     {
-        private Dictionary<String, XSCompletion> dict = new Dictionary<string, XSCompletion>(StringComparer.OrdinalIgnoreCase);
-        public new bool Add(XSCompletion item)
+        internal bool HasMethods { get; private set; }
+        internal bool HasProperties { get; private set; }
+        internal bool HasFields { get; private set; }
+        internal bool HasEvents { get; private set; }
+        internal bool HasEnumMembers { get; private set; }
+        internal bool HasTypes { get; private set; }
+        internal bool HasNamespaces { get; private set; }
+        internal CompletionList() : base(StringComparer.OrdinalIgnoreCase)
+        {
+
+        }
+        public bool Add(XSCompletion item)
         {
             //
-            if (dict.ContainsKey(item.DisplayText))
+            if (ContainsKey(item.DisplayText))
             {
                 // only methods have overloads 
                 // we do not want to the overloads message for partial classes that appear in more than 1 file
@@ -2039,7 +2058,7 @@ namespace XSharpLanguage
                     int overloads = 0;
                     // Already exists in the List !!
                     // First Overload ?
-                    var comp = dict[item.DisplayText];
+                    var comp = this[item.DisplayText];
                     if (comp.Properties.ContainsProperty("overloads"))
                     {
                         // No ...
@@ -2058,8 +2077,54 @@ namespace XSharpLanguage
                 return true;
 
             }
-            base.Add(item);
-            dict.Add(item.DisplayText, item);
+            if (! String.IsNullOrEmpty(item.DisplayText))
+            {
+                switch (item.Kind)
+                {
+                    case Kind.Method:
+                    case Kind.Function:
+                    case Kind.Procedure:
+                    case Kind.Operator:
+                    case Kind.VODLL:
+                        HasMethods = true;
+                        break;
+                    case Kind.Event:
+                        HasEvents = true;
+                        break;
+                    case Kind.Property:
+                    case Kind.Access:
+                    case Kind.Assign:
+                        HasProperties = true;
+                        break;
+                    case Kind.Namespace:
+                        HasNamespaces = true;
+                        break;
+                    case Kind.EnumMember:
+                        HasEnumMembers = true;
+                        break;
+                    case Kind.Constructor:
+                        break;
+                    case Kind.Destructor:
+                        break;
+                    case Kind.Local:
+                        break;
+                    case Kind.Parameter:
+                        break;
+                    case Kind.Delegate:
+                        break;
+                    case Kind.Using:
+                        break;
+                    case Kind.Keyword:
+                        break;
+                    default:
+                        if (item.Kind.IsField())
+                            HasFields = true;
+                        else if (item.Kind.IsType())
+                            HasTypes = true;
+                        break;
+                }
+                base.Add(item.DisplayText, item);
+            }
             return true;
         }
     }

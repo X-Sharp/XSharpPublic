@@ -561,6 +561,35 @@ namespace XSharpModel
     }
     public static class ElementExtensions
     {
+        public static bool IsType(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Class:
+                case Kind.Structure:
+                case Kind.VOStruct:
+                case Kind.Union:
+                case Kind.Interface:
+                case Kind.Enum:
+                case Kind.Delegate:
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool IsField(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Field:
+                case Kind.ClassVar:
+                case Kind.VOGlobal:
+                case Kind.VODefine:
+                    return true;
+            }
+            return false;
+        }
+
         public static bool HasReturnType( this Kind elementKind)
         {
             switch (elementKind)

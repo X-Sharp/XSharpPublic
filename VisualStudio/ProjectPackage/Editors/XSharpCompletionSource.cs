@@ -22,6 +22,7 @@ using LanguageService.CodeAnalysis.XSharp;
 using System.Diagnostics;
 using System.Collections.Immutable;
 using XSharpColorizer;
+using XSharp.Project.OptionsPages;
 
 namespace XSharpLanguage
 {
@@ -53,6 +54,7 @@ namespace XSharpLanguage
         private IToken _stopToken;
 
         private XFile _file;
+        private bool showTabs;
         internal static bool StringEquals(string lhs, string rhs)
         {
             if (String.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase))
@@ -69,12 +71,16 @@ namespace XSharpLanguage
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             _settingIgnoreCase = true;
             _stopToken = null;
+
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
             if (_disposed)
                 throw new ObjectDisposedException("XSharpCompletionSource");
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            showTabs = optionsPage.CompletionListTabs;
             // Where does the StartSession has been triggered ?
             ITextSnapshot snapshot = _buffer.CurrentSnapshot;
             var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(snapshot);
@@ -353,40 +359,43 @@ namespace XSharpLanguage
             // Sort in alphabetical order
             // and put in the SelectionList
             completionSets.Add(new CompletionSet("All", "All", applicableTo, compList.Values, Enumerable.Empty<Completion>()));
-            if (compList.HasEnumMembers)
+            if (showTabs)
             {
-                var sub = compList.Values.Where(item => item.Kind == Kind.EnumMember);
-                completionSets.Add(new CompletionSet("Values", "Values", applicableTo, sub, Enumerable.Empty<Completion>()));
-            }
-            if (compList.HasMethods)
-            {
-                var sub = compList.Values.Where(item => item.Kind == Kind.Method);
-                completionSets.Add(new CompletionSet("Methods", "Methods", applicableTo, sub, Enumerable.Empty<Completion>()));
-            }
-            if (compList.HasFields)
-            {
-                var sub = compList.Values.Where(item => item.Kind.IsField());
-                completionSets.Add(new CompletionSet("Fields", "Fields", applicableTo, sub, Enumerable.Empty<Completion>()));
-            }
-            if (compList.HasProperties)
-            {
-                var sub = compList.Values.Where(item => item.Kind == Kind.Property);
-                completionSets.Add(new CompletionSet("Properties", "Properties", applicableTo, sub, Enumerable.Empty<Completion>()));
-            }
-            if (compList.HasEvents)
-            {
-                var sub = compList.Values.Where(item => item.Kind == Kind.Event);
-                completionSets.Add(new CompletionSet("Events", "Events", applicableTo, sub, Enumerable.Empty<Completion>()));
-            }
-            if (compList.HasTypes)
-            {
-                var sub = compList.Values.Where(item => item.Kind.IsType());
-                completionSets.Add(new CompletionSet("Types", "Types", applicableTo, sub, Enumerable.Empty<Completion>()));
-            }
-            if (compList.HasNamespaces)
-            {
-                var sub = compList.Values.Where(item => item.Kind == Kind.Namespace);
-                completionSets.Add(new CompletionSet("Namespaces", "Namespaces", applicableTo, sub, Enumerable.Empty<Completion>()));
+                if (compList.HasEnumMembers)
+                {
+                    var sub = compList.Values.Where(item => item.Kind == Kind.EnumMember);
+                    completionSets.Add(new CompletionSet("Values", "Values", applicableTo, sub, Enumerable.Empty<Completion>()));
+                }
+                if (compList.HasMethods)
+                {
+                    var sub = compList.Values.Where(item => item.Kind == Kind.Method);
+                    completionSets.Add(new CompletionSet("Methods", "Methods", applicableTo, sub, Enumerable.Empty<Completion>()));
+                }
+                if (compList.HasFields)
+                {
+                    var sub = compList.Values.Where(item => item.Kind.IsField());
+                    completionSets.Add(new CompletionSet("Fields", "Fields", applicableTo, sub, Enumerable.Empty<Completion>()));
+                }
+                if (compList.HasProperties)
+                {
+                    var sub = compList.Values.Where(item => item.Kind == Kind.Property);
+                    completionSets.Add(new CompletionSet("Properties", "Properties", applicableTo, sub, Enumerable.Empty<Completion>()));
+                }
+                if (compList.HasEvents)
+                {
+                    var sub = compList.Values.Where(item => item.Kind == Kind.Event);
+                    completionSets.Add(new CompletionSet("Events", "Events", applicableTo, sub, Enumerable.Empty<Completion>()));
+                }
+                if (compList.HasTypes)
+                {
+                    var sub = compList.Values.Where(item => item.Kind.IsType());
+                    completionSets.Add(new CompletionSet("Types", "Types", applicableTo, sub, Enumerable.Empty<Completion>()));
+                }
+                if (compList.HasNamespaces)
+                {
+                    var sub = compList.Values.Where(item => item.Kind == Kind.Namespace);
+                    completionSets.Add(new CompletionSet("Namespaces", "Namespaces", applicableTo, sub, Enumerable.Empty<Completion>()));
+                }
             }
             if (kwdList.Count > 0)
             {
@@ -2012,11 +2021,10 @@ namespace XSharpLanguage
         internal bool HasNamespaces { get; private set; }
         internal CompletionList() : base(StringComparer.OrdinalIgnoreCase)
         {
-
         }
         public bool Add(XSCompletion item)
         {
-            //
+            
             if (ContainsKey(item.DisplayText))
             {
                 // only methods have overloads 

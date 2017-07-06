@@ -239,6 +239,15 @@
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="ModelScannerEvents.cs" />
+    <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\IntellisenseOptionsControl.Designer.cs">
+      <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
       <SubType>UserControl</SubType>
@@ -497,6 +506,9 @@
     <None Include="Snippets\Snippets\while.snippet" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="OptionsPages\IntellisenseOptionsControl.resx">
+      <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Wix\FolderBrowserTextBox.resx">
       <DependentUpon>FolderBrowserTextBox.cs</DependentUpon>
     </EmbeddedResource>

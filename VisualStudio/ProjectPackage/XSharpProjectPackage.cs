@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Globalization;
 using static XSharp.Project.XSharpConstants;
+using XSharp.Project.OptionsPages;
 #if VODESIGNER
 using XSharp.VOEditors;
 #endif
@@ -53,7 +54,7 @@ $ShellFolder$	The full path of the location where Visual Studio was installed.
 $System$	The Windows\system32 folder.
 $WINDIR$	The Windows folder.
 */
-          
+
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis.VS", CodeBase = "XSharp.CodeAnalysis.VS.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
@@ -130,27 +131,15 @@ namespace XSharp.Project
          SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
+    [ProvideLanguageEditorOptionPageAttribute(
+                 typeof(IntellisenseOptionsPage),  // GUID of property page
+                 LanguageName,  // Language Name
+                 null,      // Page Category
+                 "Intellisense",// Page name
+                 "#201"         // Localized name of property page
+                 )]
 
     /*
-        [ProvideLanguageEditorOptionPageAttribute()
-                 "{A2FE74E1-FFFF-3311-4342-123052450768}",  // GUID of property page
-                 "XSharp",  // Registry key name for language
-                 "Options",      // Registry key name for property page
-                 "#242"         // Localized name of property page
-                 )]
-        [ProvideLanguageEditorOptionPageAttribute(
-                 "XSharp",  // Registry key name for language
-                 "Advanced",     // Registry key name for node
-                 "#243"         // Localized name of node
-                 )]
-        [ProvideLanguageEditorOptionPageAttribute(
-            "{A2FE74E2-FFFF-3311-4342-123052450768}",  // GUID of property page
-            "XSharp",  // Registry key name for language
-                 @"Advanced\Indenting",     // Registry key name for property page
-                 "#244"         // Localized name of property page
-
-                 )]
-
 
     [ProvideLanguageEditorOptionPage(typeof(Options.AdvancedOptionPage), "CSharp", null, "Advanced", pageNameResourceId: "#102", keywordListResourceId: 306)]
         [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingStylePage), "CSharp", null, @"Code Style", pageNameResourceId: "#114", keywordListResourceId: 313)]
@@ -232,6 +221,11 @@ namespace XSharp.Project
                 frame.Show();
             }
 
+        }
+        internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
+        {
+            var page = (IntellisenseOptionsPage) GetDialogPage(typeof(IntellisenseOptionsPage));
+            return page;
         }
 
         #region Overridden Implementation

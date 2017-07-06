@@ -8,15 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
-using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Tagging;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TextManager.Interop;
 using System.Windows.Media;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
@@ -25,6 +21,8 @@ using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
 using System.Diagnostics;
 using System.Collections.Immutable;
+using XSharpColorizer;
+
 namespace XSharpLanguage
 {
     [Export(typeof(ICompletionSourceProvider))]
@@ -41,30 +39,13 @@ namespace XSharpLanguage
         public ICompletionSource TryCreateCompletionSource(ITextBuffer textBuffer)
         {
 
-            return new XSharpCompletionSource(this, textBuffer, GetFileName(textBuffer));
-        }
-
-        private string GetFileName(ITextBuffer buffer)
-        {
-            IVsTextBuffer bufferAdapter;
-            buffer.Properties.TryGetProperty(typeof(IVsTextBuffer), out bufferAdapter);
-            if (bufferAdapter != null)
-            {
-                var persistFileFormat = bufferAdapter as IPersistFileFormat;
-                string ppzsFilename = null;
-                uint iii;
-                if (persistFileFormat != null)
-                    persistFileFormat.GetCurFile(out ppzsFilename, out iii);
-                return ppzsFilename;
-            }
-            return null;
+            return new XSharpCompletionSource(this, textBuffer);
         }
     }
 
     partial class XSharpCompletionSource : ICompletionSource
     {
         private ITextBuffer _buffer;
-        private String _fileName;
         private bool _disposed = false;
         private XSharpCompletionSourceProvider _provider;
         private bool _settingIgnoreCase;
@@ -79,12 +60,13 @@ namespace XSharpLanguage
             return false;
         }
 
-        public XSharpCompletionSource(XSharpCompletionSourceProvider provider, ITextBuffer buffer, String fileName)
+        public XSharpCompletionSource(XSharpCompletionSourceProvider provider, ITextBuffer buffer)
         {
             _provider = provider;
             _buffer = buffer;
-            _fileName = fileName;
+            _file = buffer.GetFile();
             // Currently, set as default, but should be VS Settings Based
+            // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             _settingIgnoreCase = true;
             _stopToken = null;
         }
@@ -118,13 +100,11 @@ namespace XSharpLanguage
             //
             var applicableTo = snapshot.CreateTrackingSpan(new SnapshotSpan(start, triggerPoint), SpanTrackingMode.EdgeInclusive);
             //
-            XFile file = XSharpModel.XSolution.FindFullPath(this._fileName);
-            if (file == null)
+            if (_file == null)
             {
                 // Uhh !??, Something went wrong
                 return;
             }
-            _file = file;
             // The Completion list we are building
             CompletionList compList = new CompletionList();
             CompletionList kwdList = new CompletionList();
@@ -139,7 +119,7 @@ namespace XSharpLanguage
             // Build a list with the tokens we have from the TriggerPoint to the start of the line
             //List<String> tokenList = this.GetTokenList(triggerPoint);
             //LanguageService.SyntaxTree.ITokenStream tokenStream;
-            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _fileName);
+            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file);
             // and make it a string
             //String tokenLine = TokenListAsString(tokenList, 0);
             String filterText = "";
@@ -186,9 +166,9 @@ namespace XSharpLanguage
                 }
             }
             // Check if we can get the member where we are
-            XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._fileName);
-            XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._fileName);
-            HashSet<String> Usings = new HashSet<String>(file.Usings, StringComparer.OrdinalIgnoreCase);
+            XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._file);
+            XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
+            HashSet<String> Usings = new HashSet<String>(_file.Usings, StringComparer.OrdinalIgnoreCase);
             if (currentNamespace != null)
             {
                 Usings.Add(currentNamespace.Name);
@@ -225,7 +205,7 @@ namespace XSharpLanguage
             {
                 currentNS = currentNamespace.Name;
             }
-            cType = XSharpTokenTools.RetrieveType(_fileName, tokenList, member, currentNS, null, out foundElement);
+            cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement);
             if (!cType.IsEmpty())
             {
                 session.Properties["Type"] = cType;
@@ -243,31 +223,31 @@ namespace XSharpLanguage
                     {
                         case XSharpLexer.USING:
                             // It can be a namespace 
-                            AddNamespaces(compList, file.Project, filterText);
+                            AddNamespaces(compList, _file.Project, filterText);
                             break;
                         case XSharpLexer.AS:
                         case XSharpLexer.IS:
                         case XSharpLexer.REF:
                         case XSharpLexer.INHERIT:
                             // It can be a namespace 
-                            AddNamespaces(compList, file.Project, filterText);
+                            AddNamespaces(compList, _file.Project, filterText);
                             // It can be Type, FullyQualified
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                            AddTypeNames(compList, file.Project, filterText, Usings);
+                            AddTypeNames(compList, _file.Project, filterText, Usings);
                             //
                             AddXSharpTypesTypeNames(kwdList, filterText);
                             break;
                         case XSharpLexer.IMPLEMENTS:
                             // It can be a namespace 
-                            AddNamespaces(compList, file.Project, filterText);
+                            AddNamespaces(compList, _file.Project, filterText);
                             // TODO: add Interfaces only
                             break;
                         default:
                             // It can be a namespace 
-                            AddNamespaces(compList, file.Project, filterText);
+                            AddNamespaces(compList, _file.Project, filterText);
                             // It can be Type, FullyQualified
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                            AddTypeNames(compList, file.Project, filterText, Usings);
+                            AddTypeNames(compList, _file.Project, filterText, Usings);
                             //
                             AddXSharpTypesTypeNames(kwdList, filterText);
                             // it can be a static Method/Property/Enum
@@ -331,23 +311,23 @@ namespace XSharpLanguage
                         {
                             case XSharpLexer.USING:
                                 // It can be a namespace 
-                                AddNamespaces(compList, file.Project, filterText);
+                                AddNamespaces(compList, _file.Project, filterText);
                                 break;
                             case XSharpLexer.AS:
                             case XSharpLexer.IS:
                             case XSharpLexer.REF:
                             case XSharpLexer.INHERIT:
                                 // It can be a namespace 
-                                AddNamespaces(compList, file.Project, filterText);
+                                AddNamespaces(compList, _file.Project, filterText);
                                 // It can be Type, FullyQualified
                                 // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                                AddTypeNames(compList, file.Project, filterText, Usings);
+                                AddTypeNames(compList, _file.Project, filterText, Usings);
                                 //
                                 AddXSharpTypesTypeNames(kwdList, filterText);
                                 break;
                             case XSharpLexer.IMPLEMENTS:
                                 // It can be a namespace 
-                                AddNamespaces(compList, file.Project, filterText);
+                                AddNamespaces(compList, _file.Project, filterText);
                                 // TODO: add Interfaces only
                                 break;
                             default:
@@ -356,15 +336,15 @@ namespace XSharpLanguage
                                     BuildCompletionList(compList, member, filterText);
                                 }
                                 // Now Add Functions and Procedures
-                                BuildCompletionList(compList, file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);
+                                BuildCompletionList(compList, _file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);
                                 // and Add NameSpaces
-                                AddNamespaces(compList, file.Project, filterText);
+                                AddNamespaces(compList, _file.Project, filterText);
                                 // and Types
-                                AddTypeNames(compList, file.Project, filterText, Usings);
+                                AddTypeNames(compList, _file.Project, filterText, Usings);
                                 //
                                 AddXSharpTypesTypeNames(kwdList, filterText);
                                 //
-                                AddUsingStaticMembers(compList, file, filterText);
+                                AddUsingStaticMembers(compList, _file, filterText);
                                 break;
                         }
                     }
@@ -753,9 +733,6 @@ namespace XSharpLanguage
         {
             if (currentMember == null)
             {
-#if TRACE
-                Support.Debug(String.Format("Building Completion for {0} : Cannot find Member.", this._fileName));
-#endif
                 return;
             }
             // First, look after Parameters
@@ -792,16 +769,10 @@ namespace XSharpLanguage
         {
             if (parent == null)
             {
-#if TRACE
-                Support.Debug(String.Format("Building Completion for {0} : Cannot find Parent.", this._fileName));
-#endif
                 return;
             }
             if (!(parent is XType))
             {
-#if TRACE
-                Support.Debug(String.Format("Building Completion for {0} : Parent {1} is NOT XType.", this._fileName, parent.Name));
-#endif
                 return;
             }
             //
@@ -837,9 +808,6 @@ namespace XSharpLanguage
         {
             if (cType == null)
             {
-#if TRACE
-                Support.Debug(String.Format("Building Completion for {0} : Cannot find CompletionType.", this._fileName));
-#endif
                 return;
             }
             //
@@ -2198,24 +2166,29 @@ namespace XSharpLanguage
         /// <param name="bufferText"></param>
         /// <param name="stopToken">The IToken that stops the move backwards</param>
         /// <param name="fromGotoDefn">Indicate if the call is due to Goto Definition</param>
+        /// <param name="file">XFile object to use for the context</param>
         /// <returns></returns>
         public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            string bufferText, out IToken stopToken, bool fromGotoDefn, string fileName)
+            string bufferText, out IToken stopToken, bool fromGotoDefn, XFile file)
         {
             List<String> tokenList = new List<string>();
             String token;
+            string fileName;
             //
             stopToken = null;
-            //tokenStream = null;
             // lex the entire document
             // Get compiler options
-            XFile file = XSolution.FindFile(fileName);
-            XSharpParseOptions parseoptions = XSharpParseOptions.Default;
+            XSharpParseOptions parseoptions; ;
             if (file != null)
             {
                 var prj = file.Project.ProjectNode;
                 parseoptions = prj.ParseOptions;
-
+                fileName = file.FullPath;
+            }
+            else
+            {
+                parseoptions = XSharpParseOptions.Default;
+                fileName = "MissingFile.prg";
             }
             //System.Threading.Thread.Sleep(500);
             var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
@@ -2414,19 +2387,12 @@ namespace XSharpLanguage
             //
             return returnList;
         }
-
-        public static XType FindNamespace(int position, String fileName)
+        public static XType FindNamespace(int position, XFile file)
         {
-            XFile file = XSharpModel.XSolution.FindFullPath(fileName);
             if (file == null)
             {
-                // Uhh !??, Something went wrong
-#if TRACE
-                Support.Debug(String.Format("Cannot find file {0} .", fileName));
-#endif
                 return null;
             }
-            //
             XType found = null;
             foreach (XType eltType in file.TypeList.Values)
             {
@@ -2467,18 +2433,13 @@ namespace XSharpLanguage
 #endif
             return null;
         }
-
-        public static XTypeMember FindMember(int position, String fileName)
+        public static XTypeMember FindMember(int position, XFile file)
         {
-            XFile file = XSharpModel.XSolution.FindFullPath(fileName);
             if (file == null)
             {
-                // Uhh !??, Something went wrong
-#if TRACE
-                Support.Debug(String.Format("Cannot find file {0} .", fileName));
-#endif
                 return null;
             }
+
             // First, Check for Function/Procedure
             XType gbl = file.GlobalType;
             XTypeMember lastGlobalElement = null;
@@ -2556,26 +2517,25 @@ namespace XSharpLanguage
 #endif
             return null;
         }
-
+ 
         /// <summary>
         /// Retrieve the CompletionType based on :
         ///  The Token list returned by GetTokenList()
         ///  The Token that stops the building of the Token List.
         /// </summary>
+        /// <param name="file"></param>
         /// <param name="tokenList"></param>
         /// <param name="currentMember"></param>
+        /// <param name="currentNS"></param>
         /// <param name="stopToken"></param>
         /// <param name="foundElement"></param>
-        /// <param name="sysFoundElement"></param>
         /// <returns></returns>
-        public static CompletionType RetrieveType(string fileName, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out CompletionElement foundElement)
+        public static CompletionType RetrieveType(XFile file, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out CompletionElement foundElement)
         {
             foundElement = null;
-            XFile file = null;
             if (currentMember == null)
             {
                 // try to find the first member in the file
-                file = XSharpModel.XSolution.FindFile(fileName);
                 if (file != null)
                     currentMember = file.FirstMember();
                 if (currentMember == null)

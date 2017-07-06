@@ -54,7 +54,7 @@ namespace XSharpColorizer
     {
         internal static bool IsXSharpDocument(ITextDocumentFactoryService factory, ITextBuffer buffer)
         {
-            string path = string.Empty;
+            string path = "";
             if (buffer.Properties.ContainsProperty(typeof(XSharpModel.XFile)))
             {
                 return buffer.Properties.GetProperty(typeof(XSharpModel.XFile)) != null;

@@ -5,51 +5,32 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
-using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Shell.Interop;
 using LanguageService.SyntaxTree;
 using System.Reflection;
 using System.Diagnostics;
+using XSharpColorizer;
 
 namespace XSharp.Project
 {
     internal class XSharpQuickInfoSource : IQuickInfoSource
     {
-        private XSharpQuickInfoSourceProvider m_provider;
-        private ITextBuffer m_subjectBuffer;
-        private String fileName;
+        private XSharpQuickInfoSourceProvider _provider;
+        private ITextBuffer _subjectBuffer;
+        private XSharpModel.XFile _file;
 
         public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer subjectBuffer)
         {
-            m_provider = provider;
-            m_subjectBuffer = subjectBuffer;
-
-            fileName = this.GetFileName(m_subjectBuffer);
+            _provider = provider;
+            _subjectBuffer = subjectBuffer;
+            _file = _subjectBuffer.GetFile();
         }
 
-        private string GetFileName(ITextBuffer buffer)
-        {
-            IVsTextBuffer bufferAdapter;
-            buffer.Properties.TryGetProperty(typeof(IVsTextBuffer), out bufferAdapter);
-            if (bufferAdapter != null)
-            {
-                var persistFileFormat = bufferAdapter as IPersistFileFormat;
-                string ppzsFilename = null;
-                uint iii;
-                if (persistFileFormat != null)
-                    persistFileFormat.GetCurFile(out ppzsFilename, out iii);
-                return ppzsFilename;
-            }
-            return null;
-        }
 
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
@@ -57,7 +38,7 @@ namespace XSharp.Project
             {
                 applicableToSpan = null;
                 // Map the trigger point down to our buffer.
-                SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(m_subjectBuffer.CurrentSnapshot);
+                SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(_subjectBuffer.CurrentSnapshot);
                 if (!subjectTriggerPoint.HasValue)
                 {
                     applicableToSpan = null;
@@ -67,28 +48,27 @@ namespace XSharp.Project
                 SnapshotSpan querySpan = new SnapshotSpan(subjectTriggerPoint.Value, 0);
 
                 //look for occurrences of our QuickInfo words in the span
-                ITextStructureNavigator navigator = m_provider.NavigatorService.GetTextStructureNavigator(m_subjectBuffer);
+                ITextStructureNavigator navigator = _provider.NavigatorService.GetTextStructureNavigator(_subjectBuffer);
                 TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
                 string searchText = extent.Span.GetText();
-
 
                 // First, where are we ?
                 int caretPos = subjectTriggerPoint.Value.Position;
                 int lineNumber = subjectTriggerPoint.Value.GetContainingLine().LineNumber;
                 String currentText = session.TextView.TextBuffer.CurrentSnapshot.GetText();
-                if (String.IsNullOrEmpty(fileName))
+                if (_file == null)
                     return;
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, fileName);
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, _file);
                 // Check if we can get the member where we are
                 while(tokenList.Count > 1)
                 {
                     tokenList.RemoveAt(0);
                 }
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
-                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, _file);
+                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 XSharpLanguage.CompletionElement gotoElement;
                 String currentNS = "";
@@ -97,7 +77,7 @@ namespace XSharp.Project
                     currentNS = currentNamespace.Name;
                 }
 
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement);
                 //
                 //
                 if ((gotoElement != null) && (gotoElement.IsInitialized))

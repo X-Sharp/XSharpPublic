@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using System;
+using XSharpModel;
 
 namespace XSharpColorizer
 {
@@ -58,5 +59,31 @@ namespace XSharpColorizer
             }
             return snapshot.GetText(new Span(start, length));
         }
+
+        public static string GetFileName(this ITextBuffer buffer)
+        {
+            XFile file = buffer.GetFile();
+            if (file != null)
+            {
+                return file.FullPath;
+            }
+            ITextDocument textDoc;
+            if (buffer.Properties.TryGetProperty(typeof(ITextDocument), out textDoc))
+            {
+                return textDoc.FilePath;
+            }
+            return string.Empty;
+        }
+        public static XFile GetFile(this ITextBuffer buffer)
+        {
+            XFile file;
+            if (buffer.Properties.TryGetProperty(typeof(XFile), out file))
+            {
+                return file;
+            }
+            return null;
+
+        }
+
     }
 }

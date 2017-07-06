@@ -26,17 +26,5 @@ namespace XSharp.Project
             var projectitem = dte.Solution.FindProjectItem(filename);
             return projectitem;
         }
-
-        public static String GetDocumentFileName(ITextBuffer TextBuffer)
-        {
-            String fileName = "";
-            ITextDocument textDoc;
-            var rc = TextBuffer.Properties.TryGetProperty<ITextDocument>(typeof(ITextDocument), out textDoc);
-            if (rc == true)
-            {
-                fileName = textDoc.FilePath;
-            }
-            return fileName;
-        }
     }
 }

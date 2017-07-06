@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using Microsoft.VisualStudio.Text.Tagging;
+using XSharpColorizer;
 
 namespace XSharp.Project
 {
@@ -48,8 +49,7 @@ namespace XSharp.Project
         public XSharpErrorColorizer(IWpfTextView view)
         {
             this.view = view;
-            string fileName = EditorHelpers.GetDocumentFileName(this.view.TextBuffer);
-            file = XSharpModel.XSolution.FindFullPath(fileName);
+            file = this.view.TextBuffer.GetFile();
             if (file == null)
             {
                 // Uhh !??, Something went wrong

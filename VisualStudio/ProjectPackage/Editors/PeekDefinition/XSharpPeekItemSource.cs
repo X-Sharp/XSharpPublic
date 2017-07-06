@@ -5,6 +5,7 @@ using System;
 using LanguageService.SyntaxTree;
 using XSharpLanguage;
 using System.Diagnostics;
+using XSharpColorizer;
 
 namespace XSharp.Project
 {
@@ -12,11 +13,13 @@ namespace XSharp.Project
     {
         private readonly ITextBuffer _textBuffer;
         private readonly IPeekResultFactory _peekResultFactory;
+        private XSharpModel.XFile _file;
 
         public XSharpPeekItemSource(ITextBuffer textBuffer, IPeekResultFactory peekResultFactory)
         {
             _textBuffer = textBuffer;
             _peekResultFactory = peekResultFactory;
+            _file = textBuffer.GetFile();
         }
 
         public void AugmentPeekSession(IPeekSession session, IList<IPeekableItem> peekableItems)
@@ -35,13 +38,12 @@ namespace XSharp.Project
                 }
                 //
                 var triggerPoint = tp.Value;
-                string fileName = EditorHelpers.GetDocumentFileName(session.TextView.TextBuffer);
                 IToken stopToken;
                 //
-                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _textBuffer.CurrentSnapshot.GetText(), out stopToken, false, fileName);
+                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _textBuffer.CurrentSnapshot.GetText(), out stopToken, false, _file);
                 // Check if we can get the member where we are
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.Position, fileName);
-                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, fileName);
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.Position, _file);
+                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 String currentNS = "";
@@ -49,7 +51,7 @@ namespace XSharp.Project
                 {
                     currentNS = currentNamespace.Name;
                 }
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(fileName, tokenList, member, currentNS, stopToken, out gotoElement);
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement);
                 //
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {

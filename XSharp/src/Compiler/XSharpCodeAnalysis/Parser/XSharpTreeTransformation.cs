@@ -4911,6 +4911,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (isDim)
             {
+                CurrentEntity.Data.HasDimVar = true;
                 if (initExpr == null)
                 {
                     initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
@@ -5443,8 +5444,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     statements.Add(stmtCtx.Get<StatementSyntax>());
                 }
             }
-            // Check for LOCAL DIM arrays and change them to Fixed statements
-            statements = CheckForLocalDimArrays(statements);
+            if (CurrentEntity.Data.HasDimVar)
+            {
+                // Check for LOCAL DIM arrays and change them to Fixed statements
+                statements = CheckForLocalDimArrays(statements);
+            }
             context.Put(MakeBlock(statements));
         }
 

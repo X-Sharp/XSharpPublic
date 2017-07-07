@@ -97,6 +97,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasCtor = 1 << 9,           // Class property
             Partial = 1 << 10,          // Class property
             PartialProps = 1 << 11,     // Class property
+            HasDimVar = 1 << 12,        // Member property
         }
 
         public class EntityData
@@ -166,6 +167,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.PartialProps); }
                 set { if (value) flags |= EntityFlags.PartialProps; else flags &= ~EntityFlags.PartialProps; }
+            }
+            public bool HasDimVar
+            {
+                get { return flags.HasFlag(EntityFlags.HasDimVar); }
+                set { if (value) flags |= EntityFlags.HasDimVar; else flags &= ~EntityFlags.HasDimVar; }
             }
 
             private List<MemVarFieldInfo> Fields;

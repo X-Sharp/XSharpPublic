@@ -33,6 +33,26 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // fall-through for other operators, if RHS is dynamic we produce dynamic operation, otherwise we'll report an error ...
                 }
             }
+#if XSHARP
+            if (Compilation.Options.IsDialectVO)
+            {
+                bool ok = true;
+                if (left.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual) 
+                    && right.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat))
+                {
+                    ok = false;
+                }
+                else if (right.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)
+                    && left.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat))
+                {
+                    ok = false;
+                }
+                if (! ok )
+                {
+                    Error(diagnostics, ErrorCode.ERR_BindToBogus, node, "Compound Assignment of a USUAL and a FLOAT");
+                }
+            }
+#endif
 
             if (left.HasAnyErrors || right.HasAnyErrors)
             {

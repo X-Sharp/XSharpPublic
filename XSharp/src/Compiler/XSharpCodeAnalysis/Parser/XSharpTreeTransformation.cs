@@ -4922,6 +4922,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     varType.XVoIsDecl = true;
                 }
+                varType.XVoIsDim = true;
             }
             if (isStatic)
             {
@@ -4958,30 +4959,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            variables.Add(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
+            var vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 isStatic ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    _syntaxFactory.RefExpression(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword),GenerateSimpleName(staticName)))
-                : (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr)));
+                    _syntaxFactory.RefExpression(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), GenerateSimpleName(staticName)))
+                : (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr));
+            vardecl.XVoIsDim = isDim;
+            variables.Add(vardecl);
             var modifiers = _pool.Allocate();
             if (isConst)
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword));
-            /*if (isStatic)
-                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword));*/
+                
             if (!isStatic)
             {
-                context.Put(_syntaxFactory.LocalDeclarationStatement(
+                var ldecl = _syntaxFactory.LocalDeclarationStatement(
                     modifiers.ToList<SyntaxToken>(),
                     _syntaxFactory.VariableDeclaration(varType, variables),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                ldecl.XVoIsDim = isDim;
+                context.Put(ldecl);
             }
             else
             {
                 var decl = _pool.Allocate<StatementSyntax>();
-                decl.Add(_syntaxFactory.LocalDeclarationStatement(
+                var ldecl = _syntaxFactory.LocalDeclarationStatement(
                     modifiers.ToList<SyntaxToken>(),
                     _syntaxFactory.VariableDeclaration(
                         _syntaxFactory.RefType(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), varType), variables),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                decl.Add(ldecl);
                 if (initExpr != null)
                 {
                     decl.Add(GenerateIfStatement(
@@ -5419,17 +5424,82 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitStatementBlock([NotNull] XP.StatementBlockContext context)
         {
-            var statements = _pool.Allocate<StatementSyntax>();
+            List<StatementSyntax> statements = new List<StatementSyntax>();
             foreach (var stmtCtx in context._Stmts)
             {
+
                 // Sometimes we generate more than 1 C# statement for a xBase statement
                 if (stmtCtx.CsNode is SyntaxList<StatementSyntax>)
-                    statements.AddRange(stmtCtx.GetList<StatementSyntax>());
+                {
+                    var list = (SyntaxList < StatementSyntax > ) stmtCtx.CsNode ;
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        var stmt = list[i];
+                        statements.Add(stmt);
+                    }
+                }
                 else
+                {
                     statements.Add(stmtCtx.Get<StatementSyntax>());
+                }
             }
+            // Check for LOCAL DIM arrays and change them to Fixed statements
+            statements = CheckForLocalDimArrays(statements);
             context.Put(MakeBlock(statements));
-            _pool.Free(statements);
+        }
+
+        private List<StatementSyntax> CheckForLocalDimArrays(List<StatementSyntax> statements)
+        {
+            foreach (var stmt in statements.ToList())
+            {
+                if (stmt is LocalDeclarationStatementSyntax)
+                {
+                    var localdecl = stmt as LocalDeclarationStatementSyntax;
+                    if (localdecl.XVoIsDim)
+                    {
+                        // we only have one variable per localdecl
+                        var vars = localdecl.Declaration.Variables;
+                        var vardecl = vars[0];
+                            
+                        // create new declaration where the local is a ptr
+                        // copy rest of statements to array
+                        // remove rest of statements from the current array
+
+                        int iPos = statements.IndexOf(stmt);
+                        var substmts = new StatementSyntax[statements.Count - iPos - 1];
+                        statements.CopyTo(iPos + 1, substmts, 0, substmts.Length);
+                        statements.RemoveRange(iPos + 1, substmts.Length);
+                        var newStmts = CheckForLocalDimArrays(substmts.ToList());
+                        var newBlock = MakeBlock(newStmts);
+
+                        // create new declaration for a pointer variable of the type 
+                        // that the original declaration points to
+                        // The new name will be the originalname + "$Dim"
+                        var newId = SyntaxFactory.MakeIdentifier(vardecl.Identifier.Text + "$dim");
+                        var atype = localdecl.Declaration.Type as ArrayTypeSyntax;
+                        var element = atype.ElementType;
+                        var ptype = _syntaxFactory.PointerType(atype.ElementType, SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken));
+                        var addressof = _syntaxFactory.PrefixUnaryExpression(SyntaxKind.AddressOfExpression,
+                                        SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
+                                        GenerateSimpleName(vardecl.Identifier.Text));
+
+                        var initexpr = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                                        addressof);
+                        var newvardecl = _syntaxFactory.VariableDeclarator(newId, null, initexpr);
+                        var newvardecl2 = _syntaxFactory.VariableDeclaration(ptype, MakeSeparatedList(newvardecl));
+
+                        var newStmt = _syntaxFactory.FixedStatement(
+                                    SyntaxFactory.MakeToken(SyntaxKind.FixedKeyword),
+                                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                    newvardecl2,
+                                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                                newBlock);
+                        statements.Add(newStmt);
+                        return statements;
+                    }
+                }
+            }
+            return statements;
         }
 
         private bool ContainsExitStatement(IList<XP.StatementContext> stmts)

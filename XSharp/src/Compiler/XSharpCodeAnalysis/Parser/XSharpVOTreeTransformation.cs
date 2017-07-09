@@ -367,8 +367,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
 
             // VO11  = stmt 2
-            rhs = GenerateLiteral(_options.VOArithmeticConversions);
-            lhs = GenerateQualifiedName(VulcanQualifiedTypeNames.RuntimeState + ".CompilerOptionVO11");
+            
+            if (_options.VOArithmeticConversions)
+            {
+                rhs = GenerateLiteral(true);
+                lhs = GenerateQualifiedName(VulcanQualifiedTypeNames.RuntimeState + ".CompilerOptionVO11");
+            }
             stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
             // OVF+  = stmt 3 and 4
             if (_options.Overflow)

@@ -160,8 +160,44 @@ namespace Microsoft.CodeAnalysis.CSharp
             var oldbody = statement as BoundBlock;
             var trystmt = oldbody.Statements[0] as BoundTryStatement;
             var tryblock = trystmt.TryBlock;
+            var refMan = method.DeclaringCompilation.GetBoundReferenceManager();
+            bool hasOVF = false;
+            bool hasFOVF = false;
+            bool hasvo11 = false;
+            foreach (var rkv in refMan.GetReferencedAssemblies())
+            {
+                var asm = rkv.Value;
+                if (asm.Name == "VulcanRT")
+                {
+                    var type = asm.GetTypeByMetadataName("Vulcan.Runtime.State");
+                    if (type != null)
+                    {
+                        var mem = type.GetMembers("CompilerOptionFOvf");
+                        hasFOVF = mem.Length > 0;
+                        mem = type.GetMembers("CompilerOptionOvf");
+                        hasOVF = mem.Length > 0;
+                        mem = type.GetMembers("CompilerOptionVO11");
+                        hasvo11 = mem.Length > 0;
+                    }
+                }
+            }
+
             foreach (var stmt in tryblock.Statements)
+            {
+                // Skip assignments to Vulcan.Runtime.State if variables do not exist
+                if (stmt is BoundExpressionStatement)
+                {
+                    var bes = stmt as BoundExpressionStatement;
+                    var str = bes.Expression.Syntax.ToString().ToLower();
+                    if (str.Contains("compileroptionvo11") && !hasvo11)
+                        continue;
+                    if (str.Contains("compileroptionovf") && !hasOVF)
+                        continue;
+                    if (str.Contains("compileroptionfovf") && !hasFOVF)
+                        continue;
+                }
                 newstatements.Add(stmt);
+            }
             var initstmts = GetInitStatements(method.DeclaringCompilation, statement,false);
             newstatements.AddRange(initstmts);
             tryblock = tryblock.Update(tryblock.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());

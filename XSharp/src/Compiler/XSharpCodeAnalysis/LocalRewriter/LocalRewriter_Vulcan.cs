@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -148,6 +149,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             var newbody = oldbody.Update(oldbody.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
             return newbody;
         }
+
+        private static BoundExpressionStatement runtimeStateAssign(SyntaxNode syntax, FieldSymbol field, bool value, TypeSymbol type)
+        {
+            var bfa = new BoundFieldAccess(syntax, null, field, ConstantValue.NotAvailable) { WasCompilerGenerated = true };
+            var lit = new BoundLiteral(syntax, ConstantValue.Create(value), type) { WasCompilerGenerated = true };
+            var ass = new BoundAssignmentOperator(syntax, bfa, lit, RefKind.None, lit.Type) { WasCompilerGenerated = true };
+            var stmt = new BoundExpressionStatement(syntax, ass) { WasCompilerGenerated = true };
+            return stmt;
+        }
         public static BoundStatement RewriteAppInit(
             MethodSymbol method,
             BoundStatement statement,
@@ -160,43 +170,35 @@ namespace Microsoft.CodeAnalysis.CSharp
             var oldbody = statement as BoundBlock;
             var trystmt = oldbody.Statements[0] as BoundTryStatement;
             var tryblock = trystmt.TryBlock;
-            var refMan = method.DeclaringCompilation.GetBoundReferenceManager();
-            bool hasOVF = false;
-            bool hasFOVF = false;
-            bool hasvo11 = false;
-            foreach (var rkv in refMan.GetReferencedAssemblies())
-            {
-                var asm = rkv.Value;
-                if (asm.Name == "VulcanRT")
-                {
-                    var type = asm.GetTypeByMetadataName("Vulcan.Runtime.State");
-                    if (type != null)
-                    {
-                        var mem = type.GetMembers("CompilerOptionFOvf");
-                        hasFOVF = mem.Length > 0;
-                        mem = type.GetMembers("CompilerOptionOvf");
-                        hasOVF = mem.Length > 0;
-                        mem = type.GetMembers("CompilerOptionVO11");
-                        hasvo11 = mem.Length > 0;
-                    }
-                }
-            }
-
             foreach (var stmt in tryblock.Statements)
             {
-                // Skip assignments to Vulcan.Runtime.State if variables do not exist
-                if (stmt is BoundExpressionStatement)
-                {
-                    var bes = stmt as BoundExpressionStatement;
-                    var str = bes.Expression.Syntax.ToString().ToLower();
-                    if (str.Contains("compileroptionvo11") && !hasvo11)
-                        continue;
-                    if (str.Contains("compileroptionovf") && !hasOVF)
-                        continue;
-                    if (str.Contains("compileroptionfovf") && !hasFOVF)
-                        continue;
-                }
                 newstatements.Add(stmt);
+            }
+            // Generate RuntimeState field assignments when  the runtime supports the fields we expect
+            var comp = method.DeclaringCompilation;
+            var vrt = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "VulcanRT");
+            if (vrt.Count() != 0)
+            {
+                var vulcanrt = vrt.First().Value;
+                var type = vulcanrt.GetTypeByMetadataName("Vulcan.Runtime.State");
+                if (type != null)
+                {
+                    var mem = type.GetMembers("CompilerOptionFOvf");
+                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
+                    {
+                        newstatements.Add(runtimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.CheckOverflow, comp.GetSpecialType(SpecialType.System_Boolean)));
+                    }
+                    mem = type.GetMembers("CompilerOptionOvf");
+                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
+                    {
+                        newstatements.Add(runtimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.CheckOverflow, comp.GetSpecialType(SpecialType.System_Boolean)));
+                    }
+                    mem = type.GetMembers("CompilerOptionVO11");
+                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
+                    {
+                        newstatements.Add(runtimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.vo11, comp.GetSpecialType(SpecialType.System_Boolean)));
+                    }
+                }
             }
             var initstmts = GetInitStatements(method.DeclaringCompilation, statement,false);
             newstatements.AddRange(initstmts);

@@ -349,9 +349,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // try
             // {
             //      State.AppModule = typeof(Functions).Module          // stmt 1
-            //      State.CompilerOptionVO11 = <value of VO11>          // optional stmt 2
-            //      State.CompilerOptionOvf  = <value of OVF>           // optional stmt 3
-            //      State.CompilerOptionFOvf = <value of OVF>           // optional stmt 4
+            //      State.CompilerOptionVO11 = <value of VO11>          // optional stmt 2, generated in the LocalRewriter
+            //      State.CompilerOptionOvf  = <value of OVF>           // optional stmt 3, generated in the LocalRewriter
+            //      State.CompilerOptionFOvf = <value of OVF>           // optional stmt 4, generated in the LocalRewriter
             //      <Call Init procedures>                              // optional block is generated in the LocalRewriter
             // }
             // catch (Exception exception)
@@ -365,24 +365,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
             stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
-
-            // VO11  = stmt 2
-            
-            if (_options.VOArithmeticConversions)
-            {
-                rhs = GenerateLiteral(true);
-                lhs = GenerateQualifiedName(VulcanQualifiedTypeNames.RuntimeState + ".CompilerOptionVO11");
-            }
-            stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
-            // OVF+  = stmt 3 and 4
-            if (_options.Overflow)
-            {
-                rhs = GenerateLiteral(true);
-                lhs = GenerateQualifiedName(VulcanQualifiedTypeNames.RuntimeState + ".CompilerOptionOvf");
-                stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
-                lhs = GenerateQualifiedName(VulcanQualifiedTypeNames.RuntimeState + ".CompilerOptionFOvf");
-                stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
-            }
+            // rest of the statements is generated in the LocalRewriter with a check for the existence of the fields in VulcanRT.
+            // in Vulcan.Runtime.State
             var body = MakeBlock(stmts);
             stmts.Clear();
 

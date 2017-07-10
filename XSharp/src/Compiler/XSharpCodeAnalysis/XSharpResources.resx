@@ -5237,5 +5237,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CannotConvertArrayIndexAccess" xml:space="preserve">
     <value>Cannot convert Array Index from '{0}' to '{1}'.</value>
   </data>
+  <data name="ERR_CompoundAssignmentUsualAndFloat" xml:space="preserve">
+    <value>A Compound Assignment (+= or -=) from a FLOAT and a USUAL is not supported because of an error in the Vulcan Runtime. Please change the expression to a simple assignment. For example F += U should become F := F + U.</value>
+  </data>
 
 </root>

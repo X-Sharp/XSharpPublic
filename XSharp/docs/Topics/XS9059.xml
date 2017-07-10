@@ -10,5 +10,6 @@
       <para styleclass="Heading1">XS9059</para>
     </header>
     <para styleclass="Normal">Cannot convert Array Index from &apos;{0}&apos; to &apos;{1}&apos;.</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

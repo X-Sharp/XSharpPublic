@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (! ok )
                 {
-                    Error(diagnostics, ErrorCode.ERR_BindToBogus, node, "Compound Assignment of a USUAL and a FLOAT");
+                    Error(diagnostics, ErrorCode.ERR_CompoundAssignmentUsualAndFloat, node);
                 }
             }
 #endif

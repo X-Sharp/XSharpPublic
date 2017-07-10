@@ -91,7 +91,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:MaximizeBox := FALSE
 		SELF:MinimizeBox := FALSE
 		SELF:Name := "xPorterUI"
-		SELF:Text := "VO-xPorter beta 0.12"
+		SELF:Text := "VO-xPorter version 1.0.1.1"
 
 		SELF:CancelButton := SELF:oExitButton
 		SELF:oExitButton:Click += SELF:ExitButtonClick

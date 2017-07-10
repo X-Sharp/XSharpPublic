@@ -1211,6 +1211,7 @@ CLASS ApplicationDescriptor
 				
 			OTHERWISE
 				cTemplate := cTemplate:Replace("%appname%" , SELF:Name)
+				cTemplate := cTemplate:Replace("%rootnamespace%", SELF:Name:Replace(" ",""))
 				cTemplate := cTemplate:Replace("%apptype%" , cAppTypeTag)
 				
 				IF cTemplate:Contains("%option_overflow%") .or. cTemplate:Contains("%option_intdiv%")

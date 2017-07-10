@@ -6,7 +6,7 @@
     <ProjectGuid>%appguid%</ProjectGuid>
     <OutputType>%apptype%</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>%appname%</RootNamespace>
+    <RootNamespace>%rootnamespace%</RootNamespace>
     <AssemblyName>%appname%</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <Name>%appname%</Name>
@@ -35,7 +35,7 @@
     <VO8>true</VO8>
     <VO9>true</VO9>
     <VO10>true</VO10>
-    <VO11>true</VO11>
+    <VO11>false</VO11>
     <VO12>%option_intdiv%</VO12>
     <VO13>true</VO13>
     <VO14>false</VO14>

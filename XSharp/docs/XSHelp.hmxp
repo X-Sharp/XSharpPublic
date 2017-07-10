@@ -529,7 +529,7 @@
       <config-value name="tocname">Table of Contents</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Anjou General Release (1.0.1)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Anjou General Release (1.0.1.1)</variable>
     </variables>
     <helpcontext-numbers/>
   </config>

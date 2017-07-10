@@ -10,16 +10,16 @@
 
 ;#define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetup101Fox"
+#define SetupExeName    "XSharpSetup1011Fox"
 #else
-#define SetupExeName    "XSharpSetup101Public"
+#define SetupExeName    "XSharpSetup1011Public"
 #endif
 
-#define Version         "1.0.1.0"
-#define VIVersion       "1.0.1.0"
-#define VITextVersion   "1.0.1.0"
-#define TouchDate       "2017-07-03"
-#define TouchTime       "01:01:01"
+#define Version         "1.0.1.1"
+#define VIVersion       "1.0.1.1"
+#define VITextVersion   "1.0.1.1"
+#define TouchDate       "2017-07-10"
+#define TouchTime       "01:01:11"
 
 
 ; version info and similar stuff.
@@ -72,7 +72,7 @@
 #define SnippetsPath     "\Snippets\1033"
 
 ; Snippets of code for the Help installer.
-#define HelpInstall1  "/operation install /catalogname "
+#define HelpInstall1  "/operation install /silent /catalogname "
 #define HelpInstall2  "/locale en-us /sourceuri """"{app}\help\XSharp.msha"""" /wait 0"
 #define HelpUninstall1 "/silent /operation uninstall /catalogname"
 #define HelpUninstall2 "/locale en-us /vendor """"XSharp"""" /productname """"X#"""" /booklist """"X# Documentation"""" /wait 0"

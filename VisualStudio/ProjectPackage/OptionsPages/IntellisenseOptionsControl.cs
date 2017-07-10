@@ -21,6 +21,7 @@ namespace XSharp.Project.OptionsPages
         internal void Initialize()
         {
             chkCompletionListtabs.Checked = optionsPage.CompletionListTabs;
+            grpCase.Enabled = false;
         }
 
 

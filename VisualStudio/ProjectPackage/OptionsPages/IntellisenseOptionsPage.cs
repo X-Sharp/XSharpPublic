@@ -13,7 +13,7 @@ namespace XSharp.Project.OptionsPages
     [SharedSettings("TextEditor.XSharp",false)]
     class IntellisenseOptionsPage : DialogPage
     {
-        private bool completionListTabs;
+        private bool completionListTabs = true;
         public bool CompletionListTabs
         {
             get { return completionListTabs; }

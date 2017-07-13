@@ -1,3 +1,4 @@
+// Robert, I think that behavior (error that property hides property) is corrrect, the error goes away when you enable /vo3 (virtual instance methods)
 FUNCTION Start AS VOID
 	LOCAL oFoo AS Foo
 	oFOO :=  Foo{}

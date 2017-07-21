@@ -798,10 +798,10 @@ namespace XSharpLanguage
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
                 String toAdd = "";
-                //if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
-                //{
-                //    toAdd = "(";
-                //}
+                if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
+                {
+                    toAdd = "(";
+                }
                 if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind)))
                     break;
             }
@@ -2933,7 +2933,7 @@ namespace XSharpLanguage
         /// <returns>The CompletionType of the Property (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchPropertyOrFieldIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
+        internal static CompletionType SearchPropertyOrFieldIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
             CompletionType result = SearchPropertyTypeIn(cType, currentToken, minVisibility, out foundElement);
             if (result.IsEmpty())

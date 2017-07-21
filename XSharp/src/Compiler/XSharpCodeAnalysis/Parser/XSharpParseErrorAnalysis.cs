@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal class XSharpParseErrorAnalysis : XSharpBaseListener
     {
         private XSharpParser _parser;
-        private List<ParseErrorData> _parseErrors;
+        private IList<ParseErrorData> _parseErrors;
 
          private void checkMissingKeyword(IToken endToken, ParserRuleContext context, string msg)
         {
@@ -40,7 +40,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return ;
         }
 
-        public XSharpParseErrorAnalysis(XSharpParser parser, List<ParseErrorData> parseErrors)
+        private void checkMissingToken(IToken l, IToken r, ParserRuleContext context)
+        {
+            if (l != null && r == null)
+            {
+                ErrorCode err = ErrorCode.ERR_SyntaxError;
+                object par = null;
+                switch (l.Type)
+                {
+                    case XSharpLexer.LPAREN:
+                        err = ErrorCode.ERR_CloseParenExpected;
+                        break;
+                    case XSharpLexer.LCURLY:
+                        err = ErrorCode.ERR_RbraceExpected;
+                        break;
+                    case XSharpLexer.LBRKT:
+                        err = ErrorCode.ERR_SyntaxError;
+                        par = ']';
+                        break;
+                }
+                IToken anchor = context.Stop;
+                if (anchor == null)
+                    anchor = l;
+                ParseErrorData errdata;
+                if (par != null)
+                    errdata = new ParseErrorData(anchor, err, par);
+                else
+                    errdata = new ParseErrorData(anchor, err);
+                _parseErrors.Add(errdata);
+            }
+        }
+
+        public XSharpParseErrorAnalysis(XSharpParser parser, IList<ParseErrorData> parseErrors)
         {
             _parser = parser;
             _parseErrors = parseErrors;
@@ -48,7 +79,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
-            if (node.Symbol.TokenIndex == -1)
+            if (node.Symbol.Type == XSharpLexer.INCOMPLETE_STRING_CONST)
+            {
+                var err = ErrorCode.ERR_UnterminatedStringLit;
+                IToken anchor = node.Symbol;
+                var errdata = new ParseErrorData(anchor, err);
+                _parseErrors.Add(errdata);
+            }
+            else
             {
                 _parseErrors.Add(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
             }
@@ -70,6 +108,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
         {
             checkMissingKeyword(context.e, context, "NEXT");
+            IToken Op;
+            Op = context.Op;
+            if (Op == null && context.AssignExpr is XSharpParser.BinaryExpressionContext)
+            {
+                var bin = context.AssignExpr as XSharpParser.BinaryExpressionContext;
+                Op = bin.Op;
+            }
+            if (Op == null && context.AssignExpr is XSharpParser.AssignmentExpressionContext)
+            {
+                var ass = context.AssignExpr as XSharpParser.AssignmentExpressionContext;
+                Op = ass.Op;
+            }
+
+            if (Op != null && Op.Type != XSharpLexer.ASSIGN_OP)
+            {
+                var err = ErrorCode.ERR_UnexpectedToken;
+                IToken anchor = Op;
+                var errdata = new ParseErrorData(anchor, err, "'"+Op.Text+ "' (':=' expected)");
+                _parseErrors.Add(errdata);
+
+            }
         }
         public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
         {
@@ -100,6 +159,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitBlockStmt([NotNull] XSharpParser.BlockStmtContext context)
         {
             checkMissingKeyword(context.e, context, "END [" + context.Key.Text + "]");
+        }
+
+
+        public override void ExitMethodCall([NotNull] XSharpParser.MethodCallContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitBoundMethodCall([NotNull] XSharpParser.BoundMethodCallContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+
+        public override void ExitCtorCall([NotNull] XSharpParser.CtorCallContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitObjectinitializer([NotNull] XSharpParser.ObjectinitializerContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitCollectioninitializer([NotNull] XSharpParser.CollectioninitializerContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitIif([NotNull] XSharpParser.IifContext context)
+        {
+            checkMissingToken(context.l, context.r, context);
+        }
+        public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
+        {
+            if (context.Left != null && context.Right == null)
+            {
+                var err = ErrorCode.ERR_SyntaxError;
+                IToken anchor = context.Stop;
+                if (anchor == null)
+                    anchor = context.Start;
+                var errdata = new ParseErrorData(anchor, err, "Expression after '"+context.Op.Text+"' operator");
+                _parseErrors.Add(errdata);
+            }
+        }
+        public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
+        {
+            if (context.Token.Type == XSharpLexer.INCOMPLETE_STRING_CONST)
+            {
+                var err = ErrorCode.ERR_UnterminatedStringLit;
+                IToken anchor = context.Stop;
+                if (anchor == null)
+                    anchor = context.Start;
+                var errdata = new ParseErrorData(anchor, err);
+                _parseErrors.Add(errdata);
+
+            }
         }
     }
 }

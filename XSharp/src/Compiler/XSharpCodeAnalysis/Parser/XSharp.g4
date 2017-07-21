@@ -446,8 +446,8 @@ statement           : Decl=localdecl                                            
                     | NOP  end=eos												#nopStmt
                     | FOR
                         ( AssignExpr=expression
-                        | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier ASSIGN_OP Expr=expression
-                        | ForDecl=LOCAL ForIter=identifier ASSIGN_OP Expr=expression (AS Type=datatype)?
+                        | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=(ASSIGN_OP|EQ) Expr=expression
+                        | ForDecl=LOCAL ForIter=identifier Op=(ASSIGN_OP|EQ) Expr=expression (AS Type=datatype)?
                         )
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
@@ -613,41 +613,39 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
 
-expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember			// member access The ? is new
-                    | Expr=expression LPAREN                       RPAREN	#methodCall				// method call, no params
-                    | Expr=expression LPAREN ArgList=argumentList  RPAREN	#methodCall				// method call, with params
-                    | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess		// Array element access
-                    | Left=expression Op=QMARK Right=boundExpression			#condAccessExpr			// expr ? expr
-                    | LPAREN Type=datatype RPAREN Expr=expression			#typeCast			    // (typename) expr
-                    | Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
-                    | Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
-                    | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
-                      Expr=expression											#prefixExpression		// +/-/~/&/++/-- expr
-                    | Expr=expression Op=IS Type=datatype						#typeCheckExpression	// expr IS typeORid
-                    | Expr=expression Op=ASTYPE Type=datatype					#typeCheckExpression	// expr AS TYPE typeORid
-                    | Left=expression Op=EXP Right=expression					#binaryExpression		// expr ^ expr
-                    | Left=expression Op=(MULT | DIV | MOD) Right=expression	#binaryExpression		// expr * expr
-                    | Left=expression Op=(PLUS | MINUS) Right=expression		#binaryExpression		// expr +/- expr
-                    | Left=expression Op=LSHIFT Right=expression				#binaryExpression		// expr << expr (shift)
-                    | Left=expression Op=GT	Gt=GT Right=expression				#binaryExpression		// expr >> expr (shift)
-                    | Left=expression
-                      Op=( LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ | NEQ2)
-                      Right=expression											#binaryExpression		// expr >= expr (relational)
-                    | Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
-                    | Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
-                    | Left=expression Op=PIPE Right=expression					#binaryExpression		// expr | expr (bitwise or)
-                    | Op=(LOGIC_NOT|NOT) Expr=expression						#prefixExpression		// .not. expr (logical not)  also  !
-                    | Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and) also &&
-                    | Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor)
-                    | Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)  also ||
-                    | Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr
+expression			: Expr=expression Op=(DOT | COLON) Name=simpleName				#accessMember			// member access The ? is new
+                    | Expr=expression l=LPAREN                       r=RPAREN		#methodCall			// method call, no params
+                    | Expr=expression l=LPAREN ArgList=argumentList  r=RPAREN?		#methodCall			// method call, params
+                    | Expr=expression l=LBRKT ArgList=bracketedArgumentList r=RBRKT #arrayAccess		// Array element access
+                    | Left=expression Op=QMARK Right=boundExpression				#condAccessExpr			// expr ? expr
+                    | LPAREN Type=datatype RPAREN Expr=expression					#typeCast			    // (typename) expr
+                    | Expr=expression Op=(INC | DEC)								#postfixExpression		// expr ++/--
+                    | Op=AWAIT Expr=expression										#awaitExpression		// AWAIT expr
+                    | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression	#prefixExpression		// +/-/~/&/++/-- expr
+                    | Expr=expression Op=IS Type=datatype							#typeCheckExpression	// expr IS typeORid
+                    | Expr=expression Op=ASTYPE Type=datatype						#typeCheckExpression	// expr AS TYPE typeORid
+                    | Left=expression Op=EXP Right=expression						#binaryExpression		// expr ^ expr
+                    | Left=expression Op=(MULT | DIV | MOD) Right=expression?		#binaryExpression		// expr * expr
+                    | Left=expression Op=(PLUS | MINUS) Right=expression?			#binaryExpression		// expr +/- expr
+                    | Left=expression Op=LSHIFT Right=expression					#binaryExpression		// expr << expr (shift)
+                    | Left=expression Op=GT	Gt=GT Right=expression					#binaryExpression		// expr >> expr (shift)
+                    | Left=expression Op=( LT | LTE | GT | GTE | EQ | EEQ | 
+										  SUBSTR | NEQ | NEQ2) Right=expression		#binaryExpression		// expr >= expr (relational)
+                    | Left=expression Op=AMP Right=expression						#binaryExpression		// expr & expr (bitwise and)
+                    | Left=expression Op=TILDE Right=expression						#binaryExpression		// expr ~ expr (bitwise xor)
+                    | Left=expression Op=PIPE Right=expression						#binaryExpression		// expr | expr (bitwise or)
+                    | Op=(LOGIC_NOT|NOT) Expr=expression							#prefixExpression		// .not. expr (logical not)  also  !
+                    | Left=expression Op=(LOGIC_AND | AND) Right=expression			#binaryExpression		// expr .and. expr (logical and) also &&
+                    | Left=expression Op=LOGIC_XOR Right=expression					#binaryExpression		// expr .xor. expr (logical xor)
+                    | Left=expression Op=(LOGIC_OR | OR) Right=expression			#binaryExpression		// expr .or. expr (logical or)  also ||
+                    | Left=expression Op=DEFAULT Right=expression					#binaryExpression		// expr DEFAULT expr
                     | <assoc=right> Left=expression
                       Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP
                             | ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
                             | ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
                             | ASSIGN_RSHIFT | ASSIGN_XOR )
-                      Right=expression											#assignmentExpression	// expr := expr, also expr += expr etc.
-                    | Expr=primary												#primaryExpression
+                      Right=expression												#assignmentExpression	// expr := expr, also expr += expr etc.
+                    | Expr=primary													#primaryExpression
                     ;
 
                     // Primary expressions
@@ -660,45 +658,45 @@ primary				: Key=SELF													#selfExpression
                     | AnoExpr=anonymousMethodExpression 						#codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
                     | Query=linqQuery											#queryExpression        // LINQ
                     | Type=datatype LCURLY Obj=expression COMMA
-                      ADDROF Func=name LPAREN RPAREN RCURLY					#delegateCtorCall		// delegate{ obj , @func() }
-                    | Type=datatype LCURLY RCURLY Init=objectOrCollectioninitializer?	#ctorCall		// id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | Type=datatype LCURLY ArgList=argumentList  RCURLY	#ctorCall				// id{ expr [, expr...] }
-                    | ch=CHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// checked( expression )
-                    | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN		#checkedExpression		// unchecked( expression )
+                      ADDROF Func=name LPAREN RPAREN RCURLY						#delegateCtorCall		// delegate{ obj , @func() }
+                    | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?	#ctorCall		// id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
+                    | Type=datatype l=LCURLY ArgList=argumentList  r=RCURLY?	#ctorCall				// id{ expr [, expr...] }
+                    | ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
+                    | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
                     | DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// default( typeORid )
                     | Name=simpleName											#nameExpression			// generic name
-                    | Type=nativeType LPAREN Expr=expression RPAREN			#voConversionExpression	// nativetype( expr )
-                    | XType=xbaseType LPAREN Expr=expression RPAREN			#voConversionExpression	// xbaseType( expr )
+                    | Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
+                    | XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
                     | Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// nativetype(_CAST, expr )
                     | XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// xbaseType(_CAST, expr )
-                    | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN	#voCastPtrExpression	// PTR( typeName, expr )
+                    | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
 					| Name=voTypeName											#voTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
                     | Type=typeName											    #typeExpression			// Standard DotNet Types
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
-                      (COMMA Exprs+=expression)* RPAREN						#intrinsicExpression	// _Or(expr, expr, expr)
+                      (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
                     | FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
                           Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME
                     | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr
-                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression  #aliasedExpr            // (expr) -> expr
-                    | AMP LPAREN Expr=expression RPAREN					#macro					// &( expr )
+                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression		#aliasedExpr            // (expr) -> expr
+                    | AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
                     | AMP Id=identifierName										#macro					// &id
-                    | LPAREN Expr=expression RPAREN							#parenExpression		// ( expr )
+                    | LPAREN Expr=expression RPAREN								#parenExpression		// ( expr )
 					| Key=ARGLIST												#argListExpression		// __ARGLIST
                     ;
 
 boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#boundAccessMember		// member access The ? is new
-                    | Expr=boundExpression LPAREN						RPAREN	#boundMethodCall		// method call, no params
-                    | Expr=boundExpression LPAREN ArgList=argumentList  RPAREN	#boundMethodCall		// method call, with params
+                    | Expr=boundExpression l=LPAREN						 r=RPAREN	#boundMethodCall	// method call, no params
+                    | Expr=boundExpression l=LPAREN ArgList=argumentList r=RPAREN?	#boundMethodCall	// method call, with params
                     | Expr=boundExpression
-                      LBRKT ArgList=bracketedArgumentList RBRKT			#boundArrayAccess		// Array element access
+                      LBRKT ArgList=bracketedArgumentList RBRKT					#boundArrayAccess		// Array element access
                     | <assoc=right> Left=boundExpression
                       Op=QMARK Right=boundExpression							#boundCondAccessExpr	// expr ? expr
                     | Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
-                    | LBRKT ArgList=bracketedArgumentList RBRKT			#bindArrayAccess
+                    | LBRKT ArgList=bracketedArgumentList RBRKT					#bindArrayAccess
                     ;
 
 // Initializers
@@ -707,7 +705,7 @@ objectOrCollectioninitializer :	ObjInit=objectinitializer
                               | CollInit=collectioninitializer
                               ;
 
-objectinitializer		: LCURLY (Members+=memberinitializer (COMMA Members+=memberinitializer)*)? RCURLY
+objectinitializer		: l=LCURLY (Members+=memberinitializer (COMMA Members+=memberinitializer)*)? r=RCURLY?
 						;
 
 memberinitializer		: Name=identifierName ASSIGN_OP Expr=initializervalue
@@ -717,7 +715,7 @@ initializervalue		: Init=objectOrCollectioninitializer // Put this first to make
 						| Expr=expression
 						;
 
-collectioninitializer	: LCURLY Members+=expression (COMMA Members+=expression)* RCURLY
+collectioninitializer	: l=LCURLY Members+=expression (COMMA Members+=expression)* r=RCURLY?
 						;
 
 bracketedArgumentList	: Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
@@ -738,7 +736,7 @@ namedArgument		// NOTE: Expression is optional so we can skip arguments for VO/V
                     ;
 
 
-iif					: (IIF|IF) LPAREN Cond=expression COMMA TrueExpr=expression? COMMA FalseExpr=expression? RPAREN
+iif					: (IIF|IF) l=LPAREN Cond=expression COMMA TrueExpr=expression? COMMA FalseExpr=expression? r=RPAREN?
                     ;
 
 nameDot				: Left=nameDot Right=simpleName DOT								#qualifiedNameDot

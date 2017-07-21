@@ -19,7 +19,7 @@ namespace XSharpModel
     public class SystemTypeController
     {
         static ConcurrentDictionary<String, AssemblyInfo> assemblies;
-        static Assembly mscorlib ;
+        static Assembly mscorlib;
 
         static SystemTypeController()
         {
@@ -72,7 +72,7 @@ namespace XSharpModel
                 assembly = new AssemblyInfo(cFileName, DateTime.MinValue);
                 assemblies.TryAdd(cFileName, assembly);
             }
-            if (cFileName.EndsWith("mscorlib.dll",StringComparison.OrdinalIgnoreCase))
+            if (cFileName.EndsWith("mscorlib.dll", StringComparison.OrdinalIgnoreCase))
             {
                 mscorlib = assembly.Assembly;
             }
@@ -83,7 +83,7 @@ namespace XSharpModel
             if (Path.GetFileName(cFileName).ToLower() == "system.dll")
             {
                 var mscorlib = Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll");
-                if (! assemblies.ContainsKey(mscorlib) && File.Exists(mscorlib))
+                if (!assemblies.ContainsKey(mscorlib) && File.Exists(mscorlib))
                 {
                     LoadAssembly(mscorlib);
                 }
@@ -106,7 +106,7 @@ namespace XSharpModel
             if (typeName.EndsWith(">"))
             {
                 bool nested = typeName.Length > typeName.Replace(">", "").Length + 1;
-                if (! nested)
+                if (!nested)
                 {
                     string[] elements = typeName.Split("<,>".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     typeName = elements[0] + "`" + (elements.Length - 1).ToString();
@@ -117,7 +117,7 @@ namespace XSharpModel
                     int pos = typeName.IndexOf("<");
                     string baseName = typeName.Substring(0, pos);
                     // remove the outer "<" and ">", so we have String, Tuple<int, int> left
-                    string typeParams = typeName.Substring(pos +1);
+                    string typeParams = typeName.Substring(pos + 1);
                     typeParams = typeParams.Substring(0, typeParams.Length - 1).Trim();
                     pos = typeParams.IndexOf("<");
                     while (pos >= 0)
@@ -133,27 +133,36 @@ namespace XSharpModel
                     typeName = baseName + "`" + elements.Length.ToString();
                 }
             }
-            Type result = Lookup(typeName,assemblies);
+            Type result = Lookup(typeName, assemblies);
             if (result != null)
                 return result;
             // try to find with explicit usings
-            foreach (var name in usings)
+            if (usings != null)
             {
-                var fullname = name + "." + typeName;
-                result = Lookup(fullname, assemblies);
-                if (result != null)
-                    return result;
-            }
-            // try to find with implicit namespaces
-            foreach (var asm in assemblies)
-            {
-                foreach (var ns in asm.ImplicitNamespaces)
+                foreach (var name in usings)
                 {
-                    var fullname = ns + "." + typeName;
+                    var fullname = name + "." + typeName;
                     result = Lookup(fullname, assemblies);
                     if (result != null)
                         return result;
+                }
+            }
+            // try to find with implicit namespaces
+            if (assemblies != null)
+            {
+                foreach (var asm in assemblies)
+                {
+                    if (asm.ImplicitNamespaces != null)
+                    {
+                        foreach (var ns in asm.ImplicitNamespaces)
+                        {
+                            var fullname = ns + "." + typeName;
+                            result = Lookup(fullname, assemblies);
+                            if (result != null)
+                                return result;
 
+                        }
+                    }
                 }
             }
             return null;
@@ -193,7 +202,7 @@ namespace XSharpModel
             return sType;
         }
 
-        public ImmutableList<String> GetNamespaces (IList<AssemblyInfo> assemblies)
+        public ImmutableList<String> GetNamespaces(IList<AssemblyInfo> assemblies)
         {
             List<string> result = new List<string>();
             //

@@ -20,6 +20,22 @@ namespace XSharp.Project.OptionsPages
             set { completionListTabs = value; }
         }
 
+        // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
+        private int keywordCase = 1;
+        public int KeywordCase
+        {
+            get { return keywordCase; }
+            set { keywordCase = value; }
+        }
+
+        private bool identifierCase = true;
+        public bool IdentifierCase
+        {
+            get { return identifierCase; }
+            set { identifierCase = value; }
+        }
+
+
         protected override IWin32Window Window
         {
             get

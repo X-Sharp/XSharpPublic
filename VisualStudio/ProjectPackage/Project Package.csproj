@@ -232,6 +232,8 @@
     <Compile Include="Editors\PeekDefinition\XSharpDefinitionPeekItem.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemSource.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemProvider.cs" />
+    <Compile Include="Editors\SmartIndent\SmartIndent.cs" />
+    <Compile Include="Editors\SmartIndent\SmartIndentProvider.cs" />
     <Compile Include="Editors\XSharpCompletionSource_Partial.cs" />
     <Compile Include="Editors\XSharpErrorColorizer.cs" />
     <Compile Include="Editors\XSharpQuickInfo.cs" />

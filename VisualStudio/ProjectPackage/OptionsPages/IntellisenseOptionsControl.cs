@@ -21,13 +21,54 @@ namespace XSharp.Project.OptionsPages
         internal void Initialize()
         {
             chkCompletionListtabs.Checked = optionsPage.CompletionListTabs;
-            grpCase.Enabled = false;
+            grpCase.Enabled = true;
+            switch (optionsPage.KeywordCase)
+            {
+                case 1:
+                    rbUpper.Checked = true;
+                    break;
+                case 2:
+                    rbLower.Checked = true;
+                    break;
+                case 3:
+                    rbTitle.Checked = true;
+                    break;
+                default:
+                    rbNone.Checked = true;
+                    break;
+
+            }
         }
 
 
         private void chkCompletionListtabs_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.CompletionListTabs = chkCompletionListtabs.Checked;
+        }
+
+        private void kwCaseChanged(object sender, EventArgs e)
+        {
+            if (rbNone.Checked)
+            {
+                optionsPage.KeywordCase = 0;
+            }
+            else if (rbUpper.Checked)
+            {
+                optionsPage.KeywordCase = 1;
+            }
+            else if (rbLower.Checked)
+            {
+                optionsPage.KeywordCase = 2;
+            }
+            else if (rbTitle.Checked)
+            {
+                optionsPage.KeywordCase = 3;
+            }
+        }
+
+        private void chkIdentifierCase_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.IdentifierCase = chkIdentifierCase.Checked;
         }
     }
 }

@@ -26,5 +26,6 @@ namespace XSharp.Project
             var projectitem = dte.Solution.FindProjectItem(filename);
             return projectitem;
         }
+
     }
 }

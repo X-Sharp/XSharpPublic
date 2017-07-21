@@ -31,12 +31,13 @@
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
             this.grpCase = new System.Windows.Forms.GroupBox();
+            this.grpKeywordCase = new System.Windows.Forms.GroupBox();
             this.rbNone = new System.Windows.Forms.RadioButton();
             this.rbUpper = new System.Windows.Forms.RadioButton();
             this.rbLower = new System.Windows.Forms.RadioButton();
-            this.lblKeywordCase = new System.Windows.Forms.Label();
             this.chkIdentifierCase = new System.Windows.Forms.CheckBox();
-            this.grpKeywordCase = new System.Windows.Forms.GroupBox();
+            this.lblKeywordCase = new System.Windows.Forms.Label();
+            this.rbTitle = new System.Windows.Forms.RadioButton();
             this.grpCompletionListTabs.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.grpKeywordCase.SuspendLayout();
@@ -75,47 +76,53 @@
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Case Synchronization";
             // 
+            // grpKeywordCase
+            // 
+            this.grpKeywordCase.Controls.Add(this.rbTitle);
+            this.grpKeywordCase.Controls.Add(this.rbNone);
+            this.grpKeywordCase.Controls.Add(this.rbUpper);
+            this.grpKeywordCase.Controls.Add(this.rbLower);
+            this.grpKeywordCase.Location = new System.Drawing.Point(218, 10);
+            this.grpKeywordCase.Name = "grpKeywordCase";
+            this.grpKeywordCase.Size = new System.Drawing.Size(237, 36);
+            this.grpKeywordCase.TabIndex = 1;
+            this.grpKeywordCase.TabStop = false;
+            // 
             // rbNone
             // 
             this.rbNone.AutoSize = true;
-            this.rbNone.Location = new System.Drawing.Point(19, 12);
+            this.rbNone.Location = new System.Drawing.Point(6, 12);
             this.rbNone.Name = "rbNone";
             this.rbNone.Size = new System.Drawing.Size(51, 17);
             this.rbNone.TabIndex = 0;
             this.rbNone.TabStop = true;
             this.rbNone.Text = "&None";
             this.rbNone.UseVisualStyleBackColor = true;
+            this.rbNone.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
             // 
             // rbUpper
             // 
             this.rbUpper.AutoSize = true;
-            this.rbUpper.Location = new System.Drawing.Point(80, 12);
+            this.rbUpper.Location = new System.Drawing.Point(59, 12);
             this.rbUpper.Name = "rbUpper";
-            this.rbUpper.Size = new System.Drawing.Size(93, 17);
+            this.rbUpper.Size = new System.Drawing.Size(62, 17);
             this.rbUpper.TabIndex = 1;
             this.rbUpper.TabStop = true;
-            this.rbUpper.Text = "&UPPER CASE";
+            this.rbUpper.Text = "&UPPER";
             this.rbUpper.UseVisualStyleBackColor = true;
+            this.rbUpper.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
             // 
             // rbLower
             // 
             this.rbLower.AutoSize = true;
-            this.rbLower.Location = new System.Drawing.Point(180, 12);
+            this.rbLower.Location = new System.Drawing.Point(127, 12);
             this.rbLower.Name = "rbLower";
-            this.rbLower.Size = new System.Drawing.Size(76, 17);
+            this.rbLower.Size = new System.Drawing.Size(50, 17);
             this.rbLower.TabIndex = 2;
             this.rbLower.TabStop = true;
-            this.rbLower.Text = "&lower case";
+            this.rbLower.Text = "&lower";
             this.rbLower.UseVisualStyleBackColor = true;
-            // 
-            // lblKeywordCase
-            // 
-            this.lblKeywordCase.AutoSize = true;
-            this.lblKeywordCase.Location = new System.Drawing.Point(13, 21);
-            this.lblKeywordCase.Name = "lblKeywordCase";
-            this.lblKeywordCase.Size = new System.Drawing.Size(153, 13);
-            this.lblKeywordCase.TabIndex = 0;
-            this.lblKeywordCase.Text = "&Keyword Case Synchronization";
+            this.rbLower.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
             // 
             // chkIdentifierCase
             // 
@@ -126,17 +133,28 @@
             this.chkIdentifierCase.TabIndex = 2;
             this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
             this.chkIdentifierCase.UseVisualStyleBackColor = true;
+            this.chkIdentifierCase.CheckedChanged += new System.EventHandler(this.chkIdentifierCase_CheckedChanged);
             // 
-            // grpKeywordCase
+            // lblKeywordCase
             // 
-            this.grpKeywordCase.Controls.Add(this.rbNone);
-            this.grpKeywordCase.Controls.Add(this.rbUpper);
-            this.grpKeywordCase.Controls.Add(this.rbLower);
-            this.grpKeywordCase.Location = new System.Drawing.Point(198, 10);
-            this.grpKeywordCase.Name = "grpKeywordCase";
-            this.grpKeywordCase.Size = new System.Drawing.Size(257, 36);
-            this.grpKeywordCase.TabIndex = 1;
-            this.grpKeywordCase.TabStop = false;
+            this.lblKeywordCase.AutoSize = true;
+            this.lblKeywordCase.Location = new System.Drawing.Point(13, 21);
+            this.lblKeywordCase.Name = "lblKeywordCase";
+            this.lblKeywordCase.Size = new System.Drawing.Size(153, 13);
+            this.lblKeywordCase.TabIndex = 0;
+            this.lblKeywordCase.Text = "&Keyword Case Synchronization";
+            // 
+            // rbTitle
+            // 
+            this.rbTitle.AutoSize = true;
+            this.rbTitle.Location = new System.Drawing.Point(183, 12);
+            this.rbTitle.Name = "rbTitle";
+            this.rbTitle.Size = new System.Drawing.Size(45, 17);
+            this.rbTitle.TabIndex = 3;
+            this.rbTitle.TabStop = true;
+            this.rbTitle.Text = "&Title";
+            this.rbTitle.UseVisualStyleBackColor = true;
+            this.rbTitle.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
             // 
             // IntellisenseOptionsControl
             // 
@@ -166,5 +184,6 @@
         private System.Windows.Forms.RadioButton rbLower;
         private System.Windows.Forms.CheckBox chkIdentifierCase;
         private System.Windows.Forms.Label lblKeywordCase;
+        private System.Windows.Forms.RadioButton rbTitle;
     }
 }

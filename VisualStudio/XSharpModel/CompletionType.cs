@@ -55,7 +55,7 @@ namespace XSharpModel
             if (element is XType)
             {
                 this._xtype = (XType)element;
-                
+
             }
             else
             {
@@ -102,13 +102,6 @@ namespace XSharpModel
             }
         }
 
-        public CompletionType(String typeName, IReadOnlyList<String> usings, XFile file)
-        {
-            _file = file;
-            CheckSystemType(typeName, usings);
-        }
-
- 
         public CompletionType(String typeName, XFile xFile, string defaultNS)
         {
             CheckType(typeName, xFile, defaultNS);
@@ -273,16 +266,25 @@ namespace XSharpModel
         {
             get
             {
+                //
                 if (_stype != null)
                     return new CompletionType(_stype.BaseType);
                 if (_xtype != null)
                 {
+
                     if (_xtype.Parent != null)
                         return new CompletionType(_xtype.Parent);
                     if (_xtype.ParentName != null)
-                        return new CompletionType(_xtype.ParentName, null, _xtype.File);
+                    {
+                        string defaultNS = "";
+                        if (!String.IsNullOrEmpty(_xtype.NameSpace))
+                        {
+                            defaultNS = _xtype.NameSpace;
+                        }
+                        return new CompletionType(_xtype.ParentName, _xtype.File, defaultNS);
+                    }
                 }
-                return new CompletionType("System.Object",null, "");
+                return new CompletionType("System.Object", null, "");
             }
         }
 

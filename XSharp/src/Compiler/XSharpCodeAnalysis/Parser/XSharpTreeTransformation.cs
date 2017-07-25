@@ -1958,7 +1958,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 GlobalEntities.Externs.Add(_syntaxFactory.ExternAliasDirective(
                     SyntaxFactory.MissingToken(dirs.ToListNode(), SyntaxKind.ExternKeyword, null),
                     SyntaxFactory.MissingToken(SyntaxKind.AliasKeyword),
-                    SyntaxFactory.Identifier("XS$dummy"),
+                    SyntaxFactory.Identifier(XSharpSpecialNames.ScriptDummy),
                     SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)
                     ));
                 _pool.Free(dirs);

@@ -629,7 +629,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
             MemVarFieldInfo fieldInfo = null;
             if (CurrentEntity != null)
+            {
                 fieldInfo = CurrentEntity.Data.GetField(Name);
+            }
             if (fieldInfo != null)
             {
                 if (fieldInfo.IsField)
@@ -699,20 +701,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expression.Put<ExpressionSyntax>(initializer);
             }
             base.VisitLocalvar(context);
-        }
-
-        public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
-        {
-            // declare memvars
-            context.SetSequencePoint(context.end);
-            if (context.T.Type == XP.MEMVAR)
-            {
-                foreach (var memvar in context._Vars)
-                {
-                    CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
-                }
-
-            }
         }
 
         public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
@@ -930,7 +918,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax type = context.Type?.Get<TypeSyntax>();
             if (type == null)
             {
-                if (CurrentEntity.Data.HasTypedParameter && _options.VOUntypedAllowed)
+                if (CurrentEntity != null && CurrentEntity.Data.HasTypedParameter && _options.VOUntypedAllowed)
                     type = _usualType;
                 else
                     type = _getMissingType();
@@ -1043,9 +1031,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCallingconvention([NotNull] XP.CallingconventionContext context)
         {
             // TODO nvk (calling convention is silently ignored for now)
-            if (context.Convention.Type == XP.CLIPPER && context.Parent == CurrentEntity)
+            if (CurrentEntity != null)
             {
-                CurrentEntity.Data.HasClipperCallingConvention = true;
+                if (context.Convention.Type == XP.CLIPPER && context.Parent == CurrentEntity)
+                {
+                    CurrentEntity.Data.HasClipperCallingConvention = true;
+                }
             }
             base.ExitCallingconvention(context);
         }
@@ -1254,7 +1245,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 XP.NameExpressionContext namecontext = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.NameExpressionContext;
                 string name = namecontext.Name.GetText();
-                var fieldInfo = CurrentEntity.Data.GetField(name);
+                MemVarFieldInfo fieldInfo = null;
+                if (CurrentEntity != null)
+                {
+                    fieldInfo = CurrentEntity.Data.GetField(name);
+                }
                 if (fieldInfo != null)
                 {
                     ExpressionSyntax expr;
@@ -1285,27 +1280,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                     else
+                    {
                         if (context.Op.Type == XP.ASSIGN_OP)
-                    {
-                        expr = GenerateMemVarPut(fieldInfo.Name, right);
-                    }
-                    else
-                    {
-                        var op = context.Op.ComplexToSimpleBinaryOp();
-                        var token = context.Op.ComplexToSimpleToken();
-                        if (op == SyntaxKind.EmptyStatement)
                         {
                             expr = GenerateMemVarPut(fieldInfo.Name, right);
-                            expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
                         }
                         else
                         {
+                            var op = context.Op.ComplexToSimpleBinaryOp();
+                            var token = context.Op.ComplexToSimpleToken();
+                            if (op == SyntaxKind.EmptyStatement)
+                            {
+                                expr = GenerateMemVarPut(fieldInfo.Name, right);
+                                expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                            }
+                            else
+                            {
 
-                            // NAME+= 1 gets converted to MemVarPut("Name", MemVarGet("Name") + 1)
-                            // left already has the MemVarGet
-                            // MemVarPut( "Name", __MemVarGet("Name") + 1)
-                            expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                            expr = GenerateMemVarPut(fieldInfo.Name, expr);
+                                // NAME+= 1 gets converted to MemVarPut("Name", MemVarGet("Name") + 1)
+                                // left already has the MemVarGet
+                                // MemVarPut( "Name", __MemVarGet("Name") + 1)
+                                expr = _syntaxFactory.BinaryExpression(op, left, token, right);
+                                expr = GenerateMemVarPut(fieldInfo.Name, expr);
+                            }
                         }
                     }
                     context.Put(expr);
@@ -1696,86 +1693,89 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr?.Get<ExpressionSyntax>();
             // when / vo9 is enabled then add missing Expression
             var ent = CurrentEntity;
-            if (context.Void != null && !ent.Data.MustBeVoid)
+            if (ent != null)
             {
-                expr = GenerateLiteral(0);
-            }
-            if (expr == null && _options.VOAllowMissingReturns && !ent.Data.MustBeVoid)
-            {
-                if (ent is XP.MethodContext || ent is XP.FunctionContext || ent is XP.PropertyAccessorContext)
+                if (context.Void != null && !ent.Data.MustBeVoid)
                 {
-                    TypeSyntax dataType;
-                    if (ent.Data.HasMissingReturnType)
+                    expr = GenerateLiteral(0);
+                }
+                if (expr == null && _options.VOAllowMissingReturns && !ent.Data.MustBeVoid)
+                {
+                    if (ent is XP.MethodContext || ent is XP.FunctionContext || ent is XP.PropertyAccessorContext)
                     {
-                        dataType = _getMissingType();
-                    }
-                    else
-                    {
-                        if (ent is XP.MethodContext)
-                            dataType = ((XP.MethodContext)ent).Type.Get<TypeSyntax>();
-                        else if (ent is XP.FunctionContext)
-                            dataType = ((XP.FunctionContext)ent).Type.Get<TypeSyntax>();
-                        else if (ent is XP.PropertyAccessorContext)
-                            dataType = ((XP.PropertyContext)ent.Parent).Type.Get<TypeSyntax>();
-                        else
-                            dataType = _getMissingType();
-                    }
-                    if (dataType != _voidType)
-                    {
-                        // calculate a new return value with a warning
-                        expr = GetReturnExpression(dataType);
-                        if (expr != null)
+                        TypeSyntax dataType;
+                        if (ent.Data.HasMissingReturnType)
                         {
-                            expr = expr.WithAdditionalDiagnostics(
-                                                new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
+                            dataType = _getMissingType();
+                        }
+                        else
+                        {
+                            if (ent is XP.MethodContext)
+                                dataType = ((XP.MethodContext)ent).Type.Get<TypeSyntax>();
+                            else if (ent is XP.FunctionContext)
+                                dataType = ((XP.FunctionContext)ent).Type.Get<TypeSyntax>();
+                            else if (ent is XP.PropertyAccessorContext)
+                                dataType = ((XP.PropertyContext)ent.Parent).Type.Get<TypeSyntax>();
+                            else
+                                dataType = _getMissingType();
+                        }
+                        if (dataType != _voidType)
+                        {
+                            // calculate a new return value with a warning
+                            expr = GetReturnExpression(dataType);
+                            if (expr != null)
+                            {
+                                expr = expr.WithAdditionalDiagnostics(
+                                                    new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
+                            }
                         }
                     }
                 }
-            }
-            if (ent.Data.MustBeVoid && expr != null)
-            {
-                // we cannot simply create an expression statement. Some expressions are not allowed as statement
-                // for example
-                // RETURN SELF:Field
-                // We change that to
-                // VAR Xs$Return := SELF:Field
-                // RETURN
+                if (ent.Data.MustBeVoid && expr != null)
+                {
+                    // we cannot simply create an expression statement. Some expressions are not allowed as statement
+                    // for example
+                    // RETURN SELF:Field
+                    // We change that to
+                    // VAR Xs$Return := SELF:Field
+                    // RETURN
 
-                if (ent.Data.IsInitAxit && context.Expr is XP.PrimaryExpressionContext &&
-                    ((XP.PrimaryExpressionContext)context.Expr).Expr is XP.SelfExpressionContext)
-                {
-                    // allow return SELF and ignore SELF
-                    expr = null;
-                    context.Put(GenerateReturn(null));
-                }
-                else
-                {
-                    expr = expr.WithAdditionalDiagnostics(
-                                        new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
-                    if (context.Expr.GetLiteralToken() == null) // nor  literal so we must evaluate the expression
+                    if (ent.Data.IsInitAxit && context.Expr is XP.PrimaryExpressionContext &&
+                        ((XP.PrimaryExpressionContext)context.Expr).Expr is XP.SelfExpressionContext)
                     {
-                        var declstmt = GenerateLocalDecl(XSharpSpecialNames.ReturnName, _impliedType, expr);
-                        var retstmt = GenerateReturn(null);
-                        var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
-                        context.Put(block);
+                        // allow return SELF and ignore SELF
+                        expr = null;
+                        context.Put(GenerateReturn(null));
                     }
                     else
                     {
-                        var stmt = GenerateReturn(null);
-                        stmt = stmt.WithAdditionalDiagnostics(
-                                       new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
-                        context.Put(stmt);
+                        expr = expr.WithAdditionalDiagnostics(
+                                            new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
+                        if (context.Expr.GetLiteralToken() == null) // nor  literal so we must evaluate the expression
+                        {
+                            var declstmt = GenerateLocalDecl(XSharpSpecialNames.ReturnName, _impliedType, expr);
+                            var retstmt = GenerateReturn(null);
+                            var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
+                            context.Put(block);
+                        }
+                        else
+                        {
+                            var stmt = GenerateReturn(null);
+                            stmt = stmt.WithAdditionalDiagnostics(
+                                           new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
+                            context.Put(stmt);
+                        }
                     }
                 }
-            }
-            else
-            {
-                context.Put(GenerateReturn(expr));
+                else
+                {
+                    context.Put(GenerateReturn(expr));
+                }
             }
 
         }
         #endregion
- 
+
         #region Parameters
         private AttributeSyntax MakeDefaultParameter(ExpressionSyntax arg1, ExpressionSyntax arg2)
         {
@@ -2176,7 +2176,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case "PCOUNT":
                     case "_GETMPARAM":
                     case "_GETFPARAM":
-                        if (CurrentEntity.Data.HasClipperCallingConvention)
+                        if (CurrentEntity != null && CurrentEntity.Data.HasClipperCallingConvention)
                         {
                             if (GenerateClipCallFunc(context, name))
                                 return;
@@ -2555,13 +2555,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private void _GenerateString2Psz(XSharpParserRuleContext context, ExpressionSyntax expr)
         {
-            CurrentEntity.Data.UsesPSZ = true;
-            NameSyntax pszlist = GenerateSimpleName(XSharpSpecialNames.VoPszList);
-            var argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
-            expr = GenerateMethodCall(VulcanQualifiedFunctionNames.String2Psz, argList);
-            var args = MakeArgumentList(MakeArgument(expr));
-            expr = CreateObject(this._pszType, args);
-            context.Put(expr);
+            if (CurrentEntity != null )
+            {
+                CurrentEntity.Data.UsesPSZ = true;
+                NameSyntax pszlist = GenerateSimpleName(XSharpSpecialNames.VoPszList);
+                var argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
+                expr = GenerateMethodCall(VulcanQualifiedFunctionNames.String2Psz, argList);
+                var args = MakeArgumentList(MakeArgument(expr));
+                expr = CreateObject(this._pszType, args);
+                context.Put(expr);
+            }
         }
 
         private bool GenerateString2Psz(XP.MethodCallContext context, string name)
@@ -2644,7 +2647,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
                 }
                 context.Put(expr);
-                CurrentEntity.Data.UsesPCount = true;
+                if (CurrentEntity != null )
+                   CurrentEntity.Data.UsesPCount = true;
                 return true;
             }
             else
@@ -2658,7 +2662,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 // _GETMPARAM or _GETFPARAM
-                CurrentEntity.Data.UsesGetMParam = true;
+                if (CurrentEntity != null)
+                    CurrentEntity.Data.UsesGetMParam = true;
                 var indices = _pool.AllocateSeparated<ArgumentSyntax>();
                 indices.Add(MakeArgument(argList.Arguments[0].Expression));
 
@@ -2931,9 +2936,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string Alias = "";
             if (context.Alias != null)
                 Alias = context.Alias.GetText();
-            foreach (var field in context._Fields)
+            if (CurrentEntity != null)
             {
-                CurrentEntity.Data.AddField(field.Id.GetText(), Alias, true);
+                foreach (var field in context._Fields)
+                {
+                    CurrentEntity.Data.AddField(field.Id.GetText(), Alias, true);
+                }
             }
         }
 

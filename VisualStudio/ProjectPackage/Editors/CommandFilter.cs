@@ -281,7 +281,7 @@ namespace XSharp.Project
                             }
                             // Not none, and the tranfsform is not the same as the original
                             if ((kwCase != 0) && (String.Compare(transform, keyword) != 0))
-                                edit.Replace(kwSpan, keyword);
+                                edit.Replace(kwSpan, transform);
                         }
                     }
                     else if (name == "identifier")

@@ -6588,11 +6588,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoCastPtrExpression([NotNull] XP.VoCastPtrExpressionContext context)
         {
-            context.Put(MakeCastTo(
-                _syntaxFactory.PointerType(context.Type.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)),
-                _syntaxFactory.PrefixUnaryExpression(SyntaxKind.AddressOfExpression,
-                    SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
-                    context.Expr.Get<ExpressionSyntax>())));
+            if (context.Expr is XP.MethodCallContext)
+            {
+                var expr = GenerateLiteral(0).WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_PtrCastNotAllowed));
+                context.Put(expr);
+            }
+            else
+            {
+                context.Put(MakeCastTo(
+                    _syntaxFactory.PointerType(context.Type.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)),
+                    _syntaxFactory.PrefixUnaryExpression(SyntaxKind.AddressOfExpression,
+                        SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
+                        context.Expr.Get<ExpressionSyntax>())));
+            }
         }
 
         public override void ExitSizeOfExpression([NotNull] XP.SizeOfExpressionContext context)

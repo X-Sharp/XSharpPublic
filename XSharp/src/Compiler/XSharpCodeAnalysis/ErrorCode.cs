@@ -1568,7 +1568,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_LamdaExpressionWithPipes = 9058,
         ERR_CannotConvertArrayIndexAccess = 9059,
         ERR_CompoundAssignmentUsualAndFloat = 9060,
-
+        ERR_PtrCastNotAllowed = 9061,
         #endregion X#-only messages
     }
 }

@@ -5240,5 +5240,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CompoundAssignmentUsualAndFloat" xml:space="preserve">
     <value>A Compound Assignment (+= or -=) from a FLOAT and a USUAL is not supported because of an error in the Vulcan Runtime. Please change the expression to a simple assignment. For example F += U should become F := F + U.</value>
   </data>
-
+  <data name="ERR_PtrCastNotAllowed" xml:space="preserve">
+    <value>The "PTR(..) operation" is not allowed for method or function calls. If the method or function returns a pointer then consider using the (&lt;Type&gt; PTR) syntax instead.</value>
+  </data>
+  
 </root>

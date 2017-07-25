@@ -23,7 +23,6 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <Prefer32Bit>false</Prefer32Bit>

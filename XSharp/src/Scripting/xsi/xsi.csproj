@@ -19,7 +19,6 @@
     <Prefer32Bit>false</Prefer32Bit>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <RestorePackages>true</RestorePackages>

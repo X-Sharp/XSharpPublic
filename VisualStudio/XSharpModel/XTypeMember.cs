@@ -105,7 +105,20 @@ namespace XSharpModel
                 string desc = modVis;
                 //
                 if ( this.Kind != Kind.ClassVar )
-                    desc += this.Kind.ToString() + " ";
+                {
+                    if (this.Kind == Kind.VODefine)
+                    {
+                        desc += "Define" + " ";
+                    }
+                    else if (this.Kind == Kind.VOGlobal)
+                    {
+                        desc += "Global" + " ";
+                    }
+                    else
+                    {
+                        desc += this.Kind.ToString() + " ";
+                    }
+                }
                 desc += this.Prototype;
                 //
                 return desc;
@@ -134,7 +147,7 @@ namespace XSharpModel
                 //
                 if (this.Kind.HasReturnType())
                 {
-                    desc += " as " + this.TypeName;
+                    desc += " AS " + this.TypeName;
                 }
                 //
                 return desc;

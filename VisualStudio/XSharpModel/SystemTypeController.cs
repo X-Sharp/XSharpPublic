@@ -165,6 +165,12 @@ namespace XSharpModel
                     }
                 }
             }
+            // Also Check into the Functions Class for Globals/Defines/...
+            var functionsName = "Functions." + typeName;
+            result = Lookup(functionsName, assemblies);
+            if (result != null)
+                return result;
+            //
             return null;
         }
 

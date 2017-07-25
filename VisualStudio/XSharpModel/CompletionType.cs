@@ -173,12 +173,15 @@ namespace XSharpModel
                 if (xType == null)
                 {
                     // Search using the USING statements in the File that contains the var
-                    foreach (string usingStatement in usings)
+                    if (usings != null)
                     {
-                        String fqn = usingStatement + "." + typeName;
-                        xType = xprj.LookupFullName(fqn, true);
-                        if (xType != null)
-                            break;
+                        foreach (string usingStatement in usings)
+                        {
+                            String fqn = usingStatement + "." + typeName;
+                            xType = xprj.LookupFullName(fqn, true);
+                            if (xType != null)
+                                break;
+                        }
                     }
                 }
             }

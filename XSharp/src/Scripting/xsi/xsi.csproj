@@ -48,12 +48,12 @@
       <Name>csc</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Compiler\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
-      <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
+    <ProjectReference Include="..\..\Compiler\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
+      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
       <Name>XSharpCodeAnalysis</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharpScripting\XSharpScripting.csproj">
-      <Project>{6D1A434C-920C-4D9D-85A9-8A56C7061A1C}</Project>
+      <Project>{014963ae-d6d1-4ff8-8d8a-8d417f5d8d1f}</Project>
       <Name>XSharpScripting</Name>
     </ProjectReference>
   </ItemGroup>

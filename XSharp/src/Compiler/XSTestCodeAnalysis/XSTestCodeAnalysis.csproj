@@ -4,7 +4,6 @@
   <PropertyGroup>
     <!-- Roslyn analyzers disabled because of dependency problems that generate strange build errors-->
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
-  
     <RoslynProjectType>Custom</RoslynProjectType>
     <AssemblyVersion>1.0.1.0</AssemblyVersion>
     <ForceGenerationOfBindingRedirects>true</ForceGenerationOfBindingRedirects>
@@ -73,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
-      <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
+      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
       <Name>XSharpCodeAnalysis</Name>
     </ProjectReference>
   </ItemGroup>

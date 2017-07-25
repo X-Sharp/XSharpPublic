@@ -603,6 +603,8 @@ namespace XSharpModel
                 case Kind.Operator:
                 case Kind.Parameter:
                 case Kind.Local:
+                case Kind.VOGlobal:
+                case Kind.VODefine:
                     return true;
             }
             return false;

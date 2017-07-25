@@ -4909,7 +4909,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 varType.XVoIsDecl = true;
             }
-            if (isDim)
+            if (isDim && CurrentEntity != null)
             {
                 CurrentEntity.Data.HasDimVar = true;
                 if (initExpr == null)
@@ -5047,13 +5047,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             // declare memvars
-            if (context.T.Type == XP.MEMVAR)
+            context.SetSequencePoint(context.end);
+            if (context.T.Type == XP.MEMVAR && CurrentEntity != null)
             {
                 foreach (var memvar in context._Vars)
                 {
-                    CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
+                        CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
                 }
-
             }
         }
 
@@ -5444,7 +5444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     statements.Add(stmtCtx.Get<StatementSyntax>());
                 }
             }
-            if (CurrentEntity.Data.HasDimVar)
+            if (CurrentEntity != null && CurrentEntity.Data.HasDimVar)
             {
                 // Check for LOCAL DIM arrays and change them to Fixed statements
                 statements = CheckForLocalDimArrays(statements);
@@ -5733,7 +5733,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             var expr = context.Expr?.Get<ExpressionSyntax>();
             var ent = CurrentEntity;
-            if (context.Void != null && !ent.Data.MustBeVoid)
+            if (context.Void != null && ent != null && !ent.Data.MustBeVoid)
             {
                 expr = GenerateLiteral(0);
             }

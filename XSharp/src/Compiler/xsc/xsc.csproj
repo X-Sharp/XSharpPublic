@@ -48,13 +48,13 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
-      <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
-      <Name>XSharpCodeAnalysis</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSCompiler\XSCompiler.csproj">
       <Project>{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}</Project>
       <Name>XSCompiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
+      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
+      <Name>XSharpCodeAnalysis</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

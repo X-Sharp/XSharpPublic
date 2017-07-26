@@ -69,6 +69,32 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             private void VisitParameters(ImmutableArray<ParameterSymbol> parameters, bool isVararg, StringBuilder builder)
             {
+#if XSHARP
+                if (parameters[0].DeclaringSyntaxReferences.Length > 0)
+                {
+                    var syntaxRef = parameters[0].DeclaringSyntaxReferences[0];
+                    var syntax = syntaxRef.GetSyntax();
+                    var xnode = syntax.XNode;
+                    var ent = xnode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.IEntityContext;
+                    if (ent != null && ent.Data.HasClipperCallingConvention)
+                    {
+                        builder.Append('(');
+                        bool comma = false;
+                        var type = parameters[0].Type as ArrayTypeSymbol;
+                        foreach (var par in ent.Params)
+                        {
+                            if (comma)
+                            {
+                                builder.Append(',');
+                            }
+                            Visit(type.ElementType, builder);
+                            comma = true;
+                        }
+                        builder.Append(")");
+                        return;
+                    }
+                }
+#endif
                 builder.Append('(');
                 bool needsComma = false;
 

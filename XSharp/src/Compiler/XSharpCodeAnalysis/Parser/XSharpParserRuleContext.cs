@@ -17,6 +17,9 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
+
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public class XSharpParserRuleContext :
@@ -27,6 +30,46 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public XSharpParserRuleContext() : base()
         {
 
+        }
+
+        public SyntaxTriviaList GetLeadingTrivia(CompilationUnitSyntax cu)
+        {
+            var list = new SyntaxTriviaList();
+            if (cu == null)
+                return list;
+            XSharpToken start = this.Start as XSharpToken;
+            var tokens = ((BufferedTokenStream) cu.XTokens).GetTokens();
+            // find offset of first token in the tokenlist
+            int startindex = start.OriginalTokenIndex;
+            if (startindex >= 0) 
+            {
+                startindex -= 1;
+                var endindex = startindex;
+                var sb = new System.Text.StringBuilder();
+                while (startindex >= 0)
+                {
+                    switch (tokens[startindex].Channel )
+                    {
+                        case XSharpLexer.XMLDOCCHANNEL:
+                            sb.Insert(0,tokens[startindex].Text + "\r\n");
+                            break;
+                        case XSharpLexer.DefaultTokenChannel:
+                            // exit the loop
+                            startindex = 0;
+                            break;
+                    }
+                    startindex--;
+                }
+                if (sb.Length > 0)
+                {
+                    string text = sb.ToString();
+                    var source = Microsoft.CodeAnalysis.Text.SourceText.From(text);
+                    var lexer = new Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.Lexer(source, CSharpParseOptions.Default);
+                    list = lexer.LexSyntaxLeadingTrivia();
+                    lexer.Dispose();
+                }
+            }
+            return list;
         }
         public XSharpParserRuleContext(Antlr4.Runtime.ParserRuleContext parent, int state) : base(parent, state)
         {

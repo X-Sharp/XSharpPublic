@@ -1442,9 +1442,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)) /*))*/;
             _pool.Free(modifiers);
+            r.XGenerated = true;
             if (nameSpace.Length > 0)
             {
                 r = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(r));
+                r.XGenerated = true;
             }
             return r;
         }
@@ -1500,9 +1502,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)) /*))*/;
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
+            classdecl.XGenerated = true;
             if (nameSpace.Length > 0)
             {
                 classdecl = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(classdecl));
+                classdecl.XGenerated = true;
             }
             return classdecl;
         }

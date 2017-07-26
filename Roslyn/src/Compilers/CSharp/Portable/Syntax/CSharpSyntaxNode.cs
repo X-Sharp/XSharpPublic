@@ -10,7 +10,10 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
-
+#if XSHARP
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -174,6 +177,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         public new SyntaxTriviaList GetLeadingTrivia()
         {
+#if XSHARP
+            XSharpParserRuleContext node = this.XNode as XSharpParserRuleContext;
+            if (node != null && ! this.XGenerated)
+            {
+                return node.GetLeadingTrivia(this.SyntaxTree.GetRoot() as CompilationUnitSyntax);
+            }
+#endif
             var firstToken = this.GetFirstToken(includeZeroWidth: true);
             return firstToken.LeadingTrivia;
         }
@@ -625,6 +635,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        #endregion
+#endregion
     }
 }

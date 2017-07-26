@@ -9385,6 +9385,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The {0} name &apos;{1}&apos; conflicts with the compiler generate globals name &apos;{2}&apos;. You should either rename the type or the output assembly..
+        /// </summary>
+        internal static string ERR_TypeNameMatchesGlobalNamespace {
+            get {
+                return ResourceManager.GetString("ERR_TypeNameMatchesGlobalNamespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type parameter declaration must be an identifier not a type.
         /// </summary>
         internal static string ERR_TypeParamMustBeIdentifier {

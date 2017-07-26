@@ -247,6 +247,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Entitynames
+
+        protected CSharpSyntaxNode CheckTypeName(XP.IEntityContext context, string typeKind, CSharpSyntaxNode node)
+        {
+            if (context.Parent.Parent is XP.Namespace_Context)
+                return node;
+            string name = context.Name;
+            if (string.Compare(this.GlobalClassName, 0,name+".",0,name.Length+1,true) == 0)
+            {
+                node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeNameMatchesGlobalNamespace, typeKind, name, GlobalClassName));
+            }
+            return node;
+        }
         protected string GetNestedName(IRuleNode ctx)
         {
             string name = "";
@@ -2332,6 +2344,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckTypeName(context, "INTERFACE", m);
+            }
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2413,6 +2429,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = AddNameSpaceToMember(context.Namespace, m);
 
             }
+            else
+            {
+                m = (MemberDeclarationSyntax) CheckTypeName(context, "CLASS", m);
+            }
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2478,6 +2498,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckTypeName(context, "STRUCTURE", m);
+            }
+
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2500,6 +2525,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Namespace != null)
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
+            }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckTypeName(context, "STRUCTURE", m);
             }
             context.Put(m);
         }

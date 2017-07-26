@@ -3212,6 +3212,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckTypeName(context, "VOSTRUCT", m);
+            }
             context.Put(m);
         }
 
@@ -3318,6 +3322,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Namespace != null)
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
+            }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckTypeName(context, "UNION", m);
             }
             context.Put(m);
         }

@@ -444,6 +444,7 @@ statement           : Decl=localdecl                                            
                       StmtBlk=statementBlock 
 					  ((e=END DO? | e=ENDDO) garbage? eos)?						#whileStmt
                     | NOP  end=eos												#nopStmt
+                    | NOP  g=garbage end=eos	{eosExpected($g.start);}	#nopStmt
                     | FOR
                         ( AssignExpr=expression
                         | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=(ASSIGN_OP|EQ) Expr=expression
@@ -458,11 +459,17 @@ statement           : Decl=localdecl                                            
 					  CaseStmt=caseBlock?
                       ((e=END CASE? | e=ENDCASE) garbage? eos)?					#caseStmt
                     | Key=EXIT end=eos											#jumpStmt
-                    | Key=LOOP end=eos											#jumpStmt
-                    | Key=BREAK Expr=expression? end=eos						#jumpStmt
-                    | RETURN (Void=VOID|Expr=expression)? end=eos				#returnStmt
+                    | Key=EXIT g=garbage end=eos	{eosExpected($g.start);}	#jumpStmt
+                    | Key=LOOP end=eos												#jumpStmt
+                    | Key=LOOP g=garbage end=eos	{eosExpected($g.start);}	#jumpStmt
+                    | Key=BREAK Expr=expression? end=eos							#jumpStmt
+                    | Key=BREAK Expr=expression? g=garbage end=eos	{eosExpected($g.start);} #jumpStmt
+                    | RETURN (Void=VOID|Expr=expression)? end=eos											#returnStmt
+                    | RETURN (Void=VOID|Expr=expression)? g=garbage end=eos	{eosExpected($g.start);}	#returnStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)? end=eos	#qoutStmt
+                    | Q=(QMARK | QQMARK)
+                       (Exprs+=expression (COMMA Exprs+=expression)*)? g=garbage end=eos	{eosExpected($g.start);} #qoutStmt
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
@@ -513,16 +520,19 @@ statement           : Decl=localdecl                                            
                       StmtBlk=statementBlock
                       (e=END FIXED? garbage? end=eos)?								#blockStmt
 
-					// Temporary solution for statements missing from the standard header file
-					//| DEFAULT Variables+=simpleName TO Values+=expression 
-					//	(COMMA Variables+=simpleName TO Values+=expression)* end=eos	#defaultStmt
-					//| Key=(WAIT|ACCEPT)  (Expr=expression)? (TO Variable=simpleName)? end = eos		#waitAcceptStmt
-					//| Key=(CANCEL|QUIT) end=eos											#cancelQuitStmt
-
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
-                    | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
-                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR )}?
-                      Exprs+=expression (COMMA Exprs+=expression)*  end=eos		#expressionStmt
+					// The first ExpressonStmt rule matches a single expression
+					// The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
+					// The third rule matches more than one expression
+                    | {ValidExpressionStmt()}?
+                      Exprs+=expression  end=eos									#expressionStmt
+                    | {ValidExpressionStmt()}?
+                      Exprs+=expression t=(RPAREN|RCURLY|RBRKT)  end=eos {eosExpected($t);}		#expressionStmt
+                    | {ValidExpressionStmt()}?
+                      Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
+
+                    | {ValidExpressionStmt()}?
+                      Exprs+=expression g=garbage end=eos	{eosExpected($g.start);} #expressionStmt
                     ;
 
 garbage				: {_allowGarbage}? (~EOS)+
@@ -585,7 +595,6 @@ localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=a
 impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expression
                    ;
 
-
 fielddecl		   : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
                    ;
 
@@ -614,9 +623,14 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 1)  unary                + - ++ -- ~
 
 expression			: Expr=expression Op=(DOT | COLON) Name=simpleName				#accessMember			// member access The ? is new
-                    | Expr=expression l=LPAREN                       r=RPAREN		#methodCall			// method call, no params
-                    | Expr=expression l=LPAREN ArgList=argumentList  r=RPAREN?		#methodCall			// method call, params
-                    | Expr=expression l=LBRKT ArgList=bracketedArgumentList r=RBRKT #arrayAccess		// Array element access
+                    | Expr=expression LPAREN                       RPAREN									#methodCall			// method call, no params
+                    | Expr=expression LPAREN                       RPAREN r=RPAREN {unexpectedToken($r);}	#methodCall			// method call, no params
+                    | Expr=expression LPAREN ArgList=argumentList  RPAREN									#methodCall			// method call, params
+                    | Expr=expression LPAREN ArgList=argumentList  					{missingToken("(");}	#methodCall			// method call, params
+                    | Expr=expression LPAREN ArgList=argumentList  RPAREN r=RPAREN	{unexpectedToken($r);}	#methodCall		// method call, params
+                    | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT									#arrayAccess		// Array element access
+                    | Expr=expression LBRKT ArgList=bracketedArgumentList				{missingToken("]");}	#arrayAccess		// Array element access
+                    | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT r=RBRKT {unexpectedToken($r);}	#arrayAccess		// Array element access
                     | Left=expression Op=QMARK Right=boundExpression				#condAccessExpr			// expr ? expr
                     | LPAREN Type=datatype RPAREN Expr=expression					#typeCast			    // (typename) expr
                     | Expr=expression Op=(INC | DEC)								#postfixExpression		// expr ++/--
@@ -625,8 +639,8 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName				#accessMember
                     | Expr=expression Op=IS Type=datatype							#typeCheckExpression	// expr IS typeORid
                     | Expr=expression Op=ASTYPE Type=datatype						#typeCheckExpression	// expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression						#binaryExpression		// expr ^ expr
-                    | Left=expression Op=(MULT | DIV | MOD) Right=expression?		#binaryExpression		// expr * expr
-                    | Left=expression Op=(PLUS | MINUS) Right=expression?			#binaryExpression		// expr +/- expr
+                    | Left=expression Op=(MULT | DIV | MOD) Right=expression		#binaryExpression		// expr * expr
+                    | Left=expression Op=(PLUS | MINUS) Right=expression			#binaryExpression		// expr +/- expr
                     | Left=expression Op=LSHIFT Right=expression					#binaryExpression		// expr << expr (shift)
                     | Left=expression Op=GT	Gt=GT Right=expression					#binaryExpression		// expr >> expr (shift)
                     | Left=expression Op=( LT | LTE | GT | GTE | EQ | EEQ | 
@@ -646,9 +660,12 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName				#accessMember
                             | ASSIGN_RSHIFT | ASSIGN_XOR )
                       Right=expression												#assignmentExpression	// expr := expr, also expr += expr etc.
                     | Expr=primary													#primaryExpression
+                    | Expr=primary r=(RPAREN|RCURLY|RBRKT)	{unexpectedToken($r);}	#primaryExpression
+
                     ;
 
                     // Primary expressions
+					// Note: No need to check for extra ) } or ] tokens. The expression rule does that already
 primary				: Key=SELF													#selfExpression
                     | Key=SUPER													#superExpression
                     | Literal=literalValue										#literalExpression		// literals
@@ -660,7 +677,7 @@ primary				: Key=SELF													#selfExpression
                     | Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY						#delegateCtorCall		// delegate{ obj , @func() }
                     | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?	#ctorCall		// id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | Type=datatype l=LCURLY ArgList=argumentList  r=RCURLY?	#ctorCall				// id{ expr [, expr...] }
+                    | Type=datatype LCURLY ArgList=argumentList  RCURLY	#ctorCall				// id{ expr [, expr...] }
                     | ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
                     | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
@@ -688,15 +705,19 @@ primary				: Key=SELF													#selfExpression
 					| Key=ARGLIST												#argListExpression		// __ARGLIST
                     ;
 
-boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#boundAccessMember		// member access The ? is new
-                    | Expr=boundExpression l=LPAREN						 r=RPAREN	#boundMethodCall	// method call, no params
-                    | Expr=boundExpression l=LPAREN ArgList=argumentList r=RPAREN?	#boundMethodCall	// method call, with params
-                    | Expr=boundExpression
-                      LBRKT ArgList=bracketedArgumentList RBRKT					#boundArrayAccess		// Array element access
-                    | <assoc=right> Left=boundExpression
-                      Op=QMARK Right=boundExpression							#boundCondAccessExpr	// expr ? expr
-                    | Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
-                    | LBRKT ArgList=bracketedArgumentList RBRKT					#bindArrayAccess
+boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName										#boundAccessMember	// member access The ? is new
+                    | Expr=boundExpression LPAREN					   RPAREN									#boundMethodCall	// method call, no params
+                    | Expr=boundExpression LPAREN ArgList=argumentList RPAREN									#boundMethodCall	// method call, with params
+                    | Expr=boundExpression LPAREN ArgList=argumentList					{missingToken("(");}	#boundMethodCall	// method call, with params
+                    | Expr=boundExpression LPAREN ArgList=argumentList RPAREN r=RPAREN	{unexpectedToken($r);}	#boundMethodCall	// method call, with params
+                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT									#boundArrayAccess	// Array element access
+                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList					{missingToken("]");}	#boundArrayAccess	// Array element access
+                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT r=RBRKT	{unexpectedToken($r);}	#boundArrayAccess	// Array element access
+                    | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression	#boundCondAccessExpr	// expr ? expr
+                    | Op=(DOT | COLON) Name=simpleName									#bindMemberAccess
+                    | LBRKT ArgList=bracketedArgumentList RBRKT									#bindArrayAccess
+                    | LBRKT ArgList=bracketedArgumentList				{missingToken("]");}	#bindArrayAccess
+					| LBRKT ArgList=bracketedArgumentList RBRKT	r=RBRKT	{unexpectedToken($r);}	#bindArrayAccess
                     ;
 
 // Initializers
@@ -705,7 +726,7 @@ objectOrCollectioninitializer :	ObjInit=objectinitializer
                               | CollInit=collectioninitializer
                               ;
 
-objectinitializer		: l=LCURLY (Members+=memberinitializer (COMMA Members+=memberinitializer)*)? r=RCURLY?
+objectinitializer		: LCURLY (Members+=memberinitializer (COMMA Members+=memberinitializer)*)? RCURLY
 						;
 
 memberinitializer		: Name=identifierName ASSIGN_OP Expr=initializervalue
@@ -715,7 +736,7 @@ initializervalue		: Init=objectOrCollectioninitializer // Put this first to make
 						| Expr=expression
 						;
 
-collectioninitializer	: l=LCURLY Members+=expression (COMMA Members+=expression)* r=RCURLY?
+collectioninitializer	: LCURLY Members+=expression (COMMA Members+=expression)* RCURLY
 						;
 
 bracketedArgumentList	: Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
@@ -736,7 +757,7 @@ namedArgument		// NOTE: Expression is optional so we can skip arguments for VO/V
                     ;
 
 
-iif					: (IIF|IF) l=LPAREN Cond=expression COMMA TrueExpr=expression? COMMA FalseExpr=expression? r=RPAREN?
+iif					: (IIF|IF) LPAREN Cond=expression COMMA TrueExpr=expression? COMMA FalseExpr=expression? RPAREN
                     ;
 
 nameDot				: Left=nameDot Right=simpleName DOT								#qualifiedNameDot

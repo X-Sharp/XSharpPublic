@@ -30,12 +30,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (endToken == null)
             {
-                var err = ErrorCode.ERR_SyntaxError;
-                IToken anchor = context.Stop;
-                if (anchor == null)
-                    anchor = context.Start;
-                var errdata = new ParseErrorData(anchor, err, msg);
-                _parseErrors.Add(errdata);
+                // if there is an error inside the start .. end then there is no need to report
+                // a missing end
+                int start = context.Start.StartIndex;
+                int end = context.Stop.StopIndex;
+                bool haserrorinblock = false;
+                foreach (var error in _parseErrors)
+                {
+                    if (error.Node.Position > start && error.Node.Position < end)
+                    {
+                        haserrorinblock = true;
+                        break;
+                       
+                    }
+                }
+                if (! haserrorinblock)
+                {
+                    var err = ErrorCode.ERR_SyntaxError;
+                    IToken anchor = context.Stop;
+                    if (anchor == null)
+                        anchor = context.Start;
+                    var errdata = new ParseErrorData(anchor, err, msg);
+                    _parseErrors.Add(errdata);
+                }
             }
             return ;
         }
@@ -86,10 +103,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var errdata = new ParseErrorData(anchor, err);
                 _parseErrors.Add(errdata);
             }
-            else
-            {
-                _parseErrors.Add(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
-            }
+            //else
+            //{
+            //    _parseErrors.Add(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
+            //}
         }
         //public override void ExitEveryRule([NotNull] ParserRuleContext ctxt)
         //{
@@ -161,32 +178,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             checkMissingKeyword(context.e, context, "END [" + context.Key.Text + "]");
         }
 
-
-        public override void ExitMethodCall([NotNull] XSharpParser.MethodCallContext context)
-        {
-            checkMissingToken(context.l, context.r, context);
-        }
-        public override void ExitBoundMethodCall([NotNull] XSharpParser.BoundMethodCallContext context)
-        {
-            checkMissingToken(context.l, context.r, context);
-        }
-
-        public override void ExitCtorCall([NotNull] XSharpParser.CtorCallContext context)
-        {
-            checkMissingToken(context.l, context.r, context);
-        }
-        public override void ExitObjectinitializer([NotNull] XSharpParser.ObjectinitializerContext context)
-        {
-            checkMissingToken(context.l, context.r, context);
-        }
-        public override void ExitCollectioninitializer([NotNull] XSharpParser.CollectioninitializerContext context)
-        {
-            checkMissingToken(context.l, context.r, context);
-        }
-        public override void ExitIif([NotNull] XSharpParser.IifContext context)
-        {
-            checkMissingToken(context.l, context.r, context);
-        }
         public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
         {
             if (context.Left != null && context.Right == null)

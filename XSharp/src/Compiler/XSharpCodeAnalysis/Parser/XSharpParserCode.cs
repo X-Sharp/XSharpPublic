@@ -59,6 +59,44 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             get { return _isScript; }
             set { _isScript = value; }
         }
+        void missingToken(string token)
+        {
+            if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
+                throw new ParseCanceledException("Missing token'" + token + "'");
+            NotifyErrorListeners("Missing token'"+token+"'");
+        }
+        void unexpectedToken(string token)
+        {
+            if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
+                throw new ParseCanceledException("Unexpected '"+token+"'token");
+
+            NotifyErrorListeners("Unexpected '"+token+"' token");
+        }
+        void eosExpected(IToken token)
+        {
+            if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
+                unexpectedToken(token?.Text);
+            string msg = "Expecting end of statement, found '" + token?.Text + "'";
+            NotifyErrorListeners(token, msg, null);
+
+        }
+        void unexpectedToken(IToken token)
+        {
+            if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
+                unexpectedToken(token?.Text);
+            string msg = "Too many '" + token?.Text + "' tokens";
+            NotifyErrorListeners(token, msg, null);
+        }
+
+
+        bool ValidExpressionStmt()
+        {
+            var la = InputStream.La(2);
+            if (la != LPAREN)
+                return true;
+            la = InputStream.La(1);
+            return la != CONSTRUCTOR && la != DESTRUCTOR;
+        }
 
         public interface IPartialPropertyContext : IEntityContext
         {

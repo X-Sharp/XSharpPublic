@@ -66,6 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool vo14 => VOFloatConstants;
         //public bool vo15 => VOUntypedAllowed;
         //public bool vo16 => VOClipperConstructors;
+        public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
 
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }
@@ -96,6 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 LateBinding = opt.LateBinding;
                 CreatingRuntime = opt.CreatingRuntime;
                 ConsoleOutput = opt.ConsoleOutput;
+                ParseLevel = opt.ParseLevel;
             }
         }
 
@@ -131,6 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
             ConsoleOutput = opt.ConsoleOutput;
+            ParseLevel = opt.ParseLevel; 
         }
 
         internal static void FixResources(CommandLineArguments args)

@@ -150,8 +150,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
     {
         private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.CsGreen;
         public XSharpParser.SourceContext XSource => internalUnit.XNode as XSharpParser.SourceContext;
-        public ITokenStream XTokenStream => internalUnit.XTokens;
-        public ITokenStream XPPTokenStream => internalUnit.XPPTokens;
+        public ITokenStream XTokens => internalUnit.XTokens;
+        public ITokenStream XPPTokens => internalUnit.XPPTokens;
         public Dictionary<string, SourceText> IncludedFiles => internalUnit.IncludedFiles;
         public bool NeedsProcessing => internalUnit.NeedsProcessing;
     }

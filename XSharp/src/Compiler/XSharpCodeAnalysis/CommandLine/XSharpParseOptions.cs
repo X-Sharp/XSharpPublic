@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoStdDef { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
-        public ParseLevel ParseLevel { get;  set; }
+        public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
@@ -138,6 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VulcanAssemblies = opt.VulcanAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
+                ParseLevel = opt.ParseLevel;
             }
         }
 
@@ -187,7 +188,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Overflow = opt.Overflow;
             ConsoleOutput = opt.ConsoleOutput;
             CommandLineArguments = opt.CommandLineArguments;
-
+            ParseLevel = opt.ParseLevel;
         }
         public  CSharpParseOptions WithOutput(TextWriter consoleOutput)
         {

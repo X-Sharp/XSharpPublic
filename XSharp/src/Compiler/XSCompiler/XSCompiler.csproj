@@ -22,7 +22,6 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
     <Prefer32Bit>false</Prefer32Bit>
@@ -47,12 +46,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
-      <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
-      <Name>XSharpCodeAnalysis</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -99,6 +92,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
+      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
+      <Name>XSharpCodeAnalysis</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(RoslynSrc)\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)\Compilers\Server\ServerShared\ServerShared.projitems" Label="Shared" />

@@ -247,6 +247,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Entitynames
+
+        protected CSharpSyntaxNode CheckTypeName(XP.IEntityContext context, string typeKind, CSharpSyntaxNode node)
+        {
+            if (context.Parent.Parent is XP.Namespace_Context)
+                return node;
+            string name = context.Name;
+            if (string.Compare(this.GlobalClassName, 0,name+".",0,name.Length+1,true) == 0)
+            {
+                node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeNameMatchesGlobalNamespace, typeKind, name, GlobalClassName));
+            }
+            return node;
+        }
         protected string GetNestedName(IRuleNode ctx)
         {
             string name = "";
@@ -1430,9 +1442,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)) /*))*/;
             _pool.Free(modifiers);
+            r.XGenerated = true;
             if (nameSpace.Length > 0)
             {
                 r = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(r));
+                r.XGenerated = true;
             }
             return r;
         }
@@ -1488,9 +1502,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)) /*))*/;
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
+            classdecl.XGenerated = true;
             if (nameSpace.Length > 0)
             {
                 classdecl = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(classdecl));
+                classdecl.XGenerated = true;
             }
             return classdecl;
         }
@@ -1958,7 +1974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 GlobalEntities.Externs.Add(_syntaxFactory.ExternAliasDirective(
                     SyntaxFactory.MissingToken(dirs.ToListNode(), SyntaxKind.ExternKeyword, null),
                     SyntaxFactory.MissingToken(SyntaxKind.AliasKeyword),
-                    SyntaxFactory.Identifier("XS$dummy"),
+                    SyntaxFactory.Identifier(XSharpSpecialNames.ScriptDummy),
                     SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)
                     ));
                 _pool.Free(dirs);
@@ -2332,6 +2348,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckTypeName(context, "INTERFACE", m);
+            }
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2413,6 +2433,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = AddNameSpaceToMember(context.Namespace, m);
 
             }
+            else
+            {
+                m = (MemberDeclarationSyntax) CheckTypeName(context, "CLASS", m);
+            }
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2478,6 +2502,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckTypeName(context, "STRUCTURE", m);
+            }
+
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2500,6 +2529,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Namespace != null)
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
+            }
+            else
+            {
+                m = (MemberDeclarationSyntax)CheckTypeName(context, "STRUCTURE", m);
             }
             context.Put(m);
         }
@@ -4909,7 +4942,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 varType.XVoIsDecl = true;
             }
-            if (isDim)
+            if (isDim && CurrentEntity != null)
             {
                 CurrentEntity.Data.HasDimVar = true;
                 if (initExpr == null)
@@ -5047,13 +5080,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             // declare memvars
-            if (context.T.Type == XP.MEMVAR)
+            context.SetSequencePoint(context.end);
+            if (context.T.Type == XP.MEMVAR && CurrentEntity != null)
             {
                 foreach (var memvar in context._Vars)
                 {
-                    CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
+                        CurrentEntity.Data.AddField(memvar.Id.GetText(), "M", false);
                 }
-
             }
         }
 
@@ -5444,7 +5477,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     statements.Add(stmtCtx.Get<StatementSyntax>());
                 }
             }
-            if (CurrentEntity.Data.HasDimVar)
+            if (CurrentEntity != null && CurrentEntity.Data.HasDimVar)
             {
                 // Check for LOCAL DIM arrays and change them to Fixed statements
                 statements = CheckForLocalDimArrays(statements);
@@ -5733,7 +5766,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             var expr = context.Expr?.Get<ExpressionSyntax>();
             var ent = CurrentEntity;
-            if (context.Void != null && !ent.Data.MustBeVoid)
+            if (context.Void != null && ent != null && !ent.Data.MustBeVoid)
             {
                 expr = GenerateLiteral(0);
             }
@@ -6588,11 +6621,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoCastPtrExpression([NotNull] XP.VoCastPtrExpressionContext context)
         {
-            context.Put(MakeCastTo(
-                _syntaxFactory.PointerType(context.Type.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)),
-                _syntaxFactory.PrefixUnaryExpression(SyntaxKind.AddressOfExpression,
-                    SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
-                    context.Expr.Get<ExpressionSyntax>())));
+            if (context.Expr is XP.MethodCallContext)
+            {
+                var expr = GenerateLiteral(0).WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_PtrCastNotAllowed));
+                context.Put(expr);
+            }
+            else
+            {
+                context.Put(MakeCastTo(
+                    _syntaxFactory.PointerType(context.Type.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)),
+                    _syntaxFactory.PrefixUnaryExpression(SyntaxKind.AddressOfExpression,
+                        SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
+                        context.Expr.Get<ExpressionSyntax>())));
+            }
         }
 
         public override void ExitSizeOfExpression([NotNull] XP.SizeOfExpressionContext context)

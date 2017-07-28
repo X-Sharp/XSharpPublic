@@ -13,6 +13,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         //internal string SourceFileName;
         internal string MappedFileName;
         internal int OriginalChannel;
+        private int _originalTokenIndex = -1;
         internal int MappedLine = -1;
         internal XSharpToken SourceSymbol;
         private XSharpToken _original = null;
@@ -92,6 +93,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
         public int Position => StartIndex;
+        public override int TokenIndex
+        {
+            get
+            {
+                return base.TokenIndex;
+            }
+            set
+            {
+                base.TokenIndex = value;
+                if (_originalTokenIndex == -1)
+                {
+                    _originalTokenIndex = value;
+                }
+            }
+        }
+
+        public int OriginalTokenIndex => _originalTokenIndex;
 
     }
 }

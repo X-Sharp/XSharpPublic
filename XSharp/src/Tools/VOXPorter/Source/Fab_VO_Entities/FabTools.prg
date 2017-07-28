@@ -262,6 +262,9 @@ BEGIN NAMESPACE FabToolsNS
             Data := oBr:ReadChars( BlocLength )
             //
             i := System.Array.IndexOf(Data, (Char)0)
+            IF i == -1 // in a few cases strings were not null terminated
+            	i := data:Length
+            END IF
             oSB := StringBuilder{ "" }
             oSB:Append( Data,0, i )
             //

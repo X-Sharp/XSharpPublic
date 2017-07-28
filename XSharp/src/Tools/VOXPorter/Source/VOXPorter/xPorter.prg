@@ -616,7 +616,7 @@ CLASS VOProjectDescriptor
 		xPorter.Message("Creating solution file for " + iif(lXide , "XIDE" , "VS"))
 
 		IF lXide
-			cFileName := cFolder + "\" + cSolutionName + ".viproj"
+			cFileName := cFolder + "\" + MakePathLegal( cSolutionName ) + ".viproj"
 			
 			IF .not. xPorter.OverWriteProjectFiles .and. File.Exists(cFileName)
 				xPorter.Message("XIDE solution file already exists.")
@@ -634,7 +634,7 @@ CLASS VOProjectDescriptor
 				RETURN
 			END IF
 		ELSE
-			cFileName := cFolder + "\" + cSolutionName + ".sln"
+			cFileName := cFolder + "\" + MakePathLegal( cSolutionName ) + ".sln"
 			IF .not. xPorter.OverWriteProjectFiles .and. File.Exists(cFileName)
 				xPorter.Message("VS solution file already exists.")
 				RETURN
@@ -743,6 +743,7 @@ CLASS ApplicationDescriptor
 	RETURN
 	
 	PROPERTY Name AS STRING GET SELF:_cName
+	PROPERTY PathValidName AS STRING GET MakePathLegal( SELF:_cName )
 	PROPERTY VOSDK AS VOSDK_Library GET SELF:_eVOSDK
 	PROPERTY Guid AS STRING GET SELF:_cGuid
 	PROPERTY Loaded AS LOGIC GET SELF:_lLoaded
@@ -753,9 +754,9 @@ CLASS ApplicationDescriptor
 	PROPERTY ProjectReferences AS List<STRING> GET SELF:_aProjectReferences
 
 //	PROPERTY AppFile_XIDE AS STRING GET SELF:_cAppFile_XIDE
-	PROPERTY AppFile_XIDE AS STRING GET SELF:AppFolder + "\" + SELF:Name + ".viapp"
+	PROPERTY AppFile_XIDE AS STRING GET SELF:AppFolder + "\" + SELF:PathValidName + ".viapp"
 //	PROPERTY AppFile_VS AS STRING GET SELF:_cAppFile_VS
-	PROPERTY AppFile_VS AS STRING GET SELF:AppFolder + "\" + SELF:Name + ".xsproj"
+	PROPERTY AppFile_VS AS STRING GET SELF:AppFolder + "\" + SELF:PathValidName + ".xsproj"
 		
 	PROPERTY OptionOverflow AS LOGIC GET SELF:_lOptionOverflow
 	PROPERTY OptionIntDiv AS LOGIC GET SELF:_lOptionIntDiv
@@ -765,7 +766,7 @@ CLASS ApplicationDescriptor
 				
 	EXPORT xPortOptions AS xPorterOptions
 	
-	PROPERTY AppFolder AS STRING GET SELF:Project:ProjectFolder + "\" + SELF:Name
+	PROPERTY AppFolder AS STRING GET SELF:Project:ProjectFolder + "\" + SELF:PathValidName
 	
 	PROPERTY ModulesCount AS INT GET SELF:_aModules:Count
 		
@@ -1017,19 +1018,19 @@ CLASS ApplicationDescriptor
 			
 			IF oModule:Generated
 				xPorter.Message("  Generating module :" , oModule:Name)
-				File.WriteAllLines(cFolder + "\" + oModule:Name + ".prg" , oCode:GetContents() , System.Text.Encoding.Default)
+				File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.Default)
 			END IF
 			
 			FOREACH oDesigner AS Designer IN oModule:Designers
 				DO CASE
 				CASE oDesigner:Type == 10 // window
-					File.WriteAllBytes(cFolder + "\" + oModule:Name + "." + oDesigner:Name + ".xsfrm" , oDesigner:Bytes)
+					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".xsfrm" , oDesigner:Bytes)
 				CASE oDesigner:Type == 16 // menu
-					File.WriteAllBytes(cFolder + "\" + oModule:Name + "." + oDesigner:Name + ".xsmnu" , oDesigner:Bytes)
+					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".xsmnu" , oDesigner:Bytes)
 /*				CASE oDesigner:Type == 12 //
-					File.WriteAllBytes(cFolder + "\" + oModule:Name + "." + oDesigner:Name + ".bin" , oDesigner:Bytes)
+					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".bin" , oDesigner:Bytes)
 				CASE oDesigner:Type == 14 //
-					File.WriteAllBytes(cFolder + "\" + oModule:Name + "." + oDesigner:Name + ".bin" , oDesigner:Bytes)*/
+					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".bin" , oDesigner:Bytes)*/
 				END CASE
 			NEXT
 
@@ -1042,15 +1043,15 @@ CLASS ApplicationDescriptor
 					oResources := OutputCode{}
 					FOREACH oPair AS KeyValuePair<STRING , OutputCode> IN aResources
 						// For VS:
-						cResFileName := oModule:Name + "." + oPair:Key + ".rc"
+						cResFileName := oModule:PathValidName + "." + oPair:Key + ".rc"
 						File.WriteAllLines(cFolder + "\" + cResFileName , oPair:Value:GetContents() , System.Text.Encoding.Default)
 						oModule:AddVSrc(cResFileName)
 						// For XIDE:
 						oResources:Combine(oPair:Value)
 					NEXT
 					// For XIDE:
-					cResFileName := oModule:Name + ".rc"
-	//				cResFileName := oModule:Name + ".prg.rc"
+					cResFileName := oModule:PathValidName + ".rc"
+	//				cResFileName := oModule:PathValidName + ".prg.rc"
 					File.WriteAllLines(cFolder + "\" + cResFileName , oResources:GetContents() , System.Text.Encoding.Default)
 					oModule:AddXIDErc(cResFileName)
 				END IF
@@ -1108,7 +1109,7 @@ CLASS ApplicationDescriptor
 						LOOP
 					END IF
 					LOCAL cName AS STRING
-					cName := oModule:Name + ".prg"
+					cName := oModule:PathValidName + ".prg"
 					IF lXide
 						oOutput:WriteLine("File = %AppPath%\" + cName)
 						oOutput:WriteLine("FileGUID = " + NewGuid())
@@ -1138,11 +1139,11 @@ CLASS ApplicationDescriptor
 			CASE cTemplate == "%references%"
 				FOREACH oRef AS ApplicationDescriptor IN SELF:_aReferences
 					IF lXide
-						oOutput:WriteLine(String.Format("ReferenceProject = {0},1,0,{1}" , oRef:Guid , oRef:Name ) )
+						oOutput:WriteLine(String.Format("ReferenceProject = {0},1,0,{1}" , oRef:Guid , oRef:PathValidName ) )
 					ELSE
 //						#warning make path relative
 						oOutput:WriteLine(String.Format(e"    <ProjectReference Include=\"{0}\">" , GetRelativePath(cFolder , oRef:AppFile_VS) ) )
-						oOutput:WriteLine(String.Format(e"      <Name>{0}</Name>" , oRef:Name ) )
+						oOutput:WriteLine(String.Format(e"      <Name>{0}</Name>" , oRef:PathValidName ) )
 						oOutput:WriteLine(String.Format(e"      <Project>{{{0}}}</Project>" , oRef:Guid ) )
 						oOutput:WriteLine(String.Format(e"      <Private>True</Private>"))
 						oOutput:WriteLine(String.Format(e"    </ProjectReference>"))
@@ -1210,8 +1211,8 @@ CLASS ApplicationDescriptor
 				NEXT
 				
 			OTHERWISE
-				cTemplate := cTemplate:Replace("%appname%" , SELF:Name)
-				cTemplate := cTemplate:Replace("%rootnamespace%", SELF:Name:Replace(" ",""))
+				cTemplate := cTemplate:Replace("%appname%" , SELF:PathValidName)
+				cTemplate := cTemplate:Replace("%rootnamespace%", SELF:PathValidName:Replace(" ",""))
 				cTemplate := cTemplate:Replace("%apptype%" , cAppTypeTag)
 				
 				IF cTemplate:Contains("%option_overflow%") .or. cTemplate:Contains("%option_intdiv%")
@@ -1321,6 +1322,7 @@ CLASS ModuleDescriptor
 	RETURN
 	
 	PROPERTY Name AS STRING GET SELF:_cName
+	PROPERTY PathValidName AS STRING GET MakePathLegal( SELF:_cName )
 	PROPERTY Classes AS List<ClassDescriptor> GET SELF:_aClasses
 	PROPERTY Application AS ApplicationDescriptor GET SELF:_oApp
 	PROPERTY Generated AS LOGIC GET SELF:_lGenerated
@@ -2400,4 +2402,8 @@ FUNCTION StripCommentsFromCode(cCode AS STRING) AS STRING
 		END IF
 	NEXT
 RETURN sCode:ToString()
+
+FUNCTION MakePathLegal(cPath AS STRING) AS STRING
+// vary neat piece of code above, found in stackoverflow!
+RETURN String.Join("_" , cPath:Split( Path.GetInvalidFileNameChars() ) )
 

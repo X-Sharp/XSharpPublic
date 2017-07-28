@@ -10,7 +10,6 @@
 
 namespace LanguageService.CodeAnalysis {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -40,7 +39,7 @@ namespace LanguageService.CodeAnalysis {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharpResources", typeof(XSharpResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharpResources", typeof(XSharpResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -8036,6 +8035,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &quot;PTR(..) operation&quot; is not allowed for method or function calls. If the method or function returns a pointer then consider using the (&lt;Type&gt; PTR) syntax instead..
+        /// </summary>
+        internal static string ERR_PtrCastNotAllowed {
+            get {
+                return ResourceManager.GetString("ERR_PtrCastNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The * or -&gt; operator must be applied to a pointer.
         /// </summary>
         internal static string ERR_PtrExpected {
@@ -9373,6 +9381,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_TypeInferenceFailedForImplicitlyTypedOutVariable {
             get {
                 return ResourceManager.GetString("ERR_TypeInferenceFailedForImplicitlyTypedOutVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} name &apos;{1}&apos; conflicts with the compiler generate globals name &apos;{2}&apos;. You should either rename the type or the output assembly..
+        /// </summary>
+        internal static string ERR_TypeNameMatchesGlobalNamespace {
+            get {
+                return ResourceManager.GetString("ERR_TypeNameMatchesGlobalNamespace", resourceCulture);
             }
         }
         

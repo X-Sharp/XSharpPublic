@@ -47,7 +47,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class XSharpSpecialNames
     {
-        internal const string ImpliedTypeName = "Xs$var";                              
+        internal const string ImpliedTypeName = "Xs$var";
+        internal const string ScriptDummy = "XS$dummy";                      
         internal const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
         internal const string StaticLocalInitFieldNameSuffix = "$init";
         internal const string StaticLocalLockFieldNameSuffix = "$lock";

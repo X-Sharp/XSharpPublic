@@ -1258,12 +1258,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             stream.name = fileName;
             var lexer = new XSharpLexer(stream);
             lexer.TokenFactory = XSharpTokenFactory.Default;
+#if !TEST
             if (options == null)
                 options = CSharpParseOptions.Default;
             lexer.AllowFourLetterAbbreviations = options.Dialect.AllowFourLetterAbbreviations();
             lexer.AllowOldStyleComments = options.Dialect.AllowOldStyleComments();
             lexer.AllowSingleQuotedStrings = options.Dialect.AllowStringsWithSingleQuotes();
             lexer.IsScript = options.Kind == Microsoft.CodeAnalysis.SourceCodeKind.Script;
+#endif
             return lexer;
         }
 

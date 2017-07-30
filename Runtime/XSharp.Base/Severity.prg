@@ -5,6 +5,7 @@
 //
 
 BEGIN NAMESPACE XSharp
+/// <Summary>Enum that matches the Visual Objects ES_* defines</Summary>
 Enum Severity
     Member WHOCARES     := 0
     Member WARNING      := 1

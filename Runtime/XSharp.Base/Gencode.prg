@@ -5,6 +5,7 @@
 //
 
 BEGIN NAMESPACE XSharp
+/// <Summary>Error code that matches the Visual Objecs Generic Error Code</Summary>
 Enum Gencode
     MEMBER WAIT         := 0
     MEMBER ARG          := 1

@@ -5,6 +5,7 @@
 //
 
 BEGIN NAMESPACE XSharp
+/// <Summary>Values that match the Visual Objects SET_* defines </Summary>
 Enum Set
 	MEMBER EXACT       := 1	
 	MEMBER @@FIXED     := 2	
@@ -112,6 +113,7 @@ Enum Set
 END Enum
 END NAMESPACE
 #region Defines
+
 DEFINE _SET_EXACT       := Set.Exact		
 DEFINE _SET_FIXED       := Set.Fixed 		
 DEFINE _SET_DECIMALS    := Set.Decimals		

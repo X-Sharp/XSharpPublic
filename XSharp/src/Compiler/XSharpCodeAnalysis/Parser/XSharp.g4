@@ -464,7 +464,7 @@ statement           : Decl=localdecl                                            
                     | Key=LOOP g=garbage end=eos	{eosExpected($g.start);}	#jumpStmt
                     | Key=BREAK Expr=expression? end=eos							#jumpStmt
                     | Key=BREAK Expr=expression? g=garbage end=eos	{eosExpected($g.start);} #jumpStmt
-                    | RETURN (Void=VOID|Expr=expression)? end=eos											#returnStmt
+                    | RETURN (Void=VOID|Expr=expression)? end=eos										#returnStmt
                     | RETURN (Void=VOID|Expr=expression)? g=garbage end=eos	{eosExpected($g.start);}	#returnStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)? end=eos	#qoutStmt
@@ -530,10 +530,7 @@ statement           : Decl=localdecl                                            
                       Exprs+=expression t=(RPAREN|RCURLY|RBRKT)  end=eos {eosExpected($t);}		#expressionStmt
                     | {ValidExpressionStmt()}?
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
-
-                    | {ValidExpressionStmt()}?
-                      Exprs+=expression g=garbage end=eos	{eosExpected($g.start);} #expressionStmt
-                    ;
+	                ;
 
 garbage				: {_allowGarbage}? (~EOS)+
 					;
@@ -624,13 +621,8 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 
 expression			: Expr=expression Op=(DOT | COLON) Name=simpleName				#accessMember			// member access The ? is new
                     | Expr=expression LPAREN                       RPAREN									#methodCall			// method call, no params
-                    | Expr=expression LPAREN                       RPAREN r=RPAREN {unexpectedToken($r);}	#methodCall			// method call, no params
                     | Expr=expression LPAREN ArgList=argumentList  RPAREN									#methodCall			// method call, params
-                    | Expr=expression LPAREN ArgList=argumentList  					{missingToken("(");}	#methodCall			// method call, params
-                    | Expr=expression LPAREN ArgList=argumentList  RPAREN r=RPAREN	{unexpectedToken($r);}	#methodCall		// method call, params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT									#arrayAccess		// Array element access
-                    | Expr=expression LBRKT ArgList=bracketedArgumentList				{missingToken("]");}	#arrayAccess		// Array element access
-                    | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT r=RBRKT {unexpectedToken($r);}	#arrayAccess		// Array element access
                     | Left=expression Op=QMARK Right=boundExpression				#condAccessExpr			// expr ? expr
                     | LPAREN Type=datatype RPAREN Expr=expression					#typeCast			    // (typename) expr
                     | Expr=expression Op=(INC | DEC)								#postfixExpression		// expr ++/--
@@ -660,7 +652,6 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName				#accessMember
                             | ASSIGN_RSHIFT | ASSIGN_XOR )
                       Right=expression												#assignmentExpression	// expr := expr, also expr += expr etc.
                     | Expr=primary													#primaryExpression
-                    | Expr=primary r=(RPAREN|RCURLY|RBRKT)	{unexpectedToken($r);}	#primaryExpression
 
                     ;
 
@@ -708,16 +699,10 @@ primary				: Key=SELF													#selfExpression
 boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName										#boundAccessMember	// member access The ? is new
                     | Expr=boundExpression LPAREN					   RPAREN									#boundMethodCall	// method call, no params
                     | Expr=boundExpression LPAREN ArgList=argumentList RPAREN									#boundMethodCall	// method call, with params
-                    | Expr=boundExpression LPAREN ArgList=argumentList					{missingToken("(");}	#boundMethodCall	// method call, with params
-                    | Expr=boundExpression LPAREN ArgList=argumentList RPAREN r=RPAREN	{unexpectedToken($r);}	#boundMethodCall	// method call, with params
                     | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT									#boundArrayAccess	// Array element access
-                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList					{missingToken("]");}	#boundArrayAccess	// Array element access
-                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT r=RBRKT	{unexpectedToken($r);}	#boundArrayAccess	// Array element access
                     | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression	#boundCondAccessExpr	// expr ? expr
                     | Op=(DOT | COLON) Name=simpleName									#bindMemberAccess
                     | LBRKT ArgList=bracketedArgumentList RBRKT									#bindArrayAccess
-                    | LBRKT ArgList=bracketedArgumentList				{missingToken("]");}	#bindArrayAccess
-					| LBRKT ArgList=bracketedArgumentList RBRKT	r=RBRKT	{unexpectedToken($r);}	#bindArrayAccess
                     ;
 
 // Initializers

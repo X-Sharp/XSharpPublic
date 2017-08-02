@@ -74,9 +74,9 @@
     <Reference Include="VsLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="XSharp.CodeAnalysis.VS">
+    <Reference Include="XSharp.CodeAnalysis, Version=0.2.12.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.VS.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

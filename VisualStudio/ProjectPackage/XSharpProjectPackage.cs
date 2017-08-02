@@ -56,7 +56,7 @@ $WINDIR$	The Windows folder.
 */
 
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis.VS", CodeBase = "XSharp.CodeAnalysis.VS.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis", CodeBase = "XSharp.CodeAnalysis.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
 namespace XSharp.Project

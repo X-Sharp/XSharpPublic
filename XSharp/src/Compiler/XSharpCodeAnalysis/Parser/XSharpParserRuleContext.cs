@@ -31,7 +31,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 
         }
-
+#if !TEST
         public SyntaxTriviaList GetLeadingTrivia(CompilationUnitSyntax cu)
         {
             var list = new SyntaxTriviaList();
@@ -71,6 +71,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return list;
         }
+#endif
         public XSharpParserRuleContext(Antlr4.Runtime.ParserRuleContext parent, int state) : base(parent, state)
         {
 

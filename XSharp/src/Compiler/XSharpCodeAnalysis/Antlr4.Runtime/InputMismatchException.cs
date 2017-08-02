@@ -19,5 +19,12 @@ namespace Antlr4.Runtime
         {
             this.OffendingToken = recognizer.CurrentToken;
         }
+
+        public InputMismatchException(Parser recognizer, int state, ParserRuleContext ctx) :
+            base(recognizer, recognizer.InputStream, ctx)
+        {
+            this.OffendingState = state;
+            this.OffendingToken = recognizer.CurrentToken;
+        }
     }
 }

@@ -25,6 +25,8 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using XSharpColorizer;
+using XSharpModel;
+
 namespace XSharp.Project
 {
     internal sealed class CommandFilter : IOleCommandTarget
@@ -72,7 +74,7 @@ namespace XSharp.Project
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
                     case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
-                        FormatDocument();
+                        //FormatDocument();
                         break;
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
@@ -82,6 +84,8 @@ namespace XSharp.Project
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession(false);
+                        //
+                        //FormatLine();
                         break;
 
                     case VSConstants.VSStd2KCmdID.TAB:
@@ -96,7 +100,7 @@ namespace XSharp.Project
                     case VSConstants.VSStd2KCmdID.BACKSPACE:
                         if (_signatureSession != null)
                         {
-                            int pos = TextView.Caret.Position.BufferPosition ;
+                            int pos = TextView.Caret.Position.BufferPosition;
                             if (pos > 0)
                             {
                                 // get previous char
@@ -108,6 +112,12 @@ namespace XSharp.Project
                             }
 
                         }
+                        break;
+                    case VSConstants.VSStd2KCmdID.UP:
+                    case VSConstants.VSStd2KCmdID.DOWN:
+                    case VSConstants.VSStd2KCmdID.PAGEUP:
+                    case VSConstants.VSStd2KCmdID.PAGEDN:
+                        FormatLine();
                         break;
                     case VSConstants.VSStd2KCmdID.TYPECHAR:
                         char ch = GetTypeChar(pvaIn);
@@ -207,6 +217,137 @@ namespace XSharp.Project
             return hresult;
         }
 
+
+        /*
+         * public static void SetText(this ITextBuffer buffer, params string[] lines)
+        {
+            var text = String.Join(Environment.NewLine, lines);
+            var edit = buffer.CreateEdit(EditOptions.DefaultMinimalChange, 0, null);
+            edit.Replace(new Span(0, buffer.CurrentSnapshot.Length), text);
+            edit.Apply();
+}
+         * */
+
+        private void FormatLine()
+        {
+            //
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            int kwCase = optionsPage.KeywordCase;
+            //
+            SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
+            ITextSnapshotLine line = caret.GetContainingLine();
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
+            //
+            var buffer = this.TextView.TextBuffer;
+            var tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(buffer);
+            var tags = tagAggregator.GetTags(lineSpan);
+            List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
+            foreach (var tag in tags)
+            {
+                tagList.Add(tag);
+            }
+            //
+            var edit = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
+            try
+            {
+                //
+                foreach (var tag in tagList)
+                {
+                    var name = tag.Tag.ClassificationType.Classification.ToLower();
+                    //
+                    if (name == "keyword")
+                    {
+                        var spans = tag.Span.GetSpans(buffer);
+                        if (spans.Count > 0)
+                        {
+                            SnapshotSpan kwSpan = spans[0];
+                            string keyword = kwSpan.GetText();
+                            string transform = null;
+                            //
+                            switch (kwCase)
+                            {
+                                case 1:
+                                    transform = keyword.ToUpper();
+                                    break;
+                                case 2:
+                                    transform = keyword.ToLower();
+                                    break;
+                                case 3:
+                                    System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US", false);
+                                    System.Globalization.TextInfo txtInfo = culture.TextInfo;
+                                    transform = txtInfo.ToTitleCase(keyword.ToLower());
+                                    break;
+                            }
+                            // Not none, and the tranfsform is not the same as the original
+                            if ((kwCase != 0) && (String.Compare(transform, keyword) != 0))
+                                edit.Replace(kwSpan, transform);
+                        }
+                    }
+                    else if (name == "identifier")
+                    {
+                        var spans = tag.Span.GetSpans(buffer);
+                        if (spans.Count > 0)
+                        {
+                            SnapshotSpan idSpan = spans[0];
+                            string identifier = idSpan.GetText();
+                            //
+                            XFile _file = buffer.GetFile();
+                            XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.Position, _file);
+                            //
+                            if (currentMember == null)
+                                continue;
+                            CompletionType cType = null;
+                            XSharpLanguage.CompletionElement foundElement = null;
+                            XVariable element = null;
+                            // Search in Parameters
+                            if (currentMember.Parameters != null)
+                                element = currentMember.Parameters.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                            if (element == null)
+                            {
+                                // then Locals
+                                if (currentMember.Locals != null)
+                                    element = currentMember.Locals.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                                if (element == null)
+                                {
+                                    if (currentMember.Parent != null)
+                                    {
+                                        // Context Type....
+                                        cType = new CompletionType(currentMember.Parent.Clone);
+                                        // We can have a Property/Field of the current CompletionType
+                                        if (!cType.IsEmpty())
+                                        {
+                                            cType = XSharpLanguage.XSharpTokenTools.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
+                                        }
+                                        // Not found ? It might be a Global !?
+                                        if (foundElement == null)
+                                        {
+
+                                        }
+                                    }
+                                }
+                            }
+                            if (element != null)
+                            {
+                                cType = new CompletionType((XVariable)element, "");
+                                foundElement = new XSharpLanguage.CompletionElement(element);
+                            }
+                            // got it !
+                            if (foundElement != null)
+                            {
+                                if ((String.Compare(foundElement.Name, identifier) != 0))
+                                    edit.Replace(idSpan, foundElement.Name);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                edit.Apply();
+            }
+        }
+
         private void FormatDocument()
         {
             var buffer = this.TextView.TextBuffer;
@@ -220,20 +361,17 @@ namespace XSharp.Project
             //
             foreach (var tag in tags)
             {
-                var name = tag.Tag.ClassificationType.Classification.ToLower();
                 //
-                if (name.Contains(XSharpColorizer.ColorizerConstants.XSharpRegionStartFormat))
+                if (tag.Tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStartFormat))
                 {
-                    if (System.Diagnostics.Debugger.IsAttached)
-                        System.Diagnostics.Debugger.Break();
                     //
-                    var spans = tag.Span.GetSpans(this.TextView.TextSnapshot);
+                    var spans = tag.Span.GetSpans(buffer);
                     if (spans.Count > 0)
                         regionStarts.Push(spans[0]);
                 }
-                else if (name.Contains(XSharpColorizer.ColorizerConstants.XSharpRegionStopFormat))
+                else if (tag.Tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStopFormat))
                 {
-                    var spans = tag.Span.GetSpans(this.TextView.TextSnapshot);
+                    var spans = tag.Span.GetSpans(buffer);
                     if (spans.Count > 0)
                     {
                         if (regionStarts.Count > 0)
@@ -247,26 +385,33 @@ namespace XSharp.Project
             }
             //Now, we have a list of Regions Start/Stop
             var editor = buffer.CreateEdit();
-            //
-            int tabSize = this.TextView.Options.GetTabSize();
-            //
-            //foreach( var region in regions )
-            //{
-            //    SnapshotPoint pt = new SnapshotPoint(this.TextView.TextSnapshot, region.Item1.Start);
-            //    var snapLine = pt.GetContainingLine();
-            //    snapLine.
-            //}
-            //var lines = this.TextView.TextViewLines;
-            //foreach( var twLine in lines )
-            //{
-            //    var fullSpan = new SnapshotSpan(twLine.Snapshot, Span.FromBounds(twLine.Start, twLine.End));
-            //    var snapLine = fullSpan.Start.GetContainingLine();
-            //    int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
-            //    string text = snapLine.GetText();
-            //    //
-            //    lines.
-            //    //
-            //}
+            try
+            {
+                //
+                int tabSize = this.TextView.Options.GetTabSize();
+                //
+                //foreach( var region in regions )
+                //{
+                //    SnapshotPoint pt = new SnapshotPoint(this.TextView.TextSnapshot, region.Item1.Start);
+                //    var snapLine = pt.GetContainingLine();
+                //    snapLine.
+                //}
+                //var lines = this.TextView.TextViewLines;
+                //foreach( var twLine in lines )
+                //{
+                //    var fullSpan = new SnapshotSpan(twLine.Snapshot, Span.FromBounds(twLine.Start, twLine.End));
+                //    var snapLine = fullSpan.Start.GetContainingLine();
+                //    int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
+                //    string text = snapLine.GetText();
+                //    //
+                //    lines.
+                //    //
+                //}
+            }
+            finally
+            {
+                editor.Apply();
+            }
 
         }
 
@@ -276,7 +421,7 @@ namespace XSharp.Project
             int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
             int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
             String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
-            XSharpModel.XFile file= this.TextView.TextBuffer.GetFile();
+            XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
             if (file == null)
                 return;
             // Then, the corresponding Type/Element if possible

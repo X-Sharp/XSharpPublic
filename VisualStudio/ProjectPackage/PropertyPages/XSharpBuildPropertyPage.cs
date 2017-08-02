@@ -200,11 +200,13 @@ namespace XSharp.Project
         public bool DocFile
         {
             get { return this.docfile; }
-            //set { this.docfile = value;
-            //    this.IsDirty = true;
-            //    // now set the XML Documentation Filename
-            //    SetDocumentationFile();
-            //}
+            set
+            {
+                this.docfile = value;
+                this.IsDirty = true;
+                // now set the XML Documentation Filename
+                SetDocumentationFile();
+            }
         }
 
         [Category(catXML)]

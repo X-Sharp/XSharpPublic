@@ -103,7 +103,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     else // System.Decimals, Objects and reference types, but not String
                     {
                         rewrittenOperand = _factory.StaticCall(usualType, VulcanFunctionNames.VulcanToObject, rewrittenOperand);
-                        conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;
+                        if (rewrittenType.IsObjectType())
+                        {
+                            conversionKind = ConversionKind.Identity;
+                        }
+                        else if (rewrittenType.IsReferenceType)
+                        {
+                            rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+                            conversionKind = ConversionKind.ImplicitReference;
+                        }
+                        else
+                        {
+                            conversionKind = ConversionKind.Unboxing;
+                        }
                     }
                 }
                 var floatType = _compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);

@@ -75,7 +75,7 @@ namespace XSharpModel
                 opts.ParseLevel = ParseLevel.Lex;
                 LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, opts, _file.FullPath);
                 var syntaxRoot = tree.GetRoot();
-                _TokenStream = ((CompilationUnitSyntax)syntaxRoot).XTokenStream;
+                _TokenStream = ((CompilationUnitSyntax)syntaxRoot).XTokens;
             }
             catch (Exception e)
             {
@@ -115,7 +115,7 @@ namespace XSharpModel
                 // Get the antlr4 parse tree root
                 var cu = syntaxRoot as CompilationUnitSyntax;
                 xTree = cu.XSource;
-                _TokenStream = cu.XTokenStream;
+                _TokenStream = cu.XTokens;
                 if (cu.ContainsDiagnostics)
                 {
                     var errors = cu.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);

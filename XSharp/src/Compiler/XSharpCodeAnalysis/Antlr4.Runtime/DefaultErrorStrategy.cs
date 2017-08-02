@@ -39,6 +39,10 @@ namespace Antlr4.Runtime
         protected internal int lastErrorIndex = -1;
 
         protected internal IntervalSet lastErrorStates;
+        // RvdH 20170802 Copied from sharwell on GitHub
+        protected ParserRuleContext nextTokensContext;
+        protected int nextTokensState;
+
 
         /// <summary>
         /// <inheritDoc/>
@@ -256,9 +260,25 @@ namespace Antlr4.Runtime
             int la = tokens.La(1);
             // try cheaper subset first; might get lucky. seems to shave a wee bit off
             IntervalSet nextTokens = recognizer.Atn.NextTokens(s);
-            if (nextTokens.Contains(TokenConstants.Epsilon) || nextTokens.Contains(la))
+            //if (nextTokens.Contains(TokenConstants.Epsilon) || nextTokens.Contains(la))
+            if (nextTokens.Contains(la))
             {
+                // We are sure the token matches
+                nextTokensContext = null;
+                nextTokensState = ATNState.InvalidStateNumber;
                 return;
+            }
+            if (nextTokens.Contains(TokenConstants.Epsilon))
+            {
+                if (nextTokensContext == null)
+                {
+                    // It's possible the next token won't match; information tracked
+                    // by sync is restricted for performance.
+                    nextTokensContext = recognizer.Context;
+                    nextTokensState = recognizer.State;
+                }
+                return;
+
             }
             switch (s.StateType)
             {
@@ -534,7 +554,18 @@ namespace Antlr4.Runtime
                 return GetMissingSymbol(recognizer);
             }
             // even that didn't work; must throw the exception
-            throw new InputMismatchException(recognizer);
+            //throw new InputMismatchException(recognizer);
+            InputMismatchException e;
+            if (nextTokensContext == null)
+            {
+                e = new InputMismatchException(recognizer);
+            }
+            else
+            {
+                e = new InputMismatchException(recognizer, nextTokensState, nextTokensContext);
+            }
+            
+            throw e;
         }
 
         /// <summary>

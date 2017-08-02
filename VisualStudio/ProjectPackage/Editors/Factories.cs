@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-#if VODESIGNER
+
 using System;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
@@ -276,190 +276,189 @@ namespace XSharp.Project
         }
     }
 
-    [Guid(GuidStrings.guidXSharpVOMenuEditor)]
-    [ProvideView(LogicalView.Designer, "")]
-    public sealed class VOMenuEditorFactory : VOEditorFactoryBase
-    {
-        public VOMenuEditorFactory(XSharpProjectPackage package)
-           : base()
-        {
+    //[Guid(GuidStrings.guidXSharpVOMenuEditor)]
+    //[ProvideView(LogicalView.Designer, "")]
+    //public sealed class VOMenuEditorFactory : VOEditorFactoryBase
+    //{
+    //    public VOMenuEditorFactory(XSharpProjectPackage package)
+    //       : base()
+    //    {
 
-            this.editorPackage = package;
-        }
+    //        this.editorPackage = package;
+    //    }
 
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public override int CreateEditorInstance(
-                        uint grfCreateDoc,
-                        string pszMkDocument,
-                        string pszPhysicalView,
-                        IVsHierarchy pvHier,
-                        uint itemid,
-                        System.IntPtr punkDocDataExisting,
-                        out System.IntPtr ppunkDocView,
-                        out System.IntPtr ppunkDocData,
-                        out string pbstrEditorCaption,
-                        out Guid pguidCmdUI,
-                        out int pgrfCDW)
-        {
+    //    [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+    //    public override int CreateEditorInstance(
+    //                    uint grfCreateDoc,
+    //                    string pszMkDocument,
+    //                    string pszPhysicalView,
+    //                    IVsHierarchy pvHier,
+    //                    uint itemid,
+    //                    System.IntPtr punkDocDataExisting,
+    //                    out System.IntPtr ppunkDocView,
+    //                    out System.IntPtr ppunkDocData,
+    //                    out string pbstrEditorCaption,
+    //                    out Guid pguidCmdUI,
+    //                    out int pgrfCDW)
+    //    {
 
-            if (CalledFromVulcanDLL())
-            {
-                IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOMenuEditorFactory", pszMkDocument) as IVsEditorFactory;
-                if (factory != null)
-                    return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-                    out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            }
-            // Initialize to null
-            ppunkDocView = IntPtr.Zero;
-            ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidStrings.guidVOMenuEditorFactory;
-            pgrfCDW = 0;
-            pbstrEditorCaption = null;
+    //        if (CalledFromVulcanDLL())
+    //        {
+    //            IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOMenuEditorFactory", pszMkDocument) as IVsEditorFactory;
+    //            if (factory != null)
+    //                return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
+    //                out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
+    //        }
+    //        // Initialize to null
+    //        ppunkDocView = IntPtr.Zero;
+    //        ppunkDocData = IntPtr.Zero;
+    //        pguidCmdUI = GuidStrings.guidVOMenuEditorFactory;
+    //        pgrfCDW = 0;
+    //        pbstrEditorCaption = null;
 
-            // Validate inputs
-            if ((grfCreateDoc & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
-            {
-                return VSConstants.E_INVALIDARG;
-            }
-            if (punkDocDataExisting != IntPtr.Zero)
-            {
-                return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
-            }
+    //        // Validate inputs
+    //        if ((grfCreateDoc & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
+    //        {
+    //            return VSConstants.E_INVALIDARG;
+    //        }
+    //        if (punkDocDataExisting != IntPtr.Zero)
+    //        {
+    //            return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
+    //        }
 
-            // Create the Document (editor)
-            var editor = new VOMenuEditorPane(editorPackage);
-            ppunkDocView = Marshal.GetIUnknownForObject(editor);
-            ppunkDocData = Marshal.GetIUnknownForObject(editor);
-            pbstrEditorCaption = "";
-            return VSConstants.S_OK;
-        }
-    }
+    //        // Create the Document (editor)
+    //        var editor = new VOMenuEditorPane(editorPackage);
+    //        ppunkDocView = Marshal.GetIUnknownForObject(editor);
+    //        ppunkDocData = Marshal.GetIUnknownForObject(editor);
+    //        pbstrEditorCaption = "";
+    //        return VSConstants.S_OK;
+    //    }
+    //}
 
-    [Guid(GuidStrings.guidXSharpVOFieldSpecEditor)]
-    [ProvideView(LogicalView.Designer, "")]
-    public sealed class VOFieldSpecEditorFactory : VOEditorFactoryBase
-    {
+    //[Guid(GuidStrings.guidXSharpVOFieldSpecEditor)]
+    //[ProvideView(LogicalView.Designer, "")]
+    //public sealed class VOFieldSpecEditorFactory : VOEditorFactoryBase
+    //{
 
-        public VOFieldSpecEditorFactory(XSharpProjectPackage package)
-            : base()
-        {
+    //    public VOFieldSpecEditorFactory(XSharpProjectPackage package)
+    //        : base()
+    //    {
 
-            this.editorPackage = package;
-        }
+    //        this.editorPackage = package;
+    //    }
 
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public override int CreateEditorInstance(
-                        uint grfCreateDoc,
-                        string pszMkDocument,
-                        string pszPhysicalView,
-                        IVsHierarchy pvHier,
-                        uint itemid,
-                        System.IntPtr punkDocDataExisting,
-                        out System.IntPtr ppunkDocView,
-                        out System.IntPtr ppunkDocData,
-                        out string pbstrEditorCaption,
-                        out Guid pguidCmdUI,
-                        out int pgrfCDW)
-        {
+    //    [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+    //    public override int CreateEditorInstance(
+    //                    uint grfCreateDoc,
+    //                    string pszMkDocument,
+    //                    string pszPhysicalView,
+    //                    IVsHierarchy pvHier,
+    //                    uint itemid,
+    //                    System.IntPtr punkDocDataExisting,
+    //                    out System.IntPtr ppunkDocView,
+    //                    out System.IntPtr ppunkDocData,
+    //                    out string pbstrEditorCaption,
+    //                    out Guid pguidCmdUI,
+    //                    out int pgrfCDW)
+    //    {
 
-            if (CalledFromVulcanDLL())
-            {
-                IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOFieldSpecEditorFactory", pszMkDocument) as IVsEditorFactory;
-                if (factory != null)
-                    return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-                    out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            }
-            // Initialize to null
-            ppunkDocView = IntPtr.Zero;
-            ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidStrings.guidVOFieldSpecEditorFactory;
-            pgrfCDW = 0;
-            pbstrEditorCaption = null;
+    //        if (CalledFromVulcanDLL())
+    //        {
+    //            IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOFieldSpecEditorFactory", pszMkDocument) as IVsEditorFactory;
+    //            if (factory != null)
+    //                return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
+    //                out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
+    //        }
+    //        // Initialize to null
+    //        ppunkDocView = IntPtr.Zero;
+    //        ppunkDocData = IntPtr.Zero;
+    //        pguidCmdUI = GuidStrings.guidVOFieldSpecEditorFactory;
+    //        pgrfCDW = 0;
+    //        pbstrEditorCaption = null;
 
-            // Validate inputs
-            if ((grfCreateDoc & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
-            {
-                return VSConstants.E_INVALIDARG;
-            }
-            if (punkDocDataExisting != IntPtr.Zero)
-            {
-                return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
-            }
+    //        // Validate inputs
+    //        if ((grfCreateDoc & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
+    //        {
+    //            return VSConstants.E_INVALIDARG;
+    //        }
+    //        if (punkDocDataExisting != IntPtr.Zero)
+    //        {
+    //            return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
+    //        }
 
-            // Create the Document (editor)
-            var editor = new VOFieldSpecEditorPane(editorPackage);
+    //        // Create the Document (editor)
+    //        var editor = new VOFieldSpecEditorPane(editorPackage);
 
-            ppunkDocView = Marshal.GetIUnknownForObject(editor);
-            ppunkDocData = Marshal.GetIUnknownForObject(editor);
-            pbstrEditorCaption = "";
-            return VSConstants.S_OK;
-        }
-    }
-
-
-    [Guid(GuidStrings.guidXSharpVOServerEditor)]
-    [ProvideView(LogicalView.Designer, "")]
-    public sealed class VODBServerEditorFactory : VOEditorFactoryBase
-    {
-
-        public VODBServerEditorFactory(XSharpProjectPackage package)
-            : base()
-        {
-
-            this.editorPackage = package;
-        }
-
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public override int CreateEditorInstance(
-                        uint grfCreateDoc,
-                        string pszMkDocument,
-                        string pszPhysicalView,
-                        IVsHierarchy pvHier,
-                        uint itemid,
-                        System.IntPtr punkDocDataExisting,
-                        out System.IntPtr ppunkDocView,
-                        out System.IntPtr ppunkDocData,
-                        out string pbstrEditorCaption,
-                        out Guid pguidCmdUI,
-                        out int pgrfCDW)
-        {
-
-            if (CalledFromVulcanDLL())
-            {
-                IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VODBServerEditorFactory", pszMkDocument) as IVsEditorFactory;
-                if (factory != null)
-                    return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-                    out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            }
-            // Initialize to null
-            ppunkDocView = IntPtr.Zero;
-            ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidStrings.guidVOServerEditorFactory;
-            pgrfCDW = 0;
-            pbstrEditorCaption = null;
-
-            // Validate inputs
-            if ((grfCreateDoc & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
-            {
-                return VSConstants.E_INVALIDARG;
-            }
-            if (punkDocDataExisting != IntPtr.Zero)
-            {
-                return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
-            }
-
-            // Create the Document (editor)
-            var editor = new VOServerEditorPane(editorPackage);
+    //        ppunkDocView = Marshal.GetIUnknownForObject(editor);
+    //        ppunkDocData = Marshal.GetIUnknownForObject(editor);
+    //        pbstrEditorCaption = "";
+    //        return VSConstants.S_OK;
+    //    }
+    //}
 
 
-            ppunkDocView = Marshal.GetIUnknownForObject(editor);
-            ppunkDocData = Marshal.GetIUnknownForObject(editor);
-            pbstrEditorCaption = "";
+    //[Guid(GuidStrings.guidXSharpVOServerEditor)]
+    //[ProvideView(LogicalView.Designer, "")]
+    //public sealed class VODBServerEditorFactory : VOEditorFactoryBase
+    //{
 
-            return VSConstants.S_OK;
-        }
-    }
+    //    public VODBServerEditorFactory(XSharpProjectPackage package)
+    //        : base()
+    //    {
+
+    //        this.editorPackage = package;
+    //    }
+
+    //    [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+    //    public override int CreateEditorInstance(
+    //                    uint grfCreateDoc,
+    //                    string pszMkDocument,
+    //                    string pszPhysicalView,
+    //                    IVsHierarchy pvHier,
+    //                    uint itemid,
+    //                    System.IntPtr punkDocDataExisting,
+    //                    out System.IntPtr ppunkDocView,
+    //                    out System.IntPtr ppunkDocData,
+    //                    out string pbstrEditorCaption,
+    //                    out Guid pguidCmdUI,
+    //                    out int pgrfCDW)
+    //    {
+
+    //        if (CalledFromVulcanDLL())
+    //        {
+    //            IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VODBServerEditorFactory", pszMkDocument) as IVsEditorFactory;
+    //            if (factory != null)
+    //                return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
+    //                out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
+    //        }
+    //        // Initialize to null
+    //        ppunkDocView = IntPtr.Zero;
+    //        ppunkDocData = IntPtr.Zero;
+    //        pguidCmdUI = GuidStrings.guidVOServerEditorFactory;
+    //        pgrfCDW = 0;
+    //        pbstrEditorCaption = null;
+
+    //        // Validate inputs
+    //        if ((grfCreateDoc & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
+    //        {
+    //            return VSConstants.E_INVALIDARG;
+    //        }
+    //        if (punkDocDataExisting != IntPtr.Zero)
+    //        {
+    //            return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
+    //        }
+
+    //        // Create the Document (editor)
+    //        var editor = new VOServerEditorPane(editorPackage);
+
+
+    //        ppunkDocView = Marshal.GetIUnknownForObject(editor);
+    //        ppunkDocData = Marshal.GetIUnknownForObject(editor);
+    //        pbstrEditorCaption = "";
+
+    //        return VSConstants.S_OK;
+    //    }
+    //}
 
 
 }
-#endif

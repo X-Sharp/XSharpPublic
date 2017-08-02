@@ -41,9 +41,6 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
     <DisabledWarnings />
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
@@ -62,12 +59,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <DocumentationFile>false</DocumentationFile>
     <Optimize>true</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
     <DisabledWarnings />
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>

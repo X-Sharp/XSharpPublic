@@ -10,6 +10,6 @@
 #using System.Reflection
 #using System.Runtime.InteropServices
 #include "version.xh"
-[assembly: AssemblyTitleAttribute( "RegisterProvider" )]
-[assembly: AssemblyDescriptionAttribute( "RegisterProvider" )]
+[assembly: AssemblyTitleAttribute( "XSharpVoEditors" )]
+[assembly: AssemblyDescriptionAttribute( "XSharpVoEditors" )]
 

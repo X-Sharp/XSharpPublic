@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-#if VODESIGNER
+
 using System;
 using System.Collections;
 using System.ComponentModel.Design;
@@ -61,7 +61,7 @@ namespace XSharp.Project
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     //   [ComSourceInterfaces( typeof( IVsTextViewEvents ) )]
     [ComVisible(true)]
-    public class VOEditorPane : Microsoft.VisualStudio.Shell.WindowPane,
+    public class VOEditorPane : WindowPane,
                                 IVsPersistDocData,  //to Enable persistence functionality for document data
                                 IPersistFileFormat, //to enable the programmatic loading or saving of an object 
                                                     //in a format specified by the user.
@@ -73,7 +73,7 @@ namespace XSharp.Project
                                                     //support IVsFileBackup and have unsaved changes.
                                                     //                               IVsFindTarget,      //to implement find and replace capabilities within the editor
                                 IExtensibleObject,  //so we can get the automation object
-                                IEditor            //the automation interface for Editor
+                                IEditorHost            //the automation interface for Editor
     {
         private uint MyFormat = 0;
         protected string MyExtension = ".*";
@@ -106,7 +106,7 @@ namespace XSharp.Project
         private bool isDirty;
         private bool loading;
         private bool gettingCheckoutStatus;
-        protected VOWEDControl editorControl;             // All VO Editors have this common parent
+        protected IVOWEDControl editorControl;             // All VO Editors have this common parent
         private bool isLoaded;
 
         private Microsoft.VisualStudio.Shell.SelectionContainer selContainer;
@@ -152,7 +152,7 @@ namespace XSharp.Project
         {
             get
             {
-                return this.editorControl;
+                return this.editorControl.IWin32Window;
             }
         }
         #endregion
@@ -185,12 +185,13 @@ namespace XSharp.Project
 
             // Create and initialize the editor
 
-            this.editorControl = new VOWEDControl();
+            this.editorControl = (IVOWEDControl) Activator.CreateInstance(typeof(XSharp_VOWEDControl));
+            this.editorControl.SetHost(this);
             this.editorControl.IsDirtyChanged = new EventHandler(IsDirtyChangedHandler);
             this.editorControl.TriggerSave = new EventHandler(TriggerSaveHandler);
 
             setupCommands();
-            this.editorControl.StatusBarMessage = new StatusBarMessageDelegate(StatusBarMessageHandler);
+            this.editorControl.StatusMessage = new StatusMessageDelegate(StatusBarMessageHandler);
         }
 
         private IVsStatusbar oStatusBar;
@@ -352,9 +353,9 @@ namespace XSharp.Project
             command.Visible = true;
         }
 
-        protected void onUnimplemented(object sender, EventArgs e)
-        {
-        }
+        //protected void onUnimplemented(object sender, EventArgs e)
+        //{
+        //}
 
         /// <summary>
         /// Helper function used to add commands using IMenuCommandService
@@ -408,7 +409,7 @@ namespace XSharp.Project
         {
             //object o = null;
             //editorControl.TextSelection.Cut(out o);
-            editorControl.DoAction(DesignerActionType.Cut);
+            editorControl.Action(Actions.Cut);
             return VSConstants.S_OK;
         }
 
@@ -420,7 +421,7 @@ namespace XSharp.Project
         {
             //object o = null;
             //editorControl.TextSelection.Copy(out o);
-            editorControl.DoAction(DesignerActionType.Copy);
+            editorControl.Action(Actions.Copy);
             return VSConstants.S_OK;
         }
 
@@ -432,7 +433,7 @@ namespace XSharp.Project
         {
             //object o = null;
             //editorControl.TextSelection.Paste(ref o, 0);
-            editorControl.DoAction(DesignerActionType.Paste);
+            editorControl.Action(Actions.Paste);
             return VSConstants.S_OK;
         }
 
@@ -448,7 +449,7 @@ namespace XSharp.Project
         public int Delete(long unit, long count)
         {
             //editorControl.TextSelection.Delete((int)unit, (int)count);
-            editorControl.DoAction(DesignerActionType.RemoveSelected);
+            editorControl.Action(Actions.RemoveSelected);
             return VSConstants.S_OK;
         }
 
@@ -480,7 +481,7 @@ namespace XSharp.Project
             }
 
             // Set the out value to this
-            ppDisp = (IEditor)this;
+            ppDisp = (IEditorHost)this;
 
             // Store the IExtensibleObjectSite object, it will be used in the Dispose method
             extensibleObjectSite = pParent;
@@ -614,7 +615,7 @@ namespace XSharp.Project
                     hr = VsUiShell.SetWaitCursor();
                 }
 
-                if (this.editorControl.OpenFile(filename))
+                if (this.editorControl.OpenWindow(filename))
                 {
                     this.isLoaded = true;
                     lSuccess = true;
@@ -1207,9 +1208,6 @@ namespace XSharp.Project
         /// <param name="_isFileReadOnly">Indicates whether the file loaded is Read Only or not</param>
         private void SetReadOnly(bool _isFileReadOnly)
         {
-            // TODO Chris: set the editor's readonly state
-
-            // this.editorControl.RichTextBoxControl.ReadOnly = _isFileReadOnly;
             this.editorControl.ReadOnly = _isFileReadOnly;
 
             //update editor caption with "[Read Only]" or "" as necessary
@@ -1388,12 +1386,15 @@ namespace XSharp.Project
                                 new EventHandler(onAlignLeft), onQueryAlignEH);
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignRight,
                                 new EventHandler(onAlignRight), onQueryAlignEH);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignHorizontalCenters,
-                                new EventHandler(onAlignHorizontalCenters), onQueryAlignEH);
+
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignTop,
                                 new EventHandler(onAlignTop), onQueryAlignEH);
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignBottom,
                                 new EventHandler(onAlignBottom), onQueryAlignEH);
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignHorizontalCenters,
+                                new EventHandler(onAlignHorizontalCenters), onQueryAlignEH);
+
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignVerticalCenters,
                                 new EventHandler(onAlignVerticalCenters), onQueryAlignEH);
 
@@ -1407,14 +1408,14 @@ namespace XSharp.Project
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.TabOrder,
                                 new EventHandler(onTabOrder), null);
 
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToGrid,
-                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+                //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToGrid,
+                //                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
 
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.LockControls,
-                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+                //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.LockControls,
+                //                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
 
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignToGrid,
-                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+                //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignToGrid,
+                //                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
 
 
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceMakeEqual,
@@ -1449,13 +1450,19 @@ namespace XSharp.Project
                                 new EventHandler(onCenterVertically), new EventHandler(onQueryCopy));
 
 
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.BringToFront,
-                               new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+                //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.BringToFront,
+                //               new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
 
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SendToBack,
-                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+                //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SendToBack,
+                //                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
 
 
+                // our own commands
+                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidShowGrid,
+                                new EventHandler(onToggleGrid), new EventHandler(onQueryViewGrid));
+
+                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidTestDialog,
+                                new EventHandler(onTestDialog), null);
             }
         }
         /// <summary>
@@ -1465,7 +1472,7 @@ namespace XSharp.Project
         /// <param name="e">  Not used.</param>
         private void onSelectAll(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SelectAll);
+            editorControl.Action(Actions.SelectAll);
         }
 
         /// <summary>
@@ -1477,7 +1484,7 @@ namespace XSharp.Project
         private void onQueryCopy(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Copy);
+            command.Enabled = editorControl.CanDoAction(Actions.Copy);
         }
 
         /// <summary>
@@ -1501,7 +1508,7 @@ namespace XSharp.Project
         private void onQueryCutOrDelete(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Cut);
+            command.Enabled = editorControl.CanDoAction(Actions.Cut);
         }
 
         /// <summary>
@@ -1520,7 +1527,7 @@ namespace XSharp.Project
         /// </summary>
         private void onDelete(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.RemoveSelected);
+            editorControl.Action(Actions.RemoveSelected);
             editorControl.RecordCommand("Delete");
         }
 
@@ -1532,7 +1539,7 @@ namespace XSharp.Project
         private void onQueryPaste(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Paste);
+            command.Enabled = editorControl.CanDoAction(Actions.Paste);
         }
 
         /// <summary>
@@ -1549,92 +1556,92 @@ namespace XSharp.Project
         private void onQueryAlign(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.AlignLeft);
+            command.Enabled = editorControl.CanDoAction(Actions.AlignLeft);
         }
         private void onQuerySpacing(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.SpacingHorzEqual);
+            command.Enabled = editorControl.CanDoAction(Actions.SpacingHorzEqual);
         }
 
         private void onAlignLeft(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.AlignLeft);
+            editorControl.Action(Actions.AlignLeft);
         }
         private void onAlignRight(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.AlignRight);
+            editorControl.Action(Actions.AlignRight);
         }
         private void onAlignHorizontalCenters(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.AlignCenterVert);
+            editorControl.Action(Actions.AlignCenterVert);
         }
         private void onAlignTop(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.AlignTop);
+            editorControl.Action(Actions.AlignTop);
         }
         private void onAlignBottom(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.AlignBottom);
+            editorControl.Action(Actions.AlignBottom);
         }
         private void onAlignVerticalCenters(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.AlignCenterHorz);
+            editorControl.Action(Actions.AlignCenterHorz);
         }
 
         private void onSameSize(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SameSize);
+            editorControl.Action(Actions.SameSize);
         }
         private void onSameHorzSize(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SameHorSize);
+            editorControl.Action(Actions.SameHorSize);
         }
         private void onSameVertSize(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SameVerSize);
+            editorControl.Action(Actions.SameVerSize);
         }
 
         private void onHorizSpaceMakeEqual(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SpacingHorzEqual);
+            editorControl.Action(Actions.SpacingHorzEqual);
         }
         private void onHorizSpaceIncrease(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SpacingHorzInc);
+            editorControl.Action(Actions.SpacingHorzInc);
         }
         private void onHorizSpaceDecrease(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SpacingHorzDec);
+            editorControl.Action(Actions.SpacingHorzDec);
         }
         private void onHorizSpaceConcatenate(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SpacingHorzRem);
+            editorControl.Action(Actions.SpacingHorzRem);
         }
         private void onVertSpaceMakeEqual(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SpacingVertEqual);
+            editorControl.Action(Actions.SpacingVertEqual);
         }
         private void onVertSpaceIncrease(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SpacingVertInc);
+            editorControl.Action(Actions.SpacingVertInc);
         }
         private void onVertSpaceDecrease(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SpacingVertDec);
+            editorControl.Action(Actions.SpacingVertDec);
         }
         private void onVertSpaceConcatenate(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.SpacingVertRem);
+            editorControl.Action(Actions.SpacingVertRem);
         }
 
         private void onCenterHorizontally(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.CenterHorz);
+            editorControl.Action(Actions.CenterHorz);
         }
         private void onCenterVertically(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.CenterVert);
+            editorControl.Action(Actions.CenterVert);
         }
 
 
@@ -1659,6 +1666,10 @@ namespace XSharp.Project
         {
             editorControl.TestForm();
         }
+        private void onToggleGrid(object sender, EventArgs e)
+        {
+            editorControl.ToggleGrid();
+        }
 
 
         /// <summary>
@@ -1669,7 +1680,7 @@ namespace XSharp.Project
         private void onQueryUndo(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Undo);
+            command.Enabled = editorControl.CanDoAction(Actions.Undo);
         }
 
         /// <summary>
@@ -1679,7 +1690,7 @@ namespace XSharp.Project
         /// <param name="e">  Not used.</param>
         private void onUndo(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.Undo);
+            editorControl.Action(Actions.Undo);
         }
 
         /// <summary>
@@ -1690,7 +1701,7 @@ namespace XSharp.Project
         private void onQueryRedo(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Redo);
+            command.Enabled = editorControl.CanDoAction(Actions.Redo);
         }
 
         /// <summary>
@@ -1700,7 +1711,7 @@ namespace XSharp.Project
         /// <param name="e">  Not used.</param>
         private void onRedo(object sender, EventArgs e)
         {
-            editorControl.DoAction(DesignerActionType.Redo);
+            editorControl.Action(Actions.Redo);
         }
 
 #endregion
@@ -1709,56 +1720,55 @@ namespace XSharp.Project
 
 
     }
-        public class VOMenuEditorPane : VOEditorPane
-    {
-        public VOMenuEditorPane(XSharpProjectPackage package) : base(package)
-        {
-            MyExtension = ".xsmnu";
-        }
-        protected override Guid _GetClassID()
-        {
-            return GuidStrings.guidVOMenuEditorFactory;
-        }
-        protected override string getFormatList()
-        {
-            char Endline = (char)'\n';
-            string FormatList = string.Format(CultureInfo.InvariantCulture, "Menu Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
-            return FormatList;
-        }
-    }
-    public class VOServerEditorPane : VOEditorPane
-    {
-        public VOServerEditorPane(XSharpProjectPackage package) : base(package)
-        {
-            MyExtension = ".xsdbs";
-        }
-        protected override Guid _GetClassID()
-        {
-            return GuidStrings.guidVOServerEditorFactory;
-        }
-        protected override string getFormatList()
-        {
-            char Endline = (char)'\n';
-            string FormatList = string.Format(CultureInfo.InvariantCulture, "DbServer Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
-            return FormatList;
-        }
-    }
-    public class VOFieldSpecEditorPane : VOEditorPane
-    {
-        public VOFieldSpecEditorPane(XSharpProjectPackage package) : base(package)
-        {
-            MyExtension = ".xsfs";
-        }
-        protected override Guid _GetClassID()
-        {
-            return GuidStrings.guidVOFieldSpecEditorFactory;
-        }
-        protected override string getFormatList()
-        {
-            char Endline = (char)'\n';
-            string FormatList = string.Format(CultureInfo.InvariantCulture, "FieldSpec Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
-            return FormatList;
-        }
-    }
+    //public class VOMenuEditorPane : VOEditorPane
+    //{
+    //    public VOMenuEditorPane(XSharpProjectPackage package) : base(package)
+    //    {
+    //        MyExtension = ".xsmnu";
+    //    }
+    //    protected override Guid _GetClassID()
+    //    {
+    //        return GuidStrings.guidVOMenuEditorFactory;
+    //    }
+    //    protected override string getFormatList()
+    //    {
+    //        char Endline = (char)'\n';
+    //        string FormatList = string.Format(CultureInfo.InvariantCulture, "Menu Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+    //        return FormatList;
+    //    }
+    //}
+    //public class VOServerEditorPane : VOEditorPane
+    //{
+    //    public VOServerEditorPane(XSharpProjectPackage package) : base(package)
+    //    {
+    //        MyExtension = ".xsdbs";
+    //    }
+    //    protected override Guid _GetClassID()
+    //    {
+    //        return GuidStrings.guidVOServerEditorFactory;
+    //    }
+    //    protected override string getFormatList()
+    //    {
+    //        char Endline = (char)'\n';
+    //        string FormatList = string.Format(CultureInfo.InvariantCulture, "DbServer Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+    //        return FormatList;
+    //    }
+    //}
+    //public class VOFieldSpecEditorPane : VOEditorPane
+    //{
+    //    public VOFieldSpecEditorPane(XSharpProjectPackage package) : base(package)
+    //    {
+    //        MyExtension = ".xsfs";
+    //    }
+    //    protected override Guid _GetClassID()
+    //    {
+    //        return GuidStrings.guidVOFieldSpecEditorFactory;
+    //    }
+    //    protected override string getFormatList()
+    //    {
+    //        char Endline = (char)'\n';
+    //        string FormatList = string.Format(CultureInfo.InvariantCulture, "FieldSpec Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+    //        return FormatList;
+    //    }
+    //}
 }
-#endif

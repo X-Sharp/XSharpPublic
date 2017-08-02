@@ -253,7 +253,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Parent.Parent is XP.Namespace_Context)
                 return node;
             string name = context.Name;
-            if (string.Compare(this.GlobalClassName, 0,name+".",0,name.Length+1,true) == 0)
+            if (string.Compare(this.GlobalClassName, 0,name+".",0,name.Length+1,StringComparison.OrdinalIgnoreCase) == 0)
             {
                 node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeNameMatchesGlobalNamespace, typeKind, name, GlobalClassName));
             }

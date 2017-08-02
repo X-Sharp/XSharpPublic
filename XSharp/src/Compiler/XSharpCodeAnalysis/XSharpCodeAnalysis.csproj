@@ -346,7 +346,7 @@
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
     <Compile Include="Parser\XSharpVOTreeTransformation.cs" />
     <Compile Include="Parser\XSharpTreeTransformation.cs" />
-    <Compile Include="Properties\AssemblyInfoVS.cs" />
+    <Compile Include="Properties\AssemblyInfoFW.cs" />
     <Compile Include="Binder\Semantics\Conversions.cs" />
     <Compile Include="LiteralNames.cs" />
     <Compile Include="Symbols\ConstantValueSpecialized.cs" />

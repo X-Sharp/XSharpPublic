@@ -358,27 +358,29 @@ namespace XSharpLanguage
             }
             // Sort in alphabetical order
             // and put in the SelectionList
-            completionSets.Add(new CompletionSet("All", "All", applicableTo, compList.Values, Enumerable.Empty<Completion>()));
+            var values = compList.Values;
+            completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
+            
             if (showTabs)
             {
                 if (compList.HasEnumMembers)
                 {
-                    var sub = compList.Values.Where(item => item.Kind == Kind.EnumMember);
+                    var sub = values.Where(item => item.Kind == Kind.EnumMember);
                     completionSets.Add(new CompletionSet("Values", "Values", applicableTo, sub, Enumerable.Empty<Completion>()));
                 }
                 if (compList.HasMethods)
                 {
-                    var sub = compList.Values.Where(item => item.Kind == Kind.Method);
+                    var sub = values.Where(item => item.Kind == Kind.Method);
                     completionSets.Add(new CompletionSet("Methods", "Methods", applicableTo, sub, Enumerable.Empty<Completion>()));
                 }
                 if (compList.HasFields)
                 {
-                    var sub = compList.Values.Where(item => item.Kind.IsField());
+                    var sub = values.Where(item => item.Kind.IsField());
                     completionSets.Add(new CompletionSet("Fields", "Fields", applicableTo, sub, Enumerable.Empty<Completion>()));
                 }
                 if (compList.HasProperties)
                 {
-                    var sub = compList.Values.Where(item => item.Kind == Kind.Property);
+                    var sub = values.Where(item => item.Kind == Kind.Property);
                     completionSets.Add(new CompletionSet("Properties", "Properties", applicableTo, sub, Enumerable.Empty<Completion>()));
                 }
                 if (compList.HasEvents)
@@ -388,12 +390,12 @@ namespace XSharpLanguage
                 }
                 if (compList.HasTypes)
                 {
-                    var sub = compList.Values.Where(item => item.Kind.IsType());
+                    var sub = values.Where(item => item.Kind.IsType());
                     completionSets.Add(new CompletionSet("Types", "Types", applicableTo, sub, Enumerable.Empty<Completion>()));
                 }
                 if (compList.HasNamespaces)
                 {
-                    var sub = compList.Values.Where(item => item.Kind == Kind.Namespace);
+                    var sub = values.Where(item => item.Kind == Kind.Namespace);
                     completionSets.Add(new CompletionSet("Namespaces", "Namespaces", applicableTo, sub, Enumerable.Empty<Completion>()));
                 }
             }
@@ -519,7 +521,7 @@ namespace XSharpLanguage
             if (dotPos != -1)
                 startLen = dotPos + 1;
             //
-            foreach (XFile file in project.Files)
+            foreach (XFile file in project.SourceFiles)
             {
                 foreach (XType typeInfo in file.TypeList.Values.Where(ti => nameStartsWith(ti.FullName, startWith)))
                 {
@@ -2580,7 +2582,6 @@ namespace XSharpLanguage
             // As we have separators every even token, we will walk by step 2
             int currentPos = 0;
             String currentToken = "";
-            XElement element = null;
             CompletionType cType = null;
             CompletionType cTemp = null;
             if (tokenList.Count == 0)
@@ -2703,33 +2704,8 @@ namespace XSharpLanguage
                     // First token, so it could be a parameter or a local var
                     if (currentPos == 0)
                     {
-                        // Search in Parameters
-                        element = currentMember.Parameters.Find(x => StringEquals(x.Name, currentToken));
-                        if (element == null)
-                        {
-                            // then Locals
-                            element = currentMember.Locals.Find(x => StringEquals(x.Name, currentToken));
-                            if (element == null)
-                            {
-                                // We can have a Property/Field of the current CompletionType
-                                if (!cType.IsEmpty())
-                                {
-                                    cType = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
-                                }
-                                //
-                                if (cType.IsEmpty())
-                                {
-                                    // Now, search for a Global in external Assemblies
-                                    //
-                                    cType = SearchGlobalFieldIn(currentMember.File, currentToken, out foundElement);
-                                }
-                            }
-                        }
-                        if (element != null)
-                        {
-                            cType = new CompletionType((XVariable)element, currentNS);
-                            foundElement = new CompletionElement(element);
-                        }
+                        // Search in Parameters, Locals, Field and Properties
+                        foundElement = currentMember.FindIdentifier(currentToken, ref cType, visibility, currentNS);
                     }
                     else
                     {
@@ -2768,7 +2744,55 @@ namespace XSharpLanguage
             }
             return cType;
         }
+        static public CompletionElement FindIdentifier(this XTypeMember member, string name, ref CompletionType cType, Modifiers visibility, string currentNS)
+        {
+            XElement element;
+            CompletionElement foundElement = null;
+            if (cType.IsEmpty())
+            {
+                cType = new CompletionType(member.Parent);
+            }
+            element = member.Parameters.Find(x => StringEquals(x.Name, name));
+            if (element == null)
+            {
+                // then Locals
+                element = member.Locals.Find(x => StringEquals(x.Name, name));
+                if (element == null)
+                {
+                    // We can have a Property/Field of the current CompletionType
+                    if (!cType.IsEmpty())
+                    {
+                        cType = SearchPropertyOrFieldIn(cType, name, visibility, out foundElement);
+                    }
+                    // Find Defines and globals in this file
+                    if (cType.IsEmpty() && member.File.GlobalType != null)
+                    {
+                        element = member.File.GlobalType.Members.Find(x => StringEquals(x.Name, name));
+                    }
+                    if (element == null)
+                    {
+                        // Now, search for a Global in external Assemblies
+                        //
+                        cType = SearchGlobalFieldIn(member.File, name, out foundElement);
+                    }
+                }
+            }
+            if (element != null )
+            {
+                if (element is XVariable)
+                {
+                    cType = new CompletionType((XVariable)element, currentNS);
+                    foundElement = new CompletionElement(element);
+                }
+                else
+                {
+                    cType = new CompletionType((XElement) element);
+                    foundElement = new CompletionElement(element);
 
+                }
+            }
+            return foundElement;
+        }
 
         /// <summary>
         /// Search for the Constructor in the corresponding Type,

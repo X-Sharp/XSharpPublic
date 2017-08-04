@@ -97,6 +97,7 @@
     <Compile Include="SystemTypeController.cs" />
     <Compile Include="TextRange.cs" />
     <Compile Include="XCollections.cs" />
+    <Compile Include="XFileType.cs" />
     <Compile Include="XProject.cs" />
     <Compile Include="XSolution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

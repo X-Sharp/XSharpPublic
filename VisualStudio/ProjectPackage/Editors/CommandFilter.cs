@@ -26,7 +26,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using XSharpColorizer;
 using XSharpModel;
-
+using XSharpLanguage;
 namespace XSharp.Project
 {
     internal sealed class CommandFilter : IOleCommandTarget
@@ -292,50 +292,19 @@ namespace XSharp.Project
                             string identifier = idSpan.GetText();
                             //
                             XFile _file = buffer.GetFile();
-                            XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.Position, _file);
+                            XTypeMember currentMember = XSharpTokenTools.FindMember(caret.Position, _file);
                             //
-                            if (currentMember == null)
-                                continue;
-                            CompletionType cType = null;
-                            XSharpLanguage.CompletionElement foundElement = null;
-                            XVariable element = null;
-                            // Search in Parameters
-                            if (currentMember.Parameters != null)
-                                element = currentMember.Parameters.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
-                            if (element == null)
+                            if (currentMember != null)
                             {
-                                // then Locals
-                                if (currentMember.Locals != null)
-                                    element = currentMember.Locals.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
-                                if (element == null)
+                                var currentNS = XSharpTokenTools.FindNamespace(caret.Position, _file);
+                                CompletionType cType = null;
+                                // use same code that is used by Completion engine to locate parameter, local, field, property or Global
+                                var foundElement = currentMember.FindIdentifier(identifier, ref cType, Modifiers.Private, currentNS.Name);
+                                if (foundElement != null)
                                 {
-                                    if (currentMember.Parent != null)
-                                    {
-                                        // Context Type....
-                                        cType = new CompletionType(currentMember.Parent.Clone);
-                                        // We can have a Property/Field of the current CompletionType
-                                        if (!cType.IsEmpty())
-                                        {
-                                            cType = XSharpLanguage.XSharpTokenTools.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
-                                        }
-                                        // Not found ? It might be a Global !?
-                                        if (foundElement == null)
-                                        {
-
-                                        }
-                                    }
+                                    if ((String.Compare(foundElement.Name, identifier) != 0))
+                                        edit.Replace(idSpan, foundElement.Name);
                                 }
-                            }
-                            if (element != null)
-                            {
-                                cType = new CompletionType((XVariable)element, "");
-                                foundElement = new XSharpLanguage.CompletionElement(element);
-                            }
-                            // got it !
-                            if (foundElement != null)
-                            {
-                                if ((String.Compare(foundElement.Name, identifier) != 0))
-                                    edit.Replace(idSpan, foundElement.Name);
                             }
                         }
                     }

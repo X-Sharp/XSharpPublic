@@ -43,8 +43,9 @@ namespace XSharpModel
 
         public static Assembly FindAssembly(string fullName)
         {
-            foreach (var asm in assemblies.Values)
+            foreach (var item in assemblies)
             {
+                var asm = item.Value;
                 if (asm.Assembly != null && string.Compare(asm.Assembly.FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0)
                     return asm.Assembly;
             }

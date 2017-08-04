@@ -443,7 +443,7 @@
     <Compile Include="Nodes\XSharpDependentFileNode.cs" />
     <Compile Include="Editors\XSharpEditorFactory.cs" />
     <Compile Include="XSharpConfigprovider.cs" />
-    <Compile Include="XFileType.cs" />
+    <Compile Include="XSharpFileType.cs" />
     <Compile Include="Automation\OAXSharpFileItem.cs" />
     <Compile Include="Editors\XSharpProjectFactory.cs" />
     <Compile Include="Nodes\XSharpFileNode.cs" />

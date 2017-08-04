@@ -420,6 +420,10 @@ namespace XSharpModel
                 new TextRange(context), new TextInterval(context),
                 context.ReturnType == null ? "Void" : context.ReturnType.GetText());
             //
+            if (context.Expr != null)
+            {
+                newMethod.Suffix = " := " +context.Expr.GetText();
+            }
             addGlobalMember(newMethod);
 
         }

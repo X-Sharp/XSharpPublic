@@ -232,28 +232,24 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		FOR n := 0 UPTO oCode:aAccessAssign:Count - 1
 			cName := oCode:aAccessAssign[n]
 
-			aEntity:Clear()
-			aEntity:Add(ceTab + "ACCESS " + cName)
-			aEntity:Add(ceTab + "RETURN SELF:FieldGet( #" + cName + " )")
 			IF lAccessAssign
+				aEntity:Clear()
+				aEntity:Add(ceTab + "ACCESS " + cName)
+				aEntity:Add(ceTab + "RETURN SELF:FieldGet( #" + cName + " )")
 				oGenerator:WriteEntity(EntityType._Access , cName , cFormName , EntityOptions.None , aEntity)
+
+				aEntity:Clear()
+				aEntity:Add(ceTab + "ASSIGN " + cName + "( uValue )")
+				aEntity:Add(ceTab + "SELF:FieldPut( #" + cName + " , uValue )")
+				oGenerator:WriteEntity(EntityType._Assign , cName , cFormName , EntityOptions.None , aEntity)
+
 			ELSE
 				oGenerator:DeleteEntity(EntityType._Access , cName , cFormName)
-			END IF
-
-			aEntity:Clear()
-			aEntity:Add(ceTab + "ASSIGN " + cName + "( uValue )")
-			aEntity:Add(ceTab + "SELF:FieldPut( #" + cName + " , uValue )")
-			IF lAccessAssign
-				oGenerator:WriteEntity(EntityType._Assign , cName , cFormName , EntityOptions.None , aEntity)
-			ELSE
 				oGenerator:DeleteEntity(EntityType._Assign , cName , cFormName)
 			END IF
 		NEXT
 		
-		// this is for separate .designer.prg file, similar to winforms. Ignore for VS
 		oGenerator:WriteEndClass(cFormName)
-
 		oGenerator:EndCode()
 	RETURN oDest:Save()
 

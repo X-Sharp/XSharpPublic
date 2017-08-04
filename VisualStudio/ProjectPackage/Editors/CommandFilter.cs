@@ -84,8 +84,7 @@ namespace XSharp.Project
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession(false);
-                        //
-                        //FormatLine();
+                        FormatLine();
                         break;
 
                     case VSConstants.VSStd2KCmdID.TAB:

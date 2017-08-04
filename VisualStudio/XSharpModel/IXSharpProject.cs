@@ -27,7 +27,12 @@ namespace XSharpModel
         void ClearIntellisenseErrors(string file);
         void AddIntellisenseError(string file, int line, int column, int Length, string errCode, string message, DiagnosticSeverity sev);
         void ShowIntellisenseErrors();
+
         bool IsDocumentOpen(string file);
+        string DocumentGetText(string file, ref bool IsOpen);
+        bool DocumentInsertLine(string fileName, int line, string text);
+        bool DocumentSetText(string fileName, string text);
+
         List<IXErrorPosition> GetIntellisenseErrorPos(string fileName);
         XSharpParseOptions ParseOptions { get; }
         EnvDTE.Project FindProject(String sProject);

@@ -313,14 +313,14 @@ namespace XSharpModel
             var aFiles = this.xFilesDict.Values.ToArray();
             foreach (XFile file in aFiles)
             {
-                //
-                if (caseInvariant)
+                // The dictionary is case insensitive
+                file.TypeList.TryGetValue(typeName, out xTemp);
+                if (xTemp != null && ! caseInvariant)
                 {
-                    file.TypeList.TryGetValue(typeName.ToLowerInvariant(), out xTemp);
-                }
-                else
-                {
-                    file.TypeList.TryGetValue(typeName.ToLower(), out xTemp);
+                    if (xType.FullName != typeName && xType.Name != typeName)
+                    {
+                        xType = null;
+                    }
                 }
                 if (xTemp != null)
                 {
@@ -371,26 +371,20 @@ namespace XSharpModel
             var aFiles = this.xFilesDict.Values.ToArray();
             foreach (XFile file in aFiles)
             {
-                var aTypes = file.TypeList.Values.ToArray();
-                foreach (XType x in aTypes)
+                XType x = null;
+                // The dictionary is case insensitive
+                if (file.TypeList.TryGetValue(typeName, out x))
                 {
-                    if (caseInvariant)
+                    xTemp = x;
+                    if (!caseInvariant)
                     {
-                        if (x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant())
+                        if (x.FullName != typeName && x.Name != typeName)
                         {
-                            xTemp = x;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (x.FullName.ToLower() == typeName.ToLower())
-                        {
-                            xTemp = x;
-                            break;
+                            xTemp = null;
                         }
                     }
                 }
+
                 if (xTemp != null)
                 {
                     if (xTemp.IsPartial)
@@ -573,13 +567,7 @@ namespace XSharpModel
             return new List<IXErrorPosition>();
         }
 
-        public bool IsDocumentOpen(string file)
-        {
-            // Always open. We remove file from project when it is closed.
-            return true;
-        }
-
-        public void OpenElement(string file, int line, int column)
+         public void OpenElement(string file, int line, int column)
         {
             return;
         }
@@ -596,6 +584,27 @@ namespace XSharpModel
         public void ShowIntellisenseErrors()
         {
             return;
+        }
+
+        public bool IsDocumentOpen(string file)
+        {
+            // Always open. We remove file from project when it is closed.
+            return true;
+        }
+
+        public string DocumentGetText(string file, ref bool isOpen)
+        {
+            isOpen = false;
+            return "";
+        }
+
+        public bool DocumentInsertLine(string fileName, int line, string text)
+        {
+            return false;
+        }
+        public bool DocumentSetText(string fileName, string text)
+        {
+            return false;
         }
     }
 }

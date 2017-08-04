@@ -17,8 +17,10 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.IO;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
-
-
+using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
+using Microsoft.VisualStudio.TextManager.Interop;
+using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -702,6 +704,77 @@ namespace XSharp.Project
                 service = this.DesignerContext;
             }
             return service;
+        }
+
+        #endregion
+
+        #region Operate on Open Files
+        private IVsTextLines TextLines
+        {
+            get
+            {
+                IVsHierarchy hierarchy;
+                uint vsitemid = VSConstants.VSITEMID_NIL;
+                IVsPersistDocData docData;
+                uint docCookie;
+                VsShellUtilities.GetRDTDocumentInfo(this.ProjectMgr.Site, this.Url, out hierarchy, out vsitemid, out docData, out docCookie);
+                if (hierarchy == null || docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL)
+                    return null;
+                IVsTextLines buffer = docData as IVsTextLines;
+                return buffer;
+
+            }
+        }
+
+        public string DocumentGetText( )
+        {
+            return VsShellUtilities.GetRunningDocumentContents(this.ProjectMgr.Site, this.Url);
+        }
+        public bool DocumentInsertLine(int line, string text)
+        {
+            IVsTextLines VsTxtlines = TextLines;
+            if (VsTxtlines == null || line < 1)
+                return false;
+            bool Result = false;
+            text += "\r\n";
+            TextSpan[] span = new TextSpan[1];
+            GCHandle handle = GCHandle.Alloc(text, GCHandleType.Pinned);
+            try
+            {
+                line -= 1;
+                Int32 result = VsTxtlines.ReplaceLines(line , 0, line , 0, handle.AddrOfPinnedObject(), text.Length, span);
+                if (result == VSConstants.S_OK)
+                    Result = true;
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return Result;
+        }
+
+        public bool DocumentSetText(string text)
+        {
+            IVsTextLines VsTxtlines = TextLines;
+            if (VsTxtlines == null)
+                return false;
+            bool Result = false;
+            GCHandle handle = GCHandle.Alloc(text, GCHandleType.Pinned);
+            try
+            {
+                TextSpan[] span = new TextSpan[1];
+                int line, col;
+                Int32 result = VsTxtlines.GetLastLineIndex(out line, out col);
+                if (result == VSConstants.S_OK)
+                    result = VsTxtlines.ReloadLines(0, 0, line, col, handle.AddrOfPinnedObject(), text.Length,  span);
+                if (result == VSConstants.S_OK)
+                    Result = true;
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return Result;
         }
 
         #endregion

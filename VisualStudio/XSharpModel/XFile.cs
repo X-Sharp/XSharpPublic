@@ -168,7 +168,7 @@ namespace XSharpModel
                 
                 lock (_lock)
                 {
-                    return _typeList.ToImmutableDictionary();
+                    return _typeList.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
                 }
             }
 

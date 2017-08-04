@@ -1923,7 +1923,39 @@ namespace XSharp.Project
         }
 
 
+        public bool DocumentInsertLine(string fileName, int line, string text)
+        {
+            XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
+            if (node != null)
+            {
+                return node.DocumentInsertLine(line, text);
+            }
+            return false;
+        }
 
+        public string DocumentGetText(string fileName, ref bool isOpen)
+        {
+            isOpen = IsDocumentOpen(fileName);
+            if (isOpen)
+            {
+                XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
+                if (node != null)
+                {
+                    return node.DocumentGetText();
+                }
+            }
+            return "";
+        }
+
+        public bool DocumentSetText(string fileName, string text)
+        {
+            XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
+            if (node != null)
+            {
+                return node.DocumentSetText( text);
+            }
+            return false;
+        }
 
         #endregion
         /*

@@ -2,12 +2,123 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
+
+DEFINE DefaultCaption  := "XSharp VO Form Editor"
+
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 	CONSTRUCTOR(_oSurface AS Control , _oOptions AS WindowDesignerOptions , _oGrid AS DesignerGrid , _oToolBox AS ToolBox)
 		SUPER(_oSurface , _oOptions , _oGrid , _oToolBox)
 	RETURN
+
+	PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
+								oRCStream AS EditorStream , oPrgStream AS EditorStream , oVhStream AS EditorStream , ;
+								cVhName REF STRING , lVnfrmOnly AS LOGIC , lRcInSameFolder REF LOGIC) AS LOGIC
+		LOCAL cRCFileName AS STRING
+		LOCAL cPrgFileName AS STRING
+		LOCAL cHeaderFile AS STRING
+		LOCAL cFileName AS STRING
+		LOCAL cBaseName AS STRING
+		LOCAL oFileInfo AS FileInfo
+		LOCAL oBaseDir AS DirectoryInfo
+		LOCAL cBaseDir AS STRING
+		LOCAL cAlternative AS STRING
+		LOCAL lSuccess AS LOGIC
+		LOCAL lError AS LOGIC
+		LOCAL nAt AS INT
+		
+		TRY
+
+			oFileInfo	:= FileInfo{cVNFrmFileName}
+			oBaseDir	:= oFileInfo:Directory
+			cBaseDir	:= oBaseDir:FullName
+			cBaseName	:= oFileInfo:Name
+			
+			IF cBaseName:ToLower():Endswith(".vnfrm") .or. cBaseName:ToLower():Endswith(".xsfrm")
+				cBaseName	:= System.IO.Path.GetFileNameWithoutExtension(cBaseName)
+			ENDIF
+			cRCFileName		:= cBaseDir + "\Resources\" + cBaseName + ".rc"
+			cAlternative	:= cBaseDir + "\" + cBaseName + ".rc"
+			IF !File.Exists(cRCFileName) .and. File.Exists(cAlternative)
+				cRCFileName := cAlternative
+				lRcInSameFolder := TRUE
+			ENDIF
+						
+			cFileName	:= cBaseName
+			nAt			:= cFileName:LastIndexOf('.')
+			IF nAt != -1 // strip out window name
+				cFileName := cFileName:Substring(0 , nAt)
+			ENDIF
+			cPrgFileName := cBaseDir + "\" + cFileName + ".prg"
+			cHeaderFile  := System.IO.Path.ChangeExtension(cPrgFileName, ".vh")
+			IF !File.Exists(cHeaderFile)
+				cHeaderFile  := System.IO.Path.ChangeExtension(cHeaderFile, ".xh")
+			ENDIF
+			cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + ".prg"
+			IF !File.Exists(cPrgFileName) .and. File.Exists(cAlternative)
+				cPrgFileName := cAlternative
+				cHeaderFile  := System.IO.Path.ChangeExtension(cPrgFileName, ".vh")
+				IF !File.Exists(cHeaderFile)
+					cHeaderFile  := System.IO.Path.ChangeExtension(cHeaderFile, ".xh")
+				ENDIF
+			ENDIF
+			cVhName := System.IO.Path.GetFileName(cHeaderFile)
+	
+			lError := FALSE
+			IF !lVnfrmOnly
+				IF !File.Exists(cRCFileName)
+					Funcs.ErrorBox("File was not found : " + cRCFileName)
+					lError := TRUE
+				END IF
+				IF !File.Exists(cPrgFileName)
+					Funcs.ErrorBox("File was not found : " + cPrgFileName)
+					lError := TRUE
+				END IF
+			END IF
+			
+			lSuccess := FALSE
+			IF !lError
+				IF !lVnfrmOnly
+					oRCStream:Load(cRCFileName)
+					oPrgStream:Load(cPrgFileName)
+					IF File.Exists(cHeaderFile) // else old transporter version
+						oVhStream:Load(cHeaderFile)
+					ENDIF
+					lSuccess := oRCStream:IsValid .and. oPrgStream:IsValid
+				ELSE
+					lSuccess := TRUE
+				END IF
+			END IF
+			IF lSuccess .and. !lError
+				lSuccess := FALSE
+				oVNFrmStream := File.Open(cVNFrmFileName , FileMode.Create , FileAccess.Write , FileShare.None)
+				lSuccess := TRUE
+			ENDIF
+			
+		CATCH e AS Exception
+
+			Funcs.WarningBox(e:Message )
+			lSuccess := FALSE
+
+		END TRY
+
+		IF !lSuccess
+			IF oVNFrmStream != NULL
+				oVNFrmStream:Close()
+			ENDIF
+			IF oRCStream:IsValid
+				oRCStream:Close()
+			ENDIF
+			IF oPrgStream:IsValid
+				oPrgStream:Close()
+			ENDIF
+			IF oVhStream:IsValid
+				oVhStream:Close()
+			ENDIF
+		END IF
+
+	RETURN lSuccess 
 
 	VIRTUAL METHOD Save() AS VOID
 		SELF:Save(SELF:cDefaultFileName , FALSE)
@@ -18,10 +129,8 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		LOCAL lOldTransporter AS LOGIC
 		LOCAL oVNFrm AS FileStream
 		LOCAL cVhName AS STRING
-		LOCAL lXsFrm := FALSE as LOGIC
-		LOCAL cXsFrmFileName := "" as STRING
 
-		IF /*SELF:lStandalone .or. */cVNFrmFileName:ToUpper():Contains("~AUTORECOVER")
+		IF cVNFrmFileName:ToUpper():Contains("~AUTORECOVER")
 			lBinaryOnly := TRUE
 		END IF
 
@@ -32,23 +141,14 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		oVh := XSharp_EditorStream{}
 		oRc := XSharp_EditorStream{}
 		
-        oVNFrm := NULL; cVhName := NULL; lRcInSameFolder := FALSE // Grrr
-		if System.IO.Path.GetExtension(cVnFrmFileName):ToLower() == ".xsfrm"
-			lXsFrm := TRUE
-			cXsFrmFileName := cVnFrmFileName
-			cVnFrmFileName := System.IO.Path.ChangeExtension(cXsFrmFileName, "vnfrm") 
-			System.IO.File.Copy(cXsFrmFileName, cVnFrmFileName,TRUE)
-		endif
+		oVNFrm := NULL; cVhName := NULL; lRcInSameFolder := FALSE // Grrr
 		IF .not. SELF:GetSaveFileStreams(cVNFrmFileName , oVNFrm , oRC , oPrg , oVh , REF cVhName , lBinaryOnly , REF lRcInSameFolder)
 			RETURN FALSE
 		ENDIF
 		
 		lOldTransporter := .not. oVh:IsValid
+		
 		SELF:SaveToXml(oVNFrm)
-		if lXsFrm
-			System.IO.File.Copy(cVnFrmFileName, cXsFrmFileName, true )
-			System.IO.File.Delete(cVnFrmFileName)
-		endif
 
 		IF .not. lBinaryOnly
 			LOCAL oCode AS CodeContents
@@ -60,7 +160,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 				SELF:SaveVh(oVh , oCode)
 			END IF
 
-			SELF:SavePrg(oPrg , oCode , lOldTransporter)
+			SELF:SavePrg(oPrg , oCode , lOldTransporter , cVhName)
 
 			SELF:nActionSaved := SELF:nAction
 		END IF
@@ -74,17 +174,11 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 		oGenerator:Clear()
 		oGenerator:AddInclude("VOWin32APILibrary.vh")
-		IF lOldTransporter
-			FOR LOCAL n := 0 UPTO oCode:aDefines:Count - 1
-				oGenerator:AddDefine(oCode:aDefines[n] , oCode:aDefineValues[n])
-			NEXT
-		ELSE
-			IF lRcInSameFolder
-				oGenerator:AddInclude(cVhName)
-			ELSE
-				oGenerator:AddInclude("..\" + cVhName)
-			END IF
-		END IF
+		
+		// in x#, always add the #defines in the .rc header, no need to put them in a .vh anymore
+		FOR LOCAL n := 0 UPTO oCode:aDefines:Count - 1
+			oGenerator:AddDefine(oCode:aDefines[n] , oCode:aDefineValues[n])
+		NEXT
 		oGenerator:AddLine("")
 		FOR LOCAL n := 0 UPTO oCode:aResource:Count - 1
 			oGenerator:AddLine(oCode:aResource[n])
@@ -92,31 +186,26 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		oStream:Save()
 	RETURN TRUE
 
-	METHOD SavePrg(oDest AS XSharp_EditorStream , oCode AS CodeContents , lOldTransporter AS LOGIC) AS LOGIC
+	METHOD SavePrg(oDest AS XSharp_EditorStream , oCode AS CodeContents , lOldTransporter AS LOGIC , cVhName AS STRING) AS LOGIC
 		LOCAL aEntity AS List<STRING>
 		LOCAL cFormName AS STRING
 		LOCAL cPrevName AS STRING
-//		LOCAL lHasDesPrg AS LOGIC
 		LOCAL n AS INT
 		
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oDest:Editor}
 		oGenerator:BeginCode(TRUE)
 
-		LOCAL /*cTab , */ceTab AS STRING
-//		cTab := e"\t"
-//		ceTab := e"\t"
+		LOCAL ceTab AS STRING
 		ceTab := ""
 
 		cFormName := SELF:oWindowDesign:Name
 		// needed for renaming a window:
-//		cPrevName := oWEditor:cPreviousName
 		cPrevName := SELF:oWindowDesign:Name
 
+		// don't do this for now, maybe the .vh file contains defiens for other windows in the same prg
 		oGenerator:DeleteDefines(oCode:aDefines)
-		IF lOldTransporter
-			oGenerator:AddDefines(oCode:aDefines , oCode:aDefineValues , FALSE)
-		ENDIF
+		oGenerator:AddXSharpDefines(oCode:aDefines , oCode:aDefineValues)
 	
 		oGenerator:WriteEntity(EntityType._Class , cPrevName , cPrevName , EntityOptions.AddUser , oCode:aClass)
 		oGenerator:WriteEntity(EntityType._Constructor , cFormName , cFormName , EntityOptions.None , oCode:aConstructor)
@@ -152,24 +241,6 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		NEXT
 		
 		// this is for separate .designer.prg file, similar to winforms. Ignore for VS
-/*
-		IF lHasDesPrg
-			oGenerator:WriteEndClass(cFormName)
-			oGenerator:EndCode()
-			oGenerator:BeginCode(FALSE)
-
-			aEntity:Clear()
-			aEntity:Add("PARTIAL CLASS " + cFormName)
-			oGenerator:WriteEntity(EntityType._Class , cPrevName , cPrevName , EntityOptions.ClearOldFields , aEntity)
-
-			oGenerator:DeleteEntity(EntityType._Constructor , "CONSTRUCTOR" , cFormName)
-			FOR n := 0 UPTO oCode:aAccessAssign:Count - 1
-				cName := oCode:aAccessAssign[n]
-				oGenerator:DeleteEntity(EntityType._Access , cName , cFormName)
-				oGenerator:DeleteEntity(EntityType._Assign , cName , cFormName)
-			NEXT
-		END IF
-*/
 		oGenerator:WriteEndClass(cFormName)
 
 		oGenerator:EndCode()
@@ -181,7 +252,6 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		oGenerator:BeginCode(TRUE)
 
 		oGenerator:DeleteDefines(oCode:aDefines)
-		oGenerator:AddDefines(oCode:aDefines, oCode:aDefineValues)
 		
 		oStream:Save()
 	RETURN TRUE
@@ -190,32 +260,27 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	// Always generates the code directly in a VS editor file
 	// Of course needs adjustment to work with x#'s project system
 	
-/*	ACCESS Module AS Vulcan.CodeModel.Module
+	ACCESS XFile AS XSharpModel.XFile
 		LOCAL cPrgFileName AS STRING
 		cPrgFileName := Funcs.GetModuleFilenameFromBinary(SELF:cDefaultFileName) + ".prg"
-	RETURN Vulcan.CodeModel.Projects.Find(cPrgFileName)
+	RETURN XSharpModel.XSolution.FindFile(cPrgFileName)
 
 	PROTECTED VIRTUAL METHOD WriteCallback(oDesign AS DesignWindowItem , cName AS STRING) AS VOID
-		LOCAL oProject AS Vulcan.CodeModel.Project
-		LOCAL oModule AS Vulcan.CodeModel.Module
-		LOCAL oMember AS Vulcan.CodeModel.Member
-		LOCAL oType AS Vulcan.CodeModel.TypeInfo
-		LOCAL oEditor AS VulcanEditor
+		LOCAL oProject AS XSharpModel.XProject
+		LOCAL oFile AS XSharpModel.XFile
+		LOCAL oType AS XSharpModel.XType
+		//LOCAL oEditor AS VulcanEditor
 		LOCAL aLines AS List<STRING>
-		LOCAL lManaged AS LOGIC
 		LOCAL cClass AS STRING
-		LOCAL lDirty AS LOGIC
 		LOCAL lOpen AS LOGIC
-		LOCAL nLine AS INT
-		LOCAL n AS INT
 
 		cClass := SELF:oWindowDesign:Name
 		
-		oModule := SELF:Module
-		IF oModule == NULL
+		oFile := SELF:XFile
+		IF oFile == NULL
 			RETURN
 		END IF
-		oProject := oModule:Parent
+		oProject := oFile:Project
 
 		IF cName == "Click"
 			cName := oDesign:Name
@@ -231,53 +296,88 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			RETURN
 		END IF
 		// Find Method for this class
+	    var rootNs := oFile:Project:ProjectNode:RootNameSpace
+		oType := oProject:Lookup(cClass,true)
+		if oType == NULL_OBJECT
+			oType := oProject:Lookup(rootNs+"."+cClass,true)
+		ENDIF
 		IF cName:ToUpper() == "CLASSDECLARATION"
-		    oType := oProject:FindType(SELF:oWindowDesign:Name, FALSE)
 	        IF (oType != NULL_OBJECT)
-	            oProject:OpenInEditor(oType)
+				oType:OpenEditor()
 	            RETURN
 	        ENDIF
 		    
-        ELSE
-		    oMember := oProject:FindMember(SELF:oWindowDesign:Name, cName, Vulcan.CodeModel.ElementType.Method, FALSE)
-	        IF (oMember != NULL_OBJECT)
-	            oProject:OpenInEditor(oMember)
-	            RETURN
-	        ENDIF
-        ENDIF		
-		oModule:GetInfo(lManaged , lOpen , lDirty)
-		IF .not. lManaged
-			RETURN
-		END IF
-		IF .not. lOpen
-			oModule:OpenInEditor()
-		END IF
-		oModule:GetInfo(lManaged , lOpen , lDirty)
-		IF .not. lOpen
-			RETURN
-		END IF
-		
-		oEditor := VulcanEditor{Funcs.BufferToLines(oModule:SourceCode)} 
-		nLine := oEditor:GetLastClassLine(cClass)
-		IF nLine <= 0 .or. nLine > oModule:GetLineCount()
-			RETURN
-		END IF
-
-		nLine ++
-		IF nLine >= oModule:GetLineCount()
-			nLine := oModule:GetLineCount() - 1
-		END IF
-
-		TRY
-			FOR n := 0 UPTO aLines:Count - 1
-				oModule:InsertLine(nLine + n , SubstituteTpl(aLines[n] , cClass , SELF:oWindowDesign:cInitMethod) + CRLF)
+        ELSEIF oType != NULL_OBJECT
+			FOREACH VAR oMember in oType:Members
+				if string.Compare(oMember:Name, cName, TRUE) == 0
+					oMember:OpenEditor()
+					RETURN
+				endif
 			NEXT
-		END TRY
-		
-		oModule:OpenInEditor(nLine , 1)
+        ENDIF		
+		lOpen := FALSE
+		var source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, ref lOpen)
 
+		IF .not. lOpen
+			oProject:ProjectNode:OpenElement(oFile:FullPath, 1,1)
+		END IF
+		source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, ref lOpen)
+		IF .not. lOpen
+			RETURN
+		END IF
+		
+		VAR oEditor := XSharp_EditorStream{}
+		oEditor:Load(oFile:FullPath)
+		VAR nLine := oType:Range:EndLine -1
+		aLines:Reverse()
+		FOREACH VAR cLine in aLines
+			oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cLine)
+		NEXT
+		oFile:Project:ProjectNode:OpenElement(oFile:FullPath, nLine,1)
+		XSharpModel.XSolution.WalkFile(oFile:FullPath)
 	RETURN
-*/
+
+END CLASS
+
+STATIC CLASS Funcs
+   STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
+      MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Error)
+   RETURN
+   STATIC METHOD ErrorBox(cMessage AS STRING) AS VOID
+      MessageBox.Show(cMessage , DefaultCaption , MessageBoxButtons.OK , MessageBoxIcon.Error)
+   RETURN
+   STATIC METHOD WarningBox(cMessage AS STRING , cCaption AS STRING) AS VOID
+      MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Warning)
+   RETURN
+   STATIC METHOD WarningBox(cMessage AS STRING) AS VOID
+      MessageBox.Show(cMessage , DefaultCaption , MessageBoxButtons.OK , MessageBoxIcon.Warning)
+   RETURN
+
+   STATIC METHOD GetModuleFilenameFromBinary(cFileName AS STRING) AS STRING
+      LOCAL cModuleName := "", cModuleFilename := "" AS STRING
+      IF SplitBinaryFilename(cFileName , REF cModuleName , REF cModuleFilename)
+         RETURN cModuleFilename
+      END IF
+   RETURN NULL
+
+   STATIC METHOD SplitBinaryFilename(cFileName AS STRING , cModuleName REF STRING , cModuleFilename REF STRING) AS LOGIC
+      LOCAL lOk AS LOGIC
+      LOCAL nAt AS INT
+      TRY
+         nAt := cFileName:LastIndexOf('.')
+         cFileName := cFileName:Substring(0 , nAt)
+         nAt := cFileName:LastIndexOf('.')
+         cFileName := cFileName:Substring(0 , nAt)
+         cModuleFilename := cFileName
+         nAt := cFileName:LastIndexOf('\\')
+         cFileName := cFileName:Substring(nAt + 1)
+         cModuleName := cFileName
+         lOk := TRUE
+	  CATCH
+		 lOk := FALSE
+      END TRY
+   RETURN lOk
+
 END CLASS
 
 END NAMESPACE

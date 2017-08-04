@@ -1102,7 +1102,7 @@ namespace Microsoft.VisualStudio.Project
         /// Get's called to rename the eventually running document this hierarchyitem points to
         /// </summary>
         /// returns FALSE if the doc can not be renamed
-        internal bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
+        protected virtual bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {
             HierarchyNode newNode = null;
             newNodeOut = null;

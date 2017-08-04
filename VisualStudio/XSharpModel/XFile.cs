@@ -21,10 +21,9 @@ namespace XSharpModel
         private XType _globalType;
         // 
         private object _lock;
-        //private int _hashCode;
         private bool _parsed;
-        private bool _xaml;
         private DateTime _lastWritten;
+        private XFileType _type;
 
         public XFile(string fullPath)
         {
@@ -32,11 +31,11 @@ namespace XSharpModel
             _usings = new List<string>();
             _usingStatics = new List<string>();
             this.filePath = fullPath;
-            _xaml = System.IO.Path.GetExtension(fullPath).ToLower() == ".xaml";
+            _type = XFileTypeHelpers.GetFileType(fullPath);
             //
             InitTypeList();
             //
-            _parsed = false;
+            _parsed = ! IsSource;
             _lock = new object();
             _lastWritten = DateTime.MinValue;
             //_hashCode = 0;
@@ -48,11 +47,14 @@ namespace XSharpModel
         /// </summary>
         public void InitTypeList()
         {
-            this._typeList = new ConcurrentDictionary<string, XType>(StringComparer.InvariantCultureIgnoreCase);
-            this._globalType = XType.CreateGlobalType(this);
-            this._typeList.TryAdd(_globalType.Name, _globalType);
-            _usings = new List<string>();
-            _usingStatics = new List<string>();
+            if (IsSource)
+            {
+                this._typeList = new ConcurrentDictionary<string, XType>(StringComparer.InvariantCultureIgnoreCase);
+                this._globalType = XType.CreateGlobalType(this);
+                this._typeList.TryAdd(_globalType.Name, _globalType);
+                _usings = new List<string>();
+                _usingStatics = new List<string>();
+            }
 
         }
         private XProject project;
@@ -101,6 +103,8 @@ namespace XSharpModel
         {
             get
             {
+                if (!IsSource)
+                    return null;
                 lock (_lock)
                 {
                     return _usings.ToImmutableList();
@@ -112,7 +116,8 @@ namespace XSharpModel
         {
             get
             {
-
+                if (!IsSource)
+                    return null;
                 lock (_lock)
                 {
                     List<string> statics = new List<string>();
@@ -137,6 +142,8 @@ namespace XSharpModel
 
         public void SetTypes(IDictionary<string, XType> types, IList<string> usings, IList<string> staticusings)
         {
+            if (!IsSource)
+                return;
             lock (this)
             {
                 _typeList.Clear();
@@ -165,7 +172,8 @@ namespace XSharpModel
         {
             get
             {
-                
+                if (!IsSource)
+                    return null;
                 lock (_lock)
                 {
                     return _typeList.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
@@ -209,6 +217,8 @@ namespace XSharpModel
         /// </summary>
         public void WaitParsing()
         {
+            if (!IsSource)
+                return ;
             //_parsedEvent.WaitOne();
             lock (_lock)
             {
@@ -232,6 +242,8 @@ namespace XSharpModel
 
         public XTypeMember FirstMember()
         {
+            if (!IsSource)
+                return null;
             lock (_lock)
             {
                 foreach (var type in TypeList.Values)
@@ -245,7 +257,7 @@ namespace XSharpModel
             }
         }
 
-        public bool IsXaml => _xaml;
+        public bool IsXaml => _type == XFileType.XAML;
+        public bool IsSource => _type == XFileType.SourceCode;
     }
-
 }

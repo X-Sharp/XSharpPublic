@@ -331,7 +331,8 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		VAR nLine := oType:Range:EndLine -1
 		aLines:Reverse()
 		FOREACH VAR cLine in aLines
-			oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cLine)
+			VAR cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitMethod)
+			oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cNew)
 		NEXT
 		oFile:Project:ProjectNode:OpenElement(oFile:FullPath, nLine,1)
 		XSharpModel.XSolution.WalkFile(oFile:FullPath)

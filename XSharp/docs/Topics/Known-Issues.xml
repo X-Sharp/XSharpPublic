@@ -13,7 +13,6 @@
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Some VO <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-By-Category">compatibility compiler options</link> are not implemented yet. The command line options are recognized but nothing is done with them<br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">/cs: Case Sensitivity (the compiler is now always Case Insensitive)</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">/vo 11: VO Compatible Numeric conversions</text></li>
       <li styleclass="Normal">The compiler pragmas (#pragma warnings and #pragma options) do not work. They are ignored by the compiler.</li>
-      <li styleclass="Normal">The <text style="font-weight:bold;">XML</text>&#32;<text style="font-weight:bold;">doc </text>generation is not working </li>
       <li styleclass="Normal">Parser errors need improvements<br/>Erroneous code may generate compiler runtime errors</li>
       <li styleclass="Normal">Compiler errors may be cryptic every now and then</li>
       <li styleclass="Normal">The compiler is <text style="font-weight:bold;">case insensitive</text>. There may be a problem with case insensitive matching of interface member names. The case insensitivity cannot be switched off for now. <br/><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">We have also seen problems for classes where different member names are defined with a name that is only different in case. </text></li>
@@ -22,7 +21,7 @@
     <para styleclass="Heading2">Visual Studio</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The intellisense is not complete. Code completion, Regions, Keyword coloring, Brace Matching, Goto definition, Peek definition , Parameter tips etc are supported. We are still working on other features, such as auto indenting and showing method and parameter descriptions from the XML files that come with many external assemblies.</li>
-      <li styleclass="Normal">No editors for VOBinary entities</li>
+      <li styleclass="Normal">No editors for VOBinary entities of type Server, Fieldspec and menu</li>
     </list>
     <para styleclass="Normal"></para>
   </body>

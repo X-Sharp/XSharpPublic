@@ -89,7 +89,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
 
 
-        bool ValidExpressionStmt()
+        bool validExpressionStmt()
         {
             var la = InputStream.La(2);
             if (la != LPAREN)

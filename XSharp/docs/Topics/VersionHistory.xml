@@ -7,6 +7,34 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading2">Changes in 1.0.2</para>
+    <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>
+    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Added support for XML doc generation. We support the same tags that the C# compiler and other .Net compiler support. </li>
+      <li styleclass="List">Improved some parser errors.</li>
+      <li styleclass="List">Created separate projects for portable and non portable (.Net framework 4.6) for the compiler and scripting</li>
+      <li styleclass="List">Fixed the code generation for conversion from USUAL to a known type. Now the same error is generated that Vulcan produces when the object type in the usual does not match the type of the target variable</li>
+      <li styleclass="List">When declaring a type with the same name as the assembly now a compiler error is generated with a suggested work around.</li>
+      <li styleclass="List">Fixed a strange compiler message when using a PTR() operation on a method call</li>
+    </list>
+    <para styleclass="Heading3"><text style="font-weight:bold;">Scripting</text></para>
+    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The scripting was not working in release 1.01</li>
+    </list>
+    <para styleclass="Heading3"><text style="font-weight:bold;">Visual Studio Integration</text></para>
+    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">QuickInfo could generate a &apos;hang&apos; in the VS editor. This has been fixed</li>
+      <li styleclass="List">Added quickinfo for globals and defines</li>
+      <li styleclass="List">Added completionlists for globals and defines</li>
+      <li styleclass="List">Added VO Form editor to edit vnfrm/xsfrm files and generate the code and resources</li>
+      <li styleclass="List">Added keyword and identifier case synchronization. </li>
+      <li styleclass="List">Fixed a problem where typing SUPER( in the editor could throw an exception</li>
+    </list>
+    <para styleclass="Heading3"><text style="font-weight:bold;">VO Xporter</text></para>
+    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem when importing certain VO 2.7 AEF files</li>
+      <li styleclass="List">Fixed a problem with unacceptible characters in the solution folder name</li>
+    </list>
     <para styleclass="Heading2">Changes in General Release (1.0.1.1)</para>
     <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>
     <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -141,7 +141,7 @@ using_              : USING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? N
                     ;
 
 
-voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList garbage? end=eos
+voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList allowedgarbage? end=eos
                     ;
 
 
@@ -161,7 +161,7 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
                     ;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
-vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=typeName)? garbage? eos
+vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=typeName)? allowedgarbage? eos
                     ;
 
 vostruct			: (Modifiers=votypeModifiers)?
@@ -185,7 +185,7 @@ votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
 
 namespace_			: BEGIN NAMESPACE Name=name eos
                       (Entities+=entity)*
-                      END NAMESPACE garbage? eos
+                      END NAMESPACE allowedgarbage? eos
                     ;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
@@ -193,7 +193,7 @@ interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
                       (ConstraintsClauses+=typeparameterconstraintsclause)* eos         // Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      END INTERFACE garbage? eos
+                      END INTERFACE allowedgarbage? eos
 					  ;
 
 interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -205,7 +205,7 @@ class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* eos						// Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      END CLASS garbage? eos
+                      END CLASS allowedgarbage? eos
 					  ;
 
 classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -234,7 +234,7 @@ structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* eos
                       (Members+=classmember)*
-                      END STRUCTURE garbage? eos
+                      END STRUCTURE allowedgarbage? eos
 					  ;
 
 structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -254,7 +254,7 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
                       ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? eos
                       (Members+=enummember)+
-                      END ENUM? garbage? eos
+                      END ENUM? allowedgarbage? eos
                     ;
 
 enumModifiers		: ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
@@ -267,7 +267,7 @@ event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
                        EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=eos
                         | (LineAccessors += eventLineAccessor)+ end=eos
-                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? garbage? end=eos
+                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? allowedgarbage? end=eos
                        )
                     ;
 
@@ -283,7 +283,7 @@ eventLineAccessor   : Attributes=attributes? Modifiers=eventModifiers?
 eventAccessor       : Attributes=attributes? Modifiers=eventModifiers?
                       ( Key=ADD     end=eos StmtBlk=statementBlock END ADD?
                       | Key=REMOVE  end=eos StmtBlk=statementBlock END REMOVE? )
-                      garbage? end=eos
+                      allowedgarbage? end=eos
                     ;
 
 
@@ -309,7 +309,7 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
                       PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=eos	// Auto
                       | (LineAccessors+=propertyLineAccessor)+ end=eos													// Single Line
-                      | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? garbage? end=eos						// Multi Line
+                      | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? allowedgarbage? end=eos						// Multi Line
                       )
                     ;
 
@@ -333,7 +333,7 @@ expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
 propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
                       ( Key=GET end=eos StmtBlk=statementBlock END GET?
                       | Key=SET end=eos StmtBlk=statementBlock END SET? )
-                      garbage? end=eos
+                      allowedgarbage? end=eos
                     ;
 
 classmember			: Member=method										#clsmethod
@@ -442,9 +442,9 @@ statement           : Decl=localdecl                                            
                     | Decl=fielddecl											#fieldStmt
                     | DO? WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
-					  ((e=END DO? | e=ENDDO) garbage? eos)?						#whileStmt
-                    | NOP  end=eos												#nopStmt
-                    | NOP  g=garbage end=eos	{eosExpected($g.start);}	#nopStmt
+					  ((e=END DO? | e=ENDDO) allowedgarbage? eos)?				#whileStmt
+                    | NOP (LPAREN RPAREN )? end=eos								#nopStmt
+                    | NOP (LPAREN RPAREN )? g=unwantedgarbage end=eos {eosExpected($g.start);}	#nopStmt
                     | FOR
                         ( AssignExpr=expression
                         | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=(ASSIGN_OP|EQ) Expr=expression
@@ -452,29 +452,29 @@ statement           : Decl=localdecl                                            
                         )
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
-                      StmtBlk=statementBlock (e=NEXT garbage? eos)?				#forStmt
+                      StmtBlk=statementBlock (e=NEXT allowedgarbage? eos)?			#forStmt
                     | IF IfStmt=ifElseBlock
-                      ((e=END IF? | e=ENDIF)  garbage? eos)?					#ifStmt
+                      ((e=END IF? | e=ENDIF)  allowedgarbage? eos)?					#ifStmt
                     | DO CASE end=eos
 					  CaseStmt=caseBlock?
-                      ((e=END CASE? | e=ENDCASE) garbage? eos)?					#caseStmt
-                    | Key=EXIT end=eos											#jumpStmt
-                    | Key=EXIT g=garbage end=eos	{eosExpected($g.start);}	#jumpStmt
+                      ((e=END CASE? | e=ENDCASE) allowedgarbage? eos)?				#caseStmt
+                    | Key=EXIT end=eos												#jumpStmt
+                    | Key=EXIT g=unwantedgarbage end=eos {eosExpected($g.start);}	#jumpStmt
                     | Key=LOOP end=eos												#jumpStmt
-                    | Key=LOOP g=garbage end=eos	{eosExpected($g.start);}	#jumpStmt
+                    | Key=LOOP g=unwantedgarbage end=eos {eosExpected($g.start);}	#jumpStmt
                     | Key=BREAK Expr=expression? end=eos							#jumpStmt
-                    | Key=BREAK Expr=expression? g=garbage end=eos	{eosExpected($g.start);} #jumpStmt
+                    | Key=BREAK Expr=expression? g=unwantedgarbage end=eos	{eosExpected($g.start);} #jumpStmt
                     | RETURN (Void=VOID|Expr=expression)? end=eos										#returnStmt
-                    | RETURN (Void=VOID|Expr=expression)? g=garbage end=eos	{eosExpected($g.start);}	#returnStmt
+                    | RETURN (Void=VOID|Expr=expression)? g=unwantedgarbage end=eos	{eosExpected($g.start);}	#returnStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)? end=eos	#qoutStmt
                     | Q=(QMARK | QQMARK)
-                       (Exprs+=expression (COMMA Exprs+=expression)*)? g=garbage end=eos	{eosExpected($g.start);} #qoutStmt
+                       (Exprs+=expression (COMMA Exprs+=expression)*)? g=unwantedgarbage end=eos {eosExpected($g.start);} #qoutStmt
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
                       (FINALLY eos FinBlock=statementBlock)?
-                      (e=END (SEQUENCE)? garbage? eos)?							#seqStmt
+                      (e=END (SEQUENCE)? allowedgarbage? eos)?					#seqStmt
                     //
                     // New in Vulcan
                     //
@@ -484,18 +484,18 @@ statement           : Decl=localdecl                                            
                     | FOREACH
                       (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
                       IN Container=expression end=eos
-                      StmtBlk=statementBlock (e=NEXT garbage? eos)?				#foreachStmt
+                      StmtBlk=statementBlock (e=NEXT allowedgarbage? eos)?		#foreachStmt
                     | Key=THROW Expr=expression? end=eos						#jumpStmt
                     | TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
                       (FINALLY eos FinBlock=statementBlock)?
-                      (e=END TRY? garbage? eos)?								#tryStmt
+                      (e=END TRY? allowedgarbage? eos)?								#tryStmt
                     | BEGIN Key=LOCK Expr=expression end=eos
                       StmtBlk=statementBlock
-                      (e=END LOCK? garbage? end=eos)?								#blockStmt
+                      (e=END LOCK? allowedgarbage? end=eos)?						#blockStmt
                     | BEGIN Key=SCOPE end=eos
                       StmtBlk=statementBlock
-                      (e=END SCOPE? garbage? end=eos)?								#blockStmt
+                      (e=END SCOPE? allowedgarbage? end=eos)?						#blockStmt
                     //
                     // New XSharp Statements
                     //
@@ -503,40 +503,44 @@ statement           : Decl=localdecl                                            
                     | YIELD Break=(BREAK|EXIT) end=eos							#yieldStmt
                     | (BEGIN|DO)? SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
-                      (e=END SWITCH? garbage? end=eos)?							#switchStmt
+                      (e=END SWITCH? allowedgarbage? end=eos)?					#switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
                         StmtBlk=statementBlock
-                      (e=END USING? garbage? end=eos)?								#blockStmt
+                      (e=END USING? allowedgarbage? end=eos)?						#blockStmt
                     | BEGIN Key=UNSAFE end=eos
                       StmtBlk=statementBlock
-                      (e=END UNSAFE? garbage? eos)?										#blockStmt
+                      (e=END UNSAFE? allowedgarbage? eos)?							#blockStmt
                     | BEGIN Key=CHECKED end=eos
                       StmtBlk=statementBlock
-                      (e=END CHECKED? garbage? end=eos)?							#blockStmt
+                      (e=END CHECKED? allowedgarbage? end=eos)?						#blockStmt
                     | BEGIN Key=UNCHECKED end=eos
                       StmtBlk=statementBlock
-                      (e=END UNCHECKED? garbage? end=eos)?							#blockStmt
+                      (e=END UNCHECKED? allowedgarbage? end=eos)?					#blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos
                       StmtBlk=statementBlock
-                      (e=END FIXED? garbage? end=eos)?								#blockStmt
+                      (e=END FIXED? allowedgarbage? end=eos)?						#blockStmt
 
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
 					// The first ExpressonStmt rule matches a single expression
 					// The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
 					// The third rule matches more than one expression
-                    | {ValidExpressionStmt()}?
+                    | {validExpressionStmt()}?
                       Exprs+=expression  end=eos									#expressionStmt
-                    | {ValidExpressionStmt()}?
+                    | {validExpressionStmt()}?
                       Exprs+=expression t=(RPAREN|RCURLY|RBRKT)  end=eos {eosExpected($t);}		#expressionStmt
-                    | {ValidExpressionStmt()}?
+                    | {validExpressionStmt()}?
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
 	                ;
 
-garbage				: {_allowGarbage}? (~EOS)+
+allowedgarbage		: {_allowGarbage}? (~EOS)+
+					;
+
+unwantedgarbage		: (~EOS)+
 					;
 
 ifElseBlock			: Cond=expression end=eos StmtBlk=statementBlock
-                      (ELSEIF ElseIfBlock=ifElseBlock | ELSE eos ElseBlock=statementBlock)?
+                      ( ELSEIF ElseIfBlock=ifElseBlock 
+					  | ELSE eos ElseBlock=statementBlock)?
                     ;
 
 caseBlock			: Key=CASE Cond=expression end=eos StmtBlk=statementBlock NextCase=caseBlock?
@@ -668,7 +672,7 @@ primary				: Key=SELF													#selfExpression
                     | Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY						#delegateCtorCall		// delegate{ obj , @func() }
                     | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?	#ctorCall		// id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | Type=datatype LCURLY ArgList=argumentList  RCURLY	#ctorCall				// id{ expr [, expr...] }
+                    | Type=datatype LCURLY ArgList=argumentList  RCURLY			#ctorCall				// id{ expr [, expr...] }
                     | ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
                     | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
@@ -696,13 +700,13 @@ primary				: Key=SELF													#selfExpression
 					| Key=ARGLIST												#argListExpression		// __ARGLIST
                     ;
 
-boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName										#boundAccessMember	// member access The ? is new
-                    | Expr=boundExpression LPAREN					   RPAREN									#boundMethodCall	// method call, no params
-                    | Expr=boundExpression LPAREN ArgList=argumentList RPAREN									#boundMethodCall	// method call, with params
-                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT									#boundArrayAccess	// Array element access
+boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName				#boundAccessMember	// member access The ? is new
+                    | Expr=boundExpression LPAREN					   RPAREN			#boundMethodCall	// method call, no params
+                    | Expr=boundExpression LPAREN ArgList=argumentList RPAREN			#boundMethodCall	// method call, with params
+                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT	#boundArrayAccess	// Array element access
                     | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression	#boundCondAccessExpr	// expr ? expr
                     | Op=(DOT | COLON) Name=simpleName									#bindMemberAccess
-                    | LBRKT ArgList=bracketedArgumentList RBRKT									#bindArrayAccess
+                    | LBRKT ArgList=bracketedArgumentList RBRKT							#bindArrayAccess
                     ;
 
 // Initializers
@@ -790,7 +794,7 @@ literalArray		: (LT Type=datatype GT)? LCURLY RCURLY															// {}
 arrayElement        : Expr=expression?      // VO Array elements are optional
                     ;
 
-// Anonymous
+// Anonymous Types
 
 anonType			: CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RCURLY
                     ;

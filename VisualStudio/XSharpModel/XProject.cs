@@ -18,7 +18,8 @@ namespace XSharpModel
 {
     public class XProject
     {
-        private ConcurrentDictionary<string, XFile> xFilesDict;
+        private ConcurrentDictionary<string, XFile> xSourceFilesDict;
+        private ConcurrentDictionary<string, XFile> xOtherFilesDict;
         private IXSharpProject _projectNode;
         //private XType _globalType;
         private bool _loaded;
@@ -39,9 +40,8 @@ namespace XSharpModel
         public XProject(IXSharpProject project)
         {
             _projectNode = project;
-            xFilesDict = new ConcurrentDictionary<string, XFile>(StringComparer.OrdinalIgnoreCase);
-            //this._globalType = XType.CreateGlobalType();
-            //
+            xSourceFilesDict = new ConcurrentDictionary<string, XFile>(StringComparer.OrdinalIgnoreCase);
+            xOtherFilesDict = new ConcurrentDictionary<string, XFile>(StringComparer.OrdinalIgnoreCase);
             this._typeController = new SystemTypeController();
             this._loaded = true;
             if (_projectNode == null)
@@ -67,11 +67,18 @@ namespace XSharpModel
 
         public List<AssemblyInfo> AssemblyReferences => _AssemblyReferences;
 
-        public List<XFile> Files
+        public List<XFile> SourceFiles
         {
             get
             {
-                return xFilesDict.Values.ToList();
+                return xSourceFilesDict.Values.ToList();
+            }
+        }
+        public List<XFile> OtherFiles
+        {
+            get
+            {
+                return xOtherFilesDict.Values.ToList();
             }
         }
 
@@ -135,13 +142,28 @@ namespace XSharpModel
         {
             if (xFile != null)
             {
-                if (xFilesDict.ContainsKey(xFile.FullPath))
+
+                if (xFile.IsSource)
                 {
-                    XFile fileOld;
-                    xFilesDict.TryRemove(xFile.FullPath, out fileOld);
+                    if (xSourceFilesDict.ContainsKey(xFile.FullPath))
+                    {
+                        XFile fileOld;
+                        xSourceFilesDict.TryRemove(xFile.FullPath, out fileOld);
+                    }
+                    xFile.Project = this;
+                    return xSourceFilesDict.TryAdd(xFile.FullPath, xFile);
                 }
-                xFile.Project = this;
-                return xFilesDict.TryAdd(xFile.FullPath, xFile);
+                else
+                {
+                    if (xOtherFilesDict.ContainsKey(xFile.FullPath))
+                    {
+                        XFile fileOld;
+                        xOtherFilesDict.TryRemove(xFile.FullPath, out fileOld);
+                    }
+                    xFile.Project = this;
+                    return xOtherFilesDict.TryAdd(xFile.FullPath, xFile);
+
+                }
             }
             return false;
         }
@@ -258,15 +280,12 @@ namespace XSharpModel
             }
         }
 
-        public XFile Find(string fullPath)
-        {
-            return FindFullPath(fullPath);
-        }
-
         public XFile FindFullPath(string fullPath)
         {
-            if (xFilesDict.ContainsKey(fullPath))
-                return xFilesDict[fullPath];
+            if (xSourceFilesDict.ContainsKey(fullPath))
+                return xSourceFilesDict[fullPath];
+            if (xOtherFilesDict.ContainsKey(fullPath))
+                return xOtherFilesDict[fullPath];
             return null;
         }
 
@@ -290,10 +309,15 @@ namespace XSharpModel
 
         public void RemoveFile(string url)
         {
-            if (this.xFilesDict.ContainsKey(url))
+            if (this.xSourceFilesDict.ContainsKey(url))
             {
                 XFile file;
-                this.xFilesDict.TryRemove(url, out file);
+                this.xSourceFilesDict.TryRemove(url, out file);
+            }
+            else if (this.xOtherFilesDict.ContainsKey(url))
+            {
+                XFile file;
+                this.xOtherFilesDict.TryRemove(url, out file);
             }
         }
 
@@ -310,17 +334,17 @@ namespace XSharpModel
             // operations do not change the collections
             XType xType = null;
             XType xTemp = null;
-            var aFiles = this.xFilesDict.Values.ToArray();
+            var aFiles = this.xSourceFilesDict.Values.ToArray();
             foreach (XFile file in aFiles)
             {
-                //
-                if (caseInvariant)
+                // The dictionary is case insensitive
+                file.TypeList.TryGetValue(typeName, out xTemp);
+                if (xTemp != null && ! caseInvariant)
                 {
-                    file.TypeList.TryGetValue(typeName.ToLowerInvariant(), out xTemp);
-                }
-                else
-                {
-                    file.TypeList.TryGetValue(typeName.ToLower(), out xTemp);
+                    if (xType.FullName != typeName && xType.Name != typeName)
+                    {
+                        xType = null;
+                    }
                 }
                 if (xTemp != null)
                 {
@@ -368,29 +392,23 @@ namespace XSharpModel
             // operations do not change the collections
             XType xType = null;
             XType xTemp = null;
-            var aFiles = this.xFilesDict.Values.ToArray();
+            var aFiles = this.xSourceFilesDict.Values.ToArray();
             foreach (XFile file in aFiles)
             {
-                var aTypes = file.TypeList.Values.ToArray();
-                foreach (XType x in aTypes)
+                XType x = null;
+                // The dictionary is case insensitive
+                if (file.TypeList.TryGetValue(typeName, out x))
                 {
-                    if (caseInvariant)
+                    xTemp = x;
+                    if (!caseInvariant)
                     {
-                        if (x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant())
+                        if (x.FullName != typeName && x.Name != typeName)
                         {
-                            xTemp = x;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (x.FullName.ToLower() == typeName.ToLower())
-                        {
-                            xTemp = x;
-                            break;
+                            xTemp = null;
                         }
                     }
                 }
+
                 if (xTemp != null)
                 {
                     if (xTemp.IsPartial)
@@ -513,7 +531,7 @@ namespace XSharpModel
                 // Create local copies of the collections to make sure that other background
                 // operations do not change the collections
                 List<XType> ns = new List<XType>();
-                var aFiles = this.Files.ToArray();
+                var aFiles = this.SourceFiles.ToArray();
                 foreach (XFile file in aFiles)
                 {
                     var aTypes = file.TypeList.Values;
@@ -573,13 +591,7 @@ namespace XSharpModel
             return new List<IXErrorPosition>();
         }
 
-        public bool IsDocumentOpen(string file)
-        {
-            // Always open. We remove file from project when it is closed.
-            return true;
-        }
-
-        public void OpenElement(string file, int line, int column)
+         public void OpenElement(string file, int line, int column)
         {
             return;
         }
@@ -596,6 +608,40 @@ namespace XSharpModel
         public void ShowIntellisenseErrors()
         {
             return;
+        }
+
+        public bool IsDocumentOpen(string file)
+        {
+            // Always open. We remove file from project when it is closed.
+            return true;
+        }
+
+        public string DocumentGetText(string file, ref bool isOpen)
+        {
+            isOpen = false;
+            return "";
+        }
+
+        public bool DocumentInsertLine(string fileName, int line, string text)
+        {
+            return false;
+        }
+        public bool DocumentSetText(string fileName, string text)
+        {
+            return false;
+        }
+
+        public void AddFileNode(string strFileName)
+        {
+            return;
+        }
+        public void DeleteFileNode(string strFileName)
+        {
+            return;
+        }
+        public bool HasFileNode(string strFileName)
+        {
+            return true;
         }
     }
 }

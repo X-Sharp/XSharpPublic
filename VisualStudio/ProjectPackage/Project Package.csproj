@@ -10,7 +10,7 @@
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>XSharp.Project</RootNamespace>
     <AssemblyName>XSharpProject</AssemblyName>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.6</TargetFrameworkMoniker>
@@ -207,9 +207,9 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="XSharp.CodeAnalysis.VS">
+    <Reference Include="XSharp.CodeAnalysis, Version=0.2.12.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.VS.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -331,7 +331,7 @@
     <Compile Include="Wix\XProjectNode.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
-    <Compile Include="Editors\EditorPane.cs" />
+    <Compile Include="Editors\XSharpVOEditorPane.cs" />
     <Compile Include="Editors\Factories.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpAuthoringScope.cs" />
@@ -416,7 +416,6 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WcfService\Service.prg">
     </ZipItem>
-    <Compile Include="Editors\IEditor.cs" />
     <Compile Include="Editors\VsTextViewCreationListener.cs" />
     <Compile Include="Wix\XHelperMethods.cs" />
     <Compile Include="Wix\XProjectMembers.cs" />
@@ -444,7 +443,7 @@
     <Compile Include="Nodes\XSharpDependentFileNode.cs" />
     <Compile Include="Editors\XSharpEditorFactory.cs" />
     <Compile Include="XSharpConfigprovider.cs" />
-    <Compile Include="XFileType.cs" />
+    <Compile Include="XSharpFileType.cs" />
     <Compile Include="Automation\OAXSharpFileItem.cs" />
     <Compile Include="Editors\XSharpProjectFactory.cs" />
     <Compile Include="Nodes\XSharpFileNode.cs" />
@@ -748,6 +747,10 @@
     <ProjectReference Include="..\XSharpColorizer\XSharpColorizer.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
       <Name>XSharpColorizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
+      <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
+      <Name>XSharpVoEditors</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

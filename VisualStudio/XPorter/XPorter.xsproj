@@ -92,7 +92,7 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings />
+    <DisabledWarnings>1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>

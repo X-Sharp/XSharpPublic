@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupCheck2017", "VisualStu
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "RegisterProvider", "VisualStudio\RegisterProvider\RegisterProvider.xsproj", "{5190E508-E052-41D5-8824-EA472241489A}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVoEditors", "VisualStudio\XSharpVoEditors\XSharpVoEditors.xsproj", "{7619DB88-6286-4EF1-8273-2A08CC8AC70E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,14 @@ Global
 		{5190E508-E052-41D5-8824-EA472241489A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5190E508-E052-41D5-8824-EA472241489A}.Release|x86.ActiveCfg = Release|Any CPU
 		{5190E508-E052-41D5-8824-EA472241489A}.Release|x86.Build.0 = Release|Any CPU
+		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Debug|x86.Build.0 = Debug|Any CPU
+		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Release|x86.ActiveCfg = Release|Any CPU
+		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

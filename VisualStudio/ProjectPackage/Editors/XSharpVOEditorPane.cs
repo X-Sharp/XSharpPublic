@@ -61,7 +61,7 @@ namespace XSharp.Project
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     //   [ComSourceInterfaces( typeof( IVsTextViewEvents ) )]
     [ComVisible(true)]
-    public class VOEditorPane : WindowPane,
+    public abstract class VOEditorPane : WindowPane,
                                 IVsPersistDocData,  //to Enable persistence functionality for document data
                                 IPersistFileFormat, //to enable the programmatic loading or saving of an object 
                                                     //in a format specified by the user.
@@ -587,6 +587,8 @@ namespace XSharp.Project
         }
 
 
+        internal abstract bool Open(string filename);
+
         /// <summary>
         /// Loads the file content into the editor
         /// </summary>
@@ -615,7 +617,7 @@ namespace XSharp.Project
                     hr = VsUiShell.SetWaitCursor();
                 }
 
-                if (this.editorControl.OpenWindow(filename))
+                if (this.Open(filename))
                 {
                     this.isLoaded = true;
                     lSuccess = true;
@@ -641,6 +643,10 @@ namespace XSharp.Project
                     // Notify the load or reload
                     NotifyDocChanged();
                 }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
             finally
             {
@@ -1336,6 +1342,11 @@ namespace XSharp.Project
             return FormatList;
         }
 
+        internal override bool Open(string filename)
+        {
+            return this.editorControl.OpenWindow(filename);
+        }
+
         #region Command Handling
         protected override void setupCommands()
         {
@@ -1720,55 +1731,70 @@ namespace XSharp.Project
 
 
     }
-    //public class VOMenuEditorPane : VOEditorPane
-    //{
-    //    public VOMenuEditorPane(XSharpProjectPackage package) : base(package)
-    //    {
-    //        MyExtension = ".xsmnu";
-    //    }
-    //    protected override Guid _GetClassID()
-    //    {
-    //        return GuidStrings.guidVOMenuEditorFactory;
-    //    }
-    //    protected override string getFormatList()
-    //    {
-    //        char Endline = (char)'\n';
-    //        string FormatList = string.Format(CultureInfo.InvariantCulture, "Menu Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
-    //        return FormatList;
-    //    }
-    //}
-    //public class VOServerEditorPane : VOEditorPane
-    //{
-    //    public VOServerEditorPane(XSharpProjectPackage package) : base(package)
-    //    {
-    //        MyExtension = ".xsdbs";
-    //    }
-    //    protected override Guid _GetClassID()
-    //    {
-    //        return GuidStrings.guidVOServerEditorFactory;
-    //    }
-    //    protected override string getFormatList()
-    //    {
-    //        char Endline = (char)'\n';
-    //        string FormatList = string.Format(CultureInfo.InvariantCulture, "DbServer Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
-    //        return FormatList;
-    //    }
-    //}
-    //public class VOFieldSpecEditorPane : VOEditorPane
-    //{
-    //    public VOFieldSpecEditorPane(XSharpProjectPackage package) : base(package)
-    //    {
-    //        MyExtension = ".xsfs";
-    //    }
-    //    protected override Guid _GetClassID()
-    //    {
-    //        return GuidStrings.guidVOFieldSpecEditorFactory;
-    //    }
-    //    protected override string getFormatList()
-    //    {
-    //        char Endline = (char)'\n';
-    //        string FormatList = string.Format(CultureInfo.InvariantCulture, "FieldSpec Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
-    //        return FormatList;
-    //    }
-    //}
+    public class VOMenuEditorPane : VOEditorPane
+    {
+        public VOMenuEditorPane(XSharpProjectPackage package) : base(package)
+        {
+            MyExtension = ".xsmnu";
+        }
+        protected override Guid _GetClassID()
+        {
+            return GuidStrings.guidVOMenuEditorFactory;
+        }
+        protected override string getFormatList()
+        {
+            char Endline = (char)'\n';
+            string FormatList = string.Format(CultureInfo.InvariantCulture, "Menu Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+            return FormatList;
+        }
+        internal override bool Open(string filename)
+        {
+            return this.editorControl.OpenMenu(filename);
+        }
+
+    }
+    public class VOServerEditorPane : VOEditorPane
+    {
+        public VOServerEditorPane(XSharpProjectPackage package) : base(package)
+        {
+            MyExtension = ".xsdbs";
+        }
+        protected override Guid _GetClassID()
+        {
+            return GuidStrings.guidVODbServerEditorFactory;
+        }
+        protected override string getFormatList()
+        {
+            char Endline = (char)'\n';
+            string FormatList = string.Format(CultureInfo.InvariantCulture, "DbServer Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+            return FormatList;
+        }
+        internal override bool Open(string filename)
+        {
+            return this.editorControl.OpenDBServer(filename);
+        }
+
+    }
+    public class VOFieldSpecEditorPane : VOEditorPane
+    {
+        public VOFieldSpecEditorPane(XSharpProjectPackage package) : base(package)
+        {
+            MyExtension = ".xsfs";
+        }
+        protected override Guid _GetClassID()
+        {
+            return GuidStrings.guidVOFieldSpecEditorFactory;
+        }
+        protected override string getFormatList()
+        {
+            char Endline = (char)'\n';
+            string FormatList = string.Format(CultureInfo.InvariantCulture, "FieldSpec Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+            return FormatList;
+        }
+        internal override bool Open(string filename)
+        {
+            return this.editorControl.OpenFieldSpec(filename);
+        }
+
+    }
 }

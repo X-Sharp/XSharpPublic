@@ -38,6 +38,39 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 		SELF:oWed:ReadOnly := FALSE
     RETURN TRUE
 
+    METHOD OpenMenu(cFileName AS STRING) AS LOGIC
+		VOWEDControl.InitializeGrid()
+		SELF:oMed := XSharp_VOMenuEditor{SELF , VOWEDControl.Grid }
+    	SELF:oEditor := SELF:oMed
+		IF ! SELF:oMed:Open(cFileName)
+			return false
+		ENDIF
+        SELF:oMed:IsDirtyChanged := SELF:oIsDirtyChangedHandler
+        SELF:oMed:TriggerSave := SELF:oTriggerSaveHandler
+		RETURN TRUE
+
+    METHOD OpenFieldSpec(cFileName AS STRING) AS LOGIC
+		VOWEDControl.InitializeGrid()
+		SELF:oFed := XSharp_VOFieldSpecEditor{SELF , VOWEDControl.Grid }
+    	SELF:oEditor := SELF:oFed
+		IF ! SELF:oFed:Open(cFileName)
+			return false
+		ENDIF
+        SELF:oFed:IsDirtyChanged := SELF:oIsDirtyChangedHandler
+        SELF:oFed:TriggerSave := SELF:oTriggerSaveHandler
+		RETURN TRUE
+
+    METHOD OpenDBServer(cFileName AS STRING) AS LOGIC
+		VOWEDControl.InitializeGrid()
+		SELF:oDed := XSharp_VODbServerEditor{SELF , VOWEDControl.Grid }
+    	SELF:oEditor := SELF:oDed
+		IF ! SELF:oDed:Open(cFileName)
+			return false
+		ENDIF
+        SELF:oDed:IsDirtyChanged := SELF:oIsDirtyChangedHandler
+        SELF:oDed:TriggerSave := SELF:oTriggerSaveHandler
+    RETURN TRUE
+
     METHOD SetStandalone() AS VOID
 	    IF SELF:oWed != NULL
 		    SELF:oWed:StandAlone := TRUE

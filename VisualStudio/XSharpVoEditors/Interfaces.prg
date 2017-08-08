@@ -9,7 +9,6 @@ BEGIN NAMESPACE XSharp.VOEditors
 	INTERFACE IEditorHost
 		
 	END INTERFACE
-
 	INTERFACE IVOWEDControl
 	// properties
 	PROPERTY IsGridEnabled as LOGIC GET
@@ -36,6 +35,9 @@ BEGIN NAMESPACE XSharp.VOEditors
 	METHOD Save(strFile as STRING) AS LOGIC
 	METHOD Save(strFile as STRING, lFormOnly as LOGIC) AS LOGIC
 	METHOD OpenWindow(cFileName AS STRING) AS LOGIC
+	METHOD OpenMenu(cFileName AS STRING) AS LOGIC
+	METHOD OpenDBServer(cFileName AS STRING) AS LOGIC
+	METHOD OpenFieldSpec(cFileName AS STRING) AS LOGIC
 
 	// Delegates
 	PROPERTY IsDirtyChanged as EventHandler SET

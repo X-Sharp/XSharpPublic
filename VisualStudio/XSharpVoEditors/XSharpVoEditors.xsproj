@@ -111,6 +111,13 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Collections.Immutable</Name>
+      <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Binaries\Debug\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Drawing</Name>
@@ -133,11 +140,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ac tions.prg" />
+    <Compile Include="Functions.prg" />
+    <Compile Include="XSharp_DED.prg" />
+    <Compile Include="XSharp_MED.prg" />
+    <Compile Include="XSharp_FED.prg" />
     <Compile Include="Interfaces.prg" />
     <Compile Include="Properties\AssembyInfo.prg" />
-    <Compile Include="XSharp_EditorControlObject.prg" />
+    <Compile Include="XSharp_WedControl.prg" />
     <Compile Include="XSharp_EditorStream.prg" />
-    <Compile Include="XSharp_VOWED.prg" />
+    <Compile Include="XSharp_WED.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

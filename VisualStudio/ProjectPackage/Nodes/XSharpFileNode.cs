@@ -17,9 +17,11 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.IO;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
-
-
-
+using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
+using Microsoft.VisualStudio.TextManager.Interop;
+using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
+using XSharpModel;
 namespace XSharp.Project
 {
     /// <summary>
@@ -88,7 +90,7 @@ namespace XSharp.Project
                     }
                     else
                     {
-                        ret = XFileType.ImageIndex(this.Url);
+                        ret = XSharpFileType.ImageIndex(this.Url);
                     }
                     if (ret == -1)
                     {
@@ -116,7 +118,7 @@ namespace XSharp.Project
         {
             int result = base.IncludeInProject();
             DetermineSubType();
-            if (this.FileType == XSharpFileType.SourceCode)
+            if (this.FileType == XFileType.SourceCode)
             {
                 var prjNode = this.ProjectMgr as XSharpProjectNode;
                 prjNode.ProjectModel.AddFile(this.Url);
@@ -126,7 +128,7 @@ namespace XSharp.Project
 
         protected override int ExcludeFromProject()
         {
-            if (this.FileType == XSharpFileType.SourceCode)
+            if (this.FileType == XFileType.SourceCode)
             {
                 var prjNode = this.ProjectMgr as XSharpProjectNode;
                 prjNode.ProjectModel.RemoveFile(this.Url);
@@ -150,7 +152,7 @@ namespace XSharp.Project
             // (something that inherits from system.windows.forms.form or system.windows.forms.usercontrol
             // We should do this with proper parsing. For now we simply test the first word after the INHERIT keyword
             // and then parse and bind to see if we can find the first type in the file.
-            if (this.FileType == XSharpFileType.SourceCode && this.Url.IndexOf(".designer.", StringComparison.OrdinalIgnoreCase) == -1)
+            if (this.FileType == XFileType.SourceCode && this.Url.IndexOf(".designer.", StringComparison.OrdinalIgnoreCase) == -1)
             {
                 string SubType = "";
                 string token = "INHERIT";
@@ -189,7 +191,7 @@ namespace XSharp.Project
 
         public void UpdateHasDesigner()
         {
-            HasDesigner = XFileType.HasDesigner(this.Url, SubType);
+            HasDesigner = XSharpFileType.HasDesigner(this.Url, SubType);
         }
 
         #region Dependent Items
@@ -211,19 +213,19 @@ namespace XSharp.Project
             int relationIndex = path.IndexOf(".");
             switch (this.FileType)
             {
-                case XSharpFileType.Header:
-                case XSharpFileType.ManagedResource:
+                case XFileType.Header:
+                case XFileType.ManagedResource:
                     path = Path.ChangeExtension(path, ".prg");
                     if (project.FindURL(folder + path) == null)
                         path = null;
                     break;
-                case XSharpFileType.VODBServer:
-                case XSharpFileType.VOFieldSpec:
-                case XSharpFileType.VOForm:
-                case XSharpFileType.VOIndex:
-                case XSharpFileType.VOMenu:
-                case XSharpFileType.VOOrder:
-                case XSharpFileType.NativeResource:
+                case XFileType.VODBServer:
+                case XFileType.VOFieldSpec:
+                case XFileType.VOForm:
+                case XFileType.VOIndex:
+                case XFileType.VOMenu:
+                case XFileType.VOOrder:
+                case XFileType.NativeResource:
                     if (relationIndex >= 0)
                     {
                         path = path.Substring(0, relationIndex) + ".prg";
@@ -341,11 +343,11 @@ namespace XSharp.Project
             var type = this.FileType;
             switch (type)
             {
-                case XSharpFileType.ManagedResource:
+                case XFileType.ManagedResource:
                     this.SubType = ProjectFileAttributeValue.Designer;
                     this.Generator = "ResXFileCodeGenerator";
                     break;
-                case XSharpFileType.Settings:
+                case XFileType.Settings:
                     this.Generator = "SettingsSingleFileGenerator";
                     break;
             }
@@ -362,14 +364,14 @@ namespace XSharp.Project
         {
             get
             {
-                return this.FileType == XSharpFileType.XAML;
+                return this.FileType == XFileType.XAML;
             }
         }
         public bool IsVOBinary
         {
             get
             {
-                return XFileType.IsVoBinary(this.Url);
+                return this.FileType.IsVOBinary();
             }
         }
 
@@ -388,11 +390,14 @@ namespace XSharp.Project
             }
         }
 
-        internal XSharpFileType FileType
+        private XFileType _fileType = XFileType.Unknown;
+        internal XFileType FileType
         {
             get
             {
-                return XFileType.GetFileType(this.Url);
+                if (_fileType == XFileType.Unknown)
+                    _fileType  = XFileTypeHelpers.GetFileType(this.Url);
+                return _fileType;
             }
         }
 
@@ -401,7 +406,7 @@ namespace XSharp.Project
             string itemType = this.ItemNode.ItemName;
             switch (this.FileType)
             {
-                case XSharpFileType.XAML:
+                case XFileType.XAML:
                     // do not change the type when not needed
                     if (String.Equals(itemType, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase))
                     {
@@ -417,13 +422,13 @@ namespace XSharp.Project
                     }
                     this.ItemNode.ItemName = ProjectFileConstants.Page;
                     break;
-                case XSharpFileType.SourceCode:
+                case XFileType.SourceCode:
                     if (String.IsNullOrEmpty(itemType))
                     {
                         this.ItemNode.ItemName = SR.Compile;
                     }
                     break;
-                case XSharpFileType.ManagedResource:
+                case XFileType.ManagedResource:
                     if (!String.Equals(itemType, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase))
                     {
                         this.ItemNode.ItemName = ProjectFileConstants.EmbeddedResource;
@@ -610,16 +615,16 @@ namespace XSharp.Project
             Debug.Assert(manager != null, "Could not get the FileDocumentManager");
 
             Guid viewGuid;
-
+            string projectItemType = XSharpFileType.GetItemType(this.FileName);
             if (HasDesigner)
             {
                 viewGuid = VSConstants.LOGVIEWID.Designer_guid;
             }
-            else if (XFileType.GetItemType(this.FileName) == ProjectFileConstants.Compile)
+            else if (projectItemType == ProjectFileConstants.Compile)
             {
                 viewGuid = VSConstants.LOGVIEWID.Code_guid;
             }
-            else if (XFileType.GetItemType(this.FileName) == XSharpProjectFileConstants.NativeResource)
+            else if (projectItemType == XSharpProjectFileConstants.NativeResource)
             {
                 viewGuid = VSConstants.LOGVIEWID.Code_guid;
             }
@@ -681,6 +686,15 @@ namespace XSharp.Project
             return base.QueryStatusOnNode(guidCmdGroup, cmd, pCmdText, ref result);
         }
 
+        protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
+        {
+            var result = base.RenameDocument(oldName, newName, out newNodeOut);
+            if (result)
+            {
+                _fileType = XFileTypeHelpers.GetFileType(newName);
+            }
+            return result;
+        }
 
         #endregion
 
@@ -702,6 +716,77 @@ namespace XSharp.Project
                 service = this.DesignerContext;
             }
             return service;
+        }
+
+        #endregion
+
+        #region Operate on Open Files
+        private IVsTextLines TextLines
+        {
+            get
+            {
+                IVsHierarchy hierarchy;
+                uint vsitemid = VSConstants.VSITEMID_NIL;
+                IVsPersistDocData docData;
+                uint docCookie;
+                VsShellUtilities.GetRDTDocumentInfo(this.ProjectMgr.Site, this.Url, out hierarchy, out vsitemid, out docData, out docCookie);
+                if (hierarchy == null || docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL)
+                    return null;
+                IVsTextLines buffer = docData as IVsTextLines;
+                return buffer;
+
+            }
+        }
+
+        public string DocumentGetText( )
+        {
+            return VsShellUtilities.GetRunningDocumentContents(this.ProjectMgr.Site, this.Url);
+        }
+        public bool DocumentInsertLine(int line, string text)
+        {
+            IVsTextLines VsTxtlines = TextLines;
+            if (VsTxtlines == null || line < 1)
+                return false;
+            bool Result = false;
+            text += "\r\n";
+            TextSpan[] span = new TextSpan[1];
+            GCHandle handle = GCHandle.Alloc(text, GCHandleType.Pinned);
+            try
+            {
+                line -= 1;
+                Int32 result = VsTxtlines.ReplaceLines(line , 0, line , 0, handle.AddrOfPinnedObject(), text.Length, span);
+                if (result == VSConstants.S_OK)
+                    Result = true;
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return Result;
+        }
+
+        public bool DocumentSetText(string text)
+        {
+            IVsTextLines VsTxtlines = TextLines;
+            if (VsTxtlines == null)
+                return false;
+            bool Result = false;
+            GCHandle handle = GCHandle.Alloc(text, GCHandleType.Pinned);
+            try
+            {
+                TextSpan[] span = new TextSpan[1];
+                int line, col;
+                Int32 result = VsTxtlines.GetLastLineIndex(out line, out col);
+                if (result == VSConstants.S_OK)
+                    result = VsTxtlines.ReloadLines(0, 0, line, col, handle.AddrOfPinnedObject(), text.Length,  span);
+                if (result == VSConstants.S_OK)
+                    Result = true;
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return Result;
         }
 
         #endregion

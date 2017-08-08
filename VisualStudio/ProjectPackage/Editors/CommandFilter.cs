@@ -26,7 +26,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using XSharpColorizer;
 using XSharpModel;
-
+using XSharpLanguage;
 namespace XSharp.Project
 {
     internal sealed class CommandFilter : IOleCommandTarget
@@ -84,8 +84,7 @@ namespace XSharp.Project
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession(false);
-                        //
-                        //FormatLine();
+                        FormatLine();
                         break;
 
                     case VSConstants.VSStd2KCmdID.TAB:

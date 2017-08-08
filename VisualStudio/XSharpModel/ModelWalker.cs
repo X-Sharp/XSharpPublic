@@ -147,7 +147,7 @@ namespace XSharpModel
                     project.ProjectNode.SetStatusBarText($"Start scanning project {project.Name}");
                     //
                 }
-                var aFiles = project.Files.ToArray();
+                var aFiles = project.SourceFiles.ToArray();
                 int iProcessed = 0;
                 var options = new ParallelOptions ();
 				if (System.Environment.ProcessorCount > 1)

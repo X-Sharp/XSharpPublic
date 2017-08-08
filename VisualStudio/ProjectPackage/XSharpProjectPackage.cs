@@ -21,9 +21,7 @@ using System.ComponentModel.Design;
 using System.Globalization;
 using static XSharp.Project.XSharpConstants;
 using XSharp.Project.OptionsPages;
-#if VODESIGNER
 using XSharp.VOEditors;
-#endif
 /*
 Substitution strings
 String	Description
@@ -56,7 +54,7 @@ $WINDIR$	The Windows folder.
 */
 
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis.VS", CodeBase = "XSharp.CodeAnalysis.VS.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis", CodeBase = "XSharp.CodeAnalysis.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
 namespace XSharp.Project
@@ -172,22 +170,20 @@ namespace XSharp.Project
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string)]
 
-#if VODESIGNER
     // Editors for VOBinaries
-    [ProvideEditorExtension(typeof(VOFormEditorFactory),        ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
+    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
+    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory),        ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory),    ".xsdbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory),   ".xsfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
     // Vulcan Binaries
-    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
-    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
-    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
-    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
-    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
-#endif
+    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
@@ -248,13 +244,11 @@ namespace XSharp.Project
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-#if VODESIGNER
             // editors for the binaries
             base.RegisterEditorFactory(new VOFormEditorFactory(this));
             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
-#endif
             // Register the language service
 
             // Proffer the service.

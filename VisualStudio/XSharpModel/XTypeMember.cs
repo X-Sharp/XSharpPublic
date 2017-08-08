@@ -12,7 +12,7 @@ namespace XSharpModel
     [DebuggerDisplay("{Prototype,nq}")]
     public class XTypeMember : XElement
     {
-
+        public string Suffix { get; set; }
         private string _typeName;
         private List<XVariable> _parameters;
         private List<XVariable> _locals;
@@ -108,11 +108,12 @@ namespace XSharpModel
                 {
                     if (this.Kind == Kind.VODefine)
                     {
-                        desc += "Define" + " ";
+                        desc += "DEFINE" + " "+this.Name+this.Suffix;
+                        return desc;
                     }
                     else if (this.Kind == Kind.VOGlobal)
                     {
-                        desc += "Global" + " ";
+                        desc += "GLOBAL" + " ";
                     }
                     else
                     {

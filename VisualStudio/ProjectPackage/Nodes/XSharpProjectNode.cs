@@ -433,7 +433,7 @@ namespace XSharp.Project
             if (IsCodeFile(include) && item.ItemName == "Compile")
                 newNode.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider),
                     new XSharpVSMDProvider(newNode), false);
-            if (newNode.FileType == XSharpFileType.ManagedResource)
+            if (newNode.FileType == XFileType.ManagedResource)
             {
                 newNode.Generator = null;
             }
@@ -750,16 +750,16 @@ namespace XSharp.Project
             }
             // there are other possible parents. For Example Window1.prg is the parent of Window1.Windows.vnfrm
             // In this case the children are a VOBinary, Header or NativeResource
-            switch (XFileType.GetFileType(fileName))
+            switch (XFileTypeHelpers.GetFileType(fileName))
             {
-                case XSharpFileType.Header:
-                case XSharpFileType.NativeResource:
-                case XSharpFileType.VOFieldSpec:
-                case XSharpFileType.VOForm:
-                case XSharpFileType.VODBServer:
-                case XSharpFileType.VOMenu:
-                case XSharpFileType.VOOrder:
-                case XSharpFileType.VOIndex:
+                case XFileType.Header:
+                case XFileType.NativeResource:
+                case XFileType.VOFieldSpec:
+                case XFileType.VOForm:
+                case XFileType.VODBServer:
+                case XFileType.VOMenu:
+                case XFileType.VOOrder:
+                case XFileType.VOIndex:
                     // dependent file
                     HierarchyNode newParent = parentNode.FindChild(parentFile + ".prg");
                     if (newParent != null)
@@ -781,7 +781,7 @@ namespace XSharp.Project
         {
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
-            string itemType = XFileType.GetItemType(itemPath);
+            string itemType = XSharpFileType.GetProjectItemType(itemPath);
             return this.CreateMsBuildFileItem(itemPath, itemType);
         }
 
@@ -792,14 +792,9 @@ namespace XSharp.Project
         /// <returns>true if the file is a resx file, otherwise false.</returns>
         public override bool IsEmbeddedResource(string fileName)
         {
-            if (XFileType.GetFileType(fileName) == XSharpFileType.ManagedResource)
+            if (XFileTypeHelpers.GetFileType(fileName) == XFileType.ManagedResource)
                 return true;
             return false;
-        }
-
-        public bool IsVoBinary(string fileName)
-        {
-            return XFileType.IsVoBinary(fileName);
         }
 
 
@@ -811,22 +806,15 @@ namespace XSharp.Project
         public override bool IsCodeFile(string strFileName)
         {
             // Don't check errors here
-            if (string.IsNullOrEmpty(strFileName))
-                return false;
-
-            string ext = Path.GetExtension(strFileName);
-            return
-                string.Compare(ext, XSharpConstants.FileExtension1, StringComparison.OrdinalIgnoreCase) == 0 ||
-                string.Compare(ext, XSharpConstants.FileExtension2, StringComparison.OrdinalIgnoreCase) == 0;
+            var type  = XFileTypeHelpers.GetFileType(strFileName);
+            return type == XFileType.SourceCode;
         }
 
         public bool IsXamlFile(string strFileName)
         {
             // Don't check errors here
-            if (string.IsNullOrEmpty(strFileName))
-                return false;
-            string ext = Path.GetExtension(strFileName);
-            return string.Compare(ext, ".xaml", StringComparison.OrdinalIgnoreCase) == 0;
+            var type = XFileTypeHelpers.GetFileType(strFileName);
+            return type == XFileType.XAML;
         }
         /// <summary>
         /// Called by the project to know if the item is a file (that is part of the project)
@@ -881,18 +869,10 @@ namespace XSharp.Project
                         {
                             if (File.Exists(url))
                             {
-                                if (IsCodeFile(url))
+                                this.ProjectModel.AddFile(url);
+                                // make sure generated code is updated when changed
+                                if (xnode.IsDependent)
                                 {
-                                    this.ProjectModel.AddFile(url);
-                                    // make sure generated code is updated when changed
-                                    if (xnode.IsDependent)
-                                    {
-                                        filechangemanager.ObserveItem(url);
-                                    }
-                                }
-                                if (IsXamlFile(url))
-                                {
-                                    this.ProjectModel.AddFile(url);
                                     filechangemanager.ObserveItem(url);
                                 }
                             }
@@ -1659,6 +1639,38 @@ namespace XSharp.Project
         }
 
 
+        public void AddFileNode(string strFileName)
+        {
+            var node = this.FindChild(strFileName);
+            if (node == null)
+            {
+                var element = this.AddFileToMsBuild(strFileName);
+                var newNode = new XSharpFileNode(this, element);
+                string parent = newNode.GetParentName();
+                if (parent != null)
+                {
+                    var parentNode = this.FindChild(parent);
+                    parentNode.AddChild(newNode);
+                }
+                else
+                    this.AddChild(newNode);
+
+            }
+        }
+        public void DeleteFileNode(string strFileName)
+        {
+            var node = this.FindChild(strFileName);
+            if (node != null)
+            {
+                this.RemoveChild(node);
+            }
+        }
+        public bool HasFileNode(string strFileName)
+        {
+            return this.FindChild(strFileName) != null;
+        }
+
+
         public XSharpParseOptions ParseOptions
         {
             get
@@ -1923,7 +1935,39 @@ namespace XSharp.Project
         }
 
 
+        public bool DocumentInsertLine(string fileName, int line, string text)
+        {
+            XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
+            if (node != null)
+            {
+                return node.DocumentInsertLine(line, text);
+            }
+            return false;
+        }
 
+        public string DocumentGetText(string fileName, ref bool isOpen)
+        {
+            isOpen = IsDocumentOpen(fileName);
+            if (isOpen)
+            {
+                XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
+                if (node != null)
+                {
+                    return node.DocumentGetText();
+                }
+            }
+            return "";
+        }
+
+        public bool DocumentSetText(string fileName, string text)
+        {
+            XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
+            if (node != null)
+            {
+                return node.DocumentSetText( text);
+            }
+            return false;
+        }
 
         #endregion
         /*

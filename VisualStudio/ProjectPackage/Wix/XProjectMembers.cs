@@ -205,7 +205,7 @@ namespace XSharp.Project
                 }
                 else if (fileMap != null &&
                     fileMap.Count > 0 &&
-                    XFileType.IsXFileItem(buildItem))
+                    XSharpFileType.IsProjectItemType(buildItem))
                 {
                     string relativePath = buildItem.EvaluatedInclude;
                     if (Path.IsPathRooted(relativePath)) // if not the relative path, make it relative

@@ -159,7 +159,6 @@ namespace XSharp.Project
 
         public string CleanURL(string url)
         {
-            url = url.ToLowerInvariant();
             return url.TrimEnd('\\'); ;
         }
         public void RemoveURL(HierarchyNode node)

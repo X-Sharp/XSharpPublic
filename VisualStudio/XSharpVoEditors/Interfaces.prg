@@ -6,9 +6,6 @@
 using System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VOEditors
-	INTERFACE IEditorHost
-		
-	END INTERFACE
 	INTERFACE IVOWEDControl
 	// properties
 	PROPERTY IsGridEnabled as LOGIC GET
@@ -16,8 +13,6 @@ BEGIN NAMESPACE XSharp.VOEditors
 	PROPERTY IsDirty as LOGIC GET 
 
 	PROPERTY IWin32Window as IWin32Window GET 
-
-	METHOD SetHost(oHost as IEditorHost) AS VOID
 
 	METHOD Action(nType as Actions) AS VOID
 	METHOD CanDoAction(nType as Actions) AS LOGIC

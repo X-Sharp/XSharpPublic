@@ -4,7 +4,6 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 USING XSharpModel
-STATIC DEFINE DefaultCaption  := "XSharp VO DbServer Editor"
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
@@ -47,12 +46,14 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			SELF:GiveFocus()
 		ENDIF
 		RETURN lOk
+
+
 	METHOD ReadAllAvailableFieldSpecs(cModule as STRING) AS VOID
-		local oBinaries as IList<XFile>
+		local aFiles as IList<XFile>
 		SELF:aAvailableFieldSpecs:Clear()
 		SELF:aFieldSpecsInModule:Clear()
-		oBinaries := XFuncs.FindItemsOfType(oXProject, XFileType.VOFieldSpec, NULL)
-		FOREACH oFile as XFile in oBinaries
+		aFiles := XFuncs.FindItemsOfType(oXProject, XFileType.VOFieldSpec, NULL)
+		FOREACH oFile as XFile in aFiles
 			LOCAL cName as STRING
 			LOCAL lInModule as LOGIC
 			cName	  := oFile:FullPath
@@ -74,14 +75,14 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			ENDIF			
 		NEXT
 
-	PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
+	PROTECTED METHOD GetSaveFileStreams(cSrvFileName AS STRING , oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
 		LOCAL cPrgFileName AS STRING
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC
 		
 		TRY
 
-			cPrgFileName := Funcs.GetModuleFilenameFromBinary(cVNFrmFileName) + ".prg"
+			cPrgFileName := Funcs.GetModuleFilenameFromBinary(cSrvFileName) + ".prg"
 			lError := FALSE
 			IF !lVnfrmOnly
 				IF !File.Exists(cPrgFileName)
@@ -183,17 +184,16 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 
 		IF aFieldSpecs:Count != 0 .and. lSaveFieldSpecs
 			LOCAL cFieldSpecFileName as STRING
+			cFieldSpecFileName := cModule + ".FieldSpecs.vnfs"
+			XFuncs.DeleteFile(oXProject, cFieldSpecFileName)
 			cFieldSpecFileName := cModule + ".FieldSpecs.xsfs"
 			VOFieldSpecEditor.SaveToXml( cFieldSpecFileName, aFieldSpecs)
-			SELF:oXProject:AddFile(cFieldSpecFileName)
+			XFuncs.EnsureFileNodeExists(OXProject, cFieldSpecFileName)
+
 			FOREACH oFieldSpec as  FSEDesignFieldSpec in aFieldSpecs
-				IF .not. String.IsNullOrEmpty(oFieldSpec:cVNfsFileName) .and. .not. oFieldSpec:cVNfsFileName:ToUpper():Contains(".FIELDSPECS.VNFS")
-					SELF:oXProject:RemoveFile(oFieldSpec:cVNfsFileName)
-					IF File.Exists(oFieldSpec:cVNfsFileName)
-						TRY
-							File.Delete(oFieldSpec:cVNfsFileName)
-						END TRY
-					END IF
+				VAR cFile := oFieldSpec:cVNfsFileName
+				IF .not. String.IsNullOrEmpty(cFile) .and. .not. oFieldSpec:cVNfsFileName:ToUpper():Contains(".FIELDSPECS.XSFS")
+					XFuncs.DeleteFile(oXProject, cFile)
 				END IF
 			NEXT
 		END IF
@@ -218,18 +218,116 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		
 		IF lSuccess
 			FOREACH cFile as STRING in SELF:aFilesToDelete
-				oXProject:RemoveFile(cFile)
-				IF File.Exists(cFileName)
-					TRY
-						File.Delete(cFile)
-					END TRY
-				END IF
+				XFuncs.DeleteFile(oXProject, cFile)
 			NEXT
 			SELF:aFilesToDelete:Clear()
 		END IF
 		
 	RETURN lSuccess
-	return FALSE
+	METHOD SavePrg(oStream AS XSharp_EditorStream , oCode AS CodeContents , aFieldSpecs AS ArrayList) AS LOGIC
+		//LOCAL oTempEditor AS XSharp_EditorStream
+		//LOCAL cName AS STRING
+		//LOCAL n AS INT
+		//VAR oGenerator := CodeGenerator{oStream:Editor}
+		//oGenerator:BeginCode(TRUE)
+		//
+		//cName := SELF:oMainDesign:GetProperty("classname"):TextValue
+		//oGenerator:WriteEntity(EntityType._Class , cName , cName , EntityOptions.AddUser, oCode:aClass)
+		//oGenerator:WriteEntity(EntityType._Constructor,  cName , cName ,EntityOptions.None , oCode:aConstructor)
+		//oGenerator:WriteEntity(EntityType._Access,  "FIELDDESC" , cName ,EntityOptions.None , oCode:aFieldDesc)
+		//oGenerator:WriteEntity(EntityType._Access,  "INDEXLIST" , cName , EntityOptions.None, oCode:aIndexList)
+//
+		//FOREACH aAdditional as List<String> in oCode:aAdditional
+			//oTempEditor := XSharp_EditorStream{aAdditional}
+			//oEntity := oTempEditor:GetFirstEntity()
+			//IF oEntity != NULL
+				//oGenerator:WriteEntity(oEntity:eType , oEntity:cName , cName , EntityOptions.None, aAdditional)
+			//END IF
+		//NEXT
+		//
+		//SELF:SaveAccessAssign(oGenerator , cName , SELF:oMainDesign:GetProperty("noaccass"):TextValue:ToUpper() == "YES")
+		//
+		//LOCAL oFieldSpec AS FSEDesignFieldSpec
+		//FOR n := 0 UPTO aFieldSpecs:Count - 1
+			//oFieldSpec := (FSEDesignFieldSpec)aFieldSpecs[n]
+			//oCode := VOFieldSpecEditor.GetCodeContents(oFieldSpec)
+			//cName := oFieldSpec:GetProperty("classname"):TextValue
+			//oGenerator:WriteEntity(EntityType._Class ,      cName , cName , EntityOptions.UserCode, oCode:aClass)
+			//oGenerator:WriteEntity(EntityType._Constructor, cName , cName , EntityOptions.None, oCode:aConstructor)
+		//NEXT
+		//
+		//oStream:Save()
+		//
+	RETURN TRUE
+	METHOD SaveAccessAssign(oGenerator AS CodeGenerator, cClass AS STRING , lNoAccAss AS LOGIC) AS VOID
+		//LOCAL aValues AS NameValueCollection
+		//LOCAL oDesign AS DBEDesignDBServer
+		//LOCAL oTempEditor AS VulcanEditor
+		//LOCAL aTempEntity AS List<STRING>
+		//LOCAL aEntity AS List<STRING>
+		//LOCAL oProp AS DesignProperty
+		//LOCAL aDesign AS ArrayList
+		//LOCAL oEntity AS ParseInfo
+		//LOCAL cValue AS STRING
+		//LOCAL cLine AS STRING
+		//LOCAL n,m,k AS INT
+//
+		//aEntity := List<STRING>{}
+		//aDesign := SELF:GetAllDesignItems(DBServerItemType.Field)
+		//FOREACH oDesign  as  DBEDesignDBServer in aDesign
+			//aValues := NameValueCollection{}
+			//FOR n := 0 UPTO oDesign:aProperties:Count - 1
+				//oProp := (DesignProperty)oDesign:aProperties[n]
+				//DO CASE
+				//CASE oProp:Name == "hlname"
+					//// it appears that %hlname% tag is translated to %fldname% in VO
+					//cValue := oDesign:GetProperty("fldname"):TextValue // BIG BAD UGLY HACK
+				//CASE oProp:cEnumType == "YESNO"
+					//cValue := iif(oProp:ValueLogic , "TRUE" , "FALSE")
+				//CASE oProp:Name == "type"
+					//IF (INT)oProp:Value == 6
+						//cValue := "X"
+					//ELSE
+						//cValue := oProp:TextValue:Substring(0,1)
+					//END IF
+				//OTHERWISE
+					//cValue := oProp:TextValue
+				//END CASE
+				//aValues:Add(oProp:Name , cValue)
+			//NEXT
+			//
+			//cValue := oDesign:GetProperty("Type"):TextValue:ToUpper()
+			//DO CASE
+			//CASE cValue == "CHARACTER" .or. cValue == "MEMO"
+				//cValue := "STRING"
+			//CASE cValue == "NUMERIC"
+				//cValue := "FLOAT"
+			//OTHERWISE
+				//cValue := "USUAL"
+			//END CASE
+			//aValues:Add("usualtype" , cValue)
+			//
+			//FOR k := 0 UPTO VODBServerEditor.Template:aAccessAssign:Count - 1
+				//aTempEntity := VODBServerEditor.Template:aAccessAssign[k]
+				//aEntity:Clear()
+				//FOR n := 0 UPTO aTempEntity:Count - 1
+					//cLine := aTempEntity[n]
+					//cLine := TranslateLine(cLine , aValues)
+					//aEntity:Add(cLine)
+				//NEXT
+				//oTempEditor := VulcanEditor{aEntity}
+				//oEntity := oTempEditor:GetFirstEntity()
+				//IF oEntity != NULL
+					//IF lNoAccAss .or. oDesign:GetProperty("included"):TextValue == "0"
+						//oGenerator:DeleteEntity(oEntity:eType , oEntity:cName , cClass )
+					//ELSE
+						//oGenerator:WriteEntity(oEntity:eType , oEntity:cName , cClass , EntityOptions.None, aEntity)
+					//ENDIF
+				//END IF
+			//NEXT
+		//NEXT
+		//
+	RETURN
 END CLASS
 
 END NAMESPACE

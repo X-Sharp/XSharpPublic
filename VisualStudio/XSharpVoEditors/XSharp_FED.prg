@@ -6,7 +6,6 @@ USING Xide
 
 using XSharpModel
 
-STATIC DEFINE DefaultCaption  := "XSharp VO Fieldspec Editor"
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
@@ -16,12 +15,10 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		SUPER(_oSurface , _oGrid) 
 	RETURN
 	METHOD Open(cFileName as STRING) AS LOGIC
-		LOCAL aVnfs AS IList<XFile>
-		LOCAL oDesign AS FSEDesignFieldSpec
+		LOCAL aFiles AS IList<XFile>
 		LOCAL aFieldSpecs as ArrayList
 		LOCAL lModule AS LOGIC
 		LOCAL lMerge := FALSE AS LOGIC
-		LOCAL n AS INT
 		LOCAL oFile as XFile
 		oFile := XSharpModel.XSolution.FindFile(cFileName)
 		if (oFile != NULL_OBJECT)
@@ -47,8 +44,8 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			SELF:cLoadedDir := FileInfo{cFileName}:DirectoryName
 			RETURN TRUE
 		END IF
-		aVnFs := XFuncs.FindItemsOfType(oXProject, XFileType.VOFieldSpec, NULL)
-		FOREACH oFs as XFile in aVnFs
+		aFiles := XFuncs.FindItemsOfType(oXProject, XFileType.VOFieldSpec, NULL)
+		FOREACH oFs as XFile in aFiles
 			local cFullName as STRING
 			cFullName := oFS:FullPath
 			lModule := Funcs.GetModuleFilenameFromBinary(cFullName):ToUpper() == Funcs.GetModuleFilenameFromBinary(cFileName):ToUpper()
@@ -67,7 +64,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 							lMerge := TRUE
 						END IF
 					END IF
-					oDesign := VOFieldSpecEditor.OpenVNfs(oFs:Name , SELF)
+					VAR oDesign := VOFieldSpecEditor.OpenVNfs(oFs:Name , SELF)
 					IF oDesign != NULL
 						aFieldSpecs:Add(oDesign)
 						SELF:aFilesToDelete:Add(oFs:Name)
@@ -83,8 +80,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			RETURN FALSE
 		END IF
 		
-		FOR n := 0 UPTO aFieldSpecs:Count - 1
-			oDesign := (FSEDesignFieldSpec)aFieldSpecs[n]
+		FOREACH  oDesign  as  FSEDesignFieldSpec in aFieldSpecs
 			IF oDesign != NULL .and. .not. SELF:NameExists(oDesign:Name)
 				oDesign:oItem:SetValues()
 				SELF:oListView:Items:Add(oDesign:oItem)
@@ -100,7 +96,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		SELF:GiveFocus()
 
 	RETURN TRUE
-	RETURN FALSE
+	
 
 	PROTECTED METHOD GetSaveFileStreams(cVNfsFileName REF STRING , cPrgFileName REF STRING , ;
 								oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
@@ -223,16 +219,10 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			lSuccess := TRUE
 			SELF:nActionSaved := SELF:nAction
 			SELF:ResetModified()
-			oXProject:AddFile(cFileName)
-
+			XFuncs.EnsureFileNodeExists(oXProject, cFileName)
 			FOREACH cDelete as STRING in SELF:aFilesToDelete
 				IF FileInfo{cDelete}:FullName:ToUpper() != FileInfo{cOrigFilename}:FullName:ToUpper()
-					oXProject:RemoveFile(cDelete)
-					IF File.Exists(cDelete)
-						TRY
-							File.Delete(cDelete)
-						END TRY
-					END IF
+					XFuncs.DeleteFile(oXProject, cDelete)
 				END IF
 			NEXT
 			SELF:aFilesToDelete:Clear()

@@ -630,5 +630,18 @@ namespace XSharpModel
         {
             return false;
         }
+
+        public void AddFileNode(string strFileName)
+        {
+            return;
+        }
+        public void DeleteFileNode(string strFileName)
+        {
+            return;
+        }
+        public bool HasFileNode(string strFileName)
+        {
+            return true;
+        }
     }
 }

@@ -3,16 +3,26 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 
-STATIC DEFINE DefaultCaption  := "XSharp VO Menu Editor"
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
-
+	PROTECT oXProject as XSharpModel.XProject
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid )
 		SUPER(_oSurface , _oGrid) 
 	RETURN
 
-	PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
+	METHOD Open(cFileName as STRING) as LOGIC
+		VAR oFile := XSharpModel.XSolution.FindFile(cFileName)
+		if (oFile != NULL_OBJECT)
+			oXProject := oFile:Project
+		endif
+		if oXProject == NULL
+			XFuncs.ErrorBox("Cannot find project for file "+cFileName)
+			RETURN FALSE
+		ENDIF
+		RETURN SUPER:Open(cFileName)
+
+	PROTECTED METHOD GetSaveFileStreams(cMnuName AS STRING , oMnuStream REF FileStream , ;
 								oRCStream AS EditorStream , oPrgStream AS EditorStream , ;
 								lMnuOnly AS LOGIC , oRCAccelStream AS EditorStream ) AS LOGIC
 		LOCAL cRCFileName AS STRING
@@ -33,7 +43,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		
 		TRY
 
-			oFileInfo := FileInfo{cVNFrmFileName}
+			oFileInfo := FileInfo{cMnuName}
 			oBaseDir := oFileInfo:Directory
 			cBaseDir := oBaseDir:FullName
 			cBaseName := oFileInfo:Name
@@ -47,7 +57,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			cRCFileName := cBaseDir + "\Resources\" + cBaseName + ".rc"
 			cRCAccelFileName := cBaseDir + "\Resources\" + cBaseName + "_Accelerator.rc"
 			cAlternative := cBaseDir + "\" + cBaseName + ".rc"
-			IF !File.Exists(cRCFileName) .and. File.Exists(cAlternative)
+			IF !File.Exists(cRCFileName) 
 				cRCFileName := cAlternative
 				cRCAccelFileName := cBaseDir + "\" + cBaseName + "_Accelerator.rc"
 			ENDIF
@@ -65,14 +75,10 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			
 			lError := FALSE
 			IF !lMnuOnly
-				IF !File.Exists(cRCFileName)
-					XFuncs.ErrorBox("File was not found : " + cRCFileName)
-					lError := TRUE
-				END IF
-				IF lAccelerators .and. !File.Exists(cRCAccelFileName)
-					XFuncs.ErrorBox("File was not found : " + cRCAccelFileName)
-					lError := TRUE
-				END IF
+				XFuncs.EnsureFileNodeExists(oXProject, cRCFileName)
+				IF lAccelerators 
+					XFuncs.EnsureFileNodeExists(oXProject, cRCAccelFileName)
+				ENDIF
 				IF !File.Exists(cPrgFileName)
 					XFuncs.ErrorBox("File was not found : " + cPrgFileName)
 					lError := TRUE
@@ -94,7 +100,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			END IF
 			IF lSuccess .and. !lError
 				lSuccess := FALSE
-				oVNFrmStream := File.Open(cVNFrmFileName , FileMode.Create , FileAccess.Write , FileShare.None)
+				oMnuStream := File.Open(cMnuName , FileMode.Create , FileAccess.Write , FileShare.None)
 				lSuccess := TRUE
 			ENDIF
 			
@@ -106,8 +112,8 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		END TRY
 
 		IF !lSuccess
-			IF oVNFrmStream != NULL
-				oVNFrmStream:Close()
+			IF oMnuStream != NULL
+				oMnuStream:Close()
 			ENDIF
 			IF oRCStream:IsValid
 				oRCStream:Close()
@@ -137,7 +143,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 
 	METHOD Save(cFileName AS STRING , lMnuOnly AS LOGIC) AS LOGIC
 		LOCAL oRCStream , oRCAccelStream , oPrgStream  AS XSharp_EditorStream
-		LOCAL oVNFrmStream := NULL AS FileStream
+		LOCAL oMnuStream := NULL AS FileStream
 		LOCAL oCode AS CodeContents
 		LOCAL lSuccess := FALSE AS LOGIC
 
@@ -156,8 +162,8 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		
 		oCode := SELF:GetCodeContents()
 
-		IF SELF:GetSaveFileStreams(cFileName , REF oVNFrmStream , oRCStream , oPrgStream, lMnuOnly , oRCAccelStream )
-			IF .not. SELF:SaveToXml(oVNFrmStream)
+		IF SELF:GetSaveFileStreams(cFileName , REF oMnuStream , oRCStream , oPrgStream, lMnuOnly , oRCAccelStream )
+			IF .not. SELF:SaveToXml(oMnuStream)
 				RETURN FALSE
 			ENDIF
 			IF !lMnuOnly

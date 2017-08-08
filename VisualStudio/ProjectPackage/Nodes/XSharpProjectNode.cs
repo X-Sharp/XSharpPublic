@@ -1639,6 +1639,38 @@ namespace XSharp.Project
         }
 
 
+        public void AddFileNode(string strFileName)
+        {
+            var node = this.FindChild(strFileName);
+            if (node == null)
+            {
+                var element = this.AddFileToMsBuild(strFileName);
+                var newNode = new XSharpFileNode(this, element);
+                string parent = newNode.GetParentName();
+                if (parent != null)
+                {
+                    var parentNode = this.FindChild(parent);
+                    parentNode.AddChild(newNode);
+                }
+                else
+                    this.AddChild(newNode);
+
+            }
+        }
+        public void DeleteFileNode(string strFileName)
+        {
+            var node = this.FindChild(strFileName);
+            if (node != null)
+            {
+                this.RemoveChild(node);
+            }
+        }
+        public bool HasFileNode(string strFileName)
+        {
+            return this.FindChild(strFileName) != null;
+        }
+
+
         public XSharpParseOptions ParseOptions
         {
             get

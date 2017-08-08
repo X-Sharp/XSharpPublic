@@ -3,14 +3,25 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 
-STATIC DEFINE DefaultCaption  := "XSharp VO Form Editor"
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
+	PROTECT oXProject as XSharpModel.XProject
 
 	CONSTRUCTOR(_oSurface AS Control , _oOptions AS WindowDesignerOptions , _oGrid AS DesignerGrid , _oToolBox AS ToolBox)
 		SUPER(_oSurface , _oOptions , _oGrid , _oToolBox)
 	RETURN
+
+	METHOD Open(cFileName as STRING) as LOGIC
+		VAR oFile := XSharpModel.XSolution.FindFile(cFileName)
+		if (oFile != NULL_OBJECT)
+			oXProject := oFile:Project
+		endif
+		if oXProject == NULL
+			XFuncs.ErrorBox("Cannot find project for file "+cFileName)
+			RETURN FALSE
+		ENDIF
+		RETURN SUPER:Open(cFileName)
 
 	PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
 								oRCStream AS EditorStream , oPrgStream AS EditorStream , oVhStream AS EditorStream , ;
@@ -56,7 +67,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 				cHeaderFile  := System.IO.Path.ChangeExtension(cHeaderFile, ".xh")
 			ENDIF
 			cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + ".prg"
-			IF !File.Exists(cPrgFileName) .and. File.Exists(cAlternative)
+			IF !File.Exists(cPrgFileName) 
 				cPrgFileName := cAlternative
 				cHeaderFile  := System.IO.Path.ChangeExtension(cPrgFileName, ".vh")
 				IF !File.Exists(cHeaderFile)
@@ -67,10 +78,10 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	
 			lError := FALSE
 			IF !lVnfrmOnly
-				IF !File.Exists(cRCFileName)
-					XFuncs.ErrorBox("File was not found : " + cRCFileName)
-					lError := TRUE
-				END IF
+				if ! File.Exists(cRCFileName)
+					cRCFileName := System.IO.Path.ChangeExtension(cVNFrmFileName, ".rc")
+				endif
+				XFuncs.EnsureFileNodeExists(oXProject, cRCFileName)
 				IF !File.Exists(cPrgFileName)
 					XFuncs.ErrorBox("File was not found : " + cPrgFileName)
 					lError := TRUE

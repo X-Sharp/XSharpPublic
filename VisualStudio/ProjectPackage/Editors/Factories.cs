@@ -331,6 +331,11 @@ namespace XSharp.Project
             ppunkDocView = Marshal.GetIUnknownForObject(editor);
             ppunkDocData = Marshal.GetIUnknownForObject(editor);
             pbstrEditorCaption = "";
+            XSharpModel.XFile file = XSharpModel.XSolution.FindFile(pszMkDocument);
+            if (file != null)
+            {
+                editor.Project = file.Project.ProjectNode;
+            }
             return VSConstants.S_OK;
         }
     }

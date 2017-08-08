@@ -23,7 +23,7 @@ namespace XSharpColorizer
     /// <summary>
     /// Classifier that classifies all text as an instance of the "XSharpClassifier" classification type.
     /// </summary>
-    internal class XSharpClassifier : IClassifier
+    public class XSharpClassifier : IClassifier
     {
         private ITextBuffer buffer;
         public ITextSnapshot Snapshot => buffer.CurrentSnapshot;
@@ -483,7 +483,7 @@ namespace XSharpColorizer
             return lastFound;
         }
 
-        internal IImmutableList<ClassificationSpan> GetRegionTags()
+        public IImmutableList<ClassificationSpan> GetRegionTags()
         {
             lock (this)
             {

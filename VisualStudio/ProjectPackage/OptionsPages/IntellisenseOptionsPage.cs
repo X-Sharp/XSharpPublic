@@ -35,6 +35,20 @@ namespace XSharp.Project.OptionsPages
             set { identifierCase = value; }
         }
 
+        private bool alignDoCase = false;
+        public bool AlignDoCase
+        {
+            get { return alignDoCase; }
+            set { alignDoCase = value; }
+        }
+
+        private bool alignMethod = false;
+        public bool AlignMehod
+        {
+            get { return alignMethod; }
+            set { alignMethod = value; }
+        }
+
 
         protected override IWin32Window Window
         {

@@ -259,5 +259,7 @@ namespace XSharpModel
 
         public bool IsXaml => _type == XFileType.XAML;
         public bool IsSource => _type == XFileType.SourceCode;
+
+        public XFileType XFileType => _type;
     }
 }

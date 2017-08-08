@@ -1043,7 +1043,15 @@ CLASS ApplicationDescriptor
 					oResources := OutputCode{}
 					FOREACH oPair AS KeyValuePair<STRING , OutputCode> IN aResources
 						// For VS:
-						cResFileName := oModule:PathValidName + "." + oPair:Key + ".rc"
+						LOCAL cName AS STRING
+						cName := oPair:Key
+						DO CASE
+						CASE cName:ToUpper():StartsWith("IDM_")
+							cName := cName:Substring(4)
+						CASE cName:ToUpper():StartsWith("IDA_")
+							cName := cName:Substring(4) + "_Accelerator"
+						END CASE
+						cResFileName := oModule:PathValidName + "." + cName + ".rc"
 						File.WriteAllLines(cFolder + "\" + cResFileName , oPair:Value:GetContents() , System.Text.Encoding.Default)
 						oModule:AddVSrc(cResFileName)
 						// For XIDE:

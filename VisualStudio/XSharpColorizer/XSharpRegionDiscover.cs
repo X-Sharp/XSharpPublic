@@ -21,7 +21,7 @@ namespace XSharpColorizer
         private readonly ITextSnapshot _snapshot;
         private bool _hasPositionalKeyword = false;
         public bool HasPositionalKeyword => _hasPositionalKeyword;
- 
+
         public XSharpRegionDiscover(ITextSnapshot snapshot) : base()
         {
             // To store intermediate declarations
@@ -32,7 +32,7 @@ namespace XSharpColorizer
         }
         internal IClassificationType xsharpRegionStartType;
         internal IClassificationType xsharpRegionStopType;
- 
+
         #region Entities with END ...
         public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
         {
@@ -86,11 +86,55 @@ namespace XSharpColorizer
             TagRegion(context, context.ChildCount - 1);
         }
         #endregion
- 
+
         #region Statements with block
         public override void ExitStatementBlock([NotNull] XSharpParser.StatementBlockContext context)
         {
-            TagRegion(context.Parent, context.Parent.ChildCount - 1);
+            if (!(context.Parent is XSharpParser.IfElseBlockContext) &&
+                !(context.Parent is XSharpParser.CaseBlockContext))
+            {
+                TagRegion(context.Parent, context.Parent.ChildCount - 1);
+            }
+            else if (context.Parent is XSharpParser.IfElseBlockContext)
+            {
+                var ctxt = context.Parent as XSharpParser.IfElseBlockContext;
+                //
+                if (ctxt.ElseIfBlock != null)
+                {
+                    // we have Count >= 3
+                    // 0 : BinaryExpr
+                    // 1 : EOS
+                    // 2 : StatementBlock
+                    //TagRegion(ctxt.ElseIfBlock, 2);
+                    //
+                    //// Search the ELSEIF block, if Any
+                    int i = 0;
+                    LanguageService.SyntaxTree.Tree.IParseTree token = null;
+                    for (i = 0; i < ctxt.ChildCount; i++)
+                    {
+                        token = ctxt.GetChild(i);
+                        String tokenText = token.GetText().ToUpper();
+                        if (tokenText == "ELSEIF")
+                        {
+                            break;
+                        }
+                        else
+                            token = null;
+                    }
+                    //
+                    if (token is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
+                    {
+                        LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)token).Symbol;
+                        var tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                        _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStartType));
+                        //
+                        var endToken = ctxt.ElseIfBlock.GetChild(2);
+                        XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
+                        tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex - 1, 1);
+                        _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStopType));
+                    }
+                }
+            }
         }
         public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)
         {
@@ -98,7 +142,98 @@ namespace XSharpColorizer
         }
         public override void ExitCaseStmt([NotNull] XSharpParser.CaseStmtContext context)
         {
+            // we have Count == 7
+            // 0 : DO
+            // 1 : CASE
+            // 2 : Eos
+            // 3 : CaseBlock
+            // 4 : END
+            // 5 : CASE
+            // 6 : Eos
             TagRegion(context, context.ChildCount - 2);
+        }
+
+        public override void ExitCaseBlock([NotNull] XSharpParser.CaseBlockContext context)
+        {
+            // we have Count == 4
+            // 0 : CASE
+            // 1 : BinaryExpr
+            // 2 : EOS
+            // 3 : StatementBlock
+            // 4 : CaseBlock <- Only if we have another CASE after
+
+            // OR
+
+            // 0 : OTHERWISE
+            // 1 : EOS
+            // 2 : StatementBlock
+
+            int endIndex = 3;
+            var startToken = context.GetChild(0);
+            String token = startToken.GetText().ToUpper();
+            if (token == "OTHERWISE")
+            {
+                endIndex = 2;
+            }
+            TagRegion(context, endIndex);
+        }
+
+        public override void ExitIfStmt([NotNull] XSharpParser.IfStmtContext context)
+        {
+            TagRegion(context, context.ChildCount - 2);
+            //
+            try
+            {
+                XSharpParser.StatementBlockContext elseBlock = null;
+                XSharpParser.IfElseBlockContext stmt = null;
+                if (context.IfStmt.ElseBlock != null)
+                {
+                    elseBlock = context.IfStmt.ElseBlock;
+                    stmt = context.IfStmt;
+                }
+                else if (context.IfStmt.ElseIfBlock != null)
+                {
+                    if (context.IfStmt.ElseIfBlock.ElseBlock != null)
+                    {
+                        elseBlock = context.IfStmt.ElseIfBlock.ElseBlock;
+                        stmt = context.IfStmt.ElseIfBlock;
+                    }
+                }
+                //
+                if (elseBlock != null)
+                {
+
+                    // Search the ELSE block, if Any
+                    int i = 0;
+                    LanguageService.SyntaxTree.Tree.IParseTree token = null;
+                    for (i = 0; i < stmt.ChildCount; i++)
+                    {
+                        token = stmt.GetChild(i);
+                        String tokenText = token.GetText().ToUpper();
+                        if (tokenText == "ELSE")
+                        {
+                            break;
+                        }
+                        else
+                            token = null;
+                    }
+                    //
+                    if (token is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
+                    {
+                        LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)token).Symbol;
+                        var tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                        _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStartType));
+                        //
+                        XSharpParser.StatementBlockContext lastTokenInContext = elseBlock as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
+                        tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex - 1, 1);
+                        _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStopType));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                XSharpClassifier.Debug("Tagregion failed: " + e.Message);
+            }
         }
         #endregion
 
@@ -159,7 +294,7 @@ namespace XSharpColorizer
             }
         }
 
-        public IImmutableList<ClassificationSpan>  GetRegionTags()
+        public IImmutableList<ClassificationSpan> GetRegionTags()
         {
             return _regionTags.ToImmutableList();
         }

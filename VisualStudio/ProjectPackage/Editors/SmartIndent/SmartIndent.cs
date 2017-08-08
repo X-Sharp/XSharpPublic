@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XSharpColorizer;
 
 namespace XSharp.Project
 {
@@ -14,11 +15,13 @@ namespace XSharp.Project
     {
         private readonly ITextView _textView;
         private readonly IBufferTagAggregatorFactoryService _aggregator;
+        private int _lastIndentValue;
 
         public XSharpSmartIndent(ITextView view, IBufferTagAggregatorFactoryService aggregator)
         {
             _textView = view;
             _aggregator = aggregator;
+            _lastIndentValue = 0;
         }
 
         public int? GetDesiredIndentation(ITextSnapshotLine line)
@@ -37,6 +40,7 @@ namespace XSharp.Project
                     ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
                     var buffer = _textView.TextBuffer;
                     SnapshotSpan lineSpan = new SnapshotSpan(prevLine.Start, prevLine.Length);
+                    int tabSize = this._textView.Options.GetTabSize();
                     //
                     var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(buffer);
                     var tags = tagAggregator.GetTags(lineSpan);
@@ -69,7 +73,6 @@ namespace XSharp.Project
                         // Extract the start of line
                         SnapshotSpan toIndent = new SnapshotSpan(prevLine.Start, snapPointFirst.Value.Position - prevLine.Start.Position);
                         String startOfLine = toIndent.GetText();
-                        int tabSize = this._textView.Options.GetTabSize();
                         // Convert Tabs to Spaces
                         startOfLine = startOfLine.Replace("\t", new String(' ', tabSize));
                         // So, at least, to align to previous line, we will need...
@@ -106,7 +109,24 @@ namespace XSharp.Project
                                 }
                             } while (nextModifier);
                             //
-                            if ( keyword != null )
+                            // eat a simple DO...
+                            bool nextKeyword;
+                            do
+                            {
+                                nextKeyword = false;
+                                switch (keyword)
+                                {
+                                    case "DO":
+                                        nextKeyword = true;
+                                        tagIndex++;
+                                        keyword = this.GetKeywordAt(tagList, tagIndex);
+                                        if (keyword == null)
+                                            nextKeyword = false;
+                                        break;
+                                }
+                            } while (nextKeyword);
+                            //
+                            if (keyword != null)
                             {
                                 switch (keyword)
                                 {
@@ -139,11 +159,44 @@ namespace XSharp.Project
                                         indentValue += tabSize;
                                         break;
 
+                                    case "IF":
+                                    case "WHILE":
+                                    case "ELSE":
+                                    case "ELSEIF":
+                                    case "FOR":
+                                        //
+                                        indentValue += tabSize;
+                                        break;
+
+                                    case "END":
+                                    case "ENDDO":
+                                    case "ENDIF":
+                                    case "NEXT":
+                                        //
+                                        indentValue = AlignToOpenToken(lineNumber);
+                                        if (indentValue < 0)
+                                            indentValue = 0;
+                                        // De-Indent previous line !!!
+                                        var edit = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
+                                        try
+                                        {
+                                            String spaces = new String('\t', indentValue / tabSize) + new String(' ', indentValue % tabSize);
+                                            edit.Replace(toIndent, spaces);
+                                        }
+                                        finally
+                                        {
+                                            edit.Apply();
+                                        }
+                                        break;
+
                                 }
                             }
                         }
+                        if (indentValue < 0)
+                            indentValue = 0;
+                        _lastIndentValue = indentValue;
                     }
-                    return indentValue;
+                    return _lastIndentValue;
                 }
             }
             return null;
@@ -172,6 +225,67 @@ namespace XSharp.Project
             return keyword;
         }
 
+        private int AlignToOpenToken(int lineNumber)
+        {
+            int indentValue = 0;
+            //
+            var buffer = _textView.TextBuffer;
+            // Try to retrieve an already parsed list of Tags
+            XSharpClassifier xsClassifier = null;
+            if (buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+            {
+                xsClassifier = buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
+            }
+
+            if (xsClassifier != null)
+            {
+                //
+                ITextSnapshot snapshot = xsClassifier.Snapshot;
+                SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
+                System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetRegionTags();
+                //
+                SortedList<int, Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new SortedList<int, Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                //
+                foreach (var tag in classifications)
+                {
+                    sortedTags.Add(tag.Span.Start.Position, tag);
+                }
+                Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> startStack = new Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                foreach (var tag in sortedTags)
+                {
+                    // Is it a Region ?
+                    if (tag.Value.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
+                    {
+                        startStack.Push(tag.Value);
+                    }
+                    else if (tag.Value.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
+                    {
+                        //
+                        var startTag = startStack.Pop();
+                        var startLine = startTag.Span.Start.GetContainingLine();
+                        // Looking for an End
+
+                        var endLine = tag.Value.Span.End.GetContainingLine();
+                        if (endLine.LineNumber == lineNumber)
+                        {
+                            // Where is the start ?
+                            SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, startLine.End);
+                            String lineText = sSpan.GetText();
+                            int tabSize = this._textView.Options.GetTabSize();
+                            lineText = lineText.Replace("\t", new String(' ', tabSize));
+                            // 
+                            indentValue = (lineText.Length - lineText.TrimStart().Length);
+                            break;
+                        }
+                    }
+                }
+            }
+            //
+            return indentValue;
+        }
+
         public void Dispose() { }
+
+
     }
 }

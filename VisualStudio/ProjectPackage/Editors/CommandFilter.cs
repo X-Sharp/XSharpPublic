@@ -74,7 +74,7 @@ namespace XSharp.Project
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
                     case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
-                        //FormatDocument();
+                        FormatDocument();
                         break;
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
@@ -117,7 +117,7 @@ namespace XSharp.Project
                     case VSConstants.VSStd2KCmdID.DOWN:
                     case VSConstants.VSStd2KCmdID.PAGEUP:
                     case VSConstants.VSStd2KCmdID.PAGEDN:
-                        FormatLine();
+                        //FormatLine();
                         break;
                     case VSConstants.VSStd2KCmdID.TYPECHAR:
                         char ch = GetTypeChar(pvaIn);
@@ -228,15 +228,397 @@ namespace XSharp.Project
 }
          * */
 
+
         private void FormatLine()
+        {
+            //
+            SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
+            var buffer = this.TextView.TextBuffer;
+            ITextSnapshotLine line = caret.GetContainingLine();
+            //
+            var editSession = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
+            try
+            {
+                FormatLine(editSession, line, null);
+            }
+            finally
+            {
+                editSession.Apply();
+            }
+        }
+
+
+        /// <summary>
+        /// Format the Keywords and Identifiers in the Line, using the EditSession
+        /// </summary>
+        /// <param name="editSession"></param>
+        /// <param name="line"></param>
+        private void FormatLine(ITextEdit editSession, ITextSnapshotLine line, int? desiredIndentation)
         {
             //
             var package = XSharp.Project.XSharpProjectPackage.Instance;
             var optionsPage = package.GetIntellisenseOptionsPage();
             int kwCase = optionsPage.KeywordCase;
+            bool syncIdentifier = optionsPage.IdentifierCase;
+            //
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
-            ITextSnapshotLine line = caret.GetContainingLine();
+            var buffer = this.TextView.TextBuffer;
+            var tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(buffer);
+            var tags = tagAggregator.GetTags(lineSpan);
+            List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
+            foreach (var tag in tags)
+            {
+                tagList.Add(tag);
+            }
+            // Keyword and Identifier Case
+            foreach (var tag in tagList)
+            {
+                var name = tag.Tag.ClassificationType.Classification.ToLower();
+                //
+                if (name == "keyword")
+                {
+                    var spans = tag.Span.GetSpans(buffer);
+                    if (spans.Count > 0)
+                    {
+                        SnapshotSpan kwSpan = spans[0];
+                        string keyword = kwSpan.GetText();
+                        string transform = null;
+                        //
+                        switch (kwCase)
+                        {
+                            case 1:
+                                transform = keyword.ToUpper();
+                                break;
+                            case 2:
+                                transform = keyword.ToLower();
+                                break;
+                            case 3:
+                                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US", false);
+                                System.Globalization.TextInfo txtInfo = culture.TextInfo;
+                                transform = txtInfo.ToTitleCase(keyword.ToLower());
+                                break;
+                        }
+                        // Not none, and the tranfsform is not the same as the original
+                        if ((kwCase != 0) && (String.Compare(transform, keyword) != 0))
+                            editSession.Replace(kwSpan, transform);
+                    }
+                }
+                else if ((name == "identifier") && syncIdentifier)
+                {
+                    var spans = tag.Span.GetSpans(buffer);
+                    if (spans.Count > 0)
+                    {
+                        SnapshotSpan idSpan = spans[0];
+                        string identifier = idSpan.GetText();
+                        //
+                        XFile _file = buffer.GetFile();
+                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.Position, _file);
+                        //
+                        if (currentMember == null)
+                            continue;
+                        CompletionType cType = null;
+                        XSharpLanguage.CompletionElement foundElement = null;
+                        XVariable element = null;
+                        // Search in Parameters
+                        if (currentMember.Parameters != null)
+                            element = currentMember.Parameters.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                        if (element == null)
+                        {
+                            // then Locals
+                            if (currentMember.Locals != null)
+                                element = currentMember.Locals.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                            if (element == null)
+                            {
+                                if (currentMember.Parent != null)
+                                {
+                                    // Context Type....
+                                    cType = new CompletionType(currentMember.Parent.Clone);
+                                    // We can have a Property/Field of the current CompletionType
+                                    if (!cType.IsEmpty())
+                                    {
+                                        cType = XSharpLanguage.XSharpTokenTools.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
+                                    }
+                                    // Not found ? It might be a Global !?
+                                    if (foundElement == null)
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                        if (element != null)
+                        {
+                            cType = new CompletionType((XVariable)element, "");
+                            foundElement = new XSharpLanguage.CompletionElement(element);
+                        }
+                        // got it !
+                        if (foundElement != null)
+                        {
+                            if ((String.Compare(foundElement.Name, identifier) != 0))
+                                editSession.Replace(idSpan, foundElement.Name);
+                        }
+                    }
+                }
+            }
+            // Indentation
+            if (desiredIndentation != null)
+            {
+                int tabSize = this.TextView.Options.GetTabSize();
+                String lineText = line.GetText();
+                int lineLength = line.Length;
+                String newText = lineText.TrimStart();
+                int newLength = newText.Length;
+                if (lineLength >= newLength)
+                {
+                    //
+                    Span indentSpan = new Span(line.Start.Position, lineLength - newLength);
+                    String indentSpaces = new String('\t', (int)desiredIndentation / tabSize) + new String(' ', (int)desiredIndentation % tabSize);
+                    editSession.Replace(indentSpan, indentSpaces);
+                }
+            }
+        }
+
+        private void FormatDocument()
+        {
+            var buffer = this.TextView.TextBuffer;
+            //            int tabSize = this.TextView.Options.GetTabSize();
+
+            // Try to retrieve an already parsed list of Tags
+            XSharpClassifier xsClassifier = null;
+            if (buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+            {
+                xsClassifier = buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
+            }
+            //
+            if (xsClassifier != null)
+            {
+                //
+                ITextSnapshot snapshot = xsClassifier.Snapshot;
+                SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
+                System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetRegionTags();
+                // We cannot use SortedList, because we may have several Classification that start at the same position
+                List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                foreach (var tag in classifications)
+                {
+                    sortedTags.Add(tag);
+                }
+                sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
+                //
+                Stack<Span> regionStarts = new Stack<Microsoft.VisualStudio.Text.Span>();
+                List<Tuple<Span, Span>> regions = new List<Tuple<Microsoft.VisualStudio.Text.Span, Microsoft.VisualStudio.Text.Span>>();
+                //
+                foreach (var tag in sortedTags)
+                {
+                    //
+                    if (tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStartFormat))
+                    {
+                        //
+                        regionStarts.Push(tag.Span.Span);
+                    }
+                    else if (tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStopFormat))
+                    {
+                        if (regionStarts.Count > 0)
+                        {
+                            var start = regionStarts.Pop();
+                            //
+                            regions.Add(new Tuple<Span, Span>(start, tag.Span.Span));
+                        }
+                    }
+                }
+                //Now, we have a list of Regions Start/Stop
+                var editSession = buffer.CreateEdit();
+                try
+                {
+                    ////
+                    //foreach (var region in regions)
+                    //{
+                    //    SnapshotPoint pt = new SnapshotPoint(this.TextView.TextSnapshot, region.Item1.Start);
+                    //    var snapLine = pt.GetContainingLine();
+                    //    FormatLine(editSession, snapLine);
+                    //}
+                    //
+
+                    var lines = buffer.CurrentSnapshot.Lines;
+                    foreach (var snapLine in lines)
+                    {
+                        int indentSize = GetDesiredIndentation(snapLine, regions);
+                        //
+                        FormatLine(editSession, snapLine, indentSize);
+                    }
+                    //
+                    //foreach( var twLine in lines )
+                    //{
+                    //    var fullSpan = new SnapshotSpan(twLine.Snapshot, Span.FromBounds(twLine.Start, twLine.End));
+                    //    var snapLine = fullSpan.Start.GetContainingLine();
+                    //    int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
+                    //    string text = snapLine.GetText();
+                    //    //
+                    //    lines.
+                    //    //
+                    //}
+                }
+                finally
+                {
+                    editSession.Apply();
+                }
+            }
+        }
+
+        private int GetDesiredIndentation(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions)
+        {
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            bool alignDoCase = optionsPage.AlignDoCase;
+            bool alignMethod = optionsPage.AlignMehod;
+            //
+            int indentValue = 0;
+            //
+            List<IMappingTagSpan<IClassificationTag>> tags = GetTagsInLine(snapLine);
+            // In Tuple Regions, the items are :
+            // Item1 is Start
+            // Item2 is End
+            foreach (var region in regions)
+            {
+                // The line is inside a region ?
+                //if ((snapLine.Start.Position >= region.Item1.Start) && (snapLine.Start.Position <= region.Item2.End))
+                {
+                    var currentRegionSpan = new SnapshotSpan(snapLine.Snapshot, Span.FromBounds(region.Item1.Start, region.Item2.End));
+                    var startLine = currentRegionSpan.Start.GetContainingLine();
+                    var endLine = currentRegionSpan.End.GetContainingLine();
+                    //
+                    // What kind of region ?
+                    String tagType = GetFirstKeywordInLine(startLine);
+                    // Skip comment and using regions
+                    if ((tagType == "//") || (tagType == "USING"))
+                    {
+                        continue;
+                    }
+                    // Region Start
+                    if (snapLine.LineNumber == startLine.LineNumber)
+                    {
+                        // Move back keywords
+                        switch (tagType)
+                        {
+                            case "ELSEIF":
+                            case "ELSE":
+                            case "CATCH":
+                            case "FINALLY":
+                                indentValue--;
+                                break;
+                        }
+                        // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
+                        // Check for a setting
+                        if (alignDoCase)
+                        {
+                            // Move back keywords
+                            switch (tagType)
+                            {
+                                case "CASE":
+                                case "OTHERWISE":
+                                    indentValue--;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (snapLine.LineNumber > startLine.LineNumber)
+                    {
+                        if (snapLine.LineNumber < endLine.LineNumber)
+                        {
+                            // Don't indent the inner code
+                            switch (tagType)
+                            {
+                                case "ELSEIF":
+                                case "ELSE":
+                                case "CATCH":
+                                case "FINALLY":
+                                    continue;
+                            }
+                            // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
+                            // Check for a setting
+                            if (alignDoCase)
+                            {
+                                // Don't indent
+                                switch (tagType)
+                                {
+                                    case "CASE":
+                                    case "OTHERWISE":
+                                        continue;
+                                }
+                            }
+                            //
+                            if (alignMethod)
+                            {
+                                // Code block
+                                switch (tagType)
+                                {
+                                    case "FUNCTION":
+                                    case "PROCEDURE":
+                                    case "METHOD":
+                                    case "PROPERTY":
+                                    case "ACCESS":
+                                    case "ASSIGN":
+                                    case "CONSTRUCTOR":
+                                    case "DESTRUCTOR":
+                                    case "OPERATOR":
+                                        continue;
+                                }
+                            }
+                            //
+                            indentValue++;
+                        }
+                        else if (snapLine.LineNumber == endLine.LineNumber)
+                        {
+                            if (!alignMethod)
+                            {
+                                // no closing keyword
+                                switch (tagType)
+                                {
+                                    case "FUNCTION":
+                                    case "PROCEDURE":
+                                    case "METHOD":
+                                    case "PROPERTY":
+                                    case "ACCESS":
+                                    case "ASSIGN":
+                                    case "CONSTRUCTOR":
+                                    case "DESTRUCTOR":
+                                    case "OPERATOR":
+                                        indentValue++;
+                                        break;
+                                }
+                            }
+                            //
+                            if (!alignDoCase)
+                            {
+                                // Don't indent
+                                switch (tagType)
+                                {
+                                    case "CASE":
+                                    case "OTHERWISE":
+                                        indentValue++;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //
+            int tabSize = this.TextView.Options.GetTabSize();
+            // This should NOT happen
+            if (indentValue < 0)
+            {
+                indentValue = 0;
+            }
+            //
+            return (indentValue * tabSize);
+        }
+
+
+        private List<IMappingTagSpan<IClassificationTag>> GetTagsInLine(ITextSnapshotLine line)
+        {
+            //
             SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
             //
             var buffer = this.TextView.TextBuffer;
@@ -247,172 +629,63 @@ namespace XSharp.Project
             {
                 tagList.Add(tag);
             }
+            return tagList;
+        }
+
+        private String GetFirstKeywordInLine(ITextSnapshotLine line)
+        {
+            String keyword = "";
+            List<IMappingTagSpan<IClassificationTag>> tagList = GetTagsInLine(line);
             //
-            var edit = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
-            try
+            if (tagList.Count > 0)
             {
-                //
-                foreach (var tag in tagList)
+                int tagIndex = 0;
+                while (tagIndex < tagList.Count)
                 {
-                    var name = tag.Tag.ClassificationType.Classification.ToLower();
+                    IClassificationTag currentTag = tagList[tagIndex].Tag;
+                    IMappingSpan currentSpan = tagList[tagIndex].Span;
+                    var buffer = this.TextView.TextBuffer;
                     //
-                    if (name == "keyword")
+                    if (currentTag.ClassificationType.IsOfType("keyword"))
                     {
-                        var spans = tag.Span.GetSpans(buffer);
+                        var spans = currentSpan.GetSpans(buffer);
                         if (spans.Count > 0)
                         {
                             SnapshotSpan kwSpan = spans[0];
-                            string keyword = kwSpan.GetText();
-                            string transform = null;
-                            //
-                            switch (kwCase)
+                            keyword = kwSpan.GetText();
+                            keyword = keyword.ToUpper();
+                            // it could be modifier...
+                            switch (keyword)
                             {
-                                case 1:
-                                    transform = keyword.ToUpper();
-                                    break;
-                                case 2:
-                                    transform = keyword.ToLower();
-                                    break;
-                                case 3:
-                                    System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US", false);
-                                    System.Globalization.TextInfo txtInfo = culture.TextInfo;
-                                    transform = txtInfo.ToTitleCase(keyword.ToLower());
+                                case "PROTECTED":
+                                case "INTERNAL":
+                                case "HIDDEN":
+                                case "PRIVATE":
+                                case "EXPORT":
+                                case "PUBLIC":
+                                case "STATIC":
+                                case "SEALED":
+                                case "ABSTRACT":
+                                case "VIRTUAL":
+                                case "PARTIAL":
+                                    tagIndex++;
+                                    keyword = "";
+                                    continue;
+                                default:
                                     break;
                             }
-                            // Not none, and the tranfsform is not the same as the original
-                            if ((kwCase != 0) && (String.Compare(transform, keyword) != 0))
-                                edit.Replace(kwSpan, transform);
                         }
                     }
-                    else if (name == "identifier")
+                    else if (currentTag.ClassificationType.IsOfType("comment"))
                     {
-                        var spans = tag.Span.GetSpans(buffer);
-                        if (spans.Count > 0)
-                        {
-                            SnapshotSpan idSpan = spans[0];
-                            string identifier = idSpan.GetText();
-                            //
-                            XFile _file = buffer.GetFile();
-                            XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.Position, _file);
-                            //
-                            if (currentMember == null)
-                                continue;
-                            CompletionType cType = null;
-                            XSharpLanguage.CompletionElement foundElement = null;
-                            XVariable element = null;
-                            // Search in Parameters
-                            if (currentMember.Parameters != null)
-                                element = currentMember.Parameters.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
-                            if (element == null)
-                            {
-                                // then Locals
-                                if (currentMember.Locals != null)
-                                    element = currentMember.Locals.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
-                                if (element == null)
-                                {
-                                    if (currentMember.Parent != null)
-                                    {
-                                        // Context Type....
-                                        cType = new CompletionType(currentMember.Parent.Clone);
-                                        // We can have a Property/Field of the current CompletionType
-                                        if (!cType.IsEmpty())
-                                        {
-                                            cType = XSharpLanguage.XSharpTokenTools.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
-                                        }
-                                        // Not found ? It might be a Global !?
-                                        if (foundElement == null)
-                                        {
-
-                                        }
-                                    }
-                                }
-                            }
-                            if (element != null)
-                            {
-                                cType = new CompletionType((XVariable)element, "");
-                                foundElement = new XSharpLanguage.CompletionElement(element);
-                            }
-                            // got it !
-                            if (foundElement != null)
-                            {
-                                if ((String.Compare(foundElement.Name, identifier) != 0))
-                                    edit.Replace(idSpan, foundElement.Name);
-                            }
-                        }
+                        //
+                        keyword = "//";
                     }
-                }
+                    // out please
+                    break;
+                };
             }
-            finally
-            {
-                edit.Apply();
-            }
-        }
-
-        private void FormatDocument()
-        {
-            var buffer = this.TextView.TextBuffer;
-            //
-            var tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(buffer);
-            SnapshotSpan docSpan = new SnapshotSpan(buffer.CurrentSnapshot, 0, buffer.CurrentSnapshot.Length);
-            var tags = tagAggregator.GetTags(docSpan);
-            //
-            Stack<Span> regionStarts = new Stack<Microsoft.VisualStudio.Text.Span>();
-            List<Tuple<Span, Span>> regions = new List<Tuple<Microsoft.VisualStudio.Text.Span, Microsoft.VisualStudio.Text.Span>>();
-            //
-            foreach (var tag in tags)
-            {
-                //
-                if (tag.Tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStartFormat))
-                {
-                    //
-                    var spans = tag.Span.GetSpans(buffer);
-                    if (spans.Count > 0)
-                        regionStarts.Push(spans[0]);
-                }
-                else if (tag.Tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStopFormat))
-                {
-                    var spans = tag.Span.GetSpans(buffer);
-                    if (spans.Count > 0)
-                    {
-                        if (regionStarts.Count > 0)
-                        {
-                            var start = regionStarts.Pop();
-                            //
-                            regions.Add(new Tuple<Span, Span>(start, spans[0]));
-                        }
-                    }
-                }
-            }
-            //Now, we have a list of Regions Start/Stop
-            var editor = buffer.CreateEdit();
-            try
-            {
-                //
-                int tabSize = this.TextView.Options.GetTabSize();
-                //
-                //foreach( var region in regions )
-                //{
-                //    SnapshotPoint pt = new SnapshotPoint(this.TextView.TextSnapshot, region.Item1.Start);
-                //    var snapLine = pt.GetContainingLine();
-                //    snapLine.
-                //}
-                //var lines = this.TextView.TextViewLines;
-                //foreach( var twLine in lines )
-                //{
-                //    var fullSpan = new SnapshotSpan(twLine.Snapshot, Span.FromBounds(twLine.Start, twLine.End));
-                //    var snapLine = fullSpan.Start.GetContainingLine();
-                //    int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
-                //    string text = snapLine.GetText();
-                //    //
-                //    lines.
-                //    //
-                //}
-            }
-            finally
-            {
-                editor.Apply();
-            }
-
+            return keyword;
         }
 
         private void GotoDefn()

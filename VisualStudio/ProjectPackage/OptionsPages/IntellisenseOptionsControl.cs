@@ -36,8 +36,11 @@ namespace XSharp.Project.OptionsPages
                 default:
                     rbNone.Checked = true;
                     break;
-
             }
+            //
+            chkIdentifierCase.Checked = optionsPage.IdentifierCase;
+            chkAlignDoCase.Checked = optionsPage.AlignDoCase;
+            chkAlignMethod.Checked = optionsPage.AlignMehod;
         }
 
 
@@ -69,6 +72,16 @@ namespace XSharp.Project.OptionsPages
         private void chkIdentifierCase_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.IdentifierCase = chkIdentifierCase.Checked;
+        }
+
+        private void chkAlignDoCase_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.AlignDoCase = chkAlignDoCase.Checked;
+        }
+
+        private void chkAlignMethod_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.AlignMehod = chkAlignMethod.Checked;
         }
     }
 }

@@ -84,7 +84,24 @@ STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
 		oGenerator:AddLine("//------------------------------------------------------------------------------")
 		oGenerator:AddLine("")
 
+	STATIC METHOD EnsureFileNodeExists(oXproject as XSharpModel.XProject , fileName as STRING) AS VOID
+		IF !System.IO.File.Exists(fileName)
+			System.IO.File.WriteAllText(fileName,"")
+		END IF
+		if !oXProject:ProjectNode:HasFileNode(fileName)
+			oXProject:ProjectNode:AddFileNode(fileName)
+		endif
 
+	STATIC METHOD DeleteFile(oXproject as XSharpModel.XProject , cFile as STRING) AS VOID
+		if oXProject:ProjectNode:HasFileNode(cFile)
+			oXProject:ProjectNode:DeleteFileNode(cFile)
+		endif
+		oXProject:RemoveFile(cFile)
+		IF System.IO.File.Exists(cFile)
+			TRY
+				System.IO.File.Delete(cFile)
+			END TRY
+		END IF
 END CLASS
 
 	

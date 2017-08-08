@@ -37,6 +37,11 @@ namespace XSharpModel
         XSharpParseOptions ParseOptions { get; }
         EnvDTE.Project FindProject(String sProject);
         string IntermediateOutputPath { get; }
+
+        void AddFileNode(string fileName);
+        void DeleteFileNode(string fileName);
+
+        bool HasFileNode(string fileName);
     }
 
     public interface IXErrorPosition

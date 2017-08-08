@@ -4,15 +4,12 @@ using XSharp.VOEditors
 using System.Windows.Forms
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
-	PROTECT host as IEditorHost
 
 	PROPERTY StatusMessage as StatusMessageDelegate AUTO
 
     CONSTRUCTOR()
         SUPER()
     RETURN
-	METHOD SetHost(oHost as IEditorHost) AS VOID
-		SELF:host := oHost
 
     METHOD OpenWindow(cFileName AS STRING) AS LOGIC
         LOCAL oFileInfo AS FileInfo

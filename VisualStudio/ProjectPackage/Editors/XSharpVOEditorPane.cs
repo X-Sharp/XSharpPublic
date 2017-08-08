@@ -72,11 +72,11 @@ namespace XSharp.Project
                                                     //backs up all objects in the Running Document Table that 
                                                     //support IVsFileBackup and have unsaved changes.
                                                     //                               IVsFindTarget,      //to implement find and replace capabilities within the editor
-                                IExtensibleObject,  //so we can get the automation object
-                                IEditorHost            //the automation interface for Editor
+                                IExtensibleObject  //so we can get the automation object
     {
         private uint MyFormat = 0;
         protected string MyExtension = ".*";
+        private XSharpModel.IXSharpProject project;
 
         private class VOEditorProperties
         {
@@ -155,6 +155,19 @@ namespace XSharp.Project
                 return this.editorControl.IWin32Window;
             }
         }
+        public XSharpModel.IXSharpProject Project
+        {
+            get
+            {
+                return project;
+            }
+            set
+            {
+                project = value;
+            }
+
+        }
+
         #endregion
 
         /// <summary>
@@ -186,7 +199,6 @@ namespace XSharp.Project
             // Create and initialize the editor
 
             this.editorControl = (IVOWEDControl) Activator.CreateInstance(typeof(XSharp_VOWEDControl));
-            this.editorControl.SetHost(this);
             this.editorControl.IsDirtyChanged = new EventHandler(IsDirtyChangedHandler);
             this.editorControl.TriggerSave = new EventHandler(TriggerSaveHandler);
 
@@ -481,7 +493,7 @@ namespace XSharp.Project
             }
 
             // Set the out value to this
-            ppDisp = (IEditorHost)this;
+            ppDisp = this;
 
             // Store the IExtensibleObjectSite object, it will be used in the Dispose method
             extensibleObjectSite = pParent;

@@ -185,15 +185,14 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		NEXT
 
 	METHOD SaveRC(oStream AS XSharp_EditorStream , oAccelStream AS XSharp_EditorStream , oCode AS CodeContents ) AS LOGIC
-		LOCAL n AS INT
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oStream:Editor}
 		oGenerator:BeginCode(TRUE)
 		oGenerator:Clear()
 		XFuncs.WriteHeader(oGenerator, "XSharp.MenuEditor")
 		SELF:_WriteDefines(oGenerator, oCode)
-		FOR VAR  nRes := 0 UPTO oCode:aResource:Count - 1
-			oGenerator:AddLine(oCode:aResource[nRes])
+		FOREACH cResource as STRING in oCode:aResource
+			oGenerator:AddLine(cResource)
 		NEXT
 		oGenerator:AddLine("")
 		
@@ -203,14 +202,14 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			oGenerator:Clear()
 			XFuncs.WriteHeader(oGenerator, "XSharp.MenuEditor")
 			SELF:_WriteDefines(oGenerator, oCode)
-			FOR VAR nRes := 0 UPTO oCode:aAccelResource:Count - 1
-				oGenerator:AddLine(oCode:aAccelResource[nRes])
+			FOREACH cResource as STRING IN oCode:aAccelResource
+				oGenerator:AddLine(cResource)
 			NEXT
 			oAccelStream:Save()
 		ELSE
 			oStream:Editor:AddLine("")
-			FOR n := 0 UPTO oCode:aAccelResource:Count - 1
-				oStream:Editor:AddLine(oCode:aAccelResource[n])
+			FOREACH cResource as STRING IN oCode:aAccelResource
+				oStream:Editor:AddLine(cResource)
 			NEXT
 		END IF
 		oStream:Save()

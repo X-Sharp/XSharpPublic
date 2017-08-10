@@ -232,8 +232,8 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			oGenerator:AddDefine(cStyle, "0x"+VODefines.GetDefineValue(cStyle):ToString("X8"))
 		NEXT
 		oGenerator:AddLine("")
-		FOR LOCAL n := 0 UPTO oCode:aResource:Count - 1
-			oGenerator:AddLine(oCode:aResource[n])
+		FOREACH cResource as STRING IN oCode:aResource
+			oGenerator:AddLine(cResource)
 		NEXT
 		oStream:Save()
 	RETURN TRUE
@@ -242,7 +242,6 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		LOCAL aEntity AS List<STRING>
 		LOCAL cFormName AS STRING
 		LOCAL cPrevName AS STRING
-		LOCAL n AS INT
 		
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oDest:Editor}
@@ -264,14 +263,12 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 		LOCAL lAccessAssign AS LOGIC
 		LOCAL oProp AS DesignProperty
-		LOCAL cName AS STRING
 
 		aEntity := List<STRING>{}
 		
 		oProp := SELF:oWindowDesign:GetPropertyByMember("NoAcc")
 		lAccessAssign := oProp != NULL .and. oProp:TextValue:Trim() == "" .and. oProp:cPage != "_Hidden"
-		FOR n := 0 UPTO oCode:aAccessAssign:Count - 1
-			cName := oCode:aAccessAssign[n]
+		FOREACH cName as STRING in oCode:aAccessAssign
 
 			IF lAccessAssign
 				aEntity:Clear()

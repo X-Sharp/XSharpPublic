@@ -18,6 +18,9 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		RETURN SELF:oXSharpEditor
 
 	// called by the editor's GetSaveFileStreams()
+	VIRTUAL METHOD Load(aLines as List<String>) AS VOID
+		SELF:oXSharpEditor := XSharpBuffer.Create(aLines)
+
 	VIRTUAL METHOD Load(cFileName AS STRING) AS VOID
 		LOCAL aLines := NULL AS List<STRING>
 		local oFile as XSharpModel.XFile

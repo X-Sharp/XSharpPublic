@@ -4,6 +4,7 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 USING XSharpModel
+USING System.Reflection
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
@@ -117,7 +118,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 	RETURN lSuccess
 	
 	METHOD Save(cFileName AS STRING , lSrvOnly AS LOGIC) AS LOGIC
-		LOCAL oPrgStream AS EditorStream
+		LOCAL oPrgStream AS XSharp_EditorStream
 		LOCAL lSaveFieldSpecs := FALSE AS LOGIC
 		LOCAL oCode AS CodeContents
 		LOCAL cFieldSpec AS STRING
@@ -224,109 +225,107 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		END IF
 		
 	RETURN lSuccess
+
+	METHOD ProcessExtraEntity(aLines as List<String>, oGenerator as CodeGenerator, cClass as string, lAdd as LOGIC) as VOID
+		LOCAL oTempStream as XSharp_EditorStream
+		LOCAL oTempGenerator as CodeGenerator
+		oTempStream := XSharp_EditorStream{}
+		oTempStream:Load(aLines)
+		oTempGenerator := CodeGenerator{oTempStream:Editor}
+		VAR oEntity := oTempStream:Editor:GetEntityObject(1)
+		IF oEntity != NULL
+			IF lAdd
+				oGenerator:WriteEntity(oEntity:eType , oEntity:cName , cClass , EntityOptions.None, aLines)
+			ELSE
+				oGenerator:DeleteEntity(oEntity:eType , oEntity:cName , cClass )
+			ENDIF
+		END IF
+		RETURN 
+
 	METHOD SavePrg(oStream AS XSharp_EditorStream , oCode AS CodeContents , aFieldSpecs AS ArrayList) AS LOGIC
-		//LOCAL oTempEditor AS XSharp_EditorStream
-		//LOCAL cName AS STRING
-		//LOCAL n AS INT
-		//VAR oGenerator := CodeGenerator{oStream:Editor}
-		//oGenerator:BeginCode(TRUE)
+		LOCAL cName AS STRING
+		VAR oGenerator := CodeGenerator{oStream:Editor}
+		oGenerator:BeginCode(TRUE)
+		
+		cName := SELF:oMainDesign:GetProperty("classname"):TextValue
+		oGenerator:WriteEntity(EntityType._Class , cName , cName , EntityOptions.AddUser, oCode:aClass)
+		oGenerator:WriteEntity(EntityType._Constructor,  cName , cName ,EntityOptions.None , oCode:aConstructor)
+		oGenerator:WriteEntity(EntityType._Access,  "FIELDDESC" , cName ,EntityOptions.None , oCode:aFieldDesc)
+		oGenerator:WriteEntity(EntityType._Access,  "INDEXLIST" , cName , EntityOptions.None, oCode:aIndexList)
+
+		FOREACH aAdditional as List<String> in oCode:aAdditional
+			SELF:ProcessExtraEntity(aAdditional, oGenerator, cName, TRUE)
+		NEXT
 		//
-		//cName := SELF:oMainDesign:GetProperty("classname"):TextValue
-		//oGenerator:WriteEntity(EntityType._Class , cName , cName , EntityOptions.AddUser, oCode:aClass)
-		//oGenerator:WriteEntity(EntityType._Constructor,  cName , cName ,EntityOptions.None , oCode:aConstructor)
-		//oGenerator:WriteEntity(EntityType._Access,  "FIELDDESC" , cName ,EntityOptions.None , oCode:aFieldDesc)
-		//oGenerator:WriteEntity(EntityType._Access,  "INDEXLIST" , cName , EntityOptions.None, oCode:aIndexList)
-//
-		//FOREACH aAdditional as List<String> in oCode:aAdditional
-			//oTempEditor := XSharp_EditorStream{aAdditional}
-			//oEntity := oTempEditor:GetFirstEntity()
-			//IF oEntity != NULL
-				//oGenerator:WriteEntity(oEntity:eType , oEntity:cName , cName , EntityOptions.None, aAdditional)
-			//END IF
-		//NEXT
-		//
-		//SELF:SaveAccessAssign(oGenerator , cName , SELF:oMainDesign:GetProperty("noaccass"):TextValue:ToUpper() == "YES")
-		//
-		//LOCAL oFieldSpec AS FSEDesignFieldSpec
-		//FOR n := 0 UPTO aFieldSpecs:Count - 1
-			//oFieldSpec := (FSEDesignFieldSpec)aFieldSpecs[n]
-			//oCode := VOFieldSpecEditor.GetCodeContents(oFieldSpec)
-			//cName := oFieldSpec:GetProperty("classname"):TextValue
-			//oGenerator:WriteEntity(EntityType._Class ,      cName , cName , EntityOptions.UserCode, oCode:aClass)
-			//oGenerator:WriteEntity(EntityType._Constructor, cName , cName , EntityOptions.None, oCode:aConstructor)
-		//NEXT
-		//
-		//oStream:Save()
-		//
+		SELF:SaveAccessAssign(oGenerator , cName , SELF:oMainDesign:GetProperty("noaccass"):TextValue:ToUpper() == "YES")
+		
+		FOREACH  oFieldSpec AS FSEDesignFieldSpec IN aFieldSpecs
+			oCode := VOFieldSpecEditor.GetCodeContents(oFieldSpec)
+			cName := oFieldSpec:GetProperty("classname"):TextValue
+			oGenerator:WriteEntity(EntityType._Class ,      cName , cName , EntityOptions.AddUser, oCode:aClass)
+			oGenerator:WriteEntity(EntityType._Constructor, cName , cName , EntityOptions.None, oCode:aConstructor)
+		NEXT
+		oStream:Save()
+		
 	RETURN TRUE
 	METHOD SaveAccessAssign(oGenerator AS CodeGenerator, cClass AS STRING , lNoAccAss AS LOGIC) AS VOID
-		//LOCAL aValues AS NameValueCollection
-		//LOCAL oDesign AS DBEDesignDBServer
-		//LOCAL oTempEditor AS VulcanEditor
-		//LOCAL aTempEntity AS List<STRING>
-		//LOCAL aEntity AS List<STRING>
-		//LOCAL oProp AS DesignProperty
-		//LOCAL aDesign AS ArrayList
-		//LOCAL oEntity AS ParseInfo
-		//LOCAL cValue AS STRING
-		//LOCAL cLine AS STRING
-		//LOCAL n,m,k AS INT
-//
-		//aEntity := List<STRING>{}
-		//aDesign := SELF:GetAllDesignItems(DBServerItemType.Field)
-		//FOREACH oDesign  as  DBEDesignDBServer in aDesign
-			//aValues := NameValueCollection{}
-			//FOR n := 0 UPTO oDesign:aProperties:Count - 1
-				//oProp := (DesignProperty)oDesign:aProperties[n]
-				//DO CASE
-				//CASE oProp:Name == "hlname"
-					//// it appears that %hlname% tag is translated to %fldname% in VO
-					//cValue := oDesign:GetProperty("fldname"):TextValue // BIG BAD UGLY HACK
-				//CASE oProp:cEnumType == "YESNO"
-					//cValue := iif(oProp:ValueLogic , "TRUE" , "FALSE")
-				//CASE oProp:Name == "type"
-					//IF (INT)oProp:Value == 6
-						//cValue := "X"
-					//ELSE
-						//cValue := oProp:TextValue:Substring(0,1)
-					//END IF
-				//OTHERWISE
-					//cValue := oProp:TextValue
-				//END CASE
-				//aValues:Add(oProp:Name , cValue)
-			//NEXT
-			//
-			//cValue := oDesign:GetProperty("Type"):TextValue:ToUpper()
-			//DO CASE
-			//CASE cValue == "CHARACTER" .or. cValue == "MEMO"
-				//cValue := "STRING"
-			//CASE cValue == "NUMERIC"
-				//cValue := "FLOAT"
-			//OTHERWISE
-				//cValue := "USUAL"
-			//END CASE
-			//aValues:Add("usualtype" , cValue)
-			//
-			//FOR k := 0 UPTO VODBServerEditor.Template:aAccessAssign:Count - 1
-				//aTempEntity := VODBServerEditor.Template:aAccessAssign[k]
-				//aEntity:Clear()
-				//FOR n := 0 UPTO aTempEntity:Count - 1
-					//cLine := aTempEntity[n]
-					//cLine := TranslateLine(cLine , aValues)
-					//aEntity:Add(cLine)
-				//NEXT
-				//oTempEditor := VulcanEditor{aEntity}
-				//oEntity := oTempEditor:GetFirstEntity()
-				//IF oEntity != NULL
-					//IF lNoAccAss .or. oDesign:GetProperty("included"):TextValue == "0"
-						//oGenerator:DeleteEntity(oEntity:eType , oEntity:cName , cClass )
-					//ELSE
-						//oGenerator:WriteEntity(oEntity:eType , oEntity:cName , cClass , EntityOptions.None, aEntity)
-					//ENDIF
-				//END IF
-			//NEXT
-		//NEXT
-		//
+		LOCAL aValues AS NameValueCollection
+		LOCAL aDesign AS ArrayList
+		LOCAL cValue AS STRING
+		LOCAL oMI AS MEthodInfo
+		LOCAL oType as System.Type
+		
+		aDesign := SELF:GetAllDesignItems(DBServerItemType.Field)
+		oType := Typeof(VODbServerEditor)
+		oMI := oType:GetMethod("TranslateLine", BindingFlags.Static | BindingFlags.NonPublic )
+		FOREACH oDesign  as  DBEDesignDBServer in aDesign
+			aValues := NameValueCollection{}
+			FOREACH oProp as  DesignProperty in oDesign:aProperties
+				DO CASE
+				CASE oProp:Name == "hlname"
+					// it appears that %hlname% tag is translated to %fldname% in VO
+					cValue := oDesign:GetProperty("fldname"):TextValue // BIG BAD UGLY HACK
+				CASE oProp:cEnumType == "YESNO"
+					cValue := iif(oProp:ValueLogic , "TRUE" , "FALSE")
+				CASE oProp:Name == "type"
+					IF (INT)oProp:Value == 6
+						cValue := "X"
+					ELSE
+						cValue := oProp:TextValue:Substring(0,1)
+					END IF
+				OTHERWISE
+					cValue := oProp:TextValue
+				END CASE
+				aValues:Add(oProp:Name , cValue)
+			NEXT
+			
+			cValue := oDesign:GetProperty("Type"):TextValue:ToUpper()
+			DO CASE
+			CASE cValue == "CHARACTER" .or. cValue == "MEMO"
+				cValue := "STRING"
+			CASE cValue == "NUMERIC"
+				cValue := "FLOAT"
+			OTHERWISE
+				cValue := "USUAL"
+			END CASE
+			aValues:Add("usualtype" , cValue)
+			
+			FOREACH aTempEntity AS List<STRING> in VODBServerEditor.Template:aAccessAssign
+				VAR aEntity := List<STRING>{}
+				FOREACH cLine as STRING IN aTempEntity
+					IF (oMI != NULL_OBJECT)
+						local cNew as STRING
+						cNew := (STRING) oMI:Invoke(NULL_OBJECT, <OBJECT>{cLine, aValues})
+						aEntity:Add(cNew)
+					ELSE
+						aEntity:Add(cLine)
+					ENDIF
+				NEXT
+				LOCAL lDelete := lNoAccAss .or. oDesign:GetProperty("included"):TextValue == "0" as LOGIC
+				SELF:ProcessExtraEntity(aEntity, oGenerator, cClass, !lDelete)
+			NEXT
+		NEXT
+		
 	RETURN
 END CLASS
 

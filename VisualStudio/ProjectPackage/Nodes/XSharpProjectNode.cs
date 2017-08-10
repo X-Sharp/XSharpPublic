@@ -1221,11 +1221,9 @@ namespace XSharp.Project
                 {
                     if (File.Exists(url))
                     {
-                        if (IsCodeFile(url))
-                            this.ProjectModel.AddFile(url);
+                        this.ProjectModel.AddFile(url);
                         if (IsXamlFile(url))
                         {
-                            this.ProjectModel.AddFile(url);
                             if (filechangemanager != null)
                             {
                                 filechangemanager.ObserveItem(url);

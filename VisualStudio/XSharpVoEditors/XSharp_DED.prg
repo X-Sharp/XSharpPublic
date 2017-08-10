@@ -47,8 +47,16 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			SELF:GiveFocus()
 		ENDIF
 		RETURN lOk
-
-
+	METHOD GetAvailableFieldSpec(cFieldSpec as STRING) AS FSEDesignFieldSpec
+		IF aAvailableFieldSpecs == NULL
+			aAvailableFieldSpecs  := ArrayList{}
+		ENDIF
+		FOREACH oFs as FSEDesignFieldSpec in aAvailableFieldSpecs
+			if String.Equals(oFS:Name, cFieldSpec, StringComparison.OrdinalIgnoreCase) 
+				return oFS
+			ENDIF
+		NEXT
+		RETURN NULL
 	METHOD ReadAllAvailableFieldSpecs(cModule as STRING) AS VOID
 		local aFiles as IList<XFile>
 		SELF:aAvailableFieldSpecs:Clear()
@@ -265,6 +273,8 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			oGenerator:WriteEntity(EntityType._Class ,      cName , cName , EntityOptions.AddUser, oCode:aClass)
 			oGenerator:WriteEntity(EntityType._Constructor, cName , cName , EntityOptions.None, oCode:aConstructor)
 		NEXT
+		oGenerator:WriteEndClass(cName)
+		oGenerator:EndCode()
 		oStream:Save()
 		
 	RETURN TRUE

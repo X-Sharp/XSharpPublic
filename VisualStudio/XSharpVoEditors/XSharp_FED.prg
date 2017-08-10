@@ -20,8 +20,19 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		LOCAL lMerge := FALSE AS LOGIC
 		LOCAL oFile as XFile
 		oFile := XSharpModel.XSolution.FindFile(cFileName)
+		IF oFile == NULL_OBJECT
+			LOCAL cPrgFileName as STRING
+			cPrgFileName := XFuncs.GetModuleFilenameFromBinary(cFileName)+".PRG"
+			oFile := XSharpModel.XSolution.FindFile(cPrgFileName)
+			if (oFile != NULL_OBJECT)
+				oXProject := oFile:Project
+				XFuncs.EnsureFileNodeExists(oXProject, cFileName)
+				oFile := XSharpModel.XSolution.FindFile(cFileName)
+			ENDIF
+		ENDIF
 		if (oFile != NULL_OBJECT)
 			oXProject := oFile:Project
+		else
 		endif
 		if oXProject == NULL
 			XFuncs.ErrorBox("Cannot find project for file "+cFileName)

@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ac tions.prg" />
+    <Compile Include="DesignWindowItem.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="XSharp_DED.prg" />
     <Compile Include="XSharp_MED.prg" />

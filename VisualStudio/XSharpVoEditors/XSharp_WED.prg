@@ -7,10 +7,47 @@ USING Xide
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	PROTECT oXProject as XSharpModel.XProject
-
+	PROTECT aStylesUsed as List<String>		// List of styles used in this window
 	CONSTRUCTOR(_oSurface AS Control , _oOptions AS WindowDesignerOptions , _oGrid AS DesignerGrid , _oToolBox AS ToolBox)
 		SUPER(_oSurface , _oOptions , _oGrid , _oToolBox)
+		aStylesUsed := List<String>{}
 	RETURN
+
+	METHOD AddStyles(aStyles as STRING[]) AS VOID
+		FOREACH cStyle as STRING IN aStyles
+			IF !aStylesUsed:Contains(cStyle)
+				aStylesUsed:Add(cStyle)
+			ENDIF
+		NEXT
+		RETURN
+
+	PROTECTED VIRTUAL METHOD CreateControl(cControl AS STRING, oParent AS Control , cGuid AS STRING) AS DesignWindowItem
+		LOCAL oItem AS XSharpDesignWindowItem
+		// Use our own DesignWindowItem so we can collect the list of styles used
+		oItem := XSharpDesignWindowItem{SELF , VOWindowEditorTemplate.Get(cControl)}
+		IF String.IsNullOrEmpty(cGuid)
+			cGuid := Guid.NewGuid():ToString()
+		ENDIF
+		oItem:cGuid := cGuid
+		oParent:Controls:Add(oItem:Control)
+
+		IF oItem:IsForm
+			SELF:oWindowDesign	:= oItem
+			SELF:oWindow		:= oItem:Control
+		ENDIF
+
+		IF oItem:Column != NULL
+			oParent:Controls:Add(oItem:Column)
+		END IF
+		IF SELF:ViewMode == ViewMode.Browse
+			oItem:lBrowseView := TRUE
+			oItem:Control:Hide()
+		ELSE
+			IF oItem:Column != NULL_OBJECT
+				oItem:Column:Hide()
+			END IF
+		ENDIF
+	RETURN oItem
 
 	METHOD Open(cFileName as STRING) as LOGIC
 		VAR oFile := XSharpModel.XSolution.FindFile(cFileName)
@@ -185,14 +222,18 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 		oGenerator:Clear()
 		XFuncs.WriteHeader(oGenerator, "XSharp.FormEditor")
-		oGenerator:AddInclude("VOWin32APILibrary.vh")
 		// in x#, always add the #defines in the .rc header, no need to put them in a .vh anymore
 		FOR LOCAL n := 0 UPTO oCode:aDefines:Count - 1
 			oGenerator:AddDefine(oCode:aDefines[n] , oCode:aDefineValues[n])
 		NEXT
+		// Write the styles that are used in Alphabetical order
+		aStylesUsed:Sort()
+		FOREACH cStyle as STRING in SELF:aStylesUsed
+			oGenerator:AddDefine(cStyle, "0x"+VODefines.GetDefineValue(cStyle):ToString("X8"))
+		NEXT
 		oGenerator:AddLine("")
-		FOR LOCAL n := 0 UPTO oCode:aResource:Count - 1
-			oGenerator:AddLine(oCode:aResource[n])
+		FOREACH cResource as STRING IN oCode:aResource
+			oGenerator:AddLine(cResource)
 		NEXT
 		oStream:Save()
 	RETURN TRUE
@@ -201,7 +242,6 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		LOCAL aEntity AS List<STRING>
 		LOCAL cFormName AS STRING
 		LOCAL cPrevName AS STRING
-		LOCAL n AS INT
 		
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oDest:Editor}
@@ -214,7 +254,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		// needed for renaming a window:
 		cPrevName := SELF:oWindowDesign:Name
 
-		// don't do this for now, maybe the .vh file contains defiens for other windows in the same prg
+		// don't delete the header file for now, maybe the .vh file contains defines for other windows in the same prg
 		oGenerator:DeleteDefines(oCode:aDefines)
 		oGenerator:AddXSharpDefines(oCode:aDefines , oCode:aDefineValues)
 	
@@ -223,14 +263,12 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 		LOCAL lAccessAssign AS LOGIC
 		LOCAL oProp AS DesignProperty
-		LOCAL cName AS STRING
 
 		aEntity := List<STRING>{}
 		
 		oProp := SELF:oWindowDesign:GetPropertyByMember("NoAcc")
 		lAccessAssign := oProp != NULL .and. oProp:TextValue:Trim() == "" .and. oProp:cPage != "_Hidden"
-		FOR n := 0 UPTO oCode:aAccessAssign:Count - 1
-			cName := oCode:aAccessAssign[n]
+		FOREACH cName as STRING in oCode:aAccessAssign
 
 			IF lAccessAssign
 				aEntity:Clear()

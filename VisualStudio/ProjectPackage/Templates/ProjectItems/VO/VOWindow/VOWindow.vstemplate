@@ -22,6 +22,5 @@
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.prg">VOWindow.prg</ProjectItem>
     <ProjectItem OpenInEditor="true" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.$fileinputname$.xsfrm">VOWindow.xsfrm</ProjectItem>
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.$fileinputname$.rc">VOwindow.rc</ProjectItem>
-    <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.vh">VOWindow.vh</ProjectItem>
   </TemplateContent>
 </VSTemplate>

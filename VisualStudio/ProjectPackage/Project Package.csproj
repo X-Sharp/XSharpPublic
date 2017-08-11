@@ -608,8 +608,6 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.rc">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vh">
-    </ZipItem>
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vstemplate">
     </ZipItem>
     <ZipProject Include="Templates\Projects\ClassLibrary\AssemblyInfo.prg" />

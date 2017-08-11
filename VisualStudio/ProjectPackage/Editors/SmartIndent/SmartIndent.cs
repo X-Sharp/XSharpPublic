@@ -30,176 +30,170 @@ namespace XSharp.Project
             bool smartSetting = true;
             if (smartSetting)
             {
+                // How many spaces do we need ?
                 int indentValue = 0;
-
+                int tabSize = this._textView.Options.GetTabSize();
+                var package = XSharp.Project.XSharpProjectPackage.Instance;
+                var optionsPage = package.GetIntellisenseOptionsPage();
+                bool alignDoCase = optionsPage.AlignDoCase;
+                bool alignMethod = optionsPage.AlignMehod;
+                // On what line are we ?
                 int lineNumber = line.LineNumber;
                 if (lineNumber > 0)
                 {
-                    // Get Previous line
+                    // We need to analyze the Previous line
                     lineNumber = lineNumber - 1;
                     ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                    var buffer = _textView.TextBuffer;
-                    SnapshotSpan lineSpan = new SnapshotSpan(prevLine.Start, prevLine.Length);
-                    int tabSize = this._textView.Options.GetTabSize();
+                    bool doSkipped;
+                    string keyword = GetFirstKeywordInLine(prevLine, out doSkipped, out indentValue);
                     //
-                    var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(buffer);
-                    var tags = tagAggregator.GetTags(lineSpan);
-                    //
-                    List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
-                    foreach (var tag in tags)
+                    if (indentValue > -1)
+                        _lastIndentValue = indentValue;
+                    // ok, now check what we have, starting the previous line
+                    if (!String.IsNullOrEmpty(keyword))
                     {
-                        if (!tag.Tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStartFormat) &&
-                            !tag.Tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStopFormat))
+                        switch (keyword)
                         {
-                            tagList.Add(tag);
-                        }
-                    }
-                    //
-                    if (tagList.Count > 0)
-                    {
-                        tagList.Sort(delegate (IMappingTagSpan<IClassificationTag> x, IMappingTagSpan<IClassificationTag> y)
-                        {
-                            if (x.Span == null && y.Span == null) return 0;
-                            //
-                            SnapshotPoint? snapPointX = x.Span.Start.GetPoint(buffer, PositionAffinity.Predecessor);
-                            SnapshotPoint? snapPointY = y.Span.Start.GetPoint(buffer, PositionAffinity.Predecessor);
-                            return snapPointX.Value.Position.CompareTo(snapPointY.Value.Position);
-                        });
-                        // Get the first element on line
-                        int tagIndex = 0;
-                        IClassificationTag currentTag = tagList[tagIndex].Tag;
-                        IMappingSpan currentSpan = tagList[tagIndex].Span;
-                        SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
-                        // Extract the start of line
-                        SnapshotSpan toIndent = new SnapshotSpan(prevLine.Start, snapPointFirst.Value.Position - prevLine.Start.Position);
-                        String startOfLine = toIndent.GetText();
-                        // Convert Tabs to Spaces
-                        startOfLine = startOfLine.Replace("\t", new String(' ', tabSize));
-                        // So, at least, to align to previous line, we will need...
-                        indentValue = startOfLine.Length;
-                        //
-                        string keyword = this.GetKeywordAt(tagList, tagIndex);
-                        //
-                        // ok, now check what we have, starting the previous line
-                        if (keyword != null)
-                        {
-                            // it could be modifier...
-                            bool nextModifier;
-                            do
-                            {
-                                nextModifier = false;
-                                switch (keyword)
+                            case "FUNCTION":
+                            case "PROCEDURE":
+                                // Align on Declaration ?
+                                // Currently, add one Tab
+                                indentValue += tabSize;
+                                break;
+
+                            case "CONSTRUCTOR":
+                            case "DESTRUCTOR":
+                            case "PROPERTY":
+                            case "ACCESS":
+                            case "ASSIGN":
+                            case "METHOD":
+                            case "OPERATOR":
+                            case "GET":
+                            case "SET":
+                                //
+                                indentValue += tabSize;
+                                break;
+
+                            case "INTERFACE":
+                            case "ENUM":
+                            case "CLASS":
+                            case "STRUCTURE":
+                            case "VOSTRUCT":
+                                //
+                                indentValue += tabSize;
+                                break;
+
+                            case "IF":
+                            case "WHILE":
+                            case "FOREACH":
+                            case "FOR":
+                            case "REPEAT":
+                            case "BEGIN":
+                            case "TRY":
+                                //
+                                indentValue += tabSize;
+                                break;
+
+                            case "ELSE":
+                            case "ELSEIF":
+                                // Retrieve the Indentation for the previous line
+                                int elseIndentValue = AlignToIFToken(line);
+                                // And apply
+                                // De-Indent previous line !!!
+                                var buffer = this._textView.TextBuffer;
+                                var editSession = buffer.CreateEdit(); 
+                                try
                                 {
-                                    case "PROTECTED":
-                                    case "INTERNAL":
-                                    case "HIDDEN":
-                                    case "PRIVATE":
-                                    case "EXPORT":
-                                    case "PUBLIC":
-                                    case "STATIC":
-                                    case "SEALED":
-                                    case "ABSTRACT":
-                                    case "VIRTUAL":
-                                        nextModifier = true;
-                                        tagIndex++;
-                                        keyword = this.GetKeywordAt(tagList, tagIndex);
-                                        if (keyword == null)
-                                            nextModifier = false;
-                                        break;
+                                    XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, elseIndentValue);
                                 }
-                            } while (nextModifier);
-                            //
-                            // eat a simple DO...
-                            bool nextKeyword;
-                            do
-                            {
-                                nextKeyword = false;
-                                switch (keyword)
+                                finally
                                 {
-                                    case "DO":
-                                        nextKeyword = true;
-                                        tagIndex++;
-                                        keyword = this.GetKeywordAt(tagList, tagIndex);
-                                        if (keyword == null)
-                                            nextKeyword = false;
-                                        break;
+                                    editSession.Apply();
                                 }
-                            } while (nextKeyword);
-                            //
-                            if (keyword != null)
-                            {
-                                switch (keyword)
+                                break;
+
+                            case "END":
+                            case "ENDDO":
+                            case "ENDIF":
+                            case "NEXT":
+                                //
+                                indentValue = AlignToOpenToken(prevLine);
+                                if (indentValue < 0)
+                                    indentValue = 0;
+                                // De-Indent previous line !!!
+                                buffer = this._textView.TextBuffer;
+                                editSession = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
+                                try
                                 {
-                                    case "FUNCTION":
-                                    case "PROCEDURE":
-                                        // Align on Declaration ?
-                                        // Currently, add one Tab
-                                        indentValue += tabSize;
-                                        break;
-
-                                    case "CONSTRUCTOR":
-                                    case "DESTRUCTOR":
-                                    case "PROPERTY":
-                                    case "ACCESS":
-                                    case "ASSIGN":
-                                    case "METHOD":
-                                    case "OPERATOR":
-                                    case "GET":
-                                    case "SET":
-                                        //
-                                        indentValue += tabSize;
-                                        break;
-
-                                    case "INTERFACE":
-                                    case "ENUM":
-                                    case "CLASS":
-                                    case "STRUCTURE":
-                                    case "VOSTRUCT":
-                                        //
-                                        indentValue += tabSize;
-                                        break;
-
-                                    case "IF":
-                                    case "WHILE":
-                                    case "ELSE":
-                                    case "ELSEIF":
-                                    case "FOR":
-                                        //
-                                        indentValue += tabSize;
-                                        break;
-
-                                    case "END":
-                                    case "ENDDO":
-                                    case "ENDIF":
-                                    case "NEXT":
-                                        //
-                                        indentValue = AlignToOpenToken(lineNumber);
-                                        if (indentValue < 0)
-                                            indentValue = 0;
-                                        // De-Indent previous line !!!
-                                        var edit = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
-                                        try
-                                        {
-                                            String spaces = new String('\t', indentValue / tabSize) + new String(' ', indentValue % tabSize);
-                                            edit.Replace(toIndent, spaces);
-                                        }
-                                        finally
-                                        {
-                                            edit.Apply();
-                                        }
-                                        break;
-
+                                    XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, indentValue);
                                 }
-                            }
+                                finally
+                                {
+                                    editSession.Apply();
+                                }
+                                break;
                         }
                         if (indentValue < 0)
                             indentValue = 0;
+                        //
                         _lastIndentValue = indentValue;
                     }
                     return _lastIndentValue;
                 }
             }
             return null;
+        }
+
+        private int AlignToIFToken(ITextSnapshotLine currentLine)
+        {
+            int indentValue = 0;
+            // On what line are we ?
+            int lineNumber = currentLine.LineNumber;
+            // We need to analyze the Previous line
+            lineNumber = lineNumber - 1;
+            while (lineNumber > 0)
+            {
+                // We need to analyze the Previous line
+                lineNumber = lineNumber - 1;
+                ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
+                List<IMappingTagSpan<IClassificationTag>> tagList = GetTagsInLine(line);
+                String keyword = "";
+                //
+                if (tagList.Count > 0)
+                {
+                    var buffer = this._textView.TextBuffer;
+                    int tabSize = this._textView.Options.GetTabSize();
+                    IMappingSpan currentSpan = tagList[0].Span;
+                    SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
+                    // Extract the start of line
+                    SnapshotSpan toIndent = new SnapshotSpan(line.Start, snapPointFirst.Value.Position - line.Start.Position);
+                    String startOfLine = toIndent.GetText();
+                    // Convert Tabs to Spaces
+                    startOfLine = startOfLine.Replace("\t", new String(' ', tabSize));
+                    // So, at least, to align to previous line, we will need...
+                    indentValue = startOfLine.Length;
+                    //
+                    IClassificationTag currentTag = tagList[0].Tag;
+                    currentSpan = tagList[0].Span;
+                    //
+                    if (currentTag.ClassificationType.IsOfType("keyword"))
+                    {
+                        var spans = currentSpan.GetSpans(buffer);
+                        if (spans.Count > 0)
+                        {
+                            SnapshotSpan kwSpan = spans[0];
+                            keyword = kwSpan.GetText();
+                            keyword = keyword.ToUpper();
+                            if (keyword == "IF")
+                                break;
+                        }
+                    }
+                    // 
+                    indentValue = 0;
+                }
+            }
+            //
+            return indentValue;
         }
 
         private String GetKeywordAt(List<IMappingTagSpan<IClassificationTag>> tagList, int tagIndex)
@@ -225,8 +219,9 @@ namespace XSharp.Project
             return keyword;
         }
 
-        private int AlignToOpenToken(int lineNumber)
+        private int AlignToOpenToken(ITextSnapshotLine currentLine)
         {
+            int lineNumber = currentLine.LineNumber;
             int indentValue = 0;
             //
             var buffer = _textView.TextBuffer;
@@ -243,29 +238,31 @@ namespace XSharp.Project
                 ITextSnapshot snapshot = xsClassifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
                 System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetRegionTags();
-                //
-                SortedList<int, Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new SortedList<int, Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
-                //
+                // We cannot use SortedList, because we may have several Classification that start at the same position
+                List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
                 foreach (var tag in classifications)
                 {
-                    sortedTags.Add(tag.Span.Start.Position, tag);
+                    sortedTags.Add(tag);
                 }
+                sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
+                //
+                //
                 Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> startStack = new Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
                 foreach (var tag in sortedTags)
                 {
                     // Is it a Region ?
-                    if (tag.Value.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
+                    if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
                     {
-                        startStack.Push(tag.Value);
+                        startStack.Push(tag);
                     }
-                    else if (tag.Value.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
+                    else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
                     {
                         //
                         var startTag = startStack.Pop();
                         var startLine = startTag.Span.Start.GetContainingLine();
                         // Looking for an End
 
-                        var endLine = tag.Value.Span.End.GetContainingLine();
+                        var endLine = tag.Span.End.GetContainingLine();
                         if (endLine.LineNumber == lineNumber)
                         {
                             // Where is the start ?
@@ -283,6 +280,110 @@ namespace XSharp.Project
             //
             return indentValue;
         }
+
+        /// <summary>
+        /// Retrieve all Tags in the Line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private List<IMappingTagSpan<IClassificationTag>> GetTagsInLine(ITextSnapshotLine line)
+        {
+            //
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
+            //
+            var buffer = this._textView.TextBuffer;
+            var tagAggregator = this._aggregator.CreateTagAggregator<IClassificationTag>(buffer);
+            var tags = tagAggregator.GetTags(lineSpan);
+            List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
+            foreach (var tag in tags)
+            {
+                tagList.Add(tag);
+            }
+            return tagList;
+        }
+
+        /// <summary>
+        /// Get the first keyword in Line. The modifiers (Private, Protected, ... ) are ignored
+        /// If the first Keyword is a Comment, "//" is returned
+        /// </summary>
+        /// <param name="line">The line to analyze</param>
+        /// <param name="doSkipped">Bool value indicating if a "DO" keyword has been skipped</param>
+        /// <param name="minIndent"></param>
+        /// <returns></returns>
+        private String GetFirstKeywordInLine(ITextSnapshotLine line, out bool doSkipped, out int minIndent)
+        {
+            minIndent = -1;
+            doSkipped = false;
+            List<IMappingTagSpan<IClassificationTag>> tagList = GetTagsInLine(line);
+            String keyword = "";
+            //
+            if (tagList.Count > 0)
+            {
+                var buffer = this._textView.TextBuffer;
+                int tabSize = this._textView.Options.GetTabSize();
+                IMappingSpan currentSpan = tagList[0].Span;
+                SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
+                // Extract the start of line
+                SnapshotSpan toIndent = new SnapshotSpan(line.Start, snapPointFirst.Value.Position - line.Start.Position);
+                String startOfLine = toIndent.GetText();
+                // Convert Tabs to Spaces
+                startOfLine = startOfLine.Replace("\t", new String(' ', tabSize));
+                // So, at least, to align to previous line, we will need...
+                minIndent = startOfLine.Length;
+                //
+                int tagIndex = 0;
+                while (tagIndex < tagList.Count)
+                {
+                    IClassificationTag currentTag = tagList[tagIndex].Tag;
+                    currentSpan = tagList[tagIndex].Span;
+                    //
+                    if (currentTag.ClassificationType.IsOfType("keyword"))
+                    {
+                        var spans = currentSpan.GetSpans(buffer);
+                        if (spans.Count > 0)
+                        {
+                            SnapshotSpan kwSpan = spans[0];
+                            keyword = kwSpan.GetText();
+                            keyword = keyword.ToUpper();
+                            // it could be modifier...
+                            switch (keyword)
+                            {
+                                case "PROTECTED":
+                                case "INTERNAL":
+                                case "HIDDEN":
+                                case "PRIVATE":
+                                case "EXPORT":
+                                case "PUBLIC":
+                                case "STATIC":
+                                case "SEALED":
+                                case "ABSTRACT":
+                                case "VIRTUAL":
+                                case "PARTIAL":
+                                    tagIndex++;
+                                    keyword = "";
+                                    continue;
+                                case "DO":
+                                    tagIndex++;
+                                    keyword = "";
+                                    doSkipped = true;
+                                    continue;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    else if (currentTag.ClassificationType.IsOfType("comment"))
+                    {
+                        //
+                        keyword = "//";
+                    }
+                    // out please
+                    break;
+                };
+            }
+            return keyword;
+        }
+
 
         public void Dispose() { }
 

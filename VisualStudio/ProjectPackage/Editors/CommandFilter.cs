@@ -32,7 +32,7 @@ namespace XSharp.Project
     internal sealed class CommandFilter : IOleCommandTarget
     {
         ICompletionSession _completionSession;
-        public IWpfTextView TextView { get; private set; }
+        public ITextView TextView { get; private set; }
         public ICompletionBroker CompletionBroker { get; private set; }
         public IOleCommandTarget Next { get; set; }
 
@@ -73,9 +73,7 @@ namespace XSharp.Project
             {
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
-                    case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
-                        FormatDocument();
-                        break;
+
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
@@ -84,9 +82,11 @@ namespace XSharp.Project
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession(false);
-                        FormatLine();
                         break;
-
+                    case VSConstants.VSStd2KCmdID.UP:
+                    case VSConstants.VSStd2KCmdID.DOWN:
+                        FormatLine(false);
+                        break;
                     case VSConstants.VSStd2KCmdID.TAB:
                         handled = CompleteCompletionSession(true);
                         break;
@@ -112,12 +112,7 @@ namespace XSharp.Project
 
                         }
                         break;
-                    case VSConstants.VSStd2KCmdID.UP:
-                    case VSConstants.VSStd2KCmdID.DOWN:
-                    case VSConstants.VSStd2KCmdID.PAGEUP:
-                    case VSConstants.VSStd2KCmdID.PAGEDN:
-                        //FormatLine();
-                        break;
+
                     case VSConstants.VSStd2KCmdID.TYPECHAR:
                         char ch = GetTypeChar(pvaIn);
                         if (_completionSession != null)
@@ -186,19 +181,6 @@ namespace XSharp.Project
                                         }
                                         break;
                                     default:
-                                        //if (_signatureSession != null)
-                                        //{
-                                        //    SnapshotPoint current = this.TextView.Caret.Position.BufferPosition;
-                                        //    int line = current.GetContainingLine().LineNumber;
-                                        //    int pos = current.Position;
-                                        //    //
-                                        //    int startLine = (int)_signatureSession.Properties["Line"];
-                                        //    int startPos = (int)_signatureSession.Properties["Start"];
-                                        //    if ( !(( line == startLine ) && ( pos >= startPos )) )
-                                        //    {
-                                        //        CancelSignatureSession();
-                                        //    }
-                                        //}
                                         break;
                                 }
                             }
@@ -206,8 +188,13 @@ namespace XSharp.Project
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
                             Filter();
                             break;
+                        case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
+                            FormatDocument();
+                            break;
+                        case VSConstants.VSStd2KCmdID.RETURN:
+                            FormatLine(true);
+                            break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
-
                             break;
                     }
                 }
@@ -228,17 +215,25 @@ namespace XSharp.Project
          * */
 
 
-        private void FormatLine()
+        private void FormatLine(bool previous)
         {
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             var buffer = this.TextView.TextBuffer;
             ITextSnapshotLine line = caret.GetContainingLine();
+            // On what line are we ?
+            int lineNumber = line.LineNumber;
+            if ((lineNumber > 0) && previous)
+            {
+                // We need to analyze the Previous line
+                lineNumber = lineNumber - 1;
+                line = line.Snapshot.GetLineFromLineNumber(lineNumber);
+            }
             //
             var editSession = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
             try
             {
-                FormatLine(editSession, line, null);
+                CommandFilterHelper.FormatLine(this.Aggregator, this.TextView, editSession, line, null);
             }
             finally
             {
@@ -247,137 +242,6 @@ namespace XSharp.Project
         }
 
 
-        /// <summary>
-        /// Format the Keywords and Identifiers in the Line, using the EditSession
-        /// </summary>
-        /// <param name="editSession"></param>
-        /// <param name="line"></param>
-        private void FormatLine(ITextEdit editSession, ITextSnapshotLine line, int? desiredIndentation)
-        {
-            //
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            int kwCase = optionsPage.KeywordCase;
-            bool syncIdentifier = optionsPage.IdentifierCase;
-            //
-            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
-            //
-            SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
-            var buffer = this.TextView.TextBuffer;
-            var tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(buffer);
-            var tags = tagAggregator.GetTags(lineSpan);
-            List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
-            foreach (var tag in tags)
-            {
-                tagList.Add(tag);
-            }
-            // Keyword and Identifier Case
-            foreach (var tag in tagList)
-            {
-                var name = tag.Tag.ClassificationType.Classification.ToLower();
-                //
-                if (name == "keyword")
-                {
-                    var spans = tag.Span.GetSpans(buffer);
-                    if (spans.Count > 0)
-                    {
-                        SnapshotSpan kwSpan = spans[0];
-                        string keyword = kwSpan.GetText();
-                        string transform = null;
-                        //
-                        switch (kwCase)
-                        {
-                            case 1:
-                                transform = keyword.ToUpper();
-                                break;
-                            case 2:
-                                transform = keyword.ToLower();
-                                break;
-                            case 3:
-                                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US", false);
-                                System.Globalization.TextInfo txtInfo = culture.TextInfo;
-                                transform = txtInfo.ToTitleCase(keyword.ToLower());
-                                break;
-                        }
-                        // Not none, and the tranfsform is not the same as the original
-                        if ((kwCase != 0) && (String.Compare(transform, keyword) != 0))
-                            editSession.Replace(kwSpan, transform);
-                    }
-                }
-                else if ((name == "identifier") && syncIdentifier)
-                {
-                    var spans = tag.Span.GetSpans(buffer);
-                    if (spans.Count > 0)
-                    {
-                        SnapshotSpan idSpan = spans[0];
-                        string identifier = idSpan.GetText();
-                        //
-                        XFile _file = buffer.GetFile();
-                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.Position, _file);
-                        //
-                        if (currentMember == null)
-                            continue;
-                        CompletionType cType = null;
-                        XSharpLanguage.CompletionElement foundElement = null;
-                        XVariable element = null;
-                        // Search in Parameters
-                        if (currentMember.Parameters != null)
-                            element = currentMember.Parameters.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
-                        if (element == null)
-                        {
-                            // then Locals
-                            if (currentMember.Locals != null)
-                                element = currentMember.Locals.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
-                            if (element == null)
-                            {
-                                if (currentMember.Parent != null)
-                                {
-                                    // Context Type....
-                                    cType = new CompletionType(currentMember.Parent.Clone);
-                                    // We can have a Property/Field of the current CompletionType
-                                    if (!cType.IsEmpty())
-                                    {
-                                        cType = XSharpLanguage.XSharpTokenTools.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
-                                    }
-                                    // Not found ? It might be a Global !?
-                                    if (foundElement == null)
-                                    {
-
-                                    }
-                                }
-                            }
-                        }
-                        if (element != null)
-                        {
-                            cType = new CompletionType((XVariable)element, "");
-                            foundElement = new XSharpLanguage.CompletionElement(element);
-                        }
-                        // got it !
-                        if (foundElement != null)
-                        {
-                            if ((String.Compare(foundElement.Name, identifier) != 0))
-                                editSession.Replace(idSpan, foundElement.Name);
-                        }
-                    }
-                }
-            }
-            // Indentation
-            if (desiredIndentation != null)
-            {
-                int tabSize = this.TextView.Options.GetTabSize();
-                String lineText = line.GetText();
-                int lineLength = line.Length;
-                String newText = lineText.TrimStart();
-                int newLength = newText.Length;
-                if (lineLength >= newLength)
-                {
-                    //
-                    Span indentSpan = new Span(line.Start.Position, lineLength - newLength);
-                    String indentSpaces = new String('\t', (int)desiredIndentation / tabSize) + new String(' ', (int)desiredIndentation % tabSize);
-                    editSession.Replace(indentSpan, indentSpaces);
-                }
-            }
-        }
 
         private void FormatDocument()
         {
@@ -444,7 +308,7 @@ namespace XSharp.Project
                     {
                         int indentSize = GetDesiredIndentation(snapLine, regions);
                         //
-                        FormatLine(editSession, snapLine, indentSize);
+                        CommandFilterHelper.FormatLine(this.Aggregator, this.TextView, editSession, snapLine, indentSize);
                     }
                     //
                     //foreach( var twLine in lines )
@@ -977,6 +841,145 @@ namespace XSharp.Project
 
 
 
+
+    }
+
+    static class CommandFilterHelper
+    {
+        /// <summary>
+        /// Format the Keywords and Identifiers in the Line, using the EditSession
+        /// </summary>
+        /// <param name="editSession"></param>
+        /// <param name="line"></param>
+        static public void FormatLine(IBufferTagAggregatorFactoryService Aggregator, ITextView TextView, ITextEdit editSession, ITextSnapshotLine line, int? desiredIndentation)
+        {
+            //
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            int kwCase = optionsPage.KeywordCase;
+            bool syncIdentifier = optionsPage.IdentifierCase;
+            //
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
+            //
+            SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
+            var buffer = TextView.TextBuffer;
+            var tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(buffer);
+            var tags = tagAggregator.GetTags(lineSpan);
+            List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
+            foreach (var tag in tags)
+            {
+                tagList.Add(tag);
+            }
+            // Keyword and Identifier Case
+            foreach (var tag in tagList)
+            {
+                var name = tag.Tag.ClassificationType.Classification.ToLower();
+                //
+                if (name == "keyword")
+                {
+                    var spans = tag.Span.GetSpans(buffer);
+                    if (spans.Count > 0)
+                    {
+                        SnapshotSpan kwSpan = spans[0];
+                        string keyword = kwSpan.GetText();
+                        string transform = null;
+                        //
+                        switch (kwCase)
+                        {
+                            case 1:
+                                transform = keyword.ToUpper();
+                                break;
+                            case 2:
+                                transform = keyword.ToLower();
+                                break;
+                            case 3:
+                                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US", false);
+                                System.Globalization.TextInfo txtInfo = culture.TextInfo;
+                                transform = txtInfo.ToTitleCase(keyword.ToLower());
+                                break;
+                        }
+                        // Not none, and the tranfsform is not the same as the original
+                        if ((kwCase != 0) && (String.Compare(transform, keyword) != 0))
+                            editSession.Replace(kwSpan, transform);
+                    }
+                }
+                else if ((name == "identifier") && syncIdentifier)
+                {
+                    var spans = tag.Span.GetSpans(buffer);
+                    if (spans.Count > 0)
+                    {
+                        SnapshotSpan idSpan = spans[0];
+                        string identifier = idSpan.GetText();
+                        //
+                        XFile _file = buffer.GetFile();
+                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.Position, _file);
+                        //
+                        if (currentMember == null)
+                            continue;
+                        CompletionType cType = null;
+                        XSharpLanguage.CompletionElement foundElement = null;
+                        XVariable element = null;
+                        // Search in Parameters
+                        if (currentMember.Parameters != null)
+                            element = currentMember.Parameters.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                        if (element == null)
+                        {
+                            // then Locals
+                            if (currentMember.Locals != null)
+                                element = currentMember.Locals.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                            if (element == null)
+                            {
+                                if (currentMember.Parent != null)
+                                {
+                                    // Context Type....
+                                    cType = new CompletionType(currentMember.Parent.Clone);
+                                    // We can have a Property/Field of the current CompletionType
+                                    if (!cType.IsEmpty())
+                                    {
+                                        cType = XSharpLanguage.XSharpTokenTools.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
+                                    }
+                                    // Not found ? It might be a Global !?
+                                    if (foundElement == null)
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                        if (element != null)
+                        {
+                            cType = new CompletionType((XVariable)element, "");
+                            foundElement = new XSharpLanguage.CompletionElement(element);
+                        }
+                        // got it !
+                        if (foundElement != null)
+                        {
+                            if ((String.Compare(foundElement.Name, identifier) != 0))
+                                editSession.Replace(idSpan, foundElement.Name);
+                        }
+                    }
+                }
+            }
+            // Indentation
+            if (desiredIndentation != null)
+            {
+                if (desiredIndentation >= 0)
+                {
+                    int tabSize = TextView.Options.GetTabSize();
+                    String lineText = line.GetText();
+                    int lineLength = line.Length;
+                    String newText = lineText.TrimStart();
+                    int newLength = newText.Length;
+                    if (lineLength >= newLength)
+                    {
+                        //
+                        Span indentSpan = new Span(line.Start.Position, lineLength - newLength);
+                        String indentSpaces = new String('\t', (int)desiredIndentation / tabSize) + new String(' ', (int)desiredIndentation % tabSize);
+                        editSession.Replace(indentSpan, indentSpaces);
+                    }
+                }
+            }
+        }
 
     }
 

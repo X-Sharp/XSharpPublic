@@ -340,22 +340,39 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 	RETURN
 
 	PROTECTED METHOD ButtonSource_Click(sender AS System.Object , e AS System.EventArgs) AS VOID
+
 		IF SELF:oRadioFromAef:Checked
 			LOCAL oDlg AS OpenFileDialog
 			oDlg := OpenFileDialog{}
 			oDlg:Filter := "VO AEF files (*.aef)|*.aef|All files (*.*)|*.*"
+	
+			LOCAL cInitFolder AS STRING
+			cInitFolder := SELF:oTextSource:Text:Trim()
+			IF .not. String.IsNullOrWhiteSpace(cInitFolder)
+				TRY
+					IF Directory.Exists(cInitFolder)
+						oDlg:InitialDirectory := cInitFolder
+					ELSEIF Directory.Exists(FileInfo{cInitFolder}:DirectoryName)
+						oDlg:InitialDirectory := FileInfo{cInitFolder}:DirectoryName
+					END IF
+				END TRY
+			END IF
+
 			IF oDlg:ShowDialog() == DialogResult.OK
 				SELF:oTextSource:Text := oDlg:FileName
 			ENDIF
+
 		ELSE
 			LOCAL oDlg AS FolderBrowserDialog
 			oDlg := FolderBrowserDialog{}
 			IF .not. String.IsNullOrWhiteSpace(SELF:oTextSource:Text)
 				oDlg:SelectedPath := SELF:oTextSource:Text
 			END IF
+
 			IF oDlg:ShowDialog() == DialogResult.OK
 				SELF:oTextSource:Text := oDlg:SelectedPath
 			END IF
+
 		END IF
 	RETURN
 

@@ -1,25 +1,25 @@
 
-#define Compression     "lzma2/ultra64"
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra64"
+#define Compression     "none"
 
 ;
 ; preprocess the help cab files
 ;
-#expr Exec('c:\xsharp\dev\xsharp\src\setup\makecabs.cmd')
+;#expr Exec('c:\xsharp\dev\xsharp\src\setup\makecabs.cmd')
 
 
-;#define FOX
+#define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetup1011Fox"
+#define SetupExeName    "XSharpSetup102Fox"
 #else
-#define SetupExeName    "XSharpSetup1011Public"
+#define SetupExeName    "XSharpSetup102Public"
 #endif
 
-#define Version         "1.0.1.1"
-#define VIVersion       "1.0.1.1"
-#define VITextVersion   "1.0.1.1"
-#define TouchDate       "2017-07-10"
-#define TouchTime       "01:01:11"
+#define Version         "1.0.2.0"
+#define VIVersion       "1.0.2.0"
+#define VITextVersion   "1.0.2.0"
+#define TouchDate       "2017-08-10"
+#define TouchTime       "01:02:00"
 
 
 ; version info and similar stuff.
@@ -52,6 +52,7 @@
 #define DocFolder       "C:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "C:\Xsharp\Dev\XSharp\Xide\"
 #define SnippetsSource  "C:\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
+#define VulcanRedistDir "C:\Program Files (x86)\Vulcan.NET 4.0\Redist\Assemblies\v4.0\"
 #define XIDESetup       "XIDE_Set_up_1.10.exe"
 #define XIDEVersion     "1.10"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
@@ -165,13 +166,10 @@ Name: "xide";             Description: "Include the XIDE {# XIDEVersion} install
 [Dirs]
 Name: "{app}\Assemblies";
 Name: "{app}\Bin";
-;#ifdef FOX
-;Name: "{app}\Bin\Debug";
-;Name: "{app}\Bin\Release";
-;#endif
 Name: "{app}\Help";
 Name: "{app}\Images";
 Name: "{app}\Include";
+Name: "{app}\Portable";
 Name: "{app}\ProjectSystem";                                
 Name: "{app}\Redist"
 Name: "{app}\Snippets"
@@ -216,31 +214,10 @@ Source: "{#BinRFolder}xsi.pdb";                            DestDir: "{app}\bin";
 Source: "{#BinRFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinRFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 
-;Source: "Baggage\DebugRelease.txt";                        DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-
-; Release Folder
-;Source: "{#BinRFolder}xsc.exe";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
-;Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-;Source: "{#BinRFolder}XSCompiler.exe";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce; 
-;Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-;Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce; 
-;Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-;Source: "{#BinRFolder}xsi.exe";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
-;Source: "{#BinRFolder}xsi.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-;Source: "{#BinRFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin\Release"; Flags: {#StdFlags} signonce ; 
-;Source: "{#BinRFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; 
-
-; Debug Folder
-;Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; 
-;Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-;Source: "{#BinDFolder}XSCompiler.exe";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; BeforeInstall: TaskKill('xscompiler.exe');
-;Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-;Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; 
-;Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-;Source: "{#BinDFolder}xsi.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce ; 
-;Source: "{#BinDFolder}xsi.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
-;Source: "{#BinDFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce ; 
-;Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}Portable\XSharp.CodeAnalysis.dll";   DestDir: "{app}\Portable"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinRFolder}Portable\XSharp.CodeAnalysis.pdb";   DestDir: "{app}\Portable"; Flags: {#StdFlags}; 
+Source: "{#BinRFolder}Portable\XSharp.Scripting.dll";      DestDir: "{app}\Portable"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinRFolder}Portable\XSharp.Scripting.pdb";      DestDir: "{app}\Portable"; Flags: {#StdFlags}; 
 
 #else
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; 
@@ -253,24 +230,37 @@ Source: "{#BinDFolder}xsi.exe";                            DestDir: "{app}\bin";
 Source: "{#BinDFolder}xsi.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 Source: "{#BinDFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinDFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+
+Source: "{#BinDFolder}Portable\XSharp.CodeAnalysis.dll";   DestDir: "{app}\Portable"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinDFolder}Portable\XSharp.CodeAnalysis.pdb";   DestDir: "{app}\Portable"; Flags: {#StdFlags}; 
+Source: "{#BinDFolder}Portable\XSharp.Scripting.dll";      DestDir: "{app}\Portable"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinDFolder}Portable\XSharp.Scripting.pdb";      DestDir: "{app}\Portable"; Flags: {#StdFlags}; 
+
 #endif
 
 ; GAC files in Bin folder, must be found by intellisense as well
 Source: "{#BinRFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall};
 Source: "{#BinRFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall};
 
-; 'Normal' Ms Runtime DLLs, not in the GAC
-Source: "{#BinRFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinRFolder}System.AppContext.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinRFolder}System.Composition.*.dll";           DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinRFolder}System.Console.dll";                 DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinRFolder}System.Diagnostics.*.dll";           DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinRFolder}System.IO.*.dll";                    DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinRFolder}System.Security.*.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinRFolder}System.Text.*.dll";                  DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinRFolder}System.Threading.*.dll";             DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinRFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinRFolder}System.Xml.*.dll";                   DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+; 'Normal' Ms Runtime DLLs needed by 4.6 version
+Source: "{#BinRFolder}Microsoft.DiaSymReader.*.Dll";                  DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinRFolder}System.Security.Cryptography.Algorithms.dll";   DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Text.Encoding.*.dll";                    DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Valuetuple.dll";                         DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+
+; 'Normal' Ms Runtime DLLs needed by Portable Version
+Source: "{#BinRFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\portable"; Flags: {#StdFlags} ; 
+Source: "{#BinRFolder}System.AppContext.dll";              DestDir: "{app}\portable"; Flags: {#StdFlags} ; 
+Source: "{#BinRFolder}System.Composition.*.dll";           DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Console.dll";                 DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Diagnostics.*.dll";           DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.IO.*.dll";                    DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Security.*.dll";              DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Text.*.dll";                  DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Threading.*.dll";             DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Valuetuple.dll";              DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Xml.*.dll";                   DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+
 
 ; native resource compiler
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; 
@@ -348,21 +338,21 @@ Components: Xide; Source: "{#XIDEFolder}{#XIDESetup}";                      Dest
 Components: vs2015; Source: "{#BinPFolder}XSharpProject.vsix";            DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
 ; CodeAnalysis is used by project system and CodeDom provider
 #ifdef FOX
-Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.VS.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
-Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.VS.pdb";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
-;Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.VS.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
-;Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.VS.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
+Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
+Components: vs2015; Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 #else
-Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.VS.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags};  BeforeInstall: DeleteOldFiles(2015);
-Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.VS.pdb";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
-;Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.VS.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
-;Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.VS.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
+Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags};  BeforeInstall: DeleteOldFiles(2015);
+Components: vs2015; Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 #endif
 
-;Components: vs2015; Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
-;Components: vs2015; Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; StrongAssemblyName: "{#Provider}{#Version}"; Flags: {#StdFlags} {#GACInstall};
 Components: vs2015; Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+
+Source: "{#BinRFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinRFolder}System.Security.Cryptography.Algorithms.dll";   DestDir: "{app}\portable"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Text.Encoding.*.dll";           DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinRFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+
 
 
 Components: vs2015; Source: "{#BinPFolder}XSharpColorizer.dll";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
@@ -370,20 +360,21 @@ Components: vs2015; Source: "{#BinPFolder}XSharpColorizer.pdb";               De
 Components: vs2015; Source: "{#BinPFolder}XSharpModel.dll";                   DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}XSharpModel.pdb";                   DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinRFolder}Microsoft.DiaSymReader.*.Dll";      DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ; 
-Components: vs2015; Source: "{#BinRFolder}System.AppContext.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ; 
-Components: vs2015; Source: "{#BinRFolder}System.Composition.*.dll";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2015; Source: "{#BinRFolder}System.Console.dll";                DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2015; Source: "{#BinRFolder}System.Diagnostics.*.dll";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2015; Source: "{#BinRFolder}System.IO.*.dll";                   DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2015; Source: "{#BinRFolder}System.Security.*.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2015; Source: "{#BinRFolder}System.Text.*.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2015; Source: "{#BinRFolder}System.Threading.*.dll";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
+Components: vs2015; Source: "{#BinRFolder}System.Security.Cryptography.Algorithms.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
+Components: vs2015; Source: "{#BinRFolder}System.Text.Encoding.*.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
 Components: vs2015; Source: "{#BinRFolder}System.Valuetuple.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2015; Source: "{#BinRFolder}System.Xml.*.dll";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
+
+; VOEditors
+Components: vs2015; Source: "{#BinPFolder}CodeGenerator.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+Components: vs2015; Source: "{#BinPFolder}XSharpVoEditors.dll";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+;Components: vs2015; Source: "{#BinPFolder}VulcanDesigners2015.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+;Components: vs2015; Source: "{#VulcanRedistDir}VulcanRTFuncs.dll";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+;Components: vs2015; Source: "{#VulcanRedistDir}VulcanRT.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+
 
 ; ItemTemplates per folder
 Components: vs2015; Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\WPF";        Flags: recursesubdirs {#StdFlags}; 
-;Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; Components: vs2015
+Components: vs2015; Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; 
@@ -423,11 +414,11 @@ Components: vs2017; Source: "{#BinPFolder}XSharpProject.vsix";          DestDir:
 
 ; CodeAnalysis is used by project system and CodeDom provider
 #ifdef FOX
-Components: vs2017; Source: "{#BinRFolder}XSharp.CodeAnalysis.VS.dll";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags};  BeforeInstall: DeleteOldFiles(2017);
-Components: vs2017; Source: "{#BinRFolder}XSharp.CodeAnalysis.VS.pdb";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+Components: vs2017; Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags};  BeforeInstall: DeleteOldFiles(2017);
+Components: vs2017; Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 #else
-Components: vs2017; Source: "{#BinDFolder}XSharp.CodeAnalysis.VS.dll";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags};  BeforeInstall: DeleteOldFiles(2017);
-Components: vs2017; Source: "{#BinDFolder}XSharp.CodeAnalysis.VS.pdb";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+Components: vs2017; Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags};  BeforeInstall: DeleteOldFiles(2017);
+Components: vs2017; Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 #endif
 
 Components: vs2017; Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; StrongAssemblyName: "{#Provider}{#Version}"; Flags: {#StdFlags} {#GACInstall};
@@ -436,21 +427,22 @@ Components: vs2017; Source: "{#BinPFolder}XSharpColorizer.dll";               De
 Components: vs2017; Source: "{#BinPFolder}XSharpColorizer.pdb";               DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}XSharpModel.dll";                   DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}XSharpModel.pdb";                   DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+
 Components: vs2017; Source: "{#BinRFolder}Microsoft.DiaSymReader.*.Dll";      DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ; 
-Components: vs2017; Source: "{#BinRFolder}System.AppContext.dll";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ; 
-Components: vs2017; Source: "{#BinRFolder}System.Composition.*.dll";          DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2017; Source: "{#BinRFolder}System.Console.dll";                DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2017; Source: "{#BinRFolder}System.Diagnostics.*.dll";          DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2017; Source: "{#BinRFolder}System.IO.*.dll";                   DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2017; Source: "{#BinRFolder}System.Security.*.dll";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2017; Source: "{#BinRFolder}System.Text.*.dll";                 DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2017; Source: "{#BinRFolder}System.Threading.*.dll";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
+Components: vs2017; Source: "{#BinRFolder}System.Security.Cryptography.Algorithms.dll";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
+Components: vs2017; Source: "{#BinRFolder}System.Text.Encoding.*.dll";                 DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
 Components: vs2017; Source: "{#BinRFolder}System.Valuetuple.dll";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
-Components: vs2017; Source: "{#BinRFolder}System.Xml.*.dll";                  DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags} ;
+
+; VOEditors
+Components: vs2017; Source: "{#BinPFolder}CodeGenerator.dll";                 DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+Components: vs2017; Source: "{#BinPFolder}XSharpVoEditors.dll";               DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+;Components: vs2017; Source: "{#BinPFolder}VulcanDesigners2015.dll";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+;Components: vs2017; Source: "{#VulcanRedistDir}VulcanRTFuncs.dll";            DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+;Components: vs2017; Source: "{#VulcanRedistDir}VulcanRT.dll";                 DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 
 ; ItemTemplates per folder
 Components: vs2017; Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\WPF";           Flags: recursesubdirs {#StdFlags}; 
-;Components: vs2017; Source: "{#BinPFolder}Itemtemplates\VO*.Zip";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\VO";            Flags: recursesubdirs {#StdFlags}; 
+Components: vs2017; Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\VO";            Flags: recursesubdirs {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Internal";      Flags: recursesubdirs {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\WCF";           Flags: recursesubdirs {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; 
@@ -504,8 +496,8 @@ Name: "{group}\{#Product} XPorter";  Filename: "{app}\bin\xporter.exe";
 Name: "{group}\{#Product} VOXPorter";  Filename: "{app}\VoXPorter\VoXPorter.exe";
 Name: "{group}\{#Product} Readme";  Filename: "{app}\Readme.rtf";
 Name: "{group}\{#Product} What's New";  Filename: "{app}\Whatsnew.rtf";
-Name: "{group}\{#Product} Documenation (CHM)"; Filename: "{app}\Help\XSharp.chm"; 
-Name: "{group}\{#Product} Documenation (PDF)"; Filename: "{app}\Help\XSharp.pdf"; 
+Name: "{group}\{#Product} Documentation (CHM)"; Filename: "{app}\Help\XSharp.chm"; 
+Name: "{group}\{#Product} Documentation (PDF)"; Filename: "{app}\Help\XSharp.pdf"; 
 Name: "{group}\{#Product} Vulcan Runtime Reference (CHM)"; Filename: "{app}\Help\XSVulcan.chm"; 
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}"; 
 Name: "{group}\{#Product} Examples"; Filename: "{commondocs}\XSharp\Examples";
@@ -645,6 +637,7 @@ Type: filesandordirs; Name: "{app}\VOXporter";
 Type: filesandordirs; Name: "{app}\Bin\Debug"; 
 Type: filesandordirs; Name: "{app}\Bin\Release"; 
 #endif
+Type: filesandordirs; Name: "{app}\Bin"; 
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            
 Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";       
@@ -653,9 +646,6 @@ Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensio
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId}\vtc";                            
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId}\ComponentModelCache";            
 Components: vs2017; Type: filesandordirs; Name: "{code:Getvs2017IdeDir}\Extensions\XSharp";       
-
-
-
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\Assemblies"                    ; 
@@ -666,6 +656,7 @@ Type: filesandordirs; Name: "{app}\Bin\Release"                   ;
 Type: filesandordirs; Name: "{app}\Bin"                           ; 
 Type: filesandordirs; Name: "{app}\Help"                          ; 
 Type: filesandordirs; Name: "{app}\Images"                        ; 
+Type: filesandordirs; Name: "{app}\Portable"                           ; 
 Type: filesandordirs; Name: "{app}\ProjectSystem"                 ; 
 Type: filesandordirs; Name: "{app}\Redist"                        ; 
 Type: filesandordirs; Name: "{app}\Tools"                         ; 
@@ -913,7 +904,7 @@ end;
 function GetVulcanDir(Param: String): String;
 begin
   result := VulcanBaseDir;
-end;
+end;   
 
 function VulcanPrgAssociated: Boolean;
 begin
@@ -1060,7 +1051,7 @@ end;
 
 
 Procedure CurPageChanged(CurPage: Integer);
-
+var vfile : string;
 begin
   PrintButton.Visible := CurPage = wpLicense;
   if vs2017Installed then 
@@ -1082,6 +1073,17 @@ begin
     vs2017VersionPage.CheckListBox.ItemEnabled[2] := false;
     end
   Checkvs2017Help;
+  if CurPage = wpFinished then
+  begin
+    if IsComponentSelected('vs2017') and Vs2015IsInstalled then
+    begin
+      vfile := 'PrivateAssemblies\VulcanDesigners2015.dll';
+      if FileExists(Vs2015Path+vfile) then
+      begin
+        FileCopy(Vs2015Path+vfile, Vs2017Path+vfile, false)
+      end
+    end
+  end
 end;
 
 procedure RegisterPreviousData(PreviousDataKey: Integer);
@@ -1165,7 +1167,6 @@ begin
     result := false;
     end
   end;
- 
   { When more than 1 VS 2017 installation, ask for the instance}
   Log('InitializeSetup end');  
 end;

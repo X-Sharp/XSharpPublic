@@ -11,6 +11,7 @@ USING Xide
 GLOBAL DefaultOutputFolder := "" AS STRING
 GLOBAL DefaultSourceFolder := "" AS STRING
 GLOBAL SDKDefines_FileName := "" AS STRING
+GLOBAL RuntimeFolder := "" AS STRING
 GLOBAL NoWarningScreen := FALSE AS LOGIC
 
 GLOBAL Replace_VOOleContainer := NULL AS STRING
@@ -74,6 +75,8 @@ FUNCTION ReadIni() AS VOID
 					NoWarningScreen := cValue == "1"
 				CASE cKey == "_VOOLECONTAINER"
 					Replace_VOOleContainer := cValue
+				CASE cKey == "RUNTIMELOCATION"
+					RuntimeFolder := cValue
 				END CASE
 			END IF
 		NEXT
@@ -737,8 +740,8 @@ CLASS ApplicationDescriptor
 //		SELF:_cAppFile_XIDE := SELF:AppFolder + "\" + SELF:Name + ".viapp"
 //		SELF:_cAppFile_VS := SELF:AppFolder + "\" + SELF:Name + ".xsproj"
 
-		SELF:GACReferences:Add("VulcanRT")
-		SELF:GACReferences:Add("VulcanRTFuncs")
+		SELF:AddRuntimeReference("VulcanRT")
+		SELF:AddRuntimeReference("VulcanRTFuncs")
 		
 	RETURN
 	
@@ -773,6 +776,30 @@ CLASS ApplicationDescriptor
 /*	METHOD SetProject(oProject AS VOProjectDescriptor) AS VOID
 		SELF:_oProject := oProject
 	RETURN*/
+
+	METHOD AddRuntimeReference(cReference AS STRING) AS VOID
+		LOCAL lAddAsDll := FALSE AS LOGIC
+		TRY
+			IF .not. String.IsNullOrWhiteSpace(RuntimeFolder) .and. Directory.Exists(RuntimeFolder)
+				LOCAL cDll AS STRING
+				cDll := RuntimeFolder
+				IF .not. cDll:EndsWith("\")
+					cDll += "\"
+				END IF
+				cDll += cReference
+				IF .not. cReference:ToLower():EndsWith(".dll")
+					cDll += ".dll"
+				END IF
+				IF File.Exists(cDll)
+					SELF:_aBrowseReferences:Add(cDll)
+					lAddAsDll := TRUE
+				END IF
+			END IF
+		END TRY
+		IF .not. lAddAsDll
+			SELF:_aGACReferences:Add(cReference)
+		END IF
+	RETURN
 
 	METHOD ResolveReferences() AS VOID
 		LOCAL nReference := 0 AS INT
@@ -861,9 +888,6 @@ CLASS ApplicationDescriptor
 		oApp:_lOptionOverflow := oAef:lOptionOverflow
 		oApp:_lOptionIntDiv := oAef:lOptionIntegerDivisions
 		
-/*		oApp:GACReferences:Add("VulcanRT")
-		oApp:GACReferences:Add("VulcanRTFuncs")*/
-		
 //		LOCAL lGUI,lWin32API,lAnySDK AS LOGIC
 		LOCAL lWin32API AS LOGIC
 		
@@ -895,7 +919,7 @@ CLASS ApplicationDescriptor
 			END SWITCH
 			IF cGAC != NULL
 //				lAnySDK := TRUE
-				oApp:GACReferences:Add(cGAC)
+				oApp:AddRuntimeReference(cGAC)
 			END IF
 		NEXT
 		
@@ -903,7 +927,7 @@ CLASS ApplicationDescriptor
 //		IF lGUI .and. .not. lWin32API
 //		IF lAnySDK .and. .not. lWin32API
 			IF .not. lWin32API
-			oApp:GACReferences:Add("VulcanVOWin32APILibrary")
+			oApp:AddRuntimeReference("VulcanVOWin32APILibrary")
 			ENDIF
 //		END IF
 		

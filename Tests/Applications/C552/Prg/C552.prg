@@ -2,6 +2,8 @@
 /*
 Same problem exists also in vulcan. The compiler(s) use the __Psz:Item[] indexer
 for obtaining the value and the indexer is zero based. So the index must be subtracted by one.
+The compiler was changed to fix this. The result in the Vulcan dialect is now different from the result
+in the VO dialect
 */
 FUNCTION Start() AS VOID
 

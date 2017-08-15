@@ -91,11 +91,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             BinaryOperatorKind opKind;
             int compoundStringLength = 0;
+            var type = expr.Type;
+
+            if (!type.SpecialType.IsNumericType())
+            {
+                return expr;
+            }
             // normalize the type
             // we allow the following 'normal' types for the Index operator:
             // int32, uint32, int64, uint64
             // all other types (usual, float, real4, real8, decimal) are converted to int32
-            switch (expr.Type.SpecialType)
+            switch (type.SpecialType)
             {
                 case SpecialType.System_Int32:
                     opKind = BinaryOperatorKind.IntSubtraction;
@@ -143,7 +149,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var usualType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                 var pszType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
-                if (cf == pszType && !Compilation.Options.ArrayZero )
+                // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
+                if (cf == pszType && !Compilation.Options.ArrayZero && Compilation.Options.Dialect == XSharpDialect.VO )
                 {
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)

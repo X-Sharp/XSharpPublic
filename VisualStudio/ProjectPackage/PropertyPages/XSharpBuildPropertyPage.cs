@@ -341,7 +341,6 @@ namespace XSharp.Project
             {
                 return;
             }
-            warningAsErrors = getCfgLogic(nameof(TreatWarningsAsErrors), false);
             outputpath = getCfgString(nameof(OutputPath), defaultOutputPath);
             outputpath = AddSlash(outputpath);
             intermediateoutputpath = getCfgString(nameof(IntermediateOutputPath),  defaultIntermediatePath);
@@ -356,7 +355,7 @@ namespace XSharp.Project
             disabledwarnings = getCfgString(nameof(DisabledWarnings),  "");
             warningLevel= getCfgInteger(nameof(WarningLevel), 4);
             warningLevel = ValidateWarningLevel(warningLevel);
-            warningAsErrors = getCfgLogic(nameof(TreatWarningsAsErrors), true);
+            warningAsErrors = getCfgLogic(nameof(TreatWarningsAsErrors), false);
             signassembly = getCfgLogic(nameof(SignAssembly), false);
             delaysign = getCfgLogic(nameof(DelaySign), false);
             assemblyoriginatorkeyfile = getCfgString(nameof(AssemblyOriginatorKeyFile), "");

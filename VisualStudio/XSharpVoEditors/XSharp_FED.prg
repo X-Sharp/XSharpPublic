@@ -172,6 +172,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			VAR cName := oDesign:GetProperty("classname"):TextValue
 			oGenerator:WriteEntity(EntityType._Class	   , cName , cName , EntityOptions.AddUser, oCode:aClass)
 			oGenerator:WriteEntity(EntityType._Constructor , cName , cName , EntityOptions.None, oCode:aConstructor)
+			oGenerator:WriteEndClass(cName)
 		NEXT
 		
 		aPrevNames := List<STRING>{}

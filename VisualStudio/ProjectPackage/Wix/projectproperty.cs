@@ -59,9 +59,9 @@ namespace XSharp.Project
             XProjectFileConstants.Cultures,
             XProjectFileConstants.DefineConstants,
             XProjectFileConstants.IncludeSearchPaths,
-            XProjectFileConstants.ReferencePaths,
-            XProjectFileConstants.SuppressIces,
-            XProjectFileConstants.SuppressSpecificWarnings,
+            XProjectFileConstants.ReferencePaths
+            //,XProjectFileConstants.SuppressIces
+            //,XProjectFileConstants.SuppressSpecificWarnings,
         };
 
         private static readonly ICollection<string> EndOfProjectFileProperties = new string[]

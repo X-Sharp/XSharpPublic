@@ -36,7 +36,7 @@ namespace XSharp.Project
                 var package = XSharp.Project.XSharpProjectPackage.Instance;
                 var optionsPage = package.GetIntellisenseOptionsPage();
                 bool alignDoCase = optionsPage.AlignDoCase;
-                bool alignMethod = optionsPage.AlignMehod;
+                bool alignMethod = optionsPage.AlignMethod;
                 // On what line are we ?
                 int lineNumber = line.LineNumber;
                 if (lineNumber > 0)

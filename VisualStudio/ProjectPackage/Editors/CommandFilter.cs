@@ -334,7 +334,7 @@ namespace XSharp.Project
             var package = XSharp.Project.XSharpProjectPackage.Instance;
             var optionsPage = package.GetIntellisenseOptionsPage();
             bool alignDoCase = optionsPage.AlignDoCase;
-            bool alignMethod = optionsPage.AlignMehod;
+            bool alignMethod = optionsPage.AlignMethod;
             //
             int indentValue = 0;
             //

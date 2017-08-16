@@ -43,7 +43,7 @@ namespace XSharp.Project.OptionsPages
         }
 
         private bool alignMethod = false;
-        public bool AlignMehod
+        public bool AlignMethod
         {
             get { return alignMethod; }
             set { alignMethod = value; }

@@ -40,7 +40,7 @@ namespace XSharp.Project.OptionsPages
             //
             chkIdentifierCase.Checked = optionsPage.IdentifierCase;
             chkAlignDoCase.Checked = optionsPage.AlignDoCase;
-            chkAlignMethod.Checked = optionsPage.AlignMehod;
+            chkAlignMethod.Checked = optionsPage.AlignMethod;
         }
 
 
@@ -81,7 +81,7 @@ namespace XSharp.Project.OptionsPages
 
         private void chkAlignMethod_CheckedChanged(object sender, EventArgs e)
         {
-            optionsPage.AlignMehod = chkAlignMethod.Checked;
+            optionsPage.AlignMethod = chkAlignMethod.Checked;
         }
     }
 }

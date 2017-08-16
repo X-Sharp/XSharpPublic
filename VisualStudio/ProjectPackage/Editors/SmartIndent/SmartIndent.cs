@@ -1,7 +1,10 @@
-﻿using Microsoft.VisualStudio.Text;
+﻿using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,132 +19,160 @@ namespace XSharp.Project
         private readonly ITextView _textView;
         private readonly IBufferTagAggregatorFactoryService _aggregator;
         private int _lastIndentValue;
+        private int _tabSize;
+        private bool _alignDoCase;
+        private bool _alignMethod;
+        private vsIndentStyle _indentStyle;
+        private IEditorOptions _options;
+        private OptionsPages.IntellisenseOptionsPage _optionsPage;
+        IVsTextManager4 _textManager;
 
         public XSharpSmartIndent(ITextView view, IBufferTagAggregatorFactoryService aggregator)
         {
             _textView = view;
             _aggregator = aggregator;
             _lastIndentValue = 0;
+            _options = _textView.Options;
+            // this does not fire when Smartindent option is changed 
+            _options.OptionChanged += Options_OptionChanged;
+            _options.GlobalOptions.OptionChanged += Options_OptionChanged;
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            _textManager = package.GetTextManager();
+            _optionsPage = package.GetIntellisenseOptionsPage();
+            getOptions();
+        }
+
+        private void getOptions()
+        {
+            _alignDoCase = _optionsPage.AlignDoCase;
+            _alignMethod = _optionsPage.AlignMethod;
+            var languagePreferences = new LANGPREFERENCES3[1];
+            languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
+            var result = _textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
+            if (result == VSConstants.S_OK)
+            {
+                _indentStyle = languagePreferences[0].IndentStyle;
+                _tabSize = (int) languagePreferences[0].uTabSize;
+            }
+        }
+
+        private void Options_OptionChanged(object sender, EditorOptionChangedEventArgs e)
+        {
+            getOptions();
+
         }
 
         public int? GetDesiredIndentation(ITextSnapshotLine line)
         {
             //
-            bool smartSetting = true;
-            if (smartSetting)
+            if (_indentStyle != vsIndentStyle.vsIndentStyleSmart)
+                return null;
+            // How many spaces do we need ?
+            int indentValue = 0;
+            // On what line are we ?
+            int lineNumber = line.LineNumber;
+            if (lineNumber > 0)
             {
-                // How many spaces do we need ?
-                int indentValue = 0;
-                int tabSize = this._textView.Options.GetTabSize();
-                var package = XSharp.Project.XSharpProjectPackage.Instance;
-                var optionsPage = package.GetIntellisenseOptionsPage();
-                bool alignDoCase = optionsPage.AlignDoCase;
-                bool alignMethod = optionsPage.AlignMethod;
-                // On what line are we ?
-                int lineNumber = line.LineNumber;
-                if (lineNumber > 0)
+                // We need to analyze the Previous line
+                lineNumber = lineNumber - 1;
+                ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
+                bool doSkipped;
+                string keyword = GetFirstKeywordInLine(prevLine, out doSkipped, out indentValue);
+                //
+                if (indentValue > -1)
+                    _lastIndentValue = indentValue;
+                // ok, now check what we have, starting the previous line
+                if (!String.IsNullOrEmpty(keyword))
                 {
-                    // We need to analyze the Previous line
-                    lineNumber = lineNumber - 1;
-                    ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                    bool doSkipped;
-                    string keyword = GetFirstKeywordInLine(prevLine, out doSkipped, out indentValue);
-                    //
-                    if (indentValue > -1)
-                        _lastIndentValue = indentValue;
-                    // ok, now check what we have, starting the previous line
-                    if (!String.IsNullOrEmpty(keyword))
+                    switch (keyword)
                     {
-                        switch (keyword)
-                        {
-                            case "FUNCTION":
-                            case "PROCEDURE":
-                                // Align on Declaration ?
-                                // Currently, add one Tab
-                                indentValue += tabSize;
-                                break;
+                        case "FUNCTION":
+                        case "PROCEDURE":
+                            // Align on Declaration ?
+                            // Currently, add one Tab
+                            indentValue += _tabSize;
+                            break;
 
-                            case "CONSTRUCTOR":
-                            case "DESTRUCTOR":
-                            case "PROPERTY":
-                            case "ACCESS":
-                            case "ASSIGN":
-                            case "METHOD":
-                            case "OPERATOR":
-                            case "GET":
-                            case "SET":
-                                //
-                                indentValue += tabSize;
-                                break;
+                        case "CONSTRUCTOR":
+                        case "DESTRUCTOR":
+                        case "PROPERTY":
+                        case "ACCESS":
+                        case "ASSIGN":
+                        case "METHOD":
+                        case "OPERATOR":
+                        case "GET":
+                        case "SET":
+                            //
+                            indentValue += _tabSize;
+                            break;
 
-                            case "INTERFACE":
-                            case "ENUM":
-                            case "CLASS":
-                            case "STRUCTURE":
-                            case "VOSTRUCT":
-                                //
-                                indentValue += tabSize;
-                                break;
+                        case "INTERFACE":
+                        case "ENUM":
+                        case "CLASS":
+                        case "STRUCTURE":
+                        case "VOSTRUCT":
+                            //
+                            indentValue += _tabSize;
+                            break;
 
-                            case "IF":
-                            case "WHILE":
-                            case "FOREACH":
-                            case "FOR":
-                            case "REPEAT":
-                            case "BEGIN":
-                            case "TRY":
-                                //
-                                indentValue += tabSize;
-                                break;
+                        case "IF":
+                        case "WHILE":
+                        case "FOREACH":
+                        case "FOR":
+                        case "REPEAT":
+                        case "BEGIN":
+                        case "TRY":
+                            //
+                            indentValue += _tabSize;
+                            break;
 
-                            case "ELSE":
-                            case "ELSEIF":
-                                // Retrieve the Indentation for the previous line
-                                int elseIndentValue = AlignToIFToken(line);
-                                // And apply
-                                // De-Indent previous line !!!
-                                var buffer = this._textView.TextBuffer;
-                                var editSession = buffer.CreateEdit(); 
-                                try
-                                {
-                                    XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, elseIndentValue);
-                                }
-                                finally
-                                {
-                                    editSession.Apply();
-                                }
-                                break;
+                        case "ELSE":
+                        case "ELSEIF":
+                            // Retrieve the Indentation for the previous line
+                            int elseIndentValue = AlignToIFToken(line);
+                            // And apply
+                            // De-Indent previous line !!!
+                            var buffer = this._textView.TextBuffer;
+                            var editSession = buffer.CreateEdit();
+                            try
+                            {
+                                XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, elseIndentValue);
+                            }
+                            finally
+                            {
+                                editSession.Apply();
+                            }
+                            break;
 
-                            case "END":
-                            case "ENDDO":
-                            case "ENDIF":
-                            case "NEXT":
-                                //
-                                indentValue = AlignToOpenToken(prevLine);
-                                if (indentValue < 0)
-                                    indentValue = 0;
-                                // De-Indent previous line !!!
-                                buffer = this._textView.TextBuffer;
-                                editSession = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
-                                try
-                                {
-                                    XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, indentValue);
-                                }
-                                finally
-                                {
-                                    editSession.Apply();
-                                }
-                                break;
-                        }
-                        if (indentValue < 0)
-                            indentValue = 0;
-                        //
-                        _lastIndentValue = indentValue;
+                        case "END":
+                        case "ENDDO":
+                        case "ENDIF":
+                        case "NEXT":
+                            //
+                            indentValue = AlignToOpenToken(prevLine);
+                            if (indentValue < 0)
+                                indentValue = 0;
+                            // De-Indent previous line !!!
+                            buffer = this._textView.TextBuffer;
+                            editSession = buffer.CreateEdit(); // EditOptions.DefaultMinimalChange, 0, null);
+                            try
+                            {
+                                XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, indentValue);
+                            }
+                            finally
+                            {
+                                editSession.Apply();
+                            }
+                            break;
                     }
-                    return _lastIndentValue;
+                    if (indentValue < 0)
+                        indentValue = 0;
+                    //
+                    _lastIndentValue = indentValue;
                 }
+                return _lastIndentValue;
             }
-            return null;
+            return 0;
         }
 
         private int AlignToIFToken(ITextSnapshotLine currentLine)
@@ -162,14 +193,13 @@ namespace XSharp.Project
                 if (tagList.Count > 0)
                 {
                     var buffer = this._textView.TextBuffer;
-                    int tabSize = this._textView.Options.GetTabSize();
                     IMappingSpan currentSpan = tagList[0].Span;
                     SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
                     // Extract the start of line
                     SnapshotSpan toIndent = new SnapshotSpan(line.Start, snapPointFirst.Value.Position - line.Start.Position);
                     String startOfLine = toIndent.GetText();
                     // Convert Tabs to Spaces
-                    startOfLine = startOfLine.Replace("\t", new String(' ', tabSize));
+                    startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
                     // So, at least, to align to previous line, we will need...
                     indentValue = startOfLine.Length;
                     //
@@ -268,8 +298,7 @@ namespace XSharp.Project
                             // Where is the start ?
                             SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, startLine.End);
                             String lineText = sSpan.GetText();
-                            int tabSize = this._textView.Options.GetTabSize();
-                            lineText = lineText.Replace("\t", new String(' ', tabSize));
+                            lineText = lineText.Replace("\t", new String(' ', _tabSize));
                             // 
                             indentValue = (lineText.Length - lineText.TrimStart().Length);
                             break;
@@ -320,14 +349,13 @@ namespace XSharp.Project
             if (tagList.Count > 0)
             {
                 var buffer = this._textView.TextBuffer;
-                int tabSize = this._textView.Options.GetTabSize();
                 IMappingSpan currentSpan = tagList[0].Span;
                 SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
                 // Extract the start of line
                 SnapshotSpan toIndent = new SnapshotSpan(line.Start, snapPointFirst.Value.Position - line.Start.Position);
                 String startOfLine = toIndent.GetText();
                 // Convert Tabs to Spaces
-                startOfLine = startOfLine.Replace("\t", new String(' ', tabSize));
+                startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
                 // So, at least, to align to previous line, we will need...
                 minIndent = startOfLine.Length;
                 //
@@ -386,7 +414,6 @@ namespace XSharp.Project
 
 
         public void Dispose() { }
-
 
     }
 }

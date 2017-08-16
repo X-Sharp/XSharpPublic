@@ -116,7 +116,7 @@ namespace XSharp.Project
                          ShowCompletion =true,
                          ShowDropDownOptions = true,    // Supports NavigationBar 
                          ShowMatchingBrace =true,
-                         ShowSmartIndent = false,
+                         ShowSmartIndent = true,
                          SingleCodeWindowOnly = false,
                          SupportCopyPasteOfHTML = false
                  )]
@@ -216,12 +216,15 @@ namespace XSharp.Project
                 service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
                 frame.Show();
             }
-
         }
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
             var page = (IntellisenseOptionsPage) GetDialogPage(typeof(IntellisenseOptionsPage));
             return page;
+        }
+        internal IVsTextManager4 GetTextManager()
+        {
+            return (IVsTextManager4) GetService(typeof(SVsTextManager));
         }
 
         #region Overridden Implementation

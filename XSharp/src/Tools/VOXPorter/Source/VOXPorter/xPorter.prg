@@ -1048,9 +1048,9 @@ CLASS ApplicationDescriptor
 			FOREACH oDesigner AS Designer IN oModule:Designers
 				DO CASE
 				CASE oDesigner:Type == 10 // window
-					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".xsfrm" , oDesigner:Bytes)
+					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + oDesigner:Extension , oDesigner:Bytes)
 				CASE oDesigner:Type == 16 // menu
-					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".xsmnu" , oDesigner:Bytes)
+					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + oDesigner:Extension , oDesigner:Bytes)
 /*				CASE oDesigner:Type == 12 //
 					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".bin" , oDesigner:Bytes)
 				CASE oDesigner:Type == 14 //
@@ -1163,6 +1163,17 @@ CLASS ApplicationDescriptor
 								oOutput:WriteLine(String.Format(e"<NativeResource Include=\"{0}\">" , cResFileName))
 								oOutput:WriteLine(String.Format(e"  <DependentUpon>{0}</DependentUpon>" , cName))
 								oOutput:WriteLine(String.Format(e"</NativeResource>" , ""))
+							NEXT
+						END IF
+						IF oModule:Designers:Count != 0
+							FOREACH oDesigner AS Designer IN oModule:Designers
+								SWITCH oDesigner:Type  
+									CASE 10	// Window
+									CASE 16 //Menu
+									oOutput:WriteLine(String.Format(e"<VOBinary Include=\"{0}\">" ,  oModule:PathValidName + "." +oDesigner:Name+oDesigner:Extension))
+									oOutput:WriteLine(String.Format(e"  <DependentUpon>{0}</DependentUpon>" , cName))
+									oOutput:WriteLine(String.Format(e"</VOBinary>" , ""))
+								END SWITCH
 							NEXT
 						END IF
 					END IF

@@ -92,6 +92,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Symbols\PETypedNameSymbol.cs" />
     <Compile Include="XSharpResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -36,9 +36,18 @@ CLASS Designer
 			aTemp[nIndex] := aBytes[n]
 			nIndex ++
 		NEXT
-		SELF:Bytes := aTemp
-	RETURN
-	
+		SELF:Bytes := aTemp  
+	PROPERTY Extension AS STRING 
+		GET
+			SWITCH SELF:Type
+			CASE 10
+				RETURN ".xsfrm"
+			CASE 16
+				RETURN ".xsmnu"
+			END SWITCH
+			RETURN ".bin"
+		END GET
+	END PROPERTY
 END CLASS
 
 BEGIN NAMESPACE Fab_VO_Entities

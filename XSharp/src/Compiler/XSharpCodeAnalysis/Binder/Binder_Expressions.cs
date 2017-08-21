@@ -203,7 +203,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                     var initSyntax = SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, exprs);
-                    argsBuilder.Clear();
+                    argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
                         creationSyntax: null,
                         initSyntax: initSyntax,
@@ -211,11 +211,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                         sizes: ImmutableArray<BoundExpression>.Empty,
                         boundInitExprOpt: args));
                     args = argsBuilder.ToImmutableAndFree();
+                    PropertySymbol indexer;
+                    // Select Array Indexer with the correct # of parameters
+                    if (analyzedArguments.Arguments.Count == 1)
+                    {
+                        indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne;
+                    }
+                    else
+                    {
+                        indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany;
+                    }
                     return new BoundIndexerAccess(
                         syntax: node,
                         receiverOpt: expr,
-                        indexer: analyzedArguments.Arguments.Count == 1 ? (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne
-                            : (Compilation.GetWellKnownType(WellKnownType.Vulcan___Array) as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany,
+                        indexer: indexer,
                         arguments: args,
                         argumentNamesOpt: default(ImmutableArray<string>),
                         argumentRefKindsOpt: default(ImmutableArray<RefKind>),

@@ -1440,8 +1440,13 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         private void RefreshReferences()
         {
-			// Refresh the reference container node for assemblies that could be resolved.
-			IReferenceContainer referenceContainer = this.config.ProjectMgr.GetReferenceContainer();
+            // RvdH Call ResolveAssemblyReferences task once and not for every reference
+            var instance = this.config.ProjectMgr.ProjectInstance;
+            this.config.ProjectMgr.DoMSBuildSubmission(BuildKind.Sync, MsBuildTarget.ResolveAssemblyReferences, ref instance, null);
+
+            // Refresh the reference container node for assemblies that could be resolved.
+
+            IReferenceContainer referenceContainer = this.config.ProjectMgr.GetReferenceContainer();
 			this.config.ProjectMgr.DoInFixedScope(() =>
 			{
 				foreach (ReferenceNode referenceNode in referenceContainer.EnumReferences())

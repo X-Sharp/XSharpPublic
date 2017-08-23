@@ -433,11 +433,15 @@ namespace Microsoft.VisualStudio.Project
 			{
 				return;
 			}
-
+            // RvdH Only call ResolveAsemblyReferences when we cannot find the group
 			var instance = this.ProjectMgr.ProjectInstance;
-			BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
 			IEnumerable<ProjectItemInstance> group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath);
-			if (group != null)
+            if (group == null)
+            {
+                BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
+                group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath);
+            }
+            if (group != null)
 			{
 				foreach (var item in group)
 				{
@@ -454,11 +458,8 @@ namespace Microsoft.VisualStudio.Project
 
 							// We have a new item to listen too, since the assembly reference is resolved from a different place.
 							this.fileChangeListener.ObserveItem(this.assemblyPath);
-
 						}
-
 						this.resolvedAssemblyName = name;
-
 						// No hint path is needed since the assembly path will always be resolved.
 						return;
 					}

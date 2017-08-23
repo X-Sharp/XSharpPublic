@@ -91,7 +91,8 @@ namespace XSharpColorizer
         public override void ExitStatementBlock([NotNull] XSharpParser.StatementBlockContext context)
         {
             if (!(context.Parent is XSharpParser.IfElseBlockContext) &&
-                !(context.Parent is XSharpParser.CaseBlockContext))
+                !(context.Parent is XSharpParser.CaseBlockContext) &&
+                !(context.Parent is XSharpParser.TryStmtContext) )
             {
                 TagRegion(context.Parent, context.Parent.ChildCount - 1);
             }
@@ -202,7 +203,6 @@ namespace XSharpColorizer
                 //
                 if (elseBlock != null)
                 {
-
                     // Search the ELSE block, if Any
                     int i = 0;
                     LanguageService.SyntaxTree.Tree.IParseTree token = null;
@@ -233,6 +233,39 @@ namespace XSharpColorizer
             catch (Exception e)
             {
                 XSharpClassifier.Debug("Tagregion failed: " + e.Message);
+            }
+        }
+
+        public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
+        {
+            TagRegion(context, context.ChildCount - 1);
+            if ( context.FinBlock != null )
+            {
+                // Search the ELSE block, if Any
+                int i = 0;
+                LanguageService.SyntaxTree.Tree.IParseTree token = null;
+                for (i = 0; i < context.ChildCount; i++)
+                {
+                    token = context.GetChild(i);
+                    String tokenText = token.GetText().ToUpper();
+                    if (tokenText == "FINALLY")
+                    {
+                        break;
+                    }
+                    else
+                        token = null;
+                }
+                //
+                if (token is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
+                {
+                    LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)token).Symbol;
+                    var tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                    _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStartType));
+                    //
+                    XSharpParser.StatementBlockContext lastTokenInContext = context.FinBlock as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
+                    tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex - 1, 1);
+                    _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStopType));
+                }
             }
         }
         #endregion

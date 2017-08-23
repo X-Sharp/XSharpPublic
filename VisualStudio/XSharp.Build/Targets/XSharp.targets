@@ -146,12 +146,6 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- This sets the doc file name to the same name as the output filename, regardless what is specified in the xsproj file-->
-    <DocFileItem Include="$(IntermediateOutputPath)$(MSBuildProjectName).xml" Condition="'$(DocumentationFile)'!=''"/>
-  </ItemGroup>
-
-
   <PropertyGroup>
     <CoreCompileDependsOn>_ComputeNonExistentFileProperty</CoreCompileDependsOn>
   </PropertyGroup>

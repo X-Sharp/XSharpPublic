@@ -18,7 +18,7 @@
 #define Version         "1.0.2.0"
 #define VIVersion       "1.0.2.0"
 #define VITextVersion   "1.0.2.0"
-#define TouchDate       "2017-08-10"
+#define TouchDate       "2017-08-24"
 #define TouchTime       "01:02:00"
 
 
@@ -52,7 +52,6 @@
 #define DocFolder       "C:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "C:\Xsharp\Dev\XSharp\Xide\"
 #define SnippetsSource  "C:\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
-#define VulcanRedistDir "C:\Program Files (x86)\Vulcan.NET 4.0\Redist\Assemblies\v4.0\"
 #define XIDESetup       "XIDE_Set_up_1.10.exe"
 #define XIDEVersion     "1.10"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
@@ -151,9 +150,9 @@ Name: "main";             Description: "The XSharp Compiler and Build System";  
 Name: "main\script";      Description: "Register .prgx as X# Script extension";       Types: full compact custom;  
 Name: "main\ngen";        Description: "Optimize performance by generating native images";       Types: full compact custom;  
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";              Types: full custom;         Check: Vs2015IsInstalled;
-Name: "vs2015\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer22Found;
+Name: "vs2015\help";      Description: "Install VS 2015 documentation";               Types: full custom;         Check: HelpViewer22Found;
 Name: "vs2017";           Description: "Visual Studio 2017 Integration";              Types: full custom;         Check: vs2017IsInstalled;
-Name: "vs2017\help";      Description: "Install VS documentation";                    Types: full custom;         Check: vs2017IsInstalled;
+Name: "vs2017\help";      Description: "Install VS 2017 documentation";               Types: full custom;         Check: vs2017IsInstalled;
 Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";  Types: full custom;                  
 
 ;[Tasks]
@@ -367,9 +366,10 @@ Components: vs2015; Source: "{#BinRFolder}System.Valuetuple.dll";             De
 ; VOEditors
 Components: vs2015; Source: "{#BinPFolder}CodeGenerator.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}XSharpVoEditors.dll";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
-;Components: vs2015; Source: "{#BinPFolder}VulcanDesigners2015.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
-;Components: vs2015; Source: "{#VulcanRedistDir}VulcanRTFuncs.dll";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
-;Components: vs2015; Source: "{#VulcanRedistDir}VulcanRT.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+
+Components: vs2015; Source: "Baggage\VulcanDesigners2015.dll";                DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanDesigner2015;
+Components: vs2015; Source: "Baggage\VulcanRTFuncs.dll";                      DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanRT;
+Components: vs2015; Source: "Baggage\VulcanRT.dll";                           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanRT;
 
 
 ; ItemTemplates per folder
@@ -436,9 +436,10 @@ Components: vs2017; Source: "{#BinRFolder}System.Valuetuple.dll";             De
 ; VOEditors
 Components: vs2017; Source: "{#BinPFolder}CodeGenerator.dll";                 DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2017; Source: "{#BinPFolder}XSharpVoEditors.dll";               DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
-;Components: vs2017; Source: "{#BinPFolder}VulcanDesigners2015.dll";           DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
-;Components: vs2017; Source: "{#VulcanRedistDir}VulcanRTFuncs.dll";            DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
-;Components: vs2017; Source: "{#VulcanRedistDir}VulcanRT.dll";                 DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
+
+Components: vs2017; Source: "Baggage\VulcanDesigners2015.dll";                DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanDesigner2017;
+Components: vs2017; Source: "Baggage\VulcanRTFuncs.dll";                      DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanRT;
+Components: vs2017; Source: "Baggage\VulcanRT.dll";                           DestDir: "{code:GetVs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanRT;
 
 ; ItemTemplates per folder
 Components: vs2017; Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\WPF";           Flags: recursesubdirs {#StdFlags}; 
@@ -700,6 +701,7 @@ var
   Vs2015Installed: Boolean;
   Vs2015BaseDir: String;
   VulcanInstalled: Boolean;
+  Vulcan4Installed: Boolean;
   VulcanBaseDir: String;
   CancelSetup : Boolean;
   
@@ -862,21 +864,13 @@ var temp : String;
 begin
   Log('Start VS Detection');
   VulcanInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Grafx\Vulcan.NET','InstallPath',VulcanBaseDir) ;
+  Vulcan4Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Grafx\Vulcan.NET\4.0','InstallPath',temp) ;  
   Vs2015Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','14.0',Vs2015BaseDir) ;
   if Vs2015Installed then Vs2015Path := Vs2015BaseDir+'Common7\Ide\';
   FindVS2017;
 
   HelpViewer22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.2','AppRoot',HelpViewer22Dir) ;
   HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;
-{
-  if Vs2017Installed and Not HelpViewer23Installed then
-  begin
-    if MsgBox('Visual Studio 2017 has been detected, but not the VS 2017 help viewer. To install the VS 2017 help you need to install the HelpViewer component. Exit installation?', mbConfirmation, MB_YESNO) = IDYES then
-    begin
-    CancelSetup := true;
-    end
-  end
- }
   VulcanPrgAssociation := false;
   if Vs2015Installed then
   begin
@@ -886,13 +880,24 @@ begin
       VulcanPrgAssociation := (UpperCase(VulcanGuid) = '{8D3F6D25-C81C-4FD8-9599-2F72B5D4B0C9}');
       end
   end
+  Log('End VS Detection');
   OurHelp22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help22Installed',temp) ;
   OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;
-  Log('VS2015: '+Vs2015BaseDir); 
-  Log('VS2017: '+Vs2017BaseDir);
+  Log('------------------');
+  Log('Detected locations');
+  Log('------------------');
+  Log('Vulcan       : ' + VulcanBaseDir);
+  if (Vulcan4Installed) then
+    Log('Vulcan 4?    : True' )
+  else
+    Log('Vulcan 4?    : False' );
+  Log('Helpviewer22 : ' + HelpViewer22Dir);
+  Log('Helpviewer23 : ' + HelpViewer23Dir);
+  Log('VS2015       : ' + Vs2015BaseDir); 
+  Log('VS2017       : ' + Vs2017BaseDir);
  
 
-  Log('End VS Detection');
+  
 end;
 
 
@@ -905,6 +910,22 @@ function GetVulcanDir(Param: String): String;
 begin
   result := VulcanBaseDir;
 end;   
+
+function MustInstallVulcanRT: Boolean;
+begin
+  result := not Vulcan4Installed;
+end;
+
+
+function MustInstallVulcanDesigner2015: Boolean;
+begin
+  result := Vs2015Installed and not Vulcan4Installed;
+end;
+
+function MustInstallVulcanDesigner2017: Boolean ;
+begin
+  result := Vs2017Installed;
+end;
 
 function VulcanPrgAssociated: Boolean;
 begin
@@ -985,12 +1006,15 @@ end;
 Procedure Checkvs2017Help();
 var
   VsHelpItem: Integer;
-
+  Caption: String;
+  i: Integer;
 begin
-  if vs2015Installed and Vs2017Installed then
-     vsHelpItem := 4
-  else
-     vsHelpItem := 2;
+    
+  for i:= 0 to WizardForm.ComponentsList.Items.Count-1 do
+  begin
+    Caption := WizardForm.ComponentsList.ItemCaption[i];
+    if (Pos('2017',Caption) > 0) and (Pos('documentation', Caption) > 0) then VsHelpItem := i;
+  end
    
   if Vs2017Installed and Not HelpViewer23Installed then
   begin

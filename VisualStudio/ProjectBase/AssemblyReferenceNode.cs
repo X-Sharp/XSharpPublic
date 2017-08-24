@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Build.Execution;
-
+using System.Linq;
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false)]
@@ -433,13 +433,14 @@ namespace Microsoft.VisualStudio.Project
 			{
 				return;
 			}
-            // RvdH Only call ResolveAsemblyReferences when we cannot find the group
+            
 			var instance = this.ProjectMgr.ProjectInstance;
-			IEnumerable<ProjectItemInstance> group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath);
-            if (group == null)
+			var group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
+            // RvdH Only call ResolveAsemblyReferences when we cannot find any items
+            if (group == null || group.Length == 0)
             {
                 BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
-                group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath);
+                group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
             }
             if (group != null)
 			{

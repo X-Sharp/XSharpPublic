@@ -228,3 +228,5 @@ XSharp/src/Setup/Preprocessed.iss
 Tests/Applications/C493/Resources/NativeResources.rc
 Tests/Applications/C493/Resources/NativeResources.res
 *.RES
+*.db
+*.opendb

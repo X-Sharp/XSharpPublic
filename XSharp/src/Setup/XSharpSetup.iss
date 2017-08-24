@@ -367,7 +367,7 @@ Components: vs2015; Source: "{#BinRFolder}System.Valuetuple.dll";             De
 Components: vs2015; Source: "{#BinPFolder}CodeGenerator.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}XSharpVoEditors.dll";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 
-Components: vs2015; Source: "Baggage\VulcanDesigners2015.dll";                DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanDesigner2015;
+Components: vs2015; Source: "Baggage\VulcanDesigners2015.dll";                DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} uninsneveruninstall;  Check: MustInstallVulcanDesigner2015;
 Components: vs2015; Source: "Baggage\VulcanRTFuncs.dll";                      DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanRT;
 Components: vs2015; Source: "Baggage\VulcanRT.dll";                           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanRT;
 

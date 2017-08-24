@@ -36,18 +36,29 @@ CLASS Designer
 			aTemp[nIndex] := aBytes[n]
 			nIndex ++
 		NEXT
-		SELF:Bytes := aTemp  
+		SELF:Bytes := aTemp      
+	PROPERTY MustExport AS LOGIC
+		GET
+			SWITCH SELF:Type
+			CASE 10		// Window
+			CASE 16		// Menu
+				RETURN TRUE
+			END SWITCH
+			RETURN FALSE
+		END GET
+	END PROPERTY
 	PROPERTY Extension AS STRING 
 		GET
 			SWITCH SELF:Type
-			CASE 10
+			CASE 10	// Window
 				RETURN ".xsfrm"
-			CASE 16
+			CASE 16	// Menu
 				RETURN ".xsmnu"
 			END SWITCH
 			RETURN ".bin"
 		END GET
-	END PROPERTY
+	END PROPERTY  
+	PROPERTY FileName AS STRING GET Name+Extension
 END CLASS
 
 BEGIN NAMESPACE Fab_VO_Entities

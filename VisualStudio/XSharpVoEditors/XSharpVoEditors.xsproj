@@ -70,9 +70,9 @@
     <DisabledWarnings>
     </DisabledWarnings>
     <WarningLevel>4</WarningLevel>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>..\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>true</NoStandardDefs>
@@ -103,13 +103,6 @@
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
   <ItemGroup>
-    <Reference Include="CodeGenerator, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <Name>CodeGenerator</Name>
-      <AssemblyName>CodeGenerator.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>CodeGenerator.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -137,6 +130,13 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\PrivateAssemblies\VulcanDesigners2015.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.CodeGenerator, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21">
+      <Name>XSharp.CodeGenerator</Name>
+      <AssemblyName>XSharp.CodeGenerator.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\External\Debug\XSharp.CodeGenerator.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

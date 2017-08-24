@@ -338,5 +338,13 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		
 	RETURN
 END CLASS
-
+STATIC CLASS BufferExtensions
+		STATIC METHOD GetEntityObject(SELF editor as XSharpBuffer, nItem as LONG) as EntityObject
+			local oLine := editor:GetLine(nItem) as LineObject
+			IF oLine != NULL .and. oLine:ContainsEntity
+				return oLine:LastEntity
+			endif
+			return NULL_OBJECT
+			
+END CLASS
 END NAMESPACE

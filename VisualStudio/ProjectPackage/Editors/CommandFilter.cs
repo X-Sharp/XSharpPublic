@@ -294,33 +294,14 @@ namespace XSharp.Project
                 var editSession = buffer.CreateEdit();
                 try
                 {
-                    ////
-                    //foreach (var region in regions)
-                    //{
-                    //    SnapshotPoint pt = new SnapshotPoint(this.TextView.TextSnapshot, region.Item1.Start);
-                    //    var snapLine = pt.GetContainingLine();
-                    //    FormatLine(editSession, snapLine);
-                    //}
-                    //
-
                     var lines = buffer.CurrentSnapshot.Lines;
                     foreach (var snapLine in lines)
                     {
-                        int indentSize = GetDesiredIndentation(snapLine, regions);
+                        int indentSize = getDesiredIndentation(snapLine, regions);
                         //
                         CommandFilterHelper.FormatLine(this.Aggregator, this.TextView, editSession, snapLine, indentSize);
                     }
                     //
-                    //foreach( var twLine in lines )
-                    //{
-                    //    var fullSpan = new SnapshotSpan(twLine.Snapshot, Span.FromBounds(twLine.Start, twLine.End));
-                    //    var snapLine = fullSpan.Start.GetContainingLine();
-                    //    int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
-                    //    string text = snapLine.GetText();
-                    //    //
-                    //    lines.
-                    //    //
-                    //}
                 }
                 finally
                 {
@@ -329,7 +310,7 @@ namespace XSharp.Project
             }
         }
 
-        private int GetDesiredIndentation(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions)
+        private int getDesiredIndentation(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions)
         {
             var package = XSharp.Project.XSharpProjectPackage.Instance;
             var optionsPage = package.GetIntellisenseOptionsPage();
@@ -467,15 +448,15 @@ namespace XSharp.Project
                     }
                 }
             }
-            //
-            int tabSize = this.TextView.Options.GetTabSize();
+            // Read the IndentSize (and not the TabSize !!)
+            int indentSize = this.TextView.Options.GetIndentSize();
             // This should NOT happen
             if (indentValue < 0)
             {
                 indentValue = 0;
             }
             //
-            return (indentValue * tabSize);
+            return (indentValue * indentSize);
         }
 
 
@@ -966,6 +947,7 @@ namespace XSharp.Project
                 if (desiredIndentation >= 0)
                 {
                     int tabSize = TextView.Options.GetTabSize();
+                    bool useSpaces = TextView.Options.IsConvertTabsToSpacesEnabled();
                     String lineText = line.GetText();
                     int lineLength = line.Length;
                     String newText = lineText.TrimStart();
@@ -974,7 +956,11 @@ namespace XSharp.Project
                     {
                         //
                         Span indentSpan = new Span(line.Start.Position, lineLength - newLength);
-                        String indentSpaces = new String('\t', (int)desiredIndentation / tabSize) + new String(' ', (int)desiredIndentation % tabSize);
+                        String indentSpaces = "";
+                        if (useSpaces)
+                            indentSpaces = new String(' ', (int)desiredIndentation );
+                        else
+                            indentSpaces = new String('\t', (int)desiredIndentation / tabSize) + new String(' ', (int)desiredIndentation % tabSize);
                         editSession.Replace(indentSpan, indentSpaces);
                     }
                 }

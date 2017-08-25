@@ -13,6 +13,7 @@ namespace XSharp.Project
     using Microsoft.Build.BuildEngine;
     using Microsoft.VisualStudio;
     using Microsoft.VisualStudio.Package;
+    using Microsoft.VisualStudio.Project;
 
     /// <summary>
     /// Property page for the build events.
@@ -46,7 +47,7 @@ namespace XSharp.Project
         /// </returns>
         public override string GetProperty(string propertyName)
         {
-            string value = base.GetProperty(propertyName);
+            string value = getCfgString(propertyName);
 
             if (propertyName == XProjectFileConstants.RunPostBuildEvent)
             {
@@ -89,9 +90,67 @@ namespace XSharp.Project
                 }
             }
 
-            base.SetProperty(propertyName, value);
+            SetConfigProperty(propertyName, value);
         }
 
+        internal string getCfgString(String Name, string defaultValue = "")
+        {
+            string property;
+            string value = this.GetUnevaluatedConfigProperty(Name);
+            if (!String.IsNullOrEmpty(value))
+                property = value;
+            else
+                property = defaultValue;
+            return property;
+        }
+
+        public void SetConfigProperty(string name, string value)
+        {
+            CCITracing.TraceCall();
+            if (value == null)
+            {
+                value = String.Empty;
+            }
+
+            if (this.ProjectMgr != null)
+            {
+                for (int i = 0, n = this.ProjectConfigs.Count; i < n; i++)
+                {
+                    ProjectConfig config = ProjectConfigs[i];
+
+                    config.SetConfigurationProperty(name, value);
+                }
+
+                this.ProjectMgr.SetProjectFileDirty(true);
+            }
+        }
+        public string GetUnevaluatedConfigProperty(string propertyName)
+        {
+            if (this.ProjectMgr != null)
+            {
+                string unifiedResult = null;
+
+                for (int i = 0; i < this.ProjectConfigs.Count; i++)
+                {
+                    ProjectConfig config = ProjectConfigs[i];
+                    string property = config.GetUnevaluatedConfigurationProperty(propertyName);
+
+                    if (property != null)
+                    {
+                        string text = property.Trim();
+
+                        if (i == 0)
+                            unifiedResult = text;
+                        else if (unifiedResult != text)
+                            return ""; // tristate value is blank then
+                    }
+                }
+
+                return unifiedResult;
+            }
+
+            return String.Empty;
+        }
         /// <summary>
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>

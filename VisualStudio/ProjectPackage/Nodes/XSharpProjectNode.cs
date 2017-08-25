@@ -32,6 +32,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharp.CodeDom;
+using MBC = Microsoft.Build.Construction;
 
 namespace XSharp.Project
 {
@@ -470,7 +471,6 @@ namespace XSharp.Project
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
-                typeof(XSharpBuildEventsPropertyPage).GUID,
                 };
             return result;
         }
@@ -485,6 +485,7 @@ namespace XSharp.Project
             {
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID,
+                typeof(XSharpBuildEventsPropertyPage).GUID,
             };
             return result;
         }
@@ -1707,12 +1708,15 @@ namespace XSharp.Project
 
         const string config = "$(Configuration)";
         const string configPlatform = "$(Configuration)|$(Platform)";
-
-        const string import1a = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
-        const string import1b = @"$(XSharpProjectExtensionsPath)XSharp.Default.props";
-        const string import2 = @"$(XSharpProjectExtensionsPath)XSharp.props";
-        const string import3 = @"$(XSharpProjectExtensionsPath)XSharp.targets";
-
+        const string conditionDebug = "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'";
+        const string conditionRelease = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
+        const string import1DefaultProps1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
+        const string importDefaultProps2 = @"$(XSharpProjectExtensionsPath)XSharp.Default.props";
+        const string importProps = @"$(XSharpProjectExtensionsPath)XSharp.props";
+        const string importTargets = @"$(XSharpProjectExtensionsPath)XSharp.targets";
+        const string postBuildEvent = "PostBuildEvent";
+        const string preBuildEvent = "PreBuildEvent";
+        const string runPostBuildEvent = "RunPostBuildEvent";
         public override int UpgradeProject(uint grfUpgradeFlags)
         {
             bool silent;
@@ -1743,13 +1747,33 @@ namespace XSharp.Project
                 ok = false;
             if (ok && str.IndexOf("<DocumentationFile>true", StringComparison.OrdinalIgnoreCase) != -1)
                 ok = false;
-            if (ok && str.IndexOf(import1a, StringComparison.OrdinalIgnoreCase) == -1 &&
-                str.IndexOf(import1b, StringComparison.OrdinalIgnoreCase) == -1)
+            if (ok && str.IndexOf(import1DefaultProps1, StringComparison.OrdinalIgnoreCase) == -1 &&
+                str.IndexOf(importDefaultProps2, StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
-            if (ok && str.IndexOf(import2, StringComparison.OrdinalIgnoreCase) == -1)
+            // XSharp.Props should no longer be there
+            if (ok && str.IndexOf(importProps, StringComparison.OrdinalIgnoreCase) >= 0)
                 ok = false;
-            if (ok && str.IndexOf(import3, StringComparison.OrdinalIgnoreCase) == -1)
-                ok = false;
+            if (ok)
+            {
+                int iTargets = str.IndexOf(importTargets, StringComparison.OrdinalIgnoreCase);
+                if (iTargets == -1)
+                {
+                    ok = false;
+                }
+                else
+                {
+                    // prebuild and postbuild must be after Targets
+                    int iPrebuild = str.IndexOf(preBuildEvent, StringComparison.OrdinalIgnoreCase);
+                    int iPostbuild = str.IndexOf(postBuildEvent, StringComparison.OrdinalIgnoreCase);
+                    int iRunPostBuild = str.IndexOf(runPostBuildEvent, StringComparison.OrdinalIgnoreCase);
+                    if (iPrebuild > -1 && iPrebuild < iTargets)
+                        ok = false;
+                    else if (iPostbuild > -1 && iPrebuild < iTargets)
+                        ok = false;
+                    else if (iRunPostBuild > -1 && iPrebuild < iTargets)
+                        ok = false;
+                }
+            }
             if (!ok)
             {
                 FixProjectFile(BuildProject.FullPath);
@@ -1767,7 +1791,6 @@ namespace XSharp.Project
             bool changed = false;
             var xml = BuildProject.Xml;
             var groups = xml.PropertyGroups.ToArray();
-
             foreach (var group in xml.PropertyGroups)
             {
                 if (group.Condition.Length > 0)
@@ -1778,11 +1801,11 @@ namespace XSharp.Project
                     {
                         if (condition.IndexOf("'Debug'", StringComparison.OrdinalIgnoreCase) > 0)
                         {
-                            condition = "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'";
+                            condition = conditionDebug;
                         }
                         else
                         {
-                            condition = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
+                            condition = conditionRelease;
                         }
                     }
                     condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
@@ -1808,76 +1831,18 @@ namespace XSharp.Project
             foreach (var prop in this.BuildProject.Properties)
             {
                 if (prop.Name.ToLower() == "documentationfile")
+                {
                     props.Add(prop);
+                }
             }
             foreach (var prop in props)
             {
                 this.BuildProject.RemoveProperty(prop);
             }
 
-            bool hasImport1 = false;
-            bool hasImport2 = false;
-            bool hasImport3 = false;
-            // clean up the duplicate pre and post build events groups
-            /*
-            Microsoft.Build.Construction.ProjectPropertyGroupElement group1 = null;
-            Microsoft.Build.Construction.ProjectPropertyGroupElement group2 = null;
-            foreach (var group in xml.PropertyGroups.Where(grp => grp.Condition?.Length > 0))
-            {
-                foreach (var child in group.Children)
-                {
-                    var pp = child as Microsoft.Build.Construction.ProjectPropertyElement;
-                    if (pp != null && String.Equals(pp.Name, "PrebuildEvent",StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (group1 == null)
-                            group1 = group;
-                        else
-                            group2 = group;
-                        break;
-                    }
-                }
-                if (group1 != null && group2 != null)
-                    break;
-            }
-            if (group2 != null)
-            {
-                group2.Parent.RemoveChild(group2);
-                changed = true;
-            }
-            */
-            foreach (var import in xml.Imports)
-            {
-                var prj = import.Project;
-                if (String.Equals(prj, import1a, StringComparison.OrdinalIgnoreCase))
-                    hasImport1 = true;
-                if (String.Equals(prj, import1b, StringComparison.OrdinalIgnoreCase))
-                    hasImport1 = true;
-                if (String.Equals(prj, import2, StringComparison.OrdinalIgnoreCase))
-                    hasImport2 = true;
-                if (String.Equals(prj, import3, StringComparison.OrdinalIgnoreCase))
-                    hasImport3 = true;
-            }
-            if (!hasImport1 || !hasImport2)
-            {
-                ShowMessageBox($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
-            }
-            if (!hasImport3)
-            {
-                var import = xml.AddImport(import3);
-                changed = true;
-            }
-            /*
-            if (group1 != null)
-            {
-                // this is removing the condition from the pre/post build event group
-                // and makes sure it is at the end of the project file.
-                var parent = group1.Parent;
-                group1.Condition = null;
-                parent.RemoveChild(group1);
-                parent.AppendChild(group1);
-                changed = true;
-            }
-            */
+            MBC.ProjectImportElement iTargets = null;
+            changed = moveImports(ref iTargets, filename) || changed;
+            changed = moveBuildEvents(iTargets) || changed;
             if (changed)
             {
                 File.Copy(filename, filename + ".bak", true);
@@ -1886,6 +1851,143 @@ namespace XSharp.Project
             }
         }
 
+        private bool moveImports(ref MBC.ProjectImportElement iTargets, string filename)
+        {
+            bool hasImportDefaultProps = false;
+            bool hasImportProps = false;
+            bool hasImportTargets = false;
+            bool changed = false;
+            MBC.ProjectImportElement iProps = null;
+            foreach (var import in BuildProject.Xml.Imports)
+            {
+                var prj = import.Project;
+                if (String.Equals(prj, import1DefaultProps1, StringComparison.OrdinalIgnoreCase))
+                    hasImportDefaultProps = true;
+                if (String.Equals(prj, importDefaultProps2, StringComparison.OrdinalIgnoreCase))
+                    hasImportDefaultProps = true;
+                if (String.Equals(prj, importProps, StringComparison.OrdinalIgnoreCase))
+                {
+                    hasImportProps = true;
+                    iProps = import;
+                }
+                if (String.Equals(prj, importTargets, StringComparison.OrdinalIgnoreCase))
+                {
+                    hasImportTargets = true;
+                    iTargets = import;
+                }
+            }
+            if (!hasImportDefaultProps || !hasImportTargets)
+            {
+                ShowMessageBox($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
+            }
+            if (hasImportProps && hasImportTargets)
+            {
+                // we must change the original XSharp.Props to XSharp.Targets and remove the original import for XSharp.Targets
+                iProps.Project = iTargets.Project;
+                BuildProject.Xml.RemoveChild(iTargets);
+                iTargets = iProps;
+                changed = true;
+            }
+            return changed;
+        }
+        private bool moveBuildEvents(MBC.ProjectImportElement iTargets )
+        {
+            // Check for Prebuild and Postbuild
+            // must be after iTargets
+            string prebuildValue = "";
+            string postbuildValue = "";
+            string runpostbuildValue = "";
+            bool moveBuildEvents = false;
+            bool hasBuildEvents = false;
+            bool changed = false;
+            foreach (var group in BuildProject.Xml.PropertyGroups)
+            {
+                bool groupHasCondition = !string.IsNullOrEmpty(group.Condition);
+                MBC.ProjectPropertyElement prebuild = null;
+                MBC.ProjectPropertyElement postbuild = null;
+                MBC.ProjectPropertyElement runpostbuild = null;
+                bool found = false;
+                foreach (var c in group.Children)
+                {
+                    var p = c as MBC.ProjectPropertyElement;
+                    if (p != null)
+                    {
+                        if (string.Equals(p.Name, preBuildEvent, StringComparison.OrdinalIgnoreCase))
+                        {
+                            prebuild = p;
+                            found = true;
+                        }
+                        if (string.Equals(p.Name, postBuildEvent, StringComparison.OrdinalIgnoreCase))
+                        {
+                            prebuild = p;
+                            found = true;
+                        }
+                        if (string.Equals(p.Name, runPostBuildEvent, StringComparison.OrdinalIgnoreCase))
+                        {
+                            runpostbuild = p;
+                            found = true;
+                        }
+                    }
+                }
+                // we do not want prebuild and postbuild in a group without condition
+                // and the group should be after the import XSharp.Targets
+                if (found)
+                {
+                    if (groupHasCondition)
+                    {
+                        hasBuildEvents = true;
+                        if (iTargets != null && group.Location.Line < iTargets.Location.Line)
+                        {
+                            BuildProject.Xml.RemoveChild(group);
+                            BuildProject.Xml.InsertAfterChild(group, BuildProject.Xml.LastChild);
+                            changed = true;
+                        }
+                    }
+                    else
+                    {
+                        moveBuildEvents = true;
+                        if (prebuild != null)
+                        {
+                            prebuildValue = prebuild.Value;
+                            group.RemoveChild(prebuild);
+                        }
+                        if (postbuild != null)
+                        {
+                            postbuildValue = postbuild.Value;
+                            group.RemoveChild(postbuild);
+                        }
+                        if (runpostbuild != null)
+                        {
+                            runpostbuildValue = runpostbuild.Value;
+                            group.RemoveChild(runpostbuild);
+                        }
+                        if (group.Children.Count == 0)
+                        {
+                            group.Parent.RemoveChild(group);
+                        }
+                    }
+                }
+            }
+            if (moveBuildEvents || !hasBuildEvents)
+            {
+                // add property groups for prebuild and postbuild events
+                var group = BuildProject.Xml.CreatePropertyGroupElement();
+                BuildProject.Xml.InsertAfterChild(group, BuildProject.Xml.LastChild);
+                group.Condition = conditionDebug;
+                group.AddProperty(preBuildEvent, prebuildValue);
+                group.AddProperty(postBuildEvent, postbuildValue);
+                group.AddProperty(runPostBuildEvent, runpostbuildValue);
+                group = BuildProject.Xml.CreatePropertyGroupElement();
+                BuildProject.Xml.InsertAfterChild(group, BuildProject.Xml.LastChild);
+                group.Condition = conditionRelease;
+                group.AddProperty(preBuildEvent, prebuildValue);
+                group.AddProperty(postBuildEvent, postbuildValue);
+                group.AddProperty(runPostBuildEvent, runpostbuildValue);
+                changed = true;
+            }
+            return changed;
+
+        }
         internal int ShowMessageBox(string message)
         {
             string title = string.Empty;

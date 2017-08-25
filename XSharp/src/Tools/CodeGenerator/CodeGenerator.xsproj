@@ -77,7 +77,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
+  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -108,14 +108,20 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
-  <PropertyGroup>
-    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \Xsharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PostBuildEvent>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \Xsharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PreBuildEvent>
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \Xsharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PreBuildEvent>
+    <PostBuildEvent />
+    <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

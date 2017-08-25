@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -142,116 +143,123 @@ namespace XSharp.Project
 
         public int? GetDesiredIndentation(ITextSnapshotLine line)
         {
-            // Update Please... as the event doesn't seems to work
-            getOptions();
-            //
-            if (_indentStyle != vsIndentStyle.vsIndentStyleSmart)
-                return null;
-            // How many spaces do we need ?
-            int indentValue = 0;
-            // On what line are we ?
-            int lineNumber = line.LineNumber;
-            if (lineNumber > 0)
+            try
             {
-                // We need to analyze the Previous line
-                lineNumber = lineNumber - 1;
-                ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                bool doSkipped;
-                string keyword = getFirstKeywordInLine(prevLine, out doSkipped, out indentValue);
+                // Update Please... as the event doesn't seems to work
+                getOptions();
                 //
-                if (indentValue > -1)
-                    _lastIndentValue = indentValue;
-                // ok, now check what we have, starting the previous line
-                if (!String.IsNullOrEmpty(keyword) && !doSkipped)
+                if (_indentStyle != vsIndentStyle.vsIndentStyleSmart)
+                    return null;
+                // How many spaces do we need ?
+                int indentValue = 0;
+                // On what line are we ?
+                int lineNumber = line.LineNumber;
+                if (lineNumber > 0)
                 {
-                    // Start of a block of code ?
-                    if (_codeBlockKeywords.Contains<String>(keyword))
+                    // We need to analyze the Previous line
+                    lineNumber = lineNumber - 1;
+                    ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
+                    bool doSkipped;
+                    string keyword = getFirstKeywordInLine(prevLine, out doSkipped, out indentValue);
+                    //
+                    if (indentValue > -1)
+                        _lastIndentValue = indentValue;
+                    // ok, now check what we have, starting the previous line
+                    if (!String.IsNullOrEmpty(keyword) && !doSkipped)
                     {
-                        if (!_alignMethod)
+                        // Start of a block of code ?
+                        if (_codeBlockKeywords.Contains<String>(keyword))
                         {
+                            if (!_alignMethod)
+                            {
+                                indentValue += _tabSize;
+                            }
+                        }
+                        else if (_indentKeywords.Contains<String>(keyword))
+                        {
+                            //
                             indentValue += _tabSize;
                         }
-                    }
-                    else if (_indentKeywords.Contains<String>(keyword))
-                    {
-                        //
-                        indentValue += _tabSize;
-                    }
-                    else if (_outdentKeywords.Contains<String>(keyword))
-                    {
-                        // We are aligning on the Open Token
-                        indentValue = alignToOpenToken(prevLine);
-                        if (indentValue < 0)
-                            indentValue = 0;
-                        // De-Indent previous line !!!
-                        var buffer = this._textView.TextBuffer;
-                        var editSession = buffer.CreateEdit();
-                        try
+                        else if (_outdentKeywords.Contains<String>(keyword))
                         {
-                            XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, indentValue);
-                        }
-                        finally
-                        {
-                            editSession.Apply();
-                        }
-                    }
-                    else
-                    {
-                        string startToken = this.searchMiddleKeyword(keyword);
-                        int? specialIndentValue = null;
-                        if (startToken != null)
-                        {
-                            // Retrieve the Indentation for the previous line
-                            specialIndentValue = alignToSpecificToken(line, startToken);
-                        }
-                        else
-                        {
-                            // We could have "special" middle keyword : CASE or OTHERWISE
-                            startToken = this.searchSpecialMiddleKeyword(keyword);
-                            if (startToken != null)
-                            {
-                                // The startToken is a list of possible tokens
-                                String[] possibleTokens = startToken.Split(',');
-                                foreach( string possibleToken in possibleTokens )
-                                {
-                                    specialIndentValue = alignToSpecificToken(line, possibleToken);
-                                    if (specialIndentValue != null)
-                                        break;
-                                }
-                            }
-                        }
-                        if ( specialIndentValue != null)
-                        {
-                            // The can be aligned to SWITCH/DO CASE or indented
-                            if (!_alignDoCase)
-                            {
-                                specialIndentValue += _tabSize;
-                            }
-                            // and Indent the new line
-                            indentValue = (int)specialIndentValue + _tabSize;
-                            // And apply
+                            // We are aligning on the Open Token
+                            indentValue = alignToOpenToken(prevLine);
+                            if (indentValue < 0)
+                                indentValue = 0;
                             // De-Indent previous line !!!
                             var buffer = this._textView.TextBuffer;
                             var editSession = buffer.CreateEdit();
                             try
                             {
-                                XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, specialIndentValue);
+                                XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, indentValue);
                             }
                             finally
                             {
                                 editSession.Apply();
                             }
                         }
+                        else
+                        {
+                            string startToken = this.searchMiddleKeyword(keyword);
+                            int? specialIndentValue = null;
+                            if (startToken != null)
+                            {
+                                // Retrieve the Indentation for the previous line
+                                specialIndentValue = alignToSpecificToken(line, startToken);
+                            }
+                            else
+                            {
+                                // We could have "special" middle keyword : CASE or OTHERWISE
+                                startToken = this.searchSpecialMiddleKeyword(keyword);
+                                if (startToken != null)
+                                {
+                                    // The startToken is a list of possible tokens
+                                    String[] possibleTokens = startToken.Split(',');
+                                    foreach (string possibleToken in possibleTokens)
+                                    {
+                                        specialIndentValue = alignToSpecificToken(line, possibleToken);
+                                        if (specialIndentValue != null)
+                                            break;
+                                    }
+                                }
+                            }
+                            if (specialIndentValue != null)
+                            {
+                                // The can be aligned to SWITCH/DO CASE or indented
+                                if (!_alignDoCase)
+                                {
+                                    specialIndentValue += _tabSize;
+                                }
+                                // and Indent the new line
+                                indentValue = (int)specialIndentValue + _tabSize;
+                                // And apply
+                                // De-Indent previous line !!!
+                                var buffer = this._textView.TextBuffer;
+                                var editSession = buffer.CreateEdit();
+                                try
+                                {
+                                    XSharp.Project.CommandFilterHelper.FormatLine(this._aggregator, this._textView, editSession, prevLine, specialIndentValue);
+                                }
+                                finally
+                                {
+                                    editSession.Apply();
+                                }
+                            }
 
+                        }
+                        if (indentValue < 0)
+                            indentValue = 0;
+                        //
+                        _lastIndentValue = indentValue;
                     }
-                    if (indentValue < 0)
-                        indentValue = 0;
-                    //
-                    _lastIndentValue = indentValue;
+                    return _lastIndentValue;
                 }
-                return _lastIndentValue;
             }
-            return 0;
+            catch (Exception ex)
+            {
+                Trace.WriteLine("SmartIndent.GetDesiredIndentation Exception : " + ex.Message);
+            }
+            return _lastIndentValue;
         }
 
         private string searchMiddleKeyword(string keyword)

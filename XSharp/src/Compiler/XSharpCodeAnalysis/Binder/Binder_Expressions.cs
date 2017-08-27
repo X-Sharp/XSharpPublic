@@ -86,94 +86,123 @@ namespace Microsoft.CodeAnalysis.CSharp
             expression = null;
             return false;
         }
+
+        private BoundExpression SubtractIndex(BoundExpression expr, DiagnosticBag diagnostics)
+        {
+            BinaryOperatorKind opKind;
+            int compoundStringLength = 0;
+            var type = expr.Type;
+
+            if (!type.SpecialType.IsNumericType())
+            {
+                return expr;
+            }
+            // normalize the type
+            // we allow the following 'normal' types for the Index operator:
+            // int32, uint32, int64, uint64
+            // all other types (usual, float, real4, real8, decimal) are converted to int32
+            switch (type.SpecialType)
+            {
+                case SpecialType.System_Int32:
+                    opKind = BinaryOperatorKind.IntSubtraction;
+                    break;
+                case SpecialType.System_UInt32:
+                    opKind = BinaryOperatorKind.UIntSubtraction;
+                    break;
+                case SpecialType.System_Int64:
+                    opKind = BinaryOperatorKind.LongSubtraction;
+                    break;
+                case SpecialType.System_UInt64:
+                    opKind = BinaryOperatorKind.ULongSubtraction;
+                    break;
+                default:
+                    expr= CreateConversion(expr, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
+                    if (expr.HasErrors)
+                    {
+                        Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, expr.Syntax, expr.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                    }
+                    opKind = BinaryOperatorKind.IntSubtraction;
+                    break;
+            }
+            // when ! ArrayZero then subtract one from the index
+            var right = new BoundLiteral(expr.Syntax, ConstantValue.Create(1), expr.Type) { WasCompilerGenerated = true };
+            // when the argument is a literal then we may be able to fold the subtract expression.
+            var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)expr.Syntax, opKind, expr, right, expr.Type.SpecialType, diagnostics, ref compoundStringLength);
+            var sig = this.Compilation.builtInOperators.GetSignature(opKind);
+            return new BoundBinaryOperator(expr.Syntax, BinaryOperatorKind.Subtraction,
+                expr, right,
+                resultConstant,
+                sig.Method,
+                resultKind: LookupResultKind.Viable,
+                originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
+                type: expr.Type,
+                hasErrors: false)
+            { WasCompilerGenerated = true };
+
+        }
+
         private BoundExpression BindIndexerOrVulcanArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
             if (Compilation.Options.IsDialectVO)
             {
                 var arrayType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
                 var usualType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                if (((NamedTypeSymbol)expr.Type).ConstructedFrom == usualType)
+                var pszType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
+                var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
+                // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
+                if (cf == pszType && !Compilation.Options.ArrayZero && Compilation.Options.Dialect == XSharpDialect.VO )
+                {
+                    ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                    foreach (var arg in analyzedArguments.Arguments)
+                    {
+                        BoundExpression newarg = arg;
+                        if (!Compilation.Options.ArrayZero)
+                        {
+                            newarg = SubtractIndex(arg, diagnostics);
+                        }
+                        argsBuilder.Add(newarg);
+                    }
+                    var newArgs = AnalyzedArguments.GetInstance();
+                    newArgs.Arguments.AddRange(argsBuilder.ToImmutableAndFree());
+                    return BindIndexerAccess(node, expr, newArgs, diagnostics);
+
+                }
+                if (cf == usualType)
                 {
                     // Index operator on USUAL then we convert the usual to an array first
                     expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
+                    cf = arrayType;
                 }
-                if (((NamedTypeSymbol)expr.Type).ConstructedFrom == arrayType)
+                if (cf == arrayType)
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
                     {
-                        var left = arg;
-                        int compoundStringLength = 0;
-                        BinaryOperatorKind opKind ;
-                        // normalize the type
-                        // we allow the following 'normal' types for the Index operator:
-                        // int32, uint32, int64, uint64
-                        // all other types (usual, float, real4, real8, decimal) are converted to int32
-                        switch (left.Type.SpecialType)
-                        {
-                            case SpecialType.System_Int32:
-                                opKind = BinaryOperatorKind.IntSubtraction;
-                                break;
-                            case SpecialType.System_UInt32:
-                                opKind = BinaryOperatorKind.UIntSubtraction;
-                                break;
-                            case SpecialType.System_Int64:
-                                opKind = BinaryOperatorKind.LongSubtraction;
-                                break;
-                            case SpecialType.System_UInt64:
-                                opKind = BinaryOperatorKind.ULongSubtraction;
-                                break;
-                            default:
-                                left = CreateConversion(left, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
-                                if (left.HasErrors)
-                                {
-                                    Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess,left.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
-                                }
-                                opKind = BinaryOperatorKind.IntSubtraction;
-                                break;
-                        }
-                        BoundExpression newarg;
+                        BoundExpression newarg = arg;
                         if (!Compilation.Options.ArrayZero)
                         {
-                            // when ! ArrayZero then subtract one from the index
-                            var right = new BoundLiteral(arg.Syntax, ConstantValue.Create(1), arg.Type) { WasCompilerGenerated = true };
-                            // when the argument is a literal then we may be able to fold the subtract expression.
-                            var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)arg.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
-                            var sig = this.Compilation.builtInOperators.GetSignature(opKind);
-                            newarg = new BoundBinaryOperator(arg.Syntax, BinaryOperatorKind.Subtraction,
-                                left, right,
-                                resultConstant,
-                                sig.Method,
-                                resultKind: LookupResultKind.Viable,
-                                originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
-                                type: left.Type,
-                                hasErrors: false)
-                            { WasCompilerGenerated = true };
-                        }
-                        else
-                        {
-                            newarg = left;
+                            newarg = SubtractIndex(arg, diagnostics);
                         }
                         argsBuilder.Add(newarg);
                     }
                     args = argsBuilder.ToImmutableAndFree();
-                    if (args.Count() > 1)
+                    if (args.Length > 1)
                     {
                         // create a an array of ints and use that as the index for the array
                         // this will make sure that the proper GetIndex calls is chosen
-                        argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                         var exprs = SeparatedSyntaxListBuilder<ExpressionSyntax>.Create();
+                        argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                         foreach (var arg in args)
                         {
                             if (exprs.Count > 0)
                                 exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
                             exprs.Add(arg.Syntax as ExpressionSyntax);
                             argsBuilder.Add(BindCastCore(arg.Syntax as ExpressionSyntax, arg, Compilation.GetSpecialType(SpecialType.System_Int32), wasCompilerGenerated: true, diagnostics: diagnostics));
+                            args = argsBuilder.ToImmutable();
                         }
                         var initSyntax = SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, exprs);
-                        args = argsBuilder.ToImmutable();
-                        argsBuilder.Clear();
+                        argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                         argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
                             creationSyntax: null,
                             initSyntax: initSyntax,
@@ -182,11 +211,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                             boundInitExprOpt: args));
                         args = argsBuilder.ToImmutableAndFree();
                     }
+                    PropertySymbol indexer;
+                    // Select Array Indexer with the correct # of parameters
+                    if (analyzedArguments.Arguments.Count == 1)
+                    {
+                        indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne;
+                    }
+                    else
+                    {
+                        indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany;
+                    }
                     return new BoundIndexerAccess(
                         syntax: node,
                         receiverOpt: expr,
-                        indexer: analyzedArguments.Arguments.Count == 1 ? (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne
-                            : (Compilation.GetWellKnownType(WellKnownType.Vulcan___Array) as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany,
+                        indexer: indexer,
                         arguments: args,
                         argumentNamesOpt: default(ImmutableArray<string>),
                         argumentRefKindsOpt: default(ImmutableArray<RefKind>),

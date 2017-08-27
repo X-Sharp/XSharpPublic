@@ -20,11 +20,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
     /// <summary>
     /// The class to represent all types imported from a PE/module.
     /// </summary>
-    internal abstract class PENamedTypeSymbol : NamedTypeSymbol
-    {
 #if XSHARP
+    internal abstract partial class PENamedTypeSymbol : NamedTypeSymbol
+    {
         private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(CaseInsensitiveComparison.Comparer);
 #else
+    internal abstract class PENamedTypeSymbol : NamedTypeSymbol
+    {
         private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(EmptyComparer.Instance);
 #endif
 
@@ -1319,67 +1321,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
         }
 
-#if XSHARP
-        private PropertySymbol _vulcanArrayIndexerOne = null;
-        internal PropertySymbol VulcanArrayIndexerOne
-        {
-            get {
-                if (_vulcanArrayIndexerOne == null)
-                {
-                    EnsureAllMembersAreLoaded();
-
-                    var moduleSymbol = this.ContainingPEModule;
-                    var module = moduleSymbol.Module;
-
-                    var getMethods = GetSimpleNonTypeMembers("__GetElement");
-                    var setMethods = GetSimpleNonTypeMembers("__SetElement");
-
-                    if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
-                    {
-                        var getOne = (from PEMethodSymbol m in getMethods where !m.ParameterTypes[0].IsArray() select m).FirstOrDefault();
-                        var setOne = (from PEMethodSymbol m in setMethods where !m.ParameterTypes[1].IsArray() select m).FirstOrDefault();
-
-                        if (((object)getOne != null) || ((object)setOne != null))
-                        {
-                            PropertyDefinitionHandle h = new PropertyDefinitionHandle();
-                            _vulcanArrayIndexerOne = PEPropertySymbol.Create(moduleSymbol, this, h, getOne, setOne);
-                        }
-                    }
-                }
-                return _vulcanArrayIndexerOne;
-            }
-        }
-
-        private PropertySymbol _vulcanArrayIndexerMany = null;
-        internal PropertySymbol VulcanArrayIndexerMany
-        {
-            get
-            {
-                if (_vulcanArrayIndexerMany == null)
-                {
-                    EnsureAllMembersAreLoaded();
-
-                    var moduleSymbol = this.ContainingPEModule;
-                    var module = moduleSymbol.Module;
-
-                    var getMethods = GetSimpleNonTypeMembers("__GetElement");
-                    var setMethods = GetSimpleNonTypeMembers("__SetElement");
-
-                    if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
-                    {
-                        var getMany = (from PEMethodSymbol m in getMethods where m.ParameterTypes[0].IsArray() select m).FirstOrDefault();
-                        var setMany = (from PEMethodSymbol m in setMethods where m.ParameterTypes[1].IsArray() select m).FirstOrDefault();
-                        if (((object)getMany != null) || ((object)setMany != null))
-                        {
-                            PropertyDefinitionHandle h = new PropertyDefinitionHandle();
-                            _vulcanArrayIndexerMany = PEPropertySymbol.Create(moduleSymbol, this, h, getMany, setMany);
-                        }
-                    }
-                }
-                return _vulcanArrayIndexerMany;
-            }
-        }
-#endif
         internal override ImmutableArray<Symbol> GetSimpleNonTypeMembers(string name)
         {
             EnsureAllMembersAreLoaded();

@@ -16,6 +16,7 @@
       <li styleclass="List">Fixed the code generation for conversion from USUAL to a known type. Now the same error is generated that Vulcan produces when the object type in the usual does not match the type of the target variable</li>
       <li styleclass="List">When declaring a type with the same name as the assembly now a compiler error is generated with a suggested work around.</li>
       <li styleclass="List">Fixed a strange compiler message when using a PTR() operation on a method call</li>
+      <li styleclass="List">Indexed access to bytes in a PSZ is now 1 based like in VO when the VO dialect is used. The Vulcan dialect needs 0 based index access like Vulcan.</li>
     </list>
     <para styleclass="Heading3"><text style="font-weight:bold;">Scripting</text></para>
     <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -26,14 +27,23 @@
       <li styleclass="List">QuickInfo could generate a &apos;hang&apos; in the VS editor. This has been fixed</li>
       <li styleclass="List">Added quickinfo for globals and defines</li>
       <li styleclass="List">Added completionlists for globals and defines</li>
+      <li styleclass="List">Added a fist version of SmartIndent</li>
+      <li styleclass="List">Added support for FormatDocument</li>
       <li styleclass="List">Added VO Form editor to edit vnfrm/xsfrm files and generate the code and resources</li>
+      <li styleclass="List">Added VO Menu editor to edit vnmnu/xsmnu files and generate the code and resources</li>
+      <li styleclass="List">Added VO DbServer editor and VO Fieldspec editor to edit vndbs/xsdbs and vnfs/xsfs files and generate the code and resources</li>
       <li styleclass="List">Added keyword and identifier case synchronization. </li>
       <li styleclass="List">Fixed a problem where typing SUPER( in the editor could throw an exception</li>
+      <li styleclass="List">Prebuild and Postbuild entries in the project file are now configuration specific</li>
+      <li styleclass="List">Added support for XML Doc generation in the project system</li>
+      <li styleclass="List">Fixed a &apos;hang&apos; that could occur with Visual Studio 2017 version 15.3 and later</li>
     </list>
     <para styleclass="Heading3"><text style="font-weight:bold;">VO Xporter</text></para>
     <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem when importing certain VO 2.7 AEF files</li>
-      <li styleclass="List">Fixed a problem with unacceptible characters in the solution folder name</li>
+      <li styleclass="List">Fixed a problem with acceptable characters in the solution folder name</li>
+      <li styleclass="List">VO Form and menu entities are also included in the xsproj file</li>
+      <li styleclass="List">Added an option to the INI files to specify the Vulcan Runtime files location (RUNTIMELOCATION)</li>
     </list>
     <para styleclass="Heading2">Changes in General Release (1.0.1.1)</para>
     <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>

@@ -1046,16 +1046,9 @@ CLASS ApplicationDescriptor
 			END IF
 			
 			FOREACH oDesigner AS Designer IN oModule:Designers
-				DO CASE
-				CASE oDesigner:Type == 10 // window
-					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".xsfrm" , oDesigner:Bytes)
-				CASE oDesigner:Type == 16 // menu
-					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".xsmnu" , oDesigner:Bytes)
-/*				CASE oDesigner:Type == 12 //
-					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".bin" , oDesigner:Bytes)
-				CASE oDesigner:Type == 14 //
-					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:Name + ".bin" , oDesigner:Bytes)*/
-				END CASE
+				IF oDesigner:MustExport
+					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:FileName , oDesigner:Bytes)
+				ENDIF
 			NEXT
 
 			IF .not. xPorter.Options:ExportOnlyDefines
@@ -1163,6 +1156,15 @@ CLASS ApplicationDescriptor
 								oOutput:WriteLine(String.Format(e"<NativeResource Include=\"{0}\">" , cResFileName))
 								oOutput:WriteLine(String.Format(e"  <DependentUpon>{0}</DependentUpon>" , cName))
 								oOutput:WriteLine(String.Format(e"</NativeResource>" , ""))
+							NEXT
+						END IF
+						IF oModule:Designers:Count != 0
+							FOREACH oDesigner AS Designer IN oModule:Designers
+								IF oDesigner:MustExport
+									oOutput:WriteLine(String.Format(e"<VOBinary Include=\"{0}\">" ,  oModule:PathValidName + "." +oDesigner:Name+oDesigner:Extension))
+									oOutput:WriteLine(String.Format(e"  <DependentUpon>{0}</DependentUpon>" , cName))
+									oOutput:WriteLine(String.Format(e"</VOBinary>" , ""))
+								ENDIF
 							NEXT
 						END IF
 					END IF

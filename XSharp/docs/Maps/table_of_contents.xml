@@ -4231,6 +4231,12 @@
       <topicref type="topic" id="429263991294005" build="ALL" modified="2017-07-10T10:40:13.517Z" icon="0" href="XS9060">
         <caption translate="true">XS9060</caption>
       </topicref>
+      <topicref type="topic" id="429714808458975" build="ALL" modified="2017-08-24T16:26:53.939Z" icon="0" href="XS9061">
+        <caption translate="true">XS9061</caption>
+      </topicref>
+      <topicref type="topic" id="429715854737495" build="ALL" modified="2017-08-24T16:26:54.070Z" icon="0" href="XS9062">
+        <caption translate="true">XS9062</caption>
+      </topicref>
     </topicref>
     <topicref type="topic" id="427607830537848" build="CHM,HTML,HXS" modified="2017-05-12T17:24:19.511Z" icon="0" href="X-Compiler-Warnings">
       <caption translate="true">X# Compiler Warnings</caption>

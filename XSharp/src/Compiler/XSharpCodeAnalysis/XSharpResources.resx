@@ -5245,6 +5245,6 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   
   <data name="ERR_TypeNameMatchesGlobalNamespace" xml:space="preserve">
-    <value>The {0} name '{1}' conflicts with the compiler generate globals name '{2}'. You should either rename the type or the output assembly.</value>
+    <value>The {0} name '{1}' conflicts with the compiler generated globals class name '{2}'. You should either rename the type or the output assembly.</value>
   </data>
 </root>

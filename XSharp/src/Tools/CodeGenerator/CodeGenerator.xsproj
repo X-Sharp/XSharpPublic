@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <PropertyGroup>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <ProjectGuid>b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CodeGenerator</RootNamespace>
+    <AssemblyName>XSharp.CodeGenerator</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <Name>CodeGenerator</Name>
+    <Nologo>true</Nologo>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <Dialect>Core</Dialect>
+    <OutputName>CodeGenerator</OutputName>
+    <StartupObject />
+    <ApplicationIcon />
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>$(Solutiondir)Binaries\$(Configuration)_$(Platform)\</OutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    <Optimize>false</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>165</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>$(Solutiondir)Binaries\$(Configuration)_$(Platform)\</OutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    <Optimize>true</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>165</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
+    <DefineConstants>TRACE</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
+  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Drawing</Name>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssembyInfo.prg" />
+    <Compile Include="XIDE_Buffer.prg" />
+    <Compile Include="XIDE_CodeGenerator.prg" />
+    <Compile Include="XIDE_EntityObject.prg" />
+    <Compile Include="XIDE_LineObject.prg" />
+    <Compile Include="XIDE_VulcanBuffer.prg" />
+    <Compile Include="XIDE_WordObject.prg" />
+    <Compile Include="XIDE_XSharpBuffer.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Compiler\Xsc\Xsc.csproj">
+      <Name>Xsc</Name>
+      <Project>{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \Xsharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PreBuildEvent>
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \Xsharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PreBuildEvent>
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

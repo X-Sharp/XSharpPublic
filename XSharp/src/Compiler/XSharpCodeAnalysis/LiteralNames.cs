@@ -93,6 +93,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Eval = "Eval";
         internal const string FunctionsClass = "Functions";
         internal const string RunInitProcs = "RunInitProcs";
+        internal const string GetElement = "__GetElement";
+        internal const string SetElement = "__SetElement";
     }
     internal static class VulcanQualifiedFunctionNames
     {

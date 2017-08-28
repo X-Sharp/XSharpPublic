@@ -261,6 +261,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 analyzedArguments.RefKinds[i] = RefKind.Ref;
                             }
                             analyzedArguments.Arguments[i] = arg;
+                            // check for correct type
+                            if (arg.Type != result.ValidResult.Member.ParameterTypes[i])
+                            {
+                                Error(diagnostics,ErrorCode.ERR_BadArgType, arg.Syntax, i+1, arg.Type, result.ValidResult.Member.ParameterTypes[i]);
+                            }
                         }
                     }
 

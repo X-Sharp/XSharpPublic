@@ -36,20 +36,16 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (Compilation.Options.IsDialectVO)
             {
-                bool ok = true;
-                if (left.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual) 
-                    && right.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat))
+                // Fix problem in Vulcan Runtime that the FLOAT += USUAL does not work as expected
+                var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                var typeFloat = Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
+                if (left.Type == typeUsual && right.Type == typeFloat)
                 {
-                    ok = false;
+                    left = CreateConversion(left, typeFloat, diagnostics);
                 }
-                else if (right.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)
-                    && left.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat))
+                else if (right.Type == typeUsual && left.Type == typeFloat)
                 {
-                    ok = false;
-                }
-                if (! ok )
-                {
-                    Error(diagnostics, ErrorCode.ERR_CompoundAssignmentUsualAndFloat, node);
+                    right = CreateConversion(right, typeFloat, diagnostics);
                 }
             }
 #endif

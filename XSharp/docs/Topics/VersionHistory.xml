@@ -43,7 +43,7 @@
       <li styleclass="List">Fixed a problem when importing certain VO 2.7 AEF files</li>
       <li styleclass="List">Fixed a problem with acceptable characters in the solution folder name</li>
       <li styleclass="List">VO Form and menu entities are also included in the xsproj file</li>
-      <li styleclass="List">Added an option to the INI files to specify the Vulcan Runtime files location (RUNTIMELOCATION)</li>
+      <li styleclass="List">Added an option to the INI files to specify the Vulcan Runtime files location (<tab /><tab />)</li>
     </list>
     <para styleclass="Heading2">Changes in General Release (1.0.1.1)</para>
     <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>

@@ -112,6 +112,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                             break;
                         }
                     }
+                    if (! funcFound && functionResults.Symbols.Count == result.Symbols.Count)
+                    {
+                        // IN VO Dialect we prefer the function over the static method
+                        if (Compilation.Options.IsDialectVO)
+                        {
+                            var temp = functionResults;
+                            functionResults = result;
+                            result.Clear();
+                            result.MergeEqual(temp);
+                        }
+                    }
+
                     if (! funcFound && funcSym.Kind == SymbolKind.Method)
                     {
                         for (int j = 0; j < result.Symbols.Count; j++)

@@ -35,7 +35,7 @@
     <VO8>true</VO8>
     <VO9>true</VO9>
     <VO10>true</VO10>
-    <VO11>true</VO11>
+    <VO11>false</VO11>
     <VO12>false</VO12>
     <VO13>true</VO13>
     <VO14>false</VO14>
@@ -67,9 +67,6 @@
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
     <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
@@ -80,7 +77,7 @@
     <IncludePaths />
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
+  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -121,21 +118,30 @@
 <Compile Include="Menus.prg">
   <SubType>Code</SubType>
 </Compile>
-<NativeResource Include="Menus.IDA_CustomerExplorerMenu.rc">
+<NativeResource Include="Menus.CustomerExplorerMenu_Accelerator.rc">
   <DependentUpon>Menus.prg</DependentUpon>
 </NativeResource>
-<NativeResource Include="Menus.IDA_EMPTYSHELLMENU.rc">
+<NativeResource Include="Menus.EMPTYSHELLMENU_Accelerator.rc">
   <DependentUpon>Menus.prg</DependentUpon>
 </NativeResource>
-<NativeResource Include="Menus.IDM_CustomerExplorerMenu.rc">
+<NativeResource Include="Menus.CustomerExplorerMenu.rc">
   <DependentUpon>Menus.prg</DependentUpon>
 </NativeResource>
-<NativeResource Include="Menus.IDM_EMPTYSHELLMENU.rc">
+<NativeResource Include="Menus.EMPTYSHELLMENU.rc">
   <DependentUpon>Menus.prg</DependentUpon>
 </NativeResource>
-<NativeResource Include="Menus.IDM_OrdersListViewMenu.rc">
+<NativeResource Include="Menus.OrdersListViewMenu.rc">
   <DependentUpon>Menus.prg</DependentUpon>
 </NativeResource>
+<VOBinary Include="Menus.CustomerExplorerMenu.xsmnu">
+  <DependentUpon>Menus.prg</DependentUpon>
+</VOBinary>
+<VOBinary Include="Menus.EMPTYSHELLMENU.xsmnu">
+  <DependentUpon>Menus.prg</DependentUpon>
+</VOBinary>
+<VOBinary Include="Menus.OrdersListViewMenu.xsmnu">
+  <DependentUpon>Menus.prg</DependentUpon>
+</VOBinary>
 <Compile Include="Customer Explorer.prg">
   <SubType>Code</SubType>
 </Compile>
@@ -145,6 +151,9 @@
 <NativeResource Include="Help About.HelpAboutDialog.rc">
   <DependentUpon>Help About.prg</DependentUpon>
 </NativeResource>
+<VOBinary Include="Help About.HelpAboutDialog.xsfrm">
+  <DependentUpon>Help About.prg</DependentUpon>
+</VOBinary>
 <Compile Include="Data Servers.prg">
   <SubType>Code</SubType>
 </Compile>
@@ -158,11 +167,20 @@
   <DependentUpon>Icons.prg</DependentUpon>
 </NativeResource>
   </ItemGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -1,15 +1,15 @@
 #region DEFINES
-STATIC DEFINE EMAILCOMPOSEDIALOG_TOMLE := 100 
-STATIC DEFINE EMAILCOMPOSEDIALOG_CCMLE := 101 
-STATIC DEFINE EMAILCOMPOSEDIALOG_BCCMLE := 102 
-STATIC DEFINE EMAILCOMPOSEDIALOG_SUBJECTSLE := 103 
-STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHMENTS := 104 
-STATIC DEFINE EMAILCOMPOSEDIALOG_TOBUTTON := 105 
-STATIC DEFINE EMAILCOMPOSEDIALOG_CCBUTTON := 106 
-STATIC DEFINE EMAILCOMPOSEDIALOG_BCCBUTTON := 107 
-STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHBUTTON := 108 
-STATIC DEFINE EMAILCOMPOSEDIALOG_SUBJECT_FT := 109 
-STATIC DEFINE EMAILCOMPOSEDIALOG_BODY := 110 
+STATIC DEFINE EMAILCOMPOSEDIALOG_TOMLE := 100
+STATIC DEFINE EMAILCOMPOSEDIALOG_CCMLE := 101
+STATIC DEFINE EMAILCOMPOSEDIALOG_BCCMLE := 102
+STATIC DEFINE EMAILCOMPOSEDIALOG_SUBJECTSLE := 103
+STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHMENTS := 104
+STATIC DEFINE EMAILCOMPOSEDIALOG_TOBUTTON := 105
+STATIC DEFINE EMAILCOMPOSEDIALOG_CCBUTTON := 106
+STATIC DEFINE EMAILCOMPOSEDIALOG_BCCBUTTON := 107
+STATIC DEFINE EMAILCOMPOSEDIALOG_ATTACHBUTTON := 108
+STATIC DEFINE EMAILCOMPOSEDIALOG_SUBJECT_FT := 109
+STATIC DEFINE EMAILCOMPOSEDIALOG_BODY := 110
 #endregion
 
 CLASS EMailDialog INHERIT DATAWINDOW
@@ -158,21 +158,20 @@ METHOD SaveButton()
 
 
 END CLASS
-class EmailComposeDialog inherit EMailDialog 
+CLASS EmailComposeDialog INHERIT EMailDialog
+	PROTECT oDCToMLE AS MULTILINEEDIT
+	PROTECT oDCCcMLE AS MULTILINEEDIT
+	PROTECT oDCBccMLE AS MULTILINEEDIT
+	PROTECT oDCSubjectSLE AS SINGLELINEEDIT
+	PROTECT oDCAttachments AS AttachmentListView
+	PROTECT oCCToButton AS PUSHBUTTON
+	PROTECT oCCCCButton AS PUSHBUTTON
+	PROTECT oCCBccButton AS PUSHBUTTON
+	PROTECT oCCAttachButton AS PUSHBUTTON
+	PROTECT oDCSubject_FT AS FIXEDTEXT
+	PROTECT oDCBody AS MULTILINEEDIT
 
-	protect oDCToMLE as MULTILINEEDIT
-	protect oDCCcMLE as MULTILINEEDIT
-	protect oDCBccMLE as MULTILINEEDIT
-	protect oDCSubjectSLE as SINGLELINEEDIT
-	protect oDCAttachments as ATTACHMENTLISTVIEW
-	protect oCCToButton as PUSHBUTTON
-	protect oCCCCButton as PUSHBUTTON
-	protect oCCBccButton as PUSHBUTTON
-	protect oCCAttachButton as PUSHBUTTON
-	protect oDCSubject_FT as FIXEDTEXT
-	protect oDCBody as MULTILINEEDIT
-
-  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
+	// {{%UC%}} User code starts here (DO NOT remove this line)  
 
 METHOD AcceptAndSaveEmail(lSend) 
    LOCAL lRet  AS LOGIC
@@ -420,67 +419,66 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	RETURN NIL
 
 
-CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
-local dim aFonts[2] AS OBJECT
+CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)
+	LOCAL oFont AS Font
 
-self:PreInit(oWindow,iCtlID,oServer,uExtra)
+	SELF:PreInit(oWindow,iCtlID,oServer,uExtra)
 
-SUPER(oWindow,ResourceID{"EmailComposeDialog",_GetInst()},iCtlID)
+	SUPER(oWindow , ResourceID{"EmailComposeDialog" , _GetInst()},iCtlID)
 
-aFonts[1] := Font{,8,"Microsoft Sans Serif"}
-aFonts[1]:Bold := TRUE
-aFonts[2] := Font{,8,"Courier New"}
+	SELF:oDCToMLE := MULTILINEEDIT{SELF , ResourceID{ EMAILCOMPOSEDIALOG_TOMLE  , _GetInst() } }
+	SELF:oDCToMLE:OwnerAlignment := OA_WIDTH
+	SELF:oDCToMLE:HyperLabel := HyperLabel{#ToMLE , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCToMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_TOMLE,_GetInst()}}
-oDCToMLE:HyperLabel := HyperLabel{#ToMLE,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCToMLE:OwnerAlignment := OA_WIDTH
+	SELF:oDCCcMLE := MULTILINEEDIT{SELF , ResourceID{ EMAILCOMPOSEDIALOG_CCMLE  , _GetInst() } }
+	SELF:oDCCcMLE:OwnerAlignment := OA_WIDTH
+	SELF:oDCCcMLE:HyperLabel := HyperLabel{#CcMLE , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCCcMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_CCMLE,_GetInst()}}
-oDCCcMLE:HyperLabel := HyperLabel{#CcMLE,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCCcMLE:OwnerAlignment := OA_WIDTH
+	SELF:oDCBccMLE := MULTILINEEDIT{SELF , ResourceID{ EMAILCOMPOSEDIALOG_BCCMLE  , _GetInst() } }
+	SELF:oDCBccMLE:OwnerAlignment := OA_WIDTH
+	SELF:oDCBccMLE:HyperLabel := HyperLabel{#BccMLE , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCBccMLE := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_BCCMLE,_GetInst()}}
-oDCBccMLE:HyperLabel := HyperLabel{#BccMLE,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCBccMLE:OwnerAlignment := OA_WIDTH
+	SELF:oDCSubjectSLE := SINGLELINEEDIT{SELF , ResourceID{ EMAILCOMPOSEDIALOG_SUBJECTSLE  , _GetInst() } }
+	SELF:oDCSubjectSLE:OwnerAlignment := OA_WIDTH
+	SELF:oDCSubjectSLE:HyperLabel := HyperLabel{#SubjectSLE , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCSubjectSLE := SingleLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_SUBJECTSLE,_GetInst()}}
-oDCSubjectSLE:HyperLabel := HyperLabel{#SubjectSLE,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCSubjectSLE:OwnerAlignment := OA_WIDTH
+	SELF:oDCAttachments := AttachmentListView{SELF , ResourceID{ EMAILCOMPOSEDIALOG_ATTACHMENTS  , _GetInst() } }
+	SELF:oDCAttachments:ContextMenu := ComposeEmailContextmenu{}
+	SELF:oDCAttachments:HyperLabel := HyperLabel{#Attachments , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCAttachments := AttachmentListView{self,ResourceID{EMAILCOMPOSEDIALOG_ATTACHMENTS,_GetInst()}}
-oDCAttachments:HyperLabel := HyperLabel{#Attachments,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCAttachments:ContextMenu := ComposeEmailContextmenu{}
+	SELF:oCCToButton := PUSHBUTTON{SELF , ResourceID{ EMAILCOMPOSEDIALOG_TOBUTTON  , _GetInst() } }
+	SELF:oCCToButton:HyperLabel := HyperLabel{#ToButton , "&TO:" , NULL_STRING , NULL_STRING}
 
-oCCToButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_TOBUTTON,_GetInst()}}
-oCCToButton:HyperLabel := HyperLabel{#ToButton,_chr(38)+"TO:",NULL_STRING,NULL_STRING}
+	SELF:oCCCCButton := PUSHBUTTON{SELF , ResourceID{ EMAILCOMPOSEDIALOG_CCBUTTON  , _GetInst() } }
+	SELF:oCCCCButton:HyperLabel := HyperLabel{#CCButton , "&CC:" , NULL_STRING , NULL_STRING}
 
-oCCCCButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_CCBUTTON,_GetInst()}}
-oCCCCButton:HyperLabel := HyperLabel{#CCButton,_chr(38)+"CC:",NULL_STRING,NULL_STRING}
+	SELF:oCCBccButton := PUSHBUTTON{SELF , ResourceID{ EMAILCOMPOSEDIALOG_BCCBUTTON  , _GetInst() } }
+	SELF:oCCBccButton:HyperLabel := HyperLabel{#BccButton , "&BCC:" , NULL_STRING , NULL_STRING}
 
-oCCBccButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_BCCBUTTON,_GetInst()}}
-oCCBccButton:HyperLabel := HyperLabel{#BccButton,_chr(38)+"BCC:",NULL_STRING,NULL_STRING}
+	SELF:oCCAttachButton := PUSHBUTTON{SELF , ResourceID{ EMAILCOMPOSEDIALOG_ATTACHBUTTON  , _GetInst() } }
+	SELF:oCCAttachButton:HyperLabel := HyperLabel{#AttachButton , "&Attach:" , NULL_STRING , NULL_STRING}
 
-oCCAttachButton := PushButton{self,ResourceID{EMAILCOMPOSEDIALOG_ATTACHBUTTON,_GetInst()}}
-oCCAttachButton:HyperLabel := HyperLabel{#AttachButton,_chr(38)+"Attach:",NULL_STRING,NULL_STRING}
+	SELF:oDCSubject_FT := FIXEDTEXT{SELF , ResourceID{ EMAILCOMPOSEDIALOG_SUBJECT_FT  , _GetInst() } }
+	oFont := Font{  , 8 , "Microsoft Sans Serif" }
+	oFont:Bold := TRUE
+	SELF:oDCSubject_FT:Font( oFont )
+	SELF:oDCSubject_FT:HyperLabel := HyperLabel{#Subject_FT , "Subject:" , NULL_STRING , NULL_STRING}
 
-oDCSubject_FT := FixedText{self,ResourceID{EMAILCOMPOSEDIALOG_SUBJECT_FT,_GetInst()}}
-oDCSubject_FT:HyperLabel := HyperLabel{#Subject_FT,"Subject:",NULL_STRING,NULL_STRING}
-oDCSubject_FT:Font(aFonts[1], FALSE)
+	SELF:oDCBody := MULTILINEEDIT{SELF , ResourceID{ EMAILCOMPOSEDIALOG_BODY  , _GetInst() } }
+	oFont := Font{  , 8 , "Courier New" }
+	SELF:oDCBody:Font( oFont )
+	SELF:oDCBody:HyperLabel := HyperLabel{#Body , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCBody := MultiLineEdit{self,ResourceID{EMAILCOMPOSEDIALOG_BODY,_GetInst()}}
-oDCBody:HyperLabel := HyperLabel{#Body,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCBody:Font(aFonts[2], FALSE)
+	SELF:Caption := ""
+	SELF:HyperLabel := HyperLabel{#EmailComposeDialog , NULL_STRING , NULL_STRING , NULL_STRING}
+	IF !IsNil(oServer)
+		SELF:Use(oServer)
+	ENDIF
 
-self:Caption := ""
-self:HyperLabel := HyperLabel{#EmailComposeDialog,NULL_STRING,NULL_STRING,NULL_STRING}
 
-if !IsNil(oServer)
-	self:Use(oServer)
-endif
+	SELF:PostInit(oWindow,iCtlID,oServer,uExtra)
 
-self:PostInit(oWindow,iCtlID,oServer,uExtra)
-
-return self
+RETURN
 
 
 METHOD DeleteAttachment() 

@@ -12,6 +12,7 @@ namespace LanguageService.CodeAnalysis {
     using System;
     using System.Reflection;
 
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2946,15 +2947,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_CompilerOptionNotSupportedForDialect {
             get {
                 return ResourceManager.GetString("ERR_CompilerOptionNotSupportedForDialect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A Compound Assignment (+= or -=) from a FLOAT and a USUAL is not supported because of an error in the Vulcan Runtime. Please change the expression to a simple assignment. For example F += U should become F := F + U..
-        /// </summary>
-        internal static string ERR_CompoundAssignmentUsualAndFloat {
-            get {
-                return ResourceManager.GetString("ERR_CompoundAssignmentUsualAndFloat", resourceCulture);
             }
         }
         
@@ -9385,7 +9377,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The {0} name &apos;{1}&apos; conflicts with the compiler generate globals name &apos;{2}&apos;. You should either rename the type or the output assembly..
+        ///   Looks up a localized string similar to The {0} name &apos;{1}&apos; conflicts with the compiler generated globals class name &apos;{2}&apos;. You should either rename the type or the output assembly..
         /// </summary>
         internal static string ERR_TypeNameMatchesGlobalNamespace {
             get {

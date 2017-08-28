@@ -71,6 +71,6 @@
   </ItemGroup>
   <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 </Project>

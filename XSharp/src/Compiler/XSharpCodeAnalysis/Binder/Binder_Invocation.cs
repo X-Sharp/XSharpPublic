@@ -79,7 +79,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics, TypeSyntax type)
         {
             var XNode = node.XNode as XP.MethodCallContext;
-            string method = XNode.Expr.GetText();
+            string method = XNode?.Expr.GetText(); 
+            if (string.IsNullOrEmpty(method))
+                method = "PCALL";
             if (!ValidatePCallArguments(node, args, diagnostics, method))
                 return;
             var kind = args[0].Kind;
@@ -223,7 +225,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics, TypeSyntax type)
         {
             var XNode = node.XNode as XP.MethodCallContext;
-            string method = XNode.Expr.GetText();
+            string method = XNode?.Expr.GetText() ;
+            if (string.IsNullOrEmpty(method))
+                method = "PCALLNATIVE";
             if (!ValidatePCallArguments(node, args, diagnostics, method))
                 return;
             // Our parent is the invocation expression of the delegate

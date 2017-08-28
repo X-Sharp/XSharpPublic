@@ -42,7 +42,7 @@ FUNCTION Start AS VOID
 	WriteLine(e"\nDevelopers grouped per country\n")
 
 	FOREACH VAR country IN oCount
-		WriteLine(i"{country.Key}, {country.Count()} developer(s)")
+		WriteLine(country:Key+" " +country:Count():ToString()+" developer(s)") 
 		FOREACH VAR oDeveloper IN country
 			WriteLine("  " + oDeveloper:Name)
 		NEXT

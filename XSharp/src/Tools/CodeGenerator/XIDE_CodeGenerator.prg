@@ -492,6 +492,9 @@ RETURN
 	RETURN
 
 	METHOD AddXSharpDefines(aDefines AS List<STRING> , aDefineValues AS List<STRING>) AS VOID
+		SELF:AddXSharpDefines(aDefines, aDefineValues, FALSE)
+
+	METHOD AddXSharpDefines(aDefines AS List<STRING> , aDefineValues AS List<STRING>, lStatic AS LOGIC) AS VOID
 		LOCAL cLine AS STRING
 		LOCAL nLine AS INT
 		FOR LOCAL n := 1 AS INT UPTO SELF:aLines:Count
@@ -508,9 +511,13 @@ RETURN
 				EXIT
 			END CASE
 		NEXT
-
+		LOCAL cMask AS STRING
+		cMask := "DEFINE {0} := {1}"
+		IF lStatic
+			cMask := "STATIC "+cMask			
+		ENDIF
 		FOR LOCAL n := 0 AS INT UPTO aDefines:Count - 1
-			cLine := String.Format("DEFINE {0} := {1}" , aDefines[n] , aDefineValues[n])
+			cLine := String.Format(cMask , aDefines[n] , aDefineValues[n])
 			SELF:InsertLine(nLine , cLine)
 			nLine ++
 		NEXT

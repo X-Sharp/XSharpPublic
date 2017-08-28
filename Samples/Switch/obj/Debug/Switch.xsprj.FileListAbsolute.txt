@@ -1,4 +1,0 @@
-D:\Xsharp\Dev\XSharp\src\Samples\Switch\bin\Debug\Switch.exe
-D:\Xsharp\Dev\XSharp\src\Samples\Switch\bin\Debug\Switch.pdb
-D:\Xsharp\Dev\XSharp\src\Samples\Switch\obj\Debug\Switch.exe
-D:\Xsharp\Dev\XSharp\src\Samples\Switch\obj\Debug\Switch.pdb

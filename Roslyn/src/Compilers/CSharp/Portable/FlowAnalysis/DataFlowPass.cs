@@ -357,13 +357,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected void Analyze(ref bool badRegion, DiagnosticBag diagnostics)
         {
             ImmutableArray<PendingBranch> returns = Analyze(ref badRegion);
-#if XSHARP
-            // Suppress error message when compiling in VO & Vulcan dialect
-            // to avoid warning when a local has been "abused" and used in a aliased expression (C397)
-            if (diagnostics != null && !compilation.Options.IsDialectVO)
-#else
             if (diagnostics != null)
-#endif
+
             {
                 foreach (Symbol captured in _capturedVariables)
                 {

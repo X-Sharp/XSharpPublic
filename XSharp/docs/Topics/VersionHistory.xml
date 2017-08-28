@@ -17,6 +17,10 @@
       <li styleclass="List">When declaring a type with the same name as the assembly now a compiler error is generated with a suggested work around.</li>
       <li styleclass="List">Fixed a strange compiler message when using a PTR() operation on a method call</li>
       <li styleclass="List">Indexed access to bytes in a PSZ is now 1 based like in VO when the VO dialect is used. The Vulcan dialect needs 0 based index access like Vulcan.</li>
+      <li styleclass="List">The error message for compound assignments of FLOAT and USUAL has been removed. The compiler now contains a workaround for the problem in the Vulcan Runtime</li>
+      <li styleclass="List">For ambiguous code where the compiler has to choose between a Function call and a static method call in any other class, the compiler now chooses the function call over the method call (Vo and Vulcan dialect). The warning will still be generated.</li>
+      <li styleclass="List">When passing a variable by reference with the @ sign the compiler will now check to see if the declared type of the function/method parameter matches the type of the local variable.</li>
+      <li styleclass="List">Some compiler warnings for unused variables were being suppressed in the &#160;VO/Vulcan dialect. They are activated again.</li>
     </list>
     <para styleclass="Heading3"><text style="font-weight:bold;">Scripting</text></para>
     <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -43,7 +47,7 @@
       <li styleclass="List">Fixed a problem when importing certain VO 2.7 AEF files</li>
       <li styleclass="List">Fixed a problem with acceptable characters in the solution folder name</li>
       <li styleclass="List">VO Form and menu entities are also included in the xsproj file</li>
-      <li styleclass="List">Added an option to the INI files to specify the Vulcan Runtime files location (RUNTIMELOCATION)</li>
+      <li styleclass="List">Added an option to the INI files to specify the Vulcan Runtime files location (<tab /><tab />)</li>
     </list>
     <para styleclass="Heading2">Changes in General Release (1.0.1.1)</para>
     <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>

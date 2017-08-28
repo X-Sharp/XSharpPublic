@@ -71,7 +71,18 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!result.IsClear)
             {
-                functionResults.MergeEqual(result);
+                foreach (var symbol in result.Symbols)
+                {
+                    if (symbol is MethodSymbol )
+                    {
+                        var ms = symbol as MethodSymbol;
+                        if (ms.IsStatic && ms.ContainingType.Name.EndsWith("Functions",System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, ms, null);
+                            functionResults.MergeEqual(result);
+                        }
+                    }
+                }
                 result.Clear();
             }
             Binder binder = null;

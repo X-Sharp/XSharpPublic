@@ -5,7 +5,7 @@
 ;
 ; preprocess the help cab files
 ;
-;#expr Exec('c:\xsharp\dev\xsharp\src\setup\makecabs.cmd')
+#expr Exec('c:\xsharp\dev\xsharp\src\setup\makecabs.cmd')
 
 
 #define FOX
@@ -17,7 +17,7 @@
 
 #define Version         "1.0.2.0"
 #define VIVersion       "1.0.2.0"
-#define TouchDate       "2017-08-24"
+#define TouchDate       "2017-08-28"
 #define TouchTime       "01:02:00"
 
 
@@ -366,7 +366,7 @@ Components: vs2015; Source: "{#BinRFolder}System.Valuetuple.dll";             De
 Components: vs2015; Source: "{#BinPFolder}XSharp.CodeGenerator.dll";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}XSharpVoEditors.dll";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 
-Components: vs2015; Source: "Baggage\VulcanDesigners2015.dll";                DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} uninsneveruninstall;  Check: MustInstallVulcanDesigner2015;
+Components: vs2015; Source: "Baggage\VulcanDesigners2015.dll";                DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} uninsneveruninstall onlyifdoesntexist;  Check: MustInstallVulcanDesigner2015;
 Components: vs2015; Source: "Baggage\VulcanRTFuncs.dll";                      DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanRT;
 Components: vs2015; Source: "Baggage\VulcanRT.dll";                           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags};  Check: MustInstallVulcanRT;
 
@@ -675,6 +675,7 @@ Type: dirifempty;     Name: "{app}\Snippets"     ;
 Type: dirifempty;     Name: "{app}\VOXPorter\Templates"; 
 Type: dirifempty;     Name: "{app}\VOXPorter"    ; 
 Type: dirifempty;     Name: "{app}"; 
+Type: filesandordirs; Name: "{group}";
 
 ; Template cache and component cache
 ;vs2015

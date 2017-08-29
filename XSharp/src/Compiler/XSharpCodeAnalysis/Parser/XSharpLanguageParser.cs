@@ -42,6 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
         private readonly bool _isScript;
+        private readonly bool _isMacroScript;
 
         private ITokenStream _lexerTokenStream;
         private ITokenStream _preprocessorTokenStream;
@@ -95,6 +96,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _fileName = FileName;
             _options = options;
             _isScript = options.Kind == SourceCodeKind.Script;
+            _isMacroScript = _isScript && options.MacroScript;
         }
 
         internal CompilationUnitSyntax ParseCompilationUnit()
@@ -112,7 +114,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             XSharpParserRuleContext tree;
             if (_isScript)
-                tree = parser.script();
+            {
+                if (_isMacroScript)
+                    tree = parser.macroScript();
+                else
+                    tree = parser.script();
+            }
             else
                 tree = parser.source();
             return tree;

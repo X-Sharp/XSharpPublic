@@ -123,9 +123,9 @@ namespace XSharpModel
 
         private void popType()
         {
-            if ( _currentTypes.Count > 0)
+            if (_currentTypes.Count > 0)
             {
-                
+
                 this._currentTypes.Pop();
             }
         }
@@ -220,7 +220,7 @@ namespace XSharpModel
                     //newClass.BaseTypes.Add(new CodeTypeReference(interfaces.GetText()));
                 }
             }
-                
+
             //
             newStruct = addType(newStruct);
             // Set as Current working Class
@@ -255,7 +255,7 @@ namespace XSharpModel
         {
             popType();
         }
-  
+
         public override void EnterEnum_([NotNull] XSharpParser.Enum_Context context)
         {
             XType newEnum = new XType(context.Id.GetText(),
@@ -422,7 +422,7 @@ namespace XSharpModel
             //
             if (context.Expr != null)
             {
-                newMethod.Suffix = " := " +context.Expr.GetText();
+                newMethod.Suffix = " := " + context.Expr.GetText();
             }
             addGlobalMember(newMethod);
 
@@ -436,7 +436,7 @@ namespace XSharpModel
 
         #region Members
 
-        private XType addType (XType newType)
+        private XType addType(XType newType)
         {
             if (_types.ContainsKey(newType.FullName))
                 return newType;
@@ -472,7 +472,7 @@ namespace XSharpModel
                 type.Members.Add(member);
                 this._currentMethod = member;
             }
-         }
+        }
         private void endMember(LanguageService.SyntaxTree.ParserRuleContext context)
         {
             addVariables(context);
@@ -488,7 +488,7 @@ namespace XSharpModel
                     new TextRange(context), new TextInterval(context));
             //
             // Todo additional properties ?
-            newMember.IsArray = context.Dim != null; 
+            newMember.IsArray = context.Dim != null;
             addMember(newMember);
         }
         public override void ExitVostructmember([NotNull] XSharpParser.VostructmemberContext context)
@@ -563,7 +563,7 @@ namespace XSharpModel
 
         public override void EnterPropertyAccessor([NotNull] XSharpParser.PropertyAccessorContext context)
         {
-           
+
         }
         public override void ExitPropertyAccessor([NotNull] XSharpParser.PropertyAccessorContext context)
         {
@@ -601,7 +601,7 @@ namespace XSharpModel
                 Kind.Destructor,
                 decodeModifiers(context.Modifiers?._Tokens),
                 decodeVisibility(context.Modifiers?._Tokens),
-                new TextRange(context), new TextInterval(context),"Void");
+                new TextRange(context), new TextInterval(context), "Void");
             //
             addParameters(context.Params, newMethod);
             addMember(newMethod);
@@ -691,7 +691,7 @@ namespace XSharpModel
                 var stop = current.Stop;        // end of this line (datatype clause)
                 if (currentVar > 1)
                 {
-                    start = varContext.Start; 
+                    start = varContext.Start;
                 }
                 if (currentVar < count) // end at this variable name
                 {
@@ -701,7 +701,7 @@ namespace XSharpModel
                 string typeName = current.DataType != null ? current.DataType.GetText() : "USUAL";
                 XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
                     Kind.ClassVar, mods, this._currentVarVisibility,
-                    new TextRange(start.Line, start.Column, stop.Line, stop.Column+stop.Text.Length),
+                    new TextRange(start.Line, start.Column, stop.Line, stop.Column + stop.Text.Length),
                     interval, typeName);
                 newClassVar.File = this._file;
                 newClassVar.IsArray = varContext.Dim != null;
@@ -749,7 +749,7 @@ namespace XSharpModel
         #region Method Body
         public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
         {
-            if (!this._buildLocals )
+            if (!this._buildLocals)
                 return;
             try
             {
@@ -760,7 +760,7 @@ namespace XSharpModel
                     String localName;
                     // Push to stack so we can manage all contexts in one loop
                     _localDecls.Push(context);
-                    
+
                     while (_localDecls.Count > 0)
                     {
                         XSharpParser.LocalvarContext tmpContext = _localDecls.Pop();
@@ -798,7 +798,7 @@ namespace XSharpModel
                 return;
             // Don't forget to add Self and Super as Local vars
             if ((context is XSharpParser.ConstructorContext) ||
-			    (context is XSharpParser.DestructorContext) ||
+                (context is XSharpParser.DestructorContext) ||
                 (context is XSharpParser.MethodContext) ||
                 (context is XSharpParser.PropertyContext))
             {
@@ -840,9 +840,63 @@ namespace XSharpModel
             }
         }
 
+        public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
+        {
+            // LOCAL, IMPLIED or VAR ??
+            base.ExitForeachStmt(context);
+        }
+
+        public override void EnterImpliedvar([NotNull] XSharpParser.ImpliedvarContext context)
+        {
+            if (!this._buildLocals)
+                return;
+            try
+            {
+                if (context.Expression is XSharpParser.PrimaryExpressionContext)
+                {
+                    XSharpParser.PrimaryExpressionContext primaryEx = (XSharpParser.PrimaryExpressionContext)context.Expression;
+                    XSharpParser.PrimaryContext primary = primaryEx.Expr;
+
+                    if (primary is XSharpParser.LiteralExpressionContext)
+                    {
+                        XSharpParser.LiteralExpressionContext lit = (XSharpParser.LiteralExpressionContext)primary;
+                        XVariable local;
+                        String localType = buildLiteralValue(lit.Literal);
+                        String localName;
+
+                        localName = context.Id.GetText();
+                        //
+                        local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
+                            new TextRange(context), new TextInterval(context),
+                            localType);
+                        local.File = this._file;
+                        local.IsArray = false;
+                        //
+                        if (this._currentMethod != null)
+                        {
+                            this._currentMethod.Locals.Add(local);
+                        }
+                    }
+                    else if (primary is XSharpParser.NameExpressionContext )
+                    {
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Support.Debug("EnterImpliedvar : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
+            }
+        }
+
+        public override void EnterVarLocalDecl([NotNull] XSharpParser.VarLocalDeclContext context)
+        {
+            base.EnterVarLocalDecl(context);
+        }
 
         #endregion
- 
+
 
         #region Helpers
 
@@ -933,6 +987,49 @@ namespace XSharpModel
             }
             //
             return retValue;
+        }
+
+        private String buildLiteralValue(XSharpParser.LiteralValueContext context)
+        {
+            string value = "";
+            //
+            switch (context.Token.Type)
+            {
+                case XSharpParser.BIN_CONST:
+                case XSharpParser.HEX_CONST:
+                case XSharpParser.INT_CONST:
+                    value = "Int";
+                    break;
+                case XSharpParser.REAL_CONST:
+                    value = "Double"; // or Real8 ??
+                    break;
+                case XSharpParser.TRUE_CONST:
+                case XSharpParser.FALSE_CONST:
+                    value = "Logic";
+                    break;
+                case XSharpParser.STRING_CONST:
+                case XSharpParser.ESCAPED_STRING_CONST:
+                    value = "String";
+                    break;
+                case XSharpParser.CHAR_CONST:
+                    break;
+                case XSharpParser.NULL:
+                    break;
+                case XSharpParser.NIL:
+                case XSharpParser.NULL_ARRAY:
+                case XSharpParser.NULL_CODEBLOCK:
+                case XSharpParser.NULL_DATE:
+                case XSharpParser.NULL_OBJECT:
+                case XSharpParser.NULL_PSZ:
+                case XSharpParser.NULL_PTR:
+                case XSharpParser.NULL_STRING:
+                case XSharpParser.NULL_SYMBOL:
+                case XSharpParser.SYMBOL_CONST:
+                case XSharpParser.DATE_CONST:
+                default:
+                    break;
+            }
+            return value;
         }
 
         #endregion

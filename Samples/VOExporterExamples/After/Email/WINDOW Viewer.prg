@@ -1,49 +1,47 @@
 #region DEFINES
-STATIC DEFINE VIEWERDLG_BTNOK := 101 
-STATIC DEFINE VIEWERDLG_INFO := 100 
-STATIC DEFINE VIEWERDLG_SIZER := 102 
+STATIC DEFINE VIEWERDLG_INFO := 100
+STATIC DEFINE VIEWERDLG_BTNOK := 101
+STATIC DEFINE VIEWERDLG_SIZER := 102
 #endregion
 
-class ViewerDlg inherit DIALOGWINDOW 
+CLASS ViewerDlg INHERIT DIALOGWINDOW
+	PROTECT oDCInfo AS MULTILINEEDIT
+	PROTECT oCCBtnOK AS PUSHBUTTON
+	PROTECT oDCSizer AS VERTICALSCROLLBAR
 
-	protect oDCInfo as MULTILINEEDIT
-	protect oCCBtnOK as PUSHBUTTON
-	protect oDCSizer as VERTICALSCROLLBAR
-
-  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
+	// {{%UC%}} User code starts here (DO NOT remove this line)  
 
 METHOD BtnOK( ) 
    SELF:EndDialog(IDOK)
    RETURN SELF
 
-CONSTRUCTOR(oParent,uExtra)  
-local dim aFonts[1] AS OBJECT
+CONSTRUCTOR(oParent,uExtra)
+	LOCAL oFont AS Font
 
-self:PreInit(oParent,uExtra)
+	SELF:PreInit(oParent,uExtra)
 
-SUPER(oParent,ResourceID{"ViewerDlg",_GetInst()},TRUE)
+	SUPER(oParent , ResourceID{"ViewerDlg" , _GetInst()} , TRUE)
 
-aFonts[1] := Font{,8,"Courier New"}
+	SELF:oDCInfo := MULTILINEEDIT{SELF , ResourceID{ VIEWERDLG_INFO  , _GetInst() } }
+	oFont := Font{  , 8 , "Courier New" }
+	SELF:oDCInfo:Font( oFont )
+	SELF:oDCInfo:OwnerAlignment := OA_WIDTH_HEIGHT
+	SELF:oDCInfo:HyperLabel := HyperLabel{#Info , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCInfo := MultiLineEdit{self,ResourceID{VIEWERDLG_INFO,_GetInst()}}
-oDCInfo:HyperLabel := HyperLabel{#Info,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCInfo:OwnerAlignment := OA_WIDTH_HEIGHT
-oDCInfo:Font(aFonts[1], FALSE)
+	SELF:oCCBtnOK := PUSHBUTTON{SELF , ResourceID{ VIEWERDLG_BTNOK  , _GetInst() } }
+	SELF:oCCBtnOK:OwnerAlignment := OA_X_Y
+	SELF:oCCBtnOK:HyperLabel := HyperLabel{#BtnOK , "OK" , NULL_STRING , NULL_STRING}
 
-oCCBtnOK := PushButton{self,ResourceID{VIEWERDLG_BTNOK,_GetInst()}}
-oCCBtnOK:HyperLabel := HyperLabel{#BtnOK,"OK",NULL_STRING,NULL_STRING}
-oCCBtnOK:OwnerAlignment := OA_X_Y
+	SELF:oDCSizer := VERTICALSCROLLBAR{SELF , ResourceID{ VIEWERDLG_SIZER  , _GetInst() } }
+	SELF:oDCSizer:OwnerAlignment := OA_X_Y
+	SELF:oDCSizer:HyperLabel := HyperLabel{#Sizer , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCSizer := VerticalScrollBar{self,ResourceID{VIEWERDLG_SIZER,_GetInst()}}
-oDCSizer:HyperLabel := HyperLabel{#Sizer,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCSizer:OwnerAlignment := OA_X_Y
+	SELF:Caption := ""
+	SELF:HyperLabel := HyperLabel{#ViewerDlg , NULL_STRING , NULL_STRING , NULL_STRING}
 
-self:Caption := ""
-self:HyperLabel := HyperLabel{#ViewerDlg,NULL_STRING,NULL_STRING,NULL_STRING}
+	SELF:PostInit(oParent,uExtra)
 
-self:PostInit(oParent,uExtra)
-
-return self
+RETURN
 
 
 METHOD PostInit(oParent,uExtra) 

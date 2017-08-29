@@ -1,14 +1,13 @@
 #region DEFINES
-STATIC DEFINE PROGRESSWINDOW_VO_TXTMESSAGE := 100 
-STATIC DEFINE PROGRESSWINDOW_VO_TXTFEEDBACK := 101 
-STATIC DEFINE PROGRESSWINDOW_VO_TXTPERCENT := 102 
-STATIC DEFINE PROGRESSWINDOW_VO_BARFEEDBACK := 103 
-STATIC DEFINE PROGRESSWINDOW_VO_PSHCANCEL := 104 
-STATIC DEFINE PROGRESSWINDOW_VO_ANIMATION := 105 
+STATIC DEFINE PROGRESSWINDOW_VO_TXTMESSAGE := 100
+STATIC DEFINE PROGRESSWINDOW_VO_TXTFEEDBACK := 101
+STATIC DEFINE PROGRESSWINDOW_VO_TXTPERCENT := 102
+STATIC DEFINE PROGRESSWINDOW_VO_BARFEEDBACK := 103
+STATIC DEFINE PROGRESSWINDOW_VO_PSHCANCEL := 104
+STATIC DEFINE PROGRESSWINDOW_VO_ANIMATION := 105
 #endregion
 
-CLASS ProgressWindow_Vo INHERIT DIALOGWINDOW 
-
+CLASS ProgressWindow_Vo INHERIT DIALOGWINDOW
 	PROTECT oDCtxtMessage AS FIXEDTEXT
 	PROTECT oDCtxtFeedback AS FIXEDTEXT
 	PROTECT oDCtxtPercent AS FIXEDTEXT
@@ -16,40 +15,40 @@ CLASS ProgressWindow_Vo INHERIT DIALOGWINDOW
 	PROTECT oCCpshCancel AS PUSHBUTTON
 	PROTECT oDCAnimation AS ANIMATIONCONTROL
 
-  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
+	// {{%UC%}} User code starts here (DO NOT remove this line)  
 
-CONSTRUCTOR(oParent,uExtra)  
+CONSTRUCTOR(oParent,uExtra)
 
-self:PreInit(oParent,uExtra)
+	SELF:PreInit(oParent,uExtra)
 
-SUPER(oParent,ResourceID{"ProgressWindow_Vo",_GetInst()},TRUE)
+	SUPER(oParent , ResourceID{"ProgressWindow_Vo" , _GetInst()} , TRUE)
 
-oDCtxtMessage := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTMESSAGE,_GetInst()}}
-oDCtxtMessage:HyperLabel := HyperLabel{#txtMessage,NULL_STRING,NULL_STRING,NULL_STRING}
+	SELF:oDCtxtMessage := FIXEDTEXT{SELF , ResourceID{ PROGRESSWINDOW_VO_TXTMESSAGE  , _GetInst() } }
+	SELF:oDCtxtMessage:HyperLabel := HyperLabel{#txtMessage , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCtxtFeedback := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTFEEDBACK,_GetInst()}}
-oDCtxtFeedback:HyperLabel := HyperLabel{#txtFeedback,NULL_STRING,NULL_STRING,NULL_STRING}
+	SELF:oDCtxtFeedback := FIXEDTEXT{SELF , ResourceID{ PROGRESSWINDOW_VO_TXTFEEDBACK  , _GetInst() } }
+	SELF:oDCtxtFeedback:HyperLabel := HyperLabel{#txtFeedback , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCtxtPercent := FixedText{SELF,ResourceID{PROGRESSWINDOW_VO_TXTPERCENT,_GetInst()}}
-oDCtxtPercent:HyperLabel := HyperLabel{#txtPercent,NULL_STRING,NULL_STRING,NULL_STRING}
+	SELF:oDCtxtPercent := FIXEDTEXT{SELF , ResourceID{ PROGRESSWINDOW_VO_TXTPERCENT  , _GetInst() } }
+	SELF:oDCtxtPercent:HyperLabel := HyperLabel{#txtPercent , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCbarFeedback := ProgressBar{SELF,ResourceID{PROGRESSWINDOW_VO_BARFEEDBACK,_GetInst()}}
-oDCbarFeedback:TooltipText := "Laufbalken 1-100%"
-oDCbarFeedback:HyperLabel := HyperLabel{#barFeedback,NULL_STRING,NULL_STRING,NULL_STRING}
+	SELF:oDCbarFeedback := PROGRESSBAR{SELF , ResourceID{ PROGRESSWINDOW_VO_BARFEEDBACK  , _GetInst() } }
+	SELF:oDCbarFeedback:TooltipText := "Laufbalken 1-100%"
+	SELF:oDCbarFeedback:HyperLabel := HyperLabel{#barFeedback , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oCCpshCancel := PushButton{SELF,ResourceID{PROGRESSWINDOW_VO_PSHCANCEL,_GetInst()}}
-oCCpshCancel:HyperLabel := HyperLabel{#pshCancel,_chr(38)+"Cancel",NULL_STRING,NULL_STRING}
-oCCpshCancel:UseHLforToolTip := True
+	SELF:oCCpshCancel := PUSHBUTTON{SELF , ResourceID{ PROGRESSWINDOW_VO_PSHCANCEL  , _GetInst() } }
+	SELF:oCCpshCancel:UseHLforToolTip := True
+	SELF:oCCpshCancel:HyperLabel := HyperLabel{#pshCancel , "&Cancel" , NULL_STRING , NULL_STRING}
 
-oDCAnimation := AnimationControl{SELF,ResourceID{PROGRESSWINDOW_VO_ANIMATION,_GetInst()}}
-oDCAnimation:HyperLabel := HyperLabel{#Animation,NULL_STRING,NULL_STRING,NULL_STRING}
+	SELF:oDCAnimation := ANIMATIONCONTROL{SELF , ResourceID{ PROGRESSWINDOW_VO_ANIMATION  , _GetInst() } }
+	SELF:oDCAnimation:HyperLabel := HyperLabel{#Animation , NULL_STRING , NULL_STRING , NULL_STRING}
 
-SELF:Caption := ""
-SELF:HyperLabel := HyperLabel{#ProgressWindow_Vo,NULL_STRING,NULL_STRING,NULL_STRING}
+	SELF:Caption := ""
+	SELF:HyperLabel := HyperLabel{#ProgressWindow_Vo , NULL_STRING , NULL_STRING , NULL_STRING}
 
-self:PostInit(oParent,uExtra)
+	SELF:PostInit(oParent,uExtra)
 
-return self
+RETURN
 
 
 END CLASS

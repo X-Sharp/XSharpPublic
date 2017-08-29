@@ -256,7 +256,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 		// don't delete the header file for now, maybe the .vh file contains defines for other windows in the same prg
 		oGenerator:DeleteDefines(oCode:aDefines)
-		oGenerator:AddXSharpDefines(oCode:aDefines , oCode:aDefineValues)
+		oGenerator:AddXSharpDefines(oCode:aDefines , oCode:aDefineValues,TRUE)
 	
 		oGenerator:WriteEntity(EntityType._Class , cPrevName , cPrevName , EntityOptions.AddUser , oCode:aClass)
 		oGenerator:WriteEntity(EntityType._Constructor , cFormName , cFormName , EntityOptions.None , oCode:aConstructor)

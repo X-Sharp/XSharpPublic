@@ -1,26 +1,25 @@
 #region DEFINES
+STATIC DEFINE EMAILWINDOWMAIN_FTMODE := 100
+STATIC DEFINE EMAILWINDOWMAIN_EMAILLISTVIEW := 101
+STATIC DEFINE EMAILWINDOWMAIN_EMAILTREEVIEW := 102
+STATIC DEFINE EMAILWINDOWMAIN__STATUSFT := 103
 DEFINE IMAGE_OPENBOOK := 2
 DEFINE IMAGE_CLOSEBOOK := 1	
 DEFINE ERR_LOGON_FAILED     := 223
 DEFINE ERR_WRONG_PASSWORD   := 224
-STATIC DEFINE EMAILWINDOWMAIN_FTMODE := 100 
-STATIC DEFINE EMAILWINDOWMAIN_EMAILLISTVIEW := 101 
-STATIC DEFINE EMAILWINDOWMAIN_EMAILTREEVIEW := 102 
-STATIC DEFINE EMAILWINDOWMAIN__STATUSFT := 103 
 DEFINE EMailReply    := 1
 DEFINE EMailReplyAll := 2
 DEFINE EMailNewFrom := 0
 DEFINE EMailForward := 3
 #endregion
 
-class EmailWindowMain inherit DATAWINDOW 
+CLASS EmailWindowMain INHERIT DATAWINDOW
+	EXPORT oDCFTMode AS FIXEDTEXT
+	EXPORT oDCEmailListView AS LISTVIEW
+	EXPORT oDCEmailTreeview AS MailTreeView
+	EXPORT oDC_StatusFT AS FIXEDTEXT
 
-	export oDCFTMode as FIXEDTEXT
-	export oDCEmailListView as LISTVIEW
-	export oDCEmailTreeview as MAILTREEVIEW
-	export oDC_StatusFT as FIXEDTEXT
-
-  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
+	// {{%UC%}} User code starts here (DO NOT remove this line)  
    PROTECT oReplyMenu AS Menu
    EXPORT MailBox AS STRING
 	
@@ -774,54 +773,50 @@ METHOD FileSaveAs()
 	RETURN SELF
 
 
-CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
-local dim aFonts[2] AS OBJECT
-local dim aBrushes[2] AS OBJECT
+CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)
+	LOCAL oFont AS Font
 
-self:PreInit(oWindow,iCtlID,oServer,uExtra)
+	SELF:PreInit(oWindow,iCtlID,oServer,uExtra)
 
-SUPER(oWindow,ResourceID{"EmailWindowMain",_GetInst()},iCtlID)
+	SUPER(oWindow , ResourceID{"EmailWindowMain" , _GetInst()},iCtlID)
 
-aFonts[1] := Font{,26,"Microsoft Sans Serif"}
-aFonts[1]:Bold := TRUE
-aFonts[2] := Font{,8,"Microsoft Sans Serif"}
-aFonts[2]:Bold := TRUE
-aBrushes[1] := Brush{Color{128,128,128}}
-aBrushes[2] := Brush{Color{190,255,255}}
+	SELF:oDCFTMode := FIXEDTEXT{SELF , ResourceID{ EMAILWINDOWMAIN_FTMODE  , _GetInst() } }
+	SELF:oDCFTMode:TextColor := Color{ COLORWHITE }
+	SELF:oDCFTMode:Background := Brush{ Color{ 128 , 128 , 128 } }
+	oFont := Font{  , 26 , "Microsoft Sans Serif" }
+	oFont:Bold := TRUE
+	SELF:oDCFTMode:Font( oFont )
+	SELF:oDCFTMode:OwnerAlignment := OA_WIDTH
+	SELF:oDCFTMode:HyperLabel := HyperLabel{#FTMode , "Fixed Text" , NULL_STRING , NULL_STRING}
 
-oDCFTMode := FixedText{self,ResourceID{EMAILWINDOWMAIN_FTMODE,_GetInst()}}
-oDCFTMode:HyperLabel := HyperLabel{#FTMode,"Fixed Text",NULL_STRING,NULL_STRING}
-oDCFTMode:TextColor := Color{COLORWHITE}
-oDCFTMode:Font(aFonts[1], FALSE)
-oDCFTMode:BackGround := aBrushes[1]
-oDCFTMode:OwnerAlignment := OA_WIDTH
+	SELF:oDCEmailListView := LISTVIEW{SELF , ResourceID{ EMAILWINDOWMAIN_EMAILLISTVIEW  , _GetInst() } }
+	SELF:oDCEmailListView:ContextMenu := EmailBrowserContextMenu{}
+	SELF:oDCEmailListView:OwnerAlignment := OA_WIDTH_HEIGHT
+	SELF:oDCEmailListView:FullRowSelect := True
+	SELF:oDCEmailListView:HyperLabel := HyperLabel{#EmailListView , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCEmailListView := ListView{self,ResourceID{EMAILWINDOWMAIN_EMAILLISTVIEW,_GetInst()}}
-oDCEmailListView:HyperLabel := HyperLabel{#EmailListView,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCEmailListView:FullRowSelect := True
-oDCEmailListView:ContextMenu := EmailBrowserContextMenu{}
-oDCEmailListView:OwnerAlignment := OA_WIDTH_HEIGHT
+	SELF:oDCEmailTreeview := MailTreeView{SELF , ResourceID{ EMAILWINDOWMAIN_EMAILTREEVIEW  , _GetInst() } }
+	SELF:oDCEmailTreeview:Background := Brush{ Color{ 190 , 255 , 255 } }
+	SELF:oDCEmailTreeview:OwnerAlignment := OA_HEIGHT
+	SELF:oDCEmailTreeview:HyperLabel := HyperLabel{#EmailTreeview , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oDCEmailTreeview := MailTreeView{self,ResourceID{EMAILWINDOWMAIN_EMAILTREEVIEW,_GetInst()}}
-oDCEmailTreeview:HyperLabel := HyperLabel{#EmailTreeview,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCEmailTreeview:BackGround := aBrushes[2]
-oDCEmailTreeview:OwnerAlignment := OA_HEIGHT
+	SELF:oDC_StatusFT := FIXEDTEXT{SELF , ResourceID{ EMAILWINDOWMAIN__STATUSFT  , _GetInst() } }
+	oFont := Font{  , 8 , "Microsoft Sans Serif" }
+	oFont:Bold := TRUE
+	SELF:oDC_StatusFT:Font( oFont )
+	SELF:oDC_StatusFT:HyperLabel := HyperLabel{#_StatusFT , "EMail - Folders" , NULL_STRING , NULL_STRING}
 
-oDC_StatusFT := FixedText{self,ResourceID{EMAILWINDOWMAIN__STATUSFT,_GetInst()}}
-oDC_StatusFT:HyperLabel := HyperLabel{#_StatusFT,"EMail - Folders",NULL_STRING,NULL_STRING}
-oDC_StatusFT:Font(aFonts[2], FALSE)
+	SELF:Caption := "Visual Objects 2.7 Mail Client"
+	SELF:Icon := AAP_EMAIL_ICON{}
+	SELF:HyperLabel := HyperLabel{#EmailWindowMain , "Visual Objects 2.7 Mail Client" , "Visual Objects 2.7 Mail Client" , NULL_STRING}
+	IF !IsNil(oServer)
+		SELF:Use(oServer)
+	ENDIF
 
-self:Caption := "Visual Objects 2.8 Mail Client"
-SELF:HyperLabel := HyperLabel{#EmailWindowMain,"Visual Objects 2.8 Mail Client","Visual Objects 2.8 Mail Client",NULL_STRING}
-self:Icon := AAP_EMAIL_ICON{}
 
-if !IsNil(oServer)
-	self:Use(oServer)
-endif
+	SELF:PostInit(oWindow,iCtlID,oServer,uExtra)
 
-self:PostInit(oWindow,iCtlID,oServer,uExtra)
-
-return self
+RETURN
 
 
 METHOD DeleteSelected(nCount) 

@@ -1,34 +1,33 @@
 #region DEFINES
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_LISTVIEW1 := 106 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_CLOSEBUTTON := 104 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_OKBUTTON := 103 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_DELETEDOWNLOADEDMAIL := 105 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_DELETEBUTTON := 101 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_DOWNLOADBUTTON := 102 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_SELECTIONOPTIONS := 100 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_REPROCESSHEADERS := 107 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_SELECTALLBUTTON := 108 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_UNSELECTALLBUTTON := 109 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_INVERTSELECTIONBUTTON := 110 
-STATIC DEFINE CHOOSEDOWNLOADDIALOG_TESTMAILIDBUTTON := 111 
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_SELECTIONOPTIONS := 100
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_DELETEBUTTON := 101
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_DOWNLOADBUTTON := 102
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_OKBUTTON := 103
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_CLOSEBUTTON := 104
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_DELETEDOWNLOADEDMAIL := 105
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_LISTVIEW1 := 106
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_REPROCESSHEADERS := 107
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_SELECTALLBUTTON := 108
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_UNSELECTALLBUTTON := 109
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_INVERTSELECTIONBUTTON := 110
+STATIC DEFINE CHOOSEDOWNLOADDIALOG_TESTMAILIDBUTTON := 111
 #endregion
 
-class ChooseDownloadDialog inherit DIALOGWINDOW 
+CLASS ChooseDownloadDialog INHERIT DIALOGWINDOW
+	PROTECT oDCSelectionOptions AS RADIOBUTTONGROUP
+	PROTECT oCCDeleteButton AS RADIOBUTTON
+	PROTECT oCCDownloadButton AS RADIOBUTTON
+	PROTECT oCCOKButton AS PUSHBUTTON
+	PROTECT oCCCloseButton AS PUSHBUTTON
+	PROTECT oDCDeleteDownloadedMail AS CHECKBOX
+	PROTECT oDCListView1 AS LISTVIEW
+	PROTECT oCCReprocessHeaders AS PUSHBUTTON
+	PROTECT oCCSelectAllButton AS PUSHBUTTON
+	PROTECT oCCUnSelectAllButton AS PUSHBUTTON
+	PROTECT oCCInvertSelectionButton AS PUSHBUTTON
+	PROTECT oCCTestMailIDButton AS PUSHBUTTON
 
-	protect oDCSelectionOptions as RADIOBUTTONGROUP
-	protect oCCDeleteButton as RADIOBUTTON
-	protect oCCDownloadButton as RADIOBUTTON
-	protect oCCOKButton as PUSHBUTTON
-	protect oCCCloseButton as PUSHBUTTON
-	protect oDCDeleteDownloadedMail as CHECKBOX
-	protect oDCListView1 as LISTVIEW
-	protect oCCReprocessHeaders as PUSHBUTTON
-	protect oCCSelectAllButton as PUSHBUTTON
-	protect oCCUnSelectAllButton as PUSHBUTTON
-	protect oCCInvertSelectionButton as PUSHBUTTON
-	protect oCCTestMailIDButton as PUSHBUTTON
-
-  //{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)
+	// {{%UC%}} User code starts here (DO NOT remove this line)  
 
   	PROTECT lSetUpComplete AS LOGIC		// used to prevent resizing messages when no controls available
   	PROTECT lInResize AS LOGIC			// prevent recursive calls to our resize method
@@ -42,72 +41,72 @@ METHOD CloseButton( )
 	
 	RETURN SELF
 
-CONSTRUCTOR(oParent,uExtra)  
-local dim aFonts[2] AS OBJECT
+CONSTRUCTOR(oParent,uExtra)
+	LOCAL oFont AS Font
 
-self:PreInit(oParent,uExtra)
+	SELF:PreInit(oParent,uExtra)
 
-SUPER(oParent,ResourceID{"ChooseDownloadDialog",_GetInst()},TRUE)
+	SUPER(oParent , ResourceID{"ChooseDownloadDialog" , _GetInst()} , TRUE)
 
-aFonts[1] := Font{,8,"Microsoft Sans Serif"}
-aFonts[1]:Bold := TRUE
-aFonts[2] := Font{,10,"Microsoft Sans Serif"}
-aFonts[2]:Bold := TRUE
+	SELF:oDCSelectionOptions := RADIOBUTTONGROUP{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_SELECTIONOPTIONS  , _GetInst() } }
+	oFont := Font{  , 8 , "Microsoft Sans Serif" }
+	oFont:Bold := TRUE
+	SELF:oDCSelectionOptions:Font( oFont )
+	SELF:oDCSelectionOptions:HyperLabel := HyperLabel{#SelectionOptions , "Selection Option:" , NULL_STRING , NULL_STRING}
 
-oCCDeleteButton := RadioButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_DELETEBUTTON,_GetInst()}}
-oCCDeleteButton:HyperLabel := HyperLabel{#DeleteButton,"Delete Selections",NULL_STRING,NULL_STRING}
+	SELF:oCCDeleteButton := RADIOBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_DELETEBUTTON  , _GetInst() } }
+	SELF:oCCDeleteButton:HyperLabel := HyperLabel{#DeleteButton , "Delete Selections" , NULL_STRING , NULL_STRING}
 
-oCCDownloadButton := RadioButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_DOWNLOADBUTTON,_GetInst()}}
-oCCDownloadButton:HyperLabel := HyperLabel{#DownloadButton,"Download Selections",NULL_STRING,NULL_STRING}
+	SELF:oCCDownloadButton := RADIOBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_DOWNLOADBUTTON  , _GetInst() } }
+	SELF:oCCDownloadButton:HyperLabel := HyperLabel{#DownloadButton , "Download Selections" , NULL_STRING , NULL_STRING}
 
-oCCOKButton := PushButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_OKBUTTON,_GetInst()}}
-oCCOKButton:HyperLabel := HyperLabel{#OKButton,_chr(38)+"Process",NULL_STRING,NULL_STRING}
-oCCOKButton:Font(aFonts[2], FALSE)
-oCCOKButton:OwnerAlignment := OA_X
+	SELF:oCCOKButton := PUSHBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_OKBUTTON  , _GetInst() } }
+	oFont := Font{  , 10 , "Microsoft Sans Serif" }
+	oFont:Bold := TRUE
+	SELF:oCCOKButton:Font( oFont )
+	SELF:oCCOKButton:OwnerAlignment := OA_X
+	SELF:oCCOKButton:HyperLabel := HyperLabel{#OKButton , "&Process" , NULL_STRING , NULL_STRING}
 
-oCCCloseButton := PushButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_CLOSEBUTTON,_GetInst()}}
-oCCCloseButton:HyperLabel := HyperLabel{#CloseButton,_chr(38)+"Abort",NULL_STRING,NULL_STRING}
-oCCCloseButton:OwnerAlignment := OA_X
+	SELF:oCCCloseButton := PUSHBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_CLOSEBUTTON  , _GetInst() } }
+	SELF:oCCCloseButton:OwnerAlignment := OA_X
+	SELF:oCCCloseButton:HyperLabel := HyperLabel{#CloseButton , "&Abort" , NULL_STRING , NULL_STRING}
 
-oDCDeleteDownloadedMail := CheckBox{self,ResourceID{CHOOSEDOWNLOADDIALOG_DELETEDOWNLOADEDMAIL,_GetInst()}}
-oDCDeleteDownloadedMail:HyperLabel := HyperLabel{#DeleteDownloadedMail,_chr(38)+"Delete Downloaded Emails",NULL_STRING,NULL_STRING}
+	SELF:oDCDeleteDownloadedMail := CHECKBOX{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_DELETEDOWNLOADEDMAIL  , _GetInst() } }
+	SELF:oDCDeleteDownloadedMail:HyperLabel := HyperLabel{#DeleteDownloadedMail , "&Delete Downloaded Emails" , NULL_STRING , NULL_STRING}
 
-oDCListView1 := ListView{self,ResourceID{CHOOSEDOWNLOADDIALOG_LISTVIEW1,_GetInst()}}
-oDCListView1:HyperLabel := HyperLabel{#ListView1,NULL_STRING,NULL_STRING,NULL_STRING}
-oDCListView1:FullRowSelect := True
-oDCListView1:CheckBoxes := False
-oDCListView1:OwnerAlignment := OA_WIDTH_HEIGHT
+	SELF:oDCListView1 := LISTVIEW{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_LISTVIEW1  , _GetInst() } }
+	SELF:oDCListView1:OwnerAlignment := OA_WIDTH_HEIGHT
+	SELF:oDCListView1:FullRowSelect := True
+	SELF:oDCListView1:CheckBoxes := False
+	SELF:oDCListView1:HyperLabel := HyperLabel{#ListView1 , NULL_STRING , NULL_STRING , NULL_STRING}
 
-oCCReprocessHeaders := PushButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_REPROCESSHEADERS,_GetInst()}}
-oCCReprocessHeaders:HyperLabel := HyperLabel{#ReprocessHeaders,_chr(38)+"Get Headers",NULL_STRING,NULL_STRING}
-oCCReprocessHeaders:OwnerAlignment := OA_X
+	SELF:oCCReprocessHeaders := PUSHBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_REPROCESSHEADERS  , _GetInst() } }
+	SELF:oCCReprocessHeaders:OwnerAlignment := OA_X
+	SELF:oCCReprocessHeaders:HyperLabel := HyperLabel{#ReprocessHeaders , "&Get Headers" , NULL_STRING , NULL_STRING}
 
-oCCSelectAllButton := PushButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_SELECTALLBUTTON,_GetInst()}}
-oCCSelectAllButton:HyperLabel := HyperLabel{#SelectAllButton,_chr(38)+"Select All Headers",NULL_STRING,NULL_STRING}
+	SELF:oCCSelectAllButton := PUSHBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_SELECTALLBUTTON  , _GetInst() } }
+	SELF:oCCSelectAllButton:HyperLabel := HyperLabel{#SelectAllButton , "&Select All Headers" , NULL_STRING , NULL_STRING}
 
-oCCUnSelectAllButton := PushButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_UNSELECTALLBUTTON,_GetInst()}}
-oCCUnSelectAllButton:HyperLabel := HyperLabel{#UnSelectAllButton,_chr(38)+"UnSelect All Headers",NULL_STRING,NULL_STRING}
+	SELF:oCCUnSelectAllButton := PUSHBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_UNSELECTALLBUTTON  , _GetInst() } }
+	SELF:oCCUnSelectAllButton:HyperLabel := HyperLabel{#UnSelectAllButton , "&UnSelect All Headers" , NULL_STRING , NULL_STRING}
 
-oCCInvertSelectionButton := PushButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_INVERTSELECTIONBUTTON,_GetInst()}}
-oCCInvertSelectionButton:HyperLabel := HyperLabel{#InvertSelectionButton,_chr(38)+"Invert Headers Selection",NULL_STRING,NULL_STRING}
+	SELF:oCCInvertSelectionButton := PUSHBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_INVERTSELECTIONBUTTON  , _GetInst() } }
+	SELF:oCCInvertSelectionButton:HyperLabel := HyperLabel{#InvertSelectionButton , "&Invert Headers Selection" , NULL_STRING , NULL_STRING}
 
-oCCTestMailIDButton := PushButton{self,ResourceID{CHOOSEDOWNLOADDIALOG_TESTMAILIDBUTTON,_GetInst()}}
-oCCTestMailIDButton:HyperLabel := HyperLabel{#TestMailIDButton,"Test Mail IDs",NULL_STRING,NULL_STRING}
+	SELF:oCCTestMailIDButton := PUSHBUTTON{SELF , ResourceID{ CHOOSEDOWNLOADDIALOG_TESTMAILIDBUTTON  , _GetInst() } }
+	SELF:oCCTestMailIDButton:HyperLabel := HyperLabel{#TestMailIDButton , "Test Mail IDs" , NULL_STRING , NULL_STRING}
 
-oDCSelectionOptions := RadioButtonGroup{self,ResourceID{CHOOSEDOWNLOADDIALOG_SELECTIONOPTIONS,_GetInst()}}
-oDCSelectionOptions:FillUsing({ ;
-								{oCCDeleteButton,"DELETE"}, ;
-								{oCCDownloadButton,"DOWNLOAD"} ;
-								})
-oDCSelectionOptions:HyperLabel := HyperLabel{#SelectionOptions,"Selection Option:",NULL_STRING,NULL_STRING}
-oDCSelectionOptions:Font(aFonts[1], FALSE)
+	SELF:oDCSelectionOptions:FillUsing({ ;
+										{SELF:oCCDeleteButton, "DELETE"}, ;
+										{SELF:oCCDownloadButton, "DOWNLOAD"} ;
+										})
 
-self:Caption := "Choose Mail to Download or Delete"
-self:HyperLabel := HyperLabel{#ChooseDownloadDialog,"Choose Mail to Download or Delete",NULL_STRING,NULL_STRING}
+	SELF:Caption := "Choose Mail to Download or Delete"
+	SELF:HyperLabel := HyperLabel{#ChooseDownloadDialog , "Choose Mail to Download or Delete" , NULL_STRING , NULL_STRING}
 
-self:PostInit(oParent,uExtra)
+	SELF:PostInit(oParent,uExtra)
 
-return self
+RETURN
 
 
 METHOD PostInit(oParent,uExtra) 

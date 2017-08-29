@@ -32,6 +32,7 @@ namespace XSharp.Project
         private String[] _codeBlockKeywords;
         private String[][] _middleKeywords;
         private String[][] _specialKeywords;
+        private String[][] _specialOutdentKeywords;
 
         public XSharpSmartIndent(ITextView view, IBufferTagAggregatorFactoryService aggregator)
         {
@@ -77,6 +78,7 @@ namespace XSharp.Project
             _middleKeywords = this.getMiddleKeywords();
             //
             _specialKeywords = this.getSpecialMiddleKeywords();
+            _specialOutdentKeywords = this.getSpecialOutdentKeywords();
         }
 
 
@@ -94,6 +96,23 @@ namespace XSharp.Project
             // 
             return new String[]{
                 "END","ENDIF","ENDCASE","ENDDO","NEXT","UNTIL"};
+        }
+
+        private String[][] getSpecialOutdentKeywords()
+        {
+            // These are keywords that we have between other keywords
+            // "CASE" is the keyword that will trigger the process
+            // "DO,SWITCH,BEGIN" is the list of possible start keyword
+            // ...
+            return new String[][]
+            {
+                new String[]{ "ENDIF","IF" },
+                new String[]{ "ENDCASE", "CASE" },
+                new String[]{ "NEXT", "FOR,FOREACH" },
+                new String[]{ "UNTIL", "REPEAT" },
+                new String[]{ "END", "BEGIN,DO,IF,TRY" },
+                new String[]{ "ENDDO", "DO,WHILE" }
+            };
         }
 
         private String[] getStartOfCodeKeywords()
@@ -130,7 +149,7 @@ namespace XSharp.Project
             return new String[][]
             {
                 new String[]{ "CASE","DO,SWITCH,BEGIN" },
-                new String[]{ "OTHERWISE", "DO,SWITCH,BEGIN" },
+                new String[]{ "OTHERWISE", "DO,SWITCH,BEGIN" }
             };
         }
         #endregion
@@ -152,6 +171,7 @@ namespace XSharp.Project
                     return null;
                 // How many spaces do we need ?
                 int indentValue = 0;
+                string outdentToken;
                 // On what line are we ?
                 int lineNumber = line.LineNumber;
                 if (lineNumber > 0)
@@ -180,12 +200,26 @@ namespace XSharp.Project
                             //
                             indentValue += _tabSize;
                         }
-                        else if (_outdentKeywords.Contains<String>(keyword))
+                        else if ((outdentToken = this.searchSpecialOutdentKeyword(keyword)) != null)
                         {
-                            // We are aligning on the Open Token
-                            indentValue = alignToOpenToken(prevLine);
-                            if (indentValue < 0)
-                                indentValue = 0;
+                            if (this.hasRegions())
+                            {
+                                // We are aligning on the Open Token
+                                indentValue = alignToOpenToken(prevLine);
+                                if (indentValue < 0)
+                                    indentValue = 0;
+                            }
+                            else
+                            {
+                                // Ok, let's try to make it smooth...
+                                int? specialOutdentValue = null;
+                                // The startToken is a list of possible tokens
+                                specialOutdentValue = alignToSpecificTokens(line, outdentToken);
+                                if (specialOutdentValue != null)
+                                {
+                                    indentValue = (int)specialOutdentValue;
+                                }
+                            }
                             // De-Indent previous line !!!
                             var buffer = this._textView.TextBuffer;
                             var editSession = buffer.CreateEdit();
@@ -205,7 +239,7 @@ namespace XSharp.Project
                             if (startToken != null)
                             {
                                 // Retrieve the Indentation for the previous line
-                                specialIndentValue = alignToSpecificToken(line, startToken);
+                                specialIndentValue = alignToSpecificTokens(line, startToken);
                             }
                             else
                             {
@@ -214,13 +248,7 @@ namespace XSharp.Project
                                 if (startToken != null)
                                 {
                                     // The startToken is a list of possible tokens
-                                    String[] possibleTokens = startToken.Split(',');
-                                    foreach (string possibleToken in possibleTokens)
-                                    {
-                                        specialIndentValue = alignToSpecificToken(line, possibleToken);
-                                        if (specialIndentValue != null)
-                                            break;
-                                    }
+                                    specialIndentValue = alignToSpecificTokens(line, startToken);
                                 }
                             }
                             if (specialIndentValue != null)
@@ -245,7 +273,6 @@ namespace XSharp.Project
                                     editSession.Apply();
                                 }
                             }
-
                         }
                         if (indentValue < 0)
                             indentValue = 0;
@@ -292,113 +319,166 @@ namespace XSharp.Project
             return startToken;
         }
 
-        private int alignToIFToken(ITextSnapshotLine currentLine)
+        private string searchSpecialOutdentKeyword(string keyword)
         {
-            int indentValue = 0;
-            // On what line are we ?
-            int lineNumber = currentLine.LineNumber;
-            // We need to analyze the Previous line
-            lineNumber = lineNumber - 1;
-            while (lineNumber > 0)
+            string startToken = null;
+            for (int i = 0; i < this._specialOutdentKeywords.Length; i++)
             {
-                // We need to analyze the Previous line
-                lineNumber = lineNumber - 1;
-                ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
-                List<IMappingTagSpan<IClassificationTag>> tagList = GetTagsInLine(line);
-                String keyword = "";
-                //
-                if (tagList.Count > 0)
+                var pair = this._specialOutdentKeywords[i];
+                if (String.Compare(keyword, pair[0], true) == 0)
                 {
-                    var buffer = this._textView.TextBuffer;
-                    IMappingSpan currentSpan = tagList[0].Span;
-                    SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
-                    // Extract the start of line
-                    SnapshotSpan toIndent = new SnapshotSpan(line.Start, snapPointFirst.Value.Position - line.Start.Position);
-                    String startOfLine = toIndent.GetText();
-                    // Convert Tabs to Spaces
-                    startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
-                    // So, at least, to align to previous line, we will need...
-                    indentValue = startOfLine.Length;
-                    //
-                    IClassificationTag currentTag = tagList[0].Tag;
-                    currentSpan = tagList[0].Span;
-                    //
-                    if (currentTag.ClassificationType.IsOfType("keyword"))
-                    {
-                        var spans = currentSpan.GetSpans(buffer);
-                        if (spans.Count > 0)
-                        {
-                            SnapshotSpan kwSpan = spans[0];
-                            keyword = kwSpan.GetText();
-                            keyword = keyword.ToUpper();
-                            if (keyword == "IF")
-                                break;
-                        }
-                    }
-                    // 
-                    indentValue = 0;
+                    startToken = pair[1];
+                    break;
                 }
             }
-            //
-            return indentValue;
+            return startToken;
         }
 
-        private int? alignToSpecificToken(ITextSnapshotLine currentLine, String token)
+        private int? alignToSpecificToken_(ITextSnapshotLine currentLine, String token)
         {
             int indentValue = 0;
             bool found = false;
-            // On what line are we ?
-            int lineNumber = currentLine.LineNumber;
-            // We need to analyze the Previous line
-            lineNumber = lineNumber - 1;
-            while (lineNumber > 0)
+            try
             {
+                // On what line are we ?
+                int lineNumber = currentLine.LineNumber;
                 // We need to analyze the Previous line
                 lineNumber = lineNumber - 1;
-                ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
-                List<IMappingTagSpan<IClassificationTag>> tagList = GetTagsInLine(line);
-                String keyword = "";
-                //
-                if (tagList.Count > 0)
+                while (lineNumber > 0)
                 {
-                    var buffer = this._textView.TextBuffer;
-                    IMappingSpan currentSpan = tagList[0].Span;
-                    SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
-                    // Extract the start of line
-                    SnapshotSpan toIndent = new SnapshotSpan(line.Start, snapPointFirst.Value.Position - line.Start.Position);
-                    String startOfLine = toIndent.GetText();
-                    // Convert Tabs to Spaces
-                    startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
-                    // So, at least, to align to previous line, we will need...
-                    indentValue = startOfLine.Length;
+                    // We need to analyze the Previous line
+                    lineNumber = lineNumber - 1;
+                    ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
+                    List<IMappingTagSpan<IClassificationTag>> tagList = GetTagsInLine(line);
+                    String keyword = "";
                     //
-                    IClassificationTag currentTag = tagList[0].Tag;
-                    currentSpan = tagList[0].Span;
-                    //
-                    if (currentTag.ClassificationType.IsOfType("keyword"))
+                    if (tagList.Count > 0)
                     {
-                        var spans = currentSpan.GetSpans(buffer);
-                        if (spans.Count > 0)
+                        var buffer = this._textView.TextBuffer;
+                        IMappingSpan currentSpan = tagList[0].Span;
+                        /*
+                        SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
+                        // Extract the start of line
+                        SnapshotSpan toIndent = new SnapshotSpan(line.Start, snapPointFirst.Value.Position - line.Start.Position);
+                        String startOfLine = toIndent.GetText();
+                        // Convert Tabs to Spaces
+                        startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
+                        // So, at least, to align to previous line, we will need...
+                        indentValue = startOfLine.Length;
+                        */
+                        String startOfLine = line.GetText();
+                        startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
+                        // So, at least, to align to previous line, we will need...
+                        indentValue = (startOfLine.Length - startOfLine.TrimStart(' ').Length);
+                        //
+                        IClassificationTag currentTag = tagList[0].Tag;
+                        currentSpan = tagList[0].Span;
+                        //
+                        if (currentTag.ClassificationType.IsOfType("keyword"))
                         {
-                            SnapshotSpan kwSpan = spans[0];
-                            keyword = kwSpan.GetText();
-                            keyword = keyword.ToUpper();
-                            if (keyword == token)
+                            var spans = currentSpan.GetSpans(buffer);
+                            if (spans.Count > 0)
                             {
-                                found = true;
-                                break;
+                                SnapshotSpan kwSpan = spans[0];
+                                keyword = kwSpan.GetText();
+                                keyword = keyword.ToUpper();
+                                if (keyword == token)
+                                {
+                                    found = true;
+                                    break;
+                                }
                             }
                         }
+                        // 
+                        indentValue = 0;
                     }
-                    // 
-                    indentValue = 0;
                 }
+
+            }
+            finally
+            {
+                //
             }
             //
             if (found)
                 return indentValue;
             else
                 return null;
+
+        }
+
+        private int? alignToSpecificTokens(ITextSnapshotLine currentLine, String tokenList)
+        {
+            int indentValue = 0;
+            bool found = false;
+            try
+            {
+                String[] possibleTokens = tokenList.Split(',');
+                // On what line are we ?
+                int lineNumber = currentLine.LineNumber;
+                // We need to analyze the Previous line
+                lineNumber = lineNumber - 1;
+                while (lineNumber > 0)
+                {
+                    // We need to analyze the Previous line
+                    lineNumber = lineNumber - 1;
+                    ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
+                    List<IMappingTagSpan<IClassificationTag>> tagList = GetTagsInLine(line);
+                    String keyword = "";
+                    //
+                    if (tagList.Count > 0)
+                    {
+                        var buffer = this._textView.TextBuffer;
+                        IMappingSpan currentSpan = tagList[0].Span;
+                        /*
+                        SnapshotPoint? snapPointFirst = currentSpan.Start.GetPoint(buffer, PositionAffinity.Predecessor);
+                        // Extract the start of line
+                        SnapshotSpan toIndent = new SnapshotSpan(line.Start, snapPointFirst.Value.Position - line.Start.Position);
+                        String startOfLine = toIndent.GetText();
+                        // Convert Tabs to Spaces
+                        startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
+                        // So, at least, to align to previous line, we will need...
+                        indentValue = startOfLine.Length;
+                        */
+                        String startOfLine = line.GetText();
+                        startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
+                        // So, at least, to align to previous line, we will need...
+                        indentValue = (startOfLine.Length - startOfLine.TrimStart(' ').Length);
+                        //
+                        IClassificationTag currentTag = tagList[0].Tag;
+                        currentSpan = tagList[0].Span;
+                        //
+                        if (currentTag.ClassificationType.IsOfType("keyword"))
+                        {
+                            var spans = currentSpan.GetSpans(buffer);
+                            if (spans.Count > 0)
+                            {
+                                SnapshotSpan kwSpan = spans[0];
+                                keyword = kwSpan.GetText();
+                                keyword = keyword.ToUpper();
+                                if (possibleTokens.Contains<String>(keyword))
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                        // 
+                        indentValue = 0;
+                    }
+                }
+
+            }
+            finally
+            {
+                //
+            }
+            //
+            if (found)
+                return indentValue;
+            else
+                return null;
+
         }
 
         private String getKeywordAt(List<IMappingTagSpan<IClassificationTag>> tagList, int tagIndex)
@@ -424,10 +504,10 @@ namespace XSharp.Project
             return keyword;
         }
 
-        private int alignToOpenToken(ITextSnapshotLine currentLine)
+
+        private bool hasRegions()
         {
-            int lineNumber = currentLine.LineNumber;
-            int indentValue = 0;
+            bool result = false;
             //
             var buffer = _textView.TextBuffer;
             // Try to retrieve an already parsed list of Tags
@@ -436,50 +516,76 @@ namespace XSharp.Project
             {
                 xsClassifier = buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
             }
-
             if (xsClassifier != null)
             {
-                //
-                ITextSnapshot snapshot = xsClassifier.Snapshot;
-                SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
                 System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetRegionTags();
-                // We cannot use SortedList, because we may have several Classification that start at the same position
-                List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
-                foreach (var tag in classifications)
-                {
-                    sortedTags.Add(tag);
-                }
-                sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
-                //
-                //
-                Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> startStack = new Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
-                foreach (var tag in sortedTags)
-                {
-                    // Is it a Region ?
-                    if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
-                    {
-                        startStack.Push(tag);
-                    }
-                    else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
-                    {
-                        //
-                        var startTag = startStack.Pop();
-                        var startLine = startTag.Span.Start.GetContainingLine();
-                        // Looking for an End
+                result = (classifications.Count > 0);
+            }
+            return result;
+        }
 
-                        var endLine = tag.Span.End.GetContainingLine();
-                        if (endLine.LineNumber == lineNumber)
+        private int alignToOpenToken(ITextSnapshotLine currentLine)
+        {
+            int indentValue = 0;
+            try
+            {
+                int lineNumber = currentLine.LineNumber;
+                //
+                var buffer = _textView.TextBuffer;
+                // Try to retrieve an already parsed list of Tags
+                XSharpClassifier xsClassifier = null;
+                if (buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+                {
+                    xsClassifier = buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
+                }
+
+                if (xsClassifier != null)
+                {
+                    //
+                    ITextSnapshot snapshot = xsClassifier.Snapshot;
+                    SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
+                    System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetRegionTags();
+                    // We cannot use SortedList, because we may have several Classification that start at the same position
+                    List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                    foreach (var tag in classifications)
+                    {
+                        sortedTags.Add(tag);
+                    }
+                    sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
+                    //
+                    Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> startStack = new Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                    foreach (var tag in sortedTags)
+                    {
+                        // Is it a Region ?
+                        if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
                         {
-                            // Where is the start ?
-                            SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, startLine.End);
-                            String lineText = sSpan.GetText();
-                            lineText = lineText.Replace("\t", new String(' ', _tabSize));
-                            // 
-                            indentValue = (lineText.Length - lineText.TrimStart().Length);
-                            break;
+                            startStack.Push(tag);
+                        }
+                        else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
+                        {
+                            //
+                            var startTag = startStack.Pop();
+                            var startLine = startTag.Span.Start.GetContainingLine();
+                            // Looking for an End
+
+                            var endLine = tag.Span.End.GetContainingLine();
+                            if (endLine.LineNumber == lineNumber)
+                            {
+                                // Where is the start ?
+                                SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, startLine.End);
+                                String lineText = sSpan.GetText();
+                                lineText = lineText.Replace("\t", new String(' ', _tabSize));
+                                // 
+                                indentValue = (lineText.Length - lineText.TrimStart().Length);
+                                break;
+                            }
                         }
                     }
                 }
+            }
+            finally
+            {
+
             }
             //
             return indentValue;

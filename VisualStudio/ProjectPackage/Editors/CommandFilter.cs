@@ -325,12 +325,13 @@ namespace XSharp.Project
             // Item2 is End
             foreach (var region in regions)
             {
+                //
+                var currentRegionSpan = new SnapshotSpan(snapLine.Snapshot, Span.FromBounds(region.Item1.Start, region.Item2.End));
+                var startLine = currentRegionSpan.Start.GetContainingLine();
+                var endLine = currentRegionSpan.End.GetContainingLine();
                 // The line is inside a region ?
-                //if ((snapLine.Start.Position >= region.Item1.Start) && (snapLine.Start.Position <= region.Item2.End))
+                if ( ( snapLine.LineNumber >= startLine.LineNumber ) && (snapLine.LineNumber <= endLine.LineNumber) )
                 {
-                    var currentRegionSpan = new SnapshotSpan(snapLine.Snapshot, Span.FromBounds(region.Item1.Start, region.Item2.End));
-                    var startLine = currentRegionSpan.Start.GetContainingLine();
-                    var endLine = currentRegionSpan.End.GetContainingLine();
                     //
                     // What kind of region ?
                     String tagType = GetFirstKeywordInLine(startLine);
@@ -958,7 +959,7 @@ namespace XSharp.Project
                         Span indentSpan = new Span(line.Start.Position, lineLength - newLength);
                         String indentSpaces = "";
                         if (useSpaces)
-                            indentSpaces = new String(' ', (int)desiredIndentation );
+                            indentSpaces = new String(' ', (int)desiredIndentation);
                         else
                             indentSpaces = new String('\t', (int)desiredIndentation / tabSize) + new String(' ', (int)desiredIndentation % tabSize);
                         editSession.Replace(indentSpan, indentSpaces);

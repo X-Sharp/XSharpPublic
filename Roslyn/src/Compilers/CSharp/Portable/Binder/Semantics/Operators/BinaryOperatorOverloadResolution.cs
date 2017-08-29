@@ -545,6 +545,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool hadApplicableCandidate = false;
             foreach (var op in operators)
             {
+#if XSHARP
+                if (Compilation.Options.IsDialectVO && 
+                    (op.Kind.Operator() == BinaryOperatorKind.Addition || op.Kind.Operator() == BinaryOperatorKind.Subtraction))
+                {
+                    // only include op_Addition op_Subtraction  with 2 float parameters.
+                    if (op.ReturnType == Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat)
+                        && op.LeftType != op.RightType)
+                        continue;
+                }
+#endif
                 var convLeft = Conversions.ClassifyConversionFromExpression(left, op.LeftType, ref useSiteDiagnostics);
                 var convRight = Conversions.ClassifyConversionFromExpression(right, op.RightType, ref useSiteDiagnostics);
                 if (convLeft.IsImplicit && convRight.IsImplicit)

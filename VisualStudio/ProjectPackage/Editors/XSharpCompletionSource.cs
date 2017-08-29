@@ -2215,6 +2215,7 @@ namespace XSharpLanguage
                 fileName = "MissingFile.prg";
             }
             //System.Threading.Thread.Sleep(500);
+            /*
             var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
             var tokens = lexer.GetTokenStream();
 
@@ -2231,6 +2232,40 @@ namespace XSharpLanguage
 
                 tokens.Consume();
             }
+            */
+            //////////////////////////////////////
+            //////////////////////////////////////
+            var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
+            var tokens = lexer.GetTokenStream() as BufferedTokenStream;
+            // locate the last token before the trigger point
+            // Use binary search in stead of linear search
+            var list = tokens.GetTokens();
+            int current = 0;
+            int bottom = 0;
+            int top = list.Count;
+            while (top - bottom > 1)
+            {
+                // determine middle
+                current = (bottom + top) / 2;
+                var check = list[current];
+                if (check.StartIndex > triggerPointPosition)
+                {
+                    top = current;
+                }
+                else if (check.StartIndex < triggerPointPosition)
+                {
+                    bottom = current;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (current > list.Count - 1 || current < 0)
+                return tokenList;
+            IToken nextToken = list[current];
+            //////////////////////////////////////
+            //////////////////////////////////////
             if (nextToken == null)
             {
                 return tokenList;
@@ -2310,6 +2345,8 @@ namespace XSharpLanguage
                     case XSharpLexer.LBRKT:
                     case XSharpLexer.SL_COMMENT:
                     case XSharpLexer.ML_COMMENT:
+                    //case XSharpLexer.VAR:
+                    //case XSharpLexer.IMPLIED:
                         // Stop here
                         stopToken = triggerToken;
                         token = null;

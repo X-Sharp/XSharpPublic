@@ -499,7 +499,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // Second, we need to determine if the method is applicable in its normal form or its expanded form.
 #if XSHARP
-            if (allowUnexpandedForm && Compilation.Options.IsDialectVO && arguments.Arguments.Count == 1 && arguments.Arguments[0].Type.IsUsual())
+            // when calling a USUAL[] function we allow 1 usual param and wrap it as params as well
+            // REF USUAL is not allowed
+            if (allowUnexpandedForm && Compilation.Options.IsDialectVO
+                && arguments.Arguments.Count == 1 
+                && arguments.Arguments[0].Type.IsUsual()
+                && arguments.RefKinds[0] == RefKind.None)
             {
                 allowUnexpandedForm = false;
             }

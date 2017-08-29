@@ -295,9 +295,10 @@ namespace XSharp.Project
                 try
                 {
                     var lines = buffer.CurrentSnapshot.Lines;
+                    int indentSize = 0;
                     foreach (var snapLine in lines)
                     {
-                        int indentSize = getDesiredIndentation(snapLine, regions);
+                        indentSize = getDesiredIndentation(snapLine, regions, indentSize);
                         //
                         CommandFilterHelper.FormatLine(this.Aggregator, this.TextView, editSession, snapLine, indentSize);
                     }
@@ -310,14 +311,18 @@ namespace XSharp.Project
             }
         }
 
-        private int getDesiredIndentation(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions)
+        private int getDesiredIndentation(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions, int previousIndentSize)
         {
             var package = XSharp.Project.XSharpProjectPackage.Instance;
             var optionsPage = package.GetIntellisenseOptionsPage();
             bool alignDoCase = optionsPage.AlignDoCase;
             bool alignMethod = optionsPage.AlignMethod;
             //
+            // Read the IndentSize (and not the TabSize !!)
+            int indentSize = this.TextView.Options.GetIndentSize();
+            int tabSize = this.TextView.Options.GetTabSize();
             int indentValue = 0;
+            int mlCmtSpaces = 0;
             //
             List<IMappingTagSpan<IClassificationTag>> tags = GetTagsInLine(snapLine);
             // In Tuple Regions, the items are :
@@ -330,7 +335,7 @@ namespace XSharp.Project
                 var startLine = currentRegionSpan.Start.GetContainingLine();
                 var endLine = currentRegionSpan.End.GetContainingLine();
                 // The line is inside a region ?
-                if ( ( snapLine.LineNumber >= startLine.LineNumber ) && (snapLine.LineNumber <= endLine.LineNumber) )
+                if ((snapLine.LineNumber >= startLine.LineNumber) && (snapLine.LineNumber <= endLine.LineNumber))
                 {
                     //
                     // What kind of region ?
@@ -338,6 +343,21 @@ namespace XSharp.Project
                     // Skip comment and using regions
                     if ((tagType == "//") || (tagType == "USING"))
                     {
+                        continue;
+                    }
+                    if (tagType == "/*")
+                    {
+                        // Get the current indentation
+                        SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
+                        String lineText = sSpan.GetText();
+                        lineText = lineText.Replace("\t", new String(' ', tabSize));
+                        mlCmtSpaces = (lineText.Length - lineText.TrimStart().Length);
+                        // What is the difference with the start
+                        sSpan = new SnapshotSpan(startLine.Start, startLine.End);
+                        lineText = sSpan.GetText();
+                        lineText = lineText.Replace("\t", new String(' ', tabSize));
+                        mlCmtSpaces = mlCmtSpaces - (lineText.Length - lineText.TrimStart().Length);
+                        //
                         continue;
                     }
                     // Region Start
@@ -449,15 +469,13 @@ namespace XSharp.Project
                     }
                 }
             }
-            // Read the IndentSize (and not the TabSize !!)
-            int indentSize = this.TextView.Options.GetIndentSize();
             // This should NOT happen
             if (indentValue < 0)
             {
                 indentValue = 0;
             }
             //
-            return (indentValue * indentSize);
+            return (indentValue * indentSize) + mlCmtSpaces;
         }
 
 
@@ -525,6 +543,16 @@ namespace XSharp.Project
                     {
                         //
                         keyword = "//";
+                        var spans = currentSpan.GetSpans(buffer);
+                        if (spans.Count > 0)
+                        {
+                            SnapshotSpan kwSpan = spans[0];
+                            keyword = kwSpan.GetText();
+                            if (keyword.Length >= 2)
+                            {
+                                keyword = keyword.Substring(0, 2);
+                            }
+                        }
                     }
                     // out please
                     break;

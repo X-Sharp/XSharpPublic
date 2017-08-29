@@ -35,7 +35,7 @@
     <VO8>true</VO8>
     <VO9>true</VO9>
     <VO10>true</VO10>
-    <VO11>true</VO11>
+    <VO11>false</VO11>
     <VO12>false</VO12>
     <VO13>true</VO13>
     <VO14>false</VO14>
@@ -67,9 +67,6 @@
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
     <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
@@ -118,6 +115,9 @@
 <NativeResource Include="Order Dialog.OrderDialog.rc">
   <DependentUpon>Order Dialog.prg</DependentUpon>
 </NativeResource>
+<VOBinary Include="Order Dialog.ORDERDIALOG.xsfrm">
+  <DependentUpon>Order Dialog.prg</DependentUpon>
+</VOBinary>
 <Compile Include="Images.prg">
   <SubType>Code</SubType>
 </Compile>
@@ -169,6 +169,9 @@
 <NativeResource Include="SubmitDlg.SubmitDlg.rc">
   <DependentUpon>SubmitDlg.prg</DependentUpon>
 </NativeResource>
+<VOBinary Include="SubmitDlg.SUBMITDLG.xsfrm">
+  <DependentUpon>SubmitDlg.prg</DependentUpon>
+</VOBinary>
 <Compile Include="TwoBmpButton.prg">
   <SubType>Code</SubType>
 </Compile>
@@ -182,4 +185,14 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
 </Project>

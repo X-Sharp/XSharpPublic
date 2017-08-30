@@ -211,7 +211,7 @@ namespace XSharpLanguage
             {
                 currentNS = currentNamespace.Name;
             }
-            cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement);
+            cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot.GetText());
             if (!cType.IsEmpty())
             {
                 session.Properties["Type"] = cType;
@@ -2264,6 +2264,10 @@ namespace XSharpLanguage
             if (current > list.Count - 1 || current < 0)
                 return tokenList;
             IToken nextToken = list[current];
+            // TODO: 
+            // Sometimes the quickinfo does not show.
+            if (nextToken.StartIndex < triggerPointPosition && top - bottom == 1)
+                nextToken = list[top];
             //////////////////////////////////////
             //////////////////////////////////////
             if (nextToken == null)
@@ -2591,8 +2595,14 @@ namespace XSharpLanguage
         /// <param name="stopToken"></param>
         /// <param name="foundElement"></param>
         /// <returns></returns>
-        public static CompletionType RetrieveType(XFile file, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out CompletionElement foundElement)
+        public static CompletionType RetrieveType(XFile file, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out CompletionElement foundElement, string currentBuffer)
         {
+            if (! file.HasLocals)
+            {
+                var xsWalker = new SourceWalker(file, currentBuffer);
+                var xTree = xsWalker.Parse();
+                xsWalker.BuildModel(xTree, true);
+            }
             foundElement = null;
             if (currentMember == null)
             {
@@ -2611,9 +2621,6 @@ namespace XSharpLanguage
             {
                 file = currentMember.File;
             }
-            //
-            var prj = file.Project.ProjectNode;
-            XSharpParseOptions parseoptions = prj.ParseOptions;
             //
             // we have to walk the tokenList, searching for the current Type
             // As we have separators every even token, we will walk by step 2
@@ -2800,9 +2807,14 @@ namespace XSharpLanguage
                     if (!cType.IsEmpty())
                     {
                         cType = SearchPropertyOrFieldIn(cType, name, visibility, out foundElement);
+                        if (foundElement != null)
+                        {
+                            element = foundElement.XSharpElement;
+                        }
+
                     }
                     // Find Defines and globals in this file
-                    if (cType.IsEmpty() && member.File.GlobalType != null)
+                    if (element == null && cType.IsEmpty() && member.File.GlobalType != null)
                     {
                         element = member.File.GlobalType.Members.Find(x => StringEquals(x.Name, name));
                     }

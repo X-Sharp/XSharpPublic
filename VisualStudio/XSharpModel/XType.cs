@@ -165,6 +165,13 @@ namespace XSharpModel
         public XType Merge(XType otherType)
         {
             var clone = this.Duplicate();
+            // prevent merging the same types 
+            if (string.Compare(otherType.File.FullPath,
+                this.File.FullPath, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                if (this.Range.StartLine == otherType.Range.StartLine)
+                    return clone;
+            }
             this.IsPartial = true;
             if (otherType != null)
             {

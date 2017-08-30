@@ -85,7 +85,7 @@ namespace XSharp.Project
                         break;
                     case VSConstants.VSStd2KCmdID.UP:
                     case VSConstants.VSStd2KCmdID.DOWN:
-                        FormatLine(false);
+                        //FormatLine(false);
                         break;
                     case VSConstants.VSStd2KCmdID.TAB:
                         handled = CompleteCompletionSession(true);

@@ -34,6 +34,13 @@ namespace XSharpModel
             _snapshot = snapshot;
             _source = snapshot.GetText();
         }
+        public SourceWalker(XFile file, string source)
+        {
+            _file = file;
+            _prjNode = _file?.Project?.ProjectNode;
+            _snapshot = null;
+            _source = source;
+        }
 
         public SourceWalker(XFile file)
         {

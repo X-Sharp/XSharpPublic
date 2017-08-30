@@ -11,14 +11,15 @@ namespace XSharpModel
     public class XVariable : XElement
     {
         private string _typeName;
+        private bool _isParameter;
 
-        public XVariable(XElement parent, string name, Kind kind, Modifiers visibility, TextRange span, TextInterval position, string typeName)
+        public XVariable(XElement parent, string name, Kind kind, Modifiers visibility, TextRange span, TextInterval position, string typeName, bool isParameter = false)
             : base(name, kind, Modifiers.None, visibility, span, position)
         {
             if (string.IsNullOrEmpty(typeName))
                 typeName = "USUAL";
             _typeName = typeName;
-
+            _isParameter = isParameter;
             this.Parent = parent;
         }
 
@@ -41,7 +42,12 @@ namespace XSharpModel
         {
             get
             {
-                return this.Prototype + " as " + this.TypeName + (IsArray ? "[]" : "");
+                string prefix;
+                if (_isParameter)
+                    prefix = "PARAMETER ";
+                else
+                    prefix = "LOCAL ";
+                return prefix +this.Prototype + " as " + this.TypeName + (IsArray ? "[]" : "");
             }
         }
 

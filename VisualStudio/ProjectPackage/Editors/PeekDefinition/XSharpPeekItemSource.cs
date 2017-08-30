@@ -51,7 +51,7 @@ namespace XSharp.Project
                 {
                     currentNS = currentNamespace.Name;
                 }
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement);
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, _textBuffer.CurrentSnapshot.GetText());
                 //
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {

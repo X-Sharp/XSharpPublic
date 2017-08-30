@@ -105,7 +105,7 @@ namespace XSharpModel
         public override void ExitSource([NotNull] XSharpParser.SourceContext context)
         {
             // Reset TypeList for this file
-            this.File.SetTypes(_types, _usings, _staticusings);
+            this.File.SetTypes(_types, _usings, _staticusings, _buildLocals);
         }
 
 
@@ -832,8 +832,9 @@ namespace XSharpModel
                 {
                     XVariable var = new XVariable(newMethod, param.Id?.GetText(), Kind.Parameter, Modifiers.Public,
                         new TextRange(param), new TextInterval(param),
-                        param.Type?.GetText());
+                        param.Type?.GetText(), true);
                     var.File = this._file;
+
                     //
                     newMethod.Parameters.Add(var);
                 }

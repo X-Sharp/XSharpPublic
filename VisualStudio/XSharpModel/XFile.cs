@@ -23,6 +23,7 @@ namespace XSharpModel
         private object _lock;
         private bool _parsed;
         private DateTime _lastWritten;
+        private bool _hasLocals;
         private XFileType _type;
 
         public XFile(string fullPath)
@@ -140,7 +141,7 @@ namespace XSharpModel
         }
 
 
-        public void SetTypes(IDictionary<string, XType> types, IList<string> usings, IList<string> staticusings)
+        public void SetTypes(IDictionary<string, XType> types, IList<string> usings, IList<string> staticusings, bool hasLocals)
         {
             if (!IsSource)
                 return;
@@ -149,6 +150,7 @@ namespace XSharpModel
                 _typeList.Clear();
                 _usings.Clear();
                 _usingStatics.Clear();
+                _hasLocals = hasLocals;
                 foreach (var type in types)
                 {
                     bool ok = _typeList.TryAdd(type.Key, type.Value);
@@ -259,6 +261,7 @@ namespace XSharpModel
 
         public bool IsXaml => _type == XFileType.XAML;
         public bool IsSource => _type == XFileType.SourceCode;
+        public bool HasLocals => _hasLocals;
 
         public XFileType XFileType => _type;
     }

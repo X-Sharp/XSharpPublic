@@ -192,7 +192,7 @@ namespace XSharp.Project
                             FormatDocument();
                             break;
                         case VSConstants.VSStd2KCmdID.RETURN:
-                            FormatLine(true);
+                            //FormatLine(true);
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                             break;

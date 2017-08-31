@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio;
+﻿#if SMARTINDENT
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -705,3 +706,4 @@ namespace XSharp.Project
     }
 
 }
+#endif

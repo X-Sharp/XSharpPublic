@@ -106,7 +106,6 @@ namespace XSharp.Project
                          EnableAdvancedMembersOption =true,
                          EnableAsyncCompletion = true, // Supports background parsing
                          EnableCommenting = true,      // Supports commenting out code
-                         EnableFormatSelection = true,
                          EnableLineNumbers =true,
                          MatchBraces =true,
                          MatchBracesAtCaret =true,
@@ -116,9 +115,19 @@ namespace XSharp.Project
                          ShowCompletion =true,
                          ShowDropDownOptions = true,    // Supports NavigationBar 
                          ShowMatchingBrace =true,
+                        
+#if SMARTINDENT
                          ShowSmartIndent = true,
+                         EnableFormatSelection = true,
+#else
+                         ShowSmartIndent = false,
+                         EnableFormatSelection = false,
+#endif
+                         HideAdvancedMembersByDefault =true,
                          SingleCodeWindowOnly = false,
-                         SupportCopyPasteOfHTML = false
+                         ShowHotURLs =true,
+                         SupportCopyPasteOfHTML = true
+                         
                  )]
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
@@ -227,7 +236,7 @@ namespace XSharp.Project
             return (IVsTextManager4) GetService(typeof(SVsTextManager));
         }
 
-        #region Overridden Implementation
+#region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -374,7 +383,7 @@ namespace XSharp.Project
         {
         }
 
-        #endregion
+#endregion
 
 
     }

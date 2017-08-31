@@ -194,7 +194,7 @@ namespace XSharp.Project
                             break;
 #endif
                         case VSConstants.VSStd2KCmdID.RETURN:
-                            FormatLine(true);
+                            //FormatLine(true);
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                             break;

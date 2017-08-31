@@ -188,9 +188,11 @@ namespace XSharp.Project
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
                             Filter();
                             break;
+#if SMARTINDENT
                         case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
                             FormatDocument();
                             break;
+#endif
                         case VSConstants.VSStd2KCmdID.RETURN:
                             FormatLine(true);
                             break;
@@ -242,6 +244,7 @@ namespace XSharp.Project
         }
 
 
+#if SMARTINDENT
 
         private void FormatDocument()
         {
@@ -478,7 +481,6 @@ namespace XSharp.Project
             return (indentValue * indentSize) + mlCmtSpaces;
         }
 
-
         private List<IMappingTagSpan<IClassificationTag>> GetTagsInLine(ITextSnapshotLine line)
         {
             //
@@ -560,7 +562,7 @@ namespace XSharp.Project
             }
             return keyword;
         }
-
+#endif
         private void GotoDefn()
         {
             // First, where are we ?
@@ -595,7 +597,7 @@ namespace XSharp.Project
         }
 
 
-        #region Completion Session
+#region Completion Session
         private void Filter()
         {
             if (_completionSession == null)
@@ -691,10 +693,10 @@ namespace XSharp.Project
         {
             _completionSession = null;
         }
-        #endregion
+#endregion
 
 
-        #region Signature Session
+#region Signature Session
         bool StartSignatureSession(bool comma, XSharpModel.CompletionType cType = null, string methodName = null)
         {
             if (_signatureSession != null)
@@ -823,7 +825,7 @@ namespace XSharp.Project
         {
             _signatureSession = null;
         }
-        #endregion
+#endregion
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {

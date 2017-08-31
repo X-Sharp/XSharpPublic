@@ -6029,7 +6029,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Local &apos;{0}&apos; or its members cannot have their address taken and be used inside an anonymous method or lambda expression.
+        ///   Looks up a localized string similar to Local &apos;{0}&apos; or its members cannot have their address taken and be used inside a codeblock, an anonymous method or lambda expression.
         /// </summary>
         internal static string ERR_LocalCantBeFixedAndHoisted {
             get {

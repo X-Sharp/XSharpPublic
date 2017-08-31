@@ -123,6 +123,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             this.Usings = usings.AsImmutableOrEmpty();
             this.AllowUnsafe = allowUnsafe;
             this.TopLevelBinderFlags = topLevelBinderFlags;
+#if XSHARP
+            this.SetXSharpSpecificOptions(XSharpSpecificCompilationOptions.Default);
+#endif
         }
 
         private CSharpCompilationOptions(CSharpCompilationOptions other) : this(

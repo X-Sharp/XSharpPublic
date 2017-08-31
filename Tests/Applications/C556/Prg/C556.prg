@@ -9,11 +9,11 @@ STRUCTURE myStruct
 //	EXPORT buf[100] AS BYTE
 
 	// error XS1716: Do not use 'System.Runtime.CompilerServices.FixedBuffer' attribute. Use the 'fixed' field modifier instead.
-	[FixedBuffer(typeof(BYTE), 100)];
-	EXPORT buf AS BYTE
+//	[FixedBuffer(typeof(BYTE), 100)];
+//	EXPORT buf AS BYTE
 
 	// this emits it with a size of 0 ([FixedBuffer(typeof(byte), 0)]) and SizeOf() returns 8	
-//	EXPORT UNSAFE FIXED buf[100] AS BYTE
+	EXPORT UNSAFE FIXED DIM buf[100] AS BYTE
 	
 END STRUCTURE
 

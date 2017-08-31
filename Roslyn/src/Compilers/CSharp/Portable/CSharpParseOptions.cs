@@ -120,6 +120,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             this.LanguageVersion = languageVersion.MapSpecifiedToEffectiveVersion();
             this.PreprocessorSymbols = preprocessorSymbols;
             _features = features;
+#if XSHARP
+            this.SetXSharpSpecificOptions(XSharpSpecificCompilationOptions.Default);
+#endif
         }
 
         public override string Language => LanguageNames.CSharp;

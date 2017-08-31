@@ -45,6 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Other options have flags, for the preprocessor macros, such as __VO1__
 
         public bool ArrayZero { get; private set; }
+        public bool MacroScript { get; private set; }
 
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
@@ -154,6 +155,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public void SetXSharpSpecificOptions(CSharpParseOptions opt)
         {
             ArrayZero = opt.ArrayZero;
+            MacroScript = opt.MacroScript;
             DebugEnabled = opt.DebugEnabled;
             DefaultIncludeDir = opt.DefaultIncludeDir;
             Dialect = opt.Dialect;
@@ -190,7 +192,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             CommandLineArguments = opt.CommandLineArguments;
             ParseLevel = opt.ParseLevel;
         }
-        public  CSharpParseOptions WithOutput(TextWriter consoleOutput)
+
+        public CSharpParseOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
+        {
+            var result = new CSharpParseOptions(this);
+            result.SetXSharpSpecificOptions(opt);
+            return result;
+        }
+
+        public CSharpParseOptions WithOutput(TextWriter consoleOutput)
         {
             if (consoleOutput == this.ConsoleOutput)
             {
@@ -199,6 +209,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = new CSharpParseOptions(this);
             result.SetXSharpSpecificOptions(this);
             result.ConsoleOutput = consoleOutput;
+            return result;
+        }
+        public CSharpParseOptions WithMacroScript(bool macroScript)
+        {
+            if (macroScript == this.MacroScript)
+            {
+                return this;
+            }
+            var result = new CSharpParseOptions(this);
+            result.SetXSharpSpecificOptions(this);
+            result.MacroScript = macroScript;
             return result;
         }
     }

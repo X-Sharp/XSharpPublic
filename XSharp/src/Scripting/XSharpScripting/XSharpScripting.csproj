@@ -71,11 +71,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assembly.cs" />
+    <Compile Include="XSharpMacro.cs" />
     <Compile Include="ScriptingResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ScriptingResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="XSharpMacroCompiler.cs" />
     <Compile Include="XSharpScriptingResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

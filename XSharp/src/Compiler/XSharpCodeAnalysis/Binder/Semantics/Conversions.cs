@@ -410,6 +410,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             // When unsafe we always allow to cast void * to typed *
+            // Is this OK ?
+            // See ticket C425
             if (source.IsVoidPointer() && destination.IsPointerType() && Compilation.Options.AllowUnsafe)
             {
                 return Conversion.Identity;

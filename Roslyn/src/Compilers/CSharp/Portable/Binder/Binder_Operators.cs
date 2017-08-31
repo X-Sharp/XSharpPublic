@@ -33,22 +33,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // fall-through for other operators, if RHS is dynamic we produce dynamic operation, otherwise we'll report an error ...
                 }
             }
-#if XSHARP
-            if (Compilation.Options.IsDialectVO)
-            {
-                // Fix problem in Vulcan Runtime that the FLOAT += USUAL does not work as expected
-                var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                var typeFloat = Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
-                if (left.Type == typeUsual && right.Type == typeFloat)
-                {
-                    left = CreateConversion(left, typeFloat, diagnostics);
-                }
-                else if (right.Type == typeUsual && left.Type == typeFloat)
-                {
-                    right = CreateConversion(right, typeFloat, diagnostics);
-                }
-            }
-#endif
 
             if (left.HasAnyErrors || right.HasAnyErrors)
             {
@@ -257,7 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (right.Kind == BoundKind.UnboundLambda)
             {
-                if (right.Syntax.XIsCodeBlock)
+                if (right.Syntax.XIsCodeBlock && right.Syntax.XNode != null)
                 {
                     Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, right.Syntax, delegateType);
                 }

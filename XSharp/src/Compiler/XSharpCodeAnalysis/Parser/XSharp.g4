@@ -37,6 +37,10 @@ scriptEntity        : Stmt=statement
 					| Expr=expression
                     ;
 
+macroScript			: ( CbExpr=codeblock | Code=codeblockCode ) EOS
+					EOF
+                    ;
+
 source				: eos? (Entities+=entity )*
 					EOF
                     ;

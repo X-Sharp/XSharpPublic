@@ -2069,6 +2069,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }*/
         }
 
+        public override void EnterMacroScript([NotNull] XP.MacroScriptContext context)
+        {
+            GlobalClassEntities = CreateClassEntities();
+            ClassEntities.Push(GlobalClassEntities);
+        }
+
+        public override void ExitMacroScript([NotNull] XP.MacroScriptContext context)
+        {
+            ExpressionSyntax e;
+            if (context.CbExpr != null)
+            {
+                e = context.CbExpr.Get<ExpressionSyntax>();
+                e.XNode = null;
+            }
+            else if (context.Code != null)
+            {
+                e = _syntaxFactory.ParenthesizedLambdaExpression(
+                    asyncKeyword: null,
+                    parameterList: EmptyParameterList(),
+                    arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                    body: context.Code.Get<CSharpSyntaxNode>());
+            }
+            else /* should never happen! */
+            {
+                e = _syntaxFactory.ParenthesizedLambdaExpression(
+                    asyncKeyword: null,
+                    parameterList: EmptyParameterList(),
+                    arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                    body: MakeBlock(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))));
+            }
+            /*e = _syntaxFactory.CastExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("CODEBLOCK")),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                e);*/
+            GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(
+                _syntaxFactory.ExpressionStatement(
+                    e,
+                    SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))
+                ));
+
+            var generated = ClassEntities.Pop();
+            GlobalEntities.Members.AddRange(generated.Members);
+            generated.Free();
+
+            // Add: using static Functions
+            AddUsingWhenMissing(GlobalEntities.Usings, XSharpSpecialNames.CoreFunctionsClass, true);
+
+            // Add: using System
+            AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
+        }
+
         public override void EnterSource([NotNull] XP.SourceContext context)
         {
             //System.Diagnostics.Debug.WriteLine("Enter Source " + _fileName);

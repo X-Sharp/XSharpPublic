@@ -23,6 +23,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     public sealed class XSharpSpecificCompilationOptions
     {
+        public static readonly XSharpSpecificCompilationOptions Default = new XSharpSpecificCompilationOptions();
+
         static string _defaultIncludeDir;
         static string _windir;
         static string _sysdir;

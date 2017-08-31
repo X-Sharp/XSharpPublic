@@ -35,7 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             Debug.Assert(destination.IsCodeblock() || conv.Exists);
-            if (!syntax.XIsCodeBlock)
+            if (!syntax.XIsCodeBlock && syntax.XNode != null)
             {
                 Error(diagnostics, ErrorCode.ERR_CodeblockWithLambdaSyntax, syntax);
             }

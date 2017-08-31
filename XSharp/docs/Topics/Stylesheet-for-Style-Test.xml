@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Stylesheet for Style Test</title>
   <body>
     <header>
@@ -26,6 +26,6 @@
     <para styleclass="Tip Body"></para>
     <para styleclass="Normal"><text style="font-style:italic;">Text-only styles in this project template:</text></para>
     <para styleclass="Tip Body"></para>
-    <para styleclass="Tip Body"><text styleclass="T_Code">T_Code</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Emphasis">T_Emphasis</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Entry">T_Entry</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Entry 10pt">T_Entry 10pt</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Menu">T_Menu</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Menu 10p">T_Menu 10pt</text></para>
+    <para styleclass="Tip Body"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">T_Code</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Emphasis">T_Emphasis</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Entry">T_Entry</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Entry 10pt">T_Entry 10pt</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Menu">T_Menu</text><text styleclass="Normal"> &#160;| &#160;</text><text styleclass="T_Menu 10p">T_Menu 10pt</text></para>
   </body>
 </topic>

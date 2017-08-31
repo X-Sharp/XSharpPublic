@@ -17,7 +17,7 @@
 
 #define Version         "1.0.2.0"
 #define VIVersion       "1.0.2.0"
-#define TouchDate       "2017-08-28"
+#define TouchDate       "2017-08-31"
 #define TouchTime       "01:02:00"
 
 

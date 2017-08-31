@@ -108,7 +108,7 @@ namespace XSharp.Project
             return new String[][]
             {
                 new String[]{ "ENDIF","IF" },
-                new String[]{ "ENDCASE", "CASE" },
+                new String[]{ "ENDCASE", "DO" },
                 new String[]{ "NEXT", "FOR,FOREACH" },
                 new String[]{ "UNTIL", "REPEAT" },
                 new String[]{ "END", "BEGIN,DO,IF,TRY" },
@@ -250,15 +250,15 @@ namespace XSharp.Project
                                 {
                                     // The startToken is a list of possible tokens
                                     specialIndentValue = alignToSpecificTokens(line, startToken);
+                                    // The can be aligned to SWITCH/DO CASE or indented
+                                    if (!_alignDoCase)
+                                    {
+                                        specialIndentValue += _tabSize;
+                                    }
                                 }
                             }
                             if (specialIndentValue != null)
                             {
-                                // The can be aligned to SWITCH/DO CASE or indented
-                                if (!_alignDoCase)
-                                {
-                                    specialIndentValue += _tabSize;
-                                }
                                 // and Indent the new line
                                 indentValue = (int)specialIndentValue + _tabSize;
                                 // And apply
@@ -462,6 +462,7 @@ namespace XSharp.Project
                                     found = true;
                                     break;
                                 }
+                                // Here we should also check for nested construct or we might get false positive...
                             }
                         }
                         // 

@@ -20,7 +20,7 @@
       <li styleclass="List">The error message for compound assignments of FLOAT and USUAL has been removed. The compiler now contains a workaround for the problem in the Vulcan Runtime</li>
       <li styleclass="List">For ambiguous code where the compiler has to choose between a Function call and a static method call in any other class, the compiler now chooses the function call over the method call (Vo and Vulcan dialect). The warning will still be generated.</li>
       <li styleclass="List">When passing a variable by reference with the @ sign the compiler will now check to see if the declared type of the function/method parameter matches the type of the local variable.</li>
-      <li styleclass="List">Some compiler warnings for unused variables were being suppressed in the &#160;VO/Vulcan dialect. They are activated again.</li>
+      <li styleclass="List">Some compiler warnings for unused variables were being suppressed in the VO/Vulcan dialect. They are activated again.</li>
     </list>
     <para styleclass="Heading3"><text style="font-weight:bold;">Scripting</text></para>
     <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -31,8 +31,6 @@
       <li styleclass="List">QuickInfo could generate a &apos;hang&apos; in the VS editor. This has been fixed</li>
       <li styleclass="List">Added quickinfo for globals and defines</li>
       <li styleclass="List">Added completionlists for globals and defines</li>
-      <li styleclass="List">Added a fist version of SmartIndent</li>
-      <li styleclass="List">Added support for FormatDocument</li>
       <li styleclass="List">Added VO Form editor to edit vnfrm/xsfrm files and generate the code and resources</li>
       <li styleclass="List">Added VO Menu editor to edit vnmnu/xsmnu files and generate the code and resources</li>
       <li styleclass="List">Added VO DbServer editor and VO Fieldspec editor to edit vndbs/xsdbs and vnfs/xsfs files and generate the code and resources</li>

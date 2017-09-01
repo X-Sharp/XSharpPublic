@@ -494,7 +494,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Lists
-        protected SyntaxList<SyntaxToken> TokenList(params SyntaxKind[] kinds)
+        internal SyntaxList<SyntaxToken> TokenList(params SyntaxKind[] kinds)
         {
             var rb = _pool.Allocate();
             foreach (var k in kinds)

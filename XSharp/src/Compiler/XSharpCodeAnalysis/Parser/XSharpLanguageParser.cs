@@ -317,6 +317,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 result.IncludedFiles = pp.IncludedFiles;
                 result.HasPCall = treeTransform.GlobalEntities.HasPCall;
                 result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
+                if (_options.IsDialectVO)
+                {
+                    result.LiteralSymbols = ((XSharpVOTreeTransformation)treeTransform).LiteralSymbols;
+                }
                 return result;
             }
             finally
@@ -522,7 +526,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // merge accesses and assigns from different source files into one property etc.
             // we pass the usings from the compilationunits along because the new compilation unit will
             // have to the same (combined) list of usings
+            // When compiling in VO/Vulcan dialect we also collect the literal symbols from the compilation unit.
+            // When we have one or more of these then we create a symbol table in the class "Xs$SymbolTable"
             var partialClasses = new Dictionary<string, List<PartialPropertyElement>>(StringComparer.OrdinalIgnoreCase);
+            var symbolTable = new Dictionary<string, InternalSyntax.FieldDeclarationSyntax>();
             foreach (var tree in trees)
             {
                 var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
@@ -544,8 +551,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
+                if (_options.IsDialectVO &&  compilationunit.LiteralSymbols.Count > 0)
+                {
+                    foreach (var pair in compilationunit.LiteralSymbols)
+                    {
+                        if (!symbolTable.ContainsKey(pair.Key))
+                        {
+                            symbolTable.Add(pair.Key, pair.Value);
+                        }
+                    }
+                    compilationunit.LiteralSymbols.Clear();
+                }
             }
-            if (partialClasses.Count > 0)
+            if (partialClasses.Count > 0 || symbolTable.Count > 0)
             {
                 // Create a new tree which shall have the generated constructors and properties
                 // and return this tree to the caller.
@@ -563,8 +581,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxListBuilder<UsingDirectiveSyntax> usingslist = _pool.Allocate<UsingDirectiveSyntax>();
                 var members = _pool.Allocate<MemberDeclarationSyntax>();
                 var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
-                var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
-                var attribs = _pool.Allocate<AttributeListSyntax>();
                 foreach (var element in partialClasses)
                 {
                     var name = element.Key;
@@ -605,17 +621,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (clsmembers.Count > 0)
                             {
                                 var decl = _syntaxFactory.InterfaceDeclaration(
-                                attribs,
-                                ifdecl.Modifiers,
-                                ifdecl.Keyword,
-                                ifdecl.Identifier,
-                                ifdecl.TypeParameterList,
-                                ifdecl.BaseList,
-                                ifdecl.ConstraintClauses,
-                                ifdecl.OpenBraceToken,
-                                clsmembers,
-                                ifdecl.CloseBraceToken,
-                                null);
+                                            default(SyntaxList<AttributeListSyntax>),
+                                            ifdecl.Modifiers,
+                                            ifdecl.Keyword,
+                                            ifdecl.Identifier,
+                                            ifdecl.TypeParameterList,
+                                            ifdecl.BaseList,
+                                            ifdecl.ConstraintClauses,
+                                            ifdecl.OpenBraceToken,
+                                            clsmembers,
+                                            ifdecl.CloseBraceToken,
+                                            null);
                                 ifdecl.XGenerated = true;
                                 members.Add(WrapInNamespace(trans,decl, xns, _options.DefaultNamespace));
                             }
@@ -641,17 +657,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (clsmembers.Count > 0)
                             {
                                 var decl = _syntaxFactory.StructDeclaration(
-                                    attribs ,
-                                    strucdecl.Modifiers,
-                                    strucdecl.Keyword,
-                                    strucdecl.Identifier,
-                                    strucdecl.TypeParameterList,
-                                    strucdecl.BaseList,
-                                    strucdecl.ConstraintClauses,
-                                    strucdecl.OpenBraceToken,
-                                    clsmembers,
-                                    strucdecl.CloseBraceToken,
-                                    null);
+                                                default(SyntaxList<AttributeListSyntax>),
+                                                strucdecl.Modifiers,
+                                                strucdecl.Keyword,
+                                                strucdecl.Identifier,
+                                                strucdecl.TypeParameterList,
+                                                strucdecl.BaseList,
+                                                strucdecl.ConstraintClauses,
+                                                strucdecl.OpenBraceToken,
+                                                clsmembers,
+                                                strucdecl.CloseBraceToken,
+                                                null);
                                 strucdecl.XGenerated = true;
                                 members.Add(WrapInNamespace(trans, decl, xns, _options.DefaultNamespace));
                             }
@@ -686,17 +702,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
 
                                 var decl = _syntaxFactory.ClassDeclaration(
-                                attribs ,
-                                classdecl.Modifiers,
-                                classdecl.Keyword,
-                                classdecl.Identifier,
-                                classdecl.TypeParameterList,
-                                classdecl.BaseList,
-                                classdecl.ConstraintClauses,
-                                classdecl.OpenBraceToken,
-                                clsmembers,
-                                classdecl.CloseBraceToken,
-                                null);
+                                                            default(SyntaxList<AttributeListSyntax>),
+                                                            classdecl.Modifiers,
+                                                            classdecl.Keyword,
+                                                            classdecl.Identifier,
+                                                            classdecl.TypeParameterList,
+                                                            classdecl.BaseList,
+                                                            classdecl.ConstraintClauses,
+                                                            classdecl.OpenBraceToken,
+                                                            clsmembers,
+                                                            classdecl.CloseBraceToken,
+                                                            null);
                                 decl.XGenerated = true;
 
                                 members.Add(WrapInNamespace(trans, decl, xns, _options.DefaultNamespace));
@@ -704,11 +720,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
+                if (symbolTable.Count > 0)
+                {
+                    // build internal static symbol table class 
+                    // the fields have been created in the code inside VOTreeTransform
+                    clsmembers.Clear();
+                    foreach (var symbol in symbolTable)
+                    {
+                        clsmembers.Add(symbol.Value);
+                    }
+                    var decl = _syntaxFactory.ClassDeclaration(
+                                    default(SyntaxList<AttributeListSyntax>),
+                                    trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
+                                    SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                                    SyntaxFactory.MakeIdentifier(XSharpSpecialNames.SymbolTable),
+                                    default(TypeParameterListSyntax),
+                                    default(BaseListSyntax),
+                                    default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                    clsmembers,
+                                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                                    null);
+                    members.Add(decl);
+                }
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 var result = _syntaxFactory.CompilationUnit(
-                                    externs,
+                                    default(SyntaxList<ExternAliasDirectiveSyntax>),
                                     usingslist,
-                                    attribs,
+                                    default(SyntaxList<AttributeListSyntax>),
                                     members,
                                     eof);
                 result.XGenerated = true;
@@ -716,13 +755,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 
                 _pool.Free(members);
                 _pool.Free(usingslist);
-                _pool.Free(externs);
-                _pool.Free(attribs);
                 _pool.Free(clsmembers);
                 return tree;
             }
             return null;
-
         }
 
         private List<MemberDeclarationSyntax> GeneratePartialProperties (List<PartialPropertyElement> classes, 

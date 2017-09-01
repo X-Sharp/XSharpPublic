@@ -5454,8 +5454,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTryStmt([NotNull] XP.TryStmtContext context)
         {
+            // Add default Catch block for try stmt without catch blocks
             context.SetSequencePoint(context.end);
-            if (!(context._CatchBlock.Count > 0) && context.FinBlock == null)
+            if (context._CatchBlock?.Count == 0  && context.FinBlock == null)
             {
                 var cb = FixPosition(new XP.CatchBlockContext(context, 0), context.Stop);
                 cb.StmtBlk = FixPosition(new XP.StatementBlockContext(cb, 0), context.Stop);

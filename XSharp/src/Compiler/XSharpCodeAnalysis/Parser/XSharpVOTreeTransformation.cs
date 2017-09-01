@@ -1591,7 +1591,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var blockstmt = stmt as XP.ILoopStmtContext;
                 return NeedsReturn(blockstmt.Statements._Stmts);
             }
-
+            if (stmt is XP.TryStmtContext)
+            {
+                var trystmt = stmt as XP.TryStmtContext;
+                // no finally check each of the blocks
+                if (NeedsReturn(trystmt.StmtBlk._Stmts))
+                    return true;
+                if (trystmt._CatchBlock?.Count == 0)
+                    return true;
+                foreach (var cb in trystmt._CatchBlock)
+                {
+                    // if one of the catches has no return then we need to add a return
+                    if (NeedsReturn(cb.StmtBlk._Stmts))
+                        return true;
+                }
+                // all catch blocks are terminated
+                return false;
+            }
+            if (stmt is XP.SeqStmtContext)
+            {
+                var seqstmt = stmt as XP.SeqStmtContext;
+                if (NeedsReturn(seqstmt.StmtBlk._Stmts))
+                    return true;
+                if (seqstmt.RecoverBlock == null)
+                    return true;
+                return NeedsReturn(seqstmt.RecoverBlock.StmtBlock._Stmts);
+            }
             return true;
         }
 
@@ -1617,6 +1642,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case SyntaxKind.FloatKeyword:
                     case SyntaxKind.DecimalKeyword:
                         result = GenerateLiteral(0);
+                        break;
+                    case SyntaxKind.BoolKeyword:
+                        result = GenerateLiteral(false);
                         break;
                     case SyntaxKind.ObjectKeyword:
                     case SyntaxKind.StringKeyword:

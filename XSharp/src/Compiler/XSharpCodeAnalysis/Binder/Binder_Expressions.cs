@@ -93,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             int compoundStringLength = 0;
             var type = expr.Type;
 
-            if (!type.SpecialType.IsNumericType())
+            if (!type.SpecialType.IsNumericType() && ! type.IsUsual() && ! type.IsObjectType())
             {
                 return expr;
             }

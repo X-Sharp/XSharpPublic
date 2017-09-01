@@ -47,6 +47,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
         private bool voStructHasDim;
+
+        private Dictionary<String, FieldDeclarationSyntax> _literalSymbols;
         #endregion
 
         #region Static Fields
@@ -71,7 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _codeblockType = GenerateQualifiedName(VulcanQualifiedTypeNames.Codeblock);
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
-
+            _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
             // calculate the global class name;
             string name = options.CommandLineArguments.CompilationOptions.ModuleName;
             string firstSource = options.CommandLineArguments.SourceFiles.FirstOrDefault().Path;
@@ -98,6 +100,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             GetVOClassAttributes();
         }
 
+        internal Dictionary<string, FieldDeclarationSyntax> LiteralSymbols => _literalSymbols;
         internal static SyntaxList<AttributeListSyntax> VOClassAttribs { get { return _voClassAttribs; } }
 
         internal SyntaxList<AttributeListSyntax> GetVOClassAttributes()
@@ -2142,6 +2145,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(expr);
             return true;
         }
+        private ExpressionSyntax GenerateLiteralSymbol(string symbol)
+        {
+            //remove the # from the string
+            symbol = symbol.Substring(1);
+            var lsym = symbol.ToLower();
+            if (!_literalSymbols.ContainsKey(lsym))
+            {
+                // create field declarator with inline assignment
+                // INTERNAL STATIC INITONLY symbol := __Symbol{"SYMBOL"} AS __Symbol
+                var expr = CreateObject(_symbolType, MakeArgumentList(MakeArgument(GenerateLiteral(lsym.ToUpper()))));
+                var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr);
+                var vars = _syntaxFactory.VariableDeclarator(SyntaxFactory.MakeIdentifier(lsym), EmptyBracketedArgumentList(), init);
+                var fielddecl = _syntaxFactory.FieldDeclaration(
+                                            default(SyntaxList<AttributeListSyntax>),
+                                            TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword, SyntaxKind.ReadOnlyKeyword),
+                                            _syntaxFactory.VariableDeclaration(_symbolType, MakeSeparatedList<VariableDeclaratorSyntax>(vars)), 
+                                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                _literalSymbols.Add(lsym, fielddecl);
+            }
+            var name = MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.SymbolTable), GenerateSimpleName(lsym));
+            return name;
+        }
+
         private bool GeneratePCall(XP.MethodCallContext context)
         {
             // Return type and parameters should match the method prototype that the first parameter
@@ -2883,8 +2909,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XP.SYMBOL_CONST:
-                    arg0 = MakeArgument(GenerateLiteral(context.Token));
-                    expr = CreateObject(_symbolType, MakeArgumentList(arg0));
+                    // call helper method that will create a symbol for the symboltable
+                    expr = GenerateLiteralSymbol(context.Token.Text);
                     break;
                 case XP.REAL_CONST:
                     if (_options.VOFloatConstants && !(CurrentEntity is XP.VodefineContext))

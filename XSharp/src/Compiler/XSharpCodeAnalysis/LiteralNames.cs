@@ -64,6 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string InitProc3 = "$Init3";
         internal const string ExitProc = "$Exit";
         internal const string PCallProc = "$PCallGetDelegate";
+        internal const string SymbolTable = "Xs$SymbolTable";
 
         internal const string VoPszList = "Xs$PszList";
         internal const string ClipperArgs = "Xs$Args";

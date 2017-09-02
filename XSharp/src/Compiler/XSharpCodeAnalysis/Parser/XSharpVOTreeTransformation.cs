@@ -75,8 +75,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
             _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
             // calculate the global class name;
-            string name = options.CommandLineArguments.CompilationOptions.ModuleName;
-            string firstSource = options.CommandLineArguments.SourceFiles.FirstOrDefault().Path;
+            string name = options.CommandLineArguments?.CompilationOptions.ModuleName;
+            string firstSource = options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
             if (String.IsNullOrEmpty(name))
             {
                 name = firstSource;
@@ -87,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = filename.Replace('.', '_');
-                if (options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
+                if (options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
                     GlobalClassName = filename + XSharpSpecialNames.VOExeFunctionsClass;
                 else
                     GlobalClassName = filename + XSharpSpecialNames.VODllFunctionsClass;
@@ -2953,9 +2953,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (block == null )
             {
                 var cbc = context.Parent as XP.CodeblockContext;
-                if (cbc.lambda == null)
+                if (cbc?.lambda == null)
                 {
-                    if (cbc.LambdaParamList == null || cbc.LambdaParamList.ImplicitParams != null)
+                    if (cbc?.LambdaParamList == null || cbc?.LambdaParamList.ImplicitParams != null)
                     {
                         block = MakeBlock(GenerateReturn((ExpressionSyntax)context.CsNode));
                         context.Put<BlockSyntax>(block);
@@ -2966,7 +2966,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // empty codeblock ?
                 var cbcontext = context.Parent as XP.CodeblockContext;
-                if (cbcontext != null && cbcontext.lambda == null)
+                if (cbcontext?.lambda == null)
                 {
                     block = MakeBlock(GenerateReturn(MakeDefault(_usualType)));
                     context.Put<BlockSyntax>(block);

@@ -2099,11 +2099,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                     body: MakeBlock(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))));
             }
-            /*e = _syntaxFactory.CastExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("CODEBLOCK")),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                e);*/
+            /*if (_options.IsDialectVO)
+            {
+                var decl = GenerateLocalDecl("$result", _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("CODEBLOCK")), e);
+                GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(decl));
+                e = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("$res"));
+            }*/
             GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(
                 _syntaxFactory.ExpressionStatement(
                     e,

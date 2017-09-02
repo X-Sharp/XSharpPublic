@@ -2444,7 +2444,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (targetType.IsDelegateType())
                 {
-                    if (expression.Syntax.XIsCodeBlock && expression.Syntax.XNode != null)
+                    if (expression.Syntax.XIsCodeBlock && !Compilation.Options.MacroScript)
                     {
                         Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, expression.Syntax, targetType);
                     }

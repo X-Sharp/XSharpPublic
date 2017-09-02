@@ -21,6 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     public sealed partial class CSharpCompilationOptions
     {
         public bool ArrayZero { get; private set; }
+        public bool MacroScript { get; private set; }
         public string DefaultIncludeDir { get; set; }
         public string WindowsDir { get; set; }
         public string SystemDir { get; set; }
@@ -108,6 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)
         {
             ArrayZero = opt.ArrayZero;
+            MacroScript = opt.MacroScript;
             DefaultIncludeDir = opt.DefaultIncludeDir;
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
@@ -134,6 +136,23 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
             ConsoleOutput = opt.ConsoleOutput;
             ParseLevel = opt.ParseLevel; 
+        }
+
+        internal CSharpCompilationOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
+        {
+            SetXSharpSpecificOptions(opt);
+            return this;
+        }
+        public CSharpCompilationOptions WithMacroScript(bool macroScript)
+        {
+            if (macroScript == this.MacroScript)
+            {
+                return this;
+            }
+            var result = new CSharpCompilationOptions(this);
+            result.SetXSharpSpecificOptions(this);
+            result.MacroScript = macroScript;
+            return result;
         }
 
         internal static void FixResources(CommandLineArguments args)

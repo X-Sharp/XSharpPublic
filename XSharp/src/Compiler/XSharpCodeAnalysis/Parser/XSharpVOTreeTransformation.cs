@@ -1628,62 +1628,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax result = null;
             if (returnType is PredefinedTypeSyntax)
             {
-                var pretype = returnType as PredefinedTypeSyntax;
-                switch (pretype.keyword.Kind)
-                {
-                    case SyntaxKind.VoidKeyword:
-                        return null;
-                    case SyntaxKind.SByteKeyword:
-                    case SyntaxKind.ShortKeyword:
-                    case SyntaxKind.IntKeyword:
-                    case SyntaxKind.LongKeyword:
-                    case SyntaxKind.ByteKeyword:
-                    case SyntaxKind.UShortKeyword:
-                    case SyntaxKind.UIntKeyword:
-                    case SyntaxKind.ULongKeyword:
-                    case SyntaxKind.DoubleKeyword:
-                    case SyntaxKind.FloatKeyword:
-                    case SyntaxKind.DecimalKeyword:
-                        result = GenerateLiteral(0);
-                        break;
-                    case SyntaxKind.BoolKeyword:
-                        result = GenerateLiteral(false);
-                        break;
-                    case SyntaxKind.ObjectKeyword:
-                    case SyntaxKind.StringKeyword:
-                    default:
-                        result = GenerateLiteralNull();
-                        break;
-                }
+                var pts= returnType as PredefinedTypeSyntax;
+                if (pts.keyword.Kind == SyntaxKind.VoidKeyword)
+                    result = null;
+                else
+                    result = MakeDefault(returnType);
             }
             else
             {
-                if (returnType is QualifiedNameSyntax)
-                {
-                    var qns = returnType as QualifiedNameSyntax;
-                    if (qns.ToFullString().Equals(GenerateQualifiedName(SystemQualifiedNames.Void1).ToFullString(), StringComparison.OrdinalIgnoreCase))
-                    {
-                        return null;
-                    }
-                    if (qns.ToFullString().Equals(GenerateQualifiedName(SystemQualifiedNames.Void2).ToFullString(), StringComparison.OrdinalIgnoreCase))
-                    {
-                        return null;
-                    }
-                }
-                if (returnType == _usualType)
-                {
-                    result = GenerateNIL();
-                }
-                else if (returnType == _floatType)
-                {
-                    // Ignore float literals for now.
-                    result = GenerateLiteral(0);
-                }
-                else if (returnType == _dateType)
-                {
-                    result = GenerateMethodCall(VulcanQualifiedFunctionNames.NullDate);
-                }
-                else if (returnType == _pszType || returnType == _symbolType)
+                if (returnType == _pszType || returnType == _symbolType)
                 {
                     result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))));
                 }
@@ -1691,7 +1644,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // _arrayType , _codeblockType
                     // other reference types all use the default null literal
-                    result = GenerateLiteralNull();
+                    result = MakeDefault(returnType);
                 }
             }
             return result;

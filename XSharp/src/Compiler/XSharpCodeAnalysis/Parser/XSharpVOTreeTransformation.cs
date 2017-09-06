@@ -1630,21 +1630,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var pts= returnType as PredefinedTypeSyntax;
                 if (pts.keyword.Kind == SyntaxKind.VoidKeyword)
-                    result = null;
-                else
-                    result = MakeDefault(returnType);
-            }
-            else
-            {
-                if (returnType == _pszType || returnType == _symbolType)
                 {
-                    result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))));
+                    return null;
                 }
                 else
                 {
-                    // _arrayType , _codeblockType
-                    // other reference types all use the default null literal
                     result = MakeDefault(returnType);
+                }
+            }
+            else
+            {
+                if (returnType is QualifiedNameSyntax)
+                {
+                    if (returnType.XNode.GetText().ToLower() == "system.void")
+                        return null;
+                }
+                if (returnType == _pszType || returnType == _symbolType)
+                {
+                    result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))));
                 }
             }
             return result;

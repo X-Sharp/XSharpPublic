@@ -1567,9 +1567,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_CodeBlockWithTypeParameters = 9057,
         WRN_LamdaExpressionWithPipes = 9058,
         ERR_CannotConvertArrayIndexAccess = 9059,
-        //ERR_CompoundAssignmentUsualAndFloat = 9060,
+        ERR_NoExplicitCast = 9060,
         ERR_PtrCastNotAllowed = 9061,
         ERR_TypeNameMatchesGlobalNamespace = 9062,
+
         #endregion X#-only messages
     }
 }

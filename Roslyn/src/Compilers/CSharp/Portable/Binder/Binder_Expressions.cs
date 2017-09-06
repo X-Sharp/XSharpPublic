@@ -1834,7 +1834,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             BoundExpression operand = this.BindValue(node.Expression, diagnostics, BindValueKind.RValue);
             TypeSymbol targetType = this.BindType(node.Type, diagnostics);
+
 #if XSHARP
+            var pe = node.XNode as XSharpParser.PrimaryExpressionContext;
+            if (pe?.Expr is XSharpParser.VoCastExpressionContext)
+            {
+                if (targetType.SpecialType == SpecialType.System_Object && ! operand.Type.IsReferenceType)
+                {
+                    diagnostics.Add(ErrorCode.ERR_NoExplicitCast, node.Location, operand.Type, targetType);
+                }
+            }
             BoundExpression expression;
             if (BindVulcanPointerDereference(node, targetType, operand, diagnostics, out expression))
             {

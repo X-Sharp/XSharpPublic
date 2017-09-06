@@ -49622,7 +49622,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C491 - Some issues with interfaces
 
-ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C492 - #error and #warning messages are output by the compiler with whitespace removed *************
 Application = C492 - #error and #warning messages are output by the compiler with whitespace removed
 IDEVersion = 1.06
@@ -56451,6 +56451,306 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C558 - Compiler error with /vo9 and RETURN only inside TRY..CATCH statement
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C559 - No compiler error with /vo15- and untyped parameters *************
+Application = C559 - No compiler error with /vo15- and untyped parameters
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C559\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C559
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 1546AC5F-293D-4BD9-B85C-76EFD985FEE1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C559 - No compiler error with /vo15- and untyped parameters FileGroups]
+[C559 - No compiler error with /vo15- and untyped parameters Files]
+File = %AppPath%\Prg\C559.prg
+FileGUID = B2FB7CD7-09EE-41FA-9AFC-90721904C75B
+FileType = Code
+[C559 - No compiler error with /vo15- and untyped parameters References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C559 - No compiler error with /vo15- and untyped parameters Resources]
+[C559 - No compiler error with /vo15- and untyped parameters Native Resources]
+[C559 - No compiler error with /vo15- and untyped parameters License files]
+[C559 - No compiler error with /vo15- and untyped parameters General Options]
+Switches=/vo15-
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C559 - No compiler error with /vo15- and untyped parameters Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C559 - No compiler error with /vo15- and untyped parameters
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C560 - CreateInstance() cannot "see" classes with namespaces *************
+Application = C560 - CreateInstance() cannot "see" classes with namespaces
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C560\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = XSharp.Namespace
+Assembly = C560
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6B54BCB8-AE19-4F32-A0B2-291F1B2E9870
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C560 - CreateInstance() cannot "see" classes with namespaces FileGroups]
+[C560 - CreateInstance() cannot "see" classes with namespaces Files]
+File = %AppPath%\Prg\C560.prg
+FileGUID = ADC2A577-4C58-4CC0-89EC-4BA9ABBAFF9C
+FileType = Code
+[C560 - CreateInstance() cannot "see" classes with namespaces References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C560 - CreateInstance() cannot "see" classes with namespaces Resources]
+[C560 - CreateInstance() cannot "see" classes with namespaces Native Resources]
+[C560 - CreateInstance() cannot "see" classes with namespaces License files]
+[C560 - CreateInstance() cannot "see" classes with namespaces General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C560 - CreateInstance() cannot "see" classes with namespaces Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C560 - CreateInstance() cannot "see" classes with namespaces
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) *************
+Application = C561 - No error reported on syntax OBJECT(_CAST , <primitive type>)
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C561\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C561
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 57BE181F-3F56-4A2A-B9E8-BD183DAA3D17
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) FileGroups]
+[C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) Files]
+File = %AppPath%\Prg\C561.prg
+FileGUID = 818481AA-A3B9-4921-A3C3-7602FB1CC3C2
+FileType = Code
+[C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) Resources]
+[C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) Native Resources]
+[C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) License files]
+[C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=1
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C561 - No error reported on syntax OBJECT(_CAST , <primitive type>) Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C561 - No error reported on syntax OBJECT(_CAST , <primitive type>)
 [EndApplications]
 
 [Configurations]

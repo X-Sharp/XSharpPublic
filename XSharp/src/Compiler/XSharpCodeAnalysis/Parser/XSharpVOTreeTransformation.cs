@@ -47,6 +47,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
         private bool voStructHasDim;
+
+        private Dictionary<String, FieldDeclarationSyntax> _literalSymbols;
         #endregion
 
         #region Static Fields
@@ -71,10 +73,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _codeblockType = GenerateQualifiedName(VulcanQualifiedTypeNames.Codeblock);
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
-
+            _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
             // calculate the global class name;
-            string name = options.CommandLineArguments.CompilationOptions.ModuleName;
-            string firstSource = options.CommandLineArguments.SourceFiles.FirstOrDefault().Path;
+            string name = options.CommandLineArguments?.CompilationOptions.ModuleName;
+            string firstSource = options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
             if (String.IsNullOrEmpty(name))
             {
                 name = firstSource;
@@ -85,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = filename.Replace('.', '_');
-                if (options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
+                if (options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
                     GlobalClassName = filename + XSharpSpecialNames.VOExeFunctionsClass;
                 else
                     GlobalClassName = filename + XSharpSpecialNames.VODllFunctionsClass;
@@ -98,6 +100,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             GetVOClassAttributes();
         }
 
+        internal Dictionary<string, FieldDeclarationSyntax> LiteralSymbols => _literalSymbols;
         internal static SyntaxList<AttributeListSyntax> VOClassAttribs { get { return _voClassAttribs; } }
 
         internal SyntaxList<AttributeListSyntax> GetVOClassAttributes()
@@ -1591,7 +1594,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var blockstmt = stmt as XP.ILoopStmtContext;
                 return NeedsReturn(blockstmt.Statements._Stmts);
             }
-
+            if (stmt is XP.TryStmtContext)
+            {
+                var trystmt = stmt as XP.TryStmtContext;
+                // no finally check each of the blocks
+                if (NeedsReturn(trystmt.StmtBlk._Stmts))
+                    return true;
+                if (trystmt._CatchBlock?.Count == 0)
+                    return true;
+                foreach (var cb in trystmt._CatchBlock)
+                {
+                    // if one of the catches has no return then we need to add a return
+                    if (NeedsReturn(cb.StmtBlk._Stmts))
+                        return true;
+                }
+                // all catch blocks are terminated
+                return false;
+            }
+            if (stmt is XP.SeqStmtContext)
+            {
+                var seqstmt = stmt as XP.SeqStmtContext;
+                if (NeedsReturn(seqstmt.StmtBlk._Stmts))
+                    return true;
+                if (seqstmt.RecoverBlock == null)
+                    return true;
+                return NeedsReturn(seqstmt.RecoverBlock.StmtBlock._Stmts);
+            }
             return true;
         }
 
@@ -1600,59 +1628,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax result = null;
             if (returnType is PredefinedTypeSyntax)
             {
-                var pretype = returnType as PredefinedTypeSyntax;
-                switch (pretype.keyword.Kind)
-                {
-                    case SyntaxKind.VoidKeyword:
-                        return null;
-                    case SyntaxKind.SByteKeyword:
-                    case SyntaxKind.ShortKeyword:
-                    case SyntaxKind.IntKeyword:
-                    case SyntaxKind.LongKeyword:
-                    case SyntaxKind.ByteKeyword:
-                    case SyntaxKind.UShortKeyword:
-                    case SyntaxKind.UIntKeyword:
-                    case SyntaxKind.ULongKeyword:
-                    case SyntaxKind.DoubleKeyword:
-                    case SyntaxKind.FloatKeyword:
-                    case SyntaxKind.DecimalKeyword:
-                        result = GenerateLiteral(0);
-                        break;
-                    case SyntaxKind.ObjectKeyword:
-                    case SyntaxKind.StringKeyword:
-                    default:
-                        result = GenerateLiteralNull();
-                        break;
-                }
+                var pts= returnType as PredefinedTypeSyntax;
+                if (pts.keyword.Kind == SyntaxKind.VoidKeyword)
+                    result = null;
+                else
+                    result = MakeDefault(returnType);
             }
             else
             {
-                if (returnType is QualifiedNameSyntax)
-                {
-                    var qns = returnType as QualifiedNameSyntax;
-                    if (qns.ToFullString().Equals(GenerateQualifiedName(SystemQualifiedNames.Void1).ToFullString(), StringComparison.OrdinalIgnoreCase))
-                    {
-                        return null;
-                    }
-                    if (qns.ToFullString().Equals(GenerateQualifiedName(SystemQualifiedNames.Void2).ToFullString(), StringComparison.OrdinalIgnoreCase))
-                    {
-                        return null;
-                    }
-                }
-                if (returnType == _usualType)
-                {
-                    result = GenerateNIL();
-                }
-                else if (returnType == _floatType)
-                {
-                    // Ignore float literals for now.
-                    result = GenerateLiteral(0);
-                }
-                else if (returnType == _dateType)
-                {
-                    result = GenerateMethodCall(VulcanQualifiedFunctionNames.NullDate);
-                }
-                else if (returnType == _pszType || returnType == _symbolType)
+                if (returnType == _pszType || returnType == _symbolType)
                 {
                     result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))));
                 }
@@ -1660,7 +1644,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // _arrayType , _codeblockType
                     // other reference types all use the default null literal
-                    result = GenerateLiteralNull();
+                    result = MakeDefault(returnType);
                 }
             }
             return result;
@@ -2114,6 +2098,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(expr);
             return true;
         }
+        private ExpressionSyntax GenerateLiteralSymbol(string symbol)
+        {
+            //remove the # from the string
+            symbol = symbol.Substring(1);
+            var lsym = symbol.ToLower();
+            if (!_literalSymbols.ContainsKey(lsym))
+            {
+                // create field declarator with inline assignment
+                // INTERNAL STATIC INITONLY symbol := __Symbol{"SYMBOL"} AS __Symbol
+                var expr = CreateObject(_symbolType, MakeArgumentList(MakeArgument(GenerateLiteral(lsym.ToUpper()))));
+                var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr);
+                var vars = _syntaxFactory.VariableDeclarator(SyntaxFactory.MakeIdentifier(lsym), EmptyBracketedArgumentList(), init);
+                var fielddecl = _syntaxFactory.FieldDeclaration(
+                                            default(SyntaxList<AttributeListSyntax>),
+                                            TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword, SyntaxKind.ReadOnlyKeyword),
+                                            _syntaxFactory.VariableDeclaration(_symbolType, MakeSeparatedList<VariableDeclaratorSyntax>(vars)), 
+                                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                _literalSymbols.Add(lsym, fielddecl);
+            }
+            var name = MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.SymbolTable), GenerateSimpleName(lsym));
+            return name;
+        }
+
         private bool GeneratePCall(XP.MethodCallContext context)
         {
             // Return type and parameters should match the method prototype that the first parameter
@@ -2855,8 +2862,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XP.SYMBOL_CONST:
-                    arg0 = MakeArgument(GenerateLiteral(context.Token));
-                    expr = CreateObject(_symbolType, MakeArgumentList(arg0));
+                    // call helper method that will create a symbol for the symboltable
+                    expr = GenerateLiteralSymbol(context.Token.Text);
                     break;
                 case XP.REAL_CONST:
                     if (_options.VOFloatConstants && !(CurrentEntity is XP.VodefineContext))
@@ -2899,9 +2906,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (block == null )
             {
                 var cbc = context.Parent as XP.CodeblockContext;
-                if (cbc.lambda == null)
+                if (cbc?.lambda == null)
                 {
-                    if (cbc.LambdaParamList == null || cbc.LambdaParamList.ImplicitParams != null)
+                    if (cbc?.LambdaParamList == null || cbc?.LambdaParamList.ImplicitParams != null)
                     {
                         block = MakeBlock(GenerateReturn((ExpressionSyntax)context.CsNode));
                         context.Put<BlockSyntax>(block);
@@ -2912,7 +2919,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // empty codeblock ?
                 var cbcontext = context.Parent as XP.CodeblockContext;
-                if (cbcontext != null && cbcontext.lambda == null)
+                if (cbcontext?.lambda == null)
                 {
                     block = MakeBlock(GenerateReturn(MakeDefault(_usualType)));
                     context.Put<BlockSyntax>(block);

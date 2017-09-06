@@ -92,6 +92,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
         public bool HasPCall { get; internal set; } = false;
         public bool NeedsProcessing { get; internal set; } = false;
+        public XSharpParser.SourceContext XSource => XNode as XSharpParser.SourceContext;
+        public Dictionary<String, FieldDeclarationSyntax> LiteralSymbols { get; internal set; } = new Dictionary<string, FieldDeclarationSyntax>();
     }
 }
 
@@ -105,6 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool XPCall { get { return (CsGreen).XPCall; } }
         internal bool XGenerated { get { return (CsGreen).XGenerated; } }
         internal bool XVoIsDim { get { return (CsGreen).XVoIsDim; } }
+
     }
 }
 
@@ -148,12 +151,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 
     public sealed partial class CompilationUnitSyntax
     {
-        private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.CsGreen;
-        public XSharpParser.SourceContext XSource => internalUnit.XNode as XSharpParser.SourceContext;
+        private InternalSyntax.CompilationUnitSyntax internalUnit => 
+            (InternalSyntax.CompilationUnitSyntax) this.CsGreen;
+        public XSharpParser.SourceContext XSource => internalUnit.XSource;
         public ITokenStream XTokens => internalUnit.XTokens;
         public ITokenStream XPPTokens => internalUnit.XPPTokens;
         public Dictionary<string, SourceText> IncludedFiles => internalUnit.IncludedFiles;
         public bool NeedsProcessing => internalUnit.NeedsProcessing;
+        internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralSymbols => internalUnit.LiteralSymbols;
     }
 }
 

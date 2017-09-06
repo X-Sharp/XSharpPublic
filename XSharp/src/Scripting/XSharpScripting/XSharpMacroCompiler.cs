@@ -11,7 +11,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
         public static readonly ScriptCompiler Instance = new XSharpMacroCompiler();
 
         private static readonly CSharpParseOptions s_defaultOptions = new CSharpParseOptions(kind: SourceCodeKind.Script)
-            .WithMacroScript(true);
+            .WithMacroScript(true)
+            .WithXSharpSpecificOptions(new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan });
 
         private XSharpMacroCompiler()
         {
@@ -63,7 +64,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
                     sourceReferenceResolver: script.Options.SourceResolver,
                     metadataReferenceResolver: script.Options.MetadataResolver,
                     assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default
-                ).WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes),
+                ).WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes)
+                .WithXSharpSpecificOptions(new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan })
+                .WithMacroScript(true),
                 previousSubmission,
                 script.ReturnType,
                 script.GlobalsType

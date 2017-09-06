@@ -494,7 +494,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Lists
-        protected SyntaxList<SyntaxToken> TokenList(params SyntaxKind[] kinds)
+        internal SyntaxList<SyntaxToken> TokenList(params SyntaxKind[] kinds)
         {
             var rb = _pool.Allocate();
             foreach (var k in kinds)
@@ -2099,11 +2099,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                     body: MakeBlock(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))));
             }
-            /*e = _syntaxFactory.CastExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("CODEBLOCK")),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                e);*/
+            /*if (_options.IsDialectVO)
+            {
+                var decl = GenerateLocalDecl("$result", _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("CODEBLOCK")), e);
+                GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(decl));
+                e = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("$res"));
+            }*/
             GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(
                 _syntaxFactory.ExpressionStatement(
                     e,
@@ -5454,8 +5455,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTryStmt([NotNull] XP.TryStmtContext context)
         {
+            // Add default Catch block for try stmt without catch blocks
             context.SetSequencePoint(context.end);
-            if (!(context._CatchBlock.Count > 0) && context.FinBlock == null)
+            if (context._CatchBlock?.Count == 0  && context.FinBlock == null)
             {
                 var cb = FixPosition(new XP.CatchBlockContext(context, 0), context.Stop);
                 cb.StmtBlk = FixPosition(new XP.StatementBlockContext(cb, 0), context.Stop);

@@ -241,7 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (right.Kind == BoundKind.UnboundLambda)
             {
-                if (right.Syntax.XIsCodeBlock && right.Syntax.XNode != null)
+                if (right.Syntax.XIsCodeBlock && !Compilation.Options.MacroScript)
                 {
                     Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, right.Syntax, delegateType);
                 }

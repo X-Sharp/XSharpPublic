@@ -6902,6 +6902,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot cast type &apos;{0}&apos; to &apos;{1}&apos;.
+        /// </summary>
+        internal static string ERR_NoExplicitCast {
+            get {
+                return ResourceManager.GetString("ERR_NoExplicitCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot convert type &apos;{0}&apos; to &apos;{1}&apos;.
         /// </summary>
         internal static string ERR_NoExplicitConv {

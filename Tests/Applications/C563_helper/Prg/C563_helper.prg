@@ -1,0 +1,2 @@
+GLOBAL sTestVulcan := #TEST
+

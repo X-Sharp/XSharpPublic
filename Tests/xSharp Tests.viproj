@@ -56352,7 +56352,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C557 - Incorrect multi dim array indexing with usual subscripts
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C558 - Compiler error with /vo9 and RETURN only inside TRY..CATCH statement *************
 Application = C558 - Compiler error with /vo9 and RETURN only inside TRY..CATCH statement
 IDEVersion = 1.06
@@ -56498,7 +56498,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C559 - No compiler error with /vo15- and untyped parameters Native Resources]
 [C559 - No compiler error with /vo15- and untyped parameters License files]
 [C559 - No compiler error with /vo15- and untyped parameters General Options]
-Switches=/vo15-
+Switches=/vo15- 
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -56752,7 +56752,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C561 - No error reported on syntax OBJECT(_CAST , <primitive type>)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C562 - Compiler crash with CLIPPER method and /vo9+ with missing RETURN type *************
 Application = C562 - Compiler crash with CLIPPER method and /vo9+ with missing RETURN type
 IDEVersion = 1.06

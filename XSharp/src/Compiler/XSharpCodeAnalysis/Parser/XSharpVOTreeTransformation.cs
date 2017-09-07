@@ -1622,32 +1622,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return true;
         }
-
         private ExpressionSyntax GetReturnExpression(TypeSyntax returnType)
         {
             ExpressionSyntax result = null;
             if (returnType is PredefinedTypeSyntax)
             {
-                var pts= returnType as PredefinedTypeSyntax;
-                if (pts.keyword.Kind == SyntaxKind.VoidKeyword)
+                var pretype = returnType as PredefinedTypeSyntax;
+                switch (pretype.keyword.Kind)
                 {
-                    return null;
-                }
-                else
-                {
-                    result = MakeDefault(returnType);
+                    case SyntaxKind.VoidKeyword:
+                        return null;
+                    default:
+                        result = MakeDefault(returnType);
+                        break;
                 }
             }
             else
             {
                 if (returnType is QualifiedNameSyntax)
                 {
-                    if (returnType.XNode.GetText().ToLower() == "system.void")
+                    var qns = returnType as QualifiedNameSyntax;
+                    // System.Void
+                    if (qns.ToFullString().Equals(GenerateQualifiedName(SystemQualifiedNames.Void1).ToFullString(), StringComparison.OrdinalIgnoreCase))
+                    {
                         return null;
+                    }
+                    // global::System.Void
+                    if (qns.ToFullString().Equals(GenerateQualifiedName(SystemQualifiedNames.Void2).ToFullString(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return null;
+                    }
                 }
                 if (returnType == _pszType || returnType == _symbolType)
                 {
                     result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))));
+                }
+                else
+                {
+                    // other types all return a default expression
+                    // This includes USUAL, DATE, ARRAY, STRING, FLOAT etc
+                    result = MakeDefault(returnType);
                 }
             }
             return result;

@@ -921,7 +921,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax type = context.Type?.Get<TypeSyntax>();
             if (type == null)
             {
-                if (CurrentEntity != null && CurrentEntity.Data.HasTypedParameter && _options.VOUntypedAllowed)
+                if (!_options.VOUntypedAllowed)
+                    type = _getMissingType();
+                else if (CurrentEntity != null && CurrentEntity.Data.HasTypedParameter )
                     type = _usualType;
                 else
                     type = _getMissingType();
@@ -2378,7 +2380,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Function Foo or Function Foo() without convention
             if (paramCount == 0 && !hasConvention)
             {
-                context.Data.HasClipperCallingConvention = _options.VOClipperCallingConvention && !isEntryPoint;
+                context.Data.HasClipperCallingConvention = _options.VOClipperCallingConvention && !isEntryPoint ;
             }
             if (paramCount > 0)
             {
@@ -2392,7 +2394,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
                 context.Data.HasTypedParameter = bHasTypedParameter;
-                if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention)
+                if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.VOUntypedAllowed)
                     context.Data.HasClipperCallingConvention = !bHasTypedParameter;
             }
         }

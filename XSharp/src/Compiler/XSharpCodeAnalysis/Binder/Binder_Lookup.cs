@@ -158,6 +158,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            // C563 Make sure the erros is generated for Inaccessible types.
+            if (! result.IsClear && result.Kind == LookupResultKind.Inaccessible && result.Error != null )
+            {
+                if (useSiteDiagnostics == null)
+                {
+                    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                }
+                useSiteDiagnostics.Add(result.Error);
+            }
             return binder;
         }
 

@@ -678,7 +678,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool noMethod = options.HasFlag(LookupOptions.MustNotBeMethod);
             bool onlyDef = options.HasFlag(LookupOptions.DefinesOnly);
-            if ((noMethod || onlyDef) && ! result.IsClear)
+            if ((noMethod || onlyDef) && ! result.IsClear && result.Kind == LookupResultKind.Viable)
             {
                 LookupResult tmp = LookupResult.GetInstance();
                 foreach (var sym in result.Symbols)

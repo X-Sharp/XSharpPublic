@@ -1,4 +1,4 @@
-﻿#if SMARTINDENT
+﻿#if SMARTINDENTMEF
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

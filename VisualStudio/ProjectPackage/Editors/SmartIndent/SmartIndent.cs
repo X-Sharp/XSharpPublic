@@ -1,4 +1,4 @@
-﻿#if SMARTINDENT
+﻿#if SMARTINDENTMEF
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text;
@@ -29,7 +29,6 @@ namespace XSharp.Project
         private OptionsPages.IntellisenseOptionsPage _optionsPage;
         IVsTextManager4 _textManager;
         private String[] _indentKeywords;
-        private String[] _outdentKeywords;
         private String[] _codeBlockKeywords;
         private String[][] _middleKeywords;
         private String[][] _specialKeywords;
@@ -71,14 +70,13 @@ namespace XSharp.Project
         {
             // Build list for Indent tokens
             _indentKeywords = this.getIndentKeywords();
-            // Build list for Outdent tokens
-            _outdentKeywords = this.getOutdentKeywords();
             // Start of Method, Function, ...
             _codeBlockKeywords = this.getStartOfCodeKeywords();
             // Middle Keywords : ELSE, ELSEIF, ...
             _middleKeywords = this.getMiddleKeywords();
-            //
+            // Name is Self-explanatory
             _specialKeywords = this.getSpecialMiddleKeywords();
+            // Build list for Outdent tokens
             _specialOutdentKeywords = this.getSpecialOutdentKeywords();
         }
 
@@ -111,7 +109,7 @@ namespace XSharp.Project
                 new String[]{ "ENDCASE", "DO" },
                 new String[]{ "NEXT", "FOR,FOREACH" },
                 new String[]{ "UNTIL", "REPEAT" },
-                new String[]{ "END", "BEGIN,DO,IF,TRY" },
+                new String[]{ "END", "BEGIN,DO,IF,TRY,WHILE" },
                 new String[]{ "ENDDO", "DO,WHILE" }
             };
         }
@@ -280,6 +278,7 @@ namespace XSharp.Project
                         //
                         _lastIndentValue = indentValue;
                     }
+                    //
                     return _lastIndentValue;
                 }
             }
@@ -412,6 +411,8 @@ namespace XSharp.Project
         {
             int indentValue = 0;
             bool found = false;
+            Stack<String> context = new Stack<String>();
+            //
             try
             {
                 String[] possibleTokens = tokenList.Split(',');
@@ -425,7 +426,7 @@ namespace XSharp.Project
                     lineNumber = lineNumber - 1;
                     ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
                     List<IMappingTagSpan<IClassificationTag>> tagList = GetTagsInLine(line);
-                    String keyword = "";
+                    String currentKeyword = "";
                     //
                     if (tagList.Count > 0)
                     {
@@ -455,21 +456,35 @@ namespace XSharp.Project
                             if (spans.Count > 0)
                             {
                                 SnapshotSpan kwSpan = spans[0];
-                                keyword = kwSpan.GetText();
-                                keyword = keyword.ToUpper();
-                                if (possibleTokens.Contains<String>(keyword))
+                                currentKeyword = kwSpan.GetText();
+                                currentKeyword = currentKeyword.ToUpper();
+                                if (possibleTokens.Contains<String>(currentKeyword))
                                 {
-                                    found = true;
-                                    break;
+                                    if (context.Count == 0)
+                                    {
+                                        found = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        tokenList = context.Pop();
+                                        possibleTokens = tokenList.Split(',');
+                                    }
                                 }
                                 // Here we should also check for nested construct or we might get false positive...
+                                string outdentToken;
+                                if ((outdentToken = this.searchSpecialOutdentKeyword(currentKeyword)) != null)
+                                {
+                                    context.Push(tokenList);
+                                    tokenList = outdentToken;
+                                    possibleTokens = tokenList.Split(',');
+                                }
                             }
                         }
                         // 
                         indentValue = 0;
                     }
                 }
-
             }
             finally
             {

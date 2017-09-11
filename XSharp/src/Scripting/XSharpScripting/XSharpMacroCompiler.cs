@@ -8,24 +8,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     internal sealed class XSharpMacroCompiler : ScriptCompiler
     {
-        public static readonly ScriptCompiler Instance = new XSharpMacroCompiler();
+        private static XSharpSpecificCompilationOptions xsOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true };
+        private static ScriptCompiler[] compilers = {null,null};    // first = VO, second = Vulcan
 
-        private static readonly CSharpParseOptions s_defaultOptions = new CSharpParseOptions(kind: SourceCodeKind.Script)
-            .WithMacroScript(true)
-            .WithXSharpSpecificOptions(new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan });
-
-        private XSharpMacroCompiler()
+        private XSharpSpecificCompilationOptions xoptions;
+        private CSharpParseOptions options;
+        public static ScriptCompiler GetInstance(bool lVoStyleStrings)
         {
+            ScriptCompiler sc = null;
+            int pos = lVoStyleStrings ? 0 : 1;
+            sc = compilers[pos];
+            if (sc == null)
+            {
+                sc = new XSharpMacroCompiler(lVoStyleStrings);
+                compilers[pos] = sc;
+            }
+            return sc;
         }
 
-        public override DiagnosticFormatter DiagnosticFormatter => CSharpDiagnosticFormatter.Instance;
+        private XSharpMacroCompiler(bool lVoStyleStrings)
+        {
+            xoptions = new XSharpSpecificCompilationOptions() { Dialect = lVoStyleStrings ? XSharpDialect.VO : XSharpDialect.Vulcan};
+            options = new CSharpParseOptions(kind: SourceCodeKind.Script)
+                .WithMacroScript(true)
+                .WithXSharpSpecificOptions(xoptions);
+
+    }
+
+    public override DiagnosticFormatter DiagnosticFormatter => CSharpDiagnosticFormatter.Instance;
 
         public override StringComparer IdentifierComparer => StringComparer.Ordinal;
 
         public override bool IsCompleteSubmission(SyntaxTree tree) => SyntaxFactory.IsCompleteSubmission(tree);
 
         public override SyntaxTree ParseSubmission(SourceText text, CancellationToken cancellationToken) =>
-            SyntaxFactory.ParseSyntaxTree(text, s_defaultOptions, cancellationToken: cancellationToken);
+            SyntaxFactory.ParseSyntaxTree(text, options, cancellationToken: cancellationToken);
 
         public override Compilation CreateSubmission(Script script)
         {
@@ -41,11 +58,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
             // TODO: report diagnostics
             diagnostics.Free();
 
-            var tree = SyntaxFactory.ParseSyntaxTree(script.Code, s_defaultOptions, script.Options.FilePath);
+            var tree = SyntaxFactory.ParseSyntaxTree(script.Code, options, script.Options.FilePath);
 
             string assemblyName, submissionTypeName;
             script.Builder.GenerateSubmissionId(out assemblyName, out submissionTypeName);
-
+            
             var compilation = CSharpCompilation.CreateScriptCompilation(
                 assemblyName,
                 tree,
@@ -65,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
                     metadataReferenceResolver: script.Options.MetadataResolver,
                     assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default
                 ).WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes)
-                .WithXSharpSpecificOptions(new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan })
+                .WithXSharpSpecificOptions(xoptions)
                 .WithMacroScript(true),
                 previousSubmission,
                 script.ReturnType,

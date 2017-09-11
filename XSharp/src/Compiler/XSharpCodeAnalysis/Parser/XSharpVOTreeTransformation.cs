@@ -2121,12 +2121,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             //remove the # from the string
             symbol = symbol.Substring(1);
+            var expr = CreateObject(_symbolType, MakeArgumentList(MakeArgument(GenerateLiteral(symbol.ToUpper()))));
+            if (_options.MacroScript)
+                return expr;
             var lsym = symbol.ToLower();
             if (!_literalSymbols.ContainsKey(lsym))
             {
                 // create field declarator with inline assignment
                 // INTERNAL STATIC INITONLY symbol := __Symbol{"SYMBOL"} AS __Symbol
-                var expr = CreateObject(_symbolType, MakeArgumentList(MakeArgument(GenerateLiteral(lsym.ToUpper()))));
                 var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr);
                 var vars = _syntaxFactory.VariableDeclarator(SyntaxFactory.MakeIdentifier(lsym), EmptyBracketedArgumentList(), init);
                 var fielddecl = _syntaxFactory.FieldDeclaration(

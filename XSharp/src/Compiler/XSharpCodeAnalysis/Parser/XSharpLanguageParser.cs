@@ -146,11 +146,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             var parseErrors = ParseErrorData.NewBag();
-            var pp = new XSharpPreprocessor(_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
-			BufferedTokenStream ppStream;
-            if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
-            { 
-	            var ppTokens = pp.PreProcess();
+            XSharpPreprocessor pp = null;
+            BufferedTokenStream ppStream = null;
+            if (! _options.MacroScript)
+            {
+                pp = new XSharpPreprocessor(_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+            }
+            // Macros do not need the preprocessor
+            bool mustPreprocess = !_options.MacroScript;
+            if (!lexer.HasPreprocessorTokens && _options.NoStdDef)
+            {
+                // also no preprocessor when the lexer has no preprocessor tokens and NoStdDef is enabled
+                mustPreprocess = false;
+            }
+            if (mustPreprocess)
+            {
+                var ppTokens = pp.PreProcess();
                 // no need to filter. The preprocessor does this already
 	            ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
             }
@@ -160,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 				// so we bypass the preprocessor and use the lexer tokenstream
                 // but if a .ppo is required we must use the preprocessor to
                 // write the source text to the .ppo file
-                if (_options.PreprocessorOutput)
+                if (_options.PreprocessorOutput && pp != null)
                 {
                     pp.writeToPPO(sourceText,false,false);
                 }
@@ -231,11 +242,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
 
                     ppStream.Reset();
-                    if (_options.Verbose)
+                    if (_options.Verbose && pp != null)
                     {
                         pp.DumpStats();
                     }
-                    pp.Close();
+                    if (pp != null)
+                    {
+                        pp.Close();
+                    }
                     parser.Reset();
                     tree = buildTree(parser);
                 }
@@ -312,14 +326,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 result.XNode = tree;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
-                result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
-                result.Globals = treeTransform.GlobalEntities.Globals;
-                result.IncludedFiles = pp.IncludedFiles;
-                result.HasPCall = treeTransform.GlobalEntities.HasPCall;
-                result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
-                if (_options.IsDialectVO)
+                if (!_options.MacroScript )
                 {
-                    result.LiteralSymbols = ((XSharpVOTreeTransformation)treeTransform).LiteralSymbols;
+                    result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
+                    result.Globals = treeTransform.GlobalEntities.Globals;
+                    result.IncludedFiles = pp?.IncludedFiles;
+                    result.HasPCall = treeTransform.GlobalEntities.HasPCall;
+                    result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
+                    if (_options.IsDialectVO)
+                    {
+                        result.LiteralSymbols = ((XSharpVOTreeTransformation)treeTransform).LiteralSymbols;
+                    }
                 }
                 return result;
             }

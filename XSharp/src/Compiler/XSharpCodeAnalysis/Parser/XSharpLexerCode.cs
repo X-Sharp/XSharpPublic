@@ -25,9 +25,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     public partial class XSharpLexer 
     {
         // Several Help methods that can be used for colorizing in an editor
-        delegate bool StringEquals(string first, string second);
-        private StringEquals stringEquals = null;
-        private StringComparer stringComparer;
         public static bool IsKeyword(int iToken)
         {
             return iToken > XSharpLexer.FIRST_KEYWORD && iToken < XSharpLexer.LAST_KEYWORD;
@@ -752,7 +749,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else if (type == SYMBOL_CONST && (LastToken == NL || LastToken == UDCSEP))
             {
                 int symtype;
-                if (! MacroLexer && SymIds.TryGetValue(t.Text, out symtype))
+                if (SymIds.TryGetValue(t.Text, out symtype))
                 {
                     t.Type = symtype;
                     _inPp = true;
@@ -760,11 +757,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 else if (_isScript)
                 {
-                    if (stringEquals(t.Text, "#R"))
+                    if (Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer.Equals(t.Text, "#R"))
                     {
                         t.Type = SCRIPT_REF;
                     }
-                    else if (stringEquals(t.Text, "#LOAD"))
+                    else if (Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer.Equals(t.Text, "#LOAD"))
                     {
                         t.Type = SCRIPT_LOAD;
                     }
@@ -882,7 +879,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         private IDictionary<string, int> _getIds(bool lFour)
         {
-            var ids = new Dictionary<string, int>(stringComparer);
+            var ids = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
 
             Dictionary<string, int> voKeywords = null;
             if (MacroLexer)
@@ -1288,7 +1285,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var token = keywords[text];
                 ids.Add(text, token);
             }
-            return ids.ToImmutableDictionary(stringComparer);
+            return ids.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
         }
 
         public IDictionary<string, int> KwIds
@@ -1325,9 +1322,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         private IDictionary<string, int> _getppIds()
         {
             // Macro lexer has no preprocessor keywords
-            if (MacroLexer)
-                return new Dictionary<string, int>();
-            var symIds = new Dictionary<string, int>(stringComparer)
+            var symIds = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer)
             {
                 {"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>
 			    {"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
@@ -1346,7 +1341,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			    {"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
 			    {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
 		    };
-            return symIds.ToImmutableDictionary(stringComparer);
+            if (MacroLexer)
+            {
+                symIds.Clear();
+            }
+            return symIds.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
         }
 
         public IDictionary<string, int> SymIds
@@ -1379,8 +1378,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             lexer.AllowSingleQuotedStrings = options.Dialect.AllowStringsWithSingleQuotes();
             lexer.IsScript = options.Kind == Microsoft.CodeAnalysis.SourceCodeKind.Script;
             lexer.MacroLexer = options.MacroScript;
-            lexer.stringEquals = Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer.Equals;
-            lexer.stringComparer = Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer;
 #endif
             return lexer;
         }

@@ -312,10 +312,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var unboundLambda = (UnboundLambda)source;
 #if XSHARP
-            if (!destination.IsDelegateType() && !destination.IsExpressionTree())
-            {
-                return BindCodeblock(syntax, unboundLambda, conversion, isCast, destination, diagnostics);
-            }
+            var cb = BindCodeblock(syntax, unboundLambda, conversion, isCast, destination, diagnostics);
+            if (cb != null)
+                return cb;
 #endif
             var boundLambda = unboundLambda.Bind((NamedTypeSymbol)destination);
             diagnostics.AddRange(boundLambda.Diagnostics);

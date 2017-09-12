@@ -7233,9 +7233,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCodeblockExpression([NotNull] XP.CodeblockExpressionContext context)
         {
             if (context.CbExpr != null)
-                context.Put(context.CbExpr.Get<LambdaExpressionSyntax>());
+                context.Put(context.CbExpr.Get<ExpressionSyntax>());
             else if (context.AnoExpr != null)
-                context.Put(context.AnoExpr.Get<AnonymousMethodExpressionSyntax>());
+                context.Put(context.AnoExpr.Get<ExpressionSyntax>());
         }
 
         public override void ExitLambdaParameterList([NotNull] XP.LambdaParameterListContext context)

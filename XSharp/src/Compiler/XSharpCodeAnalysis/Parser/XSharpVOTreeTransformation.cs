@@ -2918,6 +2918,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
         #region Codeblocks
+        public override void ExitCodeblock([NotNull] XP.CodeblockContext context)
+        {
+            base.ExitCodeblock(context);
+            if (context.lambda == null)
+            {
+                var expr = context.Get<ExpressionSyntax>();
+                expr = MakeCastTo(_codeblockType, expr);
+                context.Put(expr);
+            }
+        }
+
         public override void ExitCodeblockCode([NotNull] XP.CodeblockCodeContext context)
         {
             // Convert everything to a stmt block when it is a real codeblock and "just" an expression

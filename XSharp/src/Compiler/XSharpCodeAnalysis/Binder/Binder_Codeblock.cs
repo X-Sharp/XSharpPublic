@@ -25,6 +25,14 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         private BoundExpression BindCodeblock(SyntaxNode syntax, UnboundLambda unboundLambda, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
         {
+            var isCodeblock = syntax.XIsCodeBlock;
+            if (!isCodeblock)
+            {
+                isCodeblock = !destination.IsDelegateType() && !destination.IsExpressionTree();
+            }
+            if (!isCodeblock)
+                return null;
+
             Conversion conv = Conversion.ImplicitReference;
 
             if (!destination.IsCodeblock() && !destination.IsObjectType())

@@ -57,10 +57,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
             foreach (var a in args)
             {
-                if (a.Type == null)
+                
+                if (a.Type == null && ! a.Syntax.XIsCodeBlock)
                     convArgs.Add(new BoundDefaultOperator(a.Syntax, usualType));
                 else
-                    convArgs.Add(MakeConversionNode(a, usualType, false));
+                   convArgs.Add(MakeConversionNode(a, usualType, false));
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
             return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanFunctionNames.VulcanSend,

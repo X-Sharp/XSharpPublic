@@ -215,3 +215,5 @@ Tools/Converter/PrjConvert.exe
 
 #Backup files
 *.bak
+/VSIntegration.VC.VC.opendb
+/VSIntegration.VC.db

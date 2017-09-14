@@ -176,14 +176,14 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 				// ALl other project groups.
 				// Adjust the condition when needed
 				VAR oCondition := (XMLAttribute) oElement:Attributes:GetNamedItem("Condition") 
-				// <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
+				// <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
 				IF oCondition != NULL
 					VAR  cInnerText := oCondition:InnerText
 					if ! cInnerText:ToLower():Contains("platform")
 						if cInnerText:ToLower():Contains("release")
-							oCondition:InnerText := "'$(Configuration)|$(Platform)'=='Release|AnyCPU'"
+							oCondition:InnerText := "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'"
 						else
-							oCondition:InnerText := "'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"
+							oCondition:InnerText := "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"
 						endif
 					ENDIF
 				ENDIF

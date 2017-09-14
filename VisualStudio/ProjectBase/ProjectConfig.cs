@@ -497,7 +497,7 @@ namespace Microsoft.VisualStudio.Project
             // So do it ourselves.
             var matchingGroups = new List<MSBuildConstruction.ProjectPropertyGroupElement>();
 
-			foreach (MSBuildConstruction.ProjectPropertyGroupElement group in this.evaluatedProject.Xml.PropertyGroups)
+            foreach (MSBuildConstruction.ProjectPropertyGroupElement group in this.evaluatedProject.Xml.PropertyGroups)
             {
                 if (String.Equals(group.Condition.Trim(), conditionTrimmed, StringComparison.OrdinalIgnoreCase))
                 {
@@ -546,7 +546,7 @@ namespace Microsoft.VisualStudio.Project
                         // remove duplicates
                         for (int i = 0; i < props.Count - 1; i++)
                         {
-                            group.RemoveChild(props[0]);
+                            group.RemoveChild(props[i]);
                         }
                         group.SetProperty(propertyName, propertyValue);
                         written = true;

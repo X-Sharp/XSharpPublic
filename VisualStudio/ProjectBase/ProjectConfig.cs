@@ -522,7 +522,7 @@ namespace Microsoft.VisualStudio.Project
                     // remove duplicates
                     for (int i = 0; i < props.Count - 1; i++)
                     {
-                        selectedGroup.RemoveChild(props[0]);
+                        selectedGroup.RemoveChild(props[i]);
                     }
                     selectedGroup.SetProperty(propertyName, propertyValue);
                     return;
@@ -536,7 +536,8 @@ namespace Microsoft.VisualStudio.Project
                     var props = new List<MSBuildConstruction.ProjectPropertyElement>();
                     foreach (MSBuildConstruction.ProjectPropertyElement property in group.PropertiesReversed)
                     {
-                        if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0)
+                        if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && 
+                            property.Condition.Length == 0)
                         {
                             props.Add(property);
                         }

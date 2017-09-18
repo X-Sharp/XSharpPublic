@@ -1,10 +1,10 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EnvDTE;
-using LanguageService.CodeAnalysis.Text;
 using System.Diagnostics;
 
 namespace XSharpModel
@@ -12,8 +12,8 @@ namespace XSharpModel
     [DebuggerDisplay("{Prototype,nq}")]
     public class XTypeMember : XElement
     {
-
-        private String _typeName;
+        public string Suffix { get; set; }
+        private string _typeName;
         private List<XVariable> _parameters;
         private List<XVariable> _locals;
         private bool _isStatic;
@@ -43,11 +43,6 @@ namespace XSharpModel
             {
                 return _typeName;
             }
-
-            set
-            {
-                _typeName = value;
-            }
         }
 
         public bool IsStatic
@@ -55,11 +50,6 @@ namespace XSharpModel
             get
             {
                 return _isStatic;
-            }
-
-            set
-            {
-                _isStatic = value;
             }
         }
 
@@ -82,11 +72,6 @@ namespace XSharpModel
             {
                 return _parameters;
             }
-
-            set
-            {
-                _parameters = value;
-            }
         }
 
         override public string FullName
@@ -105,54 +90,67 @@ namespace XSharpModel
             }
         }
 
-        public override String Description
+        public bool IsArray { get; set; }
+        public override string Description
         {
             get
             {
-                String modVis = "";
+                string modVis = "";
                 if (this.Modifiers != Modifiers.None)
                 {
                     modVis += this.Modifiers.ToString() + " ";
                 }
                 modVis += this.Visibility.ToString() + " ";
                 //
-                String desc = modVis;
+                string desc = modVis;
                 //
                 if ( this.Kind != Kind.ClassVar )
-                    desc += this.Kind.ToString() + " ";
-                desc += this.Prototype;
-                //
-                if ((this.Kind == Kind.Method) || (this.Kind == Kind.Function) || (this.Kind == Kind.Property ) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
                 {
-                    desc += " as " + this.TypeName;
+                    if (this.Kind == Kind.VODefine)
+                    {
+                        desc += "DEFINE" + " "+this.Name+this.Suffix;
+                        return desc;
+                    }
+                    else if (this.Kind == Kind.VOGlobal)
+                    {
+                        desc += "GLOBAL" + " ";
+                    }
+                    else
+                    {
+                        desc += this.Kind.ToString() + " ";
+                    }
                 }
+                desc += this.Prototype;
                 //
                 return desc;
             }
         }
 
-        public override String Prototype
+        public override string Prototype
         {
             get
             {
-                if ( (this.Kind == Kind.Property) || (this.Kind == Kind.Access) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
-                    return this.Name;
-                //
-                String vars = "";
-                foreach (XVariable var in this.Parameters)
+                string vars = "";
+                if ( this.Kind.HasParameters())
                 {
-                    if (vars.Length > 0)
-                        vars += ", ";
-                    vars += var.Name + " as " + var.TypeName;
+                    vars = "(";
+                    foreach (XVariable var in this.Parameters)
+                    {
+                        if (vars.Length > 1)
+                            vars += ", ";
+                        vars += var.Name + " as " + var.TypeName;
+                    }
+                    vars += ")";
                 }
                 //
-                String desc = "";
-                desc += this.Name;
-                desc += "(";
+                string desc = this.Name;
                 desc += vars;
-                desc += ")";
                 //
-
+                if (this.Kind.HasReturnType())
+                {
+                    desc += " AS " + this.TypeName;
+                }
+                //
                 return desc;
             }
         }
@@ -163,11 +161,35 @@ namespace XSharpModel
             {
                 return _locals;
             }
+        }
 
-            set
+
+        /// <summary>
+        /// Fill a List of XTypeMember with Homonyms of the current one
+        /// </summary>
+        /// <returns></returns>
+        public List<XTypeMember> Namesake()
+        {
+            List<XTypeMember> _namesake = new List<XTypeMember>();
+            if ( Parent != null )
             {
-                _locals = value;
+                //Search in the parent members
+                foreach( var member in Parent.Members )
+                {
+                    // For Homonyms
+                    if ( string.Compare( member.FullName, this.FullName, true ) == 0 )
+                    {
+                        // But don't add the current one
+                        if ( string.Compare( member.Prototype, this.Prototype, true) !=0 )
+                        {
+                            _namesake.Add(member);
+                        }
+                    }
+                }
+                // Hey, we should also walk the Parent's parents, no ?
+
             }
+            return _namesake;
         }
     }
 }

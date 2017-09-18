@@ -1,4 +1,9 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -152,6 +157,7 @@ namespace XSharp.Project
         }
         #endregion
     }
+    [ComVisible(true)]
     public class XSharpReferenceNodeProperties : ReferenceNodeProperties
     {
         #region ctors
@@ -355,7 +361,7 @@ namespace XSharp.Project
 
             get
             {
-                string specificVersion = this.GetProperty("Isolated", "False");
+                string specificVersion = this.GetProperty(ProjectFileConstants.Isolated, "False");
 
                 if (String.IsNullOrEmpty(specificVersion))
                 {
@@ -368,8 +374,17 @@ namespace XSharp.Project
             }
             set
             {
-                this.SetProperty("Isolated", value.ToString());
+                this.SetProperty(ProjectFileConstants.Isolated, value.ToString());
             }
+        }
+
+        [SRCategory(SR.Misc)]
+        [LocDisplayName(SR.EmbedInteropTypes)]
+        [SRDescription(SR.EmbedInteropTypesDescription)]
+        public virtual bool EmbedInteropTypes
+        {
+            get { return ((ComReferenceNode)this.Node).EmbedInteropTypes; }
+            set { ((ComReferenceNode)this.Node).EmbedInteropTypes = value; }
         }
 
         #endregion

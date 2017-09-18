@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="ViewerDlg">
+    <Window Name="ViewerDlg">
+      <Name>ViewerDlg</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>
+      </Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>401</Width>
+      <Height>240</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3234594820</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"ViewerDlg"</HyperLabel>
+      </ExProperties>
+    </Window>
+    <Control Name="Info">
+      <Name>Info</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>1</Order>
+      <Left>1</Left>
+      <Top>1</Top>
+      <Width>393</Width>
+      <Height>174</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1085345860</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"Info"</HyperLabel>
+        <NewFont>8:Courier New</NewFont>
+        <OwnerAlignment>OA_WIDTH_HEIGHT</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="BtnOK">
+      <Name>BtnOK</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>OK</Caption>
+      <Order>2</Order>
+      <Left>292</Left>
+      <Top>181</Top>
+      <Width>80</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"OK"</HyperLabel>
+        <HyperLabel>"BtnOK"</HyperLabel>
+        <OwnerAlignment>OA_X_Y</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="Sizer">
+      <Name>Sizer</Name>
+      <Class>CONTROL:SCROLLBAR:VERTICALSCROLLBAR</Class>
+      <Caption>
+      </Caption>
+      <Order>3</Order>
+      <Left>377</Left>
+      <Top>187</Top>
+      <Width>21</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1140850691</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"Sizer"</HyperLabel>
+        <OwnerAlignment>OA_X_Y</OwnerAlignment>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

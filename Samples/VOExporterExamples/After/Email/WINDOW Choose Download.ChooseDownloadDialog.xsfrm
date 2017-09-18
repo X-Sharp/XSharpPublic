@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="ChooseDownloadDialog">
+    <Window Name="ChooseDownloadDialog">
+      <Name>ChooseDownloadDialog</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>Choose Mail to Download or Delete</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>613</Width>
+      <Height>359</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3234594820</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Choose Mail to Download or Delete"</HyperLabel>
+        <HyperLabel>"ChooseDownloadDialog"</HyperLabel>
+      </ExProperties>
+    </Window>
+    <Control Name="DeleteButton">
+      <Name>DeleteButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON</Class>
+      <Caption>Delete Selections</Caption>
+      <Order>2</Order>
+      <Left>21</Left>
+      <Top>25</Top>
+      <Width>140</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872905</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Delete Selections"</HyperLabel>
+        <HyperLabel>"DeleteButton"</HyperLabel>
+        <Value>"DELETE"</Value>
+      </ExProperties>
+    </Control>
+    <Control Name="DownloadButton">
+      <Name>DownloadButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON</Class>
+      <Caption>Download Selections</Caption>
+      <Order>3</Order>
+      <Left>21</Left>
+      <Top>45</Top>
+      <Width>140</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741833</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Download Selections"</HyperLabel>
+        <HyperLabel>"DownloadButton"</HyperLabel>
+        <Value>"DOWNLOAD"</Value>
+      </ExProperties>
+    </Control>
+    <Control Name="OKButton">
+      <Name>OKButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Process</Caption>
+      <Order>4</Order>
+      <Left>505</Left>
+      <Top>33</Top>
+      <Width>97</Width>
+      <Height>32</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Process"</HyperLabel>
+        <HyperLabel>"OKButton"</HyperLabel>
+        <NewFont>10:Microsoft Sans Serif:Bold</NewFont>
+        <OwnerAlignment>OA_X</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="CloseButton">
+      <Name>CloseButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Abort</Caption>
+      <Order>5</Order>
+      <Left>505</Left>
+      <Top>65</Top>
+      <Width>97</Width>
+      <Height>28</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Abort"</HyperLabel>
+        <HyperLabel>"CloseButton"</HyperLabel>
+        <OwnerAlignment>OA_X</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="DeleteDownloadedMail">
+      <Name>DeleteDownloadedMail</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:CHECKBOX</Class>
+      <Caption>&amp;Delete Downloaded Emails</Caption>
+      <Order>6</Order>
+      <Left>37</Left>
+      <Top>65</Top>
+      <Width>152</Width>
+      <Height>20</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807363</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Delete Downloaded Emails"</HyperLabel>
+        <HyperLabel>"DeleteDownloadedMail"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="ListView1">
+      <Name>ListView1</Name>
+      <Class>CONTROL:COMMONCONTROL:LISTVIEW</Class>
+      <Caption>
+      </Caption>
+      <Order>7</Order>
+      <Left>1</Left>
+      <Top>97</Top>
+      <Width>605</Width>
+      <Height>229</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082130957</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"ListView1"</HyperLabel>
+        <OwnerAlignment>OA_WIDTH_HEIGHT</OwnerAlignment>
+        <FullRowSelect>True</FullRowSelect>
+        <CheckBoxes>False</CheckBoxes>
+      </ExProperties>
+    </Control>
+    <Control Name="ReprocessHeaders">
+      <Name>ReprocessHeaders</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Get Headers</Caption>
+      <Order>8</Order>
+      <Left>505</Left>
+      <Top>5</Top>
+      <Width>97</Width>
+      <Height>28</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Get Headers"</HyperLabel>
+        <HyperLabel>"ReprocessHeaders"</HyperLabel>
+        <OwnerAlignment>OA_X</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="SelectAllButton">
+      <Name>SelectAllButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Select All Headers</Caption>
+      <Order>9</Order>
+      <Left>261</Left>
+      <Top>9</Top>
+      <Width>136</Width>
+      <Height>24</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Select All Headers"</HyperLabel>
+        <HyperLabel>"SelectAllButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="UnSelectAllButton">
+      <Name>UnSelectAllButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;UnSelect All Headers</Caption>
+      <Order>10</Order>
+      <Left>261</Left>
+      <Top>37</Top>
+      <Width>136</Width>
+      <Height>24</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;UnSelect All Headers"</HyperLabel>
+        <HyperLabel>"UnSelectAllButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="InvertSelectionButton">
+      <Name>InvertSelectionButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Invert Headers Selection</Caption>
+      <Order>11</Order>
+      <Left>261</Left>
+      <Top>65</Top>
+      <Width>136</Width>
+      <Height>24</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Invert Headers Selection"</HyperLabel>
+        <HyperLabel>"InvertSelectionButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="TestMailIDButton">
+      <Name>TestMailIDButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>Test Mail IDs</Caption>
+      <Order>12</Order>
+      <Left>409</Left>
+      <Top>29</Top>
+      <Width>80</Width>
+      <Height>44</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Test Mail IDs"</HyperLabel>
+        <HyperLabel>"TestMailIDButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="SelectionOptions">
+      <Name>SelectionOptions</Name>
+      <Class>CONTROL:TEXTCONTROL:RADIOBUTTONGROUP</Class>
+      <Caption>Selection Option:</Caption>
+      <Order>1</Order>
+      <Left>9</Left>
+      <Top>9</Top>
+      <Width>188</Width>
+      <Height>80</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872903</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Selection Option:"</HyperLabel>
+        <HyperLabel>"SelectionOptions"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

@@ -26,9 +26,10 @@ namespace XSharp.Project
 
         // The parameterless constructor is called by the WPF designer ?
 
-        public VSXSharpCodeDomProvider(XSharpFileNode fileNode)
+        public VSXSharpCodeDomProvider(XSharpFileNode fileNode)  
         {
             _fileNode = fileNode;
+            _projectNode = fileNode.ProjectMgr as XSharpProjectNode;
         }
 
         #region helper functions
@@ -76,7 +77,6 @@ namespace XSharp.Project
             {
                 this.FileName = mainFilePath;
                 // Do the parse
-#if DESIGNERSUPPORT
                 // If the TextReader is a DocDataTextReader, we should be running from VisualStudio, called by the designer
                 // So, we will guess the FileName to check if we have a .Designer.Prg file at the same place.
                 // If so, we will have to handle both .prg to produce two CodeCompileUnit, then we will merge the result into one, with markers in it
@@ -96,7 +96,7 @@ namespace XSharp.Project
                         String prgFileName = dd.Name;
                         // Build the Designer FileName
                         String designerPrgFile = XSharpCodeDomHelper.BuildDesignerFileName(prgFileName);
-                        if (File.Exists(designerPrgFile))
+                        if (!String.IsNullOrEmpty(designerPrgFile) && File.Exists(designerPrgFile))
                         {
                             // Ok, we have a candidate !!!
                             DocData docdata = new DocData((IServiceProvider)ddtr, designerPrgFile);
@@ -116,7 +116,6 @@ namespace XSharp.Project
                     }
                 }
                 else
-#endif
                 {
                     compileUnit = base.Parse(codeStream);
                 }
@@ -132,7 +131,6 @@ namespace XSharp.Project
         // Called by the WinForm designer at save time
         public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
         {
-#if DESIGNERSUPPORT
             // Does that CodeCompileUnit comes from a "Merged" unit ?
             if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_HASDESIGNER))
             {
@@ -210,7 +208,7 @@ namespace XSharp.Project
                 designerStream.Close();
                 NormalizeLineEndings(designerPrgFile);
                 // The problem here, is that we "may" have some new members, like EvenHandlers, and we need to update their position (line/col)
-                XSharpCodeParser parser = new XSharpCodeParser();
+                XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
                 parser.TabSize = XSharpCodeDomProvider.TabSize;
                 parser.FileName = designerPrgFile;
                 CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
@@ -270,7 +268,6 @@ namespace XSharp.Project
                 }
             }
             else
-#endif
             {
                 // suppress generating the "generated code" header
                 if (writer is  DocDataTextWriter)       // Form Editor
@@ -289,7 +286,7 @@ namespace XSharp.Project
                     DocDataTextReader ddtr = new DocDataTextReader(docData);
                     // Retrieve 
                     string generatedSource = ddtr.ReadToEnd();
-                    XSharpCodeParser parser = new XSharpCodeParser();
+                    XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
                     parser.TabSize = XSharpCodeDomProvider.TabSize;
                     if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_FILENAME))
                     {

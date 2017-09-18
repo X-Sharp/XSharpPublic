@@ -30,6 +30,10 @@ namespace XSharp.Project
     public abstract class XProjectNode : ProjectNode
     {
 
+        public XProjectNode(): base()
+        {
+            URLNodes = new Dictionary<string, HierarchyNode>(1000, StringComparer.OrdinalIgnoreCase);
+        }
         /// <summary>
         /// Initialize common project properties with default value if they are empty.
         /// </summary>
@@ -151,11 +155,10 @@ namespace XSharp.Project
 
         #endregion
         #region Cache URLs and other canonicalnames
-        protected Dictionary<string, HierarchyNode> URLNodes = new Dictionary<string, HierarchyNode>(1000);
+        protected Dictionary<string, HierarchyNode> URLNodes ;
 
         public string CleanURL(string url)
         {
-            url = url.ToLowerInvariant();
             return url.TrimEnd('\\'); ;
         }
         public void RemoveURL(HierarchyNode node)
@@ -172,7 +175,7 @@ namespace XSharp.Project
 
         }
 
-        public void RemoveURL(String url)
+        public virtual void RemoveURL(String url)
         {
             url = CleanURL(url);
             if (URLNodes.ContainsKey(url))
@@ -180,13 +183,12 @@ namespace XSharp.Project
 
         }
 
-        public void AddURL(String url, HierarchyNode node)
+        public virtual void AddURL(String url, HierarchyNode node)
         {
             url = this.CleanURL(url);
             if (URLNodes.ContainsKey(url))
                 URLNodes.Remove(url);
             URLNodes.Add(url, node);
-
         }
 
         public HierarchyNode FindURL(String url)
@@ -260,7 +262,7 @@ namespace XSharp.Project
 
                     case VsCommands.ProjectProperties:
                         // Sets the menu command text to 'ProjectName &Properties' where ProjectName is the name of this project
-                        string propertiesMenuCommandText = Path.GetFileNameWithoutExtension(this.ProjectFile)+" &Properties";
+                        string propertiesMenuCommandText = Path.GetFileNameWithoutExtension(this.ProjectFile) + " &Properties";
                         NativeMethods.OLECMDTEXT.SetText(pCmdText, propertiesMenuCommandText);
                         result = QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return (int)VSConstants.S_OK;
@@ -311,7 +313,7 @@ namespace XSharp.Project
                 }
             }
 
-             return base.QueryStatusCommandFromOleCommandTarget(cmdGroup, cmd, out handled);
+            return base.QueryStatusCommandFromOleCommandTarget(cmdGroup, cmd, out handled);
         }
         /// <summary>
         /// This is similar to QueryStatusOnNode method but it is internal so that others within the assembley can call
@@ -348,7 +350,7 @@ namespace XSharp.Project
             {
                 EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
                 var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), Utilities.GetActivePlatformName(automationObject));
-                return new XProjectConfig(this,name );
+                return new XProjectConfig(this, name);
             }
         }
 
@@ -616,5 +618,6 @@ namespace XSharp.Project
         }
 
         #endregion
+
     }
 }

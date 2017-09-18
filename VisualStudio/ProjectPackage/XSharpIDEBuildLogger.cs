@@ -1,4 +1,9 @@
-﻿using Microsoft.VisualStudio.Project;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -7,26 +12,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Build.Framework;
+using Microsoft.VisualStudio.Shell.TableManager;
+
 namespace XSharp.Project
 {
     internal class XSharpIDEBuildLogger : IDEBuildLogger
     {
-        ErrorListProvider errorlistProvider;
-        OutputErrorsFactory outputErrors;
-        List<IErrorListItem> errorItems;
+        ErrorListManager errorlistManager;
         XSharpProjectNode node;
         bool mustLog;
         internal XSharpIDEBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy) : base(output, taskProvider, hierarchy)
         {
 
         }
-        internal ErrorListProvider ErrorlistProvider
+        internal ErrorListManager ErrorListManager
         {
-            get { return errorlistProvider; }
-            set {
-                errorlistProvider = value;
-                outputErrors = new OutputErrorsFactory(value);
-                errorlistProvider.AddErrorListFactory(outputErrors);
+            get { return errorlistManager; }
+            set
+            {
+                errorlistManager = value;
             }
         }
         internal XSharpProjectNode ProjectNode
@@ -43,8 +47,8 @@ namespace XSharp.Project
 
         internal void Clear()
         {
-            if (outputErrors != null)
-                outputErrors.ClearErrors();
+            errorlistManager.ClearBuildErrors();
+            errorlistManager.Refresh();
         }
         protected int errors;
         protected int warnings;
@@ -53,7 +57,7 @@ namespace XSharp.Project
         protected override void BuildStartedHandler(object sender, BuildStartedEventArgs buildEvent)
         {
             base.BuildStartedHandler(sender, buildEvent);
-            errorItems = new List<IErrorListItem>();
+            errorlistManager.ClearBuildErrors();
             errors = warnings = 0;
             didCompile = false;
         }
@@ -69,23 +73,13 @@ namespace XSharp.Project
         {
             base.ProjectStartedHandler(sender, buildEvent);
             mustLog = true;
-            //if (String.IsNullOrEmpty(buildEvent.TargetNames))
-            //{
-            
-            //    mustLog = true;
-            //}
-            //else
-            //{
-            //    mustLog = false;
-            //}
         }
         protected override void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs buildEvent)
         {
             base.ProjectFinishedHandler(sender, buildEvent);
             if (didCompile)
             {
-                outputErrors.ClearErrors();
-                outputErrors.AddErrorItems(errorItems);
+                errorlistManager.Refresh();
             }
         }
 
@@ -117,58 +111,19 @@ namespace XSharp.Project
                     didCompile = true;
                 }
             }
+            if (messageEvent.SenderName.ToLower() == "nativeresourcecompiler")
+            {
+                didCompile = true;
+            }
         }
         protected void ReportError(BuildErrorEventArgs args)
         {
-            var error = new ErrorListItem()
-            {
-                Column = args.ColumnNumber,
-                ErrorCategory = "Build",
-                ErrorCode = args.Code,
-                ErrorSource = Constants.Product,
-                Filename = args.File,
-                Line = args.LineNumber,
-                Message = args.Message,
-                ProjectName = ProjectNode.Caption,
-                Severity = MessageSeverity.Error
-            };
-            errorItems.Add(error);
+            errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Error);
+
         }
         protected void ReportWarning(BuildWarningEventArgs args)
         {
-            var error = new ErrorListItem()
-            {
-                Column = args.ColumnNumber,
-                ErrorCategory = "Build",
-                ErrorCode = args.Code,
-                ErrorSource = Constants.Product,
-                Filename = args.File,
-                Line = args.LineNumber,
-                Message = args.Message,
-                ProjectName = ProjectNode.Caption,
-                Severity = MessageSeverity.Warning
-            };
-            errorItems.Add(error);
-        }
-
-        internal class ErrorListItem : IErrorListItem
-        {
-            public int Column { get; set; }
-
-            public object ErrorCode { get; set; }
-
-
-            public object ErrorSource { get; set; }
-
-            public string Filename { get; set; }
-            public int Line { get; set; }
-
-            public string Message { get; set; }
-
-            public string ProjectName { get; set; }
-
-            public MessageSeverity Severity { get; set; }
-            public string ErrorCategory { get; set; }
+            errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Warning);
         }
     }
 }

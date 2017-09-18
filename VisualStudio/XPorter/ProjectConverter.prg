@@ -1,6 +1,9 @@
-// Application : XPorter
-// XPorter.prg , Created : 28-9-2016   15:02
-// User : robert
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 
 USING System.Collections.Generic
 USING System.Xml                           

@@ -15,13 +15,18 @@ using Microsoft.Build.Execution;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
+using XSharp.Project;
 namespace Microsoft.VisualStudio.Project
 {
+    //
+    // RvdH: Note that the C# project system calls the constructor with a null outputassembly
+    //       we therefore retrieve all the info through the ProjectNode in stead.
+    //
+    // 
     class Output : IVsOutput2
     {
         private ProjectNode project;
-        private ProjectItemInstance output;
+        //private ProjectItemInstance output;
 
         /// <summary>
         /// Constructor for IVSOutput2 implementation
@@ -31,30 +36,18 @@ namespace Microsoft.VisualStudio.Project
         public Output(ProjectNode projectManager, ProjectItemInstance outputAssembly)
         {
             Utilities.ArgumentNotNull("projectManager", projectManager);
-			// outputAssembly may be empty!
+            // outputAssembly may be empty!
             //Utilities.ArgumentNotNull("outputAssembly", outputAssembly);
             project = projectManager;
-            output = outputAssembly;
+            //output = outputAssembly;
         }
 
         #region IVsOutput2 Members
 
         public int get_CanonicalName(out string pbstrCanonicalName)
         {
-            if (output == null)
-			{
-			 	// we're lying here to keep callers happy who expect a path...
-				// See also OutputGroup.get_KeyOutputObject
-                pbstrCanonicalName = project.Url;
-                return VSConstants.S_OK;
-            }
-
             // Get the output assembly path (including the name)
-            pbstrCanonicalName = output.GetMetadataValue(ProjectFileConstants.FinalOutputPath);
-			if (String.IsNullOrEmpty(pbstrCanonicalName))
-			{
-				pbstrCanonicalName = output.EvaluatedInclude;
-			}
+            pbstrCanonicalName = project.GetProjectProperty(ProjectFileConstants.TargetPath);
             Debug.Assert(!String.IsNullOrEmpty(pbstrCanonicalName), "Output Assembly not defined");
 
             // Make sure we have a full path
@@ -73,19 +66,15 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public virtual int get_DeploySourceURL(out string pbstrDeploySourceURL)
         {
-            if (output == null)
-			{
-                // we're lying here to keep callers happy who expect a path...
-				// See also OutputGroup.get_KeyOutputObject
-                pbstrDeploySourceURL = GetType().Assembly.CodeBase;
-                return VSConstants.S_OK;
-            }
-
-            string path = output.GetMetadataValue(ProjectFileConstants.FinalOutputPath);
-			if (String.IsNullOrEmpty(path))
+            string path = string.Empty; ;
+            if (this.project is XProjectNode)
             {
-                pbstrDeploySourceURL = new Url(output.GetMetadataValue("FullPath")).Uri.AbsoluteUri;
-                return VSConstants.S_OK;
+                var xproject = project as XProjectNode;
+                path = project.GetOutputAssembly(xproject.CurrentConfig.ConfigCanonicalName);
+            }
+            if (String.IsNullOrEmpty(path))
+            {
+                path = project.GetProjectProperty(ProjectFileConstants.TargetPath);
             }
             if(path.Length < 9 || String.Compare(path.Substring(0, 8), "file:///", StringComparison.OrdinalIgnoreCase) != 0)
                 path = "file:///" + path; // TODO: does not work with '#' char, see e.g. bug 641942
@@ -105,25 +94,12 @@ namespace Microsoft.VisualStudio.Project
                 pvar = null;
                 return VSConstants.E_INVALIDARG;
             }
-			if (output == null)
-			{
-			 	// we're lying here to keep callers happy who expect a path...
-				// See also OutputGroup.get_KeyOutputObject
-                switch (szProperty) {
-                    case "FinalOutputPath":
-                        pvar = typeof(string).Assembly.CodeBase;
-                        return VSConstants.S_OK;
-                }
-                pvar = null;
-                return VSConstants.E_NOTIMPL;
-            }
-
-            if (string.Equals(szProperty, "OUTPUTLOC", StringComparison.OrdinalIgnoreCase))
+	        if (string.Equals(szProperty, "OUTPUTLOC", StringComparison.OrdinalIgnoreCase))
             {
-                szProperty = ProjectFileConstants.FinalOutputPath;
+                szProperty = ProjectFileConstants.TargetDir;
             }
 
-            string value = output.GetMetadataValue(szProperty);
+            string value = project.GetProjectProperty(szProperty);
             pvar = value;
 
             // If we don't have a value, we are expected to return unimplemented
@@ -143,18 +119,10 @@ namespace Microsoft.VisualStudio.Project
 
         public int get_RootRelativeURL(out string pbstrRelativePath)
         {
-            if (output == null)
-			{
-			 	// we're lying here to keep callers happy who expect a path...
-				// See also OutputGroup.get_KeyOutputObject
-                pbstrRelativePath = project.ProjectFolder;
-                return VSConstants.E_FAIL;
-            }
 
             pbstrRelativePath = String.Empty;
             object variant;
             // get the corresponding property
-
             if(ErrorHandler.Succeeded(this.get_Property("TargetPath", out variant)))
             {
                 string var = variant as String;

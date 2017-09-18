@@ -16,6 +16,9 @@ using Microsoft.VisualStudio.Package;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Text.Operations;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Tagging;
 
 namespace XSharp.Project
 {
@@ -40,13 +43,23 @@ namespace XSharp.Project
         [Import]
         ICompletionBroker CompletionBroker = null;
 
+        [Import]
+        ITextStructureNavigatorSelectorService NavigatorService { get; set; }
+
+        [Import]
+        ISignatureHelpBroker SignatureHelpBroker = null;
+
+        [Import]
+        IBufferTagAggregatorFactoryService aggregator = null;
+
+
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IVsTextLines textlines;
             textViewAdapter.GetBuffer(out textlines);
             if (textlines != null)
             {
-                Guid langId ;
+                Guid langId;
                 textlines.GetLanguageServiceID(out langId);
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
@@ -55,40 +68,21 @@ namespace XSharp.Project
                     {
                         Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);
+                        return;
                     }
+                    //
+                    // Only capturing keystroke for OUR languageService... ???
+                    //
+                    IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
+                    Debug.Assert(textView != null);
+                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator);
+                    IOleCommandTarget next;
+                    textViewAdapter.AddCommandFilter(filter, out next);
+                    filter.Next = next;
                 }
             }
-            //
-            IWpfTextView view = AdaptersFactory.GetWpfTextView(textViewAdapter);
-            Debug.Assert(view != null);
-
-            CommandFilter filter = new CommandFilter(view, CompletionBroker);
-
-            IOleCommandTarget next;
-            textViewAdapter.AddCommandFilter(filter, out next);
-            filter.Next = next;
         }
+
     }
-    internal static class EditorHelpers
-    {
-        internal static bool IsVulcanFileNode(string fileName)
-        {
-            object itemNode = GetItemNode(fileName);
-            if (itemNode != null)
-            {
-                Type type = itemNode.GetType();
-                var asm = type.Assembly.GetName().Name;
-                return asm.IndexOf("vulcan", StringComparison.OrdinalIgnoreCase) == 0;
-            }
-            return false;
-        }
-        private static object GetItemNode(string filename)
-        {
-            EnvDTE80.DTE2 dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
-            var projectitem = dte.Solution.FindProjectItem(filename);
-            return projectitem;
-        }
-    }
-
 
 }

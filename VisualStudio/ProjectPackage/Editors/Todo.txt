@@ -1,0 +1,16 @@
+﻿Some things that need extra work:
+- Parameter Handling for Generic types
+- Index operator [] on List types
+- Quickinfo and other intellisense lookup for GLOBALS and DEFINES in external Libs 
+  (right now a single token is checked for Local, Field and Property, but it can also be a define or global)
+- Quickinfo for #defines ?
+- Formatting the source code
+- Commenting the code does not work perfect yet.
+- Implement Event Handler after += on Event property
+- Looking up Description from XML comment files for assemblies (SVsXMLMemberIndexService, IVsXMLMemberIndex  )
+- Delay lookups because the customer may still be typing
+- Limit the completion list to a certain number of items
+- Add keyword case synchroniation
+- Add smart indenting
+- Add intellisense for Globals
+- Goto definition for Functions

@@ -178,8 +178,9 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public override bool ShouldSerializeValue(object component)
         {
-            bool result = this.property.ShouldSerializeValue(component);
-            return result;
+            //bool result = this.property.ShouldSerializeValue(component);
+            //return result;
+            return false;
         }
 
         /// <summary>

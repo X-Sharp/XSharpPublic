@@ -409,13 +409,14 @@ namespace XSharp.Build
 
 
         private int errorCount;
-        private bool hasShownMaxErrorMsg;
+        //private bool hasShownMaxErrorMsg;
         public Xsc() : base()
         {
             //System.Diagnostics.Debugger.Launch();
             errorCount = 0;
-            hasShownMaxErrorMsg = false;
+            //hasShownMaxErrorMsg = false;
             VulcanCompatibleResources = false;
+            NoStandardDefs = true;
         }
 
         protected override string ToolName
@@ -492,10 +493,16 @@ namespace XSharp.Build
                 }
                 // Allow to override the path when developing.
                 // Please note that this must be a complete path, for example "d:\Xsharp\Dev\XSharp\Binaries\Debug"
+
                 string DevPath = System.Environment.GetEnvironmentVariable("XSHARPDEV");
-                if (!string.IsNullOrEmpty(DevPath))
+                if (!string.IsNullOrEmpty(DevPath) )
                 {
-                    CompilerPath = Utilities.AddSlash(DevPath);
+                    DevPath = Utilities.AddSlash(DevPath);
+                    string testPath = Path.Combine(Path.GetDirectoryName(DevPath), toolName);
+                    if (File.Exists(testPath))
+                    {
+                        CompilerPath = DevPath;
+                    }
                 }
                 if (string.IsNullOrEmpty(CompilerPath))
                 {
@@ -666,8 +673,11 @@ namespace XSharp.Build
         {
             get
             {
-                string platform = this.Platform;
-                if ((string.IsNullOrEmpty(platform) || platform.Equals("anycpu", StringComparison.OrdinalIgnoreCase)) && this.Prefer32Bit)
+                // no 32 bit preference for libraries
+                string platform = this.Platform?.ToLower();
+                if ((string.IsNullOrEmpty(platform) || platform.Equals("anycpu")) 
+                    && this.Prefer32Bit
+                    && TargetType.ToLower().Contains("exe"))
                 {
                     platform = "anycpu32bitpreferred";
                 }
@@ -695,7 +705,7 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/platform:", PlatformWith32BitPreference);
             commandLine.AppendSwitchIfNotNull("/errorreport:", ErrorReport);
             commandLine.AppendSwitchWithInteger("/warn:", base.Bag, nameof(WarningLevel));
-            //commandLine.AppendSwitchIfNotNull("/doc:", DocumentationFile);
+            commandLine.AppendSwitchIfNotNull("/doc:", DocumentationFile);
             commandLine.AppendSwitchIfNotNull("/baseaddress:", BaseAddress);
             commandLine.AppendSwitchUnquotedIfNotNull("/define:", Utilities.GetDefineConstantsSwitch(DefineConstants, Log));
             commandLine.AppendSwitchIfNotNull("/win32res:", Win32Resource);
@@ -960,18 +970,18 @@ namespace XSharp.Build
         {
             try
             {
-                if (errorCount < 500)
-                {
-                    base.LogEventsFromTextOutput(singleLine, messageImportance);
-                }
-                else if (! hasShownMaxErrorMsg)
-                {
-                    hasShownMaxErrorMsg = true;
-                    // the line is in the format c:\....\file.prg (n,n,n,n): error/warning XSnnnn:
-                    string line = singleLine.Substring(0, singleLine.IndexOf(')')+2);
-                    line += " error XB9001:" + $"Truncating error list after at {errorCount} errors ";
-                    base.LogEventsFromTextOutput(line, MessageImportance.High);
-                }
+                //if (errorCount < 500)
+                //{
+                base.LogEventsFromTextOutput(singleLine, messageImportance);
+                //}
+                //else if (! hasShownMaxErrorMsg)
+                //{
+                //    //hasShownMaxErrorMsg = true;
+                //    // the line is in the format c:\....\file.prg (n,n,n,n): error/warning XSnnnn:
+                //    string line = singleLine.Substring(0, singleLine.IndexOf(')')+2);
+                //    line += " error XB9001:" + $"Truncating error list after at {errorCount} errors ";
+                //    base.LogEventsFromTextOutput(line, MessageImportance.High);
+                //}
                 errorCount++;
             }
             catch (Exception e)

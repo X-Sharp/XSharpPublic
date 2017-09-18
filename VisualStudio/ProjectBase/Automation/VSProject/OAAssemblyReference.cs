@@ -125,7 +125,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 {
                     return BaseReferenceNode.AssemblyName.Name;
                 }
-                return null;
+                return BaseReferenceNode.Caption;
             }
         }
         public override int RevisionNumber

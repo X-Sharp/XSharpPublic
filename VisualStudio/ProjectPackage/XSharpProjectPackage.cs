@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -19,9 +19,44 @@ using XSharp.Project.WPF;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Globalization;
-#if VODESIGNER
+using static XSharp.Project.XSharpConstants;
+using XSharp.Project.OptionsPages;
 using XSharp.VOEditors;
-#endif
+/*
+Substitution strings
+String	Description
+$=RegistryEntry$	The value of the RegistryEntry entry. If the registry entry string 
+                    ends in a backslash (\), then the default value of the registry subkey is used. 
+                    For example, the substitution string $=HKEY_CURRENT_USER\Environment\TEMP$ is expanded 
+                    to the temporary folder of the current user.
+$AppName$	        The qualified name of the application that is passed to the AppEnv.dll entry points. 
+                    The qualified name consists of the application name, an underscore, and the class identifier 
+                    (CLSID) of the application automation object, which is also recorded as the value of the 
+                    ThisVersionDTECLSID setting in the project .pkgdef file.
+$AppDataLocalFolder	The subfolder under %LOCALAPPDATA% for this application.
+$BaseInstallDir$	The full path of the location where Visual Studio was installed.
+$CommonFiles$	    The value of the %CommonProgramFiles% environment variable.
+$MyDocuments$	    The full path of the My Documents folder of the current user.
+$PackageFolder$	    The full path of the directory that contains the package assembly files for the application.
+$ProgramFiles$	    The value of the %ProgramFiles% environment variable.
+$RootFolder$	    The full path of the root directory of the application.
+$RootKey$	        The root registry key for the application. By default the root is in 
+                    HKEY_CURRENT_USER\Software\CompanyName\ProjectName\VersionNumber (when the application 
+                    is running, _Config is appended to this key). It is set by the RegistryRoot value in 
+                    the SolutionName.pkgdef file.
+                    The $RootKey$ string can be used to retrieve a registry value under the application subkey. 
+                    For example, the string "$=$RootKey$\AppIcon$" will return the value of the AppIcon entry 
+                    under the application root subkey.
+The parser processes the .pkgdef file sequentially, and can access a registry entry under the application subkey only if the entry has been previously defined
+$ShellFolder$	The full path of the location where Visual Studio was installed.
+$System$	The Windows\system32 folder.
+$WINDIR$	The Windows folder.
+*/
+
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis", CodeBase = "XSharp.CodeAnalysis.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = "31c59c566fa38f21", Version = XSharp.Constants.Version)]
 namespace XSharp.Project
 {
 
@@ -42,7 +77,7 @@ namespace XSharp.Project
     /// </remarks>
     ///
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
-    [Description("XSharp Project System")]
+    [Description(ProjectSystemName)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]      // 53651BEA-799A-45EB-B58C-C884F5417219
@@ -50,21 +85,18 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpBuildPropertyPage))]        // E994C210-9D6D-4CF4-A061-EBBEA2BC626B
     [ProvideObject(typeof(XSharpBuildEventsPropertyPage))]  // 49306259-9119-466E-8780-486CFBE2597D
     [ProvideObject(typeof(XSharpDebugPropertyPage))]        // 2955A638-C389-4675-BB1C-6B2BC173C1E7
-    [ProvideProjectFactory(typeof(XSharpProjectFactory),
-        XSharpConstants.LanguageName,
-        XSharpConstants.LanguageName + " Project Files (*." + XSharpConstants.ProjectExtension + ");*." + XSharpConstants.ProjectExtension,
-        XSharpConstants.ProjectExtension,
-        XSharpConstants.ProjectExtensions,
+    [ProvideProjectFactory(typeof(XSharpProjectFactory), 
+        LanguageName, ProjectFileMask,ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
-    [ProvideService(typeof(XSharpLanguageService), ServiceName = "XSharp Language Service")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".vh")]
+    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), FileExtension1)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), FileExtension2)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), PpoExtension)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), HeaderExtension1)]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), HeaderExtension2)]
     [ProvideLanguageService(typeof(XSharpLanguageService),
-                         "XSharp",
+                         LanguageName,
                          1,                            // resource ID of localized language name
                          AutoOutlining =true,
                          CodeSense = true,             // Supports IntelliSense
@@ -74,7 +106,6 @@ namespace XSharp.Project
                          EnableAdvancedMembersOption =true,
                          EnableAsyncCompletion = true, // Supports background parsing
                          EnableCommenting = true,      // Supports commenting out code
-                         EnableFormatSelection = true,
                          EnableLineNumbers =true,
                          MatchBraces =true,
                          MatchBracesAtCaret =true,
@@ -84,40 +115,38 @@ namespace XSharp.Project
                          ShowCompletion =true,
                          ShowDropDownOptions = true,    // Supports NavigationBar 
                          ShowMatchingBrace =true,
+                        
+#if SMARTINDENT
+                         ShowSmartIndent = true,
+                         EnableFormatSelection = true,
+#else
                          ShowSmartIndent = false,
+                         EnableFormatSelection = false,
+#endif
+                         HideAdvancedMembersByDefault =true,
                          SingleCodeWindowOnly = false,
-                         SupportCopyPasteOfHTML = false
+                         ShowHotURLs =true,
+                         SupportCopyPasteOfHTML = true
+                         
                  )]
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
-         "XSharp",  // Name of language used as registry key.
+         LanguageName,  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
-         "XSharp",  // language key used in snippet templates.
+         LanguageName,  // language key used in snippet templates.
          @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
          SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
+    [ProvideLanguageEditorOptionPageAttribute(
+                 typeof(IntellisenseOptionsPage),  // GUID of property page
+                 LanguageName,  // Language Name
+                 null,      // Page Category
+                 "Intellisense",// Page name
+                 "#201"         // Localized name of property page
+                 )]
 
     /*
-        [ProvideLanguageEditorOptionPageAttribute()
-                 "{A2FE74E1-FFFF-3311-4342-123052450768}",  // GUID of property page
-                 "XSharp",  // Registry key name for language
-                 "Options",      // Registry key name for property page
-                 "#242"         // Localized name of property page
-                 )]
-        [ProvideLanguageEditorOptionPageAttribute(
-                 "XSharp",  // Registry key name for language
-                 "Advanced",     // Registry key name for node
-                 "#243"         // Localized name of node
-                 )]
-        [ProvideLanguageEditorOptionPageAttribute(
-            "{A2FE74E2-FFFF-3311-4342-123052450768}",  // GUID of property page
-            "XSharp",  // Registry key name for language
-                 @"Advanced\Indenting",     // Registry key name for property page
-                 "#244"         // Localized name of property page
-
-                 )]
-
 
     [ProvideLanguageEditorOptionPage(typeof(Options.AdvancedOptionPage), "CSharp", null, "Advanced", pageNameResourceId: "#102", keywordListResourceId: 306)]
         [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingStylePage), "CSharp", null, @"Code Style", pageNameResourceId: "#114", keywordListResourceId: 313)]
@@ -132,46 +161,43 @@ namespace XSharp.Project
         null,
         null,
         null,
-        LanguageVsTemplate = XSharpConstants.LanguageName,
+        LanguageVsTemplate = LanguageName,
         TemplateGroupIDsVsTemplate = "WPF",
         ShowOnlySpecifiedTemplatesVsTemplate = false, SortPriority =100)]
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
-
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = "XSharp Source Code Editor",NameResourceID =109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension1, 0x42, DefaultName = EditorName, NameResourceID =109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), PpoExtension, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension1, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = EditorName, NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string)]
 
-#if VODESIGNER
     // Editors for VOBinaries
-    [ProvideEditorExtension(typeof(VOFormEditorFactory),        ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
+    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
+    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory),        ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory),    ".xsdbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory),   ".xsfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
     // Vulcan Binaries
-    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
-    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
-    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
-    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
-    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
-#endif
+    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
-    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "ResXFileCodeGenerator", contextGuid: "ResXFileCodeGenerator", GeneratesDesignTimeSource =true, GeneratorRegKeyName = "Microsoft ResX File Code Generator")]
-    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "PublicResXFileCodeGenerator", contextGuid: "{69b6a86d-ef43-4d9e-a758-8a18b38a7384}", GeneratesDesignTimeSource=true,GeneratorRegKeyName = "Microsoft ResX File Code Generator (public class)")]
-    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "SettingsSingleFileGenerator", contextGuid: "{3B4C204A-88A2-3AF8-BCFD-CFCB16399541}", GeneratesDesignTimeSource = false, GeneratesSharedDesignTimeSource =true,GeneratorRegKeyName = "Generator for strongly typed settings class")]
-    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "PublicSettingsSingleFileGenerator", contextGuid: "{940f36b5-a42e-435e-8ef4-20b9d4801d22}", GeneratesDesignTimeSource = false, GeneratesSharedDesignTimeSource = true, GeneratorRegKeyName = "Generator for strongly typed settings class (public class)")]
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
     public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
     {
         private uint m_componentID;
@@ -189,39 +215,53 @@ namespace XSharp.Project
         {
             get { return XSharpProjectPackage.instance; }
         }
-        #region Overridden Implementation
+
+        public void OpenInBrowser(string url)
+        {
+            IVsWebBrowsingService service = (IVsWebBrowsingService)GetService(typeof(SVsWebBrowsingService));
+            if (service != null)
+            {
+                IVsWindowFrame frame = null;
+                service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
+                frame.Show();
+            }
+        }
+        internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
+        {
+            var page = (IntellisenseOptionsPage) GetDialogPage(typeof(IntellisenseOptionsPage));
+            return page;
+        }
+        internal IVsTextManager4 GetTextManager()
+        {
+            return (IVsTextManager4) GetService(typeof(SVsTextManager));
+        }
+
+#region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
         protected override void Initialize()
         {
+            // Suspend walking until Solution is opened.
+            base.SolutionListeners.Add(new ModelScannerEvents(this));
             base.Initialize();
             XSharpProjectPackage.instance = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             this.settings = new XPackageSettings(this);
 
+
+
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-#if VODESIGNER
             // editors for the binaries
             base.RegisterEditorFactory(new VOFormEditorFactory(this));
             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
-#endif
             // Register the language service
-            // Add our command handlers for menu (commands must exist in the .vsct file)
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs)
-            {
-                // Create the command for the menu item.
-                CommandID menuCommandID = new CommandID(GuidStrings.guidXSharpLanguageServiceCmdSet, (int)PkgCmdIDList.cmdidInsertSnippet);
-                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
-                mcs.AddCommand(menuItem);
-            }
 
             // Proffer the service.
             IServiceContainer serviceContainer = this as IServiceContainer;
@@ -247,8 +287,10 @@ namespace XSharp.Project
                 crinfo[0].uIdleTimeInterval = 1000;
                 int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
             }
+            // Initialize Custom Menu Items
+            XSharp.Project.XSharpMenuItems.Initialize(this);
 
-         }
+        }
 
         /// <summary>
         /// Gets the settings stored in the registry for this package.
@@ -261,25 +303,6 @@ namespace XSharp.Project
         public override string ProductUserContext
         {
             get { return "XSharp"; }
-        }
-        private void MenuItemCallback(object sender, EventArgs e)
-        {
-            // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-            Guid clsid = Guid.Empty;
-            int result;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                       0,
-                       ref clsid,
-                       "XSharp Language Service",
-                       string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.ToString()),
-                       string.Empty,
-                       0,
-                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                       OLEMSGICON.OLEMSGICON_INFO,
-                       0,        // false
-                       out result));
         }
 
 #endregion
@@ -296,6 +319,11 @@ namespace XSharp.Project
             if (service != null)
             {
                 service.OnIdle(bPeriodic);
+            }
+            var walker = XSharpModel.ModelWalker.GetWalker();
+            if (!walker.IsWalkerRunning && walker.HasWork)
+            {
+                walker.Walk();
             }
             return 0;
         }
@@ -357,6 +385,16 @@ namespace XSharp.Project
 
 #endregion
 
+
+    }
+    public class Support
+    {
+        public static void Debug(string msg, params object[] o)
+        {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(String.Format("XProject: " + msg, o));
+#endif
+        }
     }
 
 }

@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="EmailAddressBook">
+    <Window Name="EmailAddressBook">
+      <Name>EmailAddressBook</Name>
+      <Class>FORM:DATADIALOG</Class>
+      <Caption>VO 2.7 Email Client Address Book</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>392</Width>
+      <Height>310</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"VO 2.7 Email Client Address Book"</HyperLabel>
+        <HyperLabel>"EmailAddressBook"</HyperLabel>
+        <NoAcc>Yes</NoAcc>
+        <AllowServerClose>False</AllowServerClose>
+      </ExProperties>
+    </Window>
+    <Control Name="tCaption">
+      <Name>tCaption</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Address Book Entry</Caption>
+      <Order>1</Order>
+      <Left>24</Left>
+      <Top>3</Top>
+      <Width>345</Width>
+      <Height>37</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082130433</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Address Book Entry"</HyperLabel>
+        <HyperLabel>"tCaption"</HyperLabel>
+        <NewFont>24:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tContact">
+      <Name>tContact</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Contact</Caption>
+      <Order>2</Order>
+      <Left>17</Left>
+      <Top>48</Top>
+      <Width>115</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Contact"</HyperLabel>
+        <HyperLabel>"tContact"</HyperLabel>
+        <TextColor>COLORBLACK</TextColor>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tCompany">
+      <Name>tCompany</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Company</Caption>
+      <Order>3</Order>
+      <Left>17</Left>
+      <Top>72</Top>
+      <Width>115</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Company"</HyperLabel>
+        <HyperLabel>"tCompany"</HyperLabel>
+        <TextColor>COLORBLACK</TextColor>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tStreet">
+      <Name>tStreet</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Street Address</Caption>
+      <Order>4</Order>
+      <Left>17</Left>
+      <Top>96</Top>
+      <Width>115</Width>
+      <Height>17</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Street Address"</HyperLabel>
+        <HyperLabel>"tStreet"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tCITY">
+      <Name>tCITY</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>City</Caption>
+      <Order>5</Order>
+      <Left>17</Left>
+      <Top>120</Top>
+      <Width>115</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"City"</HyperLabel>
+        <HyperLabel>"tCITY"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tSTATE">
+      <Name>tSTATE</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>State</Caption>
+      <Order>6</Order>
+      <Left>17</Left>
+      <Top>144</Top>
+      <Width>115</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"State"</HyperLabel>
+        <HyperLabel>"tSTATE"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tPHONE">
+      <Name>tPHONE</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Phone</Caption>
+      <Order>7</Order>
+      <Left>17</Left>
+      <Top>168</Top>
+      <Width>115</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Phone"</HyperLabel>
+        <HyperLabel>"tPHONE"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tFax">
+      <Name>tFax</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fax</Caption>
+      <Order>8</Order>
+      <Left>17</Left>
+      <Top>192</Top>
+      <Width>115</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fax"</HyperLabel>
+        <HyperLabel>"tFax"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tMobile">
+      <Name>tMobile</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Mobile</Caption>
+      <Order>9</Order>
+      <Left>17</Left>
+      <Top>216</Top>
+      <Width>115</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Mobile"</HyperLabel>
+        <HyperLabel>"tMobile"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="tEMAIL">
+      <Name>tEMAIL</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Email Address</Caption>
+      <Order>10</Order>
+      <Left>17</Left>
+      <Top>240</Top>
+      <Width>115</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Email Address"</HyperLabel>
+        <HyperLabel>"tEMAIL"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="CONTACT">
+      <Name>CONTACT</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>11</Order>
+      <Left>137</Left>
+      <Top>44</Top>
+      <Width>242</Width>
+      <Height>20</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"CONTACT"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Enter the full name of a friend"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="COMPANY">
+      <Name>COMPANY</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>12</Order>
+      <Left>137</Left>
+      <Top>69</Top>
+      <Width>242</Width>
+      <Height>20</Height>
+      <BrowseIndex>1</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"COMPANY"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Enter the full name of a friend"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="STREET">
+      <Name>STREET</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>13</Order>
+      <Left>137</Left>
+      <Top>93</Top>
+      <Width>242</Width>
+      <Height>20</Height>
+      <BrowseIndex>2</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"STREET"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Enter the street address of the person"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="CITY">
+      <Name>CITY</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>14</Order>
+      <Left>137</Left>
+      <Top>117</Top>
+      <Width>242</Width>
+      <Height>20</Height>
+      <BrowseIndex>3</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"CITY"</HyperLabel>
+        <TooltipText>"Enter the city of the person"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="STATE">
+      <Name>STATE</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>15</Order>
+      <Left>137</Left>
+      <Top>141</Top>
+      <Width>241</Width>
+      <Height>20</Height>
+      <BrowseIndex>4</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"STATE"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Enter the state "</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="PHONE">
+      <Name>PHONE</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>16</Order>
+      <Left>137</Left>
+      <Top>165</Top>
+      <Width>164</Width>
+      <Height>20</Height>
+      <BrowseIndex>5</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"PHONE"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Enter the phone number of the person"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="Mobile">
+      <Name>Mobile</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>17</Order>
+      <Left>137</Left>
+      <Top>213</Top>
+      <Width>164</Width>
+      <Height>20</Height>
+      <BrowseIndex>6</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"Mobile"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Enter the phone number of the person"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="Fax">
+      <Name>Fax</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>18</Order>
+      <Left>137</Left>
+      <Top>189</Top>
+      <Width>164</Width>
+      <Height>20</Height>
+      <BrowseIndex>7</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"Fax"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Enter the phone number of the person"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="EMAIL">
+      <Name>EMAIL</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>19</Order>
+      <Left>137</Left>
+      <Top>237</Top>
+      <Width>245</Width>
+      <Height>20</Height>
+      <BrowseIndex>8</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"EMAIL"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Enter the Email address of the person"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="PBNew">
+      <Name>PBNew</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>New</Caption>
+      <Order>20</Order>
+      <Left>24</Left>
+      <Top>278</Top>
+      <Width>80</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"New"</HyperLabel>
+        <HyperLabel>"PBNew"</HyperLabel>
+        <TooltipText>"To add a new friend"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="PBExit">
+      <Name>PBExit</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>Exit</Caption>
+      <Order>21</Order>
+      <Left>288</Left>
+      <Top>278</Top>
+      <Width>80</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807361</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Exit"</HyperLabel>
+        <HyperLabel>"PBExit"</HyperLabel>
+        <UseHLforToolTip>True</UseHLforToolTip>
+        <TooltipText>"Exit"</TooltipText>
+      </ExProperties>
+    </Control>
+    <Control Name="PBSave">
+      <Name>PBSave</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>Save</Caption>
+      <Order>22</Order>
+      <Left>156</Left>
+      <Top>278</Top>
+      <Width>80</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Save"</HyperLabel>
+        <HyperLabel>"PBSave"</HyperLabel>
+        <TooltipText>"To save entry"</TooltipText>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

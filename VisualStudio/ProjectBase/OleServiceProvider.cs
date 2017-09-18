@@ -114,7 +114,7 @@ namespace Microsoft.VisualStudio.Project
                 serviceInstance = services[guidService];
             }
 
-            if (serviceInstance == null)
+            if (serviceInstance == null || serviceInstance.ServiceInstance == null)
             {
                 return VSConstants.E_NOINTERFACE;
             }
@@ -204,7 +204,10 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new InvalidOperationException();
             }
-
+            //if (data.ServiceInstance == null)
+            //{
+            //    System.Diagnostics.Debugger.Break();
+            //}
             services.Add(data.Guid, data);
         }
 

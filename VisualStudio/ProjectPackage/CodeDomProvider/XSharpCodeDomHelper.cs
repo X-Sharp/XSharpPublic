@@ -1,4 +1,9 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
@@ -205,7 +210,9 @@ namespace XSharp.CodeDom
         {
             // Retrieve path information from the FulPath
             String prgPath = Path.GetDirectoryName(prgFile);
-            // Strip off the.prg
+            if (prgFile.EndsWith(".xaml.prg", StringComparison.OrdinalIgnoreCase))
+                return "";
+            string extension = Path.GetExtension(prgFile).ToLower();
             String prg = Path.GetFileNameWithoutExtension(prgFile);
             // Does the FileName ends with .Designer ?
             if (!prg.EndsWith(".Designer"))

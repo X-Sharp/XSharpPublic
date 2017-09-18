@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="Lookup">
+    <Window Name="Lookup">
+      <Name>Lookup</Name>
+      <Class>FORM:DATAWINDOW</Class>
+      <Caption>DataWindow Caption</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>408</Width>
+      <Height>93</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"DataWindow Caption"</HyperLabel>
+        <HyperLabel>"Lookup"</HyperLabel>
+        <NoAcc>Yes</NoAcc>
+        <ViewAs>#BrowseView</ViewAs>
+        <Use>&lt;Share Owner's&gt;</Use>
+        <DBInhFrom>LookUpDataBrowser</DBInhFrom>
+      </ExProperties>
+    </Window>
+    <Control Name="EMAIL">
+      <Name>EMAIL</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>Email:</Caption>
+      <Order>2</Order>
+      <Left>82</Left>
+      <Top>50</Top>
+      <Width>292</Width>
+      <Height>20</Height>
+      <BrowseIndex>1</BrowseIndex>
+      <BrowseSize>35</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>1</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Email:"</HyperLabel>
+        <HyperLabel>"EMAIL"</HyperLabel>
+        <HyperLabel>,,,"Contacts_EMAIL"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="CONTACT">
+      <Name>CONTACT</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>Contact:</Caption>
+      <Order>1</Order>
+      <Left>82</Left>
+      <Top>26</Top>
+      <Width>292</Width>
+      <Height>20</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>33</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>1</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Contact:"</HyperLabel>
+        <HyperLabel>"CONTACT"</HyperLabel>
+        <HyperLabel>,,,"Contacts_CONTACT"</HyperLabel>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

@@ -10,6 +10,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Project;
+using System.Reflection;
 
 namespace XSharp.Project
 {
@@ -45,7 +46,7 @@ namespace XSharp.Project
          : base(root, element)
       {
          BindReferenceData();
-      }
+       }
 
 
       public XSharpComReferenceNode(ProjectNode root, VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
@@ -78,23 +79,15 @@ namespace XSharp.Project
             {
                return wrapperFileName;
             }
-            //else if (!String.IsNullOrEmpty(this.wrapperFileName))
-            //{
-            //   string asm = this.ProjectMgr.GetOutputAssembly(null);
-            //   asm = Path.GetDirectoryName(asm) + Path.DirectorySeparatorChar + this.wrapperFileName;
-            //   return asm;
-            //}
-            //else 
-            //   return base.Url;
-            string result = this.ProjectMgr.ProjectInstance.GetPropertyValue("IntermediateOutputPath") + this.wrapperFileName;
 
+            string result = this.ProjectMgr.GetProjectProperty("IntermediateOutputPath") + this.wrapperFileName;
             result = Path.Combine(this.ProjectMgr.ProjectFolder, result);
             return result;
          }
       }
       protected override NodeProperties CreatePropertiesObject()
       {
-         return new ReferenceNodeProperties(this);
+         return new XSharpComReferenceNodeProperties(this);
 
       }
       internal bool Matches(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool )
@@ -108,7 +101,20 @@ namespace XSharp.Project
             && selectorData.guidTypeLibrary == this.TypeGuid
             && string.Compare(wrapperTool, this.WrapperTool, true) == 0);
       }
-      private IVsTypeLibraryWrapper TypeLibWrapper
+        XSharpOAComReference comReference;
+        internal override object Object
+        {
+            get
+            {
+                if (null == comReference)
+                {
+                    comReference = new XSharpOAComReference(this);
+                }
+                return comReference;
+            }
+        }
+
+        private IVsTypeLibraryWrapper TypeLibWrapper
       {
          get
          {
@@ -185,4 +191,91 @@ namespace XSharp.Project
 
       }
    }
+    [CLSCompliant(false), ComVisible(true)]
+    internal class XSharpOAComReference : Microsoft.VisualStudio.Project.Automation.OAComReference
+    {
+        private Assembly assembly = null;
+        private string assemblyPath = null;
+        private bool tryLoad = false;
+
+        internal XSharpOAComReference(ComReferenceNode comReference) : base(comReference)
+        {
+
+        }
+        
+        private void LoadAssembly()
+        {
+            if (assembly == null && !tryLoad)
+            {
+                try
+                {
+
+                    if (BaseReferenceNode.WrapperTool.ToLower() == "primary")
+                    {
+                        var key = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey("Typelib\\" + BaseReferenceNode.TypeGuid.ToString("B") + "\\" + this.Version);
+                        if (key != null)
+                        {
+                            string asmName = (string)key.GetValue("PrimaryInteropAssemblyName");
+                            var name = new AssemblyName(asmName);
+                            assembly = Assembly.Load(name);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    assembly = null;
+                }
+                if (assembly == null)
+                {
+                    try
+                    {
+                        string path = base.Path;
+                        tryLoad = true;
+                        assembly = XSharpModel.AssemblyInfo.LoadAssemblyFromFile(path);
+                        assemblyPath = path;
+                    }
+                    catch (Exception)
+                    {
+                        assembly = null;
+                    }
+                }
+            }
+
+        }
+        public override string Name
+        {
+            get
+            {
+                // this needs to return the name as defined in the assembly
+                // Otherwise the form editor will not be able to load a saved activeX control
+                // the safest thing to do is to load the assembly and retrieve its name
+                LoadAssembly();
+                if (assembly != null)
+                {
+                    return assembly.GetName().Name;
+                }
+                return System.IO.Path.GetFileNameWithoutExtension(this.Path);
+            }
+
+        }        
+        public override string Path
+        {
+            get
+            {
+                try
+                {
+                    if (assembly == null)
+                        LoadAssembly();
+                    if (assembly != null)
+                        return assemblyPath;
+                }
+                catch
+                {
+
+                }
+                return base.Path;
+            }
+        }
+    }
+
 }

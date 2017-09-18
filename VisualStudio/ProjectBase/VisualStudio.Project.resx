@@ -545,6 +545,18 @@
   <data name="DescriptionDescription" xml:space="preserve">
     <value>The value of the AssemblyDescription attribute from the assembly metadata.</value>
   </data>
+  <data name="DoNotCopy" xml:space="preserve">
+    <value>Do not copy</value>
+    <comment>Copy to Output - drop down option</comment>
+  </data>
+  <data name="CopyAlways" xml:space="preserve">
+    <value>Copy always</value>
+    <comment>Copy to Output - drop down option</comment>
+  </data>
+  <data name="CopyIfNewer" xml:space="preserve">
+    <value>Copy if newer</value>
+    <comment>Copy to Output - drop down option</comment>
+  </data>
   <data name="CopyNOfFile" xml:space="preserve">
     <value>Copy ({0}) of {1}</value>
   </data>
@@ -615,7 +627,7 @@ Are you sure you want to change the Target Framework for this project?</value>
   </data>
   <data name="NativeResource" xml:space="preserve">
     <value>Native Resource</value>
-    <comment>Build action dropdown</comment>
+    <comment>Build action - drop down option</comment>
   </data>
   <data name="Identity" xml:space="preserve">
     <value>Identity</value>

@@ -56452,7 +56452,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C558 - Compiler error with /vo9 and RETURN only inside TRY..CATCH statement
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C559 - No compiler error with /vo15- and untyped parameters *************
 Application = C559 - No compiler error with /vo15- and untyped parameters
 IDEVersion = 1.06
@@ -56552,7 +56552,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C559 - No compiler error with /vo15- and untyped parameters
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
 ; ************** APPLICATION C560 - CreateInstance() cannot "see" classes with namespaces *************
 Application = C560 - CreateInstance() cannot "see" classes with namespaces
 IDEVersion = 1.06
@@ -56852,7 +56852,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C562 - Compiler crash with CLIPPER method and /vo9+ with missing RETURN type
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C563 - Runtime exception accessing a GLOBAL defined in a vulcan assembly *************
 Application = C563 - Runtime exception accessing a GLOBAL defined in a vulcan assembly
 IDEVersion = 1.06
@@ -56953,7 +56953,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C563 - Runtime exception accessing a GLOBAL defined in a vulcan assembly
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C563_helper *************
 Application = C563_helper
 IDEVersion = 1.06
@@ -56961,7 +56961,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 2
-Platform = AnyCPU
+Platform = x86
 Language = VulcanNet
 Runtime = CLR4
 Dialect = None
@@ -56993,6 +56993,8 @@ FileGUID = 1F731703-3191-4A52-BDF6-B14D0280C507
 FileType = Code
 [C563_helper References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C563_helper Resources]
 [C563_helper Native Resources]
 [C563_helper License files]
@@ -57052,8 +57054,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C563_helper
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C564 Codeblock Latebound Cal *************
-Application = C564 Codeblock Latebound Cal
+; ************** APPLICATION C564 - Codeblock Latebound Call *************
+Application = C564 - Codeblock Latebound Call
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -57066,7 +57068,7 @@ Dialect = Vulcan
 Folder = %ProjectPath%\Applications\C564\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
-Description = An x# application targetting the vulcan dialect
+Description = 
 NameSpace = 
 Assembly = C564
 Extension = 
@@ -57084,19 +57086,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C564 Codeblock Latebound Cal FileGroups]
-[C564 Codeblock Latebound Cal Files]
+[C564 - Codeblock Latebound Call FileGroups]
+[C564 - Codeblock Latebound Call Files]
 File = %AppPath%\Prg\C564.prg
 FileGUID = B7DCE1F2-D171-4803-A9DA-CB973515EDDB
 FileType = Code
-[C564 Codeblock Latebound Cal References]
+[C564 - Codeblock Latebound Call References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C564 Codeblock Latebound Cal Resources]
-[C564 Codeblock Latebound Cal Native Resources]
-[C564 Codeblock Latebound Cal License files]
-[C564 Codeblock Latebound Cal General Options]
+[C564 - Codeblock Latebound Call Resources]
+[C564 - Codeblock Latebound Call Native Resources]
+[C564 - Codeblock Latebound Call License files]
+[C564 - Codeblock Latebound Call General Options]
 Switches=/optimize
 ZeroArrays=0
 CaseSensitive=0
@@ -57122,7 +57124,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C564 Codeblock Latebound Cal Configurations]
+[C564 - Codeblock Latebound Call Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -57149,7 +57151,305 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=1
   ForceConsole=0
   ForceX86=0
-ENDApplication = C564 Codeblock Latebound Cal
+ENDApplication = C564 - Codeblock Latebound Call
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C565 - Missing overflow checks for numeric conversion when /ovf is enabled *************
+Application = C565 - Missing overflow checks for numeric conversion when /ovf is enabled
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C565\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C565
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = A264241F-9C68-41E1-84B3-AE3E758E5D32
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C565 - Missing overflow checks for numeric conversion when /ovf is enabled FileGroups]
+[C565 - Missing overflow checks for numeric conversion when /ovf is enabled Files]
+File = %AppPath%\Prg\C565.prg
+FileGUID = 974E2A05-3E31-4DA0-988A-80EC30398CF4
+FileType = Code
+[C565 - Missing overflow checks for numeric conversion when /ovf is enabled References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C565 - Missing overflow checks for numeric conversion when /ovf is enabled Resources]
+[C565 - Missing overflow checks for numeric conversion when /ovf is enabled Native Resources]
+[C565 - Missing overflow checks for numeric conversion when /ovf is enabled License files]
+[C565 - Missing overflow checks for numeric conversion when /ovf is enabled General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=1
+FOvf=1
+ResponseOnly=0
+[C565 - Missing overflow checks for numeric conversion when /ovf is enabled Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C565 - Missing overflow checks for numeric conversion when /ovf is enabled
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect *************
+Application = C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C566\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C566
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = CE5DBC82-6240-4890-8E74-59E39F3882AB
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect FileGroups]
+[C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect Files]
+File = %AppPath%\Prg\C566.prg
+FileGUID = CB1393C8-9F1F-44F0-9391-0D5A1C8A8D5E
+FileType = Code
+[C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect Resources]
+[C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect Native Resources]
+[C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect License files]
+[C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=1
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C567 - Failed to emit module error with lambda expression in Core *************
+Application = C567 - Failed to emit module error with lambda expression in Core
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C567\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C567
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = ADB0ACD0-5B69-4C2C-991E-2B8211FB9D2D
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C567 - Failed to emit module error with lambda expression in Core FileGroups]
+[C567 - Failed to emit module error with lambda expression in Core Files]
+File = %AppPath%\Prg\C567.prg
+FileGUID = BB209727-A56C-47DF-AF3A-4A26C35D72EE
+FileType = Code
+[C567 - Failed to emit module error with lambda expression in Core References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[C567 - Failed to emit module error with lambda expression in Core Resources]
+[C567 - Failed to emit module error with lambda expression in Core Native Resources]
+[C567 - Failed to emit module error with lambda expression in Core License files]
+[C567 - Failed to emit module error with lambda expression in Core General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C567 - Failed to emit module error with lambda expression in Core Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C567 - Failed to emit module error with lambda expression in Core
 [EndApplications]
 
 [Configurations]

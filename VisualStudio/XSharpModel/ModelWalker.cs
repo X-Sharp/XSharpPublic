@@ -1,4 +1,9 @@
-﻿using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
 using LanguageService.SyntaxTree.Tree;
@@ -9,34 +14,59 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace XSharpModel
 {
     public class ModelWalker
     {
         static ModelWalker _walker;
+        static int suspendLevel;
         static ModelWalker()
-        {
+        { 
+            suspendLevel = 0;
         }
-        static internal ModelWalker GetWalker()
+
+        public static void Suspend()
+        {
+            suspendLevel += 1;
+        }
+        public static void Resume()
+        {
+            suspendLevel -= 1;
+
+        }
+        static public ModelWalker GetWalker()
         {
             if (_walker == null)
                 _walker = new ModelWalker();
             return _walker;
         }
 
-        private Queue<XProject> _projects;
+        private ConcurrentQueue<XProject> _projects;
         private Thread _WalkerThread;
         private ModelWalker()
         {
-            _projects = new Queue<XProject>();
+            _projects = new ConcurrentQueue<XProject>();
         }
 
         internal void AddProject(XProject xProject)
         {
             lock (this)
             {
-                _projects.Enqueue(xProject);
+                bool lAdd2Queue = true;
+                foreach (var prj in _projects)
+                {
+                    if (String.Equals(prj.Name, xProject.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        lAdd2Queue = false;
+                        break;
+                    }
+                }
+                if (lAdd2Queue)
+                {
+                    _projects.Enqueue(xProject);
+                }
                 if (!IsWalkerRunning)
                 {
                     Walk();
@@ -45,7 +75,7 @@ namespace XSharpModel
         }
 
 
-        internal bool IsWalkerRunning
+        public bool IsWalkerRunning
         {
             get
             {
@@ -57,16 +87,18 @@ namespace XSharpModel
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Cannot check Background walker Thread : ");
-                    Debug.WriteLine(e.Message);
+                    Support.Debug("Cannot check Background walker Thread : ");
+                    Support.Debug(e.Message);
                 }
                 return false;
 
             }
         }
-
-        internal void Walk()
+        public bool HasWork => _projects.Count > 0;
+        public void Walk()
         {
+            if (suspendLevel != 0)
+                return;
             try
             {
                 StopThread();
@@ -79,8 +111,8 @@ namespace XSharpModel
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Cannot start Background walker Thread : ");
-                Debug.WriteLine(e.Message);
+                Support.Debug("Cannot start Background walker Thread : ");
+                Support.Debug(e.Message);
             }
             return;
         }
@@ -91,74 +123,72 @@ namespace XSharpModel
             //
             do
             {
+                if (suspendLevel != 0)
+                {
+                    // Abort and put project back in the list
+                    if (project != null)
+                    { 
+                        _projects.Enqueue(project);
+                    }
+                    break;
+                }
                 // 
                 lock (this)
                 {
                     // need to continue ?
                     if (_projects.Count == 0)
+                    {
                         break;
-                    project = _projects.Dequeue();
+                    }
+                    if (! _projects.TryDequeue( out project))
+                    {
+                        break;
+                    }
+                    project.ProjectNode.SetStatusBarText($"Start scanning project {project.Name}");
                     //
                 }
-#if DEBUG
-                Stopwatch stopWatch = new Stopwatch();
-#endif
-                foreach (XFile file in project.Files)
+                var aFiles = project.SourceFiles.ToArray();
+                int iProcessed = 0;
+                var options = new ParallelOptions ();
+				if (System.Environment.ProcessorCount > 1)
+				{
+					options.MaxDegreeOfParallelism = (System.Environment.ProcessorCount * 3)/ 4;
+				}
+                project.ProjectNode.SetStatusBarAnimation(true, 0);
+                Parallel.ForEach(aFiles, options, file =>
                 {
                     // Detect project unload
-                    if (!project.Loaded)
-                        break;
-
-                    //
-                    project.ProjectNode.SetStatusBarText(String.Format("Walking {0} : Processing File {1} ", project.Name, file.Name));
-#if DEBUG                    
-                    Debug.WriteLine(String.Format("Walking {0} : Processing File {1} ", project.Name, file.Name));
-                    stopWatch.Start();
-#endif
-                    //file.Name
-                    var code = System.IO.File.ReadAllText(file.FullPath);
-                    FileWalk(file, code);
-                    //
-#if DEBUG             
-                    stopWatch.Stop();
-                    Debug.WriteLine(String.Format("   needs {0}", stopWatch.Elapsed));
-#endif
-                }
+                    if (project.Loaded)
+                    {
+                        iProcessed += 1;
+                        project.ProjectNode.SetStatusBarText(String.Format("Walking {0} : Processing File {1} ({2} of {3})", project.Name, file.Name, iProcessed, aFiles.Length));
+                        FileWalk(file);
+                    }
+                });
                 project.ProjectNode.SetStatusBarText("");
+                project.ProjectNode.SetStatusBarAnimation(false, 0);
             } while (true);
         }
 
-        public void FileWalk(XFile file, string code)
+        internal void FileWalk( XFile file )
         {
-            // abort when the project is unloaded
-            if (!file.Project.Loaded)
-                return;
-
-            var stream = new AntlrInputStream(code.ToString());
-            var lexer = new XSharpLexer(stream);
-            // if you want VO style lexing uncomment the following lines.
-            //lexer.AllowFourLetterAbbreviations = true; // enables 4 letter abbreviations
-            //lexer.AllowOldStyleComments = true; // enables && commments
-
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new XSharpParser(tokens);
-            var tree = parser.source();
-            var walker = new ParseTreeWalker();
-            var entityparser = new EntityParser(file);
-            file.Parsing = true;
-            try
+            DateTime dt = System.IO.File.GetLastWriteTime(file.FullPath);
+            if (dt > file.LastWritten)
             {
-                walker.Walk(entityparser, tree);
-            }
-            catch (Exception ex)
-            {
-                // Push Exception away...
-                throw ex;
-            }
-            finally
-            {
-                // And don't forget to release the Mutex
-                file.Parsing = false;
+                SourceWalker sw = new SourceWalker(file);
+                //
+                try
+                {
+                    var xTree = sw.Parse();
+                    sw.BuildModel(xTree, false);
+                    file.LastWritten= dt;
+                    //
+                }
+                catch (Exception)
+                {
+                    // Push Exception away...
+                    ;
+                }
             }
         }
 
@@ -170,13 +200,13 @@ namespace XSharpModel
                     return;
                 if (_WalkerThread.IsAlive)
                 {
-
+                    _WalkerThread.Abort();
                 }
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Cannot stop Background walker Thread : ");
-                Debug.WriteLine(e.Message);
+                Support.Debug("Cannot stop Background walker Thread : ");
+                Support.Debug(e.Message);
             }
             _WalkerThread = null;
             return;

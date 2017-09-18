@@ -1,0 +1,10 @@
+ OrdersListViewMenu MENU
+Begin
+	POPUP "X"
+	BEGIN
+		MENUITEM "&Edit Order", 26128
+		MENUITEM SEPARATOR
+		MENUITEM "&Refresh", 26130
+	END
+End
+ 

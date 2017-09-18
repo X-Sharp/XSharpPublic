@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="oMarginDialog">
+    <Window Name="oMarginDialog">
+      <Name>oMarginDialog</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>Margins</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>271</Width>
+      <Height>176</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3234332804</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Margins"</HyperLabel>
+        <HyperLabel>"oMarginDialog"</HyperLabel>
+      </ExProperties>
+    </Window>
+    <Control Name="ftLM">
+      <Name>ftLM</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Left Margin</Caption>
+      <Order>1</Order>
+      <Left>32</Left>
+      <Top>29</Top>
+      <Width>80</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>Yes</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Left Margin"</HyperLabel>
+        <HyperLabel>"ftLM"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="ftRM">
+      <Name>ftRM</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Right Margin</Caption>
+      <Order>2</Order>
+      <Left>32</Left>
+      <Top>59</Top>
+      <Width>80</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>Yes</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Right Margin"</HyperLabel>
+        <HyperLabel>"ftRM"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="sleLM">
+      <Name>sleLM</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>3</Order>
+      <Left>150</Left>
+      <Top>29</Top>
+      <Width>73</Width>
+      <Height>20</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"sleLM"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="sleRM">
+      <Name>sleRM</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>4</Order>
+      <Left>150</Left>
+      <Top>59</Top>
+      <Width>73</Width>
+      <Height>20</Height>
+      <BrowseIndex>1</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"sleRM"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="pbOK">
+      <Name>pbOK</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>OK</Caption>
+      <Order>5</Order>
+      <Left>32</Left>
+      <Top>109</Top>
+      <Width>80</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807361</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"OK"</HyperLabel>
+        <HyperLabel>"pbOK"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="pbCancel">
+      <Name>pbCancel</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>Cancel</Caption>
+      <Order>6</Order>
+      <Left>143</Left>
+      <Top>109</Top>
+      <Width>80</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Cancel"</HyperLabel>
+        <HyperLabel>"pbCancel"</HyperLabel>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

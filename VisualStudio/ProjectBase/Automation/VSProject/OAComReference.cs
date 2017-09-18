@@ -13,6 +13,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -39,19 +40,26 @@ namespace Microsoft.VisualStudio.Project.Automation
                 {
                     // Do Nothing
                 }
-                if(0 == locale)
-                {
-                    return string.Empty;
-                }
-                CultureInfo culture = new CultureInfo(locale);
+				if(0 == locale)
+				{
+                    return "0";
+				}
+				CultureInfo culture = new CultureInfo(locale);
                 return culture.Name;
             }
         }
+      public override string Description
+      {
+         get
+         {
+            return BaseReferenceNode.Description;
+         }
+      }
         public override string Identity
         {
             get
             {
-                return String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", BaseReferenceNode.TypeGuid.ToString("B"), this.Version);
+                return string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\{2}\\{3}", BaseReferenceNode.TypeGuid.ToString("B").ToUpper(), this.Version, BaseReferenceNode.LCID, BaseReferenceNode.WrapperTool);
             }
         }
         public override int MajorVersion
@@ -62,10 +70,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get { return BaseReferenceNode.MinorVersionNumber; }
         }
-        public override string Name
-        {
-            get { return BaseReferenceNode.Caption; }
-        }
+
         public override VSLangProj.prjReferenceType Type
         {
             get

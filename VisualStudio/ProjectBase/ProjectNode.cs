@@ -492,7 +492,7 @@ namespace Microsoft.VisualStudio.Project
 
         private Guid projectIdGuid;
 
-        private ProjectOptions options;
+        protected ProjectOptions options;
 
         private bool isClosed;
 
@@ -589,9 +589,7 @@ namespace Microsoft.VisualStudio.Project
 
       private bool alreadyHandledOverwritePrompts = false;
 
-        private bool buildSystemKindCached = false;
 
-        private uint cachedBuildSystemKind = 0;
         #endregion
 
         #region abstract properties
@@ -4453,7 +4451,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Overloaded method. Invokes MSBuild using the default configuration and does without logging on the output window pane.
         /// </summary>
-        public BuildResult Build(string target)
+        public virtual BuildResult Build(string target)
         {
             return this.Build(0, new ConfigCanonicalName(), null, target);
         }
@@ -6929,7 +6927,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
-        internal void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
+        internal virtual void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             this.projectOpened = true;
         }

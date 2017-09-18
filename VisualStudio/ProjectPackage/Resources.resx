@@ -202,4 +202,13 @@
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="DoNotCopy" xml:space="preserve">
+    <value>Do not copy</value>
+  </data>
+  <data name="CopyAlways" xml:space="preserve">
+    <value>Copy always</value>
+  </data>
+  <data name="CopyIfNewer" xml:space="preserve">
+    <value>Copy if newer</value>
+  </data>
 </root>

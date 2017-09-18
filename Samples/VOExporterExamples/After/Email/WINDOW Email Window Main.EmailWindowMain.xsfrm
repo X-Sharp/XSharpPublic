@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="EmailWindowMain">
+    <Window Name="EmailWindowMain">
+      <Name>EmailWindowMain</Name>
+      <Class>FORM:DATAWINDOW</Class>
+      <Caption>Visual Objects 2.7 Mail Client</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>630</Width>
+      <Height>362</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Visual Objects 2.7 Mail Client"</HyperLabel>
+        <HyperLabel>"EmailWindowMain"</HyperLabel>
+        <HyperLabel>,,"Visual Objects 2.7 Mail Client"</HyperLabel>
+        <ExpCtls>Yes</ExpCtls>
+        <Icon>AAP_EMAIL_ICON</Icon>
+      </ExProperties>
+    </Window>
+    <Control Name="FTMode">
+      <Name>FTMode</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>1</Order>
+      <Left>1</Left>
+      <Top>1</Top>
+      <Width>630</Width>
+      <Height>44</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"FTMode"</HyperLabel>
+        <TextColor>COLORWHITE</TextColor>
+        <Background>128 128 128</Background>
+        <NewFont>26:Microsoft Sans Serif:Bold</NewFont>
+        <OwnerAlignment>OA_WIDTH</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="EmailListView">
+      <Name>EmailListView</Name>
+      <Class>CONTROL:COMMONCONTROL:LISTVIEW</Class>
+      <Caption>
+      </Caption>
+      <Order>2</Order>
+      <Left>193</Left>
+      <Top>45</Top>
+      <Width>436</Width>
+      <Height>316</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741833</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"EmailListView"</HyperLabel>
+        <ContextMenu>EmailBrowserContextMenu</ContextMenu>
+        <OwnerAlignment>OA_WIDTH_HEIGHT</OwnerAlignment>
+        <FullRowSelect>True</FullRowSelect>
+      </ExProperties>
+    </Control>
+    <Control Name="EmailTreeview">
+      <Name>EmailTreeview</Name>
+      <Class>CONTROL:COMMONCONTROL:TREEVIEW</Class>
+      <Caption>
+      </Caption>
+      <Order>3</Order>
+      <Left>1</Left>
+      <Top>65</Top>
+      <Width>192</Width>
+      <Height>296</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741863</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"EmailTreeview"</HyperLabel>
+        <Background>190 255 255</Background>
+        <InheritClassName>MailTreeView</InheritClassName>
+        <OwnerAlignment>OA_HEIGHT</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="_StatusFT">
+      <Name>_StatusFT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>EMail - Folders</Caption>
+      <Order>4</Order>
+      <Left>1</Left>
+      <Top>45</Top>
+      <Width>192</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073742336</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"EMail - Folders"</HyperLabel>
+        <HyperLabel>"_StatusFT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

@@ -1,0 +1,12 @@
+ ComposeEmailContextmenu MENU
+Begin
+	POPUP "Click"
+	BEGIN
+		MENUITEM "&Add...", 10223
+		MENUITEM "&Delete...", 10224
+		MENUITEM "&Open...", 10225
+		MENUITEM "Sa&ve...", 10226
+		MENUITEM "&Select All...", 10227
+	END
+End
+ 

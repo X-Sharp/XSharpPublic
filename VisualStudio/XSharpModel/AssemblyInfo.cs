@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Diagnostics;
+using System.IO;
+using System.Collections.Immutable;
 namespace XSharpModel
 {
+    [DebuggerDisplay("{DisplayName,nq}")]
     public class AssemblyInfo
     {
         // Fields
         /// <summary>
         /// A Dictionary of Type : The key is a string with the typeName in LowerCase
         /// </summary>
-        private Dictionary<string, Type> aTypes;
-        private List<MethodInfo> aExtensions;
+        private IDictionary<string, Type> _aTypes;
+        private IList<MethodInfo> _aExtensions;
 
-        private string _DefaultNamespace;
         private string _FileName;
         private DateTime _Modified;
         private bool lLoadedTypes;
@@ -26,12 +25,22 @@ namespace XSharpModel
 
         private Hashtable _NameSpaces;
         private List<string> _NameSpaceTexts;
+        private List<string> _ImplicitNamespaces;
         private NameSpaceContainer _ZeroNamespace;
-
+        private VSLangProj.Reference _Reference;
 
         // Has Extensions Methods ?
         private bool lHasExtensions;
-
+        
+        public string DisplayName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_FileName))
+                    return "(Empty)";
+                return System.IO.Path.GetFileName(_FileName);
+            }
+        }
         public string FileName
         {
             get
@@ -71,82 +80,146 @@ namespace XSharpModel
             }
         }
 
-        public Dictionary<string, Type> Types
+        public IDictionary<string, Type> Types
         {
             get
             {
-                return aTypes;
-            }
-
-            set
-            {
-                aTypes = value;
+                return _aTypes;
             }
         }
+        public ImmutableList<string> ImplicitNamespaces => _ImplicitNamespaces.ToImmutableList();
+        public String GlobalClassName => _GlobalClassName;
 
-        public List<string> Namespaces
+        public ImmutableList<string> Namespaces => _NameSpaceTexts.ToImmutableList();
+
+
+        public AssemblyInfo()
         {
-            get
-            {
-                return _NameSpaceTexts;
-            }
+            // A
+            this._aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+            this._aExtensions = new List<MethodInfo>();
+            this._NameSpaces = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            this._NameSpaceTexts = new List<string>();
+            this._ImplicitNamespaces = new List<string>();
+            this._ZeroNamespace = new NameSpaceContainer("_");
+            this._Assembly = null;
+
         }
-
-        public AssemblyInfo(string _cFileName, DateTime _dModified, Assembly _oAssembly)
+        public AssemblyInfo (VSLangProj.Reference reference) : this()
         {
-            this._DefaultNamespace = "";
+            _Reference = reference;
+        }
+        public AssemblyInfo(string _cFileName, DateTime _dModified) : this()
+        {
             this.FileName = _cFileName;
             this.Modified = _dModified;
-            this.Assembly = _oAssembly;
-            // A
-            this.aTypes = new Dictionary<string, Type>();
-            this.aExtensions = new List<MethodInfo>();
-            this._NameSpaces = new Hashtable();
-            this._NameSpaceTexts = new List<string>();
-            this.aExtensions = new List<MethodInfo>();
-            this._ZeroNamespace = new NameSpaceContainer("_");
 
             this.UpdateAssembly();
+        }
+
+
+        public static Assembly LoadAssemblyFromFile(string FileName)
+        {
+            if (!System.IO.File.Exists(FileName))
+            {
+                return null;
+            }
+            try
+            {
+                FileStream input = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+                byte[] rawAssembly = new BinaryReader(input).ReadBytes((int)input.Length);
+                if (rawAssembly.Length != input.Length)
+                {
+                    //MessageBox.Show("Intellisense error 9");
+                }
+                input.Close();
+
+                // if the PDB file exists then this might put a lock on the pdb file.
+                // so we rename the pdb temporarily to prevent the lock
+                var cPdb = Path.ChangeExtension(FileName, ".pdb");
+                var cTmp = Path.ChangeExtension(FileName, ".p$$");
+                bool renamed = false;
+                if (File.Exists(cPdb))
+                {
+                    renamed = true;
+                    if (File.Exists(cTmp))
+                        File.Delete(cTmp);
+                    File.Move(cPdb, cTmp);
+                }
+                var assembly = Assembly.Load(rawAssembly);
+                if (renamed && File.Exists(cTmp))
+                {
+                    File.Move(cTmp, cPdb);
+                }
+                input.Dispose();
+                return assembly;
+            }
+            catch
+            {
+            }
+            return null;
+
+        }
+
+        internal void LoadAssembly()
+        {
+            if (String.IsNullOrEmpty(FileName))
+            {
+                if (_Reference != null)
+                {
+                    FileName = _Reference.Path;
+                }
+            }
+            if (!System.IO.File.Exists(FileName))
+            {
+                return ;
+            }
+            this.Assembly = LoadAssemblyFromFile(FileName);
+            this.Modified = File.GetLastWriteTime(FileName);
         }
 
         internal void UpdateAssembly()
         {
             Type[] types = null;
+            var aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+            var aExtensions = new List<MethodInfo>();
             //
             int num;
             string nspace = "";
             string fullName = "";
             string simpleName = "";
-            string str3 = "";
-            //
-            this.aTypes.Clear();
             //
             this._NameSpaces.Clear();
             this._NameSpaceTexts.Clear();
-            this.aExtensions.Clear();
+            
             this._ZeroNamespace.Types.Clear();
             this._GlobalClassName = "";
-            this._DefaultNamespace = "";
             this.lHasExtensions = false;
             //
+            this.LoadAssembly();
             try
             {
-                object[] customAttributes = this.Assembly.GetCustomAttributes(false);
-                for (num = 1; num <= customAttributes.Length; num++)
+                if (this.Assembly != null)
                 {
-                    object obj2 = customAttributes[num - 1];
-                    switch (obj2.ToString())
+                  object[] customAttributes = this.Assembly.GetCustomAttributes(false);
+                    for (num = 1; num <= customAttributes.Length; num++)
                     {
-                        case "Vulcan.Internal.VulcanClassLibraryAttribute":
-                            {
-                                Type type = obj2.GetType();
-                                this._GlobalClassName = type.GetProperty("globalClassName").GetValue(obj2, null).ToString();
-                                this._DefaultNamespace = type.GetProperty("defaultNamespace").GetValue(obj2, null).ToString();
+                        object custattr = customAttributes[num - 1];
+                        Type type = custattr.GetType();
+                        switch (custattr.ToString())
+                        {
+                            case "Vulcan.Internal.VulcanClassLibraryAttribute":
+                                this._GlobalClassName = type.GetProperty("globalClassName").GetValue(custattr, null).ToString();
+                                this._ImplicitNamespaces.Add(type.GetProperty("defaultNamespace").GetValue(custattr, null).ToString());
                                 break;
-                            }
-                        case "System.Runtime.CompilerServices.ExtensionAttribute":
-                            this.lHasExtensions = true;
-                            break;
+                            case "System.Runtime.CompilerServices.ExtensionAttribute":
+                                this.lHasExtensions = true;
+                                break;
+                            case "Vulcan.VulcanImplicitNamespaceAttribute":
+                                this._ImplicitNamespaces.Add(type.GetProperty("Namespace").GetValue(custattr, null).ToString());
+                                break;
+
+                        }
                     }
                 }
             }
@@ -154,24 +227,44 @@ namespace XSharpModel
             {
             }
             // Load Types From Assembly, if possible
+            // register event handler to find missing assemblies
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             try
             {
-                types = this.Assembly.GetTypes();
+                if (this.Assembly != null)
+                {
+                    types = this.Assembly.GetTypes();
+                }
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                Support.Debug("Cannot load types from {0}", Assembly.GetName().Name);
+                for (int i = 0; i < e.LoaderExceptions.Length; i++)
+                {
+                    var le = e.LoaderExceptions[i];
+                    var t = e.Types[i];
+                    Support.Debug("Cannot load type {0}: {1}", t.Name, le.Message);
+                }
+                this.Assembly = null;
             }
             catch
             {
             }
             // Has Types ?
-            if (types != null && ! lLoadedTypes)
+            currentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+            if (types?.Length > 0 && (aTypes?.Count == 0  | ! lLoadedTypes))
             {
-                // Mark as Loaded
-                this.lLoadedTypes = true;
                 try
                 {
                     for (num = 1; num <= types.Length; num++)
                     {
                         // First, Get Fullname ( for eg, System.Collections.Generic.List`1 )
                         fullName = types[num - 1].FullName;
+                        // Remove "special" Types
+                        if (fullName.StartsWith("$") || fullName.StartsWith("<"))
+                            continue;
+                        //
                         if (this.lHasExtensions && HasExtensionAttribute(types[num - 1]))
                         {
                             MethodInfo[] methods = types[num - 1].GetMethods(BindingFlags.Public | BindingFlags.Static);
@@ -179,7 +272,7 @@ namespace XSharpModel
                             {
                                 if (HasExtensionAttribute(info))
                                 {
-                                    this.aExtensions.Add(info);
+                                    aExtensions.Add(info);
                                 }
                             }
                         }
@@ -195,9 +288,9 @@ namespace XSharpModel
                             fullName = fullName.Substring(0, fullName.IndexOf("`") + 2);
                         }
                         // Add to the FullyQualified name
-                        if (!this.aTypes.ContainsKey(fullName.ToLower()))
+                        if (!aTypes.ContainsKey(fullName))
                         {
-                            this.aTypes.Add(fullName.ToLower(), types[num - 1]);
+                            aTypes.Add(fullName, types[num - 1]);
                         }
                         // Now, with Standard name
                         simpleName = types[num - 1].Name;
@@ -225,18 +318,18 @@ namespace XSharpModel
                             if ((nspace != null) && (nspace.Length > 0))
                             {
                                 NameSpaceContainer container;
-                                str3 = nspace.ToLower();
-                                if (!this._NameSpaces.ContainsKey(str3))
+                                ;
+                                if (!this._NameSpaces.ContainsKey(nspace))
                                 {
                                     container = new NameSpaceContainer(nspace);
                                     container.Types.Add(simpleName, this.GetTypeTypesFromType(types[num - 1]));
-                                    this._NameSpaces.Add(str3, container);
+                                    this._NameSpaces.Add(nspace, container);
                                     //this._NameSpaceTexts.Add(nspace + ".");
-                                    this._NameSpaceTexts.Add(nspace );
+                                    this._NameSpaceTexts.Add(nspace);
                                 }
                                 else
                                 {
-                                    container = (NameSpaceContainer)this._NameSpaces[str3];
+                                    container = (NameSpaceContainer)this._NameSpaces[nspace];
                                     if (!container.Types.ContainsKey(simpleName))
                                     {
                                         container.Types.Add(simpleName, this.GetTypeTypesFromType(types[num - 1]));
@@ -245,7 +338,7 @@ namespace XSharpModel
                                 while (nspace.Contains("."))
                                 {
                                     nspace = nspace.Substring(0, nspace.LastIndexOf('.'));
-                                    if (!this._NameSpaceTexts.Contains(nspace ))
+                                    if (!this._NameSpaceTexts.Contains(nspace))
                                     {
                                         this._NameSpaceTexts.Add(nspace);
                                     }
@@ -253,11 +346,54 @@ namespace XSharpModel
                             }
                         }
                     }
+                    // Mark as Loaded
+                    this.lLoadedTypes = true;
+                    this._aTypes = aTypes.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
+                    this._aExtensions = aExtensions.ToImmutableList();
                 }
                 catch
                 {
+                    // empty values
+                    this.lLoadedTypes = false;
+                    aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+                    this._aTypes = aTypes.ToImmutableDictionary();
+                    this._aExtensions = new List<MethodInfo>();
                 }
             }
+        }
+
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var folders = new List<String>();   // list of folders that we have tried
+            string folderPath = System.IO.Path.GetDirectoryName(this.FileName);
+            var name = new AssemblyName(args.Name).Name + ".dll";
+            string assemblyPath = Path.Combine(folderPath, name);
+            if (File.Exists(assemblyPath))
+            {
+                var asm = LoadAssemblyFromFile(assemblyPath);
+                if (asm != null)
+                    return asm;
+            }
+            folders.Add(folderPath);
+            // try in the folder for the other assemblies
+            foreach (var path in SystemTypeController.AssemblyFileNames)
+            {
+                folderPath = System.IO.Path.GetDirectoryName(path);
+                if (! folders.Contains(folderPath))
+                {
+                    assemblyPath = Path.Combine(folderPath, name);
+                    if (File.Exists(assemblyPath))
+                    {
+                        var asm = Assembly.LoadFrom(assemblyPath);
+                        if (asm != null)
+                            return asm;
+                    }
+                    folders.Add(folderPath);
+                }
+            }
+
+
+            return null;
         }
 
         private static bool HasExtensionAttribute(MemberInfo oInfo)
@@ -323,15 +459,5 @@ namespace XSharpModel
                 this.Types = new SortedList<string, TypeTypes>();
             }
         }
-
-
-
-
-
-
-
-
-
-
     }
 }

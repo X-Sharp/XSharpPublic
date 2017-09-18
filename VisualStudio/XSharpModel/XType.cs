@@ -1,4 +1,9 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +16,12 @@ namespace XSharpModel
 {
 
     /// <summary>
-    /// Model for Class or a Structure
+    /// Model for Namespace, Class, Interface, Structure, Enum
     /// </summary>
     [DebuggerDisplay("{FullName,nq}")]
     public class XType : XElement
     {
-        private List<XTypeMember> _members;
+        private XTypeMemberList _members;
         private string _nameSpace;
         private bool _isPartial;
         private bool _isStatic;
@@ -25,19 +30,20 @@ namespace XSharpModel
         public XType(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position)
             : base(name, kind, modifiers, visibility, span, position)
         {
-            _members = new List<XTypeMember>();
+            _members = new XTypeMemberList();
+            _parentName = "System.Object";
             _nameSpace = "";
             if (modifiers.HasFlag(Modifiers.Static))
             {
                 this._isStatic = true;
             }
-            if (modifiers.HasFlag( Modifiers.Partial))
+            if (modifiers.HasFlag(Modifiers.Partial))
             {
                 this._isPartial = true;
             }
         }
 
-        public List<XTypeMember> Members
+        public XTypeMemberList Members
         {
             get
             {
@@ -50,7 +56,7 @@ namespace XSharpModel
         {
             get
             {
-                if (!String.IsNullOrEmpty(_nameSpace))
+                if (!string.IsNullOrEmpty(_nameSpace))
                 {
 
                     return this.NameSpace + "." + this.Name;
@@ -75,8 +81,6 @@ namespace XSharpModel
             }
         }
 
-
-
         public bool IsPartial
         {
             get
@@ -87,6 +91,25 @@ namespace XSharpModel
             set
             {
                 _isPartial = value;
+            }
+        }
+
+        public bool IsType
+        {
+            get
+            {
+                switch (this.Kind)
+                {
+                    case Kind.Class:
+                    case Kind.Structure:
+                    case Kind.VOStruct:
+                    case Kind.Union:
+                    case Kind.Interface:
+                    case Kind.Enum:
+                        return true;
+                    default:
+                        return false;
+                }
             }
         }
 
@@ -103,7 +126,6 @@ namespace XSharpModel
             }
         }
 
-
         /// <summary>
         /// Duplicate the current Object, so we have the same properties in another object
         /// </summary>
@@ -111,45 +133,63 @@ namespace XSharpModel
         public XType Duplicate()
         {
             XType temp = new XType(this.Name, this.Kind, this.Modifiers, this.Visibility, this.Range, this.Interval);
+            temp.Parent = this.Parent;
+            temp.ParentName = this.ParentName;
             temp.IsPartial = this.IsPartial;
             temp.IsStatic = this.IsStatic;
-            temp.File = new XFile(this.File.FullPath);
-            foreach (XTypeMember mbr in this.Members)
-            {
-                temp.Members.Add(mbr);
-            }
+            temp.File = this.File;
+            temp.Members.AddRange(this.Members);
             //
             return temp;
         }
 
+        /// <summary>
+        /// If this XType is a Partial type, return a Copy of it, merged with all other informations
+        /// coming from other files.
+        /// </summary>
+        public XType Clone
+        {
+            get
+            {
+                if (this.IsPartial)
+                    return this.File.Project.LookupFullName(this.FullName, true);
+                else
+                    return this;
+            }
+        }
 
         /// <summary>
         /// Merge two XType Objects : Used to create the resulting  XType from partial classes
         /// </summary>
         /// <param name="otherType"></param>
-        public void Merge(XType otherType)
+        public XType Merge(XType otherType)
         {
+            var clone = this.Duplicate();
+            // prevent merging the same types 
+            if (string.Compare(otherType.File.FullPath,
+                this.File.FullPath, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                if (this.Range.StartLine == otherType.Range.StartLine)
+                    return clone;
+            }
             this.IsPartial = true;
             if (otherType != null)
             {
-                foreach (XTypeMember mbr in otherType.Members)
+                clone.Members.AddRange(otherType.Members);
+                if ((clone.Parent == null) && (otherType.Parent != null))
                 {
-                    this.Members.Add(mbr);
+                    clone.Parent = otherType.Parent;
                 }
-                if ((this.Parent == null) && (otherType.Parent != null))
+                else if ((clone.ParentName == null) && (otherType.ParentName != null))
                 {
-                    this.Parent = otherType.Parent;
-                }
-                else if ((this.ParentName == null) && (otherType.ParentName != null))
-                {
-                    this.ParentName = otherType.ParentName;
+                    clone.ParentName = otherType.ParentName;
                 }
             }
             //
-            return;
+            return clone;
         }
 
-        new public String ParentName
+        public override string ParentName
         {
             get
             {
@@ -157,7 +197,7 @@ namespace XSharpModel
                 {
                     return this.Parent.Name;
                 }
-                else if ( this._parentName != null )
+                else if (this._parentName != null)
                 {
                     return this._parentName;
                 }
@@ -168,17 +208,17 @@ namespace XSharpModel
             {
                 if (this.Parent != null)
                 {
-                    throw new Exception( "Cannot set ParentName if Parent is not null" );
+                    throw new Exception("Cannot set ParentName if Parent is not null");
                 }
                 this._parentName = value;
             }
         }
 
-        public override String Description
+        public override string Description
         {
             get
             {
-                String modVis = "";
+                string modVis = "";
                 if (this.Kind == Kind.Class)
                 {
                     if (this.Modifiers != Modifiers.None)
@@ -188,18 +228,36 @@ namespace XSharpModel
                     modVis += this.Visibility.ToString() + " ";
                 }
                 //
-                String desc = modVis;
+                string desc = modVis;
                 //
-                desc += this.Kind.ToString() + " ";
-                desc += this.Prototype;
+                if (this.Kind == Kind.Keyword)
+                {
+                    desc = this.Name + " " + this.Kind.ToString();
+                }
+                else
+                {
+                    desc += this.Kind.ToString() + " ";
+                    desc += this.Prototype;
+                }
                 //
                 return desc;
             }
         }
 
-        public static XType CreateGlobalType()
+        public static XType CreateGlobalType(XFile file)
         {
-            return new XType("(Global Scope)", Kind.Class, Modifiers.Partial|Modifiers.Static, Modifiers.Public, new TextRange(1,1,1,1), new TextInterval());
+            XType globalType = new XType(XType.GlobalName, Kind.Class, Modifiers.None, Modifiers.Public, new TextRange(1, 1, 1, 1), new TextInterval());
+            globalType.IsPartial = true;
+            globalType.IsStatic = true;
+            globalType.File = file;
+            return globalType;
         }
+
+        public static bool IsGlobalType(XType type)
+        {
+            return type.Name == XType.GlobalName;
+        }
+
+        public const string GlobalName = "(Global Scope)";
     }
 }

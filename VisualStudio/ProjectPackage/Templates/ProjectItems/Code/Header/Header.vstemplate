@@ -6,7 +6,6 @@
     <TemplateID>XSharp.Header</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <Icon>Include.png</Icon>
-    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>Header.vh</DefaultName> 
   </TemplateData>

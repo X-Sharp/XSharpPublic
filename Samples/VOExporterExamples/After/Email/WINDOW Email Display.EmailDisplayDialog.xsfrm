@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="EmailDisplayDialog">
+    <Window Name="EmailDisplayDialog">
+      <Name>EmailDisplayDialog</Name>
+      <Class>FORM:DATAWINDOW</Class>
+      <Caption>
+      </Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>379</Width>
+      <Height>286</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"EmailDisplayDialog"</HyperLabel>
+        <InheritClassName>EMailDialog</InheritClassName>
+        <NoAcc>Yes</NoAcc>
+      </ExProperties>
+    </Window>
+    <Control Name="From_FT">
+      <Name>From_FT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>From:</Caption>
+      <Order>1</Order>
+      <Left>8</Left>
+      <Top>4</Top>
+      <Width>50</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"From:"</HyperLabel>
+        <HyperLabel>"From_FT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="FromText">
+      <Name>FromText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>2</Order>
+      <Left>62</Left>
+      <Top>4</Top>
+      <Width>208</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"FromText"</HyperLabel>
+        <OwnerAlignment>OA_WIDTH</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="Date_FT">
+      <Name>Date_FT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Date:</Caption>
+      <Order>3</Order>
+      <Left>274</Left>
+      <Top>4</Top>
+      <Width>38</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Date:"</HyperLabel>
+        <HyperLabel>"Date_FT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+        <OwnerAlignment>OA_X</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="DateText">
+      <Name>DateText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>4</Order>
+      <Left>312</Left>
+      <Top>4</Top>
+      <Width>65</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"DateText"</HyperLabel>
+        <OwnerAlignment>OA_X</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="To_FT">
+      <Name>To_FT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>To:</Caption>
+      <Order>5</Order>
+      <Left>8</Left>
+      <Top>25</Top>
+      <Width>50</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"To:"</HyperLabel>
+        <HyperLabel>"To_FT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="ToMLE">
+      <Name>ToMLE</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>6</Order>
+      <Left>62</Left>
+      <Top>23</Top>
+      <Width>316</Width>
+      <Height>20</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1084297284</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"ToMLE"</HyperLabel>
+        <OwnerAlignment>OA_WIDTH</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="CC_FT">
+      <Name>CC_FT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Cc:</Caption>
+      <Order>7</Order>
+      <Left>8</Left>
+      <Top>46</Top>
+      <Width>50</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Cc:"</HyperLabel>
+        <HyperLabel>"CC_FT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="CcMLE">
+      <Name>CcMLE</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>8</Order>
+      <Left>62</Left>
+      <Top>44</Top>
+      <Width>316</Width>
+      <Height>20</Height>
+      <BrowseIndex>1</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1084297284</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"CcMLE"</HyperLabel>
+        <OwnerAlignment>OA_WIDTH</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="Subject_FT">
+      <Name>Subject_FT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Subject:</Caption>
+      <Order>9</Order>
+      <Left>8</Left>
+      <Top>67</Top>
+      <Width>50</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Subject:"</HyperLabel>
+        <HyperLabel>"Subject_FT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SubjectText">
+      <Name>SubjectText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>10</Order>
+      <Left>62</Left>
+      <Top>67</Top>
+      <Width>316</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"SubjectText"</HyperLabel>
+        <OwnerAlignment>OA_WIDTH</OwnerAlignment>
+      </ExProperties>
+    </Control>
+    <Control Name="Attach_FT">
+      <Name>Attach_FT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Attach:</Caption>
+      <Order>11</Order>
+      <Left>9</Left>
+      <Top>88</Top>
+      <Width>50</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Attach:"</HyperLabel>
+        <HyperLabel>"Attach_FT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="Attachments">
+      <Name>Attachments</Name>
+      <Class>CONTROL:COMMONCONTROL:LISTVIEW</Class>
+      <Caption>
+      </Caption>
+      <Order>12</Order>
+      <Left>62</Left>
+      <Top>86</Top>
+      <Width>316</Width>
+      <Height>27</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082130690</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"Attachments"</HyperLabel>
+        <InheritClassName>AttachmentListView</InheritClassName>
+        <ContextMenu>SaveAttachmentsContextMenu</ContextMenu>
+      </ExProperties>
+    </Control>
+    <Control Name="WebBrowser">
+      <Name>WebBrowser</Name>
+      <Class>CONTROL:OLEGEN:OLEOBJECT</Class>
+      <Caption>
+      </Caption>
+      <Order>13</Order>
+      <Left>1</Left>
+      <Top>145</Top>
+      <Width>377</Width>
+      <Height>140</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"WebBrowser"</HyperLabel>
+        <InheritClassName>WebBrowser</InheritClassName>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

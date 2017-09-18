@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="SubmitDlg">
+    <Window Name="SubmitDlg">
+      <Name>SubmitDlg</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>Submit, Prepare and Deliver ...</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>373</Width>
+      <Height>124</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3234334852</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Submit, Prepare and Deliver ..."</HyperLabel>
+        <HyperLabel>"SubmitDlg"</HyperLabel>
+      </ExProperties>
+    </Window>
+    <Control Name="ProgressBar1">
+      <Name>ProgressBar1</Name>
+      <Class>CONTROL:COMMONCONTROL:PROGRESSBAR</Class>
+      <Caption>
+      </Caption>
+      <Order>1</Order>
+      <Left>16</Left>
+      <Top>21</Top>
+      <Width>334</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>131072</ExStyles>
+      <ExProperties>
+        <HyperLabel>"ProgressBar1"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="DoneButton">
+      <Name>DoneButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>Done</Caption>
+      <Order>2</Order>
+      <Left>131</Left>
+      <Top>62</Top>
+      <Width>80</Width>
+      <Height>22</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Done"</HyperLabel>
+        <HyperLabel>"DoneButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

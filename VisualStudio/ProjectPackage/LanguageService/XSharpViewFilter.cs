@@ -15,14 +15,17 @@ using Microsoft.VisualStudio.OLE.Interop;
 using System.Runtime.InteropServices;
 using XSharp.Project;
 using static Microsoft.VisualStudio.VSConstants;
+using Microsoft.VisualStudio.Text;
+using LanguageService.SyntaxTree;
 
 namespace XSharp.LanguageService
 {
     internal class XSharpViewFilter : ViewFilter
     {
+
         private String[] type1 = { "Expansion" };
         private String[] type2 = { "SurroundsWith" };
-        internal XSharpViewFilter(CodeWindowManager mgr, IVsTextView view ) : base(mgr, view)
+        internal XSharpViewFilter(CodeWindowManager mgr, IVsTextView view) : base(mgr, view)
         {
 
         }
@@ -113,7 +116,7 @@ namespace XSharp.LanguageService
         {
             if (Guid.Equals(guidCmdGroup, Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet2K))
             {
-                switch ((VSStd2KCmdID) nCmdId)
+                switch ((VSStd2KCmdID)nCmdId)
                 {
                     case VSStd2KCmdID.INSERTSNIPPET:
                     case VSStd2KCmdID.SURROUNDWITH:
@@ -124,7 +127,7 @@ namespace XSharp.LanguageService
             }
             if (Guid.Equals(guidCmdGroup, Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet97))
             {
-                switch ((VSStd97CmdID) nCmdId)
+                switch ((VSStd97CmdID)nCmdId)
                 {
                     case VSStd97CmdID.GotoDefn:
                         return (int)(OLECMDF.OLECMDF_SUPPORTED | OLECMDF.OLECMDF_LATCHED);
@@ -133,7 +136,7 @@ namespace XSharp.LanguageService
                         return (int)(OLECMDF.OLECMDF_SUPPORTED | OLECMDF.OLECMDF_INVISIBLE);
                 }
             }
-                return base.QueryCommandStatus(ref guidCmdGroup, nCmdId);
+            return base.QueryCommandStatus(ref guidCmdGroup, nCmdId);
         }
 
         protected override int QueryParameterList(ref Guid guidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
@@ -145,7 +148,7 @@ namespace XSharp.LanguageService
         {
             if (Guid.Equals(guidCmdGroup, Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet2K))
             {
-                switch (( VSConstants.VSStd2KCmdID) nCmdId)
+                switch ((VSConstants.VSStd2KCmdID)nCmdId)
                 {
                     case VSStd2KCmdID.INSERTSNIPPET:
                         {
@@ -156,7 +159,7 @@ namespace XSharp.LanguageService
                             }
                             return true;
                         }
-                        
+
                     case VSStd2KCmdID.SURROUNDWITH:
                         {
                             ExpansionProvider ep = GetExpansionProvider();
@@ -176,7 +179,7 @@ namespace XSharp.LanguageService
 
         public override void HandlePostExec(ref Guid guidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, bool bufferWasChanged)
         {
-            base.HandlePostExec(ref guidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut,bufferWasChanged);
+            base.HandlePostExec(ref guidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut, bufferWasChanged);
         }
 
         protected override int ExecCommand(ref Guid guidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)

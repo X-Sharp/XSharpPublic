@@ -1,12 +1,13 @@
-﻿using EnvDTE;
-using LanguageService.CodeAnalysis.Text;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using EnvDTE;
 using Microsoft.VisualStudio.Language.Intellisense;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections.Immutable;
 namespace XSharpModel
 {
     public class XElement
@@ -61,26 +62,56 @@ namespace XSharpModel
         {
             get
             {
+                // Handle "(Global Scope"
+                //if ( this._Name == XType.GlobalName )
+
                 return this._Name;
             }
 
         }
 
+        public void ForceComplete()
+        {
+            if (_parent == null && !String.IsNullOrEmpty(ParentName))
+            {
+                string parentName = this.ParentName;
+                string thisName = this.FullName;
+                if (parentName.IndexOf(".") == -1 && thisName.IndexOf(".") > 0)
+                {
+                    parentName = thisName.Substring(0, thisName.LastIndexOf(".") + 1) + parentName;
+                }
+                if (File != null)
+                {
+                    var tmp = File.Project.LookupFullName(parentName, true);
+                    if (tmp == null)
+                    {
+                        tmp = File.Project.Lookup(parentName, true);
+                    }
+                    if (tmp != null)
+                    {
+                        _parent = tmp;
+                        // Ensure whole tree is resolved.
+                        _parent.ForceComplete();
+                    }
+                }
+            }
+        }
 
         public XElement Parent
         {
             get
             {
+                // An internal type that has not been resolved yet ?
                 return _parent;
-            }
 
+            }
             set
             {
                 _parent = value;
             }
         }
 
-        public String ParentName
+        public virtual String ParentName
         {
             get
             {
@@ -89,6 +120,10 @@ namespace XSharpModel
                     return this._parent.FullName;
                 }
                 return null;
+            }
+            set
+            {
+                ;
             }
         }
 
@@ -115,7 +150,20 @@ namespace XSharpModel
                 return this._interval;
             }
         }
+        public IImmutableList<String> FileUsings
+        {
+            get
+            {
+                if (_File == null)
+                {
+                    var list = new List<String>();
+                    return list.ToImmutableList();                    
 
+                }
+                else
+                    return _File.Usings;
+            }
+        }
         public XFile File
         {
             get
@@ -129,16 +177,22 @@ namespace XSharpModel
             }
         }
 
+        public void OpenEditor()
+        {
+            if ((this._File != null) && (this._File.Project != null))
+            {
+                if (this._File.Project.ProjectNode != null)
+                {
+                    this._File.Project.ProjectNode.OpenElement(this._File.FullPath, this.Range.StartLine, this.Range.StartColumn);
+                }
+            }
+        }
+
         public Modifiers Modifiers
         {
             get
             {
                 return _Modifiers;
-            }
-
-            set
-            {
-                _Modifiers = value;
             }
         }
 
@@ -147,11 +201,6 @@ namespace XSharpModel
             get
             {
                 return _Visibility;
-            }
-
-            set
-            {
-                _Visibility = value;
             }
         }
 
@@ -230,6 +279,9 @@ namespace XSharpModel
                     case Kind.Enum:
                         imgK = ImageListKind.Enum;
                         break;
+                    case Kind.EnumMember:
+                        imgK = ImageListKind.EnumValue;
+                        break;
                     case Kind.Interface:
                         imgK = ImageListKind.Interface;
                         break;
@@ -238,6 +290,7 @@ namespace XSharpModel
                         break;
                     case Kind.VOGlobal:
                     case Kind.Field:
+                    case Kind.ClassVar:
                         imgK = ImageListKind.Field;
                         break;
                     case Kind.Parameter:
@@ -314,6 +367,9 @@ namespace XSharpModel
                     case Kind.Enum:
                         imgG = StandardGlyphGroup.GlyphGroupEnum;
                         break;
+                    case Kind.EnumMember:
+                        imgG = StandardGlyphGroup.GlyphGroupEnumMember;
+                        break;
                     case Kind.Operator:
                         imgG = StandardGlyphGroup.GlyphGroupOperator;
                         break;
@@ -325,6 +381,7 @@ namespace XSharpModel
                         break;
                     case Kind.Field:
                     case Kind.VOGlobal:
+                    case Kind.ClassVar:
                         imgG = StandardGlyphGroup.GlyphGroupField;
                         break;
                     case Kind.Union:
@@ -335,6 +392,9 @@ namespace XSharpModel
                         break;
                     case Kind.VOStruct:
                         imgG = StandardGlyphGroup.GlyphGroupValueType;
+                        break;
+                    case Kind.Keyword:
+                        imgG = StandardGlyphGroup.GlyphKeyword;
                         break;
                 }
                 return imgG;
@@ -440,6 +500,8 @@ namespace XSharpModel
         VODLL,
         VOStruct,
         Union,
+        EnumMember,
+        Keyword
     }
 
     /// <summary>
@@ -497,5 +559,74 @@ namespace XSharpModel
         Private,
         ImageListOverlayArrow,
     }
+    public static class ElementExtensions
+    {
+        public static bool IsType(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Class:
+                case Kind.Structure:
+                case Kind.VOStruct:
+                case Kind.Union:
+                case Kind.Interface:
+                case Kind.Enum:
+                case Kind.Delegate:
+                    return true;
+            }
+            return false;
+        }
 
+        public static bool IsField(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Field:
+                case Kind.ClassVar:
+                case Kind.VOGlobal:
+                case Kind.VODefine:
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool HasReturnType( this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Method:
+                case Kind.Access:
+                case Kind.ClassVar:
+                case Kind.Property:
+                case Kind.Function:
+                case Kind.Delegate:
+                case Kind.Operator:
+                case Kind.Parameter:
+                case Kind.Local:
+                case Kind.VOGlobal:
+                case Kind.VODefine:
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool HasParameters(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Function:
+                case Kind.Procedure:
+                case Kind.Method:
+                case Kind.Assign:
+                case Kind.Event:
+                case Kind.Delegate:
+                case Kind.Constructor:
+                case Kind.Operator:
+                case Kind.VODLL:
+                    return true;
+            }
+            return false;
+        }
+
+    }
 }

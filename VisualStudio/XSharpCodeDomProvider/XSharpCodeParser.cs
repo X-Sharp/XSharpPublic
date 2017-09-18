@@ -13,11 +13,12 @@ namespace XSharp.CodeDom
 {
     public class XSharpCodeParser : CodeParser
     {
-
-        public XSharpCodeParser()
+        IProjectTypeHelper _projectNode;
+        public XSharpCodeParser(IProjectTypeHelper projectNode)
         {
             this.FileName = "";
-            this.TabSize = 1;       
+            this.TabSize = 1;
+            _projectNode = projectNode;
         }
         public string FileName { get; set; }
 
@@ -50,20 +51,31 @@ namespace XSharp.CodeDom
             //
             try
             {
-                // Tab replace, in order to have the good position of Memebers (Line/col)
+                // Tab replace, in order to have the good position of Members (Line/col)
                 String TabSpace = new String(' ', TabSize);
                 source = source.Replace("\t", TabSpace);
                 //
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source);
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source, _projectNode.ParseOptions);
                 var syntaxRoot = tree.GetRoot();
                 // Get the antlr4 parse tree root
                 var xtree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
-                //
-                var discover = new XSharpTreeDiscover();
+
+                // We need to d 2 steps here:
+                // 1 - Scan for the fields , so we know the difference between fields and properties when we perform step 2
+                // 2 - Scan for the rest. We pass the list of fields to the tree discover code so it "knows" about all fields
+
+                var discoverFields = new XSharpFieldsDiscover(_projectNode);
+                discoverFields.SourceCode = source;
+                discoverFields.CurrentFile = this.FileName;
+
+                var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
+                walker.Walk(discoverFields, xtree);
+                // now the discoverFields class should contain a Dictionary with <context, FieldList>
+                var discover = new XSharpClassDiscover(_projectNode);
+                discover.FieldList = discoverFields.FieldList;
                 discover.SourceCode = source;
                 discover.CurrentFile = this.FileName;
                 //
-                var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
                 walker.Walk(discover, xtree);
                 //
                 ccu = discover.CodeCompileUnit;

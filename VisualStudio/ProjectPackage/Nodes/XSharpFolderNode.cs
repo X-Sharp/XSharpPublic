@@ -49,7 +49,7 @@ namespace XSharp.Project
 
         protected internal override void DeleteFromStorage(string path)
         {
-            if (File.Exists(path))
+            if (Directory.Exists(path))
             {
                 File.SetAttributes(path, FileAttributes.Normal); // make sure it's not readonly.
                 OurNativeMethods.ShellDelete(path, OurNativeMethods.RecycleOption.SendToRecycleBin,

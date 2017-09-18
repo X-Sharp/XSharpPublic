@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="EmailPropertiesDialog">
+    <Window Name="EmailPropertiesDialog">
+      <Name>EmailPropertiesDialog</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>Email Properties</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>425</Width>
+      <Height>401</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3234332804</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Email Properties"</HyperLabel>
+        <HyperLabel>"EmailPropertiesDialog"</HyperLabel>
+      </ExProperties>
+    </Window>
+    <Control Name="CloseButton">
+      <Name>CloseButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Close</Caption>
+      <Order>1</Order>
+      <Left>329</Left>
+      <Top>345</Top>
+      <Width>80</Width>
+      <Height>24</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Close"</HyperLabel>
+        <HyperLabel>"CloseButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="SourceButton">
+      <Name>SourceButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Message Header</Caption>
+      <Order>2</Order>
+      <Left>13</Left>
+      <Top>345</Top>
+      <Width>296</Width>
+      <Height>24</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Message Header"</HyperLabel>
+        <HyperLabel>"SourceButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="ToText">
+      <Name>ToText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Type:</Caption>
+      <Order>3</Order>
+      <Left>13</Left>
+      <Top>93</Top>
+      <Width>40</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Type:"</HyperLabel>
+        <HyperLabel>"ToText"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="FromInfoText">
+      <Name>FromInfoText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>4</Order>
+      <Left>65</Left>
+      <Top>41</Top>
+      <Width>308</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"FromInfoText"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="TitleInfoText">
+      <Name>TitleInfoText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>5</Order>
+      <Left>65</Left>
+      <Top>17</Top>
+      <Width>308</Width>
+      <Height>12</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"TitleInfoText"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="TitleText">
+      <Name>TitleText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Location:</Caption>
+      <Order>6</Order>
+      <Left>13</Left>
+      <Top>121</Top>
+      <Width>60</Width>
+      <Height>12</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Location:"</HyperLabel>
+        <HyperLabel>"TitleText"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="letter_icon">
+      <Name>letter_icon</Name>
+      <Class>CONTROL:FIXEDICON</Class>
+      <Caption>letter_ico</Caption>
+      <Order>7</Order>
+      <Left>13</Left>
+      <Top>13</Top>
+      <Width>44</Width>
+      <Height>44</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>Yes</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741827</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"letter_ico"</HyperLabel>
+        <HyperLabel>"letter_icon"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="TitleText1">
+      <Name>TitleText1</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Sent:</Caption>
+      <Order>9</Order>
+      <Left>13</Left>
+      <Top>229</Top>
+      <Width>36</Width>
+      <Height>12</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Sent:"</HyperLabel>
+        <HyperLabel>"TitleText1"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="TitleText2">
+      <Name>TitleText2</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Received:</Caption>
+      <Order>10</Order>
+      <Left>13</Left>
+      <Top>257</Top>
+      <Width>64</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Received:"</HyperLabel>
+        <HyperLabel>"TitleText2"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="TitleText3">
+      <Name>TitleText3</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Size:</Caption>
+      <Order>11</Order>
+      <Left>13</Left>
+      <Top>149</Top>
+      <Width>60</Width>
+      <Height>12</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Size:"</HyperLabel>
+        <HyperLabel>"TitleText3"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="FromInfoText1">
+      <Name>FromInfoText1</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Mail Message</Caption>
+      <Order>13</Order>
+      <Left>93</Left>
+      <Top>93</Top>
+      <Width>79</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Mail Message"</HyperLabel>
+        <HyperLabel>"FromInfoText1"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="LocationText">
+      <Name>LocationText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>14</Order>
+      <Left>93</Left>
+      <Top>121</Top>
+      <Width>156</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"LocationText"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="SizeText">
+      <Name>SizeText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>15</Order>
+      <Left>93</Left>
+      <Top>149</Top>
+      <Width>116</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"SizeText"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="TitleText4">
+      <Name>TitleText4</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Priority:</Caption>
+      <Order>16</Order>
+      <Left>13</Left>
+      <Top>197</Top>
+      <Width>48</Width>
+      <Height>12</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Priority:"</HyperLabel>
+        <HyperLabel>"TitleText4"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="PriorityText">
+      <Name>PriorityText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>17</Order>
+      <Left>93</Left>
+      <Top>197</Top>
+      <Width>184</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"PriorityText"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="Senttext">
+      <Name>Senttext</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>18</Order>
+      <Left>93</Left>
+      <Top>229</Top>
+      <Width>184</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"Senttext"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="ReceivedText">
+      <Name>ReceivedText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>19</Order>
+      <Left>93</Left>
+      <Top>257</Top>
+      <Width>184</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"ReceivedText"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="GroupBox1">
+      <Name>GroupBox1</Name>
+      <Class>CONTROL:TEXTCONTROL:GROUPBOX</Class>
+      <Caption>
+      </Caption>
+      <Order>8</Order>
+      <Left>13</Left>
+      <Top>69</Top>
+      <Width>392</Width>
+      <Height>8</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872903</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"GroupBox1"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="GroupBox2">
+      <Name>GroupBox2</Name>
+      <Class>CONTROL:TEXTCONTROL:GROUPBOX</Class>
+      <Caption>
+      </Caption>
+      <Order>12</Order>
+      <Left>13</Left>
+      <Top>173</Top>
+      <Width>392</Width>
+      <Height>8</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872903</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"GroupBox2"</HyperLabel>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

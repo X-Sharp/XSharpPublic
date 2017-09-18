@@ -237,6 +237,11 @@ namespace XSharp.Project
         [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         int IProjectSourceNode.ExcludeFromProject()
         {
+            return this.ExcludeFromProject();
+        }
+
+        protected override int ExcludeFromProject()
+        {
             if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
@@ -293,7 +298,7 @@ namespace XSharp.Project
                 this.CloseDocumentWindow(this);
 
                 XProjectNode projectNode = this.ProjectMgr as XProjectNode;
-
+                projectNode.RemoveURL(this.Url);
                 if (projectNode != null && projectNode.ShowAllFilesEnabled && File.Exists(this.Url))
                 {
                     // need to store before removing the node.
@@ -326,8 +331,9 @@ namespace XSharp.Project
             }
 
             return VSConstants.S_OK;
-        }
 
+
+        }
         /// <summary>
         /// Include the item into the project system.
         /// </summary>

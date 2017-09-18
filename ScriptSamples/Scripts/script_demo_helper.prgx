@@ -1,0 +1,42 @@
+/*
+ * Demo script library!
+ *
+ * This script does nothing, but declares a function, a variable and a class.
+ * It can be loaded by other scripts with the #LOAD directive to use those
+ * declarations.
+ * Effectively, this functions as a "script class library"!
+ */
+
+using static System.Threading.Thread
+
+// Declaring a variable here makes it also accessible in any script
+// that loads this one
+const var Ten := 10
+
+// A function can also be declared to be accessed by scripts that load this one
+function CountTo(num as int) as void
+	for var i := 1 to num
+		Console.Write("{0}... ",i)
+		Sleep(500)
+	next
+	Console.WriteLine()
+	return
+
+// Types can be declared too.
+class Test
+	static method CountDown(num as int) as void
+		for var i := num downto 1
+			Console.Write("{0}... ",i)
+			Sleep(500)
+		next
+		Console.WriteLine()
+		return
+	
+	method CountFromTo(num1 as int, num2 as int) as void
+		for var i := num1 to num2
+			Console.Write("{0}... ",i)
+			Sleep(500)
+		next
+		Console.WriteLine()
+		return
+end class

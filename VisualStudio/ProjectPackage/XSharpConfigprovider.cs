@@ -13,7 +13,9 @@ using Microsoft.VisualStudio.Shell;
 
 using System.IO;
 using MSBuild = Microsoft.Build.Evaluation;
+using MSBuildExecution = Microsoft.Build.Execution;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace XSharp.Project
 {
@@ -30,6 +32,18 @@ namespace XSharp.Project
         protected override ProjectConfig CreateProjectConfiguration(ConfigCanonicalName canonicalName)
         {
             return new XSharpProjectConfig(base.ProjectMgr, canonicalName);
+        }
+
+        public override int GetCfgOfName(string name, string platName, out IVsCfg cfg)
+        {
+            if (name.IndexOf("|") >= 0)
+            {
+                var elements = name.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                name = elements[0];
+                platName = elements[1];
+            }
+            return base.GetCfgOfName(name, platName, out cfg);
+
         }
     }
 
@@ -137,6 +151,60 @@ namespace XSharp.Project
 
             return VSConstants.S_OK;
         }
+
+        internal override OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
+        {
+            OutputGroup outputGroup = new XSharpOutputGroup(group.Key, group.Value, project, this);
+            return outputGroup;
+        }
     }
 
+    internal class XSharpOutputGroup : OutputGroup
+    {
+        internal XSharpOutputGroup(string outputName, string msBuildTargetName, ProjectNode projectManager, ProjectConfig configuration)
+            : base(outputName, msBuildTargetName, projectManager, configuration)
+        {
+
+        }
+
+        // added to make sure our key output is picked up properly
+        protected override void Refresh()
+        {
+            // Let MSBuild know which configuration we are working with
+            this.Project.SetConfiguration(this.ProjectCfg.ConfigCanonicalName);
+
+            // Generate dependencies if such a task exist
+            if (this.Project.ProjectInstance.Targets.ContainsKey(ProjectFileConstants.AllProjectOutputGroups))
+            {
+                bool succeeded = false;
+                this.Project.BuildTarget(ProjectFileConstants.AllProjectOutputGroups, out succeeded);
+                if (!succeeded)
+                {
+                    Debug.WriteLine("Failed to build target {0}", this.TargetName);
+                    this.Outputs.Clear();
+                    return;
+                }
+            }
+            // Rebuild the content of our list of output
+            string outputType = this.TargetName + "Output";
+            if (TargetName == "BuiltProjectOutputGroup")
+                outputType = this.TargetName + "KeyOutput";
+            this.Outputs.Clear();
+            foreach (MSBuildExecution.ProjectItemInstance item in MSBuildProjectInstance.GetItems(this.Project.ProjectInstance, outputType))
+            {
+                Output output = new Output(this.Project, item);
+                this.Outputs.Add(output);
+
+                // See if it is our key output
+                if (String.Compare(MSBuildItem.GetMetadataValue(item, "IsKeyOutput"), true.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
+                    KeyOutput = output;
+            }
+
+            this.Project.SetCurrentConfiguration();
+
+            // Now that the group is built we have to check if it is invalidated by a property
+            // change on the project.
+            this.Project.OnProjectPropertyChanged += new EventHandler<ProjectPropertyChangedArgs>(OnProjectPropertyChanged);
+        }
+    }
 }

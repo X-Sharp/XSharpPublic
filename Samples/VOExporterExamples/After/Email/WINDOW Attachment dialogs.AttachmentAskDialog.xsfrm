@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="AttachmentAskDialog">
+    <Window Name="AttachmentAskDialog">
+      <Name>AttachmentAskDialog</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>Attachment Virus Warning</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>395</Width>
+      <Height>287</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3234332804</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Attachment Virus Warning"</HyperLabel>
+        <HyperLabel>"AttachmentAskDialog"</HyperLabel>
+        <Icon>AAP_EMAIL_ICON</Icon>
+      </ExProperties>
+    </Window>
+    <Control Name="OpenButton">
+      <Name>OpenButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON</Class>
+      <Caption>Open this attachment - I accept the risk of viruses.</Caption>
+      <Order>2</Order>
+      <Left>53</Left>
+      <Top>157</Top>
+      <Width>288</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741833</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Open this attachment - I accept the risk of viruses."</HyperLabel>
+        <HyperLabel>"OpenButton"</HyperLabel>
+        <Value>"O"</Value>
+      </ExProperties>
+    </Control>
+    <Control Name="SaveButton">
+      <Name>SaveButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON</Class>
+      <Caption>Save this attachment to another location.</Caption>
+      <Order>3</Order>
+      <Left>53</Left>
+      <Top>181</Top>
+      <Width>264</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741833</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Save this attachment to another location."</HyperLabel>
+        <HyperLabel>"SaveButton"</HyperLabel>
+        <Value>"S"</Value>
+      </ExProperties>
+    </Control>
+    <Control Name="MessageText">
+      <Name>MessageText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>4</Order>
+      <Left>29</Left>
+      <Top>61</Top>
+      <Width>332</Width>
+      <Height>64</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"MessageText"</HyperLabel>
+        <TextColor>COLORRED</TextColor>
+      </ExProperties>
+    </Control>
+    <Control Name="CloseButton">
+      <Name>CloseButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Abort</Caption>
+      <Order>5</Order>
+      <Left>281</Left>
+      <Top>225</Top>
+      <Width>79</Width>
+      <Height>26</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Abort"</HyperLabel>
+        <HyperLabel>"CloseButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="ProceedButton">
+      <Name>ProceedButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Proceed</Caption>
+      <Order>6</Order>
+      <Left>197</Left>
+      <Top>225</Top>
+      <Width>79</Width>
+      <Height>26</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Proceed"</HyperLabel>
+        <HyperLabel>"ProceedButton"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="VirusWarning">
+      <Name>VirusWarning</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:CHECKBOX</Class>
+      <Caption>Show this warning always</Caption>
+      <Order>8</Order>
+      <Left>29</Left>
+      <Top>229</Top>
+      <Width>156</Width>
+      <Height>20</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807363</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Show this warning always"</HyperLabel>
+        <HyperLabel>"VirusWarning"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="AttachmentName">
+      <Name>AttachmentName</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Fixed Text</Caption>
+      <Order>9</Order>
+      <Left>29</Left>
+      <Top>9</Top>
+      <Width>332</Width>
+      <Height>32</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Fixed Text"</HyperLabel>
+        <HyperLabel>"AttachmentName"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="GroupBox1">
+      <Name>GroupBox1</Name>
+      <Class>CONTROL:TEXTCONTROL:GROUPBOX</Class>
+      <Caption>
+      </Caption>
+      <Order>7</Order>
+      <Left>29</Left>
+      <Top>45</Top>
+      <Width>332</Width>
+      <Height>8</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872903</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"GroupBox1"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="UserChoice">
+      <Name>UserChoice</Name>
+      <Class>CONTROL:TEXTCONTROL:RADIOBUTTONGROUP</Class>
+      <Caption>Select what you wish to do:</Caption>
+      <Order>1</Order>
+      <Left>29</Left>
+      <Top>133</Top>
+      <Width>332</Width>
+      <Height>82</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872903</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Select what you wish to do:"</HyperLabel>
+        <HyperLabel>"UserChoice"</HyperLabel>
+        <TextColor>0 128 0</TextColor>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

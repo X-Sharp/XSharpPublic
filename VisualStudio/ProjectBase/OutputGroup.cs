@@ -144,7 +144,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region event handlers
-        private void OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs args)
+        internal void OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs args)
         {
             // In theory here we should decide if we have to invalidate the group according with the kind of property
             // that is changed.
@@ -273,5 +273,17 @@ namespace Microsoft.VisualStudio.Project
         }
 
         #endregion
+
+#if XSHARP
+        internal List<Output> Outputs => _outputs;
+        internal Output KeyOutput
+        {
+            get
+            {
+                return _keyOutput;
+            }
+            set { _keyOutput = value; }
+        }
+#endif
     }
 }

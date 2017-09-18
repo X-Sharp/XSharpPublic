@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using System.Windows;
+using XSharpModel;
 
 namespace XSharpColorizer
 {

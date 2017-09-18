@@ -1,25 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LanguageService.CodeAnalysis.Text;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
-using LanguageService.SyntaxTree.Misc;
-using LanguageService.SyntaxTree.Tree;
 namespace XSharpModel
 {
     [DebuggerDisplay("{Prototype,nq}")]
     public class XVariable : XElement
     {
-        private String _typeName;
+        private string _typeName;
+        private bool _isParameter;
 
-        public XVariable(XElement parent, string name, Kind kind, Modifiers visibility, TextRange span, TextInterval position, string typeName)
+        public XVariable(XElement parent, string name, Kind kind, Modifiers visibility, TextRange span, TextInterval position, string typeName, bool isParameter = false)
             : base(name, kind, Modifiers.None, visibility, span, position)
         {
+            if (string.IsNullOrEmpty(typeName))
+                typeName = "USUAL";
             _typeName = typeName;
+            _isParameter = isParameter;
             this.Parent = parent;
         }
 
@@ -32,25 +32,33 @@ namespace XSharpModel
 
             set
             {
+                if (string.IsNullOrEmpty(value))
+                    value = "USUAL";
                 _typeName = value;
             }
         }
 
-        public override String Description
+        public override string Description
         {
             get
             {
-                return this.Prototype + " as " + this.TypeName;
+                string prefix;
+                if (_isParameter)
+                    prefix = "PARAMETER ";
+                else
+                    prefix = "LOCAL ";
+                return prefix +this.Prototype + " as " + this.TypeName + (IsArray ? "[]" : "");
             }
         }
 
-        public override String Prototype
+        public override string Prototype
         {
             get
             {
                 return this.Name;
             }
         }
+        public bool IsArray { get; set; }
 
     }
 }

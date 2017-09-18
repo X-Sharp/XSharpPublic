@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-#if VODESIGNER
+
 using System;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
@@ -331,6 +331,11 @@ namespace XSharp.Project
             ppunkDocView = Marshal.GetIUnknownForObject(editor);
             ppunkDocData = Marshal.GetIUnknownForObject(editor);
             pbstrEditorCaption = "";
+            XSharpModel.XFile file = XSharpModel.XSolution.FindFile(pszMkDocument);
+            if (file != null)
+            {
+                editor.Project = file.Project.ProjectNode;
+            }
             return VSConstants.S_OK;
         }
     }
@@ -397,7 +402,7 @@ namespace XSharp.Project
     }
 
 
-    [Guid(GuidStrings.guidXSharpVOServerEditor)]
+    [Guid(GuidStrings.guidXSharpVODbServerEditor)]
     [ProvideView(LogicalView.Designer, "")]
     public sealed class VODBServerEditorFactory : VOEditorFactoryBase
     {
@@ -434,7 +439,7 @@ namespace XSharp.Project
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidStrings.guidVOServerEditorFactory;
+            pguidCmdUI = GuidStrings.guidVODbServerEditorFactory;
             pgrfCDW = 0;
             pbstrEditorCaption = null;
 
@@ -459,7 +464,4 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
     }
-
-
 }
-#endif

@@ -282,7 +282,7 @@ namespace Microsoft.VisualStudio.Project
             ProjectElement element = new ProjectElement(this.ProjectMgr, this.typeName, ProjectFileConstants.COMReference);
 
             // Set the basic information regarding this COM component
-            element.SetMetadata(ProjectFileConstants.Guid, this.typeGuid.ToString("B"));
+            element.SetMetadata(ProjectFileConstants.Guid, this.typeGuid.ToString("B").ToUpper());
             element.SetMetadata(ProjectFileConstants.VersionMajor, this.majorVersionNumber);
             element.SetMetadata(ProjectFileConstants.VersionMinor, this.minorVersionNumber);
             element.SetMetadata(ProjectFileConstants.Lcid, this.lcid);
@@ -300,10 +300,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 // MSBuild will have to generate an interop assembly
                element.SetMetadata(ProjectFileConstants.WrapperTool, tmpWrapper.ToLowerInvariant());
-               element.SetMetadata(ProjectFileConstants.Private, true.ToString());
-               // element.SetMetadata(ProjectFileConstants.EmbedInteropTypes, true.ToString());
-               // element.SetMetadata(ProjectFileConstants.Private, true.ToString());
-               // element.SetMetadata(ProjectFileConstants.EmbedInteropTypes, false.ToString());
+               //element.SetMetadata(ProjectFileConstants.Private, true.ToString());
             }
             return element;
         }

@@ -157,6 +157,7 @@
     <Compile Include="RddError.prg" />
     <Compile Include="SubCodes.prg" />
     <Compile Include="_Dummy.prg" />
+    <Compile Include="RddState.prg" />
     <Compile Include="Types\BaseIndex.prg" />
     <Compile Include="Types\BaseMemo.prg" />
     <Compile Include="Types\DBF.prg" />

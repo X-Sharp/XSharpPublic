@@ -1,0 +1,696 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="EmailConfig">
+    <Window Name="EmailConfig">
+      <Name>EmailConfig</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>Email Sample Configuration</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>335</Width>
+      <Height>571</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3234334852</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Email Sample Configuration"</HyperLabel>
+        <HyperLabel>"EmailConfig"</HyperLabel>
+      </ExProperties>
+    </Window>
+    <Control Name="FixedText4">
+      <Name>FixedText4</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>&amp;Full name</Caption>
+      <Order>1</Order>
+      <Left>12</Left>
+      <Top>84</Top>
+      <Width>83</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Full name"</HyperLabel>
+        <HyperLabel>"FixedText4"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SLEFullname">
+      <Name>SLEFullname</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>2</Order>
+      <Left>100</Left>
+      <Top>80</Top>
+      <Width>215</Width>
+      <Height>20</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLEFullname"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText5">
+      <Name>FixedText5</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>&amp;Email address</Caption>
+      <Order>3</Order>
+      <Left>12</Left>
+      <Top>104</Top>
+      <Width>83</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Email address"</HyperLabel>
+        <HyperLabel>"FixedText5"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SLEEmail">
+      <Name>SLEEmail</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>4</Order>
+      <Left>100</Left>
+      <Top>100</Top>
+      <Width>215</Width>
+      <Height>20</Height>
+      <BrowseIndex>1</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLEEmail"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText3">
+      <Name>FixedText3</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>&amp;Server Name</Caption>
+      <Order>5</Order>
+      <Left>13</Left>
+      <Top>171</Top>
+      <Width>83</Width>
+      <Height>18</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Server Name"</HyperLabel>
+        <HyperLabel>"FixedText3"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SLEPopServer">
+      <Name>SLEPopServer</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>6</Order>
+      <Left>101</Left>
+      <Top>169</Top>
+      <Width>216</Width>
+      <Height>20</Height>
+      <BrowseIndex>2</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLEPopServer"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText1">
+      <Name>FixedText1</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>&amp;Account name</Caption>
+      <Order>7</Order>
+      <Left>13</Left>
+      <Top>197</Top>
+      <Width>83</Width>
+      <Height>19</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Account name"</HyperLabel>
+        <HyperLabel>"FixedText1"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SLEAccount">
+      <Name>SLEAccount</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>8</Order>
+      <Left>101</Left>
+      <Top>193</Top>
+      <Width>160</Width>
+      <Height>20</Height>
+      <BrowseIndex>3</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLEAccount"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText2">
+      <Name>FixedText2</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>&amp;Password</Caption>
+      <Order>9</Order>
+      <Left>13</Left>
+      <Top>217</Top>
+      <Width>83</Width>
+      <Height>15</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Password"</HyperLabel>
+        <HyperLabel>"FixedText2"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SLEPassword">
+      <Name>SLEPassword</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>10</Order>
+      <Left>101</Left>
+      <Top>213</Top>
+      <Width>160</Width>
+      <Height>20</Height>
+      <BrowseIndex>4</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196128</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLEPassword"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="InspectHeaders">
+      <Name>InspectHeaders</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:CHECKBOX</Class>
+      <Caption>&amp;Inspect Headers before Download</Caption>
+      <Order>11</Order>
+      <Left>13</Left>
+      <Top>237</Top>
+      <Width>216</Width>
+      <Height>20</Height>
+      <BrowseIndex>5</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807363</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Inspect Headers before Download"</HyperLabel>
+        <HyperLabel>"InspectHeaders"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText7">
+      <Name>FixedText7</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Server name</Caption>
+      <Order>12</Order>
+      <Left>13</Left>
+      <Top>349</Top>
+      <Width>83</Width>
+      <Height>16</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Server name"</HyperLabel>
+        <HyperLabel>"FixedText7"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SLESmtpServer">
+      <Name>SLESmtpServer</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>13</Order>
+      <Left>101</Left>
+      <Top>345</Top>
+      <Width>215</Width>
+      <Height>20</Height>
+      <BrowseIndex>6</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLESmtpServer"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="Authentication">
+      <Name>Authentication</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:CHECKBOX</Class>
+      <Caption>Smtp Server Requires &amp;Authentication</Caption>
+      <Order>14</Order>
+      <Left>21</Left>
+      <Top>373</Top>
+      <Width>232</Width>
+      <Height>19</Height>
+      <BrowseIndex>7</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807363</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Smtp Server Requires &amp;Authentication"</HyperLabel>
+        <HyperLabel>"Authentication"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SmtpUserNameFT">
+      <Name>SmtpUserNameFT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>&amp;User name</Caption>
+      <Order>15</Order>
+      <Left>13</Left>
+      <Top>400</Top>
+      <Width>83</Width>
+      <Height>18</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;User name"</HyperLabel>
+        <HyperLabel>"SmtpUserNameFT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SLESmtpUserName">
+      <Name>SLESmtpUserName</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>16</Order>
+      <Left>101</Left>
+      <Top>397</Top>
+      <Width>160</Width>
+      <Height>20</Height>
+      <BrowseIndex>8</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLESmtpUserName"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="SmtpPasswordFT">
+      <Name>SmtpPasswordFT</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>&amp;Password</Caption>
+      <Order>17</Order>
+      <Left>13</Left>
+      <Top>420</Top>
+      <Width>83</Width>
+      <Height>18</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Password"</HyperLabel>
+        <HyperLabel>"SmtpPasswordFT"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="SLESmtpPassword">
+      <Name>SLESmtpPassword</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>18</Order>
+      <Left>101</Left>
+      <Top>417</Top>
+      <Width>160</Width>
+      <Height>20</Height>
+      <BrowseIndex>9</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196128</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLESmtpPassword"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="SLEDirectory">
+      <Name>SLEDirectory</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>19</Order>
+      <Left>9</Left>
+      <Top>473</Top>
+      <Width>312</Width>
+      <Height>20</Height>
+      <BrowseIndex>10</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082196096</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"SLEDirectory"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="PBOK">
+      <Name>PBOK</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;OK</Caption>
+      <Order>20</Order>
+      <Left>157</Left>
+      <Top>505</Top>
+      <Width>80</Width>
+      <Height>24</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;OK"</HyperLabel>
+        <HyperLabel>"PBOK"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="PBCancel">
+      <Name>PBCancel</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>&amp;Cancel</Caption>
+      <Order>21</Order>
+      <Left>241</Left>
+      <Top>505</Top>
+      <Width>80</Width>
+      <Height>24</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807360</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Cancel"</HyperLabel>
+        <HyperLabel>"PBCancel"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText6">
+      <Name>FixedText6</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Internet Mail</Caption>
+      <Order>22</Order>
+      <Left>109</Left>
+      <Top>9</Top>
+      <Width>212</Width>
+      <Height>37</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Internet Mail"</HyperLabel>
+        <HyperLabel>"FixedText6"</HyperLabel>
+        <NewFont>24:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText8">
+      <Name>FixedText8</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Attachments &amp;Directory:</Caption>
+      <Order>25</Order>
+      <Left>17</Left>
+      <Top>453</Top>
+      <Width>296</Width>
+      <Height>15</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741825</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Attachments &amp;Directory:"</HyperLabel>
+        <HyperLabel>"FixedText8"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="DeleteDownloads">
+      <Name>DeleteDownloads</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:CHECKBOX</Class>
+      <Caption>&amp;Delete downloaded mail from Server</Caption>
+      <Order>27</Order>
+      <Left>13</Left>
+      <Top>257</Top>
+      <Width>240</Width>
+      <Height>20</Height>
+      <BrowseIndex>11</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807363</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Delete downloaded mail from Server"</HyperLabel>
+        <HyperLabel>"DeleteDownloads"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="Period">
+      <Name>Period</Name>
+      <Class>CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT</Class>
+      <Caption>
+      </Caption>
+      <Order>28</Order>
+      <Left>173</Left>
+      <Top>281</Top>
+      <Width>44</Width>
+      <Height>20</Height>
+      <BrowseIndex>12</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082204288</Styles>
+      <ExStyles>512</ExStyles>
+      <ExProperties>
+        <HyperLabel>"Period"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText9">
+      <Name>FixedText9</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>&amp;Check for new Mail every</Caption>
+      <Order>29</Order>
+      <Left>13</Left>
+      <Top>285</Top>
+      <Width>148</Width>
+      <Height>15</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741826</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"&amp;Check for new Mail every"</HyperLabel>
+        <HyperLabel>"FixedText9"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedText10">
+      <Name>FixedText10</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>minutes</Caption>
+      <Order>30</Order>
+      <Left>225</Left>
+      <Top>285</Top>
+      <Width>56</Width>
+      <Height>15</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741824</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"minutes"</HyperLabel>
+        <HyperLabel>"FixedText10"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="InboxStartup">
+      <Name>InboxStartup</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:CHECKBOX</Class>
+      <Caption>Startup at my Inbox</Caption>
+      <Order>31</Order>
+      <Left>9</Left>
+      <Top>505</Top>
+      <Width>136</Width>
+      <Height>19</Height>
+      <BrowseIndex>13</BrowseIndex>
+      <BrowseSize>17</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807363</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Startup at my Inbox"</HyperLabel>
+        <HyperLabel>"InboxStartup"</HyperLabel>
+        <NewFont>8:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="GroupBox2">
+      <Name>GroupBox2</Name>
+      <Class>CONTROL:TEXTCONTROL:GROUPBOX</Class>
+      <Caption>Personal Information:</Caption>
+      <Order>24</Order>
+      <Left>5</Left>
+      <Top>57</Top>
+      <Width>319</Width>
+      <Height>75</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872903</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Personal Information:"</HyperLabel>
+        <HyperLabel>"GroupBox2"</HyperLabel>
+        <NewFont>10:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="GroupBox3">
+      <Name>GroupBox3</Name>
+      <Class>CONTROL:TEXTCONTROL:GROUPBOX</Class>
+      <Caption>Outgoing Mail Server SMTP:</Caption>
+      <Order>26</Order>
+      <Left>5</Left>
+      <Top>321</Top>
+      <Width>319</Width>
+      <Height>124</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872903</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Outgoing Mail Server SMTP:"</HyperLabel>
+        <HyperLabel>"GroupBox3"</HyperLabel>
+        <NewFont>10:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+    <Control Name="GroupBox1">
+      <Name>GroupBox1</Name>
+      <Class>CONTROL:TEXTCONTROL:GROUPBOX</Class>
+      <Caption>Incoming Mail Server POP3:</Caption>
+      <Order>23</Order>
+      <Left>5</Left>
+      <Top>145</Top>
+      <Width>319</Width>
+      <Height>164</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073872903</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Incoming Mail Server POP3:"</HyperLabel>
+        <HyperLabel>"GroupBox1"</HyperLabel>
+        <NewFont>10:Microsoft Sans Serif:Bold</NewFont>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

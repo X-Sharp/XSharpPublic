@@ -66,7 +66,7 @@
     <Rule Id="RS0023" Action="Error" />
   </Rules>
   <Rules AnalyzerId="Roslyn.Core" RuleNamespace="Roslyn.Core">
-    <Rule Id="AD0001" Action="Error" />
+    <Rule Id="AD0001" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="Roslyn.Diagnostic.Analyzers" RuleNamespace="Roslyn.Diagnostics.Analyzers">
     <Rule Id="RS0001" Action="Warning" />

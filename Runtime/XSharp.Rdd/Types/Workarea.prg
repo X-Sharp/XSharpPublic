@@ -36,8 +36,8 @@ CLASS Workarea IMPLEMENTS IRdd
 	INTERNAL _Delimiter		AS STRING	// Field Delimiter
 	INTERNAL _Separator	    AS STRING	// Field Separator
 	INTERNAL _ReadOnly		AS LOGIC	// ReadOnly ?  
-	INTERNAL _Shared			AS LOGIC	// Shared ?  
-	INTERNAL _Stream			AS FileStream // File. 
+	INTERNAL _Shared		AS LOGIC	// Shared ?  
+	INTERNAL _Stream		AS FileStream // File. 
 	INTERNAL _Flush			AS LOGIC		// Must flush ? 
 
 	// Memo and Order Implementation

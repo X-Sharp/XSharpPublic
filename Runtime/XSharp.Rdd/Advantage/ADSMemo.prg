@@ -43,7 +43,7 @@ CLASS XSharp.RDD.ADSMemo INHERIT BaseMemo
                 return oRDD:_Fields[nFldPos]:Length
             ENDIF
         ENDIF
-        RETURN 0
+        
 
  
 

@@ -5,7 +5,7 @@ USING System.Text
 
 BEGIN NAMESPACE XSharp.RDD
 
-	CLASS RddError INHERIT XError
+	CLASS RddError INHERIT Error
     CONSTRUCTOR()
          RETURN
 

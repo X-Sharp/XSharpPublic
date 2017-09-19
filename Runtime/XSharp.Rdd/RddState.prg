@@ -8,17 +8,17 @@ CLASS RDDState
 	PRIVATE STATIC StateTable AS Dictionary<Thread, RDDState>
 	PRIVATE STATIC MainThread AS Thread   
 	// Static Properties	
-	PRIVATE STATIC PROPERTY MainState AS State GET StateTable[MainThread]
+	PRIVATE STATIC PROPERTY MainState AS RDDState GET StateTable[MainThread]
 	// Static Methods and Constructor
 	STATIC CONSTRUCTOR
-		StateTable := Dictionary<Thread, XSharp.Runtime.State>{}
-		VAR oCurrent := State{}
+		StateTable := Dictionary<Thread, RDDState>{}
+		VAR oCurrent := RDDState{}
 		MainThread := Thread.CurrentThread
 		StateTable:Add(MainThread, oCurrent)				
 	
-	PUBLIC STATIC METHOD GetInstance() AS State
+	PUBLIC STATIC METHOD GetInstance() AS RDDState
 		VAR oThread := Thread.CurrentThread
-		LOCAL oState AS State   
+		LOCAL oState AS RDDState   
 		BEGIN LOCK StateTable
 			IF ! StateTable.ContainsKey(oThread)   
 				oState := MainState:Clone()
@@ -37,9 +37,9 @@ CLASS RDDState
 		SELF:Name := "State for Thread "+Thread.CurrentThread.ManagedThreadId.ToString()
 		Settings := Dictionary<INT, OBJECT>{}
 		RETURN
-	PRIVATE METHOD Clone() AS State
-		LOCAL oNew AS State
-		oNew := State{}		
+	PRIVATE METHOD Clone() AS RDDState
+		LOCAL oNew AS RDDState
+		oNew := RDDState{}		
 		BEGIN LOCK Settings
 			// Copy all values from Current State to New state
 			FOREACH VAR element IN Settings     

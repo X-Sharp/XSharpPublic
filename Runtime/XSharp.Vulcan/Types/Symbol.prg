@@ -5,37 +5,50 @@
 //
 
 USING System
+USING System.Collections
+USING System.Collections.Generic
 
-//STRUCTURE Vulcan.__Symbol
-	//PRIVATE Value as Long
-	//CONSTRUCTOR(s as STRING)
-		//Value := 1
-	//OPERATOR IMPLICIT(s as STRING) AS SYMBOL
-		//RETURN __Symbol{s}
-	//PROPERTY _stringValue as LONG GET Value
-//END STRUCTURE
+// Todo: Implement System.IConvertible ?
 
-PUBLIC STRUCTURE __Symbol IMPLEMENTS System.Collections.Generic.IEqualityComparer<__Symbol>, System.IEquatable<__Symbol>
+BEGIN NAMESPACE XSharp
+PUBLIC STRUCTURE __Symbol ;
+	IMPLEMENTS IEqualityComparer<__Symbol>, ;
+	IEquatable<__Symbol>,;
+	ICloneable,;
+	IEnumerable ;
+	//System.IConvertible,;
+
     #region fields
-    PRIVATE index		AS LONG
-    PRIVATE stringValue AS STRING
+    PRIVATE INITONLY _index		AS DWORD
 	#endregion
 
     #region constrúctors
     CONSTRUCTOR(value AS string,  upperCase := TRUE AS Logic)
 		if (string.IsNullOrEmpty(value)  )
-			SELF:stringValue := string.Empty
-		else
-			SELF:stringValue:=  value
+			self:_index := 0
+		ELSE
+			IF (upperCase)
+				value := value:ToUpperInvariant()
+			endif
+			_index := SymbolTable.Add(value)
 		endif
-        IF (upperCase)
-            SELF:stringValue := SELF:stringValue:ToUpperInvariant()
-        ENDIF
-        index := 0
-        index := SymbolDictionary.Add(SELF)
-	return
+	RETURN
+
+	PRIVATE CONSTRUCTOR (value AS DWORD)
+		SELF:_index := value
+
     #endregion
 
+	#region Properties
+	PRIVATE PROPERTY StringValue AS STRING
+	GET
+		IF _index == 0
+			RETURN String.Empty
+		ENDIF
+		return SymbolTable.getString(_index)
+	END GET
+	END PROPERTY
+	#endregion
 	#region methods
     VIRTUAL METHOD Equals(obj AS Object) AS Logic
         LOCAL other AS __Symbol
@@ -48,102 +61,194 @@ PUBLIC STRUCTURE __Symbol IMPLEMENTS System.Collections.Generic.IEqualityCompare
         ENDIF
     RETURN SELF:Equals(other)
 
-    METHOD Equals(other AS __Symbol) AS Logic
-        IF (other == null)
-            RETURN FALSE
-        ENDIF
-    RETURN SELF:stringValue:Equals(other:stringValue)
-
-     METHOD Equals(x AS __Symbol, y AS __Symbol) AS Logic
-        IF ((x == null) .AND. (y == null))
-            RETURN TRUE
-        ENDIF
-        IF (x == null)
-            RETURN FALSE
-        ENDIF
-    RETURN x:Equals(y)
-
     VIRTUAL METHOD GetHashCode() AS Long
-    RETURN SELF:index
+		RETURN SELF:_index:GetHashCode()
 
     METHOD GetHashCode(obj AS __Symbol) AS Long
-    RETURN obj:index
-
-    STATIC OPERATOR ==(a AS __Symbol, b AS __Symbol) AS Logic
-        IF ((a == null) .OR. (b == null))
-            RETURN Object.Equals(a, b)
-        ENDIF
-    RETURN (a:index == b:index)
-
-    STATIC OPERATOR implicit(value AS string) AS __Symbol
-    RETURN __Symbol{value, TRUE}
-
-    STATIC OPERATOR implicit(newSymbol AS __Symbol) AS string
-    RETURN newSymbol:stringValue
-
-    STATIC OPERATOR !=(a AS __Symbol, b AS __Symbol) AS Logic
-    RETURN ! (a == b)
+		RETURN obj:GetHashCode()
 
     VIRTUAL METHOD ToString() AS string
-		if ( string.IsNullOrEmpty(stringValue) ) 
+		if _index == 0
 			return string.Empty
 		endif
-	return self:stringValue
+		return self:stringValue
 	#endregion
 
+#region Equality
+    METHOD Equals(other AS __Symbol) AS Logic
+		RETURN SELF:_index == other:_index
+
+     METHOD Equals(x AS __Symbol, y AS __Symbol) AS Logic
+		RETURN x:_index == y:_index
+
+    METHOD Equals(s AS String) AS Logic
+		RETURN SELF:StringValue == s
+
+#endregion
+#region Operators
+
+    STATIC OPERATOR ==(lhs AS __Symbol, rhs AS __Symbol) AS Logic
+	    RETURN lhs:_index == rhs:_index
+
+    STATIC OPERATOR !=(a AS __Symbol, b AS __Symbol) AS Logic
+		RETURN a:_index != b:_index
+
+    STATIC OPERATOR ==(lhs AS __Symbol, rhs AS STRING) AS LOGIC
+		RETURN lhs:StringValue == rhs
+
+    STATIC OPERATOR !=(lhs AS __Symbol, rhs AS STRING) AS LOGIC
+		RETURN lhs:StringValue != rhs
+
+    STATIC OPERATOR ==(lhs AS String, rhs AS __Symbol) AS Logic
+	    RETURN lhs == rhs:StringValue 
+
+    STATIC OPERATOR !=(lhs AS String, rhs AS __Symbol) AS Logic
+	    RETURN lhs != rhs:StringValue 
+
+    STATIC OPERATOR ==(lhs AS __Symbol, rhs AS DWORD) AS LOGIC
+		RETURN lhs:_index == rhs
+
+    STATIC OPERATOR !=(lhs AS __Symbol, rhs AS DWORD) AS LOGIC
+		RETURN lhs:_index != rhs
+
+    STATIC OPERATOR ==(lhs AS DWORD, rhs AS __Symbol) AS LOGIC
+		RETURN lhs == rhs:_index
+
+    STATIC OPERATOR !=(lhs AS DWORD, rhs AS __Symbol) AS LOGIC
+		RETURN lhs != rhs:_index
+
+    STATIC OPERATOR EXPLICIT(value AS DWORD) AS __Symbol
+		IF value <= SymbolTable.Count
+			RETURN __Symbol{value}
+		ENDIF
+		RETURN __Symbol{0}
+
+    STATIC OPERATOR EXPLICIT(value AS __Symbol) AS DWORD
+		RETURN value:_index
+
+    STATIC OPERATOR IMPLICIT(value AS string) AS __Symbol
+		RETURN __Symbol{value, TRUE}
+
+    STATIC OPERATOR IMPLICIT(value AS __Symbol) AS string
+		RETURN value:stringValue
+
+	// relative comparisons
+	// compare symbols or symbols and strings
+	STATIC OPERATOR >(lhs AS __Symbol, rhs AS __Symbol) as LOGIC
+		RETURN __StringCompare(lhs:StringValue, rhs:StringValue) > 0
+
+	STATIC OPERATOR >(lhs AS __Symbol, rhs AS String) as LOGIC
+		RETURN __StringCompare(lhs:StringValue, rhs) > 0
+
+	STATIC OPERATOR >(lhs AS STRING, rhs AS __Symbol) as LOGIC
+		RETURN __StringCompare(lhs, rhs:StringValue) > 0
+
+	STATIC OPERATOR <(lhs AS __Symbol, rhs AS __Symbol) as LOGIC
+		return __StringCompare(lhs:StringValue, rhs:StringValue) < 0
+
+	STATIC OPERATOR <(lhs AS __Symbol, rhs AS String) as LOGIC
+		RETURN __StringCompare(lhs:StringValue, rhs) < 0
+
+	STATIC OPERATOR <(lhs AS STRING, rhs AS __Symbol) as LOGIC
+		RETURN __StringCompare(lhs, rhs:StringValue) < 0
+
+	// or Equals
+	STATIC OPERATOR >=(lhs AS __Symbol, rhs AS __Symbol) as LOGIC
+		RETURN __StringCompare(lhs:StringValue, rhs:StringValue) >= 0
+
+	STATIC OPERATOR >=(lhs AS __Symbol, rhs AS String) as LOGIC
+		RETURN __StringCompare(lhs:StringValue, rhs) >= 0
+
+	STATIC OPERATOR >=(lhs AS STRING, rhs AS __Symbol) as LOGIC
+		RETURN __StringCompare(lhs, rhs:StringValue) >= 0
+
+	STATIC OPERATOR <=(lhs AS __Symbol, rhs AS __Symbol) as LOGIC
+		return __StringCompare(lhs:StringValue, rhs:StringValue) <= 0
+
+	STATIC OPERATOR <=(lhs AS __Symbol, rhs AS String) as LOGIC
+		RETURN __StringCompare(lhs:StringValue, rhs) <= 0
+
+	STATIC OPERATOR <=(lhs AS STRING, rhs AS __Symbol) as LOGIC
+		RETURN __StringCompare(lhs, rhs:StringValue) <= 0
+
+#endregion
+
+
 	#region internal types
-    INTERNAL STATIC  CLASS SymbolDictionary
+    INTERNAL STATIC  CLASS SymbolTable
         #region fields
-        STATIC INITONLY PRIVATE symbolLookup AS System.Collections.Generic.Dictionary<string,Long>
-        STATIC INITONLY PRIVATE symbols := System.Collections.Generic.List<__Symbol>{} AS System.Collections.Generic.List<__Symbol>
-        STATIC PRIVATE sync AS Object
-        STATIC INITONLY PRIVATE NON_EXISTING_SYMBOL := __Symbol{"", FALSE} AS __Symbol
+		// Note that we are not using a ConcurrentDictionary since we want to keep the LookupTable and List
+		// in sync. Therefore we handle our own locking in this class
+        STATIC INITONLY INTERNAL LookupTable AS Dictionary<STRING,DWORD>
+        STATIC INITONLY INTERNAL Strings AS List<String>
+        STATIC INITONLY PRIVATE sync AS Object
+        STATIC INITONLY INTERNAL EmptySymbol AS __Symbol
 		#endregion
 
         #region constructors
         STATIC  CONSTRUCTOR()
-            LOCAL dictionary AS System.Collections.Generic.Dictionary<string,Long>
-            dictionary := System.Collections.Generic.Dictionary<string,Long>{}
-			Add(NON_EXISTING_SYMBOL)
-            SymbolDictionary.symbolLookup := dictionary
-            SymbolDictionary.sync := Object{}
+			EmptySymbol := __Symbol{null, FALSE} 
+            sync		:= OBJECT{}
+			Strings     := List<String>{} 
+            LookupTable := Dictionary<STRING,DWORD>{}
+			// Add empty string to tables
+			Strings.Add(String.Empty)
+			LookupTable.Add(String.Empty, 0)
+			LookupTable.Add(null, 0)
 		#endregion
 
 		#region methods
-        INTERNAL STATIC METHOD Add(newSymbol AS __Symbol) AS Int
-            LOCAL syncObj AS Object
-            IF (newSymbol != SymbolDictionary.NON_EXISTING_SYMBOL)
-                syncObj := SymbolDictionary.sync
-                BEGIN LOCK syncObj
-                    IF (SymbolDictionary.symbolLookup:ContainsKey(newSymbol:stringValue))
-                        newSymbol:index := SymbolDictionary.symbolLookup[newSymbol:stringValue]
+        INTERNAL STATIC METHOD Add(stringvalue AS STRING) AS DWORD
+			local index := 0 as DWORD
+            IF !String.IsNullOrEmpty(stringvalue)
+				BEGIN LOCK sync
+                    IF (LookupTable:ContainsKey(stringvalue))
+						index := LookupTable[stringValue]
                     ELSE
-                        SymbolDictionary.symbols:Add(newSymbol)
-                        newSymbol:index := SymbolDictionary.symbols:Count
-                        SymbolDictionary.symbolLookup:Add(newSymbol:stringValue, newSymbol:index)
+                        strings:Add(stringvalue)
+                        index := (DWORD) strings:Count
+                        LookupTable:Add(stringValue, index)
                     ENDIF
                 END LOCK
             ENDIF
-		return newSymbol:index
+		RETURN index
 
         INTERNAL STATIC METHOD Find(s AS string) AS __Symbol
-            LOCAL num AS Long
-            BEGIN LOCK SymbolDictionary.sync
-                IF (SymbolDictionary.symbolLookup:ContainsKey(s))
-                    num := SymbolDictionary.symbolLookup[s]
-                    RETURN SymbolDictionary.symbols[num]
+            LOCAL index as DWORD
+            BEGIN LOCK sync
+                IF (LookupTable:ContainsKey(s))
+                    index := LookupTable[s]
+                    RETURN __Symbol{index}
                 ENDIF
             END LOCK
-        RETURN SymbolDictionary.NON_EXISTING_SYMBOL
+			RETURN EmptySymbol
 
         INTERNAL STATIC PROPERTY Count AS Long
             GET
-                RETURN symbols:Count
+                RETURN strings:Count
             END GET
         END PROPERTY
+
+		INTERNAL STATIC METHOD getString(index as DWORD) AS __Symbol
+			IF (INT) index <= strings:Count
+				return strings[(int) index]
+			ENDIF
+			RETURN String.Empty
 		#endregion
 
     END CLASS
 	#endregion
 
+	#region IClonable
+	METHOD Clone() AS OBJECT
+		RETURN __Symbol{SELF:_index}
+	#endregion
+
+	#region IEnumerable
+	// Vulcan.__Symbol
+	METHOD GetEnumerator() as IEnumerator
+		return SymbolTable.strings.GetEnumerator()
+
+	#endregion
 END STRUCTURE
+END NAMESPACE

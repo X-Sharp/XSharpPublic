@@ -4,23 +4,17 @@
 // See License.txt in the project root for license information.
 //
 
+[Obsolete];
 STRUCTURE _GCDUMP
-	PRIVATE Value as LONG
-	CONSTRUCTOR(l as long) STRICT
-		Value := l
-	PROPERTY __Value as LONG GET Value
+	PUBLIC Value as LONG
 END STRUCTURE
 
+[Obsolete];
 STRUCTURE _WINRTL_CRITICAL_SECTION
-	PRIVATE Value as LONG
-	CONSTRUCTOR(l as long) 
-	Value := l
-	PROPERTY __Value as LONG GET Value
+	PUBLIC Value as LONG
 END STRUCTURE
 
+[Obsolete];
 STRUCTURE _JMP_BUF
-	PRIVATE Value as LONG
-	CONSTRUCTOR(l as long) 
-	Value := l
-	PROPERTY __Value as LONG GET Value
+	PUBLIC Value as LONG
 END STRUCTURE

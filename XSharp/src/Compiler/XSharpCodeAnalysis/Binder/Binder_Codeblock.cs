@@ -41,8 +41,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conv = Conversions.ClassifyConversionFromType(Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), destination, ref useSiteDiagnostics);
                 diagnostics.Add(syntax, useSiteDiagnostics);
             }
-
-            Debug.Assert(destination.IsCodeblock() || conv.Exists);
+            if (Compilation.Options.IsDialectVO)
+            {
+                Debug.Assert(destination.IsCodeblock() || conv.Exists);
+            }
             if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript)
             {
                 Error(diagnostics, ErrorCode.ERR_CodeblockWithLambdaSyntax, syntax);

@@ -48,35 +48,35 @@ CONSTRUCTOR()
     SELF:m_dbfName      := String.Empty
 #region Helper Methods that check for error conditions
 
-    INTERNAL METHOD ACECALL(ulRetCode AS DWord) AS VOID
+    INTERNAL METHOD ACECALL(ulRetCode AS DWORD) AS VOID
         IF (ulRetCode != 0)
-            SELF:ADSERROR(ulRetCode, 27)
+            SELF:ADSERROR((int) ulRetCode, 27)
         ENDIF
         RETURN 
 
 
-    METHOD ADSERROR(uiSubCode AS DWord, uiGenCode AS DWord) AS void
-        SELF:ADSERROR(uiSubCode, uiGenCode, String.Empty, String.Empty, ES_ERROR)
+    METHOD ADSERROR(iSubCode AS INT, iGenCode AS INT) AS void
+        SELF:ADSERROR(iSubCode, iGenCode, String.Empty, String.Empty, ES_ERROR)
 
-    METHOD ADSERROR(uiSubCode AS DWord, uiGenCode AS DWord, uiSeverity as DWORD) AS void
-        SELF:ADSERROR(uiSubCode, uiGenCode, String.Empty, String.Empty, uiSeverity)
+    METHOD ADSERROR(iSubCode AS INT, iGenCode AS INT, iSeverity as INT) AS void
+        SELF:ADSERROR(iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
 
-    METHOD ADSERROR(uiSubCode AS DWord, uiGenCode AS DWord, strFunction AS string) AS void
-        SELF:ADSERROR(uiSubCode, uiGenCode, strFunction, String.Empty, ES_ERROR)
+    METHOD ADSERROR(iSubCode AS INT, iGenCode AS INT, strFunction AS string) AS void
+        SELF:ADSERROR(iSubCode, iGenCode, strFunction, String.Empty, ES_ERROR)
 
-    METHOD ADSERROR(uiSubCode AS DWord, uiGenCode AS DWord, strFunction AS string, strMessage AS string) AS void
-        SELF:ADSERROR(uiSubCode, uiGenCode, strFunction,strMessage, ES_ERROR)
+    METHOD ADSERROR(iSubCode AS int, iGenCode AS Int, strFunction AS string, strMessage AS string) AS void
+        SELF:ADSERROR(iSubCode, iGenCode, strFunction,strMessage, ES_ERROR)
 
-    METHOD ADSERROR(uiSubCode AS DWord, uiGenCode AS DWord, strFunction AS string, strMessage AS string, uiSeverity AS DWord) AS void
+    METHOD ADSERROR(iSubCode AS int, iGenCode AS int, strFunction AS string, strMessage AS string, iSeverity AS Int) AS void
         LOCAL lastError AS DWord
         LOCAL pucBuf AS Char[]
         LOCAL wBufLen AS Word
         LOCAL oError as RddError
         oError := RddError{}
-        oError:SubCode := uiSubCode
-        oError:Gencode := uiGenCode
+        oError:SubCode := iSubCode
+        oError:Gencode := iGenCode
         oError:SubSystem := SELF:m_strDriver
-        oError:Severity := uiSeverity
+        oError:Severity := iSeverity
         oError:FuncSym  := strFunction
         oError:FileName := SELF:m_dbfName
         IF (strMessage == String.Empty)

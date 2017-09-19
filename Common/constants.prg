@@ -9,7 +9,7 @@ BEGIN NAMESPACE XSharp
    
         internal const Company := "XSharpBV"													AS string 			
         internal const Product := "XSharp"														AS string 
-        internal const Version := "0.2.9.0"														AS string 
+        internal const Version := "1.1.0.0"														AS string 
         internal const Copyright := "Copyright © XSharp BV 2015-2017"							AS string 
 
         internal const RegistryKey := "Software\" + Company + "\" + Product						AS string 

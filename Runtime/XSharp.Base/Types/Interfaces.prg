@@ -17,16 +17,16 @@ END INTERFACE
 INTERFACE IDate
 	/// <summary>Year part of the date. A number between 0 and 9999</summary>
 	/// <returns>Integer value</returns>
-	PROPERTY Year		AS INT GET SET
+	PROPERTY Year		AS INT GET
 	/// <summary>Month part of the date. A number between 0 an 12</summary>
 	/// <returns>Integer value</returns>
-	PROPERTY Month		AS INT GET SET
+	PROPERTY Month		AS INT GET
 	/// <summary>Day part of the date. A number between 0 an 31</summary>
 	/// <returns>Integer value</returns>
-	PROPERTY Day		AS INT GET SET
+	PROPERTY Day		AS INT GET
 	/// <summary>Date as System.DateTime structure</summary>
 	/// <returns>System.DateTime value</returns>
-	PROPERTY Value		AS DateTime GET SET
+	PROPERTY Value		AS DateTime GET 
 	/// <summary>Is the date empty (NULL_DATE)</summary>
 	/// <returns>Logical value</returns>
 	PROPERTY IsEmpty	AS LOGIC GET
@@ -37,13 +37,13 @@ END INTERFACE
 INTERFACE IFloat
 	/// <summary>Double value of the Float</summary>
 	/// <returns>Integer value</returns>
-	PROPERTY Value    AS REAL8 GET SET
+	PROPERTY Value    AS REAL8 GET
 	/// <summary>Number of digits (includes the optional decimal separator and decimals).</summary>
 	/// <returns>Integer value</returns>
-	PROPERTY Digits	  AS INT  GET SET
+	PROPERTY Digits	  AS INT  GET 
 	/// <summary>Number of decimals.</summary>
 	/// <returns>Integer value</returns>
-	PROPERTY Decimals AS INT  GET SET
+	PROPERTY Decimals AS INT  GET 
 END INTERFACE
 /// <summary>
 /// This interface defines the Macro compiler subsystem

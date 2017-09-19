@@ -3,6 +3,6 @@
          Description="This file contains diagnostic settings used by all Roslyn projects. Projects that need specific settings should have their own rule set files that Include this one, and then make the necessary adjustments." 
          ToolsVersion="14.0">
   <Rules AnalyzerId="Roslyn.Core" RuleNamespace="Roslyn.Core">
-    <Rule Id="AD0001" Action="Error" />
+    <Rule Id="AD0001" Action="Warning" />
   </Rules>
 </RuleSet>

@@ -3175,9 +3175,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         */
         protected MemberDeclarationSyntax GenerateClassWrapper (SyntaxToken identifier,MemberDeclarationSyntax member, XP.NameDotContext namedot)
         {
+            // This method generates a class wrapper for standalone Methods with a Class Clause
             MemberDeclarationSyntax cls = _syntaxFactory.ClassDeclaration(
                 attributeLists: EmptyList<AttributeListSyntax>(),
-                modifiers: TokenList(SyntaxKind.PartialKeyword),
+                modifiers: TokenList(SyntaxKind.PartialKeyword, SyntaxKind.PublicKeyword),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: identifier,
                 typeParameterList: default(TypeParameterListSyntax),

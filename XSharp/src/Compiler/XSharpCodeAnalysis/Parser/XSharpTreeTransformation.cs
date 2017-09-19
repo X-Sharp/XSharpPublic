@@ -6570,9 +6570,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
             expr = MakeCastTo(context.Type.Get<TypeSyntax>(), expr);
-            if (_options.IsDialectVO)
+            if (_options.IsDialectVO )
             {
-                expr = MakeChecked(expr, false);
+                expr = MakeChecked(expr, _options.Overflow);
             }
             context.Put(expr);
         }

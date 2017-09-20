@@ -8,7 +8,7 @@ using XSharp.Runtime
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	CLASS RuntimeByteTests
+	CLASS ByteTests
 
 		[Fact];
 		METHOD SwapByteTest() as void

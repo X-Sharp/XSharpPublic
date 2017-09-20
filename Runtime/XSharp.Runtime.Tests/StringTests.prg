@@ -7,7 +7,7 @@ using XSharp.Runtime
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	CLASS RuntimeStringTests
+	CLASS StringTests
 
 	[Fact];
 	METHOD AdjustFNameTest() as void

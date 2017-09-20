@@ -8,7 +8,7 @@ using XSharp.Runtime
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	CLASS SymbolTests
-
+	
 		[Fact];
 		METHOD CreateSymbolTest() as void
 			VAR sym := __Symbol{"TestSymbol",true}

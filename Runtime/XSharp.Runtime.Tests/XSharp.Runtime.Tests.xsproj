@@ -136,16 +136,16 @@
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RuntimeArrayTests.prg" />
-    <Compile Include="RuntimeByteTests.prg" />
-    <Compile Include="RuntimeDateTests.prg" />
-    <Compile Include="RuntimeIOTests.prg" />
-    <Compile Include="RuntimeMiscTests.prg" />
-    <Compile Include="RuntimeNumericTest.prg" />
-    <Compile Include="RuntimeStringTests.prg">
+    <Compile Include="ArrayTests.prg" />
+    <Compile Include="ByteTests.prg" />
+    <Compile Include="DateTests.prg" />
+    <Compile Include="IOTests.prg" />
+    <Compile Include="MiscTests.prg" />
+    <Compile Include="NumericTest.prg" />
+    <Compile Include="StringTests.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RuntimeUsualTests.prg" />
+    <Compile Include="UsualTests.prg" />
     <Compile Include="SymbolTests.prg" />
     <Compile Include="Usual.prg" />
   </ItemGroup>

@@ -8,13 +8,13 @@ using XSharp.Runtime
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	CLASS RuntimeUsualTests
+	CLASS UsualTests
 
 		[Fact];
 		METHOD DateTimeTest() as void
 			local now as __VODate
 			local u   as __Usual
-		    now := (__VODate)System.DateTime.Now 
+		    now := __VoDate{System.DateTime.Now}
 			u := __Usual{now}
 			var s := u:ToString()
 			Assert.Equal(now:ToString(),u:ToString())

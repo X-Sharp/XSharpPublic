@@ -7,7 +7,7 @@ using XSharp.Runtime
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	CLASS RuntimeIOTests
+	CLASS IOTests
 
 		[Fact];
 		METHOD FileTest() as void

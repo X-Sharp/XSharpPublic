@@ -96,7 +96,7 @@ namespace Microsoft.VisualStudio.Project
             }
 	        if (string.Equals(szProperty, "OUTPUTLOC", StringComparison.OrdinalIgnoreCase))
             {
-                szProperty = ProjectFileConstants.TargetDir;
+                szProperty = ProjectFileConstants.TargetPath;
             }
 
             string value = project.GetProjectProperty(szProperty);

@@ -348,6 +348,10 @@ namespace XSharp.Project
                 // Added for NuGet Support
                 case (int)__VSHPROPID8.VSHPROPID_ProjectCapabilitiesChecker:
                     return new XSharpProjectCapabilitiesPresenceChecker();
+
+                // Test ?
+                case (int)__VSHPROPID5.VSHPROPID_TargetPlatformIdentifier:
+                    return "Windows";
             }
             return base.GetProperty(propId);
         }
@@ -1707,7 +1711,6 @@ namespace XSharp.Project
         }
 
         const string config = "$(Configuration)";
-        const string configIncorrect = "$(Platform)'=='";
         const string configPlatform = "$(Configuration)|$(Platform)";
         const string conditionDebug = "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'";
         const string conditionRelease = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
@@ -1738,8 +1741,6 @@ namespace XSharp.Project
             // /prebuildevent appears more than once.
             //if (str.ToLower().Replace("/prebuildevent", "").Length < str.Length - "/prebuildevent".Length)
             //    ok = false;
-            if (ok  && str.IndexOf(configIncorrect) > 0)
-                ok = false;
             if (ok && str.IndexOf("'Debug|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
@@ -1794,43 +1795,11 @@ namespace XSharp.Project
             bool changed = false;
             var xml = BuildProject.Xml;
             var groups = xml.PropertyGroups.ToArray();
-            
             foreach (var group in xml.PropertyGroups)
             {
                 if (group.Condition.Length > 0)
                 {
-                    string condition = group.Condition.Trim();
-                    // Fix incorrect conditions from earlier builds of X#
-                    if (condition.IndexOf(configIncorrect, StringComparison.OrdinalIgnoreCase) > 0)
-                    {
-                        condition = condition.Replace("'=='", "' == '");
-                        group.Condition = condition;
-                        changed = true;
-                        // Ok now check for other groups with same condition 
-                        // and move properties from there to this group
-                        // but not the prebuild and postbuild events
-                        foreach (var grp2 in groups.Where(g => g != group && g.Condition.Trim() == condition))
-                        {
-                            var props2 = grp2.Properties.ToArray();
-                            foreach (var prop in props2)
-                            {
-                                if (string.Equals(prop.Name, postBuildEvent, StringComparison.OrdinalIgnoreCase) ||
-                                    string.Equals(prop.Name, preBuildEvent, StringComparison.OrdinalIgnoreCase) ||
-                                    string.Equals(prop.Name, runPostBuildEvent, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    ; // ok
-                                }
-                                else
-                                {
-                                    grp2.RemoveChild(prop);
-                                    if (group.Properties.Where(p => p.Name.ToLower() == prop.Name.ToLower()) == null)
-                                        group.AddProperty(prop.Name, prop.Value);
-                                    else
-                                        group.SetProperty(prop.Name, prop.Value);
-                                }
-                            }
-                        }
-                    }
+                    string condition = group.Condition;
                     if (condition.IndexOf(config, StringComparison.OrdinalIgnoreCase) > -1 &&
                         condition.IndexOf(configPlatform, StringComparison.OrdinalIgnoreCase) == -1)
                     {
@@ -1862,13 +1831,17 @@ namespace XSharp.Project
             {
                 var item = groups[0].AddProperty("XSharpProjectExtensionsPath", @"$(MSBuildExtensionsPath)\XSharp\");
             }
-            var props = this.BuildProject.Properties.ToList();
-            foreach (var prop in props)
+            var props = new List<MSBuild.ProjectProperty>();
+            foreach (var prop in this.BuildProject.Properties)
             {
                 if (prop.Name.ToLower() == "documentationfile")
                 {
-                    this.BuildProject.RemoveProperty(prop);
+                    props.Add(prop);
                 }
+            }
+            foreach (var prop in props)
+            {
+                this.BuildProject.RemoveProperty(prop);
             }
 
             MBC.ProjectImportElement iTargets = null;

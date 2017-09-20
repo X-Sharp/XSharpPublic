@@ -2,23 +2,21 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using Microsoft.VisualStudio.TestTools.UnitTesting
-using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
+using XUnit
 using XSharp.Runtime
 
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	[TestClass];
-	CLASS MiscTests
+	PUBLIC CLASS MiscTests
 
-		//[TestMethod];
+		//[Fact];
 		//METHOD AsSymbolTest() as void
 			//local u as usual 
 			//u := "Testsymbol"
-			//AreEqual(true,AsSymbol(u)==#Testsymbol)
+			//Assert.Equal(true,AsSymbol(u)==#Testsymbol)
 		//RETURN
-		//[TestMethod];
+		//[Fact];
 		//METHOD BetweenTest() as void
 			//local u1 as usual 
 			//local u2 as usual 
@@ -26,40 +24,40 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			//u1 := 3
 			//u2 := 1
 			//u3 := 8
-			//AreEqual(true,Between(u1,u2,u3))
+			//Assert.Equal(true,Between(u1,u2,u3))
 		//RETURN
-		//[TestMethod];
+		//[Fact];
 		//METHOD CheckInstanceOfTest() as void
 			//local u as usual
 			//u := 6 
-			//AreEqual(true,CheckInstanceOf(u,#__Usual))
+			//Assert.Equal(true,CheckInstanceOf(u,#__Usual))
 		//RETURN
-		//[TestMethod];
+		//[Fact];
 		//METHOD ClassCountTest() as void
-			//AreEqual(true,ClassCount()>0)
+			//Assert.Equal(true,ClassCount()>0)
 		//RETURN
-		//[TestMethod];
+		//[Fact];
 		//METHOD ClassListTest() as void
 		    //local classes as array
 			//classes := ClassList()
-			//AreEqual(true,classes:Count>0)
+			//Assert.Equal(true,classes:Count>0)
 		//RETURN
-		//[TestMethod];
+		//[Fact];
 		//METHOD ClassNameTest() as void
 		    //local fi := System.IO.DriveInfo{"C"} as System.IO.DriveInfo
-			//AreEqual("DriveInfo",ClassName(fi))
+			//Assert.Equal("DriveInfo",ClassName(fi))
 		//RETURN
-		[TestMethod];
+		[Fact];
 		METHOD CurDriveTest() as void
-			AreEqual("C",CurDrive())
+			Assert.Equal("C",CurDrive():ToUpper())
 		RETURN
-		//[TestMethod];
+		//[Fact];
 		//METHOD DiskFreeTest() as void
-			//AreEqual(true,DiskFree()>0)
+			//Assert.Equal(true,DiskFree()>0)
 		//RETURN
-		//[TestMethod];
+		//[Fact];
 		//METHOD DiskSpaceTest() as void
-			//AreEqual(true,DiskSpace()>0)
+			//Assert.Equal(true,DiskSpace()>0)
 		//RETURN
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

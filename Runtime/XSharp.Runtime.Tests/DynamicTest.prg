@@ -2,8 +2,7 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using Microsoft.VisualStudio.TestTools.UnitTesting
-using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
+using XUnit
 using XSharp.Runtime
 using System.Diagnostics
 

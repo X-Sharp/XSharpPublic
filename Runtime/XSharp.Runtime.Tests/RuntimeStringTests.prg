@@ -2,236 +2,233 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using Microsoft.VisualStudio.TestTools.UnitTesting
-using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
+using XUnit
 using XSharp.Runtime
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	[TestClass];
 	CLASS RuntimeStringTests
 
-	[TestMethod];
+	[Fact];
 	METHOD AdjustFNameTest() as void
-	    AreEqual("    xyz   ddss.dbf",AdjustFName("    xyz   ddss    .dbf"))
-	    AreEqual(null,AdjustFName(null))
-		AreEqual(" abc ced",AdjustFName(" abc ced   "))
+	    Assert.Equal("    xyz   ddss.dbf",AdjustFName("    xyz   ddss    .dbf"))
+	    Assert.Equal(null,AdjustFName(null))
+		Assert.Equal(" abc ced",AdjustFName(" abc ced   "))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD AllTrimTest() as void
 
 		local s := e" Hello World\t\r\n" as string
 
-		AreEqual("Hello World",AllTrim(s))
-		AreEqual(null,AllTrim(null))
+		Assert.Equal("Hello World",AllTrim(s))
+		Assert.Equal(null,AllTrim(null))
 
 		s:= "Hello World    "
-		AreEqual("Hello World",AllTrim(s))
+		Assert.Equal("Hello World",AllTrim(s))
 	         	
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD AmPmTest() as void
 		var time := "16:55:23"
-		AreEqual("04:55:23",AmPm(time))
+		Assert.Equal("04:55:23",AmPm(time))
 		time := "26:55:23"
-		AreEqual(null,AmPm(time))
-		AreEqual(null,AmPm(null))
+		Assert.Equal(null,AmPm(time))
+		Assert.Equal(null,AmPm(null))
 	RETURN
 	
-	[TestMethod];
+	[Fact];
 	METHOD AscTest() as void
 		local value := " 123" as string
-		AreEqual((dword)32,Asc(value))
-		AreEqual((dword)32,Asc(" "))
-		AreEqual((dword)0,Asc(null))
+		Assert.Equal((dword)32,Asc(value))
+		Assert.Equal((dword)32,Asc(" "))
+		Assert.Equal((dword)0,Asc(null))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD AtTest() as void
 		var time := "16:55:23"
-		AreEqual((dword)4,At("55",time))
-		AreEqual((dword)0,At("55",null))
-		AreEqual((dword)0,At(null,time))
+		Assert.Equal((dword)4,At("55",time))
+		Assert.Equal((dword)0,At("55",null))
+		Assert.Equal((dword)0,At(null,time))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD AtCTest() as void
-        AreEqual((dword)7,AtC("World","Hello World"))
-	    AreEqual((dword)7,AtC("world","Hello World"))
-        AreEqual((dword)0,At("world","Hello World"))
+        Assert.Equal((dword)7,AtC("World","Hello World"))
+	    Assert.Equal((dword)7,AtC("world","Hello World"))
+        Assert.Equal((dword)0,At("world","Hello World"))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD At3Test() as void
 		var time := "16:25:23"
-		AreEqual((dword)7,At3("2",time,5))
-		AreEqual((dword)0,At3("2",time,12))
+		Assert.Equal((dword)7,At3("2",time,5))
+		Assert.Equal((dword)0,At3("2",time,12))
 
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD CharEvenTest() as void
-		AreEqual("1234",CharEven("A1B2C3D4"))
-		AreEqual("1234",CharEven("A1B2C3D4E"))
-		AreEqual(null,CharEven(null))
+		Assert.Equal("1234",CharEven("A1B2C3D4"))
+		Assert.Equal("1234",CharEven("A1B2C3D4E"))
+		Assert.Equal(null,CharEven(null))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD CharOddTest() as void
-		AreEqual("ABCD",CharOdd("A1B2C3D4"))
-		AreEqual("ABCDE",CharOdd("A1B2C3D4E"))
-		AreEqual(null,CharOdd(null))
+		Assert.Equal("ABCD",CharOdd("A1B2C3D4"))
+		Assert.Equal("ABCDE",CharOdd("A1B2C3D4E"))
+		Assert.Equal(null,CharOdd(null))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD CharPosTest() as void
-		AreEqual("o",CharPos("Hello World",5))
-		AreEqual(String.Empty,CharPos("A1B2C3D4E",33))
+		Assert.Equal("o",CharPos("Hello World",5))
+		Assert.Equal(String.Empty,CharPos("A1B2C3D4E",33))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD InStrTest() as void
-		AreEqual(true,Instr("o W","Hello World"))
-		AreEqual(false,Instr("o w","Hello World"))
-		AreEqual(false,Instr(null,null))
-		AreEqual(false,Instr("w",null))
-		AreEqual(false,Instr(null,"w"))
+		Assert.Equal(true,Instr("o W","Hello World"))
+		Assert.Equal(false,Instr("o w","Hello World"))
+		Assert.Equal(false,Instr(null,null))
+		Assert.Equal(false,Instr("w",null))
+		Assert.Equal(false,Instr(null,"w"))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD LeftTest() as void
 
 		local s := "Hello World" as string
 		local unassigned		 as string		                  
    			                  
-		AreEqual("",left(s,0))
-		AreEqual("H",left(s,1))
-		AreEqual("Hello World",left(s,99))
+		Assert.Equal("",left(s,0))
+		Assert.Equal("H",left(s,1))
+		Assert.Equal("Hello World",left(s,99))
 
-		AreEqual(null,left(unassigned,0))
-		AreEqual(null,left(unassigned,1))
-		AreEqual(null,left(unassigned,99))
+		Assert.Equal(null,left(unassigned,0))
+		Assert.Equal(null,left(unassigned,1))
+		Assert.Equal(null,left(unassigned,99))
 	         	
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD LowerTest() as void
-		AreEqual("hello world",Lower("Hello World"))
-		AreEqual(null,Lower(null))
+		Assert.Equal("hello world",Lower("Hello World"))
+		Assert.Equal(null,Lower(null))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD LTrimTest() as void
-		AreEqual("Hello World",LTrim("    Hello World"))
-		AreEqual(null,Lower(null))
+		Assert.Equal("Hello World",LTrim("    Hello World"))
+		Assert.Equal(null,Lower(null))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD OccursTest() as void
-		AreEqual((dword)2,Occurs("or","the world according to me"))
-		AreEqual((dword)0,Occurs(null,null))
-		AreEqual((dword)0,Occurs("x",null))
-		AreEqual((dword)0,Occurs(null,"xx"))
+		Assert.Equal((dword)2,Occurs("or","the world according to me"))
+		Assert.Equal((dword)0,Occurs(null,null))
+		Assert.Equal((dword)0,Occurs("x",null))
+		Assert.Equal((dword)0,Occurs(null,"xx"))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD Occurs3Test() as void
-		AreEqual((dword)1,Occurs3("or","the world according to me",7))
+		Assert.Equal((dword)1,Occurs3("or","the world according to me",7))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD ProperTest() as void
-		AreEqual("Hello World",Proper("hello world"))
-		AreEqual(null,Proper(null))
+		Assert.Equal("Hello World",Proper("hello world"))
+		Assert.Equal(null,Proper(null))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD RAtTest() as void
-		AreEqual((dword)14,RAt("or","the world according to me"))
-		AreEqual((dword)0,Rat(null,null))
-		AreEqual((dword)0,Rat("or",null))
-		AreEqual((dword)0,Rat(null,"the world"))
+		Assert.Equal((dword)14,RAt("or","the world according to me"))
+		Assert.Equal((dword)0,Rat(null,null))
+		Assert.Equal((dword)0,Rat("or",null))
+		Assert.Equal((dword)0,Rat(null,"the world"))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD RAt3Test() as void
-		AreEqual((dword)14,RAt3("or","the world according to me",9))
+		Assert.Equal((dword)14,RAt3("or","the world according to me",9))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD ReplicateTest() as void
-		AreEqual("dudadudaduda",Replicate("duda",3))
+		Assert.Equal("dudadudaduda",Replicate("duda",3))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD RTrimTest() as void
-		AreEqual("    Hello World",RTrim("    Hello World     "))
-		AreEqual(null,RTrim(null))
+		Assert.Equal("    Hello World",RTrim("    Hello World     "))
+		Assert.Equal(null,RTrim(null))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD RightTest() as void
-		AreEqual("World",Right("Hello World",5))
-		AreEqual(null,Right(null,0))
+		Assert.Equal("World",Right("Hello World",5))
+		Assert.Equal(null,Right(null,0))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD SCloneTest() as void
 		local s:="Hello World" as string
-		AreEqual(s,SClone(s))
+		Assert.Equal(s,SClone(s))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD SLenTest() as void
 		local s:="Hello World" as string
 		var l := SLen(s)
-		AreEqual((dword)11,SLen(s))
+		Assert.Equal((dword)11,SLen(s))
 	RETURN
 
-	[TestMethod];
-	[ExpectedException(typeof(InvalidOperationException))];
+	[Fact];
 	METHOD SLenExceptionTest() as void
 		local s as string
 		s:=string.Empty
-		AreEqual((dword)0,SLen(s))
+		//XUnit.Assert.Throws<InvalidOperationException>( () => SLen(s))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD StuffTest() as void
 		local s:="Hello World" as string
-		AreEqual("Hello Kiel",Stuff(s,7,5,"Kiel"))
-		AreEqual("Kiel",Stuff(null,7,5,"Kiel"))
-		AreEqual("Hello ",Stuff(s,7,5,""))
-		AreEqual("Hello WorldKiel",Stuff(s,12,5,"Kiel"))
+		Assert.Equal("Hello Kiel",Stuff(s,7,5,"Kiel"))
+		Assert.Equal("Kiel",Stuff(null,7,5,"Kiel"))
+		Assert.Equal("Hello ",Stuff(s,7,5,""))
+		Assert.Equal("Hello WorldKiel",Stuff(s,12,5,"Kiel"))
 	RETURN
 
-	[TestMethod];
+	[Fact];
 	METHOD SubStr2Test() as void
 		local s:="Hello World" as string
-		AreEqual("World",SubStr2(s,7))
-		AreEqual("",SubStr2(s,20))
-		AreEqual(null,SubStr2(null,5))
+		Assert.Equal("World",SubStr2(s,7))
+		Assert.Equal("",SubStr2(s,20))
+		Assert.Equal(null,SubStr2(null,5))
 	RETURN
-	[TestMethod];
+	[Fact];
 	METHOD SubStr3Test() as void
 		local s:="Hello World" as string
-		AreEqual("World",SubStr3(s,7,5))
-		AreEqual("",SubStr3(s,20,5))
-		AreEqual(null,SubStr3(null,5,2))
+		Assert.Equal("World",SubStr3(s,7,5))
+		Assert.Equal("",SubStr3(s,20,5))
+		Assert.Equal(null,SubStr3(null,5,2))
 	RETURN
-	[TestMethod];
+	[Fact];
 	METHOD TrimTest() as void
 		local s:="Hello World   " as string
-		AreEqual("Hello World",Trim(s))
-		AreEqual(null,Trim(null))
+		Assert.Equal("Hello World",Trim(s))
+		Assert.Equal(null,Trim(null))
 	RETURN
-	[TestMethod];
+	[Fact];
 	METHOD UpperTest() as void
 		local s:="Hello World" as string
-		AreEqual("HELLO WORLD",Upper(s))
-		AreEqual(null,Upper(null))
+		Assert.Equal("HELLO WORLD",Upper(s))
+		Assert.Equal(null,Upper(null))
 	RETURN
 	END CLASS
 

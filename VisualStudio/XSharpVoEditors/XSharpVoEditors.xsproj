@@ -41,26 +41,6 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>

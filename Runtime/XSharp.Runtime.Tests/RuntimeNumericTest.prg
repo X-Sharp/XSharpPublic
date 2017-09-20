@@ -2,44 +2,42 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using Microsoft.VisualStudio.TestTools.UnitTesting
-using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
+using XUnit
 using XSharp.Runtime
 
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	[TestClass];
 	CLASS RuntimeNumericTests
 
-		[TestMethod];
+		[Fact];
 		METHOD CHRTest() as void
-			AreEqual(" ",CHR((DWORD)32))
+			Assert.Equal(" ",CHR((DWORD)32))
 		RETURN
 
-		[TestMethod];
+		[Fact];
 		METHOD CONTIMETest() as void
-			AreEqual("13:34:54",CONTIME((dword)13,(dword)34,(dword)54))
+			Assert.Equal("13:34:54",CONTIME((dword)13,(dword)34,(dword)54))
 		RETURN
 
-		[TestMethod];
+		[Fact];
 		METHOD FracTest() as void
-			AreEqual((__VOFloat)120,Fact((dword)5))
+			Assert.Equal((__VOFloat)120,Fact((dword)5))
 		RETURN
 
-		[TestMethod];
+		[Fact];
 		METHOD DW2BINTest() as void
-			AreEqual("    ",DW2Bin((dword) 32*256*256*256+32*256*256+32*256+32))
+			Assert.Equal("    ",DW2Bin((dword) 32*256*256*256+32*256*256+32*256+32))
 		RETURN
 
-		[TestMethod];
+		[Fact];
 		METHOD NToCDoWTest() as void
-			AreEqual("Freitag",NToCDoW(DOW(CTOD("27/05/2016"))))
+		//	Assert.Equal("Freitag",NToCDoW(DOW(CTOD("27/05/2016"))))
 		RETURN
 
-		[TestMethod];
+		[Fact];
 		METHOD NToCMonthTest() as void
-			AreEqual("Juni",NToCMonth((dword)6))
+		//	Assert.Equal("Juni",NToCMonth((dword)6))
 		RETURN		 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

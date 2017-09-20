@@ -2,19 +2,17 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using Microsoft.VisualStudio.TestTools.UnitTesting
-using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
+using XUnit
 using XSharp.Runtime
 
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	[TestClass];
 	CLASS RuntimeByteTests
 
-		[TestMethod];
+		[Fact];
 		METHOD SwapByteTest() as void
-			AreEqual((word)86,SwapByte((byte)101))
+			Assert.Equal((word)86,SwapByte((byte)101))
 		RETURN
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

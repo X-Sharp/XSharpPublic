@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Playground", "Runtime\Playground\Playground.xsproj", "{973320C4-FDE1-4505-A86A-A17866B2D0EB}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Runtime.Tests", "Runtime\XSharp.Runtime.Tests\XSharp.Runtime.Tests.xsproj", "{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
@@ -23,7 +21,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Vulcan", "Runtime\XS
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO", "Runtime\XSharp.VO\XSharp.VO.xsproj", "{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "tester", "Runtime\tester\tester.xsproj", "{45EDCAB6-B729-4239-9D31-C1D8BED3F001}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulcanTests", "VulcanTests\VulcanTests.csproj", "{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{973320C4-FDE1-4505-A86A-A17866B2D0EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{973320C4-FDE1-4505-A86A-A17866B2D0EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{973320C4-FDE1-4505-A86A-A17866B2D0EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{973320C4-FDE1-4505-A86A-A17866B2D0EB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -59,10 +53,10 @@ Global
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45EDCAB6-B729-4239-9D31-C1D8BED3F001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45EDCAB6-B729-4239-9D31-C1D8BED3F001}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45EDCAB6-B729-4239-9D31-C1D8BED3F001}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45EDCAB6-B729-4239-9D31-C1D8BED3F001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

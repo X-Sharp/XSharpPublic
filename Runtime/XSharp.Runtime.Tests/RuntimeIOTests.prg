@@ -1,20 +1,18 @@
 ﻿USING System
 USING System.Collections.Generic
 USING System.Text
-using Microsoft.VisualStudio.TestTools.UnitTesting
-using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
+using XUnit
 using XSharp.Runtime
 
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	[TestClass];
 	CLASS RuntimeIOTests
 
-		[TestMethod];
+		[Fact];
 		METHOD FileTest() as void
-			AreEqual(true,File("c:\windows\system32\shell32.dll"))
-			AreEqual(false,File(null))
+			Assert.Equal(true,File("c:\windows\system32\shell32.dll"))
+			Assert.Equal(false,File(null))
 		RETURN
 
 	END CLASS

@@ -8,7 +8,7 @@ using XSharp.Runtime
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	CLASS RuntimeNumericTests
+	CLASS NumericTests
 
 		[Fact];
 		METHOD CHRTest() as void

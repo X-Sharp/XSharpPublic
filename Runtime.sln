@@ -21,8 +21,6 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Vulcan", "Runtime\XS
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO", "Runtime\XSharp.VO\XSharp.VO.xsproj", "{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulcanTests", "VulcanTests\VulcanTests.csproj", "{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,10 +51,6 @@ Global
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7B73BD8-4ED9-47E5-A550-BF733AF450B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

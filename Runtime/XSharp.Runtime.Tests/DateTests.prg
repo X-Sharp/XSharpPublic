@@ -8,7 +8,7 @@ using XSharp.Runtime
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	CLASS RuntimeDateTests
+	CLASS DateTests
 
 		[Fact];
 		METHOD CTODTest() as void

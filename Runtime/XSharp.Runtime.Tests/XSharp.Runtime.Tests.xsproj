@@ -147,7 +147,6 @@
     </Compile>
     <Compile Include="UsualTests.prg" />
     <Compile Include="SymbolTests.prg" />
-    <Compile Include="Usual.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

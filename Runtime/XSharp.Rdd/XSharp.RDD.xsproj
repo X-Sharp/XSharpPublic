@@ -54,7 +54,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-   <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <Optimize>true</Optimize>
@@ -67,7 +67,6 @@
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
-
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -92,7 +91,6 @@
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <ItemGroup>

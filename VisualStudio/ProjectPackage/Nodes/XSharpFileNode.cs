@@ -276,6 +276,14 @@ namespace XSharp.Project
             }
             return path;
         }
+        public override object GetProperty(int propId)
+        {
+            if (propId == (int)__VSHPROPID8.VSHPROPID_DiagHubLanguage)
+                return Constants.Product;
+            return base.GetProperty(propId);
+        }
+
+
         /// <summary>
         /// This method is used to move dependant items from the main level (1st level below project node) to
         /// and make them children of the modules they belong to.

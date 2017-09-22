@@ -64,7 +64,7 @@ namespace XSharp.Project
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
                     string fileName = FilePathUtilities.GetFilePath(textlines);
-                    if (EditorHelpers.IsVulcanFileNode(fileName))       // is this a file node from Vulcan ?
+                    if (!EditorHelpers.IsOurFile(fileName))       // is this a file node from Vulcan ?
                     {
                         Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);

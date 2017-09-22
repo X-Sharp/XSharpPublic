@@ -13,22 +13,30 @@ CLASS XSharp.RDD.BaseMemo Implements IMemo
 	// Read & Write		
 	VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
 		THROW NotImplementedException{__ENTITY__}
+
 	VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
+
 	VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
 		THROW NotImplementedException{__ENTITY__}
+
 	VIRTUAL METHOD Flush() 			AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
+
 	VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
+
 	VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
 
 	// Memo File Access 
 	VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
+
 	VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
+
 	VIRTUAL METHOD OpenMemFile( ) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
+
 END CLASS

@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+#using System.IO
 
 BEGIN NAMESPACE XSharp.RDD
 
@@ -10,47 +11,45 @@ CLASS Workarea IMPLEMENTS IRdd
 	// This class does NOT implement file based (DBF stuff). 
 	// That is handled in the DBF class which inherits from RddBase
 	#region Fields
-	PROTECT _Area			AS LONG		// Workarea Number (1 based)
-	PROTECT _Alias			AS STRING	// Unique Alias
-	PROTECT _Fields			AS RddFieldInfo[]	// List of Fields
-	PROTECT _Bof			AS LOGIC	// Is BOF ?
-	PROTECT _Bottom			AS LOGIC	// Is at Bottom ?
-	PROTECT _Eof			AS LOGIC	// Is EOF
-	PROTECT _Found			AS LOGIC	// Is Found ?
-	PROTECT _Top			AS LOGIC	// Is at Top
-	PROTECT _Result			AS OBJECT                
-	PROTECT _ScopeInfo		AS DbScopeInfo
-	PROTECT _FilterInfo		AS DbFilterInfo  
-	PROTECT _OrderCondInfo	AS DbOrderCondInfo
-	PROTECT _RelInfo		AS DbRelInfo
-	PROTECT _Parents		AS LONG		// # of parents   
-	PROTECT _MaxFieldNameLength AS LONG	// 
-	// Error Handling
-	PROTECT _LastGenCode	AS LONG
-	PROTECT _LastSubCode	AS LONG
-	PROTECT _LastException  AS Exception
+	INTERNAL _Area			AS LONG		// Workarea Number (1 based)
+	INTERNAL _Alias			AS STRING	// Unique Alias
+	INTERNAL _FileName		AS STRING
+	INTERNAL _Fields		AS RddFieldInfo[]	// List of Fields
+	INTERNAL _Bof			AS LOGIC	// Is BOF ?
+	INTERNAL _Bottom		AS LOGIC	// Is at Bottom ?
+	INTERNAL _Eof			AS LOGIC	// Is EOF
+	INTERNAL _Found			AS LOGIC	// Is Found ?
+	INTERNAL _Top			AS LOGIC	// Is at Top
+	INTERNAL _Result		AS OBJECT                
+	INTERNAL _ScopeInfo		AS DbScopeInfo
+	INTERNAL _FilterInfo	AS DbFilterInfo  
+	INTERNAL _OrderCondInfo	AS DbOrderCondInfo
+	INTERNAL _RelInfo		AS DbRelInfo
+	INTERNAL _Parents		AS LONG		// # of parents   
+	INTERNAL _MaxFieldNameLength AS LONG	// 
 
 	// Some flags that are stored here but managed in subclasses
-	PROTECT _TransRec		AS LOGIC
-	PROTECT _RecordLength	AS WORD   	// Size of record
-	PROTECT _RecordBuffer	AS BYTE[]	// Current Record
-	PROTECT _BufferSize		AS LONG
-	PROTECT _Delimiter		AS STRING	// Field Delimiter
-	PROTECT _Separator	    AS STRING	// Field Separator
-	PROTECT _ReadOnly		AS LOGIC	// ReadOnly ?  
-	PROTECT _Shared			AS LOGIC	// Shared ?  
-	PROTECT _Stream			AS WFileStream // File. 
-	PROTECT _Flush			AS LOGIC		// Must flush ? 
+	INTERNAL _TransRec		AS LOGIC
+	INTERNAL _RecordLength	AS WORD   	// Size of record
+	INTERNAL _RecordBuffer	AS BYTE[]	// Current Record
+	INTERNAL _BufferSize		AS LONG
+	INTERNAL _Delimiter		AS STRING	// Field Delimiter
+	INTERNAL _Separator	    AS STRING	// Field Separator
+	INTERNAL _ReadOnly		AS LOGIC	// ReadOnly ?  
+	INTERNAL _Shared		AS LOGIC	// Shared ?  
+	INTERNAL _Stream		AS FileStream // File. 
+	INTERNAL _Flush			AS LOGIC		// Must flush ? 
 
 	// Memo and Order Implementation
-	PROTECT _Memo			as IMemo
-	PROTECT _Order			as IOrder
+	INTERNAL _Memo			as IMemo
+	INTERNAL _Order			as IOrder
 
 	#endregion
 
 	CONSTRUCTOR() 
 		SELF:_FilterInfo := DbFilterInfo{}
 		SELF:_ScopeInfo  := DbScopeInfo{}            
+        SELF:_OrderCondInfo := DbOrderCondInfo{}
 		SELF:_Parents	 := 0   
 		SELF:_Memo		 := BaseMemo{SELF}
 		SELF:_Order		 := BaseIndex{SELF}          
@@ -376,6 +375,7 @@ VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
 
 VIRTUAL METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC
 	RETURN SELF:_Order:Seek(info)
+#endregion
 
 
 #region Relations
@@ -508,6 +508,8 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 
 	VIRTUAL PROPERTY Deleted AS LOGIC GET FALSE
 
+    VIRTUAL PROPERTY Driver AS STRING GET "Workarea"
+
 	VIRTUAL PROPERTY EoF AS LOGIC GET _Eof
 
 	VIRTUAL PROPERTY Exclusive AS LOGIC GET FALSE
@@ -522,17 +524,11 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	VIRTUAL PROPERTY RecCount AS INT GET 0
 
 	VIRTUAL PROPERTY RecId AS OBJECT GET NULL
-	VIRTUAL PROPERTY RecNo		AS LONG GET   0	
+	VIRTUAL PROPERTY RecNo AS LONG GET   0	
 
 	VIRTUAL PROPERTY Shared AS LOGIC GET FALSE
 
 	VIRTUAL PROPERTY SysName AS STRING GET typeof(Workarea):ToString()
-
-	VIRTUAL PROPERTY LastGenCode AS INT GET _LastGenCode
-
-	VIRTUAL PROPERTY LastSubCode AS INT GET _LastSubCode
-
-	VIRTUAL PROPERTY LastError AS System.Exception GET _LastException
 
 END CLASS
 END NAMESPACE

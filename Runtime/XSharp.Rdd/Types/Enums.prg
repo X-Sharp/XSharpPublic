@@ -6,7 +6,7 @@
 
 BEGIN NAMESPACE XSharp.RDD 
 ENUM DbLockMode
-	MEMBER Lock
+	MEMBER @@Lock
 	MEMBER UnLock
 END ENUM
 

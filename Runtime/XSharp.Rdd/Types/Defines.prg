@@ -165,6 +165,10 @@ DEFINE DBI_RL_TEST 		:= 1019 AS SHORT
 
 DEFINE DBI_USER 				:= 2000 AS SHORT  	// Start of user definable DBI_ values
 
+// Advantage additions
+DEFINE DBI_GET_ACE_TABLE_HANDLE  := DBI_USER  + 110
+DEFINE DBI_GET_ACE_STMT_HANDLE   := DBI_USER  + 111
+
 
 // OrderInfo Defines
 DEFINE DBOI_CONDITION 	:= 1 AS SHORT    // String: The order's conditional expression     
@@ -250,6 +254,12 @@ DEFINE DBOI_RESETPOS           := 133 AS SHORT /* rest logical and raw positions
 DEFINE DBOI_INDEXPAGESIZE      := 134 AS SHORT /* get index page size */
 
 DEFINE DBOI_USER 				:= 1000 AS SHORT
+
+// Advantage extensions
+
+DEFINE DBOI_AXS_PERCENT_INDEXED  := 1805 as SHORT
+DEFINE DBOI_GET_ACE_INDEX_HANDLE := 1806 as SHORT
+
 
 // Duplicates
 DEFINE DBOI_KEYGOTO 	:= DBOI_POSITION  AS SHORT

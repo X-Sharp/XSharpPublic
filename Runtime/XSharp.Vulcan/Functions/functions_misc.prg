@@ -485,6 +485,7 @@ using XSharp
 	/// <param name="nValType"></param>
 	/// <returns>
 	/// </returns>
+	[Obsolete];
 	FUNCTION CreateGCDump(pDump AS _GCDUMP,nValType AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
@@ -848,7 +849,8 @@ using XSharp
 	/// <param name="ptrERRINFO"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ErrorBuild(ptrERRINFO AS ERRINFO) AS ERROR
+	[Obsolete];
+	FUNCTION ErrorBuild(ptrERRINFO AS IntPtr) AS ERROR
 		/// THROW NotImplementedException{}
 	RETURN  Error{}
 
@@ -868,7 +870,8 @@ using XSharp
 	/// <param name="ptrERRINFO"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ErrorExec(ptrERRINFO AS ERRINFO) AS __Usual
+	[Obsolete];
+	FUNCTION ErrorExec(ptrERRINFO AS IntPtr) AS __Usual
 		/// THROW NotImplementedException{}
 	RETURN __Usual._NIL   
 
@@ -1592,6 +1595,7 @@ using XSharp
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
+	[Obsolete];
 	FUNCTION LongJmp(strucMark AS _JMP_BUF,n AS INT) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN
@@ -2377,6 +2381,7 @@ using XSharp
 	/// <param name="lpCriticalSection"></param>
 	/// <returns>
 	/// </returns>
+	[Obsolete];
 	FUNCTION VOEnterCriticalSection(lpCriticalSection AS _WINRTL_CRITICAL_SECTION) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN
@@ -2386,6 +2391,7 @@ using XSharp
 	/// <param name="lpCriticalSection"></param>
 	/// <returns>
 	/// </returns>
+	[Obsolete];
 	FUNCTION VOLeaveCriticalSection(lpCriticalSection AS _WINRTL_CRITICAL_SECTION) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN

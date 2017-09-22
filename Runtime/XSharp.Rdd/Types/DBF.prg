@@ -8,7 +8,6 @@ USING System.Runtime.InteropServices
 BEGIN NAMESPACE XSharp.RDD
 CLASS DBF INHERIT Workarea  
 	PROTECT _Header			AS DbfHeader    
-	PROTECT _FileName		AS STRING
 	PROTECT _HeaderLength	AS WORD  	// Size of header 
 	PROTECT _BufferValid	AS LOGIC	// Current Record is Valid
 	PROTECT _HasMemo		AS LOGIC

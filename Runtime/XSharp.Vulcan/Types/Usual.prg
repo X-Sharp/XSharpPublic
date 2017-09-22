@@ -7,15 +7,15 @@ using System
 using System.Runtime.InteropServices
 
 begin namespace XSharp
-	[StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)];
-	structure __Usual implements System.IConvertible,System.IComparable
+	[StructLayout(LayoutKind.Sequential)];
+	structure __Usual implements IConvertible,IComparable
 		#region static fields
 		public static _NIL as __Usual
 		#endregion
 		#region private fields
-		private flags    	as UsualFlags		// type, byref, width, decimals
-		private refData  	as Object			// for GC data
-		private valueData	as UsualData		// for non GC data
+		private initonly _flags    	as __Usual_flags	// type, byref, width, decimals
+		private _valueData	as __UsualData		// for non GC data
+		private _refData  	as Object			// for GC data
 		#endregion
 		#region constructors
 		STATIC Constructor()
@@ -23,194 +23,353 @@ begin namespace XSharp
 		return
 
 		private  constructor(u as __Usual)
-			self:flags      := u:flags
-			self:valueData	:= u:valueData
-			self:refData 	:= u:refData 
-			self:_usualType := u:_usualType
+			self:_flags     := u:_flags
+			self:_valueData	:= u:_valueData
+			SELF:_refData 	:= u:_refData 
+
 		return
 
-		private  constructor(l as Logic)
-			self:flags			:= UsualFlags{UsualDataType.LOGIC}
-			self:valueData		:= UsualData{}
-			self:refData 		:= null
-			self:valueData:l	:= l
+		private  constructor(value as Logic)
+			self:_flags			:= __Usual_flags{__UsualType.LOGIC}
+			self:_valueData		:= __UsualData{}{ l:= value}
 		return
 
-		private  constructor(a as __Array)
-			self:flags		:= UsualFlags{UsualDataType.Array}
-			self:valueData	:= UsualData{}
-			self:refData	:= a
+		private  constructor(value as __Array)
+			self:_flags		:= __Usual_flags{__UsualType.Array}
+			self:_refData	:= value
 		return
 
-		private  constructor(dt as System.DateTime)
-			self:flags		:= UsualFlags{ UsualDataType.Date}
-			self:valueData	:= UsualData{}
-			self:refData	:= dt
+		private  constructor(value as System.DateTime)
+			self:_flags		:= __Usual_flags{ __UsualType.Date}
+			self:_refData	:= value
 		return
 
-		private  constructor(i as Long)
-			self:flags		:= UsualFlags{UsualDataType.INT}
-			self:valueData	:= UsualData{}
-			self:refData 	 := null
-			self:valueData:i := i
+		private  constructor(value as Long)
+			self:_flags		:= __Usual_flags{__UsualType.INT}
+			self:_valueData	:= __UsualData{} {i := value}
 		return
 
-		private  constructor(i as Int64)
-			self:flags		:= UsualFlags{UsualDataType.INT64}
-			self:valueData	:= UsualData{}
-			self:refData 	:= null
-			self:valueData:i64 := i
+		private  constructor(value as Int64)
+			self:_flags		:= __Usual_flags{__UsualType.INT64}
+			self:_valueData	:= __UsualData{} {i64 := value}
 		return
 
-		private  constructor(p as System.IntPtr)
-			self:flags		:= UsualFlags{UsualDataType.PTR}
-			self:valueData	:= UsualData{}
-			self:refData 	 := null
-			self:valueData:p := p
+		private  constructor(value as System.IntPtr)
+			self:_flags		:= __Usual_flags{__UsualType.PTR}
+			self:_valueData	:= __UsualData{} {p := value}
 		return
 
 		public constructor(o as Object)
 			local u				as __Usual
 			local vartype		as System.Type
 			local typeCode		as System.TypeCode
-			self:flags			:= UsualFlags{UsualDataType.PTR}
-			self:valueData		:= UsualData{}
-			self:refData 		    := null
+			self:_flags			:= __Usual_flags{__UsualType.PTR}
+			self:_valueData		:= __UsualData{}
+			self:_refData 		    := null
 			if (o != null)
 				if (o:GetType() == typeof(__Usual))
 					// boxed __Usual
 					u		:= (__Usual)o 
-					self:refData	:= u:refData 
-					self:valueData	:= u:valueData
-					self:_usualType := u:_usualType
+					self:_refData	:= u:_refData 
+					self:_valueData	:= u:_valueData
 				else
 					//  decode type from typecode
 					vartype := o:GetType()
 					typeCode := System.Type.GetTypeCode(vartype)
 					switch typeCode
 					case  System.TypeCode.DBNull
-						self:_usualType := UsualDataType.Void
-						self:refData	:= null
+						self:_flags:usualType := __UsualType.Void
+						self:_refData	:= null
 					case System.TypeCode.Boolean
-						self:_usualType := UsualDataType.LOGIC
-						self:valueData:l := (Logic)o 
+						self:_flags:usualType := __UsualType.LOGIC
+						self:_valueData:l := (Logic)o 
 					case System.TypeCode.Char
-						self:_usualType		:= UsualDataType.INT
-						self:valueData:i	:= (Char)o 
+						self:_flags:usualType		:= __UsualType.INT
+						self:_valueData:i	:= (Char)o 
 					case System.TypeCode.SByte
-						self:_usualType		:= UsualDataType.INT
-						self:valueData:i	:= (SByte)o 
+						self:_flags:usualType		:= __UsualType.INT
+						self:_valueData:i	:= (SByte)o 
 					case System.TypeCode.Byte
-						self:_usualType		:= UsualDataType.INT
-						self:valueData:i	:= (Byte)o 
+						self:_flags:usualType		:= __UsualType.INT
+						self:_valueData:i	:= (Byte)o 
 					case System.TypeCode.Int16 
-						self:_usualType		:= UsualDataType.INT
-						self:valueData:i	:= (Short)o 
+						self:_flags:usualType		:= __UsualType.INT
+						self:_valueData:i	:= (Short)o 
 					case System.TypeCode.UInt16
-						self:_usualType		:= UsualDataType.INT
-						self:valueData:i	:= (Word)o 
+						self:_flags:usualType		:= __UsualType.INT
+						self:_valueData:i	:= (Word)o 
 					case System.TypeCode.Int32
-						self:_usualType		:= UsualDataType.INT
-						self:valueData:i	:= (Long)o 
+						self:_flags:usualType		:= __UsualType.INT
+						self:_valueData:i	:= (Long)o 
 					case System.TypeCode.UInt32
 						if ((DWord)o  <= 0x7fffffff)
-							self:_usualType := UsualDataType.INT
-							self:valueData:i := (Long)(DWord)o  
+							self:_flags:usualType := __UsualType.INT
+							self:_valueData:i := (Long)(DWord)o  
 						else
-							self:_usualType := UsualDataType.Float
-							self:valueData:f := (DWord)o 
+							self:_flags:usualType := __UsualType.Float
+							self:_valueData:r8 := (DWord)o 
 						endif
 					case System.TypeCode.Int64 
-						self:_usualType		:= UsualDataType.INT64
-						self:valueData:i64	:= (Int64)o 
+						self:_flags:usualType		:= __UsualType.INT64
+						self:_valueData:i64	:= (Int64)o 
 					case System.TypeCode.UInt64 
-						self:_usualType := UsualDataType.INT64
-						self:valueData:i64 := (Int64)(UInt64)o  
+						self:_flags:usualType := __UsualType.INT64
+						self:_valueData:i64 := (Int64)(UInt64)o  
 					case System.TypeCode.Single  
-						self:_usualType		:= UsualDataType.Float
-						self:valueData:f	:= (real8)o 
-						self:width := 255
-						self:decimals := 255
+						self:_flags:usualType		:= __UsualType.Float
+						self:_valueData:r8	:= (real8)o 
+						self:_flags:width := 255
+						self:_flags:decimals := 255
 					case System.TypeCode.Double 
-						self:_usualType := UsualDataType.Float
-						self:valueData:f := (real8)o 
-						self:width := 255
-						self:decimals := 255
+						self:_flags:usualType := __UsualType.Float
+						self:_valueData:r8 := (real8)o 
+						self:_flags:width := 255
+						self:_flags:decimals := 255
 					case System.TypeCode.Decimal 
-						self:_usualType := UsualDataType.OBJECT
-						self:refData  := o
+						self:_flags:usualType := __UsualType.OBJECT
+						self:_refData  := o
 					case System.TypeCode.DateTime 
-						self:_usualType := UsualDataType.Date
-						self:valueData:d := __VoDate{ (System.DateTime) o }
+						self:_flags:usualType := __UsualType.Date
+						self:_valueData:d := __VoDate{ (System.DateTime) o }
 					case System.TypeCode.String 
-						self:_usualType := UsualDataType.STRING
-						self:refData  := (string)o 
+						self:_flags:usualType := __UsualType.STRING
+						SELF:_refData  := (STRING)o 
+					otherwise
+						if vartype == typeof(__Array)
+							self:_flags:usualType := __UsualType.Array
+							self:_refData  := o
+						elseif vartype == typeof(__VODate)
+							self:_flags:usualType := __UsualType.Date
+							self:_valueData:d :=  (__VoDate) o
+						elseif vartype == typeof(__Symbol)
+							self:_flags:usualType := __UsualType.Symbol
+							self:_valueData:s :=  (__Symbol) o
+						endif
 					end switch
-					if ((typeCode == System.TypeCode.Object) .and. (vartype== typeof(__Array)))
-						self:_usualType := UsualDataType.Array
-						self:refData  := o
-					endif
-					if ((typeCode == System.TypeCode.Object) .and. (vartype== typeof(__VODate)))
-						self:_usualType := UsualDataType.Date
-						self:valueData:d :=  (__VoDate) o
-					endif
 
 				endif
 			endif
 		return
 
 		private  constructor(s as string)
-			//
-			self:flags		:= UsualFlags{UsualDataType.STRING}
-			self:valueData	:= UsualData{}
-			self:refData 	:= s
+			self:_flags		:= __Usual_flags{__UsualType.STRING}
+			self:_valueData	:= __UsualData{}
+			self:_refData 	:= s
 		return
 		#endregion
+		#region properties
+		PRIVATE  PROPERTY _usualType	AS __UsualType GET _flags:UsualType 
+		// properties for floats
+		PRIVATE  PROPERTY width			AS BYTE GET _flags:width 
+		PRIVATE  PROPERTY decimals		AS BYTE GET _flags:decimals 
+
+ 		internal Property UsualType		as __UsualType GET  _usualType
+ 		internal property IsArray		as Logic GET _usualType == __UsualType.Array
+		internal property IsByRef		as Logic GET self:_flags:IsByRef
+		internal property IsDate		as Logic GET _usualType == __UsualType.Date
+		internal property IsPtr			as Logic GET _usualType == __UsualType.PTR
+		internal property IsString		as Logic GET _usualType == __UsualType.STRING
+		internal property IsLong		as Logic GET _usualType == __UsualType.INT64
+		internal property IsFloat		as Logic GET _usualType == __UsualType.Float
+		internal property IsValueType	as LOGIC GET ! SELF:IsReferenceType
+		internal property IsReferenceType as LOGIC
+			GET
+				switch _usualType
+				case __UsualType.Array
+				case __UsualType.OBJECT
+				case __UsualType.STRING
+					return true
+				otherwise
+					return false
+				end switch
+			END GET
+		end property
+
+		internal property IsNil as Logic
+			Get
+				return self:usualType == __UsualType.Void .or. ;
+				(self:IsReferenceType .and. self:_refData  == null)
+
+			End Get
+		end property
+		#endregion
+
+
 		#region implementation IComparable
 		public method CompareTo(o as Object) as Long
 			return 0
 		#endregion
+				
+		#region Comparison Operators 
+		static operator >(leftOperand as __Usual, rightOperand as __Usual) as Logic
+			THROW NotImplementedException{}
 
-		#region properties
-		private  property _usualType	as UsualDataType get flags:usualType set flags:usualType := value
-		private  property width			as Byte GET flags:width SET flags:width := value
-		private  property decimals		as Byte GET flags:decimals SET flags:decimals := value
-		public   Property UsualType		as UsualDataType GET  _usualType
-		internal property IsArray		as Logic GET self:usualType == UsualDataType.Array
-		internal property IsByRef		as Logic GET self:flags:IsByRef
-		internal property IsDate		as Logic GET self:usualType == UsualDataType.Date
-		internal property IsPtr			as Logic GET self:usualType == UsualDataType.PTR
-		internal property IsString		as Logic GET self:usualType == UsualDataType.STRING
-		internal property IsLong		as Logic GET self:usualType == UsualDataType.INT64
-		internal property IsFloat		as Logic GET self:usualType == UsualDataType.Float
-		internal property IsValueType	as LOGIC GET ! SELF:IsReferenceType
+		static operator >=(leftOperand as __Usual, rightOperand as __Usual) as Logic
+			THROW NotImplementedException{}
 
-		internal property IsReferenceType as LOGIC
-			GET
-				if self:_usualType == UsualDataType.Array
-					return true
-				elseif self:_usualType == UsualDataType.OBJECT
-					return true
-				elseif self:_usualType ==  UsualDataType.STRING
-					return true
-				else
-					return false
-				endif
-			END GET
-		end property
+		static operator <(leftOperand as __Usual, rightOperand as __Usual) as Logic
+			THROW NotImplementedException{}
+
+		static operator <=(leftOperand as __Usual, rightOperand as __Usual) as Logic
+			THROW NotImplementedException{}
+
+#endregion
+
+#region Operators for Equality
+		public method Equals(obj as object) as logic
+			return super:Equals(obj)
+
+		public method GetHashCode() as int
+			return super:GetHashCode()
+
+		static operator ==(leftOperand as __Usual, rightOperand as __Usual) as Logic
+			THROW NotImplementedException{}
+
+		static operator !=(leftOperand as __Usual, rightOperand as __Usual) as Logic
+			THROW NotImplementedException{}
+
+#endregion
+
+#region Unary Operators
+		static operator -(u as __Usual) as __Usual
+			THROW NotImplementedException{}
+		static operator +(u as __Usual) as __Usual
+			THROW NotImplementedException{}
+		static operator --(u as __Usual) as __Usual
+			THROW NotImplementedException{}
+
+		static operator ++(u as __Usual) as __Usual
+			THROW NotImplementedException{}
+
+#endregion
+#region Numeric Operators for Add, Delete etc (also for strings)
+
+		static operator +(leftOperand as __Usual, rightOperand as __Usual) as __Usual
+			THROW NotImplementedException{}
+
+		static operator /(leftOperand as __Usual, rightOperand as __Usual) as __Usual
+			THROW NotImplementedException{}
 
 
-		internal property IsNil as Logic
-			Get
-				return self:usualType == UsualDataType.Void .or. ;
-				(self:IsReferenceType .and. self:refData  == null)
 
-			End Get
-		end property
+		static operator <<(leftOperand as __Usual, rightOperand as Long) as __Usual
+			THROW NotImplementedException{}
+
+		static method op_LogicalNot(u as __Usual) as Logic
+			THROW NotImplementedException{}
+
+		static operator %(leftOperand as __Usual, rightOperand as __Usual) as __Usual
+			THROW NotImplementedException{}
+
+		static operator *(leftOperand as __Usual, rightOperand as __Usual) as __Usual
+			THROW NotImplementedException{}
+
+		static operator >>(leftOperand as __Usual, rightOperand as Long) as __Usual
+			THROW NotImplementedException{}
+
+		static operator -(leftOperand as __Usual, rightOperand as __Usual) as __Usual
+			THROW NotImplementedException{}
 
 
+		static operator &(leftOperand as __Usual, rightOperand as __Usual) as __Usual
+			THROW NotImplementedException{}
 
+		static operator |(leftOperand as __Usual, rightOperand as __Usual) as __Usual
+			THROW NotImplementedException{}
 		#endregion
+
+#region Implicit From Usual to Other Type
+		static operator implicit(u as __Usual) as __Array
+			THROW NotImplementedException{}
+		static operator implicit(u as __Usual) as Logic
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as Byte
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as System.Collections.ArrayList
+			THROW NotImplementedException{}
+		static operator implicit(u as __Usual) as System.DateTime
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as real8
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as Short
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as Long
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as __VoFloat
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as Int64
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as System.IntPtr
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as SByte
+			THROW NotImplementedException{}
+		static operator implicit(u as __Usual) as real4
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as string
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as Word
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as DWord
+			THROW NotImplementedException{}
+
+		static operator implicit(u as __Usual) as UInt64
+			THROW NotImplementedException{}
+#endregion
+#region Implicit from Other Type to Usual
+		static operator implicit(value as Logic) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as Byte) as __Usual
+			return __Usual{(int)value}
+
+		static operator implicit(value as __Array) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as System.DateTime) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as real8) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as Short) as __Usual
+			return __Usual{(int)value}
+
+		static operator implicit(value as Long) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as Int64) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as System.IntPtr) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as SByte) as __Usual
+			return __Usual{(int)value}
+
+		static operator implicit(value as real4) as __Usual
+			return __Usual{(real8)value }
+
+		static operator implicit(value as string) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as Word) as __Usual
+			return __Usual{(int)value}
+
+		static operator implicit(value as DWord) as __Usual
+			return IIF((value > 0x7fffffff),__Usual{(Long)value },__Usual{(__VoFloat)value })
+#endregion
 		#region implementation IConvertable
 		public method ToBoolean(provider as System.IFormatProvider) as Logic
 			THROW NotImplementedException{}
@@ -251,53 +410,46 @@ begin namespace XSharp
 		public method ToString() as string
 			local strResult as STRING
 	      
-		switch (SELF:usualType)
-			case UsualDataType.Array
-				strResult := SELF:refData:ToString()
+			switch (SELF:usualType)
+			case __UsualType.Array
+			case __UsualType.CODEBLOCK
+			case __UsualType.OBJECT
+				strResult := SELF:_refData:ToString()
 
-			case UsualDataType.CODEBLOCK
-				strResult := SELF:refData:ToString()
+			case __UsualType.Date
+				strResult := self:_valueData:d:ToString()
 
-			case UsualDataType.Date
-				strResult := self:valueData:d:ToString()
+			case __UsualType.Float
+				strResult := self:_valueData:r8:ToString()
 
-			case UsualDataType.Float
-				strResult := self:valueData:f:ToString()
+			case __UsualType.INT
+				strResult := self:_valueData:i:ToString()
 
-			case UsualDataType.INT
-				strResult := self:valueData:i:ToString()
+			case __UsualType.INT64
+				strResult := self:_valueData:i64:ToString()
 
-			case UsualDataType.INT64
-				strResult := self:valueData:i64:ToString()
+			case __UsualType.LOGIC
+				strResult := IIF(!self:_valueData:l , ".F." , ".T.")
 
-			case UsualDataType.LOGIC
-				strResult := IIF(!self:valueData:l , ".F." , ".T.")
+			case __UsualType.PTR
+				strResult := self:_valueData:p:ToString()
 
-			case UsualDataType.OBJECT
-				// todo
-				strResult := ""
+			case __UsualType.STRING
+				strResult := (string) SELF:_refData;
 
-			case UsualDataType.PTR
-				// todo
-				strResult := ""
+			case __UsualType.Symbol
+				strResult := self:_valueData:s:ToString()
 
-			case UsualDataType.STRING
-				strResult := (string) SELF:refData;
-
-			case UsualDataType.Symbol
-				strResult := self:valueData:s:ToString()
-
-			case UsualDataType.Void
+			case __UsualType.Void
 				strResult := "NIL"
 			otherwise
 				strResult := ""
 			end switch
-		return strResult
+			return strResult
 
 
 		public method ToString(provider as System.IFormatProvider) as string
 		return ""
-
 		public method ToType(conversionType as System.Type, provider as System.IFormatProvider) as Object
 		return NULL
 
@@ -313,185 +465,25 @@ begin namespace XSharp
 		public method GetTypeCode() as System.TypeCode
 		THROW NotImplementedException{}
 		#endregion
-		#region operators
-		static operator +(leftOperand as __Usual, rightOperand as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		static operator &(leftOperand as __Usual, rightOperand as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		static operator |(leftOperand as __Usual, rightOperand as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		static operator --(u as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		static operator /(leftOperand as __Usual, rightOperand as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		public method Equals(obj as object) as logic
-			return super:Equals(obj)
-
-		public method GetHashCode() as int
-			return super:GetHashCode()
-
-		static operator ==(leftOperand as __Usual, rightOperand as __Usual) as Logic
-			THROW NotImplementedException{}
-
-		static operator >(leftOperand as __Usual, rightOperand as __Usual) as Logic
-			THROW NotImplementedException{}
-
-		static operator >=(leftOperand as __Usual, rightOperand as __Usual) as Logic
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as Logic
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as Byte
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as System.Collections.ArrayList
-			THROW NotImplementedException{}
-		static operator implicit(u as __Usual) as System.DateTime
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as real8
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as Short
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as Long
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as Int64
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as System.IntPtr
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as SByte
-			THROW NotImplementedException{}
-		static operator implicit(u as __Usual) as real4
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as string
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as Word
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as DWord
-			THROW NotImplementedException{}
-
-		static operator implicit(u as __Usual) as UInt64
-			THROW NotImplementedException{}
-
-		static operator implicit(l as Logic) as __Usual
-			return __Usual{l}
-
-		static operator implicit(i as Byte) as __Usual
-			return __Usual{(int)i}
-
-		static operator implicit(a as __Array) as __Usual
-			return __Usual{a}
-
-		static operator implicit(dt as System.DateTime) as __Usual
-			return __Usual{dt}
-
-		static operator implicit(v as real8) as __Usual
-			return __Usual{v}
-
-		static operator implicit(i as Short) as __Usual
-			return __Usual{(int)i}
-
-		static operator implicit(i as Long) as __Usual
-			return __Usual{i}
-
-		static operator implicit(i64 as Int64) as __Usual
-			return __Usual{i64}
-
-		static operator implicit(i as System.IntPtr) as __Usual
-			return __Usual{i}
-
-		static operator implicit(i as SByte) as __Usual
-			return __Usual{(int)i}
-
-		static operator implicit(v as real4) as __Usual
-			return __Usual{(real8)v }
-
-		static operator implicit(s as string) as __Usual
-			return __Usual{s}
-
-		static operator implicit(i as Word) as __Usual
-			return __Usual{(int)i}
-
-		static operator implicit(v as DWord) as __Usual
-			return IIF((v > 0x7fffffff),__Usual{(Long)v },__Usual{(__VoFloat)v })
-
-		static operator ++(u as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		static operator !=(leftOperand as __Usual, rightOperand as __Usual) as Logic
-			THROW NotImplementedException{}
-
-		static operator <<(leftOperand as __Usual, rightOperand as Long) as __Usual
-			THROW NotImplementedException{}
-		static operator <(leftOperand as __Usual, rightOperand as __Usual) as Logic
-			THROW NotImplementedException{}
-
-		static operator <=(leftOperand as __Usual, rightOperand as __Usual) as Logic
-			THROW NotImplementedException{}
-
-		static method op_LogicalNot(u as __Usual) as Logic
-			THROW NotImplementedException{}
-
-		static operator %(leftOperand as __Usual, rightOperand as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		static operator *(leftOperand as __Usual, rightOperand as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		static operator >>(leftOperand as __Usual, rightOperand as Long) as __Usual
-			THROW NotImplementedException{}
-
-		static operator -(leftOperand as __Usual, rightOperand as __Usual) as __Usual
-			THROW NotImplementedException{}
-
-		static operator -(u as __Usual) as __Usual
-			THROW NotImplementedException{}
-		static operator +(u as __Usual) as __Usual
-			THROW NotImplementedException{}
-		#endregion
-
-		static operator implicit(u as __Usual) as __Array
-			THROW NotImplementedException{}
 
 	end structure			
 
 
-	[StructLayout(System.Runtime.InteropServices.LayoutKind.Explicit, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
-	internal structure UsualData
+	[StructLayout(LayoutKind.Explicit)];
+	public structure __UsualData
 		// Fields
-		[FieldOffset(0)];
-		export d as __VoDate
-		[FieldOffset(0)];
-		export f as real8
-		[FieldOffset(0)];
-		export i as Long
-		[FieldOffset(0)];
-		export i64 as Int64
-		[FieldOffset(0)];
-		export l as Logic
-		[FieldOffset(0)];
-		export p as System.IntPtr
-		[FieldOffset(0)];
-		export s as __Symbol
+		[FieldOffset(0)] export d as __VoDate
+		[FieldOffset(0)] export r8 as real8
+		[FieldOffset(0)] export i as Long
+		[FieldOffset(0)] export i64 as Int64
+		[FieldOffset(0)] export l as Logic
+		[FieldOffset(0)] export p as System.IntPtr
+		[FieldOffset(0)] export s as __Symbol
 
 	end structure
 
 
-	public enum UsualDataType as Byte
+	public enum __UsualType as Byte
 		// These numbers must match with the types defined in the compiler
 		// They also match with the USUAL types in VO (BaseType.h)
 		member @@Void		:=0
@@ -523,23 +515,15 @@ begin namespace XSharp
 		member @@Invalid    :=99
 	end enum
 
-	[StructLayout(System.Runtime.InteropServices.LayoutKind.Explicit)];
-	internal structure UsualFlags
+	[StructLayout(LayoutKind.Explicit)];
+	public structure __Usual_flags
+		[FieldOffset(0)] export usualType as __UsualType
+		[FieldOffset(1)] export width as byte
+		[FieldOffset(2)] export decimals as byte
+		[FieldOffset(3)] export isByRef as logic
 
-		[FieldOffset(0)];
-		export usualType as UsualDataType
-		[FieldOffset(1)];
-		export width as byte
-		[FieldOffset(2)];
-		export decimals as byte
-		[FieldOffset(3)];
-		export isByRef as logic
-
-		CONSTRUCTOR(type as UsualDataType)
+		CONSTRUCTOR(type as __UsualType)
 			usualType := type
-			width	  := 0
-			decimals  := 0
-			isByRef   := false
 	end structure
 
 end namespace

@@ -2,28 +2,62 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using Microsoft.VisualStudio.TestTools.UnitTesting
-using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
+using XUnit
 using XSharp.Runtime
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
-	[TestClass];
 	CLASS SymbolTests
-
-		[TestMethod];
+	
+		[Fact];
 		METHOD CreateSymbolTest() as void
-			var sym := #TestSymbol
-			AreEqual("TestSymbol",sym:ToString())
+			VAR sym := __Symbol{"TestSymbol",true}
+			Assert.Equal("TESTSYMBOL",sym:ToString())
 		RETURN
-		[TestMethod];
+		[Fact];
 		METHOD CompareSymbolTest() as void
-			var sym1 := #TestSymbol
-			var sym2 := #TestSymbol
-			AreEqual(true,sym1==sym2)
-			AreEqual(true,sym1=="TestSymbol")
-			AreEqual(false,sym1==#TestSymbol1)
+			var sym1 := __Symbol{"TestSymbol"}
+			var sym2 := __Symbol{"TestSymbol"}
+			Assert.Equal(true,sym1==sym2)
+			Assert.Equal(true,sym1=="TESTSYMBOL")
+			Assert.Equal(false,sym1==#TestSymbol1)
 		RETURN
+
+		[Fact];
+		METHOD GreaterSymbolTest() as void
+			var sym1 := __Symbol{"TestSymbol1"}
+			var sym2 := __Symbol{"TestSymbol2"}
+			Assert.Equal(true,sym1<=sym2)
+			Assert.Equal(true,sym1<sym2)
+			Assert.Equal(false,sym1 > sym2)
+			Assert.Equal(false,sym1 >= sym2)
+			Assert.Equal(true,sym2 > sym1)
+			Assert.Equal(true,sym2 >= sym1)
+			Assert.Equal(false,sym2 < sym1)
+		RETURN
+
+		[Fact];
+		METHOD ImplicitConverter() as void
+			local s as string
+			local sym as __Symbol
+			sym := __Symbol{"test"}
+			s := sym
+			Assert.Equal(s, sym:ToString())
+			sym := s
+			Assert.Equal(s, sym:ToString())
+
+		[Fact];
+		METHOD ExplicitConverter() as void
+			local d as DWORD
+			local sym1 as __Symbol
+			local sym2 as __Symbol
+			sym1 := __Symbol{"test"}
+			d:= (DWORD) sym1
+			sym2 := (__Symbol) d
+			Assert.Equal(sym1, sym2)
+			sym2 := (__Symbol) 0x42U
+			Assert.NotEqual(sym1, sym2)
+			
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

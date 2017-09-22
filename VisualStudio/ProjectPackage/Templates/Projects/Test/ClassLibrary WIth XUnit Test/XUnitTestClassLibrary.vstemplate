@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Class Library with XUnit Testing</Name>
+    <Description>A project for creating a X# class library (.dll) with XUnit Testing</Description>
+    <Icon>XUnitTestClassLibrary.png</Icon>
+    <TemplateID>XSharp.Test.XUnitClassLibrary</TemplateID>
+    <ProjectType>XSharp</ProjectType>
+    <SortOrder>1</SortOrder>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>XUnitTestClassLibrary</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="XUnitTestClassLibrary.xsproj" ReplaceParameters="true">
+      <!-- 
+      These are the items which will show up when a new project is created using the custom project system.
+      Items referenced in here must also be referenced in the project file.
+      -->
+      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">TestClass.prg</ProjectItem>
+      <ProjectItem OpenInEditor="false">Packages.config</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

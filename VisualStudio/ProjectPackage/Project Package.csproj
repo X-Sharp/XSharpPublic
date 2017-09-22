@@ -363,6 +363,7 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\packages.config" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
@@ -404,6 +405,11 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.png" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\TestClass.prg" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\XUnitTestClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\XUnitTestClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\XUnitTestClassLibrary.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

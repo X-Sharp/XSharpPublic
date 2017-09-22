@@ -42,6 +42,8 @@ namespace XSharp.Project
         #endregion
 
         #region Helpers
+        static ServiceProvider _serviceProviderStatic;
+        internal static ServiceProvider GetServiceProvider() => _serviceProviderStatic;
         #endregion
 
         #region IVsEditorFactory Members
@@ -49,6 +51,7 @@ namespace XSharp.Project
         public virtual int SetSite(Microsoft.VisualStudio.OLE.Interop.IServiceProvider psp)
         {
             _serviceProvider = new ServiceProvider(psp);
+            _serviceProviderStatic = _serviceProvider;
             return VSConstants.S_OK;
         }
 

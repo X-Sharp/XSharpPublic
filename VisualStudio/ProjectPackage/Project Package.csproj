@@ -410,6 +410,11 @@
     <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\XUnitTestClassLibrary.png" />
     <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\XUnitTestClassLibrary.vstemplate" />
     <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth XUnit Test\XUnitTestClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth MsTest\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth MsTest\TestClass.prg" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth MsTest\MsTestClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth MsTest\MsTestClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\Test\ClassLibrary WIth MsTest\MsTestClassLibrary.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

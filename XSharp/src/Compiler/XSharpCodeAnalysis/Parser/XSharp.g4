@@ -271,7 +271,7 @@ event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
                        EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=eos
                         | (LineAccessors += eventLineAccessor)+ end=eos
-                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? allowedgarbage? end=eos
+                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? allowedgarbage? eos
                        )
                     ;
 
@@ -313,7 +313,7 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
                       PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=eos	// Auto
                       | (LineAccessors+=propertyLineAccessor)+ end=eos													// Single Line
-                      | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? allowedgarbage? end=eos						// Multi Line
+                      | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? allowedgarbage? eos						// Multi Line
                       )
                     ;
 
@@ -507,22 +507,22 @@ statement           : Decl=localdecl                                            
                     | YIELD Break=(BREAK|EXIT) end=eos							#yieldStmt
                     | (BEGIN|DO)? SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
-                      (e=END SWITCH? allowedgarbage? end=eos)?					#switchStmt
+                      (e=END SWITCH? allowedgarbage? eos)?					#switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
                         StmtBlk=statementBlock
-                      (e=END USING? allowedgarbage? end=eos)?						#blockStmt
+                      (e=END USING? allowedgarbage? eos)?						#blockStmt
                     | BEGIN Key=UNSAFE end=eos
                       StmtBlk=statementBlock
                       (e=END UNSAFE? allowedgarbage? eos)?							#blockStmt
                     | BEGIN Key=CHECKED end=eos
                       StmtBlk=statementBlock
-                      (e=END CHECKED? allowedgarbage? end=eos)?						#blockStmt
+                      (e=END CHECKED? allowedgarbage? eos)?						#blockStmt
                     | BEGIN Key=UNCHECKED end=eos
                       StmtBlk=statementBlock
-                      (e=END UNCHECKED? allowedgarbage? end=eos)?					#blockStmt
+                      (e=END UNCHECKED? allowedgarbage? eos)?					#blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos
                       StmtBlk=statementBlock
-                      (e=END FIXED? allowedgarbage? end=eos)?						#blockStmt
+                      (e=END FIXED? allowedgarbage? eos)?						#blockStmt
 
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
 					// The first ExpressonStmt rule matches a single expression

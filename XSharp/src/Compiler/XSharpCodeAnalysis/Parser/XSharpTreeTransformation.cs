@@ -2635,11 +2635,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Events
         public override void ExitEvent_([NotNull] XP.Event_Context context)
         {
-            context.SetSequencePoint(context.end);
+            if (context.Multi != null)
+                context.SetSequencePoint(context.Multi.Start);
+            else
+                context.SetSequencePoint(context.end);
+
             var attrLists = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var type_ = context.Type?.Get<TypeSyntax>() ?? MissingType();
             var singleLine = context._LineAccessors != null && context._LineAccessors.Count > 0;
-            var multiLine = context._Accessors != null && context._Accessors.Count > 0;
+            var multiLine = context.Multi != null && context._Accessors.Count > 0;
             ExplicitInterfaceSpecifierSyntax explif = null;
             if (context.ExplicitIface != null)
             {
@@ -2939,6 +2943,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Properties
         public override void ExitProperty([NotNull] XP.PropertyContext context)
         {
+            if (context.Multi != null)
+                context.SetSequencePoint(context.Multi.Start);
+            else
+                context.SetSequencePoint(context.end);
             var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?._EXTERN != null;
             var isAbstract = context.Modifiers?._ABSTRACT != null;
@@ -2973,7 +2981,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.AddError(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
             }
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface , context.isInStructure());
-            context.SetSequencePoint(context.end);
             if (context.ExplicitIface != null)
             {
                 var m = _pool.Allocate();

@@ -97,14 +97,39 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 
 	#region Cloning
 	public method Clone() as __Array
-		throw NotImplementedException{"__Array.Clone is not implemented yet."}
+		local aResult as __Array
+		LOCAL nCount as INT
+		nCount := internalList:Count
+		aResult := __Array{nCount}
+		FOR VAR I := 0 to nCount-1
+			var u := internallist[i]
+			if u:IsArray
+				u := ((__Array) u):Clone()
+			endif
+			aResult:internalList[i] := u
+		NEXT
+		return aResult
 
 	public method CloneShallow() as __Array
-		throw NotImplementedException{"__Array.CloneShallow is not implemented yet."}
+		local aResult as __Array
+		LOCAL nCount as INT
+		nCount := internalList:Count
+		aResult := __Array{nCount}
+		FOR VAR I := 0 to nCount-1
+			aResult:INternalList[i] := internalList[i]
+		NEXT
+		return aResult
+
 	#endregion
 
 
 	#region Indexers and to Get / Set Elements. 
+    ///
+    /// <Summary>Access the array element using ZERO based array index</Summary>
+    ///
+	public method __GetElement(index as int) as __Usual
+		return SELF:internalList[ index ]
+
     ///
     /// <Summary>Access the array element using ZERO based array index</Summary>
     ///
@@ -115,7 +140,7 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 
 		for i:=0+__ARRAYBASE__  upto indexLength-2+__ARRAYBASE__ 
 			local u := currentArray:internalList[ index[i]-__ARRAYBASE__] as __Usual
-			if u:IsNil
+			if u:IsNil 
 				return Default(__Usual)
 			endif
 			if u:UsualType != __UsualType.ARRAY
@@ -123,7 +148,7 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 			endif
 			currentArray := (__Array) u
 		next
-		return currentArray:internalList[ index[i]-__ARRAYBASE__]
+		return currentArray:internalList[ index[i]]
 	public Method __SetElement(u as __Usual,index as int) AS __Usual
 		internalList[index]:=u
 	return u
@@ -244,7 +269,7 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 
 	public method Size(size as dword) as __Array
 		if size < 0 
-			throw ArgumentException{"Size must be greate or equal zero."}
+			throw ArgumentException{"Size must be greater or equal than zero."}
 		endif
 		if size > self:Length
 			local i as int
@@ -278,19 +303,17 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 
 
 	public method Tail() as __Usual
-		if self:Length == 0 
-			return default(__Usual)
-		endif
-	return internalList[internalList:Count-1]
+		return internalList.LastOrDefault()
 
 	#region static function
 	public static Method Copy(aSource as __Array,aTarget as __Array,parameter params int[] ) as __Array
 		throw NotImplementedException{"__Array.Copy is not implemented yet."}
 
-	public static Method ArrayDelete(arrayToModify as __Array,position as dword) AS __Array
-		arrayToModify:RemoveAt(position)
-		arrayToModify:Add(__Usual{})
-	return arrayToModify	
+	public Method Delete(position as dword) AS __Array
+		SELF:RemoveAt(position)
+		SELF:Add(__Usual{})
+	return SELF	
+
 
 	public static method ArrayCreate(dimensions params int[] ) as __Array
 		local count := dimensions:Length as int
@@ -311,26 +334,6 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 		endif
 	return arrayNew
 
-	public static method ArrayFill(arraytoFill as __Array,elementValue AS __USUAL) as __Array
-		return ArrayFill(arrayToFill, elementValue, 0,  arrayToFill:internalList:Count)
-
-	public static method ArrayFill(arraytoFill as __Array,elementValue AS __USUAL,start as int) as __Array
-		return ArrayFill(arrayToFill, elementValue, start,  arrayToFill:internalList:Count- start)
-
-	public static method ArrayFill(arraytoFill as __Array,elementValue AS __USUAL,start as int, count as int) as __Array
-		if start < 0 
-			throw ArgumentException{"Start index must be greater or equal zero."}
-		endif
-		if count < 0 
-			throw ArgumentException{"Count index must be greater or equal zero."}
-		endif
-		if arrayToFill:internalList:Count > 0
-			local i as int
-			for i:= start  upto start + count
-				arraytoFill:internalList[i-__ARRAYBASE__] := elementValue
-			next
-		endif
-	return arraytoFill
 	#endregion
 
 	#region locking

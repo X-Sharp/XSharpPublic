@@ -9,7 +9,8 @@ using System.Diagnostics
 using XSharp.Internal
 BEGIN NAMESPACE XSharp
 	[StructLayout(LayoutKind.Sequential)];
-	structure __Usual implements IConvertible,IComparable
+	[DebuggerDisplay("{Value} ({Type,nq})", Type := "USUAL")];
+	STRUCTURE __Usual IMPLEMENTS IConvertible,IComparable
 		#region static fields
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		public static _NIL as __Usual
@@ -34,34 +35,60 @@ BEGIN NAMESPACE XSharp
 
 		return
 
+		private constructor(f as __VoFLoat)
+			SELF:_valueData.r8 := f:Value
+			SELF:_flags.usualType  := __UsualType.Float
+			SELF:_flags.Width := (byte) f:Digits
+			SELF:_flags.Decimals := (byte) f:Decimals
+
+		return
+
+		PRIVATE CONSTRUCTOR(r8 AS Real8)
+			SELF:_valueData.r8 := r8
+			SELF:_flags.usualType  := __UsualType.Float
+			SELF:_flags.Width := 255
+			SELF:_flags.Decimals := 255
+
+		return
+
 		private constructor(value as Logic)
-			SELF:_flags			:= __Usual_flags{__UsualType.LOGIC}
-			SELF:_valueData		:= __UsualData{}{ l:= value}
+			SELF:_flags:UsualType	:= __UsualType.LOGIC
+			SELF:_valueData:l		:= value
 		return
 
 		private constructor(value as __Array)
-			SELF:_flags		:= __Usual_flags{__UsualType.Array}
-			SELF:_refData	:= value
+			SELF:_flags:UsualType	:= __UsualType.Array
+			SELF:_refData			:= value
 		return
 
-		private constructor(value as System.DateTime)
-			SELF:_flags		:= __Usual_flags{ __UsualType.Date}
-			SELF:_refData	:= value
+		private constructor(value as __VoDate)
+			SELF:_flags:UsualType	:= __UsualType.Date
+			SELF:_valueData:d		:= value
 		return
 
 		private constructor(value as Long)
-			SELF:_flags		:= __Usual_flags{__UsualType.Long}
-			SELF:_valueData	:= __UsualData{} {i := value}
+			SELF:_flags:UsualType	:= __UsualType.LONG
+			SELF:_valueData:i		:= value
 		return
 
 		private constructor(value as Int64)
-			SELF:_flags		:= __Usual_flags{__UsualType.Int64}
-			SELF:_valueData	:= __UsualData{} {i64 := value}
+			SELF:_flags:UsualType	:= __UsualType.INT64
+			SELF:_valueData:i64 := value
 		return
 
-		private constructor(value as System.IntPtr)
-			SELF:_flags		:= __Usual_flags{__UsualType.PTR}
-			SELF:_valueData	:= __UsualData{} {p := value}
+		private constructor(value as UInt64)
+			if (value < Int64.MaxValue)
+				SELF:_flags:UsualType	:= __UsualType.INT64
+				SELF:_valueData:i64 := (int64) value
+			else
+				SELF:_flags:UsualType	:= __UsualType.FLOAT
+				SELF:_valueData:r8 := value
+			endif
+		return
+
+		PRIVATE CONSTRUCTOR(value AS System.IntPtr)
+			SELF:_flags:UsualType	:= __UsualType.PTR
+			SELF:_valueData:p		:= value
 		return
 
 		public constructor(o as Object)
@@ -254,7 +281,172 @@ BEGIN NAMESPACE XSharp
 
 		#region implementation IComparable
 		public method CompareTo(o as Object) as Long
+			local rhs as __Usual
+			rhs := (__Usual) o
+			if SELF:UsualType == rhs:UsualType
+				// Compare ValueTypes
+				switch UsualType
+				case __UsualType.Date
+					return SELF:_valueData:d - rhs:_valueData:d
+				case __UsualType.Logic
+					if (_valueData:l == rhs:_valueData:l)
+						return 0
+					elseif _valueData:l
+						return 1
+					else
+						return -1
+					endif
+				case __UsualType.Long
+					return SELF:_valueData:i - rhs:_valueData:i
+				case __UsualType.Int64
+					if SELF:_valueData:i64 == rhs:_valueData:i64
+						return 0
+					elseif SELF:_valueData:i64 > rhs:_valueData:i64
+						return 1
+					else
+						return -1
+					endif
+
+				case __UsualType.Symbol
+					if (self:_valueData:s == rhs:_valueData:s)
+						return 0
+					elseif (self:_valueData:s > rhs:_valueData:s)
+						return 1
+					else
+						return -1
+					endif
+				case __UsualType.Ptr
+					if (self:_valueData:p:ToInt64() == rhs:_valueData:p:ToInt64())
+						return 0
+					elseif (self:_valueData:p:ToInt64() > rhs:_valueData:p:ToInt64())
+						return 1
+					else
+						return -1
+					endif
+				case __UsualType.String
+					// Vulcan does a case insensitive comparison ?
+					return String.Compare( (STRING) _refData, (String) rhs:_refData)
+				otherwise
+					return 0
+				END SWITCH
+			ELSEIF SELF:UsualType == __UsualType.Void
+				return -1
+			ELSEIF rhs:UsualType == __UsualType.Void
+				return 1
+			elseif SELF:UsualType == __UsualType.Date
+				switch rhs:UsualType
+				case __UsualType.Long
+					return (int) _valueData.d - rhs:_valueData.i
+				CASE __UsualType.Int64
+					if (int64) (DWORD) _valueData.d == rhs:_valueData.i64
+						return 0
+					elseif (int64) (DWORD) _valueData.d > rhs:_valueData.i64
+					else
+						return -1
+					endif
+				case __UsualType.Float
+					if (real8) (int) _valueData.d == rhs:_valueData.r8
+						return 0
+					elseif (real8) (int) _valueData.d > rhs:_valueData.r8
+						return 1
+					else
+						return -1
+					endif
+				otherwise
+					nop
+				end switch
+			elseif SELF:UsualType == __UsualType.Float
+				switch rhs:UsualType
+				case __UsualType.Long
+					if _valueData.r8 == rhs:_valueData.i
+						return 0
+					elseif _valueData.r8 > rhs:_valueData.i
+						return 1
+					else
+						return -1
+					endif
+				case __UsualType.Int64
+					if _valueData.r8 == rhs:_valueData.i64
+						return 0
+					elseif _valueData.r8 > rhs:_valueData.i64
+						return 1
+					else
+						return -1
+					endif
+				case __UsualType.Date
+					if _valueData.r8 ==(int) rhs:_valueData.d
+						return 0
+					elseif _valueData.r8 > (int) rhs:_valueData.d
+						return 1
+					else
+						return -1
+					endif
+
+				otherwise
+					nop
+				end switch
+			elseif SELF:UsualType == __UsualType.Long
+				switch rhs:UsualType
+				case __UsualType.Date
+					return _valueData.i - (int) (DWORD) rhs:_valueData.d
+				case __UsualType.Int64
+					if (int64) _valueData.i == rhs:_valueData.i64
+						return 0
+					elseif (int64) _valueData.i > rhs:_valueData.i64
+						return 1
+					else
+						return -1
+					endif
+				case __UsualType.Float
+					if _valueData.i == rhs:_valueData.r8
+						return 0
+					elseif _valueData.i > rhs:_valueData.r8
+						return 1
+					else
+						return -1
+					endif
+				otherwise
+					nop
+				END SWITCH
+			elseif SELF:UsualType == __UsualType.Int64
+				switch rhs:UsualType
+				case __UsualType.Date
+					if _valueData.i64 == (int64) (DWORD) rhs:_valueData.d
+						return 0
+					elseif _valueData.i64 > (int64) (DWORD) rhs:_valueData.d
+						return 1
+					else
+						return -1
+					endif
+				case __UsualType.Long
+					if _valueData.i64 == rhs:_valueData.i
+						return 0
+					elseif _valueData.i64 > rhs:_valueData.i
+						return 1
+					else
+						return -1
+					endif
+				case __UsualType.Float
+					if  _valueData.i64 == rhs:_valueData.r8
+						return 0
+					elseif _valueData.i64 > rhs:_valueData.r8
+						return 1
+					else
+						return -1
+					endif
+				otherwise
+					nop
+				end switch
+			endif
+			if self:UsualType > rhs:UsualType
+				return 1
+			elseif self:UsualType < rhs:UsualType
+				return -1
+			endif
 			return 0
+		
+
+
 		#endregion
 				
 		#region Comparison Operators 
@@ -709,7 +901,7 @@ BEGIN NAMESPACE XSharp
 		static operator +(lhs as __Usual, rhs as __Usual) as __Usual
 			SWITCH lhs:UsualType
 			CASE __UsualType.Long
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return lhs:_valueData.i + rhs:_valueData.i 
 				CASE __UsualType.Int64
@@ -731,13 +923,17 @@ BEGIN NAMESPACE XSharp
 					nop
 				END SWITCH
 			CASE __UsualType.Float
+				LOCAL result as Real8
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.r8 + rhs:_valueData.i 
+					result :=  lhs:_valueData.r8 + rhs:_valueData.i 
+					return __VoFLoat{result, lhs:_flags.Width, lhs._Flags.decimals}
 				CASE __UsualType.Int64
-					return lhs:_valueData.r8 + rhs:_valueData.i64
+					result :=  lhs:_valueData.r8 + rhs:_valueData.i64
+					return __VoFLoat{result, lhs:_flags.Width, lhs._Flags.decimals}
 				CASE __UsualType.Float
-					return lhs:_valueData.r8 + rhs:_valueData.r8
+					result :=  lhs:_valueData.r8 + rhs:_valueData.r8
+					return __VoFLoat{result, lhs:_flags.Width, lhs._Flags.decimals}
 				OTHERWISE
 					nop
 				END SWITCH
@@ -948,7 +1144,7 @@ BEGIN NAMESPACE XSharp
 		static operator -(lhs as __Usual, rhs as __Usual) as __Usual
 			SWITCH lhs:UsualType
 			CASE __UsualType.Long
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return lhs:_valueData.i - rhs:_valueData.i 
 				CASE __UsualType.Int64
@@ -1412,9 +1608,6 @@ BEGIN NAMESPACE XSharp
 		static operator implicit(value as __VoFLoat) as __Usual
 			return __Usual{value}
 
-		STATIC OPERATOR IMPLICIT(value AS System.DateTime) AS __Usual
-			return __Usual{value}
-
 		static operator implicit(value as real8) as __Usual
 			return __Usual{value}
 
@@ -1427,7 +1620,10 @@ BEGIN NAMESPACE XSharp
 		static operator implicit(value as Int64) as __Usual
 			return __Usual{value}
 
-		static operator implicit(value as System.IntPtr) as __Usual
+		static operator implicit(value as UInt64) as __Usual
+			return __Usual{value}
+
+		STATIC OPERATOR IMPLICIT(value AS System.IntPtr) AS __Usual
 			return __Usual{value}
 
 		static operator implicit(value as SByte) as __Usual
@@ -1443,7 +1639,7 @@ BEGIN NAMESPACE XSharp
 			return __Usual{(int)value}
 
 		static operator implicit(value as DWord) as __Usual
-			return IIF((value > 0x7fffffff),__Usual{(Long)value },__Usual{(__VoFloat)value })
+			return IIF((value <= 0x7fffffff),__Usual{(Long)value },__Usual{(__VoFloat)value })
 #endregion
 		#region implementation IConvertable
 		public method ToBoolean(provider as System.IFormatProvider) as Logic

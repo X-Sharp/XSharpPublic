@@ -25,9 +25,13 @@ begin namespace XSharp
         // for date calculation we use the Value property which returns a System.DateTime type
 		// Note that the Vulcan type uses a datetime which takes 8 bytes. We only use 4 bytes
 		#region fields
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffSet(00)] private initonly _value as System.Int32
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffSet(00)] private initonly _year  as System.UInt16
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffSet(02)] private initonly _month as System.Byte
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffSet(03)] private initonly _day   as System.Byte
 		#endregion
 
@@ -39,6 +43,7 @@ begin namespace XSharp
 		#endregion
 
         #region datetime conversions
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         Property Value as System.DateTime 
         get
             if (_value == 0)
@@ -381,6 +386,7 @@ begin namespace XSharp
 
 		property Day as int Get _day 
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		property IsEmpty as Logic
 			Get
 				return _value == 0

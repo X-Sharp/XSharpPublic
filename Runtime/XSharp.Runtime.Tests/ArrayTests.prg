@@ -23,19 +23,6 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			testArray[1] := 1
 			testArray[2] := 2
 			testArray[3] := 3
-			__Array.ArrayFill(testArray,4)
-			Assert.Equal(4,(int)testArray[1])
-			Assert.Equal(4,(int)testArray[2])
-			Assert.Equal(4,(int)testArray[3])
-
-            __Array.ArrayFill(testArray, 5,1)
-            Assert.Equal(5, (int)testArray[2])
-            Assert.Equal(5, (int)testArray[3])
-
-            __Array.ArrayFill(testArray, 9, 1 , 1)
-            Assert.Equal(4, (int)testArray[1])
-            Assert.Equal(9, (int)testArray[2])
-            Assert.Equal(5, (int)testArray[3])
 		return
 		[Fact];
 		METHOD ArraySwapTest() as void
@@ -46,14 +33,16 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal( 2 , (int) oldValue)
 			Assert.Equal( 4 , (int) testArray[2])
 		return
+		
 		[Fact];
 		METHOD ArrayDeleteTest() as void
 			local values := <object>{1,2,3} as object[]
 			local testArray := __Array{values} as __Array
-			__Array.ArrayDelete(testArray,1)
+			testArray:Delete(1)
 			Assert.Equal( (dword)3 , testArray:Length)
 			Assert.Equal( __Usual._NIL ,  testArray[3])
 		return
+		
 		[Fact];
 		METHOD ArraySizeTest() as void
 			local values := <object>{1,2,3} as object[]
@@ -63,12 +52,14 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			testArray:Size(2)
 			Assert.Equal((dword)2,testArray:Length)
 		return
+
 		[Fact];
 		METHOD ArrayTailTest() as void
 			local values := <object>{1,2,3} as object[]
 			local testArray := __Array{values} as __Array
 			Assert.Equal( 3 , (int) testArray:Tail())
 		return
+		
 		[Fact];
 		METHOD ArrayDimTest() as void
 			local values := <object>{5,4} as object[]

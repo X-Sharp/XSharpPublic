@@ -965,7 +965,7 @@ BEGIN NAMESPACE XSharp
 			
 			SWITCH lhs:UsualType
 			CASE __UsualType.Long
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					local result as INT
 					LOCAL remainder as INT
@@ -991,7 +991,7 @@ BEGIN NAMESPACE XSharp
 				END SWITCH
 
 			CASE __UsualType.Int64
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					local result as INT64
 					LOCAL remainder as INT64
@@ -1017,7 +1017,7 @@ BEGIN NAMESPACE XSharp
 				END SWITCH
 
 			CASE __UsualType.Float
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return __VoFLoat{lhs:_valueData.r8 / rhs:_valueData.i, lhs:_flags.width, rhs:_flags.decimals}
 				CASE __UsualType.Int64
@@ -1037,7 +1037,7 @@ BEGIN NAMESPACE XSharp
 		static operator %(lhs as __Usual, rhs as __Usual) as __Usual
 			SWITCH lhs:UsualType
 			CASE __UsualType.Long
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return lhs:_valueData.i % rhs:_valueData.i
 				CASE __UsualType.Int64
@@ -1049,7 +1049,7 @@ BEGIN NAMESPACE XSharp
 				END SWITCH
 
 			CASE __UsualType.Int64
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return lhs:_valueData.i64 % rhs:_valueData.i
 				CASE __UsualType.Int64
@@ -1061,7 +1061,7 @@ BEGIN NAMESPACE XSharp
 				END SWITCH
 
 			CASE __UsualType.Float
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return __VoFLoat{lhs:_valueData.r8 % rhs:_valueData.i, lhs:_flags.width, rhs:_flags.decimals}
 				CASE __UsualType.Int64
@@ -1079,7 +1079,7 @@ BEGIN NAMESPACE XSharp
 		static operator *(lhs as __Usual, rhs as __Usual) as __Usual
 			SWITCH lhs:UsualType
 			CASE __UsualType.Long
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return lhs:_valueData.i * rhs:_valueData.i
 				CASE __UsualType.Int64
@@ -1091,7 +1091,7 @@ BEGIN NAMESPACE XSharp
 				END SWITCH
 
 			CASE __UsualType.Int64
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return lhs:_valueData.i64 * rhs:_valueData.i
 				CASE __UsualType.Int64
@@ -1103,7 +1103,7 @@ BEGIN NAMESPACE XSharp
 				END SWITCH
 
 			CASE __UsualType.Float
-				SWITCH lhs:UsualType
+				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					return __VoFLoat{lhs:_valueData.r8 * rhs:_valueData.i, lhs:_flags.width, rhs:_flags.decimals}
 				CASE __UsualType.Int64

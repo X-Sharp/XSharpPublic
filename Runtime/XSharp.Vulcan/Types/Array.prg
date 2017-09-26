@@ -103,7 +103,7 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 		aResult := __Array{nCount}
 		FOR VAR I := 0 to nCount-1
 			var u := internallist[i]
-			if u:IsArray
+			if u:UsualType == __UsualType.Array
 				u := ((__Array) u):Clone()
 			endif
 			aResult:internalList[i] := u

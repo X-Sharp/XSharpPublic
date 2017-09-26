@@ -11,6 +11,7 @@ USING XSharp
 USING System.Diagnostics
 BEGIN NAMESPACE XSharp	
     [DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
+	[DebuggerTypeProxy(typeof(DateDebugView))];
     [StructLayout(LayoutKind.Explicit)];
 	STRUCTURE __VODate IMPLEMENTS System.IComparable, ;
 		System.IFormattable, ;
@@ -25,13 +26,9 @@ BEGIN NAMESPACE XSharp
         // for date calculation we use the Value PROPERTY which returns a System.DateTime type
 		// Note that the Vulcan type uses a datetime which takes 8 bytes. We only use 4 bytes
 		#region fields
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffSet(00)] private initonly _value as System.Int32
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffSet(00)] private initonly _year  as System.UInt16
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffSet(02)] private initonly _month as System.Byte
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffSet(03)] private initonly _day   as System.Byte
 		#endregion
 
@@ -43,7 +40,6 @@ BEGIN NAMESPACE XSharp
 		#endregion
 
         #region datetime conversions
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PROPERTY Value as System.DateTime 
         GET
             IF (_value == 0)
@@ -419,16 +415,26 @@ BEGIN NAMESPACE XSharp
         #endregion
 		#region properties
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PROPERTY IsEmpty AS LOGIC
 			Get
 				RETURN _value == 0
 			End Get
 		end property
 
-		PROPERTY Month AS INT GET _month 
-		PROPERTY Year AS INT GET _year 
-		PROPERTY Day AS INT Get _day 
+		PROPERTY Month	AS INT GET _month 
+		PROPERTY Year	AS INT GET _year 
+		PROPERTY Day	AS INT Get _day 
+
+	internal class DateDebugView
+		private _value as __VoDate
+		public constructor (d as __VoDate)
+			_value := d
+		
+		PUBLIC PROPERTY Year	as INT Get _value:Year
+		PUBLIC PROPERTY Month	as INT Get _value:Month
+		PUBLIC PROPERTY Day		as INT Get _value:Day
+
+	end class
 
 	#endregion
 

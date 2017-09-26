@@ -10,18 +10,15 @@ using XSharp.Internal
 BEGIN NAMESPACE XSharp
 	[StructLayout(LayoutKind.Sequential)];
 	[DebuggerDisplay("{Value} ({Type,nq})", Type := "USUAL")];
+	[DebuggerTypeProxy(typeof(UsualDebugView))];
 	STRUCTURE __Usual IMPLEMENTS IConvertible,IComparable
 		#region static fields
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		public static _NIL as __Usual
+		PUBLIC STATIC _NIL as __Usual
 		#endregion
 		#region private fields
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PRIVATE INITONLY _flags    	AS __Usual_flags	// type, byref, width, decimals
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		private _valueData	as __UsualData		// for non GC data
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		private _refData  	as Object			// for GC data
+		PRIVATE INITONLY _valueData	as __UsualData		// for non GC data
+		PRIVATE INITONLY _refData  	as Object			// for GC data
 		#endregion
 		#region constructors
 		STATIC Constructor()
@@ -35,59 +32,64 @@ BEGIN NAMESPACE XSharp
 
 		return
 
-		private constructor(f as __VoFLoat)
-			SELF:_valueData.r8 := f:Value
-			SELF:_flags.usualType  := __UsualType.Float
-			SELF:_flags.Width := (byte) f:Digits
-			SELF:_flags.Decimals := (byte) f:Decimals
+		private constructor(f as __VoFloat)
+			SELF:_valueData:r8		:= f:Value
+			SELF:_flags:usualType	:= __UsualType.Float
+			SELF:_flags:Width		:= (Sbyte) f:Digits
+			SELF:_flags:Decimals	:= (Sbyte) f:Decimals
 
 		return
 
 		PRIVATE CONSTRUCTOR(r8 AS Real8)
-			SELF:_valueData.r8 := r8
-			SELF:_flags.usualType  := __UsualType.Float
-			SELF:_flags.Width := 255
-			SELF:_flags.Decimals := 255
+			SELF:_valueData:r8		:= r8
+			SELF:_flags:usualType	:= __UsualType.Float
+			SELF:_flags:Width		:= -1
+			SELF:_flags:Decimals	:= -1
 
 		return
 
 		private constructor(value as Logic)
-			SELF:_flags:UsualType	:= __UsualType.LOGIC
+			SELF:_flags:usualType	:= __UsualType.LOGIC
 			SELF:_valueData:l		:= value
 		return
 
 		private constructor(value as __Array)
-			SELF:_flags:UsualType	:= __UsualType.Array
+			SELF:_flags:usualType	:= __UsualType.Array
 			SELF:_refData			:= value
 		return
 
 		private constructor(value as __VoDate)
-			SELF:_flags:UsualType	:= __UsualType.Date
+			SELF:_flags:usualType	:= __UsualType.Date
 			SELF:_valueData:d		:= value
 		return
 
 		private constructor(value as Long)
-			SELF:_flags:UsualType	:= __UsualType.LONG
-			SELF:_valueData:i		:= value
+			SELF:_flags:usualType	:= __UsualType.LONG
+			_valueData:i			:= value
 		return
 
 		private constructor(value as Int64)
-			SELF:_flags:UsualType	:= __UsualType.INT64
-			SELF:_valueData:i64 := value
+			SELF:_flags:usualType	:= __UsualType.INT64
+			SELF:_valueData:i64		:= value
 		return
 
 		private constructor(value as UInt64)
 			if value < Int64.MaxValue
-				SELF:_flags:UsualType	:= __UsualType.INT64
-				SELF:_valueData:i64 := (int64) value
+				SELF:_flags:usualType	:= __UsualType.INT64
+				SELF:_valueData:i64:= (int64) value
 			else
-				SELF:_flags:UsualType	:= __UsualType.FLOAT
+				SELF:_flags:usualType	:= __UsualType.FLOAT
 				SELF:_valueData:r8 := value
 			endif
 		return
 
+		PRIVATE CONSTRUCTOR(d AS System.Decimal)
+			SELF:_refdata	:= d
+			SELF:_flags:usualType  := __UsualType.Decimal
+
+
 		PRIVATE CONSTRUCTOR(value AS System.IntPtr)
-			SELF:_flags:UsualType	:= __UsualType.PTR
+			SELF:_flags:usualType	:= __UsualType.PTR
 			SELF:_valueData:p		:= value
 		return
 
@@ -134,9 +136,9 @@ BEGIN NAMESPACE XSharp
 							SELF:_valueData:i := (Long)(DWord)o  
 						else
 							SELF:_flags:usualType := __UsualType.Float
-							SELF:_valueData:r8 := (DWord)o 
-							SELF:_flags:width	:= 255
-							SELF:_flags:decimals := 255
+							SELF:_valueData:r8:= (REAL8) (UInt32) o 
+							SELF:_flags:width	:= -1
+							SELF:_flags:decimals := -1
 						endif
 					CASE System.TypeCode.Int64 
 						SELF:_flags:usualType		:= __UsualType.Int64
@@ -148,21 +150,21 @@ BEGIN NAMESPACE XSharp
 						ELSE
 							SELF:_flags:usualType := __UsualType.FLOAT
 							SELF:_valueData:r8 := (Real8)(UInt64)o  
-							SELF:_flags:width	:= 255
-							SELF:_flags:decimals := 255
+							SELF:_flags:width	:= -1
+							SELF:_flags:decimals := -1
 						ENDIF
 					CASE System.TypeCode.Single  
 						SELF:_flags:usualType		:= __UsualType.Float
 						SELF:_valueData:r8	:= (real8)o 
-						SELF:_flags:width	:= 255
-						SELF:_flags:decimals := 255
+						SELF:_flags:width	:= -1
+						SELF:_flags:decimals := -1
 					CASE System.TypeCode.Double 
 						SELF:_flags:usualType := __UsualType.Float
 						SELF:_valueData:r8 := (real8)o 
-						SELF:_flags:width := 255
-						SELF:_flags:decimals := 255
+						SELF:_flags:width := -1
+						SELF:_flags:decimals := -1
 					CASE System.TypeCode.Decimal 
-						SELF:_flags:usualType := __UsualType.OBJECT
+						SELF:_flags:usualType := __UsualType.Decimal
 						SELF:_refData  := o
 					CASE System.TypeCode.DateTime 
 						SELF:_flags:usualType := __UsualType.Date
@@ -188,39 +190,27 @@ BEGIN NAMESPACE XSharp
 		return
 
 		private constructor(s as string)
-			SELF:_flags		:= __Usual_flags{__UsualType.STRING}
-			SELF:_valueData	:= __UsualData{}
-			SELF:_refData 	:= s
+			SELF:_flags:usualType	:= __UsualType.STRING
+			SELF:_refData 			:= s
 		return
 		#endregion
 		#region properties
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		private PROPERTY _usualType	AS __UsualType GET _flags:UsualType 
+		PRIVATE PROPERTY _usualType		AS __UsualType	GET _flags:usualType 
+		PRIVATE PROPERTY _decimalValue	as System.Decimal GET IIF(UsualType == __UsualType.Decimal, (System.Decimal) _refData , 0)
+		PRIVATE PROPERTY _i64Value		as Int64	GET _valueData:i64 
+		PRIVATE PROPERTY _r8Value		as REAL8	GET _valueData:r8 
+		PRIVATE PROPERTY _dateValue		as __VoDate GET _valueData:d 
+		PRIVATE PROPERTY _intValue		as INT		GET _valueData:i  
+		PRIVATE PROPERTY _symValue		as __Symbol	GET _valueData:s 
+		PRIVATE PROPERTY _logicValue	as LOGIC	GET _valueData:l 
+		PRIVATE PROPERTY _ptrValue		as IntPtr	GET _valueData:p 
+		PRIVATE PROPERTY _stringValue   as STRING	GET IIF(UsualType == __UsualType.String, (String) _refData , String.Empty)
+		private property _floatValue    as __VoFloat GET __VoFloat{ _valueData:r8, _width, _decimals}
 		// properties for floats
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		private PROPERTY width			AS BYTE GET _flags:width 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		private PROPERTY decimals		AS BYTE GET _flags:decimals 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
- 		internal Property UsualType		as __UsualType GET  _usualType
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
- 		internal property IsArray		as Logic GET _usualType == __UsualType.Array
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		internal property IsByRef		as Logic GET SELF:_flags:IsByRef
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		internal property IsDate		as Logic GET _usualType == __UsualType.Date
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		internal property IsPtr			as Logic GET _usualType == __UsualType.PTR
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		internal property IsString		as Logic GET _usualType == __UsualType.STRING
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		internal property IsLong		as Logic GET _usualType == __UsualType.Int64
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		internal property IsFloat		as Logic GET _usualType == __UsualType.Float
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		internal property IsValueType	as LOGIC GET ! SELF:IsReferenceType
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		internal property IsReferenceType as LOGIC
+		PRIVATE PROPERTY _width			AS SBYTE GET _flags:width 
+		PRIVATE PROPERTY _decimals		AS SBYTE GET _flags:decimals 
+ 		INTERNAL PROPERTY UsualType		as __UsualType GET  _usualType
+		PRIVATE PROPERTY isReferenceType as LOGIC
 			GET
 				switch _usualType
 				CASE __UsualType.Array
@@ -233,7 +223,6 @@ BEGIN NAMESPACE XSharp
 			END GET
 		end property
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		internal property IsNil as Logic
 			Get
 				return SELF:usualType == __UsualType.Void .or. ;
@@ -248,21 +237,23 @@ BEGIN NAMESPACE XSharp
 			GET
 			SWITCH UsualType
 			CASE __UsualType.Long
-				return _valueData.i
+				return _intValue
 			CASE __UsualType.Int64
-				return _valueData.i64
+				return _i64Value
 			CASE __UsualType.Float
-				return _valueData.r8
+				return _r8Value
+			CASE __UsualType.Decimal
+				return _decimalValue
 			CASE __UsualType.Logic
-				return _valueData.l
+				return _logicValue
 			CASE __UsualType.Date
-				return _valueData.d
+				return _dateValue
 			CASE __UsualType.Ptr
-				return _valueData.p
+				return _ptrValue
 			CASE __UsualType.Symbol
-				return _valueData.s
+				return _symValue
 			CASE __UsualType.String
-				return (string) _refData
+				return _stringValue
 			CASE __UsualType.Array
 				return (__Array) _refData
 			CASE __UsualType.Void
@@ -287,138 +278,105 @@ BEGIN NAMESPACE XSharp
 				// Compare ValueTypes
 				switch UsualType
 				case __UsualType.Logic
+					return SELF:_logicValue:CompareTo(rhs:_logicValue)
 				case __UsualType.Date
+					return SELF:_dateValue:CompareTo(rhs:_dateValue)
 				case __UsualType.Long
+					return SELF:_intValue:CompareTo(rhs:_intValue)
 				case __UsualType.Int64
+					return SELF:_i64Value:CompareTo(rhs:_i64Value)
 				case __UsualType.Symbol
+					// Uses String Comparison rules
+					return String.Compare( (string) SELF:_symValue, (string) rhs:_symValue)
 				case __UsualType.Ptr
-					// All valuetypes use the same i64 comparison. The types store the data
-					// on the same location and unused bytes are 0
-					if SELF:_valueData:i64 == rhs:_valueData:i64
-						return 0
-					elseif SELF:_valueData:i64 > rhs:_valueData:i64
-						return 1
-					else
-						return -1
-					endif
-
+					return SELF:_ptrValue:ToInt64():CompareTo(rhs:_ptrValue:ToInt64())
 				case __UsualType.String
 					// Vulcan does a case insensitive comparison ?
-					return String.Compare( (STRING) _refData, (String) rhs:_refData)
+					return String.Compare( _stringValue,  rhs:_stringValue)
 				otherwise
 					return 0
 				END SWITCH
-			ELSEIF SELF:UsualType == __UsualType.Void
-				return -1
-			ELSEIF rhs:UsualType == __UsualType.Void
-				return 1
-			elseif SELF:UsualType == __UsualType.Date
-				switch rhs:UsualType
-				case __UsualType.Long
-					return (int) _valueData.d - rhs:_valueData.i
-				CASE __UsualType.Int64
-					if (int64) (DWORD) _valueData.d == rhs:_valueData.i64
-						return 0
-					elseif (int64) (DWORD) _valueData.d > rhs:_valueData.i64
-					else
-						return -1
-					endif
-				case __UsualType.Float
-					if (real8) (int) _valueData.d == rhs:_valueData.r8
-						return 0
-					elseif (real8) (int) _valueData.d > rhs:_valueData.r8
-						return 1
-					else
-						return -1
-					endif
-				otherwise
-					nop	// uses comparison by type
-				end switch
-			elseif SELF:UsualType == __UsualType.Float
-				switch rhs:UsualType
-				case __UsualType.Long
-					if _valueData.r8 == rhs:_valueData.i
-						return 0
-					elseif _valueData.r8 > rhs:_valueData.i
-						return 1
-					else
-						return -1
-					endif
-				case __UsualType.Int64
-					if _valueData.r8 == rhs:_valueData.i64
-						return 0
-					elseif _valueData.r8 > rhs:_valueData.i64
-						return 1
-					else
-						return -1
-					endif
-				case __UsualType.Date
-					if _valueData.r8 ==(int) rhs:_valueData.d
-						return 0
-					elseif _valueData.r8 > (int) rhs:_valueData.d
-						return 1
-					else
-						return -1
-					endif
+			ELSE
+				// Type of LHS different from type of RHS
+				SWITCH SELF:UsualType
+				CASE __UsualType.Void
+					RETURN -1
+				CASE __UsualType.Date
+					// Upscale when needed to avoid overflow errors
+					SWITCH rhs:UsualType
+					case __UsualType.Long
+						return ((int) _dateValue).CompareTo(rhs:_intValue)
+					CASE __UsualType.Int64
+						return ( (int64) (int) _dateValue).CompareTo(rhs:_i64Value)
+					case __UsualType.Float
+						return ((real8) (int) _dateValue).CompareTo(rhs:_r8Value)
+					case __UsualType.Decimal
+						return ((System.Decimal) (int) _dateValue).CompareTo(rhs:_decimalValue)
+					otherwise
+						nop	// uses comparison by type
+					end switch
 
-				otherwise
-					nop	// uses comparison by type
-				end switch
-			elseif SELF:UsualType == __UsualType.Long
-				switch rhs:UsualType
-				case __UsualType.Date
-					return _valueData.i - (int) (DWORD) rhs:_valueData.d
-				case __UsualType.Int64
-					if (int64) _valueData.i == rhs:_valueData.i64
-						return 0
-					elseif (int64) _valueData.i > rhs:_valueData.i64
-						return 1
-					else
-						return -1
-					endif
-				case __UsualType.Float
-					if _valueData.i == rhs:_valueData.r8
-						return 0
-					elseif _valueData.i > rhs:_valueData.r8
-						return 1
-					else
-						return -1
-					endif
-				otherwise
-					nop	// uses comparison by type
-				END SWITCH
-			elseif SELF:UsualType == __UsualType.Int64
-				switch rhs:UsualType
-				case __UsualType.Date
-					if _valueData.i64 == (int64) (DWORD) rhs:_valueData.d
-						return 0
-					elseif _valueData.i64 > (int64) (DWORD) rhs:_valueData.d
-						return 1
-					else
-						return -1
-					endif
-				case __UsualType.Long
-					if _valueData.i64 == rhs:_valueData.i
-						return 0
-					elseif _valueData.i64 > rhs:_valueData.i
-						return 1
-					else
-						return -1
-					endif
-				case __UsualType.Float
-					if  _valueData.i64 == rhs:_valueData.r8
-						return 0
-					elseif _valueData.i64 > rhs:_valueData.r8
-						return 1
-					else
-						return -1
-					endif
-				otherwise
-					nop	// uses comparison by type
-				end switch
-			endif
-			// comparison by type
-			if self:UsualType > rhs:UsualType
+				CASE __UsualType.Float
+					switch rhs:UsualType
+					case __UsualType.Long
+						return _r8Value.CompareTo( (real8) rhs:_intValue)
+					case __UsualType.Int64
+						return _r8Value.CompareTo( (real8) rhs:_i64Value)
+					case __UsualType.Decimal
+						return _r8Value.CompareTo( (real8) rhs:_decimalValue)
+					case __UsualType.Date
+						return _r8Value.CompareTo( (real8) (int) rhs:_dateValue)
+					otherwise
+						nop	// uses comparison by type
+					end switch
+
+				CASE __UsualType.Long
+					// Upscale when needed to avoid overflow errors
+					switch rhs:UsualType
+					case __UsualType.Date
+						return _intValue.CompareTo((Int) rhs:_dateValue)
+					case __UsualType.Int64
+						return ((int64)_intValue).CompareTo(rhs:_i64Value)
+					case __UsualType.Float
+						return ((real8)_intValue).CompareTo(rhs:_r8Value)
+					case __UsualType.Decimal
+						return ((System.Decimal)_intValue).CompareTo(rhs:_decimalValue)
+					otherwise
+						nop	// uses comparison by type
+					END SWITCH
+
+				CASE __UsualType.Int64
+					switch rhs:UsualType
+					case __UsualType.Date
+						return _i64Value.CompareTo((int) rhs:_dateValue)
+					case __UsualType.Long
+						return _i64Value.CompareTo( rhs:_intValue)
+					case __UsualType.Float
+						return _i64Value.CompareTo( rhs:_r8Value)
+					case __UsualType.Decimal
+						return _i64Value.CompareTo( rhs:_decimalValue)
+					otherwise
+						nop	// uses comparison by type
+					end switch
+
+				CASE __UsualType.Decimal
+					switch rhs:UsualType
+					case __UsualType.Date
+						return _decimalValue.CompareTo((int) rhs:_dateValue)
+					case __UsualType.Long
+						return _decimalValue.CompareTo(rhs:_intValue)
+					case __UsualType.Float
+						return _decimalValue.CompareTo(rhs:_r8Value)
+					case __UsualType.Int64
+						return _decimalValue.CompareTo(rhs:_i64Value)
+					otherwise
+						nop	// uses comparison by type
+					end switch
+				END SWITCH 
+			ENDIF
+			IF rhs:UsualType == __UsualType.Void
+				return 1
+			ELSEif self:UsualType > rhs:UsualType
 				return 1
 			elseif self:UsualType < rhs:UsualType
 				return -1
@@ -435,53 +393,73 @@ BEGIN NAMESPACE XSharp
 			case __UsualType.Long
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.i > rhs:_valueData.i
+					return lhs:_intValue > rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.i > rhs:_valueData.i64
+					return lhs:_intValue > rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.i > rhs:_valueData.r8
+					return lhs:_intValue > rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_intValue > rhs:_decimalValue
 				otherwise
 					throw BinaryError(">", "Argument not numeric", false, lhs, rhs)
 				end switch
 			case __UsualType.Int64
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.i64 > rhs:_valueData.i
+					return lhs:_i64Value > rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.i64 > rhs:_valueData.i64
+					return lhs:_i64Value > rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.i64 > rhs:_valueData.r8
+					return lhs:_i64Value > rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_i64Value > rhs:_decimalValue
 				otherwise
 					throw BinaryError(">", "Argument not numeric", false, lhs, rhs)
 				end switch
 			case __UsualType.Float
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.r8 > rhs:_valueData.i
+					return lhs:_r8Value > rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.r8 > rhs:_valueData.i64
+					return lhs:_r8Value > rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.r8 > rhs:_valueData.r8
+					return lhs:_r8Value > rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_r8Value > (REAL8) rhs:_decimalValue
 				otherwise
 					throw BinaryError(">", "Argument not numeric", false, lhs, rhs)
 				end switch
 
-			case __UsualType.String
+			case __UsualType.Decimal
+				switch rhs:UsualType
+				case __UsualType.Long
+					return lhs:_decimalValue > rhs:_intValue
+				case __UsualType.Int64
+					return lhs:_decimalValue > rhs:_i64Value
+				case __UsualType.Float
+					return lhs:_decimalValue > (System.Decimal) rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_decimalValue >  rhs:_decimalValue
+				otherwise
+					throw BinaryError(">", "Argument not numeric", false, lhs, rhs)
+				end switch
+
+			CASE __UsualType.String
 				if rhs:UsualType == __UsualType.String
-					return (string) lhs:_refData > (string) rhs:_refData
+					return lhs:_stringValue> rhs:_stringValue
 				else
 					nop
 				endif
 
 			case __UsualType.Symbol
 				if rhs:UsualType == __UsualType.Symbol
-					return lhs:_valuedata.s > rhs:_valuedata.s
+					return lhs:_symValue > rhs:_symValue
 				else
 					nop
 				endif
 			case __UsualType.Date
 				if rhs:UsualType == __UsualType.Date
-					return lhs:_valuedata.d > rhs:_valuedata.d
+					return lhs:_dateValue > rhs:_dateValue
 				else
 					nop
 				endif
@@ -495,53 +473,73 @@ BEGIN NAMESPACE XSharp
 			case __UsualType.Long
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.i >= rhs:_valueData.i
+					return lhs:_intValue >= rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.i >= rhs:_valueData.i64
+					return lhs:_intValue >= rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.i >= rhs:_valueData.r8
+					return lhs:_intValue >= rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_intValue >= rhs:_decimalValue
 				otherwise
 					throw BinaryError(">=", "Argument not numeric", false, lhs, rhs)
 				end switch
 			case __UsualType.Int64
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.i64 >= rhs:_valueData.i
+					return lhs:_i64Value >= rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.i64 >= rhs:_valueData.i64
+					return lhs:_i64Value >= rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.i64 >= rhs:_valueData.r8
+					return lhs:_i64Value >= rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_i64Value >= rhs:_decimalValue
 				otherwise
 					throw BinaryError(">=", "Argument not numeric", false, lhs, rhs)
 				end switch
 			case __UsualType.Float
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.r8 >= rhs:_valueData.i
+					return lhs:_r8Value >= rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.r8 >= rhs:_valueData.i64
+					return lhs:_r8Value >= rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.r8 >= rhs:_valueData.r8
+					return lhs:_r8Value >= rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_r8Value >= (REAL8) rhs:_decimalValue
+				otherwise
+					throw BinaryError(">=", "Argument not numeric", false, lhs, rhs)
+				end switch
+
+			CASE __UsualType.Decimal
+				switch rhs:UsualType
+				case __UsualType.Long
+					return lhs:_decimalValue >= rhs:_intValue
+				case __UsualType.Int64
+					return lhs:_decimalValue >= rhs:_i64Value
+				case __UsualType.Float
+					return lhs:_decimalValue >= (System.Decimal) rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_decimalValue >=  rhs:_decimalValue
 				otherwise
 					throw BinaryError(">=", "Argument not numeric", false, lhs, rhs)
 				end switch
 
 			case __UsualType.String
 				if rhs:UsualType == __UsualType.String
-					return (string) lhs:_refData >= (string) rhs:_refData
+					return lhs:_stringValue>= rhs:_stringValue
 				else
 					nop
 				endif
 
 			case __UsualType.Symbol
 				if rhs:UsualType == __UsualType.Symbol
-					return lhs:_valuedata.s >= rhs:_valuedata.s
+					return lhs:_symValue >= rhs:_symValue
 				else
 					nop
 				endif
 			case __UsualType.Date
 				if rhs:UsualType == __UsualType.Date
-					return lhs:_valuedata.d >= rhs:_valuedata.d
+					return lhs:_dateValue >= rhs:_dateValue
 				else
 					nop
 				endif
@@ -555,53 +553,73 @@ BEGIN NAMESPACE XSharp
 			case __UsualType.Long
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.i < rhs:_valueData.i
+					return lhs:_intValue < rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.i < rhs:_valueData.i64
+					return lhs:_intValue < rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.i < rhs:_valueData.r8
+					return lhs:_intValue < rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_intValue < rhs:_decimalValue
 				otherwise
 					throw BinaryError("<", "Argument not numeric", false, lhs, rhs)
 				end switch
 			case __UsualType.Int64
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.i64 < rhs:_valueData.i
+					return lhs:_i64Value < rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.i64 < rhs:_valueData.i64
+					return lhs:_i64Value < rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.i64 < rhs:_valueData.r8
+					return lhs:_i64Value < rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_i64Value < rhs:_decimalValue
 				otherwise
 					throw BinaryError("<", "Argument not numeric", false, lhs, rhs)
 				end switch
 			case __UsualType.Float
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.r8 < rhs:_valueData.i
+					return lhs:_r8Value < rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.r8 < rhs:_valueData.i64
+					return lhs:_r8Value < rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.r8 < rhs:_valueData.r8
+					return lhs:_r8Value < rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_r8Value < (REAL8) rhs:_decimalValue
+				otherwise
+					throw BinaryError("<", "Argument not numeric", false, lhs, rhs)
+				end switch
+
+			CASE __UsualType.Decimal
+				switch rhs:UsualType
+				case __UsualType.Long
+					return lhs:_decimalValue < rhs:_intValue
+				case __UsualType.Int64		 
+					return lhs:_decimalValue < rhs:_i64Value
+				case __UsualType.Float		 
+					return lhs:_decimalValue < (System.Decimal) rhs:_r8Value
+				case __UsualType.Decimal	 
+					return lhs:_decimalValue <  rhs:_decimalValue
 				otherwise
 					throw BinaryError("<", "Argument not numeric", false, lhs, rhs)
 				end switch
 
 			case __UsualType.String
 				if rhs:UsualType == __UsualType.String
-					return (string) lhs:_refData < (string) rhs:_refData
+					return lhs:_stringValue< rhs:_stringValue
 				else
 					nop
 				endif
 
 			case __UsualType.Symbol
 				if rhs:UsualType == __UsualType.Symbol
-					return lhs:_valuedata.s < rhs:_valuedata.s
+					return lhs:_symValue < rhs:_symValue
 				else
 					nop
 				endif
 			case __UsualType.Date
 				if rhs:UsualType == __UsualType.Date
-					return lhs:_valuedata.d < rhs:_valuedata.d
+					return lhs:_dateValue < rhs:_dateValue
 				else
 					nop
 				endif
@@ -615,53 +633,73 @@ BEGIN NAMESPACE XSharp
 			case __UsualType.Long
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.i <= rhs:_valueData.i
+					return lhs:_intValue <= rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.i <= rhs:_valueData.i64
+					return lhs:_intValue <= rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.i <= rhs:_valueData.r8
+					return lhs:_intValue <= rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_intValue <= rhs:_decimalValue
 				otherwise
 					throw BinaryError("<=", "Argument not numeric", false, lhs, rhs)
 				end switch
 			case __UsualType.Int64
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.i64 <= rhs:_valueData.i
+					return lhs:_i64Value <= rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.i64 <= rhs:_valueData.i64
+					return lhs:_i64Value <= rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.i64 <= rhs:_valueData.r8
+					return lhs:_i64Value <= rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_i64Value <= rhs:_decimalValue
 				otherwise
 					throw BinaryError("<=", "Argument not numeric", false, lhs, rhs)
 				end switch
 			case __UsualType.Float
 				switch rhs:UsualType
 				case __UsualType.Long
-					return lhs:_valueData.r8 <= rhs:_valueData.i
+					return lhs:_r8Value <= rhs:_intValue
 				case __UsualType.Int64
-					return lhs:_valueData.r8 <= rhs:_valueData.i64
+					return lhs:_r8Value <= rhs:_i64Value
 				case __UsualType.Float
-					return lhs:_valueData.r8 <= rhs:_valueData.r8
+					return lhs:_r8Value <= rhs:_r8Value
+				case __UsualType.Decimal
+					return lhs:_r8Value <= (REAL8) rhs:_decimalValue
+				otherwise
+					throw BinaryError("<=", "Argument not numeric", false, lhs, rhs)
+				end switch
+
+			CASE __UsualType.Decimal
+				switch rhs:UsualType
+				case __UsualType.Long
+					return lhs:_decimalValue <= rhs:_intValue
+				case __UsualType.Int64		 
+					return lhs:_decimalValue <= rhs:_i64Value
+				case __UsualType.Float		 
+					return lhs:_decimalValue <= (System.Decimal) rhs:_r8Value
+				case __UsualType.Decimal	 
+					return lhs:_decimalValue <=  rhs:_decimalValue
 				otherwise
 					throw BinaryError("<=", "Argument not numeric", false, lhs, rhs)
 				end switch
 
 			case __UsualType.String
 				if rhs:UsualType == __UsualType.String
-					return (string) lhs:_refData <= (string) rhs:_refData
+					return  lhs:_stringValue<= rhs:_stringValue
 				else
 					nop
 				endif
 
 			case __UsualType.Symbol
 				if rhs:UsualType == __UsualType.Symbol
-					return lhs:_valuedata.s <= rhs:_valuedata.s
+					return lhs:_symValue <= rhs:_symValue
 				else
 					nop
 				endif
 			case __UsualType.Date
 				if rhs:UsualType == __UsualType.Date
-					return lhs:_valuedata.d <= rhs:_valuedata.d
+					return lhs:_dateValue <= rhs:_dateValue
 				else
 					nop
 				endif
@@ -684,10 +722,11 @@ BEGIN NAMESPACE XSharp
 		static operator !=(lhs as __Usual, rhs as __Usual) as Logic
 			if lhs:UsualType == __UsualType.STRING .and. rhs:UsualType == __UsualType.STRING
 				// Todo __StringEquals
-				return ! String.Equals( (string) lhs:_refData, (string) rhs:_refData)
+				return ! String.Equals(  lhs:_stringValue, rhs:_stringValue)
 			else
 				return ! lhs:UsualEquals(rhs, "!=")
 			endif
+
 		method UsualEquals( rhs as __Usual, operator as STRING) as LOGIC
 			switch self:UsualType
 			case __UsualType.Object
@@ -703,13 +742,18 @@ BEGIN NAMESPACE XSharp
 			case __UsualType.Long
 				switch rhs:UsualType
 				case __UsualType.Long
-					return _valueData.i == rhs:_valueData:i
+					return _intValue == rhs:_intValue
 				case __UsualType.Int64
-					return (int64) _valueData:i == rhs:_valueData:i64
+					// cast lhs to int64 to avoid overflow 
+					return (int64) _intValue == rhs:_i64Value	
 				case __UsualType.Float
-					return (__VoFloat) _valueData:i == (__VOFloat) rhs
+					// cast lhs to real8 to avoid overflow 
+					return (real8) _intValue == rhs:_r8Value
+				case __UsualType.Decimal
+					// cast lhs to decimal to avoid overflow 
+					return (System.Decimal) _intValue == rhs:_decimalValue
 				case __UsualType.Logic
-					return rhs:_valueData:l == (SELF:_ValueData:i <> 0)
+					return rhs:_logicValue == (SELF:_intValue <> 0)
 				otherwise
 					nop
 				end switch
@@ -717,13 +761,15 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Int64
 				switch rhs:UsualType
 				case __UsualType.Long
-					return _valueData:i64 == (int64) rhs:_valueData:i
+					return _i64Value == (int64) rhs:_intValue
 				case __UsualType.Int64
-					return  _valueData:i64 == rhs:_valueData:i64
+					return _i64Value == rhs:_i64Value
 				case __UsualType.Float
-					return (__VoFloat) _valueData.i64 == (__VoFloat) rhs
+					return  (real8) _i64Value == rhs:_r8Value
+				case __UsualType.Decimal
+					return _i64Value == rhs:_decimalValue
 				case __UsualType.Logic
-					return rhs:_valueData:l == (SELF:_ValueData:i64 <> 0)
+					return rhs:_logicValue == (SELF:_i64Value <> 0)
 				otherwise
 					nop
 				end switch
@@ -731,11 +777,27 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Float
 				switch rhs:UsualType
 				case __UsualType.Long
-					return (__VoFloat) SELF == (__VoFloat) rhs:_valueData.i
+					return self:_r8Value == (REAL8) rhs:_intValue
 				case __UsualType.Int64
-					return  _valueData.i64 == rhs:_valueData.i64
+					return self:_r8Value == (REAL8) rhs:_i64Value
 				case __UsualType.Float
-					return (__VoFloat) _valueData.i64 == (__VOFloat) rhs
+					return self:_r8Value ==  rhs:_r8Value
+				case __UsualType.Decimal
+					return self:_r8Value ==  (REAL8) rhs:_decimalValue
+				otherwise
+					nop
+				end switch
+
+			CASE __UsualType.Decimal
+				switch rhs:UsualType
+				case __UsualType.Long
+					return self:_decimalValue == rhs:_intValue
+				case __UsualType.Int64
+					return self:_decimalValue == rhs:_i64Value
+				case __UsualType.Float
+					return self:_decimalValue == (System.Decimal) rhs:_r8Value
+				case __UsualType.Decimal
+					return self:_decimalValue == rhs:_decimalValue
 				otherwise
 					nop
 				end switch
@@ -743,11 +805,13 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.LOGIC
 				switch rhs:UsualType
 				case __UsualType.LOGIC
-					return SELF:_valueData:l == rhs:_valueData:l
+					return SELF:_logicValue == rhs:_logicValue
 				case __UsualType.Long
-					return  SELF:_valueData:l == (rhs:_valueData:i <> 0)
+					return  SELF:_logicValue == (rhs:_intValue <> 0)
 				case __UsualType.Int64
-					return  SELF:_valueData:l == (rhs:_valueData:i64 <> 0)
+					return  SELF:_logicValue == (rhs:_i64Value <> 0)
+				case __UsualType.Decimal
+					return  SELF:_logicValue == (rhs:_decimalValue <> 0)
 				otherwise
 					nop
 				end switch
@@ -755,7 +819,7 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.DATE
 				switch rhs:UsualType
 				case __UsualType.DATE
-					return SELF:_valueData:d == rhs:_valueData:d
+					return SELF:_dateValue == rhs:_dateValue
 				otherwise
 					nop
 				end switch
@@ -763,9 +827,9 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.STRING
 				switch rhs:UsualType
 				case __UsualType.STRING
-					return (string) SELF:_refData == (string) rhs:_refData
+					return SELF:_stringValue== rhs:_stringValue
 				case __UsualType.Symbol
-					return (string) SELF:_refData == rhs:_valueData:s
+					return SELF:_stringValue == rhs:_symValue
 				otherwise
 					nop
 				end switch
@@ -789,7 +853,7 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Ptr
 				switch rhs:UsualType
 				case __UsualType.Ptr
-					return SELF:_valueData.p == rhs:_valueData.p
+					return SELF:_ptrValue == rhs:_ptrValue
 				otherwise
 					nop
 				end switch
@@ -797,9 +861,9 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Symbol
 				switch rhs:UsualType
 				case __UsualType.Symbol
-					return SELF:_valueData.s == rhs:_valueData.s
+					return SELF:_symValue == rhs:_symValue
 				case __UsualType.String
-					return SELF:_valueData.s == (String) rhs:_refData
+					return SELF:_symValue == rhs:_stringValue
 				otherwise
 					nop
 				end switch
@@ -814,27 +878,29 @@ BEGIN NAMESPACE XSharp
 #region Unary Operators
 		STATIC OPERATOR !(u AS __Usual) AS LOGIC
 			if u:UsualType == __UsualType.LOGIC
-				return !u:_valueData.l
+				return !u:_logicValue
 			endif
 			throw UnaryError("!", u)
 
 		STATIC OPERATOR ~(u AS __Usual) AS __Usual
 			if u:UsualType == __UsualType.Long
-				return ~u:_valueData.i
+				return ~u:_intValue
 			endif
 			if u:UsualType == __UsualType.Int64
-				return ~u:_valueData.i64
+				return ~u:_i64Value
 			endif
-			throw UnaryError("~", u)
+			THROW UnaryError("~", u)
 
 		STATIC OPERATOR -(u AS __Usual) AS __Usual
 			SWITCH u:UsualType
 			CASE __UsualType.LONG
-				return -u:_valueData.i
+				return -u:_intValue
 			CASE __UsualType.Int64
-				return -u:_valueData.i64
+				return -u:_i64Value
 			CASE __UsualType.Float
-				return __VoFloat{-u:_valueData.r8, u:_flags.width, u:_flags:decimals}
+				return -u:_floatValue
+			CASE __UsualType.Decimal
+				return -u:_decimalValue
 			OTHERWISE
 				THROW UnaryError("-", u)
 			END SWITCH
@@ -842,11 +908,13 @@ BEGIN NAMESPACE XSharp
 		STATIC OPERATOR +(u AS __Usual) AS __Usual
 			SWITCH u:UsualType
 			CASE __UsualType.LONG
-				return u:_valueData.i
+				return u:_intValue
 			CASE __UsualType.Int64
-				return u:_valueData.i64
+				return u:_i64Value
 			CASE __UsualType.Float
-				return __VoFloat{u:_valueData.r8, u:_flags.width, u:_flags:decimals}
+				return u:_floatValue
+			CASE __UsualType.Decimal
+				return u:_decimalValue
 			OTHERWISE
 				THROW UnaryError("+", u)
 			END SWITCH
@@ -854,11 +922,13 @@ BEGIN NAMESPACE XSharp
 		STATIC OPERATOR --(u AS __Usual) AS __Usual
 			SWITCH u:UsualType
 			CASE __UsualType.LONG
-				return u:_valueData.i-1
+				return u:_intValue - 1
 			CASE __UsualType.Int64
-				return u:_valueData.i64-1
+				return u:_i64Value - 1
 			CASE __UsualType.Float
-				return __VoFloat{u:_valueData.r8 -1, u:_flags.width, u:_flags:decimals}
+				return u:_floatValue -1
+			CASE __UsualType.Decimal
+				return u:_decimalValue - 1 
 			OTHERWISE
 				THROW UnaryError("--", u)
 			END SWITCH
@@ -866,11 +936,13 @@ BEGIN NAMESPACE XSharp
 		STATIC OPERATOR ++(u AS __Usual) AS __Usual
 			SWITCH u:UsualType
 			CASE __UsualType.LONG
-				return u:_valueData.i+1
+				return u:_intValue + 1
 			CASE __UsualType.Int64
-				return u:_valueData.i64+1
+				return u:_i64Value + 1
 			CASE __UsualType.Float
-				return __VoFloat{u:_valueData.r8 +1, u:_flags.width, u:_flags:decimals}
+				return u:_floatValue +1
+			CASE __UsualType.Decimal
+				return u:_decimalValue + 1 
 			OTHERWISE
 				THROW UnaryError("++", u)
 			END SWITCH
@@ -883,55 +955,80 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Long
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.i + rhs:_valueData.i 
+					return lhs:_intValue + rhs:_intValue 
 				CASE __UsualType.Int64
-					return lhs:_valueData.i + rhs:_valueData.i64
+					return lhs:_intValue + rhs:_i64Value
 				CASE __UsualType.Float
-					return lhs:_valueData.i + rhs:_valueData.r8
+					return lhs:_intValue + rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_intValue + rhs:_decimalValue
 				OTHERWISE
 					nop
 				END SWITCH
+
 			CASE __UsualType.Int64
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.i64 + rhs:_valueData.i 
+					return lhs:_i64Value + rhs:_intValue 
 				CASE __UsualType.Int64
-					return lhs:_valueData.i64 + rhs:_valueData.i64
+					return lhs:_i64Value + rhs:_i64Value
 				CASE __UsualType.Float
-					return lhs:_valueData.i64 + rhs:_valueData.r8
+					return lhs:_i64Value + rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_i64Value + rhs:_decimalValue
 				OTHERWISE
 					nop
 				END SWITCH
+
 			CASE __UsualType.Float
 				LOCAL result as Real8
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					result :=  lhs:_valueData.r8 + rhs:_valueData.i 
-					return __VoFLoat{result, lhs:_flags.Width, lhs._Flags.decimals}
+					result :=  lhs:_r8Value + rhs:_intValue 
+					return __VoFloat{result, lhs:_width, lhs._decimals}
 				CASE __UsualType.Int64
-					result :=  lhs:_valueData.r8 + rhs:_valueData.i64
-					return __VoFLoat{result, lhs:_flags.Width, lhs._Flags.decimals}
+					result :=  lhs:_r8Value + rhs:_i64Value
+					return __VoFloat{result, lhs:_width, lhs._decimals}
 				CASE __UsualType.Float
-					result :=  lhs:_valueData.r8 + rhs:_valueData.r8
-					return __VoFLoat{result, lhs:_flags.Width, lhs._Flags.decimals}
+					result :=  lhs:_r8Value + rhs:_r8Value
+					return __VoFloat{result, lhs:_width, lhs._decimals}
+				CASE __UsualType.Decimal
+					result :=  lhs:_r8Value + (REAL8) rhs:_decimalValue
+					return __VoFloat{result, lhs:_width, lhs._decimals}
+
 				OTHERWISE
 					nop
 				END SWITCH
+
+			CASE __UsualType.Decimal
+				SWITCH rhs:UsualType
+				CASE __UsualType.Long
+					return lhs:_decimalValue + rhs:_intValue 
+				CASE __UsualType.Int64
+					return lhs:_decimalValue + rhs:_i64Value
+				CASE __UsualType.Float
+					return lhs:_decimalValue + (System.Decimal) rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_decimalValue + rhs:_decimalValue
+				OTHERWISE
+					nop
+				END SWITCH
+
 			CASE __UsualType.String
 				SWITCH rhs:UsualType
 				CASE __UsualType.String
-					return (String) lhs:_refData + (string) rhs:_refData
+					return lhs:_stringValue+ rhs:_stringValue
 				OTHERWISE
 					throw BinaryError("+", "Argument Not String", false, lhs, rhs)
 				END SWITCH
 			CASE __UsualType.Date
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.d + rhs:_valueData.i 
+					return lhs:_dateValue + rhs:_intValue 
 				CASE __UsualType.Int64
-					return lhs:_valueData.d + rhs:_valueData.i64
+					return lhs:_dateValue + rhs:_i64Value
 				CASE __UsualType.Float
-					return lhs:_valueData.d + rhs:_valueData.r8
+					return lhs:_dateValue + rhs:_r8Value
 				OTHERWISE
 					throw BinaryError("+", "Argument Not Numeric", false, lhs, rhs)
 				END SWITCH
@@ -944,28 +1041,39 @@ BEGIN NAMESPACE XSharp
 		static operator /(lhs as __Usual, rhs as __Usual) as __Usual
 			
 			SWITCH lhs:UsualType
+
 			CASE __UsualType.Long
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
 					local result as INT
 					LOCAL remainder as INT
-					result := Math.DivRem(lhs:_valueData.i, rhs:_valueData.i, OUT remainder)
+					result := Math.DivRem(lhs:_intValue, rhs:_intValue, OUT remainder)
 					if remainder == 0
 						return result
 					else
-						return lhs:_valueData.i / rhs:_valueData.i
+						return lhs:_intValue / rhs:_intValue
 					endif
 				CASE __UsualType.Int64
 					local result as INT64
 					LOCAL remainder as INT64
-					result := Math.DivRem((int64) lhs:_valueData.i, rhs:_valueData.i64, OUT remainder)
+					result := Math.DivRem((int64) lhs:_intValue, rhs:_i64Value, OUT remainder)
 					if remainder == 0
 						return result
 					else
-						return lhs:_valueData.i / rhs:_valueData.i64
+						return lhs:_intValue / rhs:_i64Value
 					endif
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.i / rhs:_valueData.r8, rhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
+
+				CASE __UsualType.Decimal
+					local result as INT64
+					LOCAL remainder as INT64
+					result := Math.DivRem((int64) lhs:_intValue, (int64) rhs:_decimalValue, OUT remainder)
+					if remainder == 0
+						return result
+					else
+						return lhs:_intValue / rhs:_decimalValue
+					endif
 				OTHERWISE
 					nop
 				END SWITCH
@@ -975,23 +1083,32 @@ BEGIN NAMESPACE XSharp
 				CASE __UsualType.Long
 					local result as INT64
 					LOCAL remainder as INT64
-					result := Math.DivRem(lhs:_valueData.i64, rhs:_valueData.i, OUT remainder)
+					result := Math.DivRem(lhs:_i64Value, rhs:_intValue, OUT remainder)
 					if remainder == 0
 						return result
 					else
-						return lhs:_valueData.i64 / rhs:_valueData.i
+						return lhs:_i64Value / rhs:_intValue
 					endif
 				CASE __UsualType.Int64
 					local result as INT64
 					LOCAL remainder as INT64
-					result := Math.DivRem( lhs:_valueData.i64, rhs:_valueData.i64, OUT remainder)
+					result := Math.DivRem( lhs:_i64Value, rhs:_i64Value, OUT remainder)
 					if remainder == 0
 						return result
 					else
-						return lhs:_valueData.i64 / rhs:_valueData.i64
+						return lhs:_i64Value / rhs:_i64Value
 					endif
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.i64 / rhs:_valueData.r8, rhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
+				CASE __UsualType.Decimal
+					local result as INT64
+					LOCAL remainder as INT64
+					result := Math.DivRem(lhs:_i64Value, (int64) rhs:_decimalValue, OUT remainder)
+					if remainder == 0
+						return result
+					else
+						return lhs:_i64Value / rhs:_decimalValue
+					endif
 				OTHERWISE
 					nop
 				END SWITCH
@@ -999,15 +1116,30 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Float
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return __VoFLoat{lhs:_valueData.r8 / rhs:_valueData.i, lhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
 				CASE __UsualType.Int64
-					return __VoFLoat{lhs:_valueData.r8 / rhs:_valueData.i64, lhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.r8 / rhs:_valueData.r8, Math.Max(lhs:_flags.width,rhs:_flags.width), lhs:_flags.decimals+ rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+				CASE __UsualType.Decimal
+					return __VoFloat{lhs:_r8Value / (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
 				OTHERWISE
 					nop
 				END SWITCH
 
+			CASE __UsualType.Decimal
+				SWITCH rhs:UsualType
+				CASE __UsualType.Long
+					return lhs:_decimalValue / rhs:_intValue
+				CASE __UsualType.Int64
+					return lhs:_decimalValue / rhs:_i64Value
+				CASE __UsualType.Float
+					return lhs:_decimalValue / (System.Decimal) rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_decimalValue /  rhs:_decimalValue
+				OTHERWISE
+					nop
+				END SWITCH
 
 			OTHERWISE
 				throw BinaryError("/", "Invalid Arguments", true, lhs, rhs)
@@ -1019,11 +1151,13 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Long
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.i % rhs:_valueData.i
+					return lhs:_intValue % rhs:_intValue
 				CASE __UsualType.Int64
-					return lhs:_valueData.i % rhs:_valueData.i64
+					return lhs:_intValue % rhs:_i64Value
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.i % rhs:_valueData.r8, rhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
+				CASE __UsualType.Decimal
+					return lhs:_intValue % rhs:_decimalValue
 				OTHERWISE
 					nop
 				END SWITCH
@@ -1031,11 +1165,13 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Int64
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.i64 % rhs:_valueData.i
+					return lhs:_i64Value % rhs:_intValue
 				CASE __UsualType.Int64
-					return lhs:_valueData.i64 % rhs:_valueData.i64
+					return lhs:_i64Value % rhs:_i64Value
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.i64 % rhs:_valueData.r8, rhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
+				CASE __UsualType.Decimal
+					return lhs:_i64Value % rhs:_decimalValue
 				OTHERWISE
 					nop
 				END SWITCH
@@ -1043,69 +1179,107 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Float
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return __VoFLoat{lhs:_valueData.r8 % rhs:_valueData.i, lhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
 				CASE __UsualType.Int64
-					return __VoFLoat{lhs:_valueData.r8 % rhs:_valueData.i64, lhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.r8 % rhs:_valueData.r8, Math.Max(lhs:_flags.width,rhs:_flags.width), lhs:_flags.decimals+ rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+				CASE __UsualType.Decimal
+					return __VoFloat{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
 				OTHERWISE
 					nop
 				END SWITCH
+
+			CASE __UsualType.Decimal
+				SWITCH rhs:UsualType
+				CASE __UsualType.Long
+					return lhs:_decimalValue % rhs:_intValue
+				CASE __UsualType.Int64
+					return lhs:_decimalValue % rhs:_i64Value
+				CASE __UsualType.Float
+					return lhs:_decimalValue % (System.Decimal) rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_decimalValue %  rhs:_decimalValue
+				OTHERWISE
+					nop
+				END SWITCH
+
 
 			OTHERWISE
 				throw BinaryError("%", "Invalid Arguments", true, lhs, rhs)
 			END SWITCH
 			throw BinaryError("%", "Argument Not Numeric", false, lhs, rhs)
-		static operator *(lhs as __Usual, rhs as __Usual) as __Usual
+
+		STATIC OPERATOR *(lhs AS __Usual, rhs AS __Usual) AS __Usual
 			SWITCH lhs:UsualType
 			CASE __UsualType.Long
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.i * rhs:_valueData.i
+					return lhs:_intValue * rhs:_intValue
 				CASE __UsualType.Int64
-					return lhs:_valueData.i * rhs:_valueData.i64
+					return lhs:_intValue * rhs:_i64Value
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.i * rhs:_valueData.r8, rhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
+				CASE __UsualType.Decimal
+					return lhs:_intValue * rhs:_decimalValue
 				OTHERWISE
-					throw BinaryError("*", "Argument Not Numeric", false, lhs, rhs)
+					nop
 				END SWITCH
 
 			CASE __UsualType.Int64
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.i64 * rhs:_valueData.i
+					return lhs:_i64Value * rhs:_intValue
 				CASE __UsualType.Int64
-					return lhs:_valueData.i64 * rhs:_valueData.i64
+					return lhs:_i64Value * rhs:_i64Value
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.i64 * rhs:_valueData.r8, rhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
+				CASE __UsualType.Decimal
+					return lhs:_i64Value * rhs:_decimalValue
 				OTHERWISE
-					throw BinaryError("*", "Argument Not Numeric", false, lhs, rhs)
+					nop
 				END SWITCH
 
 			CASE __UsualType.Float
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return __VoFLoat{lhs:_valueData.r8 * rhs:_valueData.i, lhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
 				CASE __UsualType.Int64
-					return __VoFLoat{lhs:_valueData.r8 * rhs:_valueData.i64, lhs:_flags.width, rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
 				CASE __UsualType.Float
-					return __VoFLoat{lhs:_valueData.r8 * rhs:_valueData.r8, Math.Max(lhs:_flags.width,rhs:_flags.width), lhs:_flags.decimals+ rhs:_flags.decimals}
+					return __VoFloat{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+				CASE __UsualType.Decimal
+					return __VoFloat{lhs:_r8Value * (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
 				OTHERWISE
-					throw BinaryError("*", "Argument Not Numeric", false, lhs, rhs)
+					nop
 				END SWITCH
 
+			CASE __UsualType.Decimal
+				SWITCH rhs:UsualType
+				CASE __UsualType.Long
+					return lhs:_decimalValue * rhs:_intValue
+				CASE __UsualType.Int64
+					return lhs:_decimalValue * rhs:_i64Value
+				CASE __UsualType.Float
+					return lhs:_decimalValue * (System.Decimal) rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_decimalValue *  rhs:_decimalValue
+				OTHERWISE
+					nop
+				END SWITCH
 
 			OTHERWISE
 				throw BinaryError("*", "Invalid Arguments", true, lhs, rhs)
 			END SWITCH
+			throw BinaryError("*", "Argument Not Numeric", false, lhs, rhs)
 
 		static operator >>(lhs as __Usual, rhs as int) as __Usual
 			// Right shift
 			switch lhs:UsualType
 			case __UsualType.Long
-				return lhs:_valuedata.i >> rhs
+				return lhs:_intValue >> rhs
 			case __UsualType.Int64
-				return lhs:_valuedata.i64 >> rhs
+				return lhs:_i64Value >> rhs
 			otherwise
 				throw BinaryError(">>", "Argument not Integer", true, lhs, rhs)
 			end switch
@@ -1114,9 +1288,9 @@ BEGIN NAMESPACE XSharp
 			// Left shift
 			switch (lhs:UsualType)
 			case __UsualType.Long
-				return lhs:_valuedata.i << rhs
+				return lhs:_intValue << rhs
 			case __UsualType.Int64
-				return lhs:_valuedata.i64 << rhs
+				return lhs:_i64Value << rhs
 			otherwise
 				throw BinaryError("<<", "Argument not Integer", true, lhs, rhs)
 			end switch
@@ -1126,36 +1300,57 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Long
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.i - rhs:_valueData.i 
+					return lhs:_intValue - rhs:_intValue 
 				CASE __UsualType.Int64
-					return lhs:_valueData.i - rhs:_valueData.i64
+					return lhs:_intValue - rhs:_i64Value
 				CASE __UsualType.Float
-					return lhs:_valueData.i - rhs:_valueData.r8
+					return lhs:_intValue - rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_intValue - rhs:_decimalValue
 				OTHERWISE
 					nop
 				END SWITCH
 			CASE __UsualType.Int64
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.i64 - rhs:_valueData.i 
+					return lhs:_i64Value - rhs:_intValue 
 				CASE __UsualType.Int64
-					return lhs:_valueData.i64 - rhs:_valueData.i64
+					return lhs:_i64Value - rhs:_i64Value
 				CASE __UsualType.Float
-					return lhs:_valueData.i64 - rhs:_valueData.r8
+					return lhs:_i64Value - rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_i64Value - rhs:_decimalValue
 				OTHERWISE
 					nop
 				END SWITCH
 			CASE __UsualType.Float
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.r8 - rhs:_valueData.i 
+					return lhs:_r8Value - rhs:_intValue 
 				CASE __UsualType.Int64
-					return lhs:_valueData.r8 - rhs:_valueData.i64
+					return lhs:_r8Value - rhs:_i64Value
 				CASE __UsualType.Float
-					return lhs:_valueData.r8 - rhs:_valueData.r8
+					return lhs:_r8Value - rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_r8Value - (real8) rhs:_decimalValue
 				OTHERWISE
 					nop
 				END SWITCH
+
+			CASE __UsualType.Decimal
+				SWITCH rhs:UsualType
+				CASE __UsualType.Long
+					return lhs:_decimalValue - rhs:_intValue 
+				CASE __UsualType.Int64
+					return lhs:_decimalValue - rhs:_i64Value
+				CASE __UsualType.Float
+					return lhs:_decimalValue - (System.Decimal) rhs:_r8Value
+				CASE __UsualType.Decimal
+					return lhs:_decimalValue - rhs:_decimalValue
+				OTHERWISE
+					nop
+				END SWITCH
+
 			CASE __UsualType.String
 				SWITCH rhs:UsualType
 				CASE __UsualType.String
@@ -1166,13 +1361,13 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Date
 				SWITCH rhs:UsualType
 				CASE __UsualType.Long
-					return lhs:_valueData.d - rhs:_valueData.i 
+					return lhs:_dateValue - rhs:_intValue 
 				CASE __UsualType.Int64
-					return lhs:_valueData.d - rhs:_valueData.i64
+					return lhs:_dateValue - rhs:_i64Value
 				CASE __UsualType.Float
-					return lhs:_valueData.d - rhs:_valueData.r8
+					return lhs:_dateValue - rhs:_r8Value
 				CASE __UsualType.Date
-					return lhs:_valueData.d - rhs:_valueData.d
+					return lhs:_dateValue - rhs:_dateValue
 				OTHERWISE
 					nop
 				END SWITCH
@@ -1181,54 +1376,58 @@ BEGIN NAMESPACE XSharp
 				throw BinaryError("-", "Invalid Arguments", true, lhs, rhs)
 			END SWITCH
 			throw BinaryError("-", "Argument Not Numeric", false, lhs, rhs)
+
 		static operator &(lhs as __Usual, rhs as __Usual) as __Usual
 			// Bitwise And
 			switch (lhs:UsualType)
 			case __UsualType.Long
 				switch (rhs:UsualType)
 				case __UsualType.Long
-					return lhs:_valuedata.i & rhs:_valuedata.i
+					return lhs:_intValue & rhs:_intValue
 				case __UsualType.Int64
-					return (int64) lhs:_valuedata.i & rhs:_valuedata.i64
+					return (int64) lhs:_intValue & rhs:_i64Value
 				otherwise
-					throw BinaryError("&", "Argument not Integer", false, lhs, rhs)
+					nop
 				END SWITCH
 			case __UsualType.Int64
 				switch (rhs:UsualType)
 				case __UsualType.Long
-					return lhs:_valuedata.i64 & (int64) rhs:_valuedata.i
+					return lhs:_i64Value & (int64) rhs:_intValue
 				case __UsualType.Int64
-					return  lhs:_valuedata.i64 & rhs:_valuedata.i64
+					return  lhs:_i64Value & rhs:_i64Value
 				otherwise
-					throw BinaryError("&", "Argument not Integer", false, lhs, rhs)
+					nop
 				END SWITCH
 			otherwise
 				throw BinaryError("&", "Argument not Integer", true, lhs, rhs)
 			end switch
-		static operator |(lhs as __Usual, rhs as __Usual) as __Usual
+			throw BinaryError("&", "Argument not Integer", false, lhs, rhs)
+
+		STATIC OPERATOR |(lhs AS __Usual, rhs AS __Usual) AS __Usual
 			// Bitwise or
 			switch (lhs:UsualType)
 			case __UsualType.Long
 				switch (rhs:UsualType)
 				case __UsualType.Long
-					return lhs:_valuedata.i | rhs:_valuedata.i
+					return lhs:_intValue | rhs:_intValue
 				case __UsualType.Int64
-					return (int64) lhs:_valuedata.i | rhs:_valuedata.i64
+					return (int64) lhs:_intValue | rhs:_i64Value
 				otherwise
-					throw BinaryError("|", "Argument not Integer", false, lhs, rhs)
+					nop
 				END SWITCH
 			case __UsualType.Int64
 				switch (rhs:UsualType)
 				case __UsualType.Long
-					return lhs:_valuedata.i64 | (int64) rhs:_valuedata.i
+					return lhs:_i64Value | (int64) rhs:_intValue
 				case __UsualType.Int64
-					return  lhs:_valuedata.i64 | rhs:_valuedata.i64
+					return  lhs:_i64Value | rhs:_i64Value
 				otherwise
-					throw BinaryError("|", "Argument not Integer", false, lhs, rhs)
+					nop
 				END SWITCH
 			otherwise
 				throw BinaryError("|", "Argument not Integer", true, lhs, rhs)
 			end switch
+			throw BinaryError("|", "Argument not Integer", false, lhs, rhs)
 		#endregion
 
 #region Implicit From Usual to Other Type
@@ -1255,11 +1454,13 @@ BEGIN NAMESPACE XSharp
 		STATIC OPERATOR IMPLICIT(u AS __Usual) AS LOGIC
 			switch u:UsualType
 			CASE __UsualType.Logic
-				return u:_valueData.l
+				return u:_logicValue
 			CASE __UsualType.Long
-				return u:_valueData.i != 0
+				return u:_intValue != 0
 			CASE __UsualType.Int64
-				return u:_valueData.i64 != 0
+				return u:_i64Value != 0
+			CASE __UsualType.Decimal
+				return u:_decimalValue != 0
 			CASE __UsualType.Void
 				return false
 			otherwise
@@ -1269,7 +1470,7 @@ BEGIN NAMESPACE XSharp
 		STATIC OPERATOR IMPLICIT(u AS __Usual) AS __VODate
 			switch u:UsualType
 			CASE __UsualType.Date
-				return u:_valueData.d
+				return u:_dateValue
 			CASE __UsualType.Void
 				return __VODate{0}
 			otherwise
@@ -1279,11 +1480,13 @@ BEGIN NAMESPACE XSharp
 		static operator implicit(u as __Usual) as System.IntPtr
 			switch u:UsualType
 			CASE __UsualType.Ptr
-				return u:_valueData.p
+				return u:_ptrValue
 			CASE __UsualType.LONG
-				return (IntPtr) u:_valueData.i
+				return (IntPtr) u:_intValue
 			CASE __UsualType.Int64
-				return (IntPtr) u:_valueData.i64
+				return (IntPtr) u:_i64Value
+			CASE __UsualType.Decimal
+				return (IntPtr) u:_decimalValue 
 			CASE __UsualType.Void
 				return IntPtr.Zero
 			otherwise
@@ -1293,11 +1496,11 @@ BEGIN NAMESPACE XSharp
 		static operator implicit(u as __Usual) as string
 			switch u:UsualType
 			CASE __UsualType.String
-				return (STRING) u:_refData
+				return u:_stringValue
 			CASE __UsualType.Void
 				return ""
 			CASE __UsualType.SYMBOL
-				return (STRING) u:_valueData.s
+				return (STRING) u:_symValue
 			otherwise
 				throw ConversionError("STRING", typeof(STRING), u)
 			end switch
@@ -1305,11 +1508,11 @@ BEGIN NAMESPACE XSharp
 		static operator implicit(u as __Usual) as __Symbol
 			switch u:UsualType
 			CASE __UsualType.String
-				return (__Symbol) (String) u:_refData
+				return (__Symbol) u:_stringValue
 			CASE __UsualType.Void
 				return __Symbol{""}
 			CASE __UsualType.SYMBOL
-				return u:_valueData.s
+				return u:_symValue
 			otherwise
 				throw ConversionError("SYMBOL", typeof(__Symbol), u)
 			end switch
@@ -1317,9 +1520,9 @@ BEGIN NAMESPACE XSharp
 		static operator implicit(u as __Usual) as __Psz
 			switch u:UsualType
 			CASE __UsualType.Ptr
-				return (__Psz) u:_valueData.p
+				return (__Psz) u:_ptrValue
 			CASE __UsualType.String
-				return __Psz{(STRING) u:_refData}
+				return __Psz{u:_stringValue}
 			CASE __UsualType.Void
 				return __Psz._Null_Psz
 			otherwise
@@ -1333,13 +1536,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return (Byte) u:_valueData:i
+						return (Byte) u:_intValue
 					CASE __UsualType.Int64
-						return (Byte) u:_valueData:I64
+						return (Byte) u:_i64Value
 					CASE __UsualType.Float
-						return (Byte) u:_ValueData:R8
+						return (Byte) u:_r8Value
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
+					CASE __UsualType.Decimal
+						return (Byte) u:_decimalValue 
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1355,13 +1560,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return (SHORT) u:_valueData:i
+						return (SHORT) u:_intValue
 					CASE __UsualType.Int64
-						return (SHORT) u:_valueData:I64
+						return (SHORT) u:_i64Value
 					CASE __UsualType.Float
-						return (SHORT) u:_ValueData:R8
+						return (SHORT) u:_r8Value
+					CASE __UsualType.Decimal
+						return (Short) u:_decimalValue 
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1377,13 +1584,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return u:_valueData:i
+						return u:_intValue
 					CASE __UsualType.Int64
-						return (long) u:_valueData:I64
+						return (long) u:_i64Value
 					CASE __UsualType.Float
-						return (long) u:_ValueData:R8
+						return (long) u:_r8Value
+					CASE __UsualType.Decimal
+						return (long) u:_decimalValue 
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1399,13 +1608,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return u:_valueData:i
+						return u:_intValue
 					CASE __UsualType.Int64
-						return (int64) u:_valueData:I64
+						return (int64) u:_i64Value
 					CASE __UsualType.Float
-						return (int64) u:_ValueData:R8
+						return (int64) u:_r8Value
+					CASE __UsualType.Decimal
+						return (int64) u:_decimalValue 
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1416,18 +1627,44 @@ BEGIN NAMESPACE XSharp
 				throw OverflowError(ex, "INT64", typeof(int64), u)
 			end try
 
-		static operator implicit(u as __Usual) as SByte
+		static operator implicit(u as __Usual) as System.Decimal
 			try
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return (SByte) u:_valueData:i
+						return u:_intValue
 					CASE __UsualType.Int64
-						return (SByte) u:_valueData:I64
+						return u:_i64Value
 					CASE __UsualType.Float
-						return (SByte) u:_ValueData:R8
+						return (System.Decimal) u:_r8Value
+					CASE __UsualType.Decimal
+						return u:_decimalValue
 					CASE __UsualType.Logic
-						return (SByte) iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
+					CASE __UsualType.Void
+						return 0
+					otherwise
+						throw ConversionError("DECIMAL", typeof(int64), u)
+					end switch
+				END CHECKED
+			CATCH ex AS OverflowException
+				throw OverflowError(ex, "DECIMAL", typeof(int64), u)
+			end try
+
+		STATIC OPERATOR IMPLICIT(u AS __Usual) AS SByte
+			try
+				BEGIN CHECKED
+					switch u:UsualType
+					CASE __UsualType.Long
+						return (SByte) u:_intValue
+					CASE __UsualType.Int64
+						return (SByte) u:_i64Value
+					CASE __UsualType.Float
+						return (SByte) u:_r8Value
+					CASE __UsualType.Decimal
+						return (SByte) u:_decimalValue 
+					CASE __UsualType.Logic
+						return (SByte) iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1444,13 +1681,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return (WORD) u:_valueData:i
+						return (WORD) u:_intValue
 					CASE __UsualType.Int64
-						return (WORD) u:_valueData:I64
+						return (WORD) u:_i64Value
 					CASE __UsualType.Float
-						return (WORD) u:_ValueData:R8
+						return (WORD) u:_r8Value
+					CASE __UsualType.Decimal
+						return (WORD) u:_decimalValue 
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1466,13 +1705,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return (DWORD) u:_valueData:i
+						return (DWORD) u:_intValue
 					CASE __UsualType.Int64
-						return (DWORD) u:_valueData:I64
+						return (DWORD) u:_i64Value
 					CASE __UsualType.Float
-						return (DWORD) u:_ValueData:R8
+						return (DWORD) u:_r8Value
+					CASE __UsualType.Decimal
+						return (DWORD) u:_decimalValue 
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1488,13 +1729,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return (UINT64) u:_valueData:i
+						return (UINT64) u:_intValue
 					CASE __UsualType.Int64
-						return (UINT64) u:_valueData:I64
+						return (UINT64) u:_i64Value
 					CASE __UsualType.Float
-						return (UINT64) u:_ValueData:R8
+						return (UINT64) u:_r8Value
+					CASE __UsualType.Decimal
+						return (UINT64) u:_decimalValue 
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1511,13 +1754,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return (REAL4) u:_valueData:i
+						return (REAL4) u:_intValue
 					CASE __UsualType.Int64
-						return (REAL4) u:_valueData:I64
+						return (REAL4) u:_i64Value
 					CASE __UsualType.Float
-						return (REAL4) u:_ValueData:R8
+						return (REAL4) u:_r8Value
+					CASE __UsualType.Decimal
+						return (REAL4) u:_decimalValue 
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1533,13 +1778,15 @@ BEGIN NAMESPACE XSharp
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return (real8) u:_valueData:i
+						return (real8) u:_intValue
 					CASE __UsualType.Int64
-						return (real8) u:_valueData:I64
+						return (real8) u:_i64Value
 					CASE __UsualType.Float
-						return (real8) u:_ValueData:R8
+						return (real8) u:_r8Value
+					CASE __UsualType.Decimal
+						return (REAL8) u:_decimalValue 
 					CASE __UsualType.Logic
-						return iif(u:_ValueData:l, 1, 0)
+						return iif(u:_logicValue, 1, 0)
 					CASE __UsualType.Void
 						return 0
 					otherwise
@@ -1549,18 +1796,21 @@ BEGIN NAMESPACE XSharp
 			CATCH ex AS OverflowException
 				throw OverflowError(ex, "REAL8", typeof(real8), u)
 			end try
+
 		static operator implicit(u as __Usual) as __VoFloat
 			try
 				BEGIN CHECKED
 					switch u:UsualType
 					CASE __UsualType.Long
-						return __VoFloat{(real8) u:_valueData:i}
+						return __VoFloat{(real8) u:_intValue}
 					CASE __UsualType.Int64
-						return __VoFloat{(real8) u:_valueData:I64}
+						return __VoFloat{(real8) u:_i64Value}
 					CASE __UsualType.Float
-						return __VoFloat{(real8) u:_ValueData:R8}
+						return __VoFloat{(real8) u:_r8Value}
+					CASE __UsualType.Decimal
+						return __VoFloat{(real8) u:_decimalValue}
 					CASE __UsualType.Logic
-						return __VoFloat{iif(u:_ValueData:l, 1, 0)}
+						return __VoFloat{iif(u:_logicValue, 1, 0)}
 					CASE __UsualType.Void
 						return __VoFloat{0}
 					otherwise
@@ -1585,7 +1835,7 @@ BEGIN NAMESPACE XSharp
 		static operator implicit(value as __VoDate) as __Usual
 			return __Usual{value}
 
-		static operator implicit(value as __VoFLoat) as __Usual
+		static operator implicit(value as __VoFloat) as __Usual
 			return __Usual{value}
 
 		static operator implicit(value as real8) as __Usual
@@ -1601,6 +1851,9 @@ BEGIN NAMESPACE XSharp
 			return __Usual{value}
 
 		static operator implicit(value as UInt64) as __Usual
+			return __Usual{value}
+
+		static operator implicit(value as System.Decimal) as __Usual
 			return __Usual{value}
 
 		STATIC OPERATOR IMPLICIT(value AS System.IntPtr) AS __Usual
@@ -1639,7 +1892,7 @@ BEGIN NAMESPACE XSharp
 			RETURN (__VoDate) SELF
 
 		public method ToDecimal(provider as System.IFormatProvider) as Decimal
-			RETURN (System.Decimal) (REAL8) SELF
+			RETURN SELF
 
 		public method ToDouble(provider as System.IFormatProvider) as real8
 			RETURN SELF
@@ -1660,23 +1913,25 @@ BEGIN NAMESPACE XSharp
 			case __UsualType.CodeBlock
 				return u:_refData			
 			CASE __UsualType.Date
-				return u:_valueData.d
+				return u:_dateValue
 			case __UsualType.FLOAT
-				return __VoFLoat{u:_valueData.r8, u:_flags.width, u:_flags.decimals}
+				return __VoFloat{u:_r8Value, u:_width, u:_decimals}
 			case __UsualType.Long
-				return u:_valueData.i
+				return u:_intValue
 			case __UsualType.Int64
-				return u:_valueData.i64
+				return u:_i64Value
+			case __UsualType.Decimal
+				return u:_decimalValue
 			case __UsualType.LOGIC
-				return u:_valueData.l
+				return u:_logicValue
 			case __UsualType.OBJECT
 				return u:_refData
 			case __UsualType.PTR
-				return u:_valueData.p
+				return u:_ptrValue
 			case __UsualType.STRING
 				return u:_refData
 			case __UsualType.SYMBOL
-				return u:_valueData.s
+				return u:_symValue
 			case __UsualType.Void
 			otherwise
 				return null
@@ -1698,28 +1953,31 @@ BEGIN NAMESPACE XSharp
 				strResult := SELF:_refData:ToString()
 
 			CASE __UsualType.Date
-				strResult := SELF:_valueData:d:ToString()
+				strResult := SELF:_dateValue:ToString()
 
 			CASE __UsualType.Float
-				strResult := SELF:_valueData:r8:ToString()
+				strResult := SELF:_r8Value:ToString()
 
 			CASE __UsualType.Long
-				strResult := SELF:_valueData:i:ToString()
+				strResult := SELF:_intValue:ToString()
 
 			CASE __UsualType.Int64
-				strResult := SELF:_valueData:i64:ToString()
+				strResult := SELF:_i64Value:ToString()
+
+			CASE __UsualType.Decimal
+				strResult := SELF:_decimalValue:ToString()
 
 			CASE __UsualType.LOGIC
-				strResult := IIF(!SELF:_valueData:l , ".F." , ".T.")
+				strResult := IIF(!SELF:_logicValue , ".F." , ".T.")
 
 			CASE __UsualType.PTR
-				strResult := SELF:_valueData:p:ToString()
+				strResult := SELF:_ptrValue:ToString()
 
 			CASE __UsualType.STRING
-				strResult := (string) SELF:_refData;
+				strResult := SELF:_stringValue
 
 			CASE __UsualType.Symbol
-				strResult := SELF:_valueData:s:ToString()
+				strResult := SELF:_symValue:ToString()
 
 			CASE __UsualType.Void
 				strResult := "NIL"
@@ -1736,11 +1994,11 @@ BEGIN NAMESPACE XSharp
 			IF conversionType:IsPointer
 				switch SELF:UsualType 
 				case __UsualType.PTR
-					return _valueData.p
+					return _ptrValue
 				case __UsualType.Long
-					return (IntPtr) _valueData.i
+					return (IntPtr) _intValue
 				case __UsualType.Int64
-					return (IntPtr) _valueData.i64
+					return (IntPtr) _i64Value
 				otherwise
 					throw InvalidCastException{}
 				end switch
@@ -1774,6 +2032,8 @@ BEGIN NAMESPACE XSharp
 				return TypeCode.Object
 			case __UsualType.FLOAT
 				return TypeCode.Object
+			case __UsualType.Decimal
+				return TypeCode.Decimal
 			case __UsualType.Long
 				return TypeCode.Int32
 			case __UsualType.Int64
@@ -1805,6 +2065,8 @@ BEGIN NAMESPACE XSharp
 		RETURN "DATE"
 	CASE __UsualType.FLOAT
 		RETURN "FLOAT"
+	CASE __UsualType.DECIMAL
+		RETURN "DECIMAL"
 	CASE __UsualType.Long
 		RETURN "LONG"
 	CASE __UsualType.Int64
@@ -1873,6 +2135,15 @@ BEGIN NAMESPACE XSharp
 
 		
 #endregion
+	internal class UsualDebugView
+		private _value as __Usual
+		public constructor (u as __Usual)
+			_value := u
+		
+		PUBLIC PROPERTY Value as OBJECT GET _value:Value
+		PUBLIC PROPERTY Type  as STRING GET _value:Type
+
+	end class
 	end structure			
 
 
@@ -1917,6 +2188,7 @@ BEGIN NAMESPACE XSharp
 		member @@Real4		:=15
 		member @@Real8		:=16
 		member @@Uint64     :=23
+		member @@Decimal	:=24
 		member @@Memo		:=32	// Used in RDD system in VO
 		member @@Invalid    :=99
 	end enum
@@ -1924,8 +2196,8 @@ BEGIN NAMESPACE XSharp
 	[StructLayout(LayoutKind.Explicit)];
 	public structure __Usual_flags
 		[FieldOffset(0)] export usualType as __UsualType
-		[FieldOffset(1)] export width as byte
-		[FieldOffset(2)] export decimals as byte
+		[FieldOffset(1)] export width as Sbyte
+		[FieldOffset(2)] export decimals as Sbyte
 		[FieldOffset(3)] export isByRef as logic
 
 		CONSTRUCTOR(type as __UsualType)

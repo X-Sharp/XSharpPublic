@@ -21,6 +21,28 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		RETURN
 
 		[Fact];
+		METHOD UsualDecimalTests() AS VOID
+			LOCAL u AS __Usual
+			LOCAL l as Decimal
+			l := 1
+			u := l
+			Assert.Equal(UsualType(u), (DWORD) 24)
+			l := u
+			Assert.Equal(l,1)
+			Assert.Equal(l,  (Decimal) u)
+			u += 1
+			Assert.Equal(2,  (Decimal) u)
+			u++
+			Assert.Equal(3,  (Decimal) u)
+			u += 1U
+			Assert.Equal(4,  (Decimal) u)
+			u += 1.0
+			Assert.Equal(5,  (Decimal) u)
+			u := __Usual{Decimal.MaxValue}
+			RETURN
+
+
+		[Fact];
 		METHOD UsualInt64Tests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL l as Int64

@@ -9,7 +9,7 @@ using System.Diagnostics
 using XSharp.Internal
 BEGIN NAMESPACE XSharp
 	[StructLayout(LayoutKind.Sequential)];
-	[DebuggerDisplay("{Value} ({Type,nq})", Type := "USUAL")];
+	[DebuggerDisplay("{Value} ({UsualType})", Type := "USUAL")];
 	[DebuggerTypeProxy(typeof(UsualDebugView))];
 	STRUCTURE __Usual IMPLEMENTS IConvertible,IComparable
 		#region static fields
@@ -265,7 +265,6 @@ BEGIN NAMESPACE XSharp
 			END SWITCH
 			END GET
 		END PROPERTY
-		PROPERTY Type as STRING GET SELF:TypeString()
 
 		#endregion
 
@@ -2141,7 +2140,7 @@ BEGIN NAMESPACE XSharp
 			_value := u
 		
 		PUBLIC PROPERTY Value as OBJECT GET _value:Value
-		PUBLIC PROPERTY Type  as STRING GET _value:Type
+		PUBLIC PROPERTY Type  as __UsualType GET _value:UsualType
 
 	end class
 	end structure			
@@ -2159,7 +2158,6 @@ BEGIN NAMESPACE XSharp
 		[FieldOffset(0)] export s as __Symbol
 
 	end structure
-
 
 	public enum __UsualType as Byte
 		// These numbers must match with the types defined in the compiler

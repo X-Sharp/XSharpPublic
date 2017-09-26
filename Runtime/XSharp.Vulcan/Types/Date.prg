@@ -3,13 +3,13 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System
-using System.Runtime.Serialization
-using System.Globalization
-using System.Runtime.InteropServices
-using XSharp
-using System.Diagnostics
-begin namespace XSharp	
+USING System
+USING System.Runtime.Serialization
+USING System.Globalization
+USING System.Runtime.InteropServices
+USING XSharp
+USING System.Diagnostics
+BEGIN NAMESPACE XSharp	
     [DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
     [StructLayout(LayoutKind.Explicit)];
 	STRUCTURE __VODate IMPLEMENTS System.IComparable, ;
@@ -22,7 +22,7 @@ begin namespace XSharp
         // year, month and date into 32 bits
         // the _value field is for convenience, so we can do a single numeric comparison
         // to determine equality or relative comparisons in stead of doing 3 comparisons
-        // for date calculation we use the Value property which returns a System.DateTime type
+        // for date calculation we use the Value PROPERTY which returns a System.DateTime type
 		// Note that the Vulcan type uses a datetime which takes 8 bytes. We only use 4 bytes
 		#region fields
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -37,70 +37,63 @@ begin namespace XSharp
 
 		#region static fields
 		// TODO move to settings object later
-		static private _dateFormat as string
+		static private _dateFormat AS STRING
 		static initonly public  _NULL_DATE as __VODate
 
 		#endregion
 
         #region datetime conversions
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        Property Value as System.DateTime 
-        get
-            if (_value == 0)
-                return System.DateTime.MinValue
-            endif
-            return System.DateTime{_year, _month, _day}
-        end get
-        end Property
+        PROPERTY Value as System.DateTime 
+        GET
+            IF (_value == 0)
+                RETURN System.DateTime.MinValue
+            ENDIF
+            RETURN System.DateTime{_year, _month, _day}
+        END GET
+        END PROPERTY
         #endregion
 
 		#region constructors
 		static constructor()
 			_dateFormat := System.Globalization.DateTimeFormatInfo.CurrentInfo:ShortDatePattern
-			_NULL_DATE := __VODate{}
-		return       
+			_NULL_DATE  := __VODate{}
+		RETURN       
 
-		constructor(d as System.DateTime)
-			_year  := (Word) d:Year
-            _month := (Byte) d:Month
-            _day   := (Byte) d:Day
+		constructor(lhs as System.DateTime)
+			_year  := (Word) lhs:Year
+            _month := (Byte) lhs:Month
+            _day   := (Byte) lhs:Day
 		    return
 
-		constructor(d as iDate)
-			_year  := (Word) d:Year
-            _month := (Byte) d:Month
-            _day   := (Byte) d:Day
+		constructor(lhs as iDate)
+			_year  := (Word) lhs:Year
+            _month := (Byte) lhs:Month
+            _day   := (Byte) lhs:Day
 		return
 
-		constructor(ticks as Int64)
+		constructor(ticks AS INT64)
 			SELF(System.DateTime{ticks})
 		return
 
-		constructor(strDate as string)
+		private constructor(v as INT, lValueAssign as LOGIC)
+			_value := v
+		return
+
+
+		constructor(strDate AS STRING)
 			throw System.NotImplementedException{"Constructor __VODate(string __VODate) is not implemented yet."}
 
-		constructor(year as Int, month as Int, day as Int)
-			_value := 0
-			_year  := 0
-			_month := 0
-			_day   := 0
-			if year > 9999
-				throw System.ArgumentOutOfRangeException{nameof(year)}
-			endif
-			if month > 12
-				throw System.ArgumentOutOfRangeException{nameof(month)}
-			endif
-			if day > 31
-				throw System.ArgumentOutOfRangeException{nameof(day)}
-			endif
+		constructor(year AS INT, month AS INT, day AS INT)
 			try
                 // this may throw an exception when the combination is not valid
-                VAR d := System.DateTime{year, month, day}
-				_year  := (Word) d:Year
-				_month := (Byte) d:Month
-				_day   := (Byte) d:Day
-			catch 
+                VAR lhs := System.DateTime{year, month, day}
+				_year  := (Word) lhs:Year
+				_month := (Byte) lhs:Month
+				_day   := (Byte) lhs:Day
+			catch e as Exception
 				_value := 0 // null_date
+				throw e
 			end try
 		return
 
@@ -112,308 +105,349 @@ begin namespace XSharp
 		
 		#region methods
 
-		method CompareTo(o as Object) as Long
+		METHOD CompareTo(o as Object) as Long
 			var rhs := (__VODate)o 
-		    return _value:CompareTo(rhs:_value)
+		    RETURN _value:CompareTo(rhs:_value)
 
-		method CompareTo(rhs as __VODate) as Long
-		    return _value:CompareTo(rhs:_value)
+		METHOD CompareTo(rhs as __VODate) as Long
+		    RETURN _value:CompareTo(rhs:_value)
 
 
-		override method GetHashCode() as Long
-		    return _value:GetHashCode()
+		override METHOD GetHashCode() as Long
+		    RETURN _value:GetHashCode()
 
-		method GetTypeCode() as System.TypeCode
-		    return Value:GetTypeCode()
+		METHOD GetTypeCode() as System.TypeCode
+		    RETURN Value:GetTypeCode()
 		#endregion
 		#region Operators
-		static operator +(d as __VODate, days as __Usual) as __VODate
-		    return d:Add(days)
+		static operator +(lhs as __VODate, days as __Usual) as __VODate
+		    RETURN lhs:Add(days)
 
-		static operator +(d as __VODate, days as real8) as __VODate
-		    return d:Add(days)
+		static operator +(lhs as __VODate, days as real8) as __VODate
+		    RETURN lhs:Add(days)
 
-		static operator +(d as __VODate, days as Long) as __VODate
-		    return d:Add(days)
+		static operator +(lhs as __VODate, days as Long) as __VODate
+		    RETURN lhs:Add(days)
 
-		static operator +(d as __VODate, days as Int64) as __VODate
-		    return d:Add(days)
+		static operator +(lhs as __VODate, days AS INT64) as __VODate
+		    RETURN lhs:Add(days)
 
-		static operator +(d as __VODate, ts as System.TimeSpan) as __VODate
-		    return d:Add(ts)
+		static operator +(lhs as __VODate, ts as System.TimeSpan) as __VODate
+		    RETURN lhs:Add(ts)
 
-		static operator +(d as __VODate, days as DWord) as __VODate
-		    return d:Add(days)
+		static operator +(lhs as __VODate, days as DWord) as __VODate
+		    RETURN lhs:Add(days)
 
-		static operator +(d as __VODate, days as UInt64) as __VODate
-		    return d:Add(days)
+		static operator +(lhs as __VODate, days as UInt64) as __VODate
+		    RETURN lhs:Add(days)
 
-		static operator --(d as __VODate) as __VODate
-		    return d:Subtract(1)
+		static operator --(lhs as __VODate) as __VODate
+		    RETURN lhs:Subtract(1)
 
-		static operator -(d as __VODate, d2 as __VODate) as Long
-		    return d:Subtract(d2)
+		static operator -(lhs as __VODate, rhs as __VODate) as Long
+		    RETURN lhs:Subtract(rhs)
 
-		static operator -(d as __VODate, days as __Usual) as __VODate
-		    return d:Subtract(days)
+		static operator -(lhs as __VODate, days as __Usual) as __VODate
+		    RETURN lhs:Subtract(days)
 
-		static operator -(d as __VODate, days as real8) as __VODate
-		    return d:Subtract(days)
+		static operator -(lhs as __VODate, days as real8) as __VODate
+		    RETURN lhs:Subtract(days)
 
-		static operator -(d as __VODate, days as Long) as __VODate
-		    return d:Subtract(days)
+		static operator -(lhs as __VODate, days as Long) as __VODate
+		    RETURN lhs:Subtract(days)
 
-		static operator -(d as __VODate, days as Int64) as __VODate
-		    return d:Subtract(days)
+		static operator -(lhs as __VODate, days AS INT64) as __VODate
+		    RETURN lhs:Subtract(days)
 
-		static operator -(d as __VODate, ts as System.TimeSpan) as __VODate
-		    return d:Subtract(ts)
+		static operator -(lhs as __VODate, ts as System.TimeSpan) as __VODate
+		    RETURN lhs:Subtract(ts)
 
-		static operator -(d as __VODate, days as DWord) as __VODate
-		    return d:Subtract(days)
+		static operator -(lhs as __VODate, days as DWord) as __VODate
+		    RETURN lhs:Subtract(days)
 
-		static operator -(d as __VODate, days as UInt64) as __VODate
-		    return d:Subtract(days)
+		static operator -(lhs as __VODate, days as UInt64) as __VODate
+		    RETURN lhs:Subtract(days)
 
 		#endregion
 		#region Equality Operators
-		method Equals(o as __VODate) as Logic
-			local rhs as __VODate
-			rhs := (__VODate)o 
-		    return _value == rhs:_value
+		METHOD Equals(lhs as __VODate) AS LOGIC
+		    RETURN _value == lhs:_value
 
-		override method Equals(o as Object) as Logic
+		override METHOD Equals(o as Object) AS LOGIC
 			if o:getType() == typeof(__VODate)
-				return Equals( (__VoDate) o)
+				RETURN Equals( (__VoDate) o)
 			elseif o:getType() == typeof(System.DateTime)
-				return Equals( __VoDate{ (System.DateTime) o})
+				RETURN Equals( __VoDate{ (System.DateTime) o})
 			endif
-			return false
+			RETURN false
 
-		static operator ==(d as __VODate, d2 as __VODate) as Logic
-		    RETURN (d:Value == d2:Value)
+		static operator ==(lhs as __VODate, rhs as __VODate) AS LOGIC
+		    RETURN (lhs:Value == rhs:Value)
 
-		static operator !=(d as __VODate, d2 as __VODate) as Logic
-		    return (d:_value != d2:_value)
+		static operator !=(lhs as __VODate, rhs as __VODate) AS LOGIC
+		    RETURN (lhs:_value != rhs:_value)
 
 		#endregion
 		#region Implicit and Explicit converters
 
 		static operator explicit(value as __VODate) as DWord
-			return (DWORD) value:_value
+			RETURN (DWORD) value:_value
 
-		static operator explicit(v as __VODate) as INT
-			return v:_value
+		static operator explicit(v as __VODate) AS INT
+			RETURN v:_value
 
 		static operator explicit(v as DWORD ) as __VoDate
-			var result := __VoDate{v}
-            return result
+			var result := __VoDate{(INT) v, true}
+            RETURN result
 
-		static operator explicit(v as INT) as __VoDate
-			var result := __VoDate{v}
-            return result
+		static operator explicit(v AS INT) as __VoDate
+			var result := __VoDate{v, true}
+
+            RETURN result
 
 		static operator explicit(v as System.DateTime) as __VODate
 			RETURN __VODate{v}
 
-		method ToDateTime() as System.DateTime
-		    return SELF:Value
+		METHOD ToDateTime() as System.DateTime
+		    RETURN SELF:Value
 
-		method FromDateTime(value as System.DateTime) as __VODate
-		    return __VODate{value}
+		METHOD FromDateTime(value as System.DateTime) as __VODate
+		    RETURN __VODate{value}
 
 		#endregion
 		#region Comparison Operators
-		static operator >(d as __VODate, d2 as __VODate) as Logic
-		    return (d:_value > d2:_value)
+		static operator >(lhs as __VODate, rhs as __VODate) AS LOGIC
+			// note: cannot use _value for > comparison because that would depend
+			//       on the intel little endian layout 
+			if lhs:_value == rhs:_value
+				return false
+			elseif lhs:_year > rhs:_year
+				return true
+			elseif lhs:_year == rhs:_year .and. lhs:_month > rhs:_month
+				return true
+			elseif lhs:_year == rhs:_year .and. lhs:_month == rhs:_month .and. lhs:_day > rhs:_day
+				return true
+			endif
+		    RETURN false
 
-		static operator >=(d as __VODate, d2 as __VODate) as Logic
-		    return (d:_value >= d2:_value)
+		static operator >=(lhs as __VODate, rhs as __VODate) AS LOGIC
+			// note: cannot use _value for > comparison because that would depend
+			//       on the intel little endian layout 
+			if lhs:_value == rhs:_value
+				return true
+			elseif lhs:_year > rhs:_year
+				return true
+			elseif lhs:_year == rhs:_year .and. lhs:_month > rhs:_month
+				return true
+			elseif lhs:_year == rhs:_year .and. lhs:_month == rhs:_month .and. lhs:_day > rhs:_day
+				return true
+			endif
+		    RETURN false
 
 		static operator implicit(v as __VODate) as System.DateTime
-		    return v:Value
+		    RETURN v:Value
 
-		static operator ++(d as __VODate) as __VODate
-		    return d:Add(1)
+		static operator ++(lhs as __VODate) as __VODate
+		    RETURN lhs:Add(1)
 
+		static operator <(lhs as __VODate, rhs as __VODate) AS LOGIC
+			// note: cannot use _value for < comparison because that would depend
+			//       on the intel little endian layout 
+			if lhs:_value == rhs:_value
+				return false
+			elseif lhs:_year < rhs:_year
+				return true
+			elseif lhs:_year == rhs:_year .and. lhs:_month < rhs:_month
+				return true
+			elseif lhs:_year == rhs:_year .and. lhs:_month == rhs:_month .and. lhs:_day < rhs:_day
+				return true
+			endif
+		    RETURN false
 
-		static operator <(d as __VODate, d2 as __VODate) as Logic
-		    return (d:_value < d2:_value)
-
-		static operator <=(d as __VODate, d2 as __VODate) as Logic
-		    return (d:_value <= d2:_value)
+		static operator <=(lhs as __VODate, rhs as __VODate) AS LOGIC
+			// note: cannot use _value for < comparison because that would depend
+			//       on the intel little endian layout 
+			if lhs:_value == rhs:_value
+				return true
+			elseif lhs:_year < rhs:_year
+				return true
+			elseif lhs:_year == rhs:_year .and. lhs:_month < rhs:_month
+				return true
+			elseif lhs:_year == rhs:_year .and. lhs:_month == rhs:_month .and. lhs:_day < rhs:_day
+				return true
+			endif
+		    RETURN false
 		#endregion
 
 		#region Add and Subtract Methods
-		method Add(days as __Usual) as __VODate
-			THROW NotImplementedException{}
+		METHOD Add(days as __Usual) as __VODate
+			RETURN SELF:Add((LONG) days)
 
-		method Add(days as real8) as __VODate
+		METHOD Add(days as real8) as __VODate
             var res := self:Value:AddDays(days)
-            return __VoDate{res}
+            RETURN __VoDate{res}
 
-		method Add(days as Long) as __VODate
+		METHOD Add(days as Long) as __VODate
             var res := self:Value:AddDays(days)
-            return __VoDate{res}
+            RETURN __VoDate{res}
 
-		method Add(days as Int64) as __VODate
+		METHOD Add(days AS INT64) as __VODate
             var res := self:Value:AddDays(days)
-            return __VoDate{res}
+            RETURN __VoDate{res}
 
-		method Add(span as System.TimeSpan) as __VODate
+		METHOD Add(span as System.TimeSpan) as __VODate
             var res := self:Value:Add(span)
-            return __VoDate{res}
+            RETURN __VoDate{res}
 
-		method Add(days as DWord) as __VODate
+		METHOD Add(days as DWord) as __VODate
             var res := self:Value:AddDays(days)
-            return __VoDate{res}
+            RETURN __VoDate{res}
 
-		method Add(days as UInt64) as __VODate
+		METHOD Add(days as UInt64) as __VODate
             var res := self:Value:AddDays(days)
-            return __VoDate{res}
+            RETURN __VoDate{res}
 
-		method Subtract(d as __VODate) as Long
+		METHOD Subtract(lhs as __VODate) as Long
 			local span as System.TimeSpan
-			span := (System.TimeSpan)(self:Value - d:Value) 
-		    return span:Days
+			span := (System.TimeSpan)(self:Value - lhs:Value) 
+		    RETURN span:Days
 
-		method Subtract(days as __Usual) as __VODate
-    		return SELF:Add(-days)		
+		METHOD Subtract(days as __Usual) as __VODate
+    		RETURN SELF:Add(- (LONG) days)		
 
-		method Subtract(days as real8) as __VODate
-		    return SELF:Add(-days)
+		METHOD Subtract(days as real8) as __VODate
+		    RETURN SELF:Add(-days)
 
-		method Subtract(days as Long) as __VODate
-		    return SELF:Add(-days)
+		METHOD Subtract(days as Long) as __VODate
+		    RETURN SELF:Add(-days)
 
-		method Subtract(days as Int64) as __VODate
-		    return SELF:Add(-days)
+		METHOD Subtract(days AS INT64) as __VODate
+		    RETURN SELF:Add(-days)
 
-		method Subtract(ts as System.TimeSpan) as __VODate
-		    return SELF:Add(-ts)
+		METHOD Subtract(ts as System.TimeSpan) as __VODate
+		    RETURN SELF:Add(-ts)
 
-		method Subtract(days as DWord) as __VODate
-		    return SELF:Add(-days)
+		METHOD Subtract(days as DWord) as __VODate
+		    RETURN SELF:Add(-days)
 
-		method Subtract(days as UInt64) as __VODate
-		    return SELF:Add(-(int64)days)
+		METHOD Subtract(days as UInt64) as __VODate
+		    RETURN SELF:Add(-(int64)days)
 		#endregion
 
     #region IConvertable 
         // forward most methods to the DateTime class so there will
         // be a proper (localized) error message
-		method IConvertible.ToBoolean(provider as System.IFormatProvider) as Logic
-			return ((IConvertible)Value):ToBoolean(provider)
+		METHOD IConvertible.ToBoolean(provider as System.IFormatProvider) AS LOGIC
+			RETURN ((IConvertible)Value):ToBoolean(provider)
 
-		method IConvertible.ToByte(provider as System.IFormatProvider) as Byte
-			return ((IConvertible)Value):ToByte(provider)
+		METHOD IConvertible.ToByte(provider as System.IFormatProvider) as Byte
+			RETURN ((IConvertible)Value):ToByte(provider)
 
-		method IConvertible.ToChar(provider as System.IFormatProvider) as Char
-			return ((IConvertible)Value):ToChar(provider)
+		METHOD IConvertible.ToChar(provider as System.IFormatProvider) as Char
+			RETURN ((IConvertible)Value):ToChar(provider)
 
-		method IConvertible.ToDateTime(provider as System.IFormatProvider) as System.DateTime
-			return Value
+		METHOD IConvertible.ToDateTime(provider as System.IFormatProvider) as System.DateTime
+			RETURN Value
 
-		method IConvertible.ToDecimal(provider as System.IFormatProvider) as Decimal
-			return ((IConvertible)Value):ToDecimal(provider)
+		METHOD IConvertible.ToDecimal(provider as System.IFormatProvider) as Decimal
+			RETURN ((IConvertible)Value):ToDecimal(provider)
 
-		method IConvertible.ToDouble(provider as System.IFormatProvider) as real8
-			return ((IConvertible)Value):ToDouble(provider)
+		METHOD IConvertible.ToDouble(provider as System.IFormatProvider) as real8
+			RETURN ((IConvertible)Value):ToDouble(provider)
 
-		method IConvertible.ToInt16(provider as System.IFormatProvider) as Short
-			return ((IConvertible)Value):ToInt16(provider)
+		METHOD IConvertible.ToInt16(provider as System.IFormatProvider) as Short
+			RETURN ((IConvertible)Value):ToInt16(provider)
 
-		method IConvertible.ToInt32(provider as System.IFormatProvider) as Long
-			return ((IConvertible)Value):ToInt32(provider)
+		METHOD IConvertible.ToInt32(provider as System.IFormatProvider) as Long
+			RETURN ((IConvertible)Value):ToInt32(provider)
 
-		method IConvertible.ToInt64(provider as System.IFormatProvider) as Int64
-			return ((IConvertible)Value):ToInt64(provider)
+		METHOD IConvertible.ToInt64(provider as System.IFormatProvider) AS INT64
+			RETURN ((IConvertible)Value):ToInt64(provider)
 
-		method IConvertible.ToSByte(provider as System.IFormatProvider) as SByte
-			return ((IConvertible)Value):ToSByte(provider)
+		METHOD IConvertible.ToSByte(provider as System.IFormatProvider) as SByte
+			RETURN ((IConvertible)Value):ToSByte(provider)
 
-		method IConvertible.ToSingle(provider as System.IFormatProvider) as real4
-			return ((IConvertible)Value):ToSingle(provider)
+		METHOD IConvertible.ToSingle(provider as System.IFormatProvider) as real4
+			RETURN ((IConvertible)Value):ToSingle(provider)
 
-		method IConvertible.ToType(conversionType as System.Type, provider as System.IFormatProvider) as Object
+		METHOD IConvertible.ToType(conversionType as System.Type, provider as System.IFormatProvider) as Object
 			if conversionType == typeof(__VoDate)
-                return SELF
+                RETURN SELF
             elseif conversionType == typeof(System.DateTime)
-                return self:Value
+                RETURN self:Value
             endif
-            return ((IConvertible)Value):ToType(conversionType, provider)
+            RETURN ((IConvertible)Value):ToType(conversionType, provider)
 
-		method IConvertible.ToUInt16(provider as System.IFormatProvider) as Word
-			return ((IConvertible)Value):ToUInt16(provider)
+		METHOD IConvertible.ToUInt16(provider as System.IFormatProvider) as Word
+			RETURN ((IConvertible)Value):ToUInt16(provider)
 
-		method IConvertible.ToUInt32(provider as System.IFormatProvider) as DWord
-			return ((IConvertible)Value):ToUInt32(provider)
+		METHOD IConvertible.ToUInt32(provider as System.IFormatProvider) AS DWORD
+			RETURN ((IConvertible)Value):ToUInt32(provider)
 
-		method IConvertible.ToUInt64(provider as System.IFormatProvider) as UInt64
-			return ((IConvertible)Value):ToUInt64(provider)
+		METHOD IConvertible.ToUInt64(provider as System.IFormatProvider) AS UINT64
+			RETURN ((IConvertible)Value):ToUInt64(provider)
 		#endregion
 
         #region ToString()
         // Use DateTime ToString) methods as helpers
-		override method ToString() as string
+		override METHOD ToString() AS STRING
             if (_value == 0)
-                return "NULL_DATE"
+                RETURN "NULL_DATE"
             endif
-		    return Value:ToString(_dateformat)
+		    RETURN Value:ToString(_dateformat)
 
-		method ToString(provider as System.IFormatProvider) as string
+		METHOD ToString(provider as System.IFormatProvider) AS STRING
             if (_value == 0)
-                return "NULL_DATE"
+                RETURN "NULL_DATE"
             endif
-		    return Value:ToString(provider)
+		    RETURN Value:ToString(provider)
 
-		method ToString(s as string) as string
+		METHOD ToString(s AS STRING) AS STRING
             if (_value == 0)
-                return "NULL_DATE"
+                RETURN "NULL_DATE"
             endif
-		    return Value:ToString(s)
+		    RETURN Value:ToString(s)
 
-		method ToString(s as string, fp as System.IFormatProvider) as string
+		METHOD ToString(s AS STRING, fp as System.IFormatProvider) AS STRING
             if (_value == 0)
-                return "NULL_DATE"
+                RETURN "NULL_DATE"
             endif
             if (s == null)
               s := _dateformat
             endif
-		    return Value:ToString(s, fp)
+		    RETURN Value:ToString(s, fp)
         #endregion
 		#region properties
 
-		property Day as int Get _day 
-
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		property IsEmpty as Logic
+		PROPERTY IsEmpty AS LOGIC
 			Get
-				return _value == 0
+				RETURN _value == 0
 			End Get
 		end property
 
-		property Month as int GET _month 
+		PROPERTY Month AS INT GET _month 
+		PROPERTY Year AS INT GET _year 
+		PROPERTY Day AS INT Get _day 
 
-		property Year as int GET _year 
 	#endregion
 
 	#region Static Properties
-		static property DateFormat as string GET _dateFormat SET _dateFormat := value
+		static PROPERTY DateFormat AS STRING GET _dateFormat SET _dateFormat := value
 
-		static property Epoch as Long
+		static PROPERTY Epoch as Long
 			Get
-				return System.Threading.Thread.CurrentThread:CurrentCulture:Calendar:TwoDigitYearMax - 100
+				RETURN System.Threading.Thread.CurrentThread:CurrentCulture:Calendar:TwoDigitYearMax - 100
 			End Get
 			Set
 				System.Threading.Thread.CurrentThread:CurrentCulture:Calendar:TwoDigitYearMax := (Long)value  + 100
 			End Set
 		end property
 
-		static property NullDate as __VODate GET _NULL_DATE
+		static PROPERTY NullDate as __VODate GET _NULL_DATE
 
-		static method ElapTime(cStartTime as string, cEndTime as string) as string
-			return System.DateTime.ParseExact(cEndTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture):Subtract(System.DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)):ToString()
+		static METHOD ElapTime(cStartTime AS STRING, cEndTime AS STRING) AS STRING
+			RETURN System.DateTime.ParseExact(cEndTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture):Subtract(System.DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)):ToString()
 
 	#endregion
 	end structure

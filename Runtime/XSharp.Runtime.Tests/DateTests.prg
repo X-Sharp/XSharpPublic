@@ -69,5 +69,50 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		METHOD YearTest() as void
 			Assert.Equal((dword)2016,YEAR(CTOD("24/05/2016")))
 		RETURN
+
+		[Fact];
+		METHOD CastTest() as void
+			LOCAL i as LONG
+			LOCAL dw as DWORD
+			VAR d := __VoDate{2017,1,1}
+			i := (LONG) d
+			dw := (DWORD) d
+			Assert.Equal(d, (__VoDate) i)
+			Assert.Equal(d, (__VoDate) dw)
+
+		RETURN
+		[Fact];
+		METHOD CompareTest() as VOID
+		VAR d1 := __VoDate{2017,09,25}
+		VAR d2 := __VoDate{2017,09,26}	// different day
+		Assert.True(d1 < d2)
+		Assert.True(d1 <= d2)
+		Assert.False(d1 > d2)
+		Assert.False(d1 >= d2)
+
+		d2 := __VoDate{2017,10,25}	// different month
+		Assert.True(d1 < d2)
+		Assert.True(d1 <= d2)
+		Assert.False(d1 > d2)
+		Assert.False(d1 >= d2)
+
+		d2 := __VoDate{2018,09,24}	// different year
+		Assert.True(d1 < d2)
+		Assert.True(d1 <= d2)
+		Assert.False(d1 > d2)
+		Assert.False(d1 >= d2)
+
+		Assert.True(d2 > d1)
+		Assert.True(d2 >= d1)
+		Assert.False(d2 < d1)
+		Assert.False(d2 <= d1)
+		
+		Var d3 := d1
+		Assert.False(d3 > d1)
+		Assert.True(d3 >= d1)
+		Assert.False(d3 < d1)
+		Assert.True(d3 <= d1)
+
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp
 		return
 
 		private constructor(value as UInt64)
-			if (value < Int64.MaxValue)
+			if value < Int64.MaxValue
 				SELF:_flags:UsualType	:= __UsualType.INT64
 				SELF:_valueData:i64 := (int64) value
 			else
@@ -93,8 +93,8 @@ BEGIN NAMESPACE XSharp
 
 		public constructor(o as Object)
 			local u				as __Usual
-			if (o != null)
-				if (o:GetType() == typeof(__Usual))
+			if o != null
+				if o:GetType() == typeof(__Usual)
 					// boxed __Usual
 					u		:= (__Usual)o 
 					SELF:_refData	:= u:_refData 
@@ -129,7 +129,7 @@ BEGIN NAMESPACE XSharp
 						SELF:_flags:usualType		:= __UsualType.Long
 						SELF:_valueData:i	:= (Long)o 
 					CASE System.TypeCode.UInt32
-						if ((DWord)o  <= Int32.MaxValue)
+						if (DWord)o  <= Int32.MaxValue
 							SELF:_flags:usualType := __UsualType.Long
 							SELF:_valueData:i := (Long)(DWord)o  
 						else
@@ -142,7 +142,7 @@ BEGIN NAMESPACE XSharp
 						SELF:_flags:usualType		:= __UsualType.Int64
 						SELF:_valueData:i64	:= (Int64)o 
 					CASE System.TypeCode.UInt64 
-						IF ((Uint64) o  <= Int64.MaxValue)
+						IF (Uint64) o  <= Int64.MaxValue
 							SELF:_flags:usualType	:= __UsualType.Int64
 							SELF:_valueData:i64		:= (Int64)(UInt64)o  
 						ELSE
@@ -286,19 +286,14 @@ BEGIN NAMESPACE XSharp
 			if SELF:UsualType == rhs:UsualType
 				// Compare ValueTypes
 				switch UsualType
-				case __UsualType.Date
-					return SELF:_valueData:d - rhs:_valueData:d
 				case __UsualType.Logic
-					if (_valueData:l == rhs:_valueData:l)
-						return 0
-					elseif _valueData:l
-						return 1
-					else
-						return -1
-					endif
+				case __UsualType.Date
 				case __UsualType.Long
-					return SELF:_valueData:i - rhs:_valueData:i
 				case __UsualType.Int64
+				case __UsualType.Symbol
+				case __UsualType.Ptr
+					// All valuetypes use the same i64 comparison. The types store the data
+					// on the same location and unused bytes are 0
 					if SELF:_valueData:i64 == rhs:_valueData:i64
 						return 0
 					elseif SELF:_valueData:i64 > rhs:_valueData:i64
@@ -307,22 +302,6 @@ BEGIN NAMESPACE XSharp
 						return -1
 					endif
 
-				case __UsualType.Symbol
-					if (self:_valueData:s == rhs:_valueData:s)
-						return 0
-					elseif (self:_valueData:s > rhs:_valueData:s)
-						return 1
-					else
-						return -1
-					endif
-				case __UsualType.Ptr
-					if (self:_valueData:p:ToInt64() == rhs:_valueData:p:ToInt64())
-						return 0
-					elseif (self:_valueData:p:ToInt64() > rhs:_valueData:p:ToInt64())
-						return 1
-					else
-						return -1
-					endif
 				case __UsualType.String
 					// Vulcan does a case insensitive comparison ?
 					return String.Compare( (STRING) _refData, (String) rhs:_refData)
@@ -353,7 +332,7 @@ BEGIN NAMESPACE XSharp
 						return -1
 					endif
 				otherwise
-					nop
+					nop	// uses comparison by type
 				end switch
 			elseif SELF:UsualType == __UsualType.Float
 				switch rhs:UsualType
@@ -383,7 +362,7 @@ BEGIN NAMESPACE XSharp
 					endif
 
 				otherwise
-					nop
+					nop	// uses comparison by type
 				end switch
 			elseif SELF:UsualType == __UsualType.Long
 				switch rhs:UsualType
@@ -406,7 +385,7 @@ BEGIN NAMESPACE XSharp
 						return -1
 					endif
 				otherwise
-					nop
+					nop	// uses comparison by type
 				END SWITCH
 			elseif SELF:UsualType == __UsualType.Int64
 				switch rhs:UsualType
@@ -435,9 +414,10 @@ BEGIN NAMESPACE XSharp
 						return -1
 					endif
 				otherwise
-					nop
+					nop	// uses comparison by type
 				end switch
 			endif
+			// comparison by type
 			if self:UsualType > rhs:UsualType
 				return 1
 			elseif self:UsualType < rhs:UsualType
@@ -833,16 +813,16 @@ BEGIN NAMESPACE XSharp
 
 #region Unary Operators
 		STATIC OPERATOR !(u AS __Usual) AS LOGIC
-			if (u:UsualType == __UsualType.LOGIC)
+			if u:UsualType == __UsualType.LOGIC
 				return !u:_valueData.l
 			endif
 			throw UnaryError("!", u)
 
 		STATIC OPERATOR ~(u AS __Usual) AS __Usual
-			if (u:UsualType == __UsualType.Long)
+			if u:UsualType == __UsualType.Long
 				return ~u:_valueData.i
 			endif
-			if (u:UsualType == __UsualType.Int64)
+			if u:UsualType == __UsualType.Int64
 				return ~u:_valueData.i64
 			endif
 			throw UnaryError("~", u)
@@ -1260,7 +1240,7 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.Void
 				return NULL
 			CASE __UsualType.Object
-				if (u:_refData== null)
+				if u:_refData== null
 					return null
 				elseif u:_refData is __Array
 					return (__Array) u:_refData
@@ -1832,7 +1812,7 @@ BEGIN NAMESPACE XSharp
 	CASE __UsualType.Logic
 		RETURN "LOGIC"
 	CASE __UsualType.OBJECT
-		if (_refData != null)
+		if _refData != null
 			return ""
 		else
 			return _refData:GetType():FullName

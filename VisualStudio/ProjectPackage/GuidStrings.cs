@@ -30,6 +30,13 @@ namespace XSharp.Project
         public const string guidXSharpVOFieldSpecEditorCmdSet = "24ea5441-eb10-45e7-9a44-797df84f8775";
 
         public const string guidVulcanLanguageServiceString = "8d3f6d25-c81c-4fd8-9599-2f72b5d4b0c9";
+        public const string guidVulcanSourceCodeEditor = "{e6787d5e-718e-4810-9c26-7cc920baa335}";
+        public const string guidVulcanFormEditor = "{e9eecf7e-7aa2-490e-affc-c55fa2acc5a3}";
+        public const string guidVulcanMenuEditor = "{adee1755-5ac3-485b-b857-f82d902362ca}";
+        public const string guidVulcanDbEditor = "{5325db94-5d6c-41fd-be44-c5b277612ce6}";
+        public const string guidVulcanFsEditor = "{4849278c-aacb-4bbe-9a15-d96da837aeb7}";
+
+
 
         public const string guidXSharpLanguageServicePkgString = "e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050";
         public const string guidXSharpLanguageServiceCmdSetString = "6511ea00-4558-4ae7-84ee-0e2aebd40d88";

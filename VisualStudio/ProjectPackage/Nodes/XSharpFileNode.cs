@@ -614,6 +614,11 @@ namespace XSharp.Project
             base.Dispose(disposing);
         }
 
+        protected internal override DocumentManager GetDocumentManager()
+        {
+            return new XSharpFileDocumentManager(this);
+        }
+
         /// <summary>
         /// Open a file depending on the SubType property associated with the file item in the project file
         /// </summary>

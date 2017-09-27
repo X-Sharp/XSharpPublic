@@ -249,8 +249,7 @@ namespace XSharp.Project
             XSharpProjectPackage.instance = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             this.settings = new XPackageSettings(this);
-
-
+            validateVulcanEditors();
 
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
@@ -289,6 +288,58 @@ namespace XSharp.Project
             }
             // Initialize Custom Menu Items
             XSharp.Project.XSharpMenuItems.Initialize(this);
+
+        }
+
+
+        private bool CheckKey(string editor, string extension)
+        {
+            var root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration);
+            var reg = root.OpenSubKey("editors\\"+editor+"\\Extensions");
+            bool Ok = true;
+            if (reg != null)
+            {
+                object value = reg.GetValue(extension);
+                if (value is int && (int)value >= 0x42)
+                {
+                    Ok = false;
+                }
+                reg.Close();
+            }
+            return Ok;
+        }
+
+         private void validateVulcanEditors()
+        {
+            // check Vulcan Source code editor keys
+            bool Ok = true;
+            // Source editor
+            Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "prg");
+            Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "ppo");
+            Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "vh");
+            Ok = Ok && CheckKey(GuidStrings.guidVulcanFormEditor, "vnfrm");
+            Ok = Ok && CheckKey(GuidStrings.guidVulcanMenuEditor, "vnmnu");
+            Ok = Ok && CheckKey(GuidStrings.guidVulcanDbEditor, "vndb");
+            Ok = Ok && CheckKey(GuidStrings.guidVulcanFsEditor, "vnfs");
+            if (! Ok)
+            {
+                int result = 0;
+                Guid tempGuid = Guid.Empty;
+
+                IVsUIShell VsUiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+                ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations", 
+                    "The Vulcan file associations must be changed.\nPlease run setup again\n\n" +
+                    "Failure to do so may result in unexpected behavior inside Visual Studio", 
+                    null, 0,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                    OLEMSGICON.OLEMSGICON_CRITICAL, 0, out result));
+            }
+            
+
+
+
+
+
 
         }
 

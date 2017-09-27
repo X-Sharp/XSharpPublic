@@ -177,7 +177,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region helper methods
 
-        private int Open(bool newFile, bool openWith, uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction, bool reopen = false)
+        protected int Open(bool newFile, bool openWith, uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction, bool reopen = false)
         {
             windowFrame = null;
             if(this.Node == null || this.Node.ProjectMgr == null || this.Node.ProjectMgr.IsClosed)
@@ -192,7 +192,7 @@ namespace Microsoft.VisualStudio.Project
             int returnValue = VSConstants.S_OK;
             string caption = this.GetOwnerCaption();
             string fullPath = this.GetFullPathForDocument();
-
+            
             IVsUIShellOpenDocument uiShellOpenDocument = this.Node.ProjectMgr.Site.GetService(typeof(SVsUIShellOpenDocument)) as IVsUIShellOpenDocument;
             IOleServiceProvider serviceProvider = this.Node.ProjectMgr.Site.GetService(typeof(IOleServiceProvider)) as IOleServiceProvider;
 

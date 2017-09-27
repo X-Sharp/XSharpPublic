@@ -241,6 +241,7 @@
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="ModelScannerEvents.cs" />
+    <Compile Include="Editors\XSharpFileDocumentManager.cs" />
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

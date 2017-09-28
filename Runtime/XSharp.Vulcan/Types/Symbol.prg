@@ -167,7 +167,7 @@ PUBLIC STRUCTURE __Symbol ;
 		// Note that we are not using a ConcurrentDictionary since we want to keep the LookupTable and List
 		// in sync. Therefore we handle our own locking in this class
         STATIC INTERNAL LookupTable AS Dictionary<STRING,DWORD>
-        STATIC INTERNAL Strings as List<String>
+        STATIC INTERNAL Strings		as List<String>
         STATIC PRIVATE sync AS Object
 		#endregion
 

@@ -205,9 +205,9 @@ begin namespace XSharp
 
 		METHOD Add(rhs AS __Usual) AS __VoFloat
 			LOCAL result AS __VoFLoat
-			IF rhs:IsFloat
+			IF rhs:UsualType == __UsualType.Float
 				result := Self:Add ( (__VoFloat) rhs)
-			ELSEIF  rhs:IsLong
+			ELSEIF  rhs:UsualType == __UsualType.Long
 				result := __VoFLoat{ SELF:_value + (Long) rhs, self:Digits, self:Decimals}
 			ELSE
 				throw Error.ArgumentError(rhs, "Argument is not numeric")
@@ -220,9 +220,9 @@ begin namespace XSharp
 
 		METHOD Subtract(rhs AS __Usual) AS __VoFloat
 			LOCAL result AS __VoFLoat
-			IF rhs:IsFloat
+			IF rhs:UsualType == __UsualType.Float
 				result := Self:Subtract( (__VoFloat) rhs)
-			ELSEIF  rhs:IsLong
+			ELSEIF  rhs:UsualType == __UsualType.Long
 				result := __VoFLoat{ SELF:_value - (LONG) rhs, SELF:Digits, SELF:Decimals}			
 			ELSE
 				throw Error.ArgumentError(rhs, "Argument is not numeric")

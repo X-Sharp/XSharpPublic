@@ -23,27 +23,49 @@ BEGIN NAMESPACE XSharp
 		/// <Summary>A string that describes the error condition.</Summary>
         PROPERTY Description AS STRING AUTO
 		PROPERTY Arg AS STRING AUTO
+		PROPERTY ArgType AS STRING AUTO
+		PROPERTY ArgTypeReq AS System.Type AUTO
+		PROPERTY ArgNum AS LONG AUTO
 		
+	PRIVATE METHOD setDefaultValues() as VOID
+		SELF:Gencode := 0
+		SELF:Subcode := 0
+		SELF:Subsystem := "BASE"
+		SELF:Severity    := Severity.Error
+		//TODO 
+		//SELF:FuncSym   := 
+
     CONSTRUCTOR()
          RETURN
 
+	CONSTRUCTOR (ex AS Exception)
+		SUPER(ex.Message,ex)
+		SELF:setDefaultValues()
+		SELF:Description := ex:Message
+
 	CONSTRUCTOR (igencode AS INT)
+		SELF:setDefaultValues()
 		SELF:Gencode := iGenCode
 
 	CONSTRUCTOR (igencode AS Gencode)
+		SELF:setDefaultValues()
 		SELF:Gencode := iGenCode
 
 	CONSTRUCTOR (igencode AS Gencode, iSubCode as INT)
+		SELF:setDefaultValues()
 		SELF:Gencode := igencode
 		SELF:SubCode := iSubcode
 
 	CONSTRUCTOR (igencode AS INT, iSubCode as INT)
+		SELF:setDefaultValues()
 		SELF:Gencode := igencode
 		SELF:SubCode := iSubcode
-	STATIC METHOD ArgumentError(name AS STRING, description AS STRING) as Error
+
+	STATIC METHOD ArgumentError(name AS STRING, description AS STRING) AS Error
 		VAR err := Error{Gencode.ARG}
 		err:Arg  := name
 		err:Description := Description
 		return err
+
 	END CLASS
 END NAMESPACE // XSharp.Rdd

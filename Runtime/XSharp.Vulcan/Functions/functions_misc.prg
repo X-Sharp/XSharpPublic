@@ -178,7 +178,8 @@ using XSharp
 	/// </returns>
 	FUNCTION AReplicate(x AS __Usual,nCount AS DWORD) AS __Array
 		local a:=__Array{(int)nCount} as __Array
-		__Array.ArrayFill(a,x)
+		//Todo
+		//__Array.ArrayFill(a,x)
 	RETURN a
 
 	/// <summary>
@@ -2336,16 +2337,6 @@ using XSharp
 	FUNCTION Used() AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
-
-	/// <summary>
-	/// Determine the data type of an expression.
-	/// </summary>
-	/// <param name="x"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION UsualType(x AS __Usual) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
 
 	/// <summary>
 	/// Access contents of an address, whether it is passed by reference or not.

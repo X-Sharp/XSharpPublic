@@ -55,7 +55,7 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
 	FUNCTION ACloneShallow(a AS __Array) AS __Array
-		/// THROW NotImplementedException{}
+		
 	RETURN NULL   
 
 	/// <summary>

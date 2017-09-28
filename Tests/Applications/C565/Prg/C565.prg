@@ -3,7 +3,7 @@ FUNCTION Start() AS VOID
 	LOCAL i AS INT
 	LOCAL d AS DWORD
 	LOCAL b AS BYTE
-	LOCAL i64 AS INT64
+	LOCAL ui64 AS UINT64
 	
 	FOR LOCAL n := 1 AS INT UPTO 5
 		LOCAL lOverflow := FALSE AS LOGIC
@@ -23,8 +23,9 @@ FUNCTION Start() AS VOID
 			CASE n == 4
 				i := -1
 				b := (BYTE)i
-			CASE n == 5
-				i64 := (INT64)UInt64.MaxValue
+			CASE n == 5       
+				i := -1
+				ui64 := (UINT64) i
 			END
 			
 		CATCH e AS System.OverflowException
@@ -51,6 +52,6 @@ FUNCTION Start() AS VOID
 	i := -1
 	b := BYTE(_CAST,i)
 
-	i64 := INT64(_CAST,UInt64.MaxValue)
+	ui64 := UINT64(_CAST,UInt64.MaxValue)
 	
 RETURN

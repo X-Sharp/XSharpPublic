@@ -52,4 +52,4 @@ begin namespace XSharp
 			return _cMacro
 	END CLASS
 
-end namespace
+END NAMESPACE

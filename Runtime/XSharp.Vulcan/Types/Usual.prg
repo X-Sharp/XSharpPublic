@@ -11,7 +11,7 @@ BEGIN NAMESPACE XSharp
 	[StructLayout(LayoutKind.Sequential)];
 	[DebuggerDisplay("{Value} ({UsualType})", Type := "USUAL")];
 	[DebuggerTypeProxy(typeof(UsualDebugView))];
-	STRUCTURE __Usual IMPLEMENTS IConvertible,IComparable
+	PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible,IComparable
 		#region static fields
 		PUBLIC STATIC _NIL as __Usual
 		#endregion

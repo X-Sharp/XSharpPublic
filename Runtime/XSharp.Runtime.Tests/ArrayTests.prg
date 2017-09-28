@@ -9,8 +9,8 @@ using XSharp.Runtime
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	CLASS RuntimeArrayTests
-
-		[Fact];
+	 
+		[Fact]; 
 		METHOD ArrayCreateTest() as void
 			local testArray := __Array:ArrayCreate(2,3) as __Array
 			Assert.NotEqual(null,testArray)

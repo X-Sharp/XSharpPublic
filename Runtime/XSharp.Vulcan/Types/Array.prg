@@ -138,8 +138,8 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 		local currentArray := self as __Array
 		local i as int
 
-		for i:=0+__ARRAYBASE__  upto indexLength-2+__ARRAYBASE__ 
-			local u := currentArray:internalList[ index[i]-__ARRAYBASE__] as __Usual
+		for i:= 1  upto indexLength  -1 // walk all but the last level
+			local u := currentArray:internalList[ index[i] -1] as __Usual
 			if u:IsNil 
 				return Default(__Usual)
 			endif
@@ -148,7 +148,7 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 			endif
 			currentArray := (__Array) u
 		next
-		return currentArray:internalList[ index[i]]
+		return currentArray:internalList[ index[i] -1]
 	public Method __SetElement(u as __Usual,index as int) AS __Usual
 		internalList[index]:=u
 	return u

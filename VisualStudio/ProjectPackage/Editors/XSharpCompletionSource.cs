@@ -360,7 +360,7 @@ namespace XSharpLanguage
             // and put in the SelectionList
             var values = compList.Values;
             completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
-            
+
             if (showTabs)
             {
                 if (compList.HasEnumMembers)
@@ -422,7 +422,7 @@ namespace XSharpLanguage
                 //
                 if (globalType != null)
                 {
-                    BuildCompletionList(compList, new CompletionType( globalType), Modifiers.Public, true, filterText);
+                    BuildCompletionList(compList, new CompletionType(globalType), Modifiers.Public, true, filterText);
                 }
                 //
             }
@@ -2349,8 +2349,8 @@ namespace XSharpLanguage
                     case XSharpLexer.LBRKT:
                     case XSharpLexer.SL_COMMENT:
                     case XSharpLexer.ML_COMMENT:
-                    //case XSharpLexer.VAR:
-                    //case XSharpLexer.IMPLIED:
+                        //case XSharpLexer.VAR:
+                        //case XSharpLexer.IMPLIED:
                         // Stop here
                         stopToken = triggerToken;
                         token = null;
@@ -2597,7 +2597,13 @@ namespace XSharpLanguage
         /// <returns></returns>
         public static CompletionType RetrieveType(XFile file, List<string> tokenList, XTypeMember currentMember, String currentNS, IToken stopToken, out CompletionElement foundElement, string currentBuffer)
         {
-            if (! file.HasLocals)
+            //
+#if TRACE
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+#endif
+            //
+            if (!file.HasLocals)
             {
                 var xsWalker = new SourceWalker(file, currentBuffer);
                 var xTree = xsWalker.Parse();
@@ -2612,6 +2618,7 @@ namespace XSharpLanguage
                 if (currentMember == null)
                 {
 #if TRACE
+                    stopWatch.Stop();
                     Support.Debug(String.Format("Retrieve current Type : Member cannot be null."));
 #endif
                     return null;
@@ -2786,6 +2793,18 @@ namespace XSharpLanguage
                     }
                 }
             }
+#if TRACE
+            //
+            stopWatch.Stop();
+            // Get the elapsed time as a TimeSpan value.
+            TimeSpan ts = stopWatch.Elapsed;
+            // Format and display the TimeSpan value.
+            string elapsedTime = String.Format("{0:00}h {1:00}m {2:00}.{3:00}s",
+                ts.Hours, ts.Minutes, ts.Seconds,
+                ts.Milliseconds / 10);
+            //
+            Trace.WriteLine("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
+#endif
             return cType;
         }
         static public CompletionElement FindIdentifier(this XTypeMember member, string name, ref CompletionType cType, Modifiers visibility, string currentNS)
@@ -2826,7 +2845,7 @@ namespace XSharpLanguage
                     }
                 }
             }
-            if (element != null )
+            if (element != null)
             {
                 if (element is XVariable)
                 {
@@ -2835,7 +2854,7 @@ namespace XSharpLanguage
                 }
                 else
                 {
-                    cType = new CompletionType((XElement) element);
+                    cType = new CompletionType((XElement)element);
                     foundElement = new CompletionElement(element);
 
                 }

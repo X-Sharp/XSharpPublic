@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Collections.Immutable;
 using XSharpColorizer;
 using XSharp.Project.OptionsPages;
+using System.Runtime.CompilerServices;
 
 namespace XSharpLanguage
 {
@@ -450,6 +451,8 @@ namespace XSharpLanguage
             {
                 foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
                 {
+                    if (XSharpTokenTools.isGenerated(typeInfo.Value))
+                        continue;
                     TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
                     String realTypeName = typeAnalysis.Name;
                     // Nested Type ?
@@ -925,6 +928,8 @@ namespace XSharpLanguage
             //
             foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
             {
+                if (XSharpTokenTools.isGenerated(member))
+                    continue;
                 try
                 {
                     MemberAnalysis analysis = new MemberAnalysis(member);
@@ -2175,6 +2180,16 @@ namespace XSharpLanguage
     /// </summary>
     public static class XSharpTokenTools
     {
+        public static bool isGenerated(System.Type type)
+        {
+            var att = type.GetCustomAttribute(typeof(CompilerGeneratedAttribute));
+            return att != null;
+        }
+        public static bool isGenerated(MemberInfo m)
+        {
+            var att = m.GetCustomAttribute(typeof(CompilerGeneratedAttribute));
+            return att != null;
+        }
 
         public static bool StringEquals(string lhs, string rhs)
         {
@@ -3150,6 +3165,9 @@ namespace XSharpLanguage
                 Type declType = null;
                 foreach (var member in members)
                 {
+                    if (isGenerated(member))
+                        continue;
+
                     if (StringEquals(member.Name, currentToken))
                     {
                         PropertyInfo prop = member as PropertyInfo;
@@ -3259,6 +3277,9 @@ namespace XSharpLanguage
                 FieldInfo field = null;
                 foreach (var member in members)
                 {
+                    if (isGenerated(member))
+                        continue;
+
                     if (StringEquals(member.Name, currentToken))
                     {
                         field = member as FieldInfo;

@@ -2139,8 +2139,9 @@ BEGIN NAMESPACE XSharp
 		public constructor (u as __Usual)
 			_value := u
 		
-		PUBLIC PROPERTY Value as OBJECT GET _value:Value
-		PUBLIC PROPERTY Type  as __UsualType GET _value:UsualType
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
+		PUBLIC PROPERTY VALUE AS OBJECT GET _value:VALUE
+		//PUBLIC PROPERTY Type  as __UsualType GET _value:UsualType
 
 	end class
 	end structure			

@@ -47,9 +47,9 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		METHOD ArraySizeTest() as void
 			local values := <object>{1,2,3} as object[]
 			local testArray := __Array{values} as __Array
-			testArray:Size(4)
+			testArray:ReSize(4)
 			Assert.Equal( __Usual._NIL ,  testArray[4])
-			testArray:Size(2)
+			testArray:ReSize(2)
 			Assert.Equal((dword)2,testArray:Length)
 		return
 
@@ -70,8 +70,11 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			mainArray:Add(true)
 			mainArray:Add("test")
 			mainArray:Add(__Usual{subArray})
-			var u := mainArray:__GetElement(5,2)
+			var u := mainArray:__GetElement(4,1)
 			Assert.Equal( 4, (int) u)
+			mainArray:__SetElement ("anothertest", 4,1)
+			u := mainArray:__GetElement(4,1)
+			Assert.Equal( "anothertest", (string) u)
 		return
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

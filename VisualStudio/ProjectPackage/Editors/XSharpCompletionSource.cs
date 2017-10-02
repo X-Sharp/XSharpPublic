@@ -2715,12 +2715,16 @@ namespace XSharpLanguage
                 //
                 if (currentToken.EndsWith("{}"))
                 {
-                    // this a Constructor call
+                    // Look for a type
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
                     if (!cType.IsEmpty())
                     {
                         SearchConstructorIn(cType, visibility, out foundElement);
+                        if (foundElement.XSharpElement == null && cType.XType != null)
+                        {
+                            foundElement = new CompletionElement(cType.XType);
+                        }
                     }
                 }
                 else if (currentToken.EndsWith("()"))

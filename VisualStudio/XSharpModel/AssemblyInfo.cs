@@ -210,13 +210,18 @@ namespace XSharpModel
                         {
                             case "Vulcan.Internal.VulcanClassLibraryAttribute":
                                 this._GlobalClassName = type.GetProperty("globalClassName").GetValue(custattr, null).ToString();
-                                this._ImplicitNamespaces.Add(type.GetProperty("defaultNamespace").GetValue(custattr, null).ToString());
+                                //
+                                string defaultNS = type.GetProperty("defaultNamespace").GetValue(custattr, null).ToString();
+                                if ( !string.IsNullOrEmpty(defaultNS ))
+                                    this._ImplicitNamespaces.Add(defaultNS);
                                 break;
                             case "System.Runtime.CompilerServices.ExtensionAttribute":
                                 this.lHasExtensions = true;
                                 break;
                             case "Vulcan.VulcanImplicitNamespaceAttribute":
-                                this._ImplicitNamespaces.Add(type.GetProperty("Namespace").GetValue(custattr, null).ToString());
+                                string nameS = type.GetProperty("Namespace").GetValue(custattr, null).ToString();
+                                if (!string.IsNullOrEmpty(nameS))
+                                    this._ImplicitNamespaces.Add(nameS);
                                 break;
 
                         }

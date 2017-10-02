@@ -4,6 +4,15 @@
 // See License.txt in the project root for license information.
 //
 
+/// <summary>
+/// Concatenate 2 strings and move trailing spaces to the end
+/// </summary>
+/// <param name="lhs">The first string .</param>
+/// <param name="rhs">The second string.</param>
+/// <returns>
+/// The combined strings where trailing spaces from the first string are moved to the end.
+/// Note: this function is used by the compiler for the "-" operator for strings and/or strings and usuals
+/// </returns>
 
 FUNCTION __StringSubtract (lhs as STRING, rhs as STRING) AS STRING
 	IF lhs != NULL .and. rhs != null
@@ -16,6 +25,27 @@ FUNCTION __StringSubtract (lhs as STRING, rhs as STRING) AS STRING
 	ENDIF
 	RETURN String.Empty
 
+/// <summary>
+/// Compare 2 strings
+/// </summary>
+/// <param name="strA">The first string .</param>
+/// <param name="strB">The second string.</param>
+/// <returns>
+/// -1 strA precedes strB in the sort order. 
+///  0 strA occurs in the same position as strB in the sort order. 
+///  1 strA follows strB in the sort order. 
+/// Note this this function should respect SetCollation() and SetInternational() and SetExact()
+/// </returns>
+
+FUNCTION __StringCompare(strA AS STRING, strB AS STRING) as INT
+	RETURN String.Compare(strA, strB)
+   
+FUNCTION __StringEquals(strA AS STRING, strB AS STRING) as INT
+	RETURN String.Compare(strA, strB) == 0
+   
+   
+FUNCTION __StringNotEquals(strA AS STRING, strB AS STRING) as INT
+	RETURN String.Compare(strA, strB) != 0
 
 
 /// <summary>

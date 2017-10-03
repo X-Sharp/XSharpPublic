@@ -665,7 +665,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 if ((getMethod.IsExtern != setMethod.IsExtern) ||
                     // (getMethod.IsAbstract != setMethod.IsAbstract) || // NOTE: Dev10 accepts one abstract accessor
                     (getMethod.IsSealed != setMethod.IsSealed) ||
+#if !XSHARP
+                    // In XSharp we allow to override just one 
                     (getMethod.IsOverride != setMethod.IsOverride) ||
+#endif
                     (getMethod.IsStatic != setMethod.IsStatic))
                 {
                     return false;

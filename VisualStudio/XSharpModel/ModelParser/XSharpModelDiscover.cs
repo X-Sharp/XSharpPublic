@@ -234,7 +234,7 @@ namespace XSharpModel
         public override void EnterInterface_([NotNull] XSharpParser.Interface_Context context)
         {
             XType newIf = new XType(context.Id.GetText(),
-                Kind.Structure,
+                Kind.Interface,
                 decodeModifiers(context.Modifiers?._Tokens),
                 decodeVisibility(context.Modifiers?._Tokens),
                 new TextRange(context), new TextInterval(context));

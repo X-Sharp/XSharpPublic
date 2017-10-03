@@ -57652,7 +57652,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C568_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C569 - Interface with PUBLIC method *************
 Application = C569 - Interface with PUBLIC method
 IDEVersion = 1.06
@@ -57749,6 +57749,203 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C569 - Interface with PUBLIC method
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C570 *************
+Application = C570
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C570\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = C570
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = C2445105-BFBF-41A2-B8CE-927412B25EF9
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C570 FileGroups]
+[C570 Files]
+File = %AppPath%\Prg\C570.prg
+FileGUID = 04FAEC7C-C1F0-41FA-BFD2-68155055569C
+FileType = Code
+[C570 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceProject = 0B5A57AF-CBC4-4A0F-A495-DD613F458119,1,0,C570_Helper
+[C570 Resources]
+[C570 Native Resources]
+[C570 License files]
+[C570 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=1
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C570 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C570
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C570_Helper *************
+Application = C570_Helper
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C570Helper\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = C570Helper
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 0B5A57AF-CBC4-4A0F-A495-DD613F458119
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C570_Helper FileGroups]
+[C570_Helper Files]
+File = %AppPath%\Prg\C570Helper.prg
+FileGUID = 95588E9D-7BAB-420F-BA5E-9E4C44BD04B5
+FileType = Code
+[C570_Helper References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[C570_Helper Resources]
+[C570_Helper Native Resources]
+[C570_Helper License files]
+[C570_Helper General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=1
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C570_Helper Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C570_Helper
 [EndApplications]
 
 [Configurations]

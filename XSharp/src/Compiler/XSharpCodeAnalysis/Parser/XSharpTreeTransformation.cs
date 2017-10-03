@@ -4742,19 +4742,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Modifiers
 
-        protected void HandleDefaultModifiers (XSharpParserRuleContext context, IList<IToken> tokens, bool fixDefault = false)
+        protected void HandleDefaultTypeModifiers (XSharpParserRuleContext context, IList<IToken> tokens, bool fixDefault = false)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, tokens, fixDefault);
+            AddUniqueModifiers(modifiers, tokens, fixDefault, false);
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
 
-        private void AddUniqueModifiers(SyntaxListBuilder modifiers, IList<IToken> tokens, bool fixDefault = false)
+        private void AddUniqueModifiers(SyntaxListBuilder modifiers, IList<IToken> tokens, bool fixDefault , bool isInInterface )
         {
             foreach (var m in tokens)
             {
-                modifiers.AddCheckUnique(m.SyntaxKeyword());
+                var kw = m.SyntaxKeyword();
+                if (isInInterface) 
+                {
+                    if (kw.Kind != SyntaxKind.PublicKeyword)
+                        modifiers.AddCheckUnique(kw);
+                }
+                else
+                    modifiers.AddCheckUnique(kw);
             }
             if (fixDefault)
             {
@@ -4764,7 +4771,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClassModifiers([NotNull] XP.ClassModifiersContext context)
         {
-            HandleDefaultModifiers(context, context._Tokens, true);
+            HandleDefaultTypeModifiers(context, context._Tokens, true);
         }
         public override void ExitClassvarModifiers([NotNull] XP.ClassvarModifiersContext context)
         {
@@ -4783,7 +4790,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitConstructorModifiers([NotNull] XP.ConstructorModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, context._Tokens);
+            AddUniqueModifiers(modifiers, context._Tokens, false, false);
             if (!modifiers.Any((int)SyntaxKind.StaticKeyword))
                 modifiers.FixDefaultVisibility();
             context.PutList(modifiers.ToList<SyntaxToken>());
@@ -4792,18 +4799,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDelegateModifiers([NotNull] XP.DelegateModifiersContext context)
         {
-            HandleDefaultModifiers(context, context._Tokens, true);
+            HandleDefaultTypeModifiers(context, context._Tokens, true);
         }
         public override void ExitEnumModifiers([NotNull] XP.EnumModifiersContext context)
         {
-            HandleDefaultModifiers(context, context._Tokens, true);
+            HandleDefaultTypeModifiers(context, context._Tokens, true);
         }
 
         public override void ExitEventModifiers([NotNull] XP.EventModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, context._Tokens, false);
-            if (!context.Parent.isInInterface())
+            bool isInInterface = context.Parent.isInInterface();
+            AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
+            if (!isInInterface)
             {
                 modifiers.FixDefaultVisibility();
                 if (_options.VirtualInstanceMethods && ! context.Parent.isInStructure())
@@ -4818,19 +4826,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDestructorModifiers([NotNull] XP.DestructorModifiersContext context)
         {
-            HandleDefaultModifiers(context, context._Tokens, true);
+            HandleDefaultTypeModifiers(context, context._Tokens, true);
         }
 
         public override void ExitInterfaceModifiers([NotNull] XP.InterfaceModifiersContext context)
         {
-            HandleDefaultModifiers(context, context._Tokens, true);
+            HandleDefaultTypeModifiers(context, context._Tokens, true);
         }
 
         public override void ExitMemberModifiers([NotNull] XP.MemberModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, context._Tokens);
-            if (!context.Parent.isInInterface())
+            bool isInInterface = context.Parent.isInInterface();
+            AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
+            if (!isInInterface)
             {
                 modifiers.FixDefaultVisibility();
                 if (_options.VirtualInstanceMethods && ! context.Parent.isInStructure())
@@ -4845,7 +4854,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitOperatorModifiers([NotNull] XP.OperatorModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, context._Tokens);
+            AddUniqueModifiers(modifiers, context._Tokens, false, false);
             if (!modifiers.Any((int)SyntaxKind.StaticKeyword))
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             modifiers.FixDefaultVisibility();
@@ -4869,7 +4878,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitFuncprocModifiers([NotNull] XP.FuncprocModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, context._Tokens);
+            AddUniqueModifiers(modifiers, context._Tokens, false, false);
             // STATIC FUNCTION is implemented as INTERNAL and will be moved to a special class
             if (modifiers.Any((int)SyntaxKind.StaticKeyword))
             {
@@ -4891,7 +4900,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitStructureModifiers([NotNull] XP.StructureModifiersContext context)
         {
-            HandleDefaultModifiers(context, context._Tokens, true);
+            HandleDefaultTypeModifiers(context, context._Tokens, true);
         }
 
         public override void ExitVotypeModifiers([NotNull] XP.VotypeModifiersContext context)
@@ -4909,7 +4918,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            HandleDefaultModifiers(context, tokens, true);
+            HandleDefaultTypeModifiers(context, tokens, true);
         }
 
         SyntaxList<SyntaxToken> GetFuncProcModifiers(XP.FuncprocModifiersContext context, bool isExtern, bool isInInterface)

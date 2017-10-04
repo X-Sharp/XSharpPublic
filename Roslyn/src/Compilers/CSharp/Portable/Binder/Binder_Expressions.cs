@@ -3240,6 +3240,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                         voDefaultCtorCall = true;
                     }
                 }
+
+            }
+            //
+            // If the constructor was generated and the Parameter count == 0
+            // then we should not bind to clipper calling convention args
+            // so delete the argument
+            // we keep the original initializerArgumentListOpt because otherwise the binder will complain
+            // that the args are detached 
+            //
+            var actualArgs = initializerArgumentListOpt;
+            if (constructor.CtorWasGenerated() && constructor.ParameterCount == 0)
+            {
+                actualArgs = initializerArgumentListOpt.Update(initializerArgumentListOpt.OpenParenToken,
+                    new SeparatedSyntaxList<ArgumentSyntax>(), initializerArgumentListOpt.CloseParenToken);
             }
 #endif
 
@@ -3253,7 +3267,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // : this(__arglist()) is legal
                 if (initializerArgumentListOpt != null)
                 {
+#if XSHARP
+                    this.BindArgumentsAndNames(actualArgs, diagnostics, analyzedArguments, allowArglist: true);
+#else
                     this.BindArgumentsAndNames(initializerArgumentListOpt, diagnostics, analyzedArguments, allowArglist: true);
+#endif
                 }
 
                 NamedTypeSymbol initializerType = containingType;

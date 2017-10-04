@@ -3156,30 +3156,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Class, Interface and Structure Members
-        /*
-        public ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx)
+        public virtual ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx)
         {
-            ParameterListSyntax pars = _syntaxFactory.ParameterList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    MakeSeparatedList<ParameterSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-
-            ArgumentListSyntax args = MakeArgumentList();
-            var chain = _syntaxFactory.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
-                                                                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                                                                SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword),
-                                                                args
-                                                                );
-            var stmts = new List<StatementSyntax>();
-            var body = MakeBlock(stmts);
-            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-            GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
-            var mods = TokenList(SyntaxKind.PublicKeyword);
-            var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null);
-            ctor.XGenerated = true;
-            return ctor;
+            return null;
         }
-        */
         protected MemberDeclarationSyntax GenerateClassWrapper (SyntaxToken identifier,MemberDeclarationSyntax member, XP.NameDotContext namedot)
         {
             // This method generates a class wrapper for standalone Methods with a Class Clause
@@ -3205,6 +3185,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterConstructor([NotNull] XP.ConstructorContext context)
         {
             context.Data.MustBeVoid = true;
+        }
+
+
+        protected ConstructorInitializerSyntax createInitializer(IToken chain, XP.ArgumentListContext args)
+        {
+            if (chain == null)
+                return null;
+
+            else
+                return _syntaxFactory.ConstructorInitializer(chain.CtorInitializerKind(),
+                                            SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                            chain.SyntaxKeyword(),
+                                            args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList());
         }
 
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)
@@ -3256,11 +3249,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: mods,
                     identifier: parentId,
                     parameterList: parameters,
-                    initializer: context.Chain == null ? null :
-                        _syntaxFactory.ConstructorInitializer(context.Chain.CtorInitializerKind(),
-                            SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                            context.Chain.SyntaxKeyword(),
-                            context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
+                    initializer: createInitializer(context.Chain, context.ArgList),
                     body: body,
                     expressionBody: null,
                     semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));

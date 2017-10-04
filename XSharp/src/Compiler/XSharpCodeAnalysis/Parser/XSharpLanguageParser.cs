@@ -601,7 +601,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var element in partialClasses)
                 {
                     var name = element.Key;
-                    //bool hasctor = false;
+                    bool hasctor = false;
                     bool haspartialprop = false;
                     XP.IPartialPropertyContext ctxt = null;
                     XP.Namespace_Context xns;
@@ -609,10 +609,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var xnode = val.Type;
                         ctxt = xnode;
-                        //if (xnode.Data.HasCtor)
-                        //{
-                        //    hasctor = true;
-                        //}
+                        if (xnode.Data.HasCtor)
+                        {
+                            hasctor = true;
+                        }
                         if (xnode.Data.PartialProps)
                         {
                             haspartialprop = true;
@@ -695,15 +695,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // ctxt.Parent is XP.EntityContext
                         // ctxt.Parent.Parent may be XP.Namespace_Context
                         xns = ctxt.Parent.Parent as XP.Namespace_Context;
-                        if (/*!hasctor || */haspartialprop)
+                        if (!hasctor ||haspartialprop)
                         {
                             clsmembers.Clear();
                             var classdecl = ctxt.Get<ClassDeclarationSyntax>();
-                            //if (!hasctor && trans != null && _options.VOClipperConstructors)
-                            //{
-                            //    var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
-                            //    clsmembers.Add(ctor);
-                            //}
+                            if (!hasctor && trans != null && _options.VOClipperConstructors)
+                            {
+                                var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
+                                if (ctor != null)
+                                {
+                                    clsmembers.Add(ctor);
+                                }
+                            }
                             if (haspartialprop)
                             {
                                 var props = GeneratePartialProperties(element.Value, usingslist, trans);

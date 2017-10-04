@@ -19,13 +19,70 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Symbols;
+using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal static partial class MemberSymbolExtensions
     {
-        
 
+
+        internal static MethodSymbol BaseConstructor(this SourceMemberContainerTypeSymbol type)
+        {
+            var baseType = type.BaseType;
+            var members = baseType.GetMembers(".ctor");
+            if (members.Length == 1)
+            {
+                return members[0] as MethodSymbol;
+            }
+            return null;
+        }
+        internal static bool suppressGeneratedConstructorParams( this ConstructorDeclarationSyntax syntax, SourceMemberContainerTypeSymbol type)
+        {
+            if (!syntax.XGenerated)
+                return false;
+            var baseCtor = type.BaseConstructor();
+            if (baseCtor == null || !baseCtor.HasClipperCallingConvention())
+            {
+                return true;
+            }
+            return false;
+        }
+        internal static bool CtorWasGenerated(this SourceConstructorSymbol ctor)
+        {
+            var syntax = ctor.SyntaxNode;
+            return ctor.CtorWasGenerated();
+        }
+
+        internal static bool CtorWasGenerated(this MethodSymbol  ctor)
+        {
+            if (ctor is SourceConstructorSymbol)
+            {
+                var ctorSymbol = ctor as SourceConstructorSymbol;
+                var syntax = ctorSymbol.SyntaxNode;
+                return syntax.XGenerated;
+            }
+            return false;
+        }
+        internal static ImmutableArray<CSharpAttributeData> GetBaseAttributes(this SourceConstructorSymbol ctor)
+        {
+            var type = ctor.ContainingType as SourceMemberContainerTypeSymbol;
+            var baseCtor = type.BaseConstructor();
+            if (baseCtor != null && baseCtor.HasClipperCallingConvention())
+            {
+                if (baseCtor is SourceConstructorSymbol)
+                {
+                    var scs = baseCtor as SourceConstructorSymbol;
+                    if (scs.CtorWasGenerated())
+                        return scs.GetBaseAttributes();
+                    else
+                        return baseCtor.GetAttributes();
+                }
+                return baseCtor.GetAttributes();
+            }
+            return ImmutableArray<CSharpAttributeData>.Empty;
+        }
         internal static bool HasClipperCallingConvention(this Symbol method)
         {
             if (method is SourceMethodSymbol)
@@ -41,16 +98,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
             }
-
-            if (method.GetParameterCount() != 1)
+            var pars = method.GetParameters();
+            if (pars.Length != 1)
                 return false;
-            var atts = method.GetAttributes();
-            foreach (var att in atts)
-            {
-                var aclass = att.AttributeClass;
-                if (aclass.IsVulcanRTAttribute(VulcanTypeNames.ClipperCallingConventionAttribute))
-                    return true;
-            }
+            var par = pars[0];
+            if (par.Name == XSharpSpecialNames.ClipperArgs)
+                return true;
+            if (par.Name == VulcanSpecialNames.ClipperArgs)
+                return true;
             return false;
         }
     }

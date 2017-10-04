@@ -16,6 +16,11 @@ limitations under the License.
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+
+    internal static class VulcanSpecialNames
+    {
+        internal const string ClipperArgs = "$args";
+    }
     internal static class VulcanTypeNames
     {
         internal const string CodeBlockType = "Codeblock";

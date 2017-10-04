@@ -835,11 +835,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: modifiers,
                     identifier: parentId,
                     parameterList: parameters,
-                    initializer: chain == null ? null :
-                        _syntaxFactory.ConstructorInitializer(chain.CtorInitializerKind(),
-                            SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                            chain.SyntaxKeyword(),
-                            args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
+                    initializer: createInitializer(chain, args), 
                     body: body,
                     expressionBody: null,
                     semicolonToken: (stmtblock?._Stmts?.Count > 0) ? null :
@@ -940,6 +936,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varType = MissingType();
             return varType;
         }
+
+        public override ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx)
+        {
+            ParameterListSyntax pars = GetClipperParameters();
+
+            var arg = MakeArgument(GenerateSimpleName(XSharpSpecialNames.ClipperArgs));
+            ArgumentListSyntax args = MakeArgumentList(arg);
+
+            var chain = _syntaxFactory.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
+                                                                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                                                SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword),
+                                                                args
+                                                                );
+            var stmts = new List<StatementSyntax>();
+            var body = MakeBlock(stmts);
+            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
+            GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
+            var mods = TokenList(SyntaxKind.PublicKeyword);
+            var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null, null);
+            ctor.XGenerated = true;
+            return ctor;
+        }
+
         #endregion
 
         #region Listener Methods
@@ -975,25 +994,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //
                 // generate new class constructor
                 // 
-                //var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
-                //var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
-                //newmembers.AddRange(classdecl.Members);
-                //newmembers.Add(ctor);
-                //classdecl = classdecl.Update(
-                //    classdecl.AttributeLists,
-                //    classdecl.Modifiers,
-                //    classdecl.Keyword,
-                //    classdecl.Identifier,
-                //    classdecl.TypeParameterList,
-                //    classdecl.BaseList,
-                //    classdecl.ConstraintClauses,
-                //    classdecl.OpenBraceToken,
-                //    newmembers,
-                //    classdecl.CloseBraceToken,
-                //    classdecl.SemicolonToken);
-                //_pool.Free(newmembers);
-                //context.Put(classdecl);
-                //context.Data.HasCtor = true;
+                var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
+                var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                newmembers.AddRange(classdecl.Members);
+                if (ctor != null)
+                {
+                    newmembers.Add(ctor);
+                }
+                classdecl = classdecl.Update(
+                    classdecl.AttributeLists,
+                    classdecl.Modifiers,
+                    classdecl.Keyword,
+                    classdecl.Identifier,
+                    classdecl.TypeParameterList,
+                    classdecl.BaseList,
+                    classdecl.ConstraintClauses,
+                    classdecl.OpenBraceToken,
+                    newmembers,
+                    classdecl.CloseBraceToken,
+                    classdecl.SemicolonToken);
+                _pool.Free(newmembers);
+                context.Put(classdecl);
+                context.Data.HasCtor = true;
             }
         }
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)

@@ -14,6 +14,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private TypeSymbol _lazyReturnType;
         private bool _lazyIsVararg;
         private readonly bool _isExpressionBodied;
+#if XSHARP
+        private readonly bool _noParams;       
+#endif
 
         public static SourceConstructorSymbol CreateConstructorSymbol(
             SourceMemberContainerTypeSymbol containingType,
@@ -35,7 +38,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             bool modifierErrors;
             var declarationModifiers = this.MakeModifiers(syntax.Modifiers, methodKind, location, diagnostics, out modifierErrors);
             this.MakeFlags(methodKind, declarationModifiers, returnsVoid: true, isExtensionMethod: false);
-
+#if XSHARP
+            // if we have generated a constructor for a subtype of a class without a 
+            // clipper calling convention constructor then we must return an empty
+            // parameter list
+            _noParams = syntax.suppressGeneratedConstructorParams(containingType);
+#endif
+            
             bool hasBlockBody = syntax.Body != null;
             _isExpressionBodied = !hasBlockBody && syntax.ExpressionBody != null;
 
@@ -121,6 +130,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
+#if XSHARP
+                if (_noParams)
+                    return 0;
+#endif
                 if (!_lazyParameters.IsDefault)
                 {
                     return _lazyParameters.Length;
@@ -134,6 +147,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
+#if XSHARP
+                if (_noParams)
+                {
+                    return ImmutableArray<ParameterSymbol>.Empty;
+                }
+#endif
                 LazyMethodChecks();
                 return _lazyParameters;
             }

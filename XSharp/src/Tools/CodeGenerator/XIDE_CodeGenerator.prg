@@ -28,9 +28,9 @@ CLASS AbstractEditor
 	METHOD EndCode() AS VOID
 		IF SELF:oBuffer != NULL
 			SELF:oBuffer:EndAction()
-//			SELF:oBuffer:Save()
 		END IF
 	RETURN
+
 	METHOD ModifiedLine(nLine AS INT) AS VOID
 		IF SELF:nStart == 0 .or. SELF:nStart > nLine
 			SELF:nStart := nLine
@@ -39,6 +39,7 @@ CLASS AbstractEditor
 			SELF:nEnd := nLine
 		ENDIF
 	RETURN
+
 	METHOD CheckCreatedCode() AS VOID
 		IF SELF:nStart != 0
 			SELF:oBuffer:LinesModified(0,0,0)
@@ -50,15 +51,19 @@ CLASS AbstractEditor
 	METHOD AddLine(cLine AS STRING) AS VOID
 		SELF:oBuffer:AddLine(cLine)
 	RETURN
+
 	METHOD InsertLine(cLine AS STRING , nLine AS INT) AS VOID
 		SELF:oBuffer:InsertLine(nLine , cLine)
 	RETURN
+
 	METHOD ReplaceLine(cLine AS STRING , nLine AS INT) AS VOID
 		SELF:oBuffer:ChangeLine(nLine , cLine)
 	RETURN
+
 	METHOD RemoveLine(nLine AS INT) AS VOID
 		SELF:oBuffer:DeleteLine(nLine)
 	RETURN
+
 	METHOD DeleteAllLines() AS VOID
 		SELF:oBuffer:DeleteAllLines()
 	RETURN
@@ -67,12 +72,9 @@ END CLASS
 
 
 PARTIAL CLASS CodeGenerator
-//	PROTECT oFile AS FileControlBase
 	PROTECT aLines AS List<LineObject>
-//	PROTECT oDesigners AS DesignersList
 	PROTECT nStart,nEnd AS INT
 	PROTECT oCaretPos AS System.Drawing.Point
-//	PROTECT oIde AS PyrgasIdeBase
 	PROTECT oEditor , oBaseEditor , oDesEditor AS AbstractEditor
 
 	CONSTRUCTOR(oBuffer AS EditorBuffer)
@@ -80,14 +82,13 @@ PARTIAL CLASS CodeGenerator
 		SELF:oBaseEditor := AbstractEditor{oBuffer}
 	RETURN
 
+
 	METHOD BeginCode() AS LOGIC
-	RETURN SELF:BeginCode(FALSE)
-	METHOD BeginCode(lUseDesPrg AS LOGIC) AS LOGIC
 		SELF:oDesEditor := SELF:oBaseEditor
 		SELF:oEditor := SELF:oBaseEditor
 		SELF:oEditor:BeginCode()
-//		SELF:aLines := SELF:oEditor:aLines
 	RETURN FALSE
+
 	METHOD EndCode() AS VOID
 		SELF:oEditor:EndCode()
 	RETURN
@@ -95,11 +96,12 @@ PARTIAL CLASS CodeGenerator
 METHOD ModifiedLine(nLine AS INT) AS VOID
 	SELF:oEditor:ModifiedLine(nLine)
 RETURN
+
 METHOD CheckCreatedCode() AS VOID
 	SELF:oEditor:CheckCreatedCode()
 RETURN
 METHOD GetLine(nLine AS INT) AS LineObject
-RETURN SELF:aLines[nLine - 1]
+	RETURN SELF:aLines[nLine - 1]
 
 
 
@@ -133,6 +135,7 @@ RETURN FALSE
 METHOD DeleteEntity(eType AS EntityType,cName AS STRING,cClass AS STRING) AS LOGIC
 	LOCAL nLine AS INT
 RETURN SELF:DeleteEntity(eType , cName ,cClass , nLine)
+
 METHOD DeleteEntity(eType AS EntityType,cName AS STRING,cClass AS STRING,nLine REF Int32) AS LOGIC
 LOCAL oLine AS LineObject
 LOCAL lExit AS LOGIC
@@ -237,8 +240,6 @@ METHOD Clear() AS VOID
 	SELF:oEditor:DeleteAllLines()
 RETURN
 
-/*	STATIC PROTECT cUser := "// User code starts here (DO NOT remove this line)  " AS STRING
-	STATIC PROTECT cTagU := "{{%UC%}}" AS STRING*/
 	STATIC PROTECT cUser := "// {{%UC%}} User code starts here (DO NOT remove this line)  " AS STRING
 	STATIC PROTECT cTagU := "" AS STRING
 
@@ -462,15 +463,11 @@ RETURN
 		
 	RETURN
 
-/*	METHOD AddInclude(cInclude AS STRING) AS VOID
-		LOCAL cLine AS STRING
-		cLine := "#include " + e"\"" + cInclude + e"\""
-		SELF:AddLine(cLine)
-	RETURN*/
 
 	METHOD AddDefine(cDefine AS STRING , cValue AS STRING) AS VOID
 		SELF:AddDefine(cDefine , cValue , TRUE)
 	RETURN
+
 	METHOD AddDefine(cDefine AS STRING , cValue AS STRING , lAdd AS LOGIC) AS VOID
 		LOCAL cLine AS STRING
 		cLine := String.Format("#define {0} {1}" , cDefine , cValue)
@@ -485,11 +482,38 @@ RETURN
 	METHOD AddDefines(aDefines AS List<STRING> , aDefineValues AS List<STRING>) AS VOID
 		SELF:AddDefines(aDefines , aDefineValues , TRUE)
 	RETURN
+
 	METHOD AddDefines(aDefines AS List<STRING> , aDefineValues AS List<STRING> , lAdd AS LOGIC) AS VOID
 		FOR LOCAL n := 0 AS INT UPTO aDefines:Count - 1
 			SELF:AddDefine(aDefines[n] , aDefineValues[n] , lAdd)
 		NEXT
 	RETURN
+
+	METHOD RemoveDefines(cWindowName as STRING) AS VOID
+		LOCAL oLine AS LineObject
+		LOCAL nLine AS INT
+		nLine := 1
+		cWindowName := cWindowName:ToUpper()+"_"
+		DO WHILE nLine <= SELF:aLines:Count
+			LOCAL lDeleted := FALSE AS LOGIC
+			oLine := SELF:aLines[nLine - 1]
+			IF oLine:eType == LineType.Define .and. .not. String.IsNullOrEmpty(oLine:cArgument)
+				IF oLine:cArgument:ToUpper():StartsWith(cWindowName)
+					SELF:DeleteLine(nLine)
+					lDeleted := TRUE
+				END IF
+			ELSEIF oLine:oEntity != NULL .and. oLine:oEntity:eType == EntityType._Define
+				IF oLine:oEntity:cName:ToUpper():StartsWith(cWindowName)
+					SELF:DeleteLine(nLine)
+					lDeleted := TRUE
+				END IF
+			END IF
+			IF .not. lDeleted
+				nLine ++
+			END IF
+		END DO
+		SELF:CheckCreatedCode()
+		RETURN
 
 	METHOD AddXSharpDefines(aDefines AS List<STRING> , aDefineValues AS List<STRING>) AS VOID
 		SELF:AddXSharpDefines(aDefines, aDefineValues, FALSE)

@@ -3250,7 +3250,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // that the args are detached 
             //
             var actualArgs = initializerArgumentListOpt;
-            if (constructor.CtorWasGenerated() && constructor.ParameterCount == 0)
+            if (constructor.IsGeneratedConstructor() && constructor.ParameterCount == 0)
             {
                 actualArgs = initializerArgumentListOpt.Update(initializerArgumentListOpt.OpenParenToken,
                     new SeparatedSyntaxList<ArgumentSyntax>(), initializerArgumentListOpt.CloseParenToken);

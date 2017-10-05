@@ -20,7 +20,9 @@ using Microsoft.CodeAnalysis.CodeGen;
 using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.Emit;
 using Roslyn.Utilities;
-
+#if XSHARP
+using Microsoft.CodeAnalysis.CSharp.Symbols;
+#endif
 namespace Microsoft.Cci
 {
     internal abstract partial class MetadataWriter
@@ -2079,10 +2081,25 @@ namespace Microsoft.Cci
             foreach (var parent in parentList)
             {
                 EntityHandle parentHandle = getDefinitionHandle(parent);
+#if XSHARP
+                var attribs = parent.GetAttributes(Context);
+                if (parent is SourceConstructorSymbol)
+                {
+                    var ctorSym = parent as SourceConstructorSymbol;
+                    attribs = ctorSym.GetConstructorAttributes(attribs);
+                }
+                foreach (ICustomAttribute customAttribute in attribs)
+                {
+                    AddCustomAttributeToTable(parentHandle, customAttribute);
+                }
+#else
                 foreach (ICustomAttribute customAttribute in parent.GetAttributes(Context))
                 {
                     AddCustomAttributeToTable(parentHandle, customAttribute);
                 }
+#endif
+
+
             }
         }
 

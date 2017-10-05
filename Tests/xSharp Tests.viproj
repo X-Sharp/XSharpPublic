@@ -44792,7 +44792,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C445 - Cannot use SizeOf(USUAL) also DATE, FLOAT etc
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C446 - VO incompatibility with missing constructors *************
 Application = C446 - VO incompatibility with missing constructors
 IDEVersion = 1.06
@@ -54948,7 +54948,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C543 - Cannot initialize field using value from another initialized field
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C544 - Robert's about ACCESS/ASSIGN in inheitance *************
 Application = C544 - Robert's about ACCESS/ASSIGN in inheitance
 IDEVersion = 1.06
@@ -55001,7 +55001,7 @@ CaseSensitive=0
 ImplicitNamespace=0
 VO1=0
 VO2=0
-VO3=0
+VO3=1
 VO4=0
 VO5=0
 VO6=0
@@ -57750,7 +57750,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C569 - Interface with PUBLIC method
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C570 *************
 Application = C570
 IDEVersion = 1.06
@@ -57849,7 +57849,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C570
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C570_Helper *************
 Application = C570_Helper
 IDEVersion = 1.06

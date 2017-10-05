@@ -2762,6 +2762,11 @@ namespace XSharpLanguage
                     }
                     if (cType.IsEmpty())
                     {
+                        // Could it be a Function or a Procedure
+                        cType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
+                    }
+                    if (cType.IsEmpty())
+                    {
                         cType = null;
                     }
                 }
@@ -2826,6 +2831,9 @@ namespace XSharpLanguage
 #endif
             return cType;
         }
+
+
+
         static public CompletionElement FindIdentifier(this XTypeMember member, string name, ref CompletionType cType, Modifiers visibility, string currentNS)
         {
             XElement element;
@@ -3594,6 +3602,60 @@ namespace XSharpLanguage
                     }
                 }
                 //
+            }
+            //
+            return cType;
+        }
+
+        private static CompletionType SearchFunctionIn(XFile xFile, string currentToken, out CompletionElement foundElement)
+        {
+            foundElement = null;
+            if (xFile == null)
+            {
+                return null;
+            }
+            if (xFile.Project == null)
+            {
+                return null;
+            }
+            //
+            CompletionType cType = null;
+            //
+            // 
+            XTypeMember xMethod = xFile.GlobalType.Members.Find(x =>
+            {
+                if ((x.Kind == Kind.Function) || (x.Kind == Kind.Procedure))
+                {
+                    return StringEquals(x.Name, currentToken);
+                }
+                return false;
+            });
+            //
+            if (xMethod != null)
+            {
+                foundElement = new CompletionElement(xMethod);
+                if (xMethod.Parent != null)
+                {
+                    // Parent is a XElement, so one of our Types
+                    return new CompletionType(xMethod.Parent.Clone);
+                }
+            }
+            else
+            {
+                // Not Found ? 
+                if (xFile.Project.ReferencedProjects != null)
+                {
+                    // now try with Referenced XSharp Projects
+                    foreach (XProject prj in xFile.Project.ReferencedProjects)
+                    {
+                        foreach (XFile file in prj.SourceFiles)
+                        {
+                            cType = SearchFunctionIn(file, currentToken, out foundElement);
+                            if (!cType.IsEmpty())
+                                break;
+                        }
+                    }
+                }
             }
             //
             return cType;

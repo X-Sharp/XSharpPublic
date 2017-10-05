@@ -187,7 +187,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 	METHOD SaveRC(oStream AS XSharp_EditorStream , oAccelStream AS XSharp_EditorStream , oCode AS CodeContents ) AS LOGIC
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oStream:Editor}
-		oGenerator:BeginCode(TRUE)
+		oGenerator:BeginCode()
 		oGenerator:Clear()
 		XFuncs.WriteHeader(oGenerator, "XSharp.MenuEditor")
 		SELF:_WriteDefines(oGenerator, oCode)
@@ -198,7 +198,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		
 		IF oAccelStream:IsValid
 			oGenerator := CodeGenerator{oAccelStream:Editor}
-			oGenerator:BeginCode(TRUE)
+			oGenerator:BeginCode()
 			oGenerator:Clear()
 			XFuncs.WriteHeader(oGenerator, "XSharp.MenuEditor")
 			SELF:_WriteDefines(oGenerator, oCode)
@@ -219,11 +219,11 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		LOCAL cName AS STRING
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oStream:Editor}
-		oGenerator:BeginCode(TRUE)
+		oGenerator:BeginCode()
 		oGenerator:DeleteDefines(oCode:aDefines)
 		oGenerator:AddXSharpDefines(oCode:aDefines , oCode:aDefineValues)
-
 		cName := SELF:oMainNode:oDesign:Name
+		oGenerator:RemoveDefines("IDM_"+cName)
 		oGenerator:WriteEntity(EntityType._Class	  , cName , cName , EntityOptions.None , oCode:aClass)
 		oGenerator:WriteEntity(EntityType._Constructor, cName , cName , EntityOptions.None , oCode:aConstructor)
 		IF SELF:HasAccelerators

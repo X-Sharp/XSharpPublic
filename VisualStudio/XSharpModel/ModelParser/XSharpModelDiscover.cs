@@ -962,6 +962,10 @@ namespace XSharpModel
                             //
                             retValue = Modifiers.Public;
                             break;
+                        case XSharpParser.STATIC:
+                            //
+                            retValue = Modifiers.Static;
+                            break;
                     }
                 }
             }

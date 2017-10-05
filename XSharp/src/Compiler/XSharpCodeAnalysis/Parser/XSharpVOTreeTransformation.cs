@@ -953,6 +953,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var body = MakeBlock(stmts);
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
+            attributeLists.Add(MakeClipperCallingConventionAttribute(new List<ExpressionSyntax>()));
             var mods = TokenList(SyntaxKind.PublicKeyword);
             var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null, null);
             ctor.XGenerated = true;

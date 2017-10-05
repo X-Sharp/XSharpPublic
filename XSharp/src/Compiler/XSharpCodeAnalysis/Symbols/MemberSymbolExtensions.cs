@@ -13,20 +13,45 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using Roslyn.Utilities;
-using Microsoft.CodeAnalysis.Symbols;
-using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Cci;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal static partial class MemberSymbolExtensions
     {
 
+        internal static IEnumerable<ICustomAttribute> GetConstructorAttributes(this SourceConstructorSymbol ctor, IEnumerable<ICustomAttribute> attribs)
+        {
+            if (!ctor.IsGeneratedConstructor())
+                return attribs;
+            var list = new List<ICustomAttribute>();
+            foreach (var att in attribs)
+            {
+                if (!att.ToString().Contains(VulcanTypeNames.ClipperCallingConventionAttribute))
+                    list.Add(att);
+            }
+            if (ctor.ParameterCount != 0)
+            {
+                var baseCtor = ctor.BaseConstructor() as SourceConstructorSymbol;
+                if (baseCtor != null)
+                {
+                    foreach (var att in baseCtor.GetAttributes())
+                    {
+                        if (att.ToString().Contains("Clipper"))
+                            list.Add(att);
+                    }
+                }
+            }
+            return list;
+
+        }
+        internal static MethodSymbol BaseConstructor(this SourceConstructorSymbol ctor)
+        {
+            var container = ctor.ContainingSymbol as SourceMemberContainerTypeSymbol;
+            return container.BaseConstructor();
+        }
 
         internal static MethodSymbol BaseConstructor(this SourceMemberContainerTypeSymbol type)
         {
@@ -34,7 +59,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var members = baseType.GetMembers(".ctor");
             if (members.Length == 1)
             {
-                return members[0] as MethodSymbol;
+                var member = members[0] as MethodSymbol;
+                if (member is SourceConstructorSymbol)
+                {
+                    var ctor = member as SourceConstructorSymbol;
+                    if (!ctor.IsGeneratedConstructor())
+                        return member;
+                    return ctor.BaseConstructor();
+                }
+                return member;
             }
             return null;
         }
@@ -49,13 +82,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return false;
         }
-        internal static bool CtorWasGenerated(this SourceConstructorSymbol ctor)
-        {
-            var syntax = ctor.SyntaxNode;
-            return ctor.CtorWasGenerated();
-        }
 
-        internal static bool CtorWasGenerated(this MethodSymbol  ctor)
+        internal static bool IsGeneratedConstructor(this MethodSymbol  ctor)
         {
             if (ctor is SourceConstructorSymbol)
             {
@@ -64,24 +92,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return syntax.XGenerated;
             }
             return false;
-        }
-        internal static ImmutableArray<CSharpAttributeData> GetBaseAttributes(this SourceConstructorSymbol ctor)
-        {
-            var type = ctor.ContainingType as SourceMemberContainerTypeSymbol;
-            var baseCtor = type.BaseConstructor();
-            if (baseCtor != null && baseCtor.HasClipperCallingConvention())
-            {
-                if (baseCtor is SourceConstructorSymbol)
-                {
-                    var scs = baseCtor as SourceConstructorSymbol;
-                    if (scs.CtorWasGenerated())
-                        return scs.GetBaseAttributes();
-                    else
-                        return baseCtor.GetAttributes();
-                }
-                return baseCtor.GetAttributes();
-            }
-            return ImmutableArray<CSharpAttributeData>.Empty;
         }
         internal static bool HasClipperCallingConvention(this Symbol method)
         {

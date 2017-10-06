@@ -588,7 +588,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         Interpreter.Line += 1;
                         c = InputStream.La(1);
-                        Interpreter.Column = 1 - (InputStream.Index - _startCharIndex);
+                        Interpreter.Column = 0 - (InputStream.Index - _startCharIndex);
                         break;
                     case '\t':
                     case ' ':

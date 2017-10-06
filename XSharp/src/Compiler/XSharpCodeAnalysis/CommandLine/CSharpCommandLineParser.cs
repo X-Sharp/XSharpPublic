@@ -358,9 +358,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo14", "Float literal Values", options.Dialect.ToString());
                     options.Vo14 = false;
                 }
+                if (options.Vo15)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo15", "Allow untyped Locals and return types", options.Dialect.ToString());
+                    options.Vo15 = false;
+                }
                 if (options.Vo16)
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo16", "Automatic Generation of Clipper Constructors", options.Dialect.ToString());
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo16", "Generate Clipper calling convention constructors for classes without constructor", options.Dialect.ToString());
                     options.Vo16 = false;
                 }
             }
@@ -370,10 +375,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     options.Vo15 = true;            // Untyped allowed
                 }
-                //if (!options.ExplicitVO16)
-                //{
-                //    options.Vo16 = true;            // Initialize variables to defaults
-                //}
             }
             options.Dialect = newDialect;
         }

@@ -358,6 +358,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo14", "Float literal Values", options.Dialect.ToString());
                     options.Vo14 = false;
                 }
+                if (options.Vo16)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo16", "Automatic Generation of Clipper Constructors", options.Dialect.ToString());
+                    options.Vo16 = false;
+                }
             }
             else
             {

@@ -248,16 +248,27 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
     internal static class XNodeExtensions
     {
+        // Extension to get safe line/column numbers
+        internal static LinePosition GetLinePosition (this Antlr4.Runtime.IToken token, bool start)
+        {
+           int iLine = token.Line   > 1 ? token.Line-1 : 0;  // note Antlr Line = 1 based
+           int iCol  = token.Column > 0 ? token.Column : 0;  // note Antlr Column = 0 based
+           if (! start)
+           {
+               iCol += token.Text.Length;
+           }
+           return new LinePosition(iLine, iCol);
+        }
         internal static Location GetLocation(this IXParseTree node)
         {
 
             TextSpan span = new TextSpan(0, 1);
-            LinePositionSpan lspan = new LinePositionSpan(new LinePosition(0, 1), new LinePosition(0, 1));
+            LinePositionSpan lspan = new LinePositionSpan(new LinePosition(0, 0), new LinePosition(0, 1));
             if (node is XSharpParserRuleContext)
             {
                 var rule = node as XSharpParserRuleContext;
-                span = new TextSpan(rule.Start.StartIndex, rule.FullWidth);
-                lspan = new LinePositionSpan(new LinePosition(rule.Start.Line-1, rule.Start.Column-1), new LinePosition(rule.Stop.Line-1, rule.Stop.Column-1));
+                span = new TextSpan(rule.Start.StartIndex, rule.FullWidth);     // Note Antlr StartIndex = 0 based
+                lspan = new LinePositionSpan(rule.Start.GetLinePosition(true), rule.Stop.GetLinePosition(false));
             }
             else if (node is XTerminalNodeImpl)
             {
@@ -269,20 +280,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (sym != null)
                 {
-                    span = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex+1);
-                    int row, col;
-                    row = sym.Line - 1;
-                    col = sym.Column -1;
-                    if (col < 0)
-                        col = 0;
-                    if(row < 0)
-                        row = 0;
-                    lspan = new LinePositionSpan(new LinePosition(row, col),
-                        new LinePosition(row, col + span.Length - 1));
+                    span = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex+1);  // note Antlr StartIndex = 0 based
+                    lspan = new LinePositionSpan(sym.GetLinePosition(true),sym.GetLinePosition(false));
                 }
                 else
                 {
-                    span = new TextSpan(term.Position, term.FullWidth);
+                    span = new TextSpan(term.Position, term.FullWidth);     // Position = 0 based
+                    // default lSpan is set above
                 }
             }
 

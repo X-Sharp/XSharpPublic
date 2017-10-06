@@ -648,7 +648,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo13", base.Bag, nameof(VO13));
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
             commandline.AppendPlusOrMinusSwitch("/vo15", base.Bag, nameof(VO15));
-            //commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
+            commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces
             if (!String.IsNullOrEmpty(this.CommandLineOption))

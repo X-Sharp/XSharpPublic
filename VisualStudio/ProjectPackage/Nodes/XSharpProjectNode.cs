@@ -1741,6 +1741,8 @@ namespace XSharp.Project
             // /prebuildevent appears more than once.
             //if (str.ToLower().Replace("/prebuildevent", "").Length < str.Length - "/prebuildevent".Length)
             //    ok = false;
+            if (ok && str.IndexOf("'=='", StringComparison.OrdinalIgnoreCase) >= 0)
+                ok = false;
             if (ok && str.IndexOf("'Debug|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
@@ -1794,8 +1796,10 @@ namespace XSharp.Project
         {
             bool changed = false;
             var xml = BuildProject.Xml;
-            var groups = xml.PropertyGroups.ToArray();
-            foreach (var group in xml.PropertyGroups)
+            var groups = xml.PropertyGroups.ToList();
+            var groupDict = new Dictionary<string, MBC.ProjectPropertyGroupElement>();
+            
+            foreach (var group in groups)
             {
                 if (group.Condition.Length > 0)
                 {
@@ -1803,19 +1807,87 @@ namespace XSharp.Project
                     if (condition.IndexOf(config, StringComparison.OrdinalIgnoreCase) > -1 &&
                         condition.IndexOf(configPlatform, StringComparison.OrdinalIgnoreCase) == -1)
                     {
-                        if (condition.IndexOf("'Debug'", StringComparison.OrdinalIgnoreCase) > 0)
-                        {
+                        if (condition.IndexOf("'Debug", StringComparison.OrdinalIgnoreCase) > 0)
                             condition = conditionDebug;
-                        }
                         else
-                        {
                             condition = conditionRelease;
+                        changed = true;
+                    }
+                    if (condition.Contains("'=='"))
+                    {
+                        condition = condition.Replace("'=='", "' == '");
+                        changed = true;
+
+                    }
+                    condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+                    group.Condition = condition;
+                    if (!groupDict.ContainsKey(condition))
+                    {
+                        groupDict.Add(condition, group);
+                    }
+                    
+                }
+            }
+            foreach (var group in groupDict.Values)
+            {
+                groups.Remove(group);
+            }
+            // now move the elements from groups after 1st 2 groups that have the same condition 
+            // with the exception of the build events
+            foreach (var group in groups.Where(g=>g.Condition.Length > 0))
+            {
+                foreach(var source in groupDict.Values)
+                {
+                    if (group.Condition.Trim() == source.Condition.Trim())
+                    {
+                        var propsToMove = new List<MBC.ProjectPropertyElement>();
+                        var propsToDelete = new List<MBC.ProjectPropertyElement>();
+                        foreach (var prop in group.Properties)
+                        {
+                            var name = prop.Name;
+                            switch (name.ToLower())
+                            {
+                                case "prebuildevent":
+                                case "postbuildevent":
+                                case "runpostbuildevent":
+                                    continue;
+                                default:
+                                    break;
+                            }
+                            bool found = false;
+                            foreach (var current in source.Properties)
+                            {
+                                if (String.Compare(current.Name, name, true) == 0)
+                                {
+                                    found = true;
+                                    current.Value = prop.Value;
+                                    propsToDelete.Add(prop);
+                                }
+                            }
+                            if (! found)
+                            {
+                                propsToMove.Add(prop);
+                            }
+                        }
+                        foreach (var prop in propsToDelete)
+                        {
+                            group.RemoveChild(prop);
+                            changed = true;
+                        }
+                        foreach (var prop in propsToMove)
+                        {
+                            group.RemoveChild(prop);
+                            source.AddProperty(prop.Name, prop.Value);
+                            changed = true;
+                        }
+                        if (group.Properties.Count == 0)
+                        {
+                            group.Parent.RemoveChild(group);
+                            changed = true;
                         }
                     }
-                    condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-                    group.Condition = condition;
-                    changed = true;
                 }
+
             }
             // check for the XSharpProjectExtensionsPath property inside the first propertygroup
             bool ok = false;

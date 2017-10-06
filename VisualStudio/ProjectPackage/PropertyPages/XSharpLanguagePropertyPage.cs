@@ -43,7 +43,7 @@ namespace XSharp.Project
         internal const string VO13Caption = "Compatible string comparisons";
         internal const string VO14Caption = "Use FLOAT literals";
         internal const string VO15Caption = "Treat missing types as USUAL";
-        internal const string VO16Caption = "Initialize Variables and Fields";
+        internal const string VO16Caption = "Generate Clipper constructors";
         internal const string VO1Description = "Allow Init() and Axit() as aliases for Constructor/Destructor (/vo1)";
         internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
@@ -59,7 +59,7 @@ namespace XSharp.Project
         internal const string VO13Description = "Compatible string comparisons, respects SetExact and collation table (/vo13)";
         internal const string VO14Description = "Store floating point literals as FLOAT and not as System.Double (REAL8)  (/vo14)";
         internal const string VO15Description = "Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE for the VO dialect and FALSE for the other dialects. We strongly recommend to set this to FALSE because this will help you to find problems in your code and non optimal code. If you have to use the USUAL type we recommend to explicitly declare variables and parameters as USUAL (/vo15)";
-        internal const string VO16Description = "Automatically initialize variables and fields with a default (empty) value. The default = TRUE for the VO dialect and FALSE for the other dialects.(/vo16)";
+        internal const string VO16Description = "Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)";
         internal const string CMDCaption = "Extra Command Line Options";
         internal const string AZCaption = "Use Zero Based Arrays";
         internal const string CSCaption = "Case Sensitive";
@@ -104,7 +104,7 @@ namespace XSharp.Project
         private bool vo13;
         private bool vo14;
         private bool vo15;
-        //private bool vo16;
+        private bool vo16;
         #endregion Fields
 
         #region Constructors
@@ -138,7 +138,7 @@ namespace XSharp.Project
         public bool CS
         {
             get { return this.cs; }
-            set { this.cs = value; this.IsDirty = true; }
+            //set { this.cs = value; this.IsDirty = true; }
         }
 
         [Category(CatGeneral), DisplayName(OVFCaption), Description(OVFDescription)]
@@ -241,7 +241,7 @@ namespace XSharp.Project
         public bool VO11
         {
             get { return this.vo11; }
-            set { this.vo11 = value; this.IsDirty = true; }
+            //set { this.vo11 = value; this.IsDirty = true; }
         }
 
         [Category(CatCompatibility),DisplayName(VO12Caption), Description(VO12Description)]
@@ -269,12 +269,12 @@ namespace XSharp.Project
             get { return this.vo15; }
             set { this.vo15 = value; this.IsDirty = true; }
         }
-        //[Category(CatCompatibility), DisplayName(VO16Caption), Description(VO16Description)]
-        //public bool VO16
-        //{
-        //    get { return this.vo16; }
-        //    set { this.vo16 = value; this.IsDirty = true; }
-        //}
+        [Category(CatCompatibility), DisplayName(VO16Caption), Description(VO16Description)]
+        public bool VO16
+        {
+            get { return this.vo16; }
+            set { this.vo16 = value; this.IsDirty = true; }
+        }
 
         #endregion
         #region Overriden Implementation
@@ -324,7 +324,7 @@ namespace XSharp.Project
             vo13 = getPrjLogic(nameof(VO13), false);
             vo14 = getPrjLogic(nameof(VO14), false);
             vo15 = getPrjLogic(nameof(VO15), true);
-            //vo16 = getPrjLogic(nameof(VO16), true);
+            vo16 = getPrjLogic(nameof(VO16), false);
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(VO13), this.vo13.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO14), this.vo14.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO15), this.vo15.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(VO16), this.vo16.ToString().ToLower());
+            this.ProjectMgr.SetProjectProperty(nameof(VO16), this.vo16.ToString().ToLower());
 
             this.IsDirty = false;
 

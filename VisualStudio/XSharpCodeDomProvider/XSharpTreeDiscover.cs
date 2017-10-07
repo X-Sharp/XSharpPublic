@@ -65,7 +65,7 @@ namespace XSharp.CodeDom
 
     class XSharpClassDiscover : XSharpBaseDiscover
     {
-  
+
         private CodeMemberMethod initComponent;
         private IList<string> _locals;          // used to keep track of local vars
 
@@ -161,9 +161,141 @@ namespace XSharp.CodeDom
             }
             return false;
         }
+
+        private bool findMember(XSharpModel.XType type, string name, MemberTypes mtype)
+        {
+            if (_members.ContainsKey(name))
+            {
+                return _members[name].MemberType == mtype;
+            }
+            bool result = false;
+            XSharpModel.XElement element = type.Members.Find(x => String.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            if (element != null)
+            {
+                System.Type t = typeof(void);
+                switch (element.Kind)
+                {
+                    case XSharpModel.Kind.Field:
+                        result = true;
+                        addMember(new XMemberType(name, MemberTypes.Field, true, t));
+                        break;
+                    case XSharpModel.Kind.Property:
+                    case XSharpModel.Kind.Access:
+                    case XSharpModel.Kind.Assign:
+                        result = true;
+                        addMember(new XMemberType(name, MemberTypes.Property, true, t));
+                        break;
+                    case XSharpModel.Kind.Method:
+                        result = true;
+                        addMember(new XMemberType(name, MemberTypes.Method, true, t));
+                        break;
+                    case XSharpModel.Kind.Event:
+                        result = true;
+                        addMember(new XMemberType(name, MemberTypes.Event, true, t));
+                        break;
+                    case XSharpModel.Kind.Constructor:
+                        result = true;
+                        addMember(new XMemberType(name, MemberTypes.Constructor, true, t));
+                        break;
+                }
+            }
+            return result;
+        }
+
+        private bool findMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
+        {
+            if (_members.ContainsKey(name))
+            {
+                return _members[name].MemberType == mtype;
+            }
+            return searchMember(type, name, mtype);
+        }
+
+        private bool searchMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
+        {
+            bool result = false;
+            //
+            if ((type.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                (type.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                (type.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+            {
+
+                //
+                EnvDTE.CodeElements members = null;
+                EnvDTE.CodeElements bases = null; ;
+                if (type.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                {
+                    EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)type;
+                    members = envClass.Members;
+                    bases = envClass.Bases;
+                }
+                else if (type.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+                {
+                    EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)type;
+                    members = envEnum.Members;
+                    bases = envEnum.Bases;
+                }
+                else if (type.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+                {
+                    EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)type;
+                    members = envStruct.Members;
+                    bases = envStruct.Bases;
+                }
+                //
+                System.Type t = typeof(void);
+                foreach (EnvDTE.CodeElement member in members)
+                {
+                    if (String.Equals(member.Name, name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        switch (member.Kind)
+                        {
+                            case EnvDTE.vsCMElement.vsCMElementEvent:
+                                result = true;
+                                addMember(new XMemberType(name, MemberTypes.Event, true, t));
+                                break;
+                            case EnvDTE.vsCMElement.vsCMElementVariable:
+                                result = true;
+                                addMember(new XMemberType(name, MemberTypes.Field, true, t));
+                                break;
+                            case EnvDTE.vsCMElement.vsCMElementFunction:
+                                result = true;
+                                addMember(new XMemberType(name, MemberTypes.Method, true, t));
+                                break;
+                            case EnvDTE.vsCMElement.vsCMElementProperty:
+                                result = true;
+                                addMember(new XMemberType(name, MemberTypes.Property, true, t));
+                                break;
+                        }
+                        if (result)
+                            break;
+                    }
+                }
+                if (!result)
+                {
+                    if (bases != null)
+                    {
+                        foreach (EnvDTE.CodeElement parent in bases)
+                        {
+                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                            {
+                                //
+                                result = searchMember(parent, name, mtype);
+                                if (result)
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {
             System.Type baseType;
+            XSharpModel.XType baseXType;
+            EnvDTE.CodeElement baseSType;
+            //
             foreach (CodeTypeReference basetype in CurrentClass.BaseTypes)
             {
                 string typeName = basetype.BaseType;
@@ -175,9 +307,34 @@ namespace XSharp.CodeDom
                         return true;
                     }
                 }
+                else
+                {
+                    // External XSharp Project
+                    baseXType = findReferencedType(typeName);
+                    if (baseXType != null)
+                    {
+                        if (findMember(baseXType, name, mtype))
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        // External C#/VB/... Project
+                        baseSType = findStrangerType(typeName);
+                        if (baseSType != null)
+                        {
+                            if (findMember(baseSType, name, mtype))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
             return false;
         }
+
 
         private bool isField(string name)
         {
@@ -364,16 +521,16 @@ namespace XSharp.CodeDom
                     FillCodeSource(newMethod, context.end.Stop, context);
 
                     // The designer will need to locate the code in the file, so we must add the location
-                    if ( context.StmtBlk.ChildCount > 0 )
+                    if (context.StmtBlk.ChildCount > 0)
                         FillCodeDomDesignerData(newMethod, context.StmtBlk.Start.Line, context.StmtBlk.Start.Column);
                     else
-                        FillCodeDomDesignerData(newMethod, context.Start.Line+1, context.Start.Column);
+                        FillCodeDomDesignerData(newMethod, context.Start.Line + 1, context.Start.Column);
                 }
             }
             //
             this.CurrentClass.Members.Add(newMethod);
             this.addMember(new XMemberType(newMethod.Name, MemberTypes.Method, false, returnType.Type));
-           
+
         }
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
@@ -424,7 +581,7 @@ namespace XSharp.CodeDom
         }
 
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
-         {
+        {
             CodeConstructor ctor = new CodeConstructor();
             ctor.Comments.AddRange(context.GetLeadingComments(_tokens));
             ctor.Attributes = MemberAttributes.Public;
@@ -576,7 +733,7 @@ namespace XSharp.CodeDom
                 {
                     stmt = CreateAssignStatement(context._expression as XSharpParser.AssignmentExpressionContext);
                 }
-                else 
+                else
                 {
                     var expr = BuildExpression(context._expression, true);
                     stmt = new CodeExpressionStatement(expr);
@@ -634,7 +791,7 @@ namespace XSharp.CodeDom
                             var mb = m as MethodBase;
                             isPrivate = mb.IsPrivate;
                             if (!isPrivate)
-                                return new CodeMethodReferenceExpression(lhsExpr,mb.Name);
+                                return new CodeMethodReferenceExpression(lhsExpr, mb.Name);
                             break;
                         case MemberTypes.Event:
                             var ei = m as EventInfo;
@@ -651,7 +808,7 @@ namespace XSharp.CodeDom
         /// <param name="lhs"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        private CodeExpression ResolveSelfExpression(CodeExpression lhs, string name  )
+        private CodeExpression ResolveSelfExpression(CodeExpression lhs, string name)
         {
             CodeExpression expr = null;
             if (this.isField(name))
@@ -663,7 +820,7 @@ namespace XSharp.CodeDom
                 expr = new CodePropertyReferenceExpression(lhs, name);
             }
             else if (this.isMethod(name))
-            { 
+            {
                 expr = new CodeMethodReferenceExpression(lhs, name);
             }
             if (expr != null && _members.ContainsKey(name))
@@ -720,7 +877,7 @@ namespace XSharp.CodeDom
             CodeExpression left = BuildExpression(member.Expr, false);
             if (left is CodeThisReferenceExpression)
             {
-                expr = ResolveSelfExpression(left, rhsName );
+                expr = ResolveSelfExpression(left, rhsName);
                 if (expr != null)
                     return expr;
             }
@@ -813,7 +970,7 @@ namespace XSharp.CodeDom
             return expr;
         }
 
-        private CodeExpression BuildExpression(XSharpParser.ExpressionContext expression, bool right )
+        private CodeExpression BuildExpression(XSharpParser.ExpressionContext expression, bool right)
         {
             CodeExpression expr = null;
             //
@@ -834,7 +991,7 @@ namespace XSharp.CodeDom
                 var tc = expression as XSharpParser.TypeCastContext;
                 var name = tc.Type.GetText();
                 var typeref = BuildTypeReference(name);
-                expr = BuildExpression(tc.Expr,true);
+                expr = BuildExpression(tc.Expr, true);
                 expr = new CodeCastExpression(typeref, expr);
             }
             else
@@ -881,7 +1038,7 @@ namespace XSharp.CodeDom
                     List<CodeExpression> exprlist = new List<CodeExpression>();
                     foreach (var Element in arr._Elements)
                     {
-                        exprlist.Add(BuildExpression(Element.Expr,true));
+                        exprlist.Add(BuildExpression(Element.Expr, true));
                     }
                     expr = new CodeArrayCreateExpression(BuildDataType(arr.Type), exprlist.ToArray());
                 }
@@ -895,9 +1052,9 @@ namespace XSharp.CodeDom
                 XSharpParser.DelegateCtorCallContext delg = (XSharpParser.DelegateCtorCallContext)ctx;
                 //
                 CodeTypeReference ctr = BuildDataType(delg.Type);
-                CodeExpression ce = BuildExpression(delg.Obj,true);
+                CodeExpression ce = BuildExpression(delg.Obj, true);
                 //
-                expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj,true), delg.Func.GetText());
+                expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj, true), delg.Func.GetText());
 
             }
             else if (ctx is XSharpParser.CtorCallContext)
@@ -910,7 +1067,7 @@ namespace XSharp.CodeDom
                     foreach (var arg in ctor.ArgList._Args)
                     {
                         // We should handle arg.Name if arg.ASSIGN_OP is not null...
-                        exprlist.Add(BuildExpression(arg.Expr,true));
+                        exprlist.Add(BuildExpression(arg.Expr, true));
                     }
                 }
                 expr = new CodeObjectCreateExpression(ctr.BaseType, exprlist.ToArray());
@@ -954,12 +1111,12 @@ namespace XSharp.CodeDom
             else if (ctx is XSharpParser.ParenExpressionContext)
             {
                 var par = ctx as XSharpParser.ParenExpressionContext;
-                expr = BuildExpression(par.Expr,true);
+                expr = BuildExpression(par.Expr, true);
             }
             else if (ctx is XSharpParser.TypeExpressionContext)
             {
                 var typ = ctx as XSharpParser.TypeExpressionContext;
-                var name = typ.Type; 
+                var name = typ.Type;
                 // NativeType, xBaseType, Name
                 if (name.Name is XSharpParser.QualifiedNameContext)
                 {
@@ -969,7 +1126,7 @@ namespace XSharp.CodeDom
                     var tr = new CodeTypeReferenceExpression(left.GetText());
                     expr = new CodePropertyReferenceExpression(tr, right.GetText());
                 }
-                else 
+                else
                 {
                     expr = new CodeSnippetExpression(ctx.GetText());
                 }
@@ -999,9 +1156,9 @@ namespace XSharp.CodeDom
             return expr;
         }
 
-  
- 
-      
+
+
+
     }
 
     internal class XSharpFieldsDiscover : XSharpBaseDiscover
@@ -1014,7 +1171,7 @@ namespace XSharp.CodeDom
         internal XSharpFieldsDiscover(IProjectTypeHelper projectNode) : base(projectNode)
         {
             classes = new Stack<ParserRuleContext>();
-            currentClass =null;
+            currentClass = null;
         }
 
         public override void EnterClass_(XSharpParser.Class_Context context)
@@ -1110,10 +1267,12 @@ namespace XSharp.CodeDom
 
         protected IProjectTypeHelper _projectNode;
         protected Dictionary<string, Type> _types;    // type cache
+        protected Dictionary<string, XSharpModel.XType> _xtypes;    // XSharp type cache
+        protected Dictionary<string, EnvDTE.CodeElement> _stypes;    // ENVDTE.CodeElement kind = type cache
         protected IList<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments 
 
-        internal Dictionary<ParserRuleContext, List<CodeMemberField>> FieldList { get;  set; }
+        internal Dictionary<ParserRuleContext, List<CodeMemberField>> FieldList { get; set; }
         internal string SourceCode { get; set; }
         internal string CurrentFile { get; set; }
 
@@ -1124,6 +1283,8 @@ namespace XSharp.CodeDom
             _projectNode = projectNode;
             this._types = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             this._usings = new List<string>();
+            this._xtypes = new Dictionary<string, XSharpModel.XType>(StringComparer.OrdinalIgnoreCase);
+            this._stypes = new Dictionary<string, EnvDTE.CodeElement>(StringComparer.OrdinalIgnoreCase);
         }
 
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
@@ -1748,6 +1909,33 @@ namespace XSharp.CodeDom
             return type;
 
         }
+
+        protected XSharpModel.XType findReferencedType(string typeName)
+        {
+            if (_xtypes.ContainsKey(typeName))
+            {
+                return _xtypes[typeName];
+            }
+            var type = _projectNode.ResolveReferencedType(typeName, _usings.ToImmutableArray());
+            //
+            if (type != null)
+                _xtypes.Add(typeName, type);
+            return type;
+        }
+
+        protected EnvDTE.CodeElement findStrangerType(string typeName)
+        {
+            if (_stypes.ContainsKey(typeName))
+            {
+                return _stypes[typeName];
+            }
+            var type = _projectNode.ResolveStrangerType(typeName, _usings.ToImmutableArray());
+            //
+            if (type != null)
+                _stypes.Add(typeName, type);
+            return type;
+        }
+
         protected XCodeTypeReference BuildNativeType(XSharpParser.NativeTypeContext nativeType)
         {
             //
@@ -1868,13 +2056,13 @@ namespace XSharp.CodeDom
                             break;
                         case XSharpLexer.ML_COMMENT:
                             // remove terminators and convert to list of single line comments
-                            var lines = line.Substring(2, line.Length - 4).Replace("\r","").Split('\n');
-                            CodeCommentStatement[]  cmts = new CodeCommentStatement[lines.Length];
+                            var lines = line.Substring(2, line.Length - 4).Replace("\r", "").Split('\n');
+                            CodeCommentStatement[] cmts = new CodeCommentStatement[lines.Length];
                             for (int i = 0; i < lines.Length; i++)
                             {
                                 cmts[i] = new CodeCommentStatement(lines[i], false);
                             }
-                            for (int i = lines.Length-1; i >= 0; i--)
+                            for (int i = lines.Length - 1; i >= 0; i--)
                             {
                                 stmts.Insert(0, cmts[i]);
                             }

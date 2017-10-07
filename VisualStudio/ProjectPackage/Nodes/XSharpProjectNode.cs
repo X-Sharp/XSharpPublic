@@ -1489,6 +1489,47 @@ namespace XSharp.Project
             var model = this.ProjectModel;
             return model.FindSystemType(name, usings);
         }
+
+        public XType ResolveReferencedType(string name, IReadOnlyList<string> usings)
+        {
+            var model = this.ProjectModel;
+            //
+            XType result = model.LookupReferenced(name, true);
+            if (result != null)
+                return result;
+            // try to find with explicit usings
+            if (usings != null)
+            {
+                foreach (var usingName in usings)
+                {
+                    var fullname = usingName + "." + name;
+                    result = model.LookupReferenced(fullname, true);
+                    if (result != null)
+                        return result;
+                }
+            }
+            return result;
+        }
+
+        public CodeElement ResolveStrangerType(string name, IReadOnlyList<string> usings)
+        {
+            var model = this.ProjectModel;
+            // First, easy way..Use the simple name
+            CodeElement codeElt = model.LookupForStranger(name, true);
+            if (codeElt == null)
+            {
+                // Search using the USING statements in the File that contains the var
+                foreach (string usingStatement in usings)
+                {
+                    String fqn = usingStatement + "." + name;
+                    codeElt = model.LookupForStranger(fqn, true);
+                    if (codeElt != null)
+                        break;
+                }
+            }
+            return codeElt;
+        }
+
         #endregion
         #region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;

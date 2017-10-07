@@ -13,6 +13,8 @@ using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using EnvDTE80;
+using Microsoft.VisualStudio;
 
 namespace XSharpModel
 {
@@ -126,7 +128,7 @@ namespace XSharpModel
                 if (string.Equals(assemblyInfo.FileName, fileName, StringComparison.OrdinalIgnoreCase))
                 {
                     _AssemblyReferences.Remove(assemblyInfo);
-                    break; 
+                    break;
                 }
             }
             return;
@@ -289,7 +291,7 @@ namespace XSharpModel
             return null;
         }
 
-        public System.Type FindSystemType (string name, IReadOnlyList<string> usings)
+        public System.Type FindSystemType(string name, IReadOnlyList<string> usings)
         {
             return _typeController.FindType(name, usings, _AssemblyReferences);
         }
@@ -339,7 +341,7 @@ namespace XSharpModel
             {
                 // The dictionary is case insensitive
                 file.TypeList.TryGetValue(typeName, out xTemp);
-                if (xTemp != null && ! caseInvariant)
+                if (xTemp != null && !caseInvariant)
                 {
                     if (xType.FullName != typeName && xType.Name != typeName)
                     {
@@ -457,64 +459,8 @@ namespace XSharpModel
             // Enumerate all referenced external Projects
             foreach (EnvDTE.Project project in this.StrangerProjects)
             {
-                // Retrieve items -> Projects
-                foreach (EnvDTE.ProjectItem item in project.ProjectItems)
-                {
-                    // Does this project provide a FileCodeModel ?
-                    // XSharp is (currently) not providing such object
-                    EnvDTE.FileCodeModel fileCodeModel = null; // item.FileCodeModel;
-                    if (fileCodeModel == null)
-                        continue;
-                    // First, search for Namespaces, this is where we will find Classes
-                    foreach (EnvDTE.CodeElement codeElementNS in fileCodeModel.CodeElements)
-                    {
-                        if (codeElementNS.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
-                        {
-                            // May be here, we could speed up search if the TypeName doesn't start with the Namespace name ??
-                            //
-                            // Classes are childs, so are Enums and Structs
-                            foreach (EnvDTE.CodeElement elt in codeElementNS.Children)
-                            {
-                                // TODO: And what about Enums, Structures, ... ???
-                                // is it a Class/Enum/Struct ?
-                                if ((elt.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
-                                    (elt.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
-                                    (elt.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
-                                {
-                                    // So the element name is
-                                    string elementName = elt.FullName;
-                                    // !!!! WARNING !!! We may have nested types
-                                    elementName = elementName.Replace("+", ".");
-                                    // Got it ?
-                                    if (caseInvariant)
-                                    {
-                                        if (elementName.ToLowerInvariant() == typeName.ToLowerInvariant())
-                                        {
-                                            // Bingo !
-                                            foundElement = elt;
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (elementName.ToLower() == typeName.ToLower())
-                                        {
-                                            // Bingo !
-                                            foundElement = elt;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            //
-                            if (foundElement != null)
-                                break;
-                        }
-                    }
-                    //
-                    if (foundElement != null)
-                        break;
-                }
+                //
+                foundElement = SearchInItems(project.ProjectItems, typeName, caseInvariant);
                 //
                 if (foundElement != null)
                     break;
@@ -523,6 +469,83 @@ namespace XSharpModel
             return foundElement;
         }
 
+        private CodeElement SearchInItems(ProjectItems projectItems, string typeName, bool caseInvariant)
+        {
+            // If not found....
+            EnvDTE.CodeElement foundElement = null;
+            // VSConstants.GUID_ItemType_PhysicalFolder.ToString().ToUpper();
+            String folderKind = "{6BB5F8EF-4483-11D3-8BCF-00C04F8EC28C}"; 
+            String itemKind = "";
+            // Retrieve items -> Projects
+            foreach (EnvDTE.ProjectItem item in projectItems)
+            {
+                itemKind = item.Kind.ToUpper();
+                if (  itemKind == folderKind ) // "{6BB5F8EF-4483-11D3-8BCF-00C04F8EC28C}"
+                {
+                    // A Folder ! Recursive search...
+                    foundElement = SearchInItems( item.ProjectItems, typeName, caseInvariant);
+                    //
+                    if (foundElement != null)
+                        break;
+                }
+                // Does this project provide a FileCodeModel ?
+                // XSharp is (currently) not providing such object
+                EnvDTE.FileCodeModel fileCodeModel = item.FileCodeModel;
+                if (fileCodeModel == null)
+                    continue;
+                // First, search for Namespaces, this is where we will find Classes
+                foreach (EnvDTE.CodeElement codeElementNS in fileCodeModel.CodeElements)
+                {
+                    if (codeElementNS.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
+                    {
+                        // May be here, we could speed up search if the TypeName doesn't start with the Namespace name ??
+                        //
+                        // Classes are childs, so are Enums and Structs
+                        foreach (EnvDTE.CodeElement elt in codeElementNS.Children)
+                        {
+                            // TODO: And what about Enums, Structures, ... ???
+                            // is it a Class/Enum/Struct ?
+                            if ((elt.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+                                (elt.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+                                (elt.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+                            {
+                                // So the element name is
+                                string elementName = elt.FullName;
+                                // !!!! WARNING !!! We may have nested types
+                                elementName = elementName.Replace("+", ".");
+                                // Got it ?
+                                if (caseInvariant)
+                                {
+                                    if (elementName.ToLowerInvariant() == typeName.ToLowerInvariant())
+                                    {
+                                        // Bingo !
+                                        foundElement = elt;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (elementName.ToLower() == typeName.ToLower())
+                                    {
+                                        // Bingo !
+                                        foundElement = elt;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        //
+                        if (foundElement != null)
+                            break;
+                    }
+                }
+                //
+                if (foundElement != null)
+                    break;
+            }
+            //
+            return foundElement;
+        }
 
         public ImmutableList<XType> Namespaces
         {
@@ -591,7 +614,7 @@ namespace XSharpModel
             return new List<IXErrorPosition>();
         }
 
-         public void OpenElement(string file, int line, int column)
+        public void OpenElement(string file, int line, int column)
         {
             return;
         }

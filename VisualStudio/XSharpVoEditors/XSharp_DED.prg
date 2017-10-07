@@ -253,7 +253,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 	METHOD SavePrg(oStream AS XSharp_EditorStream , oCode AS CodeContents , aFieldSpecs AS ArrayList) AS LOGIC
 		LOCAL cName AS STRING
 		VAR oGenerator := CodeGenerator{oStream:Editor}
-		oGenerator:BeginCode(TRUE)
+		oGenerator:BeginCode()
 		
 		cName := SELF:oMainDesign:GetProperty("classname"):TextValue
 		oGenerator:WriteEntity(EntityType._Class , cName , cName , EntityOptions.AddUser, oCode:aClass)

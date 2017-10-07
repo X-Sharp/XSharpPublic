@@ -676,14 +676,27 @@ namespace XSharp.Project
             {
                 currentNS = currentNamespace.Name;
             }
+            bool done = false;
             XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
             //
             if ((gotoElement != null) && (gotoElement.XSharpElement != null))
             {
                 // Ok, find it ! Let's go ;)
-                gotoElement.XSharpElement.OpenEditor();
+                done = true;
             }
             //
+            if (!done && tokenList.Count > 1)
+            {
+                // try again with just the last element in the list
+                tokenList.RemoveRange(0, tokenList.Count - 1);
+                cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
+            }
+            if ((gotoElement != null) && (gotoElement.XSharpElement != null))
+            {
+                // Ok, find it ! Let's go ;)
+                gotoElement.XSharpElement.OpenEditor();
+            }
+
         }
 
 

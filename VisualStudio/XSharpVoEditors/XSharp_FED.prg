@@ -165,7 +165,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		LOCAL aPrevNames AS List<STRING>
 		LOCAL oCode AS CodeContents
 		VAR oGenerator := CodeGenerator{oStream:Editor}
-		oGenerator:BeginCode(TRUE)
+		oGenerator:BeginCode()
 		
 		FOREACH oDesign as FSEDesignFieldSpec in aDesign
 			oCode := GetCodeContents(oDesign)

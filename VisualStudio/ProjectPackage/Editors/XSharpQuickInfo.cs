@@ -63,9 +63,9 @@ namespace XSharp.Project
                 //ITokenStream tokenStream;
                 List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, _file);
                 // Check if we can get the member where we are
-                while(tokenList.Count > 1)
+                if (tokenList.Count > 1)
                 {
-                    tokenList.RemoveAt(0);
+                    tokenList.RemoveRange(0, tokenList.Count - 1);
                 }
                 XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, _file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);

@@ -218,7 +218,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	METHOD SaveRC(oStream AS XSharp_EditorStream , oCode AS CodeContents , cVhName AS STRING , lOldTransporter AS LOGIC , lRcInSameFolder AS LOGIC) AS LOGIC
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oStream:Editor}
-		oGenerator:BeginCode(TRUE)
+		oGenerator:BeginCode()
 
 		oGenerator:Clear()
 		XFuncs.WriteHeader(oGenerator, "XSharp.FormEditor")
@@ -245,7 +245,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oDest:Editor}
-		oGenerator:BeginCode(TRUE)
+		oGenerator:BeginCode()
 
 		LOCAL ceTab AS STRING
 		ceTab := ""
@@ -256,6 +256,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 		// don't delete the header file for now, maybe the .vh file contains defines for other windows in the same prg
 		oGenerator:DeleteDefines(oCode:aDefines)
+		oGenerator:RemoveDefines(cPrevName)
 		oGenerator:AddXSharpDefines(oCode:aDefines , oCode:aDefineValues,TRUE)
 	
 		oGenerator:WriteEntity(EntityType._Class , cPrevName , cPrevName , EntityOptions.AddUser , oCode:aClass)
@@ -273,12 +274,12 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			IF lAccessAssign
 				aEntity:Clear()
 				aEntity:Add(ceTab + "ACCESS " + cName)
-				aEntity:Add(ceTab + "RETURN SELF:FieldGet( #" + cName + " )")
+				aEntity:Add(ceTab + ceTab+ "RETURN SELF:FieldGet( #" + cName + " )")
 				oGenerator:WriteEntity(EntityType._Access , cName , cFormName , EntityOptions.None , aEntity)
 
 				aEntity:Clear()
 				aEntity:Add(ceTab + "ASSIGN " + cName + "( uValue )")
-				aEntity:Add(ceTab + "SELF:FieldPut( #" + cName + " , uValue )")
+				aEntity:Add(ceTab + ceTab+"SELF:FieldPut( #" + cName + " , uValue )")
 				oGenerator:WriteEntity(EntityType._Assign , cName , cFormName , EntityOptions.None , aEntity)
 
 			ELSE
@@ -294,7 +295,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	METHOD SaveVh(oStream AS XSharp_EditorStream , oCode AS CodeContents) AS LOGIC
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oStream:Editor}
-		oGenerator:BeginCode(TRUE)
+		oGenerator:BeginCode()
 
 		oGenerator:DeleteDefines(oCode:aDefines)
 		

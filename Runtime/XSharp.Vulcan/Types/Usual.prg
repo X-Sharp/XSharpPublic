@@ -11,7 +11,7 @@ BEGIN NAMESPACE XSharp
 	[StructLayout(LayoutKind.Sequential)];
 	[DebuggerDisplay("{Value} ({UsualType})", Type := "USUAL")];
 	[DebuggerTypeProxy(typeof(UsualDebugView))];
-	STRUCTURE __Usual IMPLEMENTS IConvertible,IComparable
+	PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible,IComparable
 		#region static fields
 		PUBLIC STATIC _NIL as __Usual
 		#endregion
@@ -2139,8 +2139,9 @@ BEGIN NAMESPACE XSharp
 		public constructor (u as __Usual)
 			_value := u
 		
-		PUBLIC PROPERTY Value as OBJECT GET _value:Value
-		PUBLIC PROPERTY Type  as __UsualType GET _value:UsualType
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
+		PUBLIC PROPERTY VALUE AS OBJECT GET _value:VALUE
+		//PUBLIC PROPERTY Type  as __UsualType GET _value:UsualType
 
 	end class
 	end structure			

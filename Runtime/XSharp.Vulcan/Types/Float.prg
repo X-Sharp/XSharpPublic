@@ -10,7 +10,7 @@ begin namespace XSharp
 	// use explicit layout so we can compact the size into 12 bytes
 	// Type is Immutable, so no settable properties
 	[StructLayout(LayoutKind.Explicit)];
-	STRUCTURE __VOFloat IMPLEMENTS IFLoat, ;
+	PUBLIC STRUCTURE __VOFloat IMPLEMENTS IFLoat, ;
 		IConvertible,; 
 		IFormattable, ;
 		IComparable<__VoFloat>, ;

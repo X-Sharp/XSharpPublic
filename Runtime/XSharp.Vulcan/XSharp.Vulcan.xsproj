@@ -110,6 +110,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Types\Array.prg" />
+    <Compile Include="Types\CodeBlock.prg" />
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
@@ -117,6 +118,7 @@
     <Compile Include="Types\Symbol.prg" />
     <Compile Include="Types\Usual.prg" />
     <Compile Include="Types\Various.prg" />
+    <Compile Include="Types\WinBool.prg" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">

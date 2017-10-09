@@ -7,6 +7,18 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading2">Changes in 1.0.3.2</para>
+    <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>
+    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem with Codeblocks used in late bound code after the release of X# 1.0.3</li>
+      <li styleclass="List">Fixed a problem with overriding properties in a subclass that inherit from a class where only the Assign (Set) or Access (Get) are defined.</li>
+      <li styleclass="List">The compiler option /vo16: automatically generate VO Clipper constructors has been implemented.</li>
+      <li styleclass="List">Fixed a crash in the compiler for compiler errors that occur on line 1, column 1 of the source file</li>
+      <li styleclass="List">Fixed a problem where overflow checking was not following the /ovf compiler option</li>
+      <li styleclass="List">Fixed problem with public modifier for interface methods</li>
+      <li styleclass="List">Added proper error message with unreachable fields in external DLLs</li>
+      <li styleclass="List">Fixed a problem with debugger sequence points (debugger stepping)</li>
+    </list>
     <para styleclass="Heading2">Changes in 1.0.3</para>
     <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>
     <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

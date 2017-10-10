@@ -41,7 +41,7 @@
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>false</VO14>
-    <VO15>true</VO15>
+    <VO15>false</VO15>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">

@@ -11,13 +11,16 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 	CLASS UsualTests
 
 		[Fact];
-		METHOD DateTimeTest() as void
-			local now as __VODate
+		METHOD UsualDateTimeTest() as void
+			local now as DateTime
 			local u   as __Usual
-		    now := __VoDate{System.DateTime.Now}
+		    now := System.DateTime.Now
 			u := (__Usual) now
 			var s := u:ToString()
 			Assert.Equal(now:ToString(),u:ToString())
+			local check as DateTime
+			check := u
+			Assert.Equal(now, check)
 		RETURN
 
 		[Fact];
@@ -26,7 +29,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			LOCAL l as Decimal
 			l := 1
 			u := l
-			Assert.Equal(UsualType(u), (DWORD) 24)
+			Assert.Equal(UsualType(u), (DWORD) 27)
 			l := u
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (Decimal) u)

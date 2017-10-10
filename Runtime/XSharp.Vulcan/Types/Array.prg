@@ -14,44 +14,44 @@ begin namespace XSharp
 [DebuggerTypeProxy(typeof(ArrayDebugView))];
 PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 	PRIVATE _internalList AS List<__Usual> 
-	private _islocked as LOGIC 
+	private _islocked AS LOGIC 
 	#region constructors
 	CONSTRUCTOR()
 		_internalList := List<__Usual>{}
 	return  
 
-	CONSTRUCTOR(capacity as int)
+	CONSTRUCTOR(capacity AS int)
 		_internalList := List<__Usual>{capacity}
 		_internalList:AddRange(Enumerable.Repeat(default(__Usual),capacity))
 	return 
 
-	CONSTRUCTOR( collection as IEnumerable<__Usual>)
+	CONSTRUCTOR( collection AS IEnumerable<__Usual>)
 		_internalList := List<__Usual>{collection}
 	return 
 
-	CONSTRUCTOR( elements as object[] )
+	CONSTRUCTOR( elements AS object[] )
 		self()
 		if elements == null
 			throw ArgumentNullException{nameof(elements)}
 		endif
-		foreach element as object in elements
+		foreach element AS object in elements
 			_internalList:Add(__Usual{element})
 		next
 	return
 
-	constructor( elements as __Usual[] )
+	constructor( elements AS __Usual[] )
 		_internalList := List<__Usual>{elements}
 	return
 	#endregion
 
 	#region properties
-	public Property IsEmpty as logic
+	public Property IsEmpty AS logic
 		get
 			return (_internalList:Count == 0)
 		end get 
 	end property
 
-	public Property Length as dword
+	public Property Length AS dword
 		get
 			return (dword)_internalList:Count
 		end get
@@ -59,18 +59,18 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 	#endregion
 
 	#region Enumerators
-	public method GetEnumerator() as IEnumerator<__Usual>
+	public method GetEnumerator() AS IEnumerator<__Usual>
 	return _internalList:GetEnumerator()
 
-	public method IEnumerable.GetEnumerator() as IEnumerator
+	public method IEnumerable.GetEnumerator() AS IEnumerator
 	RETURN _internalList:GetEnumerator()
 
 	#endregion
 
 	#region Helpers for array creation
 
-	public static method __ArrayNew( dimensions params int[] ) as __Array 
-		local newArray as __Array
+	public static method __ArrayNew( dimensions params int[] ) AS __Array 
+		local newArray AS __Array
 		if dimensions:Length != 0 
 			newArray := __ArrayNewHelper(dimensions,1)
 		else
@@ -78,20 +78,20 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 		endif
 	return newArray
 
-	public static method __ArrayNewHelper(dimensions as int[], currentDim as int) as __Array
-		local capacity := dimensions[currentDim-1] as int // one based ?
-		local newArray := __Array{capacity} as __Array
+	public static method __ArrayNewHelper(dimensions AS int[], currentDim AS int) AS __Array
+		local capacity := dimensions[currentDim-1] AS int // one based ?
+		local newArray := __Array{capacity} AS __Array
 
 		if currentDim != dimensions:Length
-			local nextDim := currentDim+1 as int
-			local index   := 1 as int
+			local nextDim := currentDim+1 AS int
+			local index   := 1 AS int
 			do while index <= capacity
 			    newArray:Add(__Usual{__ArrayNewHelper(dimensions,nextDim)})
 				index+=1
 			enddo
 			return newArray
 		endif
-		local i as int
+		local i AS int
 		for i:=1 upto capacity
 			newArray:Add(__Usual{})
 		next
@@ -99,9 +99,9 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 	#endregion
 
 	#region Cloning
-	public method Clone() as __Array
-		local aResult as __Array
-		LOCAL nCount as INT
+	public method Clone() AS __Array
+		local aResult AS __Array
+		LOCAL nCount AS INT
 		nCount := _internalList:Count
 		aResult := __Array{nCount}
 		FOR VAR I := 0 to nCount-1
@@ -113,9 +113,9 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 		NEXT
 		return aResult
 
-	public method CloneShallow() as __Array
-		local aResult as __Array
-		LOCAL nCount as INT
+	public method CloneShallow() AS __Array
+		local aResult AS __Array
+		LOCAL nCount AS INT
 		nCount := _internalList:Count
 		aResult := __Array{nCount}
 		FOR VAR I := 0 to nCount-1
@@ -130,19 +130,19 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
     ///
     /// <Summary>Access the array element using ZERO based array index</Summary>
     ///
-	public method __GetElement(index as int) as __Usual
+	public method __GetElement(index AS int) AS __Usual
 		return SELF:_internalList[ index ]
 
     ///
     /// <Summary>Access the array element using ZERO based array index</Summary>
     ///
-	public method __GetElement(index params int[]) as __Usual
-		local indexLength := index:Length as int
-		local currentArray := self as __Array
-		local i as int
+	public method __GetElement(index params int[]) AS __Usual
+		local indexLength := index:Length AS int
+		local currentArray := self AS __Array
+		local i AS int
 
 		for i:= 1  upto indexLength  -1 // walk all but the last level
-			local u := currentArray:_internalList[ index[i] ] as __Usual
+			local u := currentArray:_internalList[ index[i] ] AS __Usual
 			if u:IsNil 
 				return u
 			endif
@@ -153,20 +153,20 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 		next
 		return currentArray:_internalList[ index[i] ]
 
-	public Method __SetElement(u as __Usual,index as int) AS __Usual
+	public Method __SetElement(u AS __Usual,index AS int) AS __Usual
 		IF SELF:CheckLock()
 			_internalList[index]:=u
 		ENDIF
 	return u
 
-	public Method __SetElement(u as __Usual, index params int[] ) as __Usual
+	public Method __SetElement(u AS __Usual, index params int[] ) AS __Usual
 		// indices are 0 based
 		IF SELF:CheckLock()
-			local length := index:Length as int
-			local currentArray := self as __Array
+			local length := index:Length AS int
+			local currentArray := self AS __Array
 
 			For var i := 1 upto length-1
-				local uArray := _internalList[index[i]] as __Usual
+				local uArray := _internalList[index[i]] AS __Usual
 				if !(uArray:UsualType == __UsualType.ARRAY)
 					throw InvalidOperationException{"Out of range error."}
 				endif
@@ -176,7 +176,7 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 		endif
 	return u
 
-	public Property self[index as dword] as __Usual 
+	public Property self[index AS dword] AS __Usual 
 		GET
 			return self[ (INT) index]
 		end get
@@ -185,7 +185,7 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 		end set
 	end property
 
-	public Property self[i as int] AS __USUAL
+	public Property self[i AS int] AS __USUAL
 		get
 			if i<__ARRAYBASE__ || i > _internalList:Count
 				throw ArgumentOutOfRangeException{}
@@ -205,65 +205,65 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 	#endregion
 
 	#region Insert and Delete elements
-	public method Add(u as __Usual) as void
+	public method Add(u AS __Usual) AS void
 		_internalList:Add(u)
 	return
 
-	public method Add(o as object) as void
+	public method Add(o AS object) AS void
 		SELF:Add(__Usual{o})
 	return
 
-	public method Insert(index as int,o as object) as void
+	public method Insert(index AS int,o AS object) AS void
 		SELF:Insert(index, __usual{o})
 	return
 
-	public method Insert(index as dword,o as object) as void
+	public method Insert(index AS dword,o AS object) AS void
 		SELF:Insert((int)index, __usual{o})
 	return
 
-	public method Insert(index as int,u as __Usual) as void
+	public method Insert(index AS int,u AS __Usual) AS void
 		IF SELF:CheckLock()
 			_internalList:Insert(index-__ARRAYBASE__ ,u)
 		ENDIF
 	return
 
-	public method Insert(index as dword,u as __Usual) as void
+	public method Insert(index AS dword,u AS __Usual) AS void
 		SELF:Insert( (int) index, u)
 	return
 		
-	public method Insert(position as int) as __Array
+	public method Insert(position AS int) AS __Array
 		self:Insert(position,default(__Usual))
 	return self
 
-	public method Insert(position as dword) as __Array
+	public method Insert(position AS dword) AS __Array
 		self:Insert((int) position, default(__Usual))
 	return self
 
-	public method RemoveAt(index as int , count as int) as void
+	public method RemoveAt(index AS int , count AS int) AS void
 		IF SELF:CheckLock()
 			_internalList:RemoveRange(index-__ARRAYBASE__ ,count)
 		ENDIF
 	return
 
-	PUBLIC METHOD RemoveAt(index as dword , count as int) as void 
+	PUBLIC METHOD RemoveAt(index AS dword , count AS int) AS void 
 		SELF:RemoveAt( (int) index, count)
 	RETURN
 
-	public method RemoveAt(index as int) as void
+	public method RemoveAt(index AS int) AS void
 		IF SELF:CheckLock()
 			_internalList:RemoveRange(index-__ARRAYBASE__,1 )
 		ENDIF
 	return
 
-	public method RemoveAt(index as dword) as void
+	public method RemoveAt(index AS dword) AS void
 		SELF:RemoveAt( (int) index)
 	return
 
- 	public method Resize(newSize as dword) as void
+ 	public method Resize(newSize AS dword) AS void
 		SELF:Resize( ( int) newSize)
 
-	public method Resize(newSize as int) as void
-		local count := self:Length as dword
+	public method Resize(newSize AS int) AS void
+		local count := self:Length AS dword
 		IF SELF:CheckLock()
 			if newSize < 0 
 				throw ArgumentException{"Size must be greater or equal than zero."}
@@ -276,7 +276,7 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 				else
 					count+=1
 					DO WHILE count <= newSize
-						local u := __Usual{} as __Usual
+						local u := __Usual{} AS __Usual
 						_internalList:Add(u)
 						count++
 					enddo
@@ -289,49 +289,49 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 
 	#endregion
 
-	public method ToString() as string
+	public method ToString() AS string
 	return string.Format("[{0}]",_internalList:Count)
 
-	public method Sort(startIndex as int, count as int, comparer as IComparer<__Usual>) as void
+	public method Sort(startIndex AS int, count AS int, comparer AS IComparer<__Usual>) AS void
 		_internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
 	return
 
-	public Method Swap(position as int, element as __Usual) AS __Usual
+	public Method Swap(position AS int, element AS __Usual) AS __Usual
 		RETURN Swap( (DWORD) position, element)
 
-	public Method Swap(position as dword, element as __Usual) AS __Usual
+	public Method Swap(position AS dword, element AS __Usual) AS __Usual
 		local original := _internalList[(int) position - __ARRAYBASE__] AS __Usual
 		_internalList[(int) position - __ARRAYBASE__]:=element
 	return original
 
 
 
-	public method Tail() as __Usual
+	public method Tail() AS __Usual
 		return _internalList.LastOrDefault()
 
 	#region static function
-	public static Method Copy(aSource as __Array,aTarget as __Array,parameter params int[] ) as __Array
+	public static Method Copy(aSource AS __Array,aTarget AS __Array,parameter params int[] ) AS __Array
 		throw NotImplementedException{"__Array.Copy is not implemented yet."}
 
-	public Method Delete(position as dword) AS __Array
+	public Method Delete(position AS dword) AS __Array
 		SELF:RemoveAt(position)
 		SELF:Add(__Usual{})
 	return SELF	
 
 
-	public static method ArrayCreate(dimensions params int[] ) as __Array
-		local count := dimensions:Length as int
+	public static method ArrayCreate(dimensions params int[] ) AS __Array
+		local count := dimensions:Length AS int
 		if count <= 0
 			throw ArgumentException{"No dimensions provided."}
 		endif
-		local initializer := object[]{dimensions[1]} as object[]
-		local arrayNew as __Array
+		local initializer := object[]{dimensions[1]} AS object[]
+		local arrayNew AS __Array
 		arrayNew := __Array{initializer}
 
 		if count > 1
-			local i as int
+			local i AS int
 			for i:=0+__ARRAYBASE__  upto dimensions[1]-1+__ARRAYBASE__
-				local newParams := int[]{count-1} as int[]
+				local newParams := int[]{count-1} AS int[]
 				Array.Copy(dimensions,1,newParams,0,count-1)
 				arrayNew:_internalList[i-__ARRAYBASE__ ] := ArrayCreate(newParams)
 			next
@@ -357,11 +357,11 @@ PUBLIC SEALED CLASS __Array IMPLEMENTS IEnumerable<__Usual>
 	#endregion
 
 	internal class ArrayDebugView
-		private _value as __Array
-		public constructor (a as __Array)
+		private _value AS __Array
+		public constructor (a AS __Array)
 			_value := a
 		//[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-		public property Elements as List<__Usual> GET _value:_internalList
+		public property Elements AS List<__Usual> GET _value:_internalList
 				
 
 	end class

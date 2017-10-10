@@ -26,7 +26,7 @@
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>false</VO14>
-    <VO15>true</VO15>
+    <VO15>false</VO15>
     <StartupObject />
     <ApplicationIcon />
     <Prefer32Bit>False</Prefer32Bit>

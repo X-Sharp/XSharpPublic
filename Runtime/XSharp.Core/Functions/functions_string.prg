@@ -40,11 +40,11 @@ FUNCTION __StringSubtract (lhs as STRING, rhs as STRING) AS STRING
 FUNCTION __StringCompare(strA AS STRING, strB AS STRING) as INT
 	RETURN String.Compare(strA, strB)
    
-FUNCTION __StringEquals(strA AS STRING, strB AS STRING) as INT
+FUNCTION __StringEquals(strA AS STRING, strB AS STRING) as LOGIC
 	RETURN String.Compare(strA, strB) == 0
    
    
-FUNCTION __StringNotEquals(strA AS STRING, strB AS STRING) as INT
+FUNCTION __StringNotEquals(strA AS STRING, strB AS STRING) as LOGIC
 	RETURN String.Compare(strA, strB) != 0
 
 

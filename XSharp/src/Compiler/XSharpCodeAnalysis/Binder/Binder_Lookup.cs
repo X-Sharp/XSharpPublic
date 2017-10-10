@@ -158,14 +158,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-            // C563 Make sure the erros is generated for Inaccessible types.
+            // C563 Make sure the error is generated for Inaccessible types.
             if (! result.IsClear && result.Kind == LookupResultKind.Inaccessible && result.Error != null )
             {
-                if (useSiteDiagnostics == null)
+                // we only want to add this for internal fields (globals)
+                if (result.Symbols[0].Kind == SymbolKind.Field)
                 {
-                    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                    if (useSiteDiagnostics == null)
+                    {
+                        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                    }
+                    useSiteDiagnostics.Add(result.Error);
                 }
-                useSiteDiagnostics.Add(result.Error);
             }
             return binder;
         }

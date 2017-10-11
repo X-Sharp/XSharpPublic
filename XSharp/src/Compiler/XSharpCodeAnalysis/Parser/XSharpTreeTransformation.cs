@@ -843,7 +843,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     type = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
                 }
-                else if (prim.Expr is XP.VoTypeNameExpressionContext)
+                else if (prim.Expr is XP.UsualTypeNameExpressionContext)
                 {
                     type = intType;
                     isConst = true;
@@ -5773,26 +5773,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitExpressionStmt([NotNull] XP.ExpressionStmtContext context)
         {
-            // an expression statement without a block does not properly debug.
-            // With a block we get 2 stops for every line of code.
-            
-            //if (context._Exprs.Count == 1)
-            //{
-            //    var expr = context._Exprs[0];
-            //    context.SetSequencePoint(expr.Start, expr.Stop);
-            //    var node = expr.CsNode;
-            //    if (node is StatementSyntax)
-            //    {
-            //        context.Put(MakeBlock(node as StatementSyntax));
-            //    }
-            //    else
-            //    {
-            //        context.Put(GenerateExpressionStatement(expr.Get<ExpressionSyntax>()));
-            //    }
-            //    return;
-            //}
-            
-            context.SetSequencePoint(context._Exprs[0].Start, context._Exprs.Last().Stop);
             var statements = _pool.Allocate<StatementSyntax>();
             foreach (var exprCtx in context._Exprs)
             {
@@ -5804,18 +5784,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    //exprCtx.SetSequencePoint();
+                    context.SetSequencePoint(context._Exprs[0].Start, context._Exprs[0].Stop);
                     var stmt = GenerateExpressionStatement(exprCtx.Get<ExpressionSyntax>());
                     stmt.XNode = exprCtx;
                     statements.Add(stmt);
                 }
             }
-            var block = MakeBlock(statements);
-            //if (context.g != null)
-            //{
-            //    block = block.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExpectedEndOfStatement, context.g.GetText()));
-            //}
-            context.Put(block);
+
+            if (statements.Count == 0)
+            {
+                context.Put(statements[0]);
+            }
+            else
+            {
+                var block = MakeBlock(statements);
+                context.Put(block);
+            }
+            
             _pool.Free(statements);
         }
 
@@ -7564,6 +7549,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.DYNAMIC:
                     context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));
                     break;
+                case XP.DATETIME:
+                    context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));
+                    break;
                 default:
                     context.Put(_syntaxFactory.PredefinedType(context.Token.SyntaxNativeType()));
                     break;
@@ -7575,7 +7563,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(type);
         }
 
-        public override void ExitVoTypeNameExpression([NotNull] XP.VoTypeNameExpressionContext context)
+        public override void ExitUsualTypeNameExpression([NotNull] XP.UsualTypeNameExpressionContext context)
         {
             context.Put(context.Name.Get<LiteralExpressionSyntax>());
         }
@@ -7585,12 +7573,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.Type.Get<TypeSyntax>());
         }
 
-        public override void ExitVoTypeName([NotNull] XP.VoTypeNameContext context)
+        public override void ExitUsualTypeName([NotNull] XP.UsualTypeNameContext context)
         {
             /*
              * Please note that these numbers must match the BT_  types in basetype.h from VO:
              * Vulcan has added 2 numbers for 64 bit types INT64 (22) and UINT64 (23)
-             * We have added 2 numbers for CHAR (24) and DYNAMIC (25)
+             * We have added 4 numbers for CHAR (24), DYNAMIC (25), DATETIME(26) and DECIMAL (27)
              * The Vulcan Runtime has an internal UsualType Enum that has matching values.
              *   #define BT_VOID         0       // == NIL
              *   #define BT_LONG         1       // signed long
@@ -7630,6 +7618,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpLexer.DATE:
                     context.Put(GenerateLiteral(2));
+                    break;
+                case XSharpLexer.DATETIME:
+                    context.Put(GenerateLiteral(26));
+                    break;
+                case XSharpLexer.DECIMAL:
+                    context.Put(GenerateLiteral(27));
                     break;
                 case XSharpLexer.DYNAMIC:
                     context.Put(GenerateLiteral(25));

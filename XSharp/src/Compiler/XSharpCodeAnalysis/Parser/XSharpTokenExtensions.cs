@@ -238,6 +238,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CHAR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CharKeyword);
                     break;
+                case XSharpParser.DECIMAL:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword);
+                    break;
                 default:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));

@@ -10,7 +10,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	CLASS UsualTests
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualDateTimeTest() as void
 			local now as DateTime
 			local u   as __Usual
@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal(now, check)
 		RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualDecimalTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL l as Decimal
@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			RETURN
 
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualInt64Tests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL l as Int64
@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Throws(typeof(Error), { => l := (Int64) u})	// Conversion Error
 			RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualLongTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL l as LONG
@@ -76,7 +76,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			
 			RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualShortTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL l as LONG
@@ -92,7 +92,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			
 			RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualSByteTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL l as SByte
@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Throws(typeof(Error), { => l := (SByte) u})	// Conversion Error
 			RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualUInt64Tests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL d as UInt64
@@ -122,7 +122,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Throws(typeof(Error), { => d := (UInt64) u})	// Conversion Error
 			RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualDwordTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL d as DWORD
@@ -137,7 +137,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Throws(typeof(Error), { => d := (DWORD) u})	// Conversion Error
 			RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualwordTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL w as WORD
@@ -152,7 +152,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Throws(typeof(Error), { => w := (WORD) u})	// Conversion Error
 			RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualByteTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL b as Byte
@@ -168,7 +168,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Throws(typeof(Error), { => b := (BYTE) u})	// Conversion Error
 			RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualAddOperatorTests() AS VOID
 			LOCAL u AS __Usual
 			u := (__Usual) 1
@@ -216,7 +216,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((__VoDate) u, d)
 			Assert.Equal(u, (__Usual) d)
 
-		[Fact];
+		[Fact, Trait("Category", "Usual")];
 		METHOD UsualSubOperatorTests() AS VOID
 			LOCAL u AS __Usual
 			u := (__Usual) 100

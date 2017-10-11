@@ -5,12 +5,12 @@ USING System.Text
 using XUnit
 using XSharp.Runtime
 
-// Array tests are not working correctly yet with the current build
+// WinBool test
 BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	CLASS WinBoolTests
 	 
-		[Fact]; 
+		[Fact, Trait("Category", "Misc")]; 
 		METHOD ConversionTests as VOID
 			local wb as __WinBool
 			local l as logic

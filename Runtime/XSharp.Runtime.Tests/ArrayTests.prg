@@ -10,6 +10,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	CLASS RuntimeArrayTests
 	 
+ 		[Trait("Category", "Array")];
 		[Fact]; 
 		METHOD ArrayCreateTest() as void
 			local testArray := __Array:ArrayCreate(2,3) as __Array
@@ -17,6 +18,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((dword)2,testArray:Length)
 			Assert.Equal((dword)3,((__Array)testArray[1]):Length)
 		RETURN
+ 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayFillTest() as void
 			local testArray := __Array{3} as __Array
@@ -24,6 +26,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			testArray[2] := 2
 			testArray[3] := 3
 		return
+ 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArraySwapTest() as void
 			local values := <object>{1,2,3} as object[]
@@ -34,6 +37,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal( 4 , (int) testArray[2])
 		return
 		
+ 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayDeleteTest() as void
 			local values := <object>{1,2,3} as object[]
@@ -43,6 +47,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal( __Usual._NIL ,  testArray[3])
 		return
 		
+ 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArraySizeTest() as void
 			local values := <object>{1,2,3} as object[]
@@ -53,6 +58,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((dword)2,testArray:Length)
 		return
 
+ 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayTailTest() as void
 			local values := <object>{1,2,3} as object[]
@@ -60,6 +66,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal( 3 , (int) testArray:Tail())
 		return
 		
+ 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayDimTest() as void
 			local values := <object>{5,4} as object[]

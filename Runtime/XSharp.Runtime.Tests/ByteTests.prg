@@ -10,8 +10,9 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	CLASS ByteTests
 
+		[Trait("Category", "Byte")];
 		[Fact];
-		METHOD SwapByteTest() as void
+		METHOD SwapByteTest() as void 
 			Assert.Equal((word)86,SwapByte((byte)101))
 		RETURN
 	END CLASS

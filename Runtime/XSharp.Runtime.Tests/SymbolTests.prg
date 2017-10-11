@@ -1,7 +1,7 @@
-﻿USING System
-USING System.Collections.Generic
-USING System.Linq
-USING System.Text
+﻿using System
+using System.Collections.Generic
+using System.Linq
+using System.Text
 using XUnit
 using XSharp.Runtime
 
@@ -9,12 +9,12 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	CLASS SymbolTests
 	
-		[Fact];
+		[Fact, Trait("Category", "Symbol")];
 		METHOD CreateSymbolTest() as void
 			VAR sym := __Symbol{"TestSymbol",true}
 			Assert.Equal("TESTSYMBOL",sym:ToString())
 		RETURN
-		[Fact];
+		[Fact, Trait("Category", "Symbol")];
 		METHOD CompareSymbolTest() as void
 			var sym1 := __Symbol{"TestSymbol"}
 			var sym2 := __Symbol{"TestSymbol"}
@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal(false,sym1==#TestSymbol1)
 		RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Symbol")];
 		METHOD GreaterSymbolTest() as void
 			var sym1 := __Symbol{"TestSymbol1"}
 			var sym2 := __Symbol{"TestSymbol2"}
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal(false,sym2 < sym1)
 		RETURN
 
-		[Fact];
+		[Fact, Trait("Category", "Symbol")];
 		METHOD ImplicitConverter() as void
 			local s as string
 			local sym as __Symbol
@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			sym := s
 			Assert.Equal(s, sym:ToString())
 
-		[Fact];
+		[Fact, Trait("Category", "Symbol")];
 		METHOD ExplicitConverter() as void
 			local d as DWORD
 			local sym1 as __Symbol

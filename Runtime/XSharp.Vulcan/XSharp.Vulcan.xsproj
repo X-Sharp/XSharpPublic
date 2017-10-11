@@ -105,7 +105,6 @@
     <Compile Include="Functions\Functions_Symbol.prg" />
     <Compile Include="Functions\Functions_Usual.prg" />
     <Compile Include="Functions\ItemAPI.prg" />
-    <Compile Include="Internal\Functions_StringCompare.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

@@ -80,16 +80,17 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <DocumentationFile>false</DocumentationFile>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>168</DisabledWarnings>
+    <DisabledWarnings>168;1591</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
+    <CommandLineOption>/creatingruntime</CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <NoStandardDefs>false</NoStandardDefs>
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -124,6 +125,7 @@
     <Compile Include="Functions\functions_set.prg" />
     <Compile Include="Functions\functions_string.prg" />
     <Compile Include="Functions\functions_unsafe.prg" />
+    <Compile Include="Functions\functions_vodb.prg" />
     <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
   </ItemGroup>
@@ -134,6 +136,11 @@
     <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">
       <Name>XSharp.Base</Name>
       <Project>{214b74ac-5fc9-4256-9e10-6bdfe5b12ce0}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

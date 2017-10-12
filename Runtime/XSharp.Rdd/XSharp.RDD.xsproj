@@ -2,9 +2,10 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup Label="Globals">
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <Prefer32Bit>False</Prefer32Bit>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -27,9 +28,7 @@
     <VO13>false</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
-    <StartupObject />
-    <ApplicationIcon />
-    <Prefer32Bit>False</Prefer32Bit>
+    <VO16>false</VO16>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>e83c6c8c-773f-4b01-a597-3d38398a9362</ProjectGuid>
@@ -38,27 +37,21 @@
     <RootNamespace>XSharp.Rdd</RootNamespace>
     <AssemblyName>XSharp.Rdd</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <Name>XSharp.RDD</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
+    <UseSharedCompilation>true</UseSharedCompilation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
+    <Optimize>true</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <Optimize>true</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>9001;1591</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -67,21 +60,22 @@
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <NoStdDef>false</NoStdDef>
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <DocumentationFile>false</DocumentationFile>
     <Optimize>true</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>9001</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
@@ -92,7 +86,7 @@
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -119,6 +113,7 @@
     <Compile Include="Advantage\AXSqlRDD.prg" />
     <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\Functions.prg" />
+    <Compile Include="Functions\RddHelpers.prg" />
     <Compile Include="RddError.prg" />
     <Compile Include="SubCodes.prg" />
     <Compile Include="_Dummy.prg" />
@@ -164,6 +159,10 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
+    <Folder Include="Functions" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">
       <Name>XSharp.Base</Name>
       <Project>{214b74ac-5fc9-4256-9e10-6bdfe5b12ce0}</Project>
@@ -177,26 +176,9 @@
     </ProjectCapabilities>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <Optimize>true</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9001;1591</DisabledWarnings>
-    <WarningLevel>4</WarningLevel>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
-    <CommandLineOption>
-    </CommandLineOption>
-    <PPO>false</PPO>
-    <NoStdDef>false</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />

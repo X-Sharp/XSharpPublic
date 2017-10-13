@@ -241,7 +241,6 @@
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="ModelScannerEvents.cs" />
-    <Compile Include="Editors\XSharpFileDocumentManager.cs" />
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -364,8 +363,8 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
-    <ZipProject Include="Templates\Projects\Test\NUnit  ClassLibrary\packages.config" />
-    <ZipProject Include="Templates\Projects\Test\XUnit  ClassLibrary\packages.config" />
+    <ZipProject Include="Templates\Projects\Test\NUnitClassLibrary\packages.config" />
+    <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\packages.config" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
@@ -407,21 +406,21 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.png" />
-    <ZipProject Include="Templates\Projects\Test\XUnit  ClassLibrary\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Test\XUnit  ClassLibrary\TestClass.prg" />
-    <ZipProject Include="Templates\Projects\Test\XUnit  ClassLibrary\XUnitTestClassLibrary.png" />
-    <ZipProject Include="Templates\Projects\Test\XUnit  ClassLibrary\XUnitTestClassLibrary.vstemplate" />
-    <ZipProject Include="Templates\Projects\Test\XUnit  ClassLibrary\XUnitTestClassLibrary.xsproj" />
-    <ZipProject Include="Templates\Projects\Test\MsTest ClassLibrary\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Test\MsTest ClassLibrary\TestClass.prg" />
-    <ZipProject Include="Templates\Projects\Test\MsTest ClassLibrary\MsTestClassLibrary.png" />
-    <ZipProject Include="Templates\Projects\Test\MsTest ClassLibrary\MsTestClassLibrary.vstemplate" />
-    <ZipProject Include="Templates\Projects\Test\MsTest ClassLibrary\MsTestClassLibrary.xsproj" />
-    <ZipProject Include="Templates\Projects\Test\NUnit  ClassLibrary\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Test\NUnit  ClassLibrary\TestClass.prg" />
-    <ZipProject Include="Templates\Projects\Test\NUnit  ClassLibrary\NUnitTestClassLibrary.png" />
-    <ZipProject Include="Templates\Projects\Test\NUnit  ClassLibrary\NUnitTestClassLibrary.vstemplate" />
-    <ZipProject Include="Templates\Projects\Test\NUnit  ClassLibrary\NUnitTestClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\Test\MsTestClassLibrary\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Test\MsTestClassLibrary\MsTestClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\Test\MsTestClassLibrary\MsTestClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\Test\MsTestClassLibrary\MsTestClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\Test\MsTestClassLibrary\TestClass.prg" />
+    <ZipProject Include="Templates\Projects\Test\NUnitClassLibrary\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Test\NUnitClassLibrary\NUnitTestClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\Test\NUnitClassLibrary\NUnitTestClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\Test\NUnitClassLibrary\NUnitTestClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\Test\NUnitClassLibrary\TestClass.prg" />
+    <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\TestClass.prg" />
+    <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\XUnitTestClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\XUnitTestClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\XUnitTestClassLibrary.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
@@ -445,6 +444,7 @@
       <DependentUpon>XStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="Wix\XVsConstants.cs" />
+    <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpMenuItems.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpProjectOptions.cs" />

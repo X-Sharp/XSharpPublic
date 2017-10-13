@@ -319,7 +319,7 @@ namespace XSharp.Project
             Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "vh");
             Ok = Ok && CheckKey(GuidStrings.guidVulcanFormEditor, "vnfrm");
             Ok = Ok && CheckKey(GuidStrings.guidVulcanMenuEditor, "vnmnu");
-            Ok = Ok && CheckKey(GuidStrings.guidVulcanDbEditor, "vndb");
+            Ok = Ok && CheckKey(GuidStrings.guidVulcanDbEditor, "vndbs");
             Ok = Ok && CheckKey(GuidStrings.guidVulcanFsEditor, "vnfs");
             if (! Ok)
             {

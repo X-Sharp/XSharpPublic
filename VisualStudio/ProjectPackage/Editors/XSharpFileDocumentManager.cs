@@ -34,6 +34,7 @@ namespace XSharp.Project
         /// <param name="windowFrame">A reference to the window frame that is mapped to the file</param>
         /// <param name="windowFrameAction">Determine the UI action on the document window</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
+        /*
         public override int Open(bool newFile, bool openWith, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction)
         {
             windowFrame = null;
@@ -56,8 +57,8 @@ namespace XSharp.Project
                 case ".vnmnu":
                     editorType = GuidStrings.guidVOMenuEditorFactory;
                     break;
-                case ".xsdb":
-                case ".vndb":
+                case ".xsdbs":
+                case ".vndbs":
                     editorType = GuidStrings.guidVODbServerEditorFactory;
                     break;
                 case ".xsfs":
@@ -68,7 +69,7 @@ namespace XSharp.Project
 
             return base.Open(newFile, openWith, 0, ref editorType, null, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
-
+        */
 
     }
 }

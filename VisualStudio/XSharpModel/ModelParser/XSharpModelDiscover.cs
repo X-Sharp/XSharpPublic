@@ -190,7 +190,7 @@ namespace XSharpModel
                 foreach (var v in _classVars)
                 {
                     v.Parent = type;
-                    type.Members.Add(v);
+                    type.AddMember(v);
                 }
             }
             _classVars.Clear();
@@ -336,7 +336,7 @@ namespace XSharpModel
         {
             member.File = this._file;
             member.Parent = _globalType;
-            _globalType.Members.Add(member);
+            _globalType.AddMember(member);
             this._currentMethod = member;
 
         }
@@ -469,8 +469,12 @@ namespace XSharpModel
             if (type != null)
             {
                 member.Parent = type;
-                type.Members.Add(member);
+                type.AddMember(member);
                 this._currentMethod = member;
+            }
+            if (ModelWalker.IsSuspended && System.Threading.Thread.CurrentThread.IsBackground)
+            {
+                System.Threading.Thread.Sleep(100);
             }
         }
         private void endMember(LanguageService.SyntaxTree.ParserRuleContext context)

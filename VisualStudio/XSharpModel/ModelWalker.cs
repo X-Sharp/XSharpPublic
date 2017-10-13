@@ -26,7 +26,7 @@ namespace XSharpModel
         { 
             suspendLevel = 0;
         }
-
+        public static bool IsSuspended => suspendLevel > 0;
         public static void Suspend()
         {
             suspendLevel += 1;
@@ -163,6 +163,10 @@ namespace XSharpModel
                         iProcessed += 1;
                         project.ProjectNode.SetStatusBarText(String.Format("Walking {0} : Processing File {1} ({2} of {3})", project.Name, file.Name, iProcessed, aFiles.Length));
                         FileWalk(file);
+                    }
+                    while (IsSuspended && System.Threading.Thread.CurrentThread.IsBackground)
+                    {
+                        Thread.Sleep(100);
                     }
                 });
                 project.ProjectNode.SetStatusBarText("");

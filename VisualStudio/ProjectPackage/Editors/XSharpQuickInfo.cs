@@ -36,6 +36,7 @@ namespace XSharp.Project
         {
             try
             {
+                XSharpModel.ModelWalker.Suspend();
                 applicableToSpan = null;
                 // Map the trigger point down to our buffer.
                 SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(_subjectBuffer.CurrentSnapshot);
@@ -161,6 +162,10 @@ namespace XSharp.Project
             catch ( Exception ex )
             {
                 Trace.WriteLine("XSharpQuickInfo.AugmentQuickInfoSession Exception : " + ex.Message);
+            }
+            finally
+            {
+                XSharpModel.ModelWalker.Resume();
             }
             applicableToSpan = null;
         }

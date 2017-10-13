@@ -655,50 +655,61 @@ namespace XSharp.Project
 #endif
         private void GotoDefn()
         {
-            // First, where are we ?
-            int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
-            int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
-            String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
-            XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
-            if (file == null)
-                return;
-            // Then, the corresponding Type/Element if possible
-            IToken stopToken;
-            //ITokenStream tokenStream;
-            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file);
-            // Check if we can get the member where we are
-            XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
-            XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
-            // LookUp for the BaseType, reading the TokenList (From left to right)
-            XSharpLanguage.CompletionElement gotoElement;
-            String currentNS = "";
-            if (currentNamespace != null)
+            try
             {
-                currentNS = currentNamespace.Name;
-            }
-            bool done = false;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
-            //
-            if ((gotoElement != null) && (gotoElement.XSharpElement != null))
-            {
-                // Ok, find it ! Let's go ;)
-                done = true;
-            }
-            //
-            if (!done && tokenList.Count > 1)
-            {
-                // try again with just the last element in the list
-                tokenList.RemoveRange(0, tokenList.Count - 1);
-                cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
-            }
-            if ((gotoElement != null) && (gotoElement.XSharpElement != null))
-            {
-                // Ok, find it ! Let's go ;)
-                gotoElement.XSharpElement.OpenEditor();
-            }
+                XSharpModel.ModelWalker.Suspend();
+                // First, where are we ?
+                int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
+                int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
+                String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
+                XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
+                if (file == null)
+                    return;
+                // Then, the corresponding Type/Element if possible
+                IToken stopToken;
+                //ITokenStream tokenStream;
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file);
+                // Check if we can get the member where we are
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
+                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
+                // LookUp for the BaseType, reading the TokenList (From left to right)
+                XSharpLanguage.CompletionElement gotoElement;
+                String currentNS = "";
+                if (currentNamespace != null)
+                {
+                    currentNS = currentNamespace.Name;
+                }
+                bool done = false;
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
+                //
+                if ((gotoElement != null) && (gotoElement.XSharpElement != null))
+                {
+                    // Ok, find it ! Let's go ;)
+                    done = true;
+                }
+                //
+                if (!done && tokenList.Count > 1)
+                {
+                    // try again with just the last element in the list
+                    tokenList.RemoveRange(0, tokenList.Count - 1);
+                    cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
+                }
+                if ((gotoElement != null) && (gotoElement.XSharpElement != null))
+                {
+                    // Ok, find it ! Let's go ;)
+                    gotoElement.XSharpElement.OpenEditor();
+                }
 
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Goto Definition Exception : " + ex.Message);
+            }
+            finally
+            {
+                XSharpModel.ModelWalker.Resume();
+            }
         }
-
 
         #region Completion Session
         private void Filter()

@@ -140,11 +140,7 @@ namespace XSharp.LanguageService
             if (typeAtPos != null)
             {
                 nSelMbr = -1;
-                typeAtPos.Members.Sort(delegate (XTypeMember elt1, XTypeMember elt2)
-                {
-                    return elt1.Name.CompareTo(elt2.Name);
-                });
-                foreach (XTypeMember member in typeAtPos.Members)
+                foreach (XTypeMember member in typeAtPos.Members.OrderBy(x => x.Name))
                 {
                     TextSpan spM = this.TextRangeToTextSpan(member.Range);
                     //
@@ -171,7 +167,7 @@ namespace XSharp.LanguageService
                         nSelMbr = nTemp;
                     }
                 }
-                if (nSelMbr == -1 && typeAtPos.Members.Count > 0)
+                if (nSelMbr == -1 && typeAtPos.Members.Count() > 0)
                     nSelMbr = 0;
             }
             //

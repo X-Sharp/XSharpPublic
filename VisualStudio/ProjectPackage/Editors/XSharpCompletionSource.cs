@@ -77,243 +77,158 @@ namespace XSharpLanguage
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            if (_disposed)
-                throw new ObjectDisposedException("XSharpCompletionSource");
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            showTabs = optionsPage.CompletionListTabs;
-            // Where does the StartSession has been triggered ?
-            ITextSnapshot snapshot = _buffer.CurrentSnapshot;
-            var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(snapshot);
-            if (triggerPoint == null)
-                return;
-            // The "parameters" coming from CommandFilter
-            uint cmd = (uint)session.Properties["Command"];
-            VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)cmd;
-            char typedChar = (char)session.Properties["Char"];
-            if (typedChar == '\0')
+            try
             {
-
-            }
-            // Reset the StopToken
-            this._stopToken = null;
-            // What is the character were it starts ?
-            var line = triggerPoint.GetContainingLine();
-            SnapshotPoint start = triggerPoint;
-            //while (start > line.Start && !char.IsWhiteSpace((start - 1).GetChar()))
-            //{
-            //    start -= 1;
-            //}
-            //
-            var applicableTo = snapshot.CreateTrackingSpan(new SnapshotSpan(start, triggerPoint), SpanTrackingMode.EdgeInclusive);
-            //
-            if (_file == null)
-            {
-                // Uhh !??, Something went wrong
-                return;
-            }
-            // The Completion list we are building
-            CompletionList compList = new CompletionList();
-            CompletionList kwdList = new CompletionList();
-            // The CompletionType we will use to fill the CompletionList
-            CompletionType cType = null;
-            if (session.Properties.ContainsProperty("Type"))
-            {
-                cType = (CompletionType)session.Properties["Type"];
-            }
-
-            // Start of Process
-            // Build a list with the tokens we have from the TriggerPoint to the start of the line
-            //List<String> tokenList = this.GetTokenList(triggerPoint);
-            //LanguageService.SyntaxTree.ITokenStream tokenStream;
-            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file);
-            // and make it a string
-            //String tokenLine = TokenListAsString(tokenList, 0);
-            String filterText = "";
-            // We might be here due to a COMPLETEWORD command, so we have no typedChar
-            // but we "may" have a incomplete word like System.String.To
-            if (typedChar == '\0')
-            {
-                if (tokenList.Count > 0)
+                XSharpModel.ModelWalker.Suspend();
+                if (_disposed)
+                    throw new ObjectDisposedException("XSharpCompletionSource");
+                var package = XSharp.Project.XSharpProjectPackage.Instance;
+                var optionsPage = package.GetIntellisenseOptionsPage();
+                showTabs = optionsPage.CompletionListTabs;
+                // Where does the StartSession has been triggered ?
+                ITextSnapshot snapshot = _buffer.CurrentSnapshot;
+                var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(snapshot);
+                if (triggerPoint == null)
+                    return;
+                // The "parameters" coming from CommandFilter
+                uint cmd = (uint)session.Properties["Command"];
+                VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)cmd;
+                char typedChar = (char)session.Properties["Char"];
+                if (typedChar == '\0')
                 {
-                    String extract = tokenList[tokenList.Count - 1];
-                    typedChar = extract[extract.Length - 1];
-                    if ((typedChar != '.') && (typedChar != ':'))
+
+                }
+                // Reset the StopToken
+                this._stopToken = null;
+                // What is the character were it starts ?
+                var line = triggerPoint.GetContainingLine();
+                SnapshotPoint start = triggerPoint;
+                //while (start > line.Start && !char.IsWhiteSpace((start - 1).GetChar()))
+                //{
+                //    start -= 1;
+                //}
+                //
+                var applicableTo = snapshot.CreateTrackingSpan(new SnapshotSpan(start, triggerPoint), SpanTrackingMode.EdgeInclusive);
+                //
+                if (_file == null)
+                {
+                    // Uhh !??, Something went wrong
+                    return;
+                }
+                // The Completion list we are building
+                CompletionList compList = new CompletionList();
+                CompletionList kwdList = new CompletionList();
+                // The CompletionType we will use to fill the CompletionList
+                CompletionType cType = null;
+                if (session.Properties.ContainsProperty("Type"))
+                {
+                    cType = (CompletionType)session.Properties["Type"];
+                }
+
+                // Start of Process
+                // Build a list with the tokens we have from the TriggerPoint to the start of the line
+                //List<String> tokenList = this.GetTokenList(triggerPoint);
+                //LanguageService.SyntaxTree.ITokenStream tokenStream;
+                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file);
+                // and make it a string
+                //String tokenLine = TokenListAsString(tokenList, 0);
+                String filterText = "";
+                // We might be here due to a COMPLETEWORD command, so we have no typedChar
+                // but we "may" have a incomplete word like System.String.To
+                if (typedChar == '\0')
+                {
+                    if (tokenList.Count > 0)
                     {
-                        if (tokenList.Count == 1)
+                        String extract = tokenList[tokenList.Count - 1];
+                        typedChar = extract[extract.Length - 1];
+                        if ((typedChar != '.') && (typedChar != ':'))
                         {
-                            //
-                            filterText = tokenList[0];
-                            int dotPos = extract.LastIndexOf(".");
-                            if (dotPos > -1)
+                            if (tokenList.Count == 1)
                             {
-                                String startToken = extract.Substring(0, dotPos);
-                                filterText = extract.Substring(dotPos + 1);
-                                typedChar = '.';
-                                tokenList[0] = startToken + ".";
+                                //
+                                filterText = tokenList[0];
+                                int dotPos = extract.LastIndexOf(".");
+                                if (dotPos > -1)
+                                {
+                                    String startToken = extract.Substring(0, dotPos);
+                                    filterText = extract.Substring(dotPos + 1);
+                                    typedChar = '.';
+                                    tokenList[0] = startToken + ".";
+                                }
                             }
+                            else
+                            {
+                                // So, we get the last Token as a Filter
+                                filterText = tokenList[tokenList.Count - 1];
+                            }
+                            // but what could be the typedChar?
+                            if (tokenList.Count > 1)
+                            {
+                                extract = tokenList[tokenList.Count - 2];
+                                typedChar = extract[extract.Length - 1];
+                                tokenList.RemoveAt(tokenList.Count - 1);
+                                //tokenLine = TokenListAsString(tokenList, 0);
+                            }
+                            // Include the filter as the text to replace
+                            start -= filterText.Length;
+                            applicableTo = snapshot.CreateTrackingSpan(new SnapshotSpan(start, triggerPoint), SpanTrackingMode.EdgeInclusive);
                         }
-                        else
-                        {
-                            // So, we get the last Token as a Filter
-                            filterText = tokenList[tokenList.Count - 1];
-                        }
-                        // but what could be the typedChar?
-                        if (tokenList.Count > 1)
-                        {
-                            extract = tokenList[tokenList.Count - 2];
-                            typedChar = extract[extract.Length - 1];
-                            tokenList.RemoveAt(tokenList.Count - 1);
-                            //tokenLine = TokenListAsString(tokenList, 0);
-                        }
-                        // Include the filter as the text to replace
-                        start -= filterText.Length;
-                        applicableTo = snapshot.CreateTrackingSpan(new SnapshotSpan(start, triggerPoint), SpanTrackingMode.EdgeInclusive);
                     }
                 }
-            }
-            // Check if we can get the member where we are
-            XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._file);
-            XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
-            HashSet<String> Usings = new HashSet<String>(_file.Usings, StringComparer.OrdinalIgnoreCase);
-            if (currentNamespace != null)
-            {
-                Usings.Add(currentNamespace.Name);
-            }
-            if (member != null && member.Parent != null && (member.Parent.Kind == Kind.Class || member.Parent.Kind == Kind.Interface))
-            {
-                var ns = member.Parent.Parent;
-                string nsName = "";
-                if ((ns != null) && (ns.Kind == Kind.Namespace))
+                // Check if we can get the member where we are
+                XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._file);
+                XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
+                HashSet<String> Usings = new HashSet<String>(_file.Usings, StringComparer.OrdinalIgnoreCase);
+                if (currentNamespace != null)
                 {
-                    nsName = ns.Name + ".";
+                    Usings.Add(currentNamespace.Name);
                 }
-                var name = nsName + member.Parent.Name;
-                var pos = name.LastIndexOf(".");
-                if (pos >= 0)
+                if (member != null && member.Parent != null && (member.Parent.Kind == Kind.Class || member.Parent.Kind == Kind.Interface))
                 {
-                    name = name.Substring(0, pos);
-                    if (!Usings.Contains(name))
+                    var ns = member.Parent.Parent;
+                    string nsName = "";
+                    if ((ns != null) && (ns.Kind == Kind.Namespace))
                     {
-                        Usings.Add(name);
+                        nsName = ns.Name + ".";
+                    }
+                    var name = nsName + member.Parent.Name;
+                    var pos = name.LastIndexOf(".");
+                    if (pos >= 0)
+                    {
+                        name = name.Substring(0, pos);
+                        if (!Usings.Contains(name))
+                        {
+                            Usings.Add(name);
+                        }
                     }
                 }
-            }
-            // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
-            int tokenType = XSharpLexer.UNRECOGNIZED;
-            if (this._stopToken != null)
-            {
-                tokenType = this._stopToken.Type;
-            }
-            // LookUp for the BaseType, reading the TokenList (From left to right)
-            CompletionElement foundElement;
-            String currentNS = "";
-            if (currentNamespace != null)
-            {
-                currentNS = currentNamespace.Name;
-            }
-            cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot.GetText());
-            if (!cType.IsEmpty())
-            {
-                session.Properties["Type"] = cType;
-            }
-            switch (typedChar)
-            {
-                case '.':
-                    if (String.IsNullOrEmpty(filterText))
-                    {
-                        filterText = TokenListAsString(tokenList, 0);
-                        if (!filterText.EndsWith("."))
-                            filterText += ".";
-                    }
-                    switch (tokenType)
-                    {
-                        case XSharpLexer.USING:
-                            // It can be a namespace 
-                            AddNamespaces(compList, _file.Project, filterText);
-                            break;
-                        case XSharpLexer.AS:
-                        case XSharpLexer.IS:
-                        case XSharpLexer.REF:
-                        case XSharpLexer.INHERIT:
-                            // It can be a namespace 
-                            AddNamespaces(compList, _file.Project, filterText);
-                            // It can be Type, FullyQualified
-                            // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                            AddTypeNames(compList, _file.Project, filterText, Usings);
-                            //
-                            AddXSharpTypesTypeNames(kwdList, filterText);
-                            break;
-                        case XSharpLexer.IMPLEMENTS:
-                            // It can be a namespace 
-                            AddNamespaces(compList, _file.Project, filterText);
-                            // TODO: add Interfaces only
-                            break;
-                        default:
-                            // It can be a namespace 
-                            AddNamespaces(compList, _file.Project, filterText);
-                            // It can be Type, FullyQualified
-                            // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                            AddTypeNames(compList, _file.Project, filterText, Usings);
-                            //
-                            AddXSharpTypesTypeNames(kwdList, filterText);
-                            // it can be a static Method/Property/Enum
-                            if (cType != null)
-                            {
-                                // First we need to keep only the text AFTER the last dot
-                                int dotPos = filterText.LastIndexOf('.');
-                                filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
-                                BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
-                            }
-                            //
-                            break;
-                    }
-                    break;
-                case ':':
-                    // Member call
-                    if (cType != null)
-                    {
-                        Modifiers visibleAs = Modifiers.Public;
-                        if (foundElement != null)
+                // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
+                int tokenType = XSharpLexer.UNRECOGNIZED;
+                if (this._stopToken != null)
+                {
+                    tokenType = this._stopToken.Type;
+                }
+                // LookUp for the BaseType, reading the TokenList (From left to right)
+                CompletionElement foundElement;
+                String currentNS = "";
+                if (currentNamespace != null)
+                {
+                    currentNS = currentNamespace.Name;
+                }
+                cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot.GetText());
+                if (!cType.IsEmpty())
+                {
+                    session.Properties["Type"] = cType;
+                }
+                switch (typedChar)
+                {
+                    case '.':
+                        if (String.IsNullOrEmpty(filterText))
                         {
-                            if (String.Compare(foundElement.Name, "self", true) == 0)
-                            {
-                                visibleAs = Modifiers.Private;
-                            }
-                            else if (String.Compare(foundElement.Name, "super", true) == 0)
-                            {
-                                visibleAs = Modifiers.Protected;
-                            }
-
+                            filterText = TokenListAsString(tokenList, 0);
+                            if (!filterText.EndsWith("."))
+                                filterText += ".";
                         }
-                        else if (member.ParentName == cType.FullName)
-                        {
-                            visibleAs = Modifiers.Private;
-                        }
-                        // Now, Fill the CompletionList with the available members, from there
-                        BuildCompletionList(compList, cType, visibleAs, false, filterText);
-                    }
-                    break;
-
-                default:
-                    // Empty line ?
-                    // If we have only one Token, it can be the start of a Parameter/Local/Property/Method/Type/...
-                    // .........
-                    // .........
-                    // We were able to determine the Type, so Get the Members
-                    if (cType != null)
-                    {
-                        Modifiers visibleAs = Modifiers.Public;
-                        if (member.ParentName == cType.FullName)
-                        {
-                            visibleAs = Modifiers.Private;
-                        }
-                        // Now, Fill the CompletionList with the available members, from there
-                        BuildCompletionList(compList, cType, visibleAs, false, filterText);
-
-                    }
-                    else
-                    {
                         switch (tokenType)
                         {
                             case XSharpLexer.USING:
@@ -338,73 +253,169 @@ namespace XSharpLanguage
                                 // TODO: add Interfaces only
                                 break;
                             default:
-                                if (member != null) // Fill with the context ( Parameters and Locals )
-                                {
-                                    BuildCompletionList(compList, member, filterText);
-                                }
-                                // Now Add Functions and Procedures
-                                BuildCompletionList(compList, _file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);
-                                // and Add NameSpaces
+                                // It can be a namespace 
                                 AddNamespaces(compList, _file.Project, filterText);
-                                // and Types
+                                // It can be Type, FullyQualified
+                                // we should also walk all the USINGs, and the current Namespace if any, to search Types
                                 AddTypeNames(compList, _file.Project, filterText, Usings);
                                 //
                                 AddXSharpTypesTypeNames(kwdList, filterText);
+                                // it can be a static Method/Property/Enum
+                                if (cType != null)
+                                {
+                                    // First we need to keep only the text AFTER the last dot
+                                    int dotPos = filterText.LastIndexOf('.');
+                                    filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
+                                    BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
+                                }
                                 //
-                                AddUsingStaticMembers(compList, _file, filterText);
                                 break;
                         }
+                        break;
+                    case ':':
+                        // Member call
+                        if (cType != null)
+                        {
+                            Modifiers visibleAs = Modifiers.Public;
+                            if (foundElement != null)
+                            {
+                                if (String.Compare(foundElement.Name, "self", true) == 0)
+                                {
+                                    visibleAs = Modifiers.Private;
+                                }
+                                else if (String.Compare(foundElement.Name, "super", true) == 0)
+                                {
+                                    visibleAs = Modifiers.Protected;
+                                }
+
+                            }
+                            else if (member.ParentName == cType.FullName)
+                            {
+                                visibleAs = Modifiers.Private;
+                            }
+                            // Now, Fill the CompletionList with the available members, from there
+                            BuildCompletionList(compList, cType, visibleAs, false, filterText);
+                        }
+                        break;
+
+                    default:
+                        // Empty line ?
+                        // If we have only one Token, it can be the start of a Parameter/Local/Property/Method/Type/...
+                        // .........
+                        // .........
+                        // We were able to determine the Type, so Get the Members
+                        if (cType != null)
+                        {
+                            Modifiers visibleAs = Modifiers.Public;
+                            if (member.ParentName == cType.FullName)
+                            {
+                                visibleAs = Modifiers.Private;
+                            }
+                            // Now, Fill the CompletionList with the available members, from there
+                            BuildCompletionList(compList, cType, visibleAs, false, filterText);
+
+                        }
+                        else
+                        {
+                            switch (tokenType)
+                            {
+                                case XSharpLexer.USING:
+                                    // It can be a namespace 
+                                    AddNamespaces(compList, _file.Project, filterText);
+                                    break;
+                                case XSharpLexer.AS:
+                                case XSharpLexer.IS:
+                                case XSharpLexer.REF:
+                                case XSharpLexer.INHERIT:
+                                    // It can be a namespace 
+                                    AddNamespaces(compList, _file.Project, filterText);
+                                    // It can be Type, FullyQualified
+                                    // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                                    AddTypeNames(compList, _file.Project, filterText, Usings);
+                                    //
+                                    AddXSharpTypesTypeNames(kwdList, filterText);
+                                    break;
+                                case XSharpLexer.IMPLEMENTS:
+                                    // It can be a namespace 
+                                    AddNamespaces(compList, _file.Project, filterText);
+                                    // TODO: add Interfaces only
+                                    break;
+                                default:
+                                    if (member != null) // Fill with the context ( Parameters and Locals )
+                                    {
+                                        BuildCompletionList(compList, member, filterText);
+                                    }
+                                    // Now Add Functions and Procedures
+                                    BuildCompletionList(compList, _file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);
+                                    // and Add NameSpaces
+                                    AddNamespaces(compList, _file.Project, filterText);
+                                    // and Types
+                                    AddTypeNames(compList, _file.Project, filterText, Usings);
+                                    //
+                                    AddXSharpTypesTypeNames(kwdList, filterText);
+                                    //
+                                    AddUsingStaticMembers(compList, _file, filterText);
+                                    break;
+                            }
+                        }
+                        break;
+                }
+                // Sort in alphabetical order
+                // and put in the SelectionList
+                var values = compList.Values;
+                completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
+
+                if (showTabs)
+                {
+                    if (compList.HasEnumMembers)
+                    {
+                        var sub = values.Where(item => item.Kind == Kind.EnumMember);
+                        completionSets.Add(new CompletionSet("Values", "Values", applicableTo, sub, Enumerable.Empty<Completion>()));
                     }
-                    break;
+                    if (compList.HasMethods)
+                    {
+                        var sub = values.Where(item => item.Kind == Kind.Method);
+                        completionSets.Add(new CompletionSet("Methods", "Methods", applicableTo, sub, Enumerable.Empty<Completion>()));
+                    }
+                    if (compList.HasFields)
+                    {
+                        var sub = values.Where(item => item.Kind.IsField());
+                        completionSets.Add(new CompletionSet("Fields", "Fields", applicableTo, sub, Enumerable.Empty<Completion>()));
+                    }
+                    if (compList.HasProperties)
+                    {
+                        var sub = values.Where(item => item.Kind == Kind.Property);
+                        completionSets.Add(new CompletionSet("Properties", "Properties", applicableTo, sub, Enumerable.Empty<Completion>()));
+                    }
+                    if (compList.HasEvents)
+                    {
+                        var sub = compList.Values.Where(item => item.Kind == Kind.Event);
+                        completionSets.Add(new CompletionSet("Events", "Events", applicableTo, sub, Enumerable.Empty<Completion>()));
+                    }
+                    if (compList.HasTypes)
+                    {
+                        var sub = values.Where(item => item.Kind.IsType());
+                        completionSets.Add(new CompletionSet("Types", "Types", applicableTo, sub, Enumerable.Empty<Completion>()));
+                    }
+                    if (compList.HasNamespaces)
+                    {
+                        var sub = values.Where(item => item.Kind == Kind.Namespace);
+                        completionSets.Add(new CompletionSet("Namespaces", "Namespaces", applicableTo, sub, Enumerable.Empty<Completion>()));
+                    }
+                }
+                if (kwdList.Count > 0)
+                {
+                    completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList.Values, Enumerable.Empty<Completion>()));
+                }
             }
-            // Sort in alphabetical order
-            // and put in the SelectionList
-            var values = compList.Values;
-            completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
-
-            if (showTabs)
+            catch (Exception ex)
             {
-                if (compList.HasEnumMembers)
-                {
-                    var sub = values.Where(item => item.Kind == Kind.EnumMember);
-                    completionSets.Add(new CompletionSet("Values", "Values", applicableTo, sub, Enumerable.Empty<Completion>()));
-                }
-                if (compList.HasMethods)
-                {
-                    var sub = values.Where(item => item.Kind == Kind.Method);
-                    completionSets.Add(new CompletionSet("Methods", "Methods", applicableTo, sub, Enumerable.Empty<Completion>()));
-                }
-                if (compList.HasFields)
-                {
-                    var sub = values.Where(item => item.Kind.IsField());
-                    completionSets.Add(new CompletionSet("Fields", "Fields", applicableTo, sub, Enumerable.Empty<Completion>()));
-                }
-                if (compList.HasProperties)
-                {
-                    var sub = values.Where(item => item.Kind == Kind.Property);
-                    completionSets.Add(new CompletionSet("Properties", "Properties", applicableTo, sub, Enumerable.Empty<Completion>()));
-                }
-                if (compList.HasEvents)
-                {
-                    var sub = compList.Values.Where(item => item.Kind == Kind.Event);
-                    completionSets.Add(new CompletionSet("Events", "Events", applicableTo, sub, Enumerable.Empty<Completion>()));
-                }
-                if (compList.HasTypes)
-                {
-                    var sub = values.Where(item => item.Kind.IsType());
-                    completionSets.Add(new CompletionSet("Types", "Types", applicableTo, sub, Enumerable.Empty<Completion>()));
-                }
-                if (compList.HasNamespaces)
-                {
-                    var sub = values.Where(item => item.Kind == Kind.Namespace);
-                    completionSets.Add(new CompletionSet("Namespaces", "Namespaces", applicableTo, sub, Enumerable.Empty<Completion>()));
-                }
+                Trace.WriteLine("AugmentCompetionSessions: " + ex.Message);
             }
-            if (kwdList.Count > 0)
+            finally
             {
-                completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList.Values, Enumerable.Empty<Completion>()));
+                XSharpModel.ModelWalker.Resume();
             }
-
         }
 
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
@@ -3622,40 +3633,22 @@ namespace XSharpLanguage
             CompletionType cType = null;
             //
             // 
-            XTypeMember xMethod = xFile.GlobalType.Members.Find(x =>
-            {
-                if ((x.Kind == Kind.Function) || (x.Kind == Kind.Procedure))
-                {
-                    return StringEquals(x.Name, currentToken);
-                }
-                return false;
-            });
+            XTypeMember xMethod = xFile.Project.FindFunction(currentToken);
             //
-            if (xMethod != null)
+            if (xMethod == null)
             {
-                foundElement = new CompletionElement(xMethod);
-                if (xMethod.Parent != null)
+                foreach (var project in xFile.Project.ReferencedProjects)
                 {
-                    // Parent is a XElement, so one of our Types
-                    return new CompletionType(xMethod.Parent.Clone);
+                    xMethod = project.FindFunction(currentToken);
+                    if (xMethod != null)
+                        break;
                 }
             }
-            else
+            foundElement = new CompletionElement(xMethod);
+            if (xMethod?.Parent != null)
             {
-                // Not Found ? 
-                if (xFile.Project.ReferencedProjects != null)
-                {
-                    // now try with Referenced XSharp Projects
-                    foreach (XProject prj in xFile.Project.ReferencedProjects)
-                    {
-                        foreach (XFile file in prj.SourceFiles)
-                        {
-                            cType = SearchFunctionIn(file, currentToken, out foundElement);
-                            if (!cType.IsEmpty())
-                                break;
-                        }
-                    }
-                }
+                // Parent is a XElement, so one of our Types
+                return new CompletionType(xMethod.Parent.Clone);
             }
             //
             return cType;

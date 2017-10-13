@@ -1757,8 +1757,9 @@ namespace XSharp.Project
         const string conditionRelease = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
         const string import1DefaultProps1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
         const string importDefaultProps2 = @"$(XSharpProjectExtensionsPath)XSharp.Default.props";
-        const string importProps = @"$(XSharpProjectExtensionsPath)XSharp.props";
-        const string importTargets = @"$(XSharpProjectExtensionsPath)XSharp.targets";
+        const string importProps = @"XSharp.props";
+        const string importTargets = @"XSharp.targets";
+        const string importTargetsFull = @"$(MSBuildExtensionsPath)\XSharp\XSharp.targets";
         const string postBuildEvent = "PostBuildEvent";
         const string preBuildEvent = "PreBuildEvent";
         const string runPostBuildEvent = "RunPostBuildEvent";
@@ -1783,23 +1784,39 @@ namespace XSharp.Project
             //if (str.ToLower().Replace("/prebuildevent", "").Length < str.Length - "/prebuildevent".Length)
             //    ok = false;
             if (ok && str.IndexOf("'=='", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
                 ok = false;
+            }
             if (ok && str.IndexOf("'Debug|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
+            {
                 ok = false;
+            }
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
+            {
                 ok = false;
+            }
             if (ok && str.IndexOf("XSharpProjectExtensionsPath", StringComparison.OrdinalIgnoreCase) == -1)
+            {
                 ok = false;
+            }
             if (ok && str.IndexOf("<DocumentationFile>false", StringComparison.OrdinalIgnoreCase) != -1)
+            {
                 ok = false;
+            }
             if (ok && str.IndexOf("<DocumentationFile>true", StringComparison.OrdinalIgnoreCase) != -1)
+            {
                 ok = false;
+            }
             if (ok && str.IndexOf(import1DefaultProps1, StringComparison.OrdinalIgnoreCase) == -1 &&
-                str.IndexOf(importDefaultProps2, StringComparison.OrdinalIgnoreCase) == -1)
+                str.IndexOf(importDefaultProps2, StringComparison.OrdinalIgnoreCase) == -1 )
+            {
                 ok = false;
+            }
             // XSharp.Props should no longer be there
             if (ok && str.IndexOf(importProps, StringComparison.OrdinalIgnoreCase) >= 0)
+            {
                 ok = false;
+            }
             if (ok)
             {
                 int iTargets = str.IndexOf(importTargets, StringComparison.OrdinalIgnoreCase);
@@ -1982,15 +1999,21 @@ namespace XSharp.Project
                     hasImportDefaultProps = true;
                 if (String.Equals(prj, importDefaultProps2, StringComparison.OrdinalIgnoreCase))
                     hasImportDefaultProps = true;
-                if (String.Equals(prj, importProps, StringComparison.OrdinalIgnoreCase))
+                if (prj.IndexOf(importProps, StringComparison.OrdinalIgnoreCase)>= 0)
                 {
                     hasImportProps = true;
                     iProps = import;
                 }
-                if (String.Equals(prj, importTargets, StringComparison.OrdinalIgnoreCase))
+                if (prj.IndexOf( importTargets, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportTargets = true;
                     iTargets = import;
+                    if (prj != importTargetsFull)
+                    {
+                        import.Project = importTargetsFull;
+                        changed = true;
+                    }
+
                 }
             }
             if (!hasImportDefaultProps || !hasImportTargets)
@@ -2000,7 +2023,7 @@ namespace XSharp.Project
             if (hasImportProps && hasImportTargets)
             {
                 // we must change the original XSharp.Props to XSharp.Targets and remove the original import for XSharp.Targets
-                iProps.Project = iTargets.Project;
+                iProps.Project = importTargetsFull;
                 BuildProject.Xml.RemoveChild(iTargets);
                 iTargets = iProps;
                 changed = true;

@@ -17,6 +17,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
 using System.Collections.Immutable;
+using XSharpModel;
 namespace XSharp.CodeDom
 {
 
@@ -162,38 +163,38 @@ namespace XSharp.CodeDom
             return false;
         }
 
-        private bool findMember(XSharpModel.XType type, string name, MemberTypes mtype)
+        private bool findMember(XType type, string name, MemberTypes mtype)
         {
             if (_members.ContainsKey(name))
             {
                 return _members[name].MemberType == mtype;
             }
             bool result = false;
-            XSharpModel.XElement element = type.Members.Find(x => String.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            XElement element = type.Members.Find(x => String.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
             if (element != null)
             {
                 System.Type t = typeof(void);
                 switch (element.Kind)
                 {
-                    case XSharpModel.Kind.Field:
+                    case Kind.Field:
                         result = true;
                         addMember(new XMemberType(name, MemberTypes.Field, true, t));
                         break;
-                    case XSharpModel.Kind.Property:
-                    case XSharpModel.Kind.Access:
-                    case XSharpModel.Kind.Assign:
+                    case Kind.Property:
+                    case Kind.Access:
+                    case Kind.Assign:
                         result = true;
                         addMember(new XMemberType(name, MemberTypes.Property, true, t));
                         break;
-                    case XSharpModel.Kind.Method:
+                    case Kind.Method:
                         result = true;
                         addMember(new XMemberType(name, MemberTypes.Method, true, t));
                         break;
-                    case XSharpModel.Kind.Event:
+                    case Kind.Event:
                         result = true;
                         addMember(new XMemberType(name, MemberTypes.Event, true, t));
                         break;
-                    case XSharpModel.Kind.Constructor:
+                    case Kind.Constructor:
                         result = true;
                         addMember(new XMemberType(name, MemberTypes.Constructor, true, t));
                         break;
@@ -293,7 +294,7 @@ namespace XSharp.CodeDom
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {
             System.Type baseType;
-            XSharpModel.XType baseXType;
+            XType baseXType;
             EnvDTE.CodeElement baseSType;
             //
             foreach (CodeTypeReference basetype in CurrentClass.BaseTypes)
@@ -1267,7 +1268,7 @@ namespace XSharp.CodeDom
 
         protected IProjectTypeHelper _projectNode;
         protected Dictionary<string, Type> _types;    // type cache
-        protected Dictionary<string, XSharpModel.XType> _xtypes;    // XSharp type cache
+        protected Dictionary<string, XType> _xtypes;    // XSharp type cache
         protected Dictionary<string, EnvDTE.CodeElement> _stypes;    // ENVDTE.CodeElement kind = type cache
         protected IList<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments 
@@ -1283,7 +1284,7 @@ namespace XSharp.CodeDom
             _projectNode = projectNode;
             this._types = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             this._usings = new List<string>();
-            this._xtypes = new Dictionary<string, XSharpModel.XType>(StringComparer.OrdinalIgnoreCase);
+            this._xtypes = new Dictionary<string, XType>(StringComparer.OrdinalIgnoreCase);
             this._stypes = new Dictionary<string, EnvDTE.CodeElement>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -1910,7 +1911,7 @@ namespace XSharp.CodeDom
 
         }
 
-        protected XSharpModel.XType findReferencedType(string typeName)
+        protected XType findReferencedType(string typeName)
         {
             if (_xtypes.ContainsKey(typeName))
             {

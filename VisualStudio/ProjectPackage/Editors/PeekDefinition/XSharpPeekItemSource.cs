@@ -26,6 +26,7 @@ namespace XSharp.Project
         {
             try
             {
+                XSharpModel.ModelWalker.Suspend();
                 if (!string.Equals(session.RelationshipName, PredefinedPeekRelationships.Definitions.Name, StringComparison.OrdinalIgnoreCase))
                 {
                     return;
@@ -62,7 +63,10 @@ namespace XSharp.Project
             {
                 Trace.WriteLine("XSharpPeekItemSource.AugmentPeekSession Exception : " + ex.Message);
             }
-
+            finally
+            {
+                XSharpModel.ModelWalker.Resume();
+            }
         }
 
         public void Dispose()

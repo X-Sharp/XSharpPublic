@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using EnvDTE;
 using LanguageService.CodeAnalysis.Text;
 using System.Diagnostics;
-
+using System.Collections.Immutable;
 namespace XSharpModel
 {
 
@@ -21,7 +21,7 @@ namespace XSharpModel
     [DebuggerDisplay("{FullName,nq}")]
     public class XType : XElement
     {
-        private XTypeMemberList _members;
+        private List<XTypeMember> _members;
         private string _nameSpace;
         private bool _isPartial;
         private bool _isStatic;
@@ -30,7 +30,7 @@ namespace XSharpModel
         public XType(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position)
             : base(name, kind, modifiers, visibility, span, position)
         {
-            _members = new XTypeMemberList();
+            _members = new List<XTypeMember>();
             _parentName = "System.Object";
             _nameSpace = "";
             if (modifiers.HasFlag(Modifiers.Static))
@@ -43,11 +43,30 @@ namespace XSharpModel
             }
         }
 
-        public XTypeMemberList Members
+        public void AddMember(XTypeMember member)
+        {
+            lock (_members)
+            {
+                _members.Add(member);
+            }
+        }
+
+        public void AddMembers(IEnumerable<XTypeMember> members)
+        {
+            lock (_members)
+            {
+                _members.AddRange(members);
+            }
+        }
+
+        public IImmutableList<XTypeMember> Members
         {
             get
             {
-                return _members;
+                lock (_members)
+                {
+                    return _members.ToImmutableArray();
+                }
             }
 
         }
@@ -138,7 +157,7 @@ namespace XSharpModel
             temp.IsPartial = this.IsPartial;
             temp.IsStatic = this.IsStatic;
             temp.File = this.File;
-            temp.Members.AddRange(this.Members);
+            temp.AddMembers(this.Members);
             //
             return temp;
         }
@@ -175,7 +194,7 @@ namespace XSharpModel
             this.IsPartial = true;
             if (otherType != null)
             {
-                clone.Members.AddRange(otherType.Members);
+                clone.AddMembers(otherType.Members);
                 if ((clone.Parent == null) && (otherType.Parent != null))
                 {
                     clone.Parent = otherType.Parent;

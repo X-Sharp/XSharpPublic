@@ -38,7 +38,7 @@
     <FileExtension Name=".vnfrm"  ContentType="VOBinary"/>
     <FileExtension Name=".vndbs"  ContentType="VOBinary"/>
     <FileExtension Name=".vnmnu"  ContentType="VOBinary"/>
-    <FileExtension Name=".vnfs "  ContentType="VOBinary"/>
+    <FileExtension Name=".vnfs"  ContentType="VOBinary"/>
     <FileExtension Name=".xsfrm"  ContentType="VOBinary"/>
     <FileExtension Name=".xsdbs"  ContentType="VOBinary"/>
     <FileExtension Name=".xsmnu"  ContentType="VOBinary"/>

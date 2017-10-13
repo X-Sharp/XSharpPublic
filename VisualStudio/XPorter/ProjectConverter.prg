@@ -122,7 +122,7 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			// change import 
 			oAttribute := (XmlAttribute) oElement:Attributes:GetNamedItem("Project")
 			IF oAttribute:Value:ToLower():Contains("vulcan.net")
-				oAttribute:Value := "$(XSharpProjectExtensionsPath)XSharp.props"
+				oAttribute:Value := "$(MSBuildExtensionsPath)\XSharp\XSharp.targets"
 			ENDIF
 		CASE "projectguid"   
 			// new guid
@@ -156,22 +156,6 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 				oChild := oDoc:CreateElement( "Dialect", cSchema)
 				oChild:InnerText := "Vulcan"
 				oElement:InsertBefore(oChild,oElement:FirstChild)
-				oChild := oDoc:CreateElement( "XSharpProjectExtensionsPath", cSchema)
-				oChild:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
-				oElement:InsertBefore(oChild, oElement:FirstChild )
-	
-				LOCAL lHasCondition := FALSE AS LOGIC
-				IF oElement:HasAttributes    
-					lHasCondition := (oElement:Attributes:GetNamedItem("Condition") != NULL)
-				ENDIF
-				IF ! lHasCondition
-					oChild := oDoc:CreateElement("Platform", cSchema)
-					oAttribute := oDoc:CreateAttribute("Condition")
-					oAttribute:Value := " '$(Platform)' == '' "
-					oChild:Attributes:Append(oAttribute)
-					oChild:InnerText := "AnyCPU"
-					oElement:PrependChild(oChild)
-				ENDIF
 			ELSE
 				// ALl other project groups.
 				// Adjust the condition when needed
@@ -194,17 +178,6 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			oChild:AppendChild(oDoc:CreateElement("ProjectConfigurationsDeclaredAsItems",cSchema))
 			oElement:AppendChild(oChild)
 			lHasProjectExtensions := TRUE
-		CASE "project"
-			// Only for main project node, not for project node inside projectreference
-			if (oParent is XMLDocument)
-				// Import the schema
-				SELF:oProjectNode := oElement
-				oChild := oDoc:CreateElement("Import", cSchema)
-				oAttribute := oDoc:CreateAttribute("Project")
-				oAttribute:Value := "$(XSharpProjectExtensionsPath)XSharp.targets"
-				oChild:Attributes:Append(oAttribute)   
-				oElement:AppendChild(oChild)  
-			ENDIF
 		CASE "reference"                               
 			// Add VulcanRT assemblies after 1st reference
 			IF !SELF:lVulcanRtWritten

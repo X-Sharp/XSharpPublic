@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp
     [DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
 	[DebuggerTypeProxy(typeof(DateDebugView))];
     [StructLayout(LayoutKind.Explicit)];
-	STRUCTURE __VODate IMPLEMENTS System.IComparable, ;
+	PUBLIC STRUCTURE __VODate IMPLEMENTS System.IComparable, ;
 		System.IFormattable, ;
 		System.IConvertible, ;
 		IDate, ;

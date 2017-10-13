@@ -180,6 +180,7 @@ namespace XSharp.Project
             try
             {
                 //
+                XSharpModel.ModelWalker.Suspend();
                 ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
                 int start = (int)session.Properties["Start"];
@@ -272,6 +273,10 @@ namespace XSharp.Project
             catch (Exception ex)
             {
                 Trace.WriteLine("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception : " + ex.Message);
+            }
+            finally
+            {
+                XSharpModel.ModelWalker.Resume();
             }
         }
 

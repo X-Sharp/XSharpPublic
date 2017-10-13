@@ -282,6 +282,24 @@ namespace XSharpModel
             }
         }
 
+        public  XTypeMember FindFunction(string name)
+        {
+            foreach (var file in this.SourceFiles)
+            {
+                var members = file.GlobalType?.Members;
+                if (members != null)
+                {
+                    var member = members.Find(
+                        x => (x.Kind == Kind.Procedure || x.Kind == Kind.Function)
+                        && string.Compare(x.Name, name, true) == 0);
+                    if (member != null)
+                        return member;
+
+                }
+            }
+            return null;
+        }
+
         public XFile FindFullPath(string fullPath)
         {
             if (xSourceFilesDict.ContainsKey(fullPath))

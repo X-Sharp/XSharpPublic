@@ -11,7 +11,7 @@
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("XSharp.Runtime.Tests")]
-[assembly: AssemblyCopyright("Copyright ?  2016")]
+[assembly: AssemblyCopyright("Copyright (C)  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

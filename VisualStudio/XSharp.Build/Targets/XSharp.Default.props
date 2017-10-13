@@ -20,18 +20,20 @@
     <RootNamespace>$(Name)</RootNamespace>
     <AssemblyName>$(Name)</AssemblyName>
     <Dialect>Core</Dialect>
+  </PropertyGroup>
+  <!-- Set defaults for Configuration, Platform  and Optimize -->
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''" >Debug</Configuration>
+    <Platform      Condition="'$(Platform)' == ''" >AnyCPU</Platform>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
     <Optimize>false</Optimize>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
   </PropertyGroup>
-  <!-- Set defaults for Configuration and Platform -->
-  <PropertyGroup Condition="'$(Configuration)' == ''" Label="Configuration">
-    <Configuration>Debug</Configuration>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == ''" Label="Configuration">
-    <Platform>AnyCPU</Platform>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
     <Optimize>true</Optimize>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
   </PropertyGroup>
 </Project>

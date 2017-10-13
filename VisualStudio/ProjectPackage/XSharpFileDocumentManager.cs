@@ -56,8 +56,8 @@ namespace XSharp.Project
                 case ".vnmnu":
                     editorType = GuidStrings.guidVOMenuEditorFactory;
                     break;
-                case ".xsdb":
-                case ".vndb":
+                case ".xsdbs":
+                case ".vndbs":
                     editorType = GuidStrings.guidVODbServerEditorFactory;
                     break;
                 case ".xsfs":
@@ -68,7 +68,5 @@ namespace XSharp.Project
 
             return base.Open(newFile, openWith, 0, ref editorType, null, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
-
-
     }
 }

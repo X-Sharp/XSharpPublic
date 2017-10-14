@@ -517,7 +517,9 @@ namespace XSharp.Project
                     propsFolder = CreateFolderNode(props);
                     AddChild(propsFolder);
                 }
-                fullPath = Path.Combine(propsFolder.Url) + fileName;
+                fileName = props + "\\" + fileName;
+                fullPath = Path.Combine(ProjectFolder, fileName);
+
             }
             HierarchyNode fileNode = this.FindURL(fullPath);
             if (fileNode == null && (flags & (uint)__PSFFLAGS.PSFF_CreateIfNotExist) != 0)
@@ -1890,62 +1892,57 @@ namespace XSharp.Project
             {
                 groups.Remove(group);
             }
+            // now the collection only has groups that are not the "first" of their kind.
             // now move the elements from groups after 1st 2 groups that have the same condition 
             // with the exception of the build events
-            foreach (var group in groups.Where(g=>g.Condition.Length > 0))
+            foreach (var group in groups.Where(g => g.Condition.Trim().Length > 0))
             {
-                foreach(var source in groupDict.Values)
+                var firstGroup = groupDict[group.Condition.Trim()];             
+                var propsToMove = new List<MBC.ProjectPropertyElement>();
+                var propsToDelete = new List<MBC.ProjectPropertyElement>();
+                foreach (var prop in group.Properties)
                 {
-                    if (group.Condition.Trim() == source.Condition.Trim())
+                    var name = prop.Name;
+                    switch (name.ToLower())
                     {
-                        var propsToMove = new List<MBC.ProjectPropertyElement>();
-                        var propsToDelete = new List<MBC.ProjectPropertyElement>();
-                        foreach (var prop in group.Properties)
+                        case "prebuildevent":
+                        case "postbuildevent":
+                        case "runpostbuildevent":
+                            continue;
+                        default:
+                            break;
+                    }
+                    bool found = false;
+                    foreach (var current in firstGroup.Properties)
+                    {
+                        if (String.Compare(current.Name, name, true) == 0)
                         {
-                            var name = prop.Name;
-                            switch (name.ToLower())
-                            {
-                                case "prebuildevent":
-                                case "postbuildevent":
-                                case "runpostbuildevent":
-                                    continue;
-                                default:
-                                    break;
-                            }
-                            bool found = false;
-                            foreach (var current in source.Properties)
-                            {
-                                if (String.Compare(current.Name, name, true) == 0)
-                                {
-                                    found = true;
-                                    current.Value = prop.Value;
-                                    propsToDelete.Add(prop);
-                                }
-                            }
-                            if (! found)
-                            {
-                                propsToMove.Add(prop);
-                            }
-                        }
-                        foreach (var prop in propsToDelete)
-                        {
-                            group.RemoveChild(prop);
-                            changed = true;
-                        }
-                        foreach (var prop in propsToMove)
-                        {
-                            group.RemoveChild(prop);
-                            source.AddProperty(prop.Name, prop.Value);
-                            changed = true;
-                        }
-                        if (group.Properties.Count == 0)
-                        {
-                            group.Parent.RemoveChild(group);
-                            changed = true;
+                            found = true;
+                            current.Value = prop.Value;
+                            propsToDelete.Add(prop);
                         }
                     }
+                    if (!found)
+                    {
+                        propsToMove.Add(prop);
+                    }
                 }
-
+                foreach (var prop in propsToDelete)
+                {
+                    group.RemoveChild(prop);
+                    changed = true;
+                }
+                foreach (var prop in propsToMove)
+                {
+                    group.RemoveChild(prop);
+                    firstGroup.AddProperty(prop.Name, prop.Value);
+                    changed = true;
+                }
+                if (group.Properties.Count == 0)
+                {
+                    group.Parent.RemoveChild(group);
+                    changed = true;
+                }
             }
             // check for the XSharpProjectExtensionsPath property inside the first propertygroup
             bool ok = false;

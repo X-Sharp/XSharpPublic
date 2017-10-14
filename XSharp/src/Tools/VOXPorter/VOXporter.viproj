@@ -1,6 +1,6 @@
 [General]
 PROJECT = VOXPorter
-IDEVersion = 1.10
+IDEVersion = 1.10b
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 465D6C49-8695-4D98-AC32-A781064D6E52
@@ -33,7 +33,7 @@ DefaultPropertiesGuid = DC6FD78A-F117-431E-8C2D-F6667142861F
 
 ; ************** APPLICATION VOXPorter *************
 Application = VOXPorter
-IDEVersion = 1.10
+IDEVersion = 1.10b
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -152,7 +152,7 @@ ENDApplication = VOXPorter
 
 ; ************** APPLICATION Fab_VO_Entities *************
 Application = Fab_VO_Entities
-IDEVersion = 1.10
+IDEVersion = 1.10b
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 

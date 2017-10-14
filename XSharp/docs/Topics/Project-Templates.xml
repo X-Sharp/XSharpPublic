@@ -12,7 +12,7 @@
     </header>
     <para styleclass="Normal">The X# Visual Studio integration comes with the following project templates:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="6">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="6">
       <tr style="vertical-align:top">
         <td>
         </td>
@@ -130,6 +130,66 @@
         </td>
         <td>
           <para styleclass="Normal">System, and some extensions for frameworks &gt; 3.5<br/>VulcanRT and VulcanRTFuncs</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="MsTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Ms Test Library</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A Library with test support using the MsTest Framework</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System and several MsTest related assemblies</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="NUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">NUnitTest Library</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A library with test support using the open source NUnit Framework</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System and several NUnit &#160;related assemblies.<br/>The template uses a NuGet package to retrieve the correct assemblies</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="XUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">XUnitTest Library</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A library with test support using the open source XUnit Framework</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System and several XUnit &#160;related assemblies.<br/>The template uses a NuGet package to retrieve the correct assemblies</para>
         </td>
       </tr>
     </table></para>

@@ -1,5 +1,5 @@
 
-#define Compression     "lzma2/ultra64"
+#define Compression     "lzma2/ultra"
 ;#define Compression     "none"
 
 ;
@@ -10,15 +10,15 @@
 
 #define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetup102Fox"
+#define SetupExeName    "XSharpSetup103Fox"
 #else
-#define SetupExeName    "XSharpSetup102Public"
+#define SetupExeName    "XSharpSetup103Public"
 #endif
 
-#define Version         "1.0.2.0"
-#define VIVersion       "1.0.2.0"
-#define TouchDate       "2017-08-31"
-#define TouchTime       "01:02:00"
+#define Version         "1.0.3.3"
+#define VIVersion       "1.0.3.3"
+#define TouchDate       "2017-10-13"
+#define TouchTime       "01:03:30"
 
 
 ; version info and similar stuff.
@@ -41,6 +41,7 @@
 #define BinDFolder      "C:\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
 #define BinRFolder      "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
 #define BinPFolder      "C:\Xsharp\DevPublic\Binaries\Debug\"
+#define BinRtFolder     "C:\Xsharp\DevPublic\Binaries\Release\"
 #define CommonFolder    "C:\Xsharp\Dev\XSharp\src\Common\"
 #define ToolsFolder     "C:\Xsharp\Dev\XSharp\src\Tools\"
 #define VOXporterFolder "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\"
@@ -64,6 +65,10 @@
 
 ; FOlders and registry keys defined by others
 #define VulcanEditorGuid "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
+#define VulcanWedGuid "Editors\{{e9eecf7e-7aa2-490e-affc-c55fa2acc5a3}\Extensions"
+#define VulcanMedGuid "Editors\{{adee1755-5ac3-485b-b857-f82d902362ca}\Extensions"
+#define VulcanDEdGuid "Editors\{{5325db94-5d6c-41fd-be44-c5b277612ce6}\Extensions"
+#define VulcanFEdGuid "Editors\{{4849278c-aacb-4bbe-9a15-d96da837aeb7}\Extensions"
 #define VS14RegPath      "Software\Microsoft\VisualStudio\14.0"
 #define VS15RegPath      "Software\Microsoft\VisualStudio\15.0"
 #define VS14LocalDir     "{localappdata}\Microsoft\VisualStudio\14.0"
@@ -351,8 +356,26 @@ Source: "{#BinRFolder}System.Security.Cryptography.Algorithms.dll";   DestDir: "
 Source: "{#BinRFolder}System.Text.Encoding.*.dll";           DestDir: "{app}\bin"; Flags: {#StdFlags} ;
 Source: "{#BinRFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
 
+; Runtime
+#ifdef INCLUDERUNTIME
+Source: "{#BinRtFolder}XSharp.Base.dll";                    DestDir: "{app}\redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Base.pdb";                    DestDir: "{app}\redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Core.pdb";                    DestDir: "{app}\redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.VO.pdb";                      DestDir: "{app}\redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Vulcan.dll";                  DestDir: "{app}\redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Vulcan.pdb";                  DestDir: "{app}\redist"; Flags: {#StdFlags} ;
 
-
+Source: "{#BinRtFolder}XSharp.Base.dll";                    DestDir: "{app}\Assemblies"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Base.pdb";                    DestDir: "{app}\Assemblies"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Assemblies"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Core.pdb";                    DestDir: "{app}\Assemblies"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Assemblies"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.VO.pdb";                      DestDir: "{app}\Assemblies"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Vulcan.dll";                  DestDir: "{app}\Assemblies"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Vulcan.pdb";                  DestDir: "{app}\Assemblies"; Flags: {#StdFlags} ;
+#endif
 Components: vs2015; Source: "{#BinPFolder}XSharpColorizer.dll";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}XSharpColorizer.pdb";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
 Components: vs2015; Source: "{#BinPFolder}XSharpModel.dll";                   DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; 
@@ -521,13 +544,21 @@ Components: vs2015\help;  Root: HKCU; Subkey: "{#Vs14RegPath}\Help"; ValueName:"
 
 ; When Vulcan is Installed then update its extension registration so we can handle the priorities in our project system
 
-Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "ppo"; ValueData: 1; Check: VulcanPrgAssociated;
-Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "prg"; ValueData: 1; Check: VulcanPrgAssociated;
-Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "vh";  ValueData: 1; Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "ppo"; ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "prg"; ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "vh";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanWedGuid}"; ValueName: "vnfrm";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanMedGuid}"; ValueName: "vnmnu";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanDedGuid}"; ValueName: "vndbs";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanFedGuid}"; ValueName: "vnfs";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
 
-Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "ppo"; ValueData: 1; Check: VulcanPrgAssociated;
-Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "prg"; ValueData: 1; Check: VulcanPrgAssociated;
-Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "vh";  ValueData: 1; Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "ppo"; ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "prg"; ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "vh";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanWedGuid}"; ValueName: "vnfrm";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanMedGuid}"; ValueName: "vnmnu";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanDedGuid}"; ValueName: "vndbs";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
+Components: vs2015; Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanFedGuid}"; ValueName: "vnfs";  ValueData: 1; ValueType: dword  ;Check: VulcanPrgAssociated;
 
 
 ; associate prgx extension
@@ -1238,15 +1269,15 @@ var ngenpath: string;
 begin
       ngenpath := GetV4NetDir('')+'ngen.exe';
       commands := '';
-      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'"' +#13+#10;
-      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsi.exe') +'"'+#13+#10;
-      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'"'+#13+#10;
+      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'" /queue' +#13+#10;
+      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsi.exe') +'" /queue'+#13+#10;
+      commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'" /queue'+#13+#10;
       ngenpath := GetV4Net64Dir('')+'ngen.exe';
       if FileExists(ngenpath) then 
       begin
-        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'"' +#13+#10;
-        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsi.exe') +'"'+#13+#10;
-        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'"'+#13+#10;
+        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'" /queue' +#13+#10;
+        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsi.exe') +'" /queue'+#13+#10;
+        commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'" /queue'+#13+#10;
       end
       SaveStringToFile( ExpandConstant('{app}\uninst\instngen.cmd '), commands, False);
       StringChangeEx(commands, ' install ', ' uninstall ', false);

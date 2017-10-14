@@ -7,7 +7,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
-    <para styleclass="Heading2">Changes in 1.0.3.2</para>
+    <para styleclass="Heading2">Changes in 1.0.3.3</para>
     <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>
     <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem with Codeblocks used in late bound code after the release of X# 1.0.3</li>
@@ -18,6 +18,28 @@
       <li styleclass="List">Fixed problem with public modifier for interface methods</li>
       <li styleclass="List">Added proper error message with unreachable fields in external DLLs</li>
       <li styleclass="List">Fixed a problem with debugger sequence points (debugger stepping)</li>
+    </list>
+    <para styleclass="Heading2">Visual Studio &amp; MsBuild</para>
+    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem in the project files with conditioned property groups</li>
+      <li styleclass="List">Added Goto Definition for Functions and Procedures</li>
+      <li styleclass="List">Improved Info tips for </li>
+      <li styleclass="List">Improved case synchronization</li>
+      <li styleclass="List">Added first version of smart indenting</li>
+      <li styleclass="List">Fixed lookup problems in the intellisense engine that could lock up VS</li>
+      <li styleclass="List">Improved Windows Form Editor support for types defined in project references.</li>
+      <li styleclass="List">Added support for the Test Explorer window</li>
+      <li styleclass="List">Added templates for unit testing with XUnit, NUnit and Microsoft Test</li>
+      <li styleclass="List">Added warning when Vulcan was (re)installed after XSharp, which could cause a problem in the Visual Studio integration</li>
+      <li styleclass="List">Compiler Generated types are now suppressed from the completion lists.</li>
+      <li styleclass="List">The VS Parser was marking Interfaces as structure in stead of interface. This has been fixed.</li>
+      <li styleclass="List">The code generator for the Window and Menu editor will delete old unused defines.</li>
+      <li styleclass="List">Changed the item template for VO windows to fix a problem when adding an event handler to a window that has not been saved yet</li>
+      <li styleclass="List">Added support for the /vo16 compiler option in MsBuild and the VS Project Property pages. </li>
+    </list>
+    <para styleclass="Heading2">XPorter</para>
+    <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fix problem in propertygroup conditions.</li>
     </list>
     <para styleclass="Heading2">Changes in 1.0.3</para>
     <para styleclass="Heading3"><text style="font-weight:bold;">Compiler</text></para>

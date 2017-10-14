@@ -5,11 +5,11 @@
 //
 /// <Summary>Helper class for the BREAK statement</summary>
 CLASS XSharp.Internal.WrappedException INHERIT Exception
-	PRIVATE _value as OBJECT
+	PRIVATE _value AS OBJECT
 	/// <Summary>The property that is passed by the BREAK statement</summary>
-	PROPERTY Value as Object get _value
-
-	CONSTRUCTOR(value as Object)
+	PROPERTY value AS OBJECT GET _value
+	
+	CONSTRUCTOR(value AS OBJECT)
 		_value := value
-
+	
 END CLASS

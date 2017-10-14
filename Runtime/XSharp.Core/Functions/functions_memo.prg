@@ -16,7 +16,7 @@
 /// </returns>
 FUNCTION MemoLine(cMemo AS STRING,wWidth AS LONG,wLineNum AS LONG,wTabSize AS LONG,lWrap AS LOGIC) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Return the contents of a text file as a string.
@@ -26,7 +26,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION MemoRead(cFile AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Report the status of memory. 
@@ -36,7 +36,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION Memory(iFunc AS INT) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Write a string to a disk file.
@@ -47,7 +47,7 @@ RETURN 0
 /// </returns>
 FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 
 /// <summary>
@@ -58,7 +58,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION MlCount1(c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Determine the position of a line in a string.
@@ -69,5 +69,5 @@ RETURN 0
 /// </returns>
 FUNCTION MLPos2(c AS STRING,nLine AS DWORD) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 

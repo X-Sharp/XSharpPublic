@@ -11,7 +11,7 @@
 /// <returns>
 /// </returns>
 FUNCTION AbsInt(i AS LONGINT) AS LONG
-RETURN Math.Abs(i)
+	RETURN Math.Abs(i)
 
 /// <summary>
 /// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -20,7 +20,7 @@ RETURN Math.Abs(i)
 /// <returns>
 /// </returns>
 FUNCTION AbsLong(li AS LONGINT) AS LONG
-RETURN Math.Abs(li)
+	RETURN Math.Abs(li)
 
 /// <summary>
 /// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -29,7 +29,7 @@ RETURN Math.Abs(li)
 /// <returns>
 /// </returns>
 FUNCTION AbsReal4(r4 AS REAL4) AS REAL4
-RETURN Math.Abs(r4)
+	RETURN Math.Abs(r4)
 
 /// <summary>
 /// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -38,7 +38,7 @@ RETURN Math.Abs(r4)
 /// <returns>
 /// </returns>
 FUNCTION AbsReal8(r8 AS REAL8) AS REAL8
-RETURN Math.Abs(r8)
+	RETURN Math.Abs(r8)
 
 /// <summary>
 /// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -47,7 +47,7 @@ RETURN Math.Abs(r8)
 /// <returns>
 /// </returns>
 FUNCTION AbsShort(si AS SHORT) AS LONG
-RETURN Math.Abs(si)
+	RETURN Math.Abs(si)
 
 
 /// <summary>
@@ -58,7 +58,7 @@ RETURN Math.Abs(si)
 /// </returns>
 FUNCTION Buffer(dwSize AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Convert an ASCII code to a character value.
@@ -67,9 +67,9 @@ RETURN String.Empty
 /// <returns>
 /// </returns>
 FUNCTION CHR(dwChar AS DWORD) AS STRING
-	local buf := byte[]{1} as byte[]
-	buf[0+__ARRAYBASE__] := (byte) dwChar
-RETURN System.Text.Encoding:ASCII:GetString(buf)
+	LOCAL buf := BYTE[]{1} AS BYTE[]
+	buf[0+__ARRAYBASE__] := (BYTE) dwChar
+	RETURN System.Text.Encoding:ASCII:GetString(buf)
 
 
 /// <summary>
@@ -80,7 +80,7 @@ RETURN System.Text.Encoding:ASCII:GetString(buf)
 /// </returns>
 FUNCTION DosErrString(nDosErr AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Convert a double word to a string containing a 32-bit unsigned integer.
@@ -89,8 +89,8 @@ RETURN String.Empty
 /// <returns>
 /// </returns>
 FUNCTION DW2Bin(n AS DWORD) AS STRING
-	local byte__Array := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byte__Array)
+	LOCAL byte__Array := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN System.Text.Encoding.ASCII:GetString(byte__Array)
 
 /// <summary>
 /// Resize the dynamic memory pool to a specific number of pages.
@@ -100,7 +100,7 @@ RETURN System.Text.Encoding.ASCII:GetString(byte__Array)
 /// </returns>
 FUNCTION DynSize(dwPages AS DWORD) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Return an error message associated with a system-generated error code.
@@ -110,7 +110,7 @@ RETURN 0
 /// </returns>
 FUNCTION ErrString(nGenCode AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
@@ -119,7 +119,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION ExitVOThread(nRetVal AS INT) AS VOID
 	/// THROW NotImplementedException{}
-RETURN   
+	RETURN   
 
 
 /// <summary>
@@ -130,7 +130,7 @@ RETURN
 /// </returns>
 FUNCTION FAttr2String(nAttrib AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 
 /// <summary>
@@ -140,7 +140,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION NationInit(dwInst AS DWORD) AS INT
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Exchange the right and left halves of a double word.
@@ -149,7 +149,7 @@ RETURN 0
 /// <returns>
 /// </returns>
 FUNCTION SwapDWord(li AS DWORD) AS DWORD
-return (dword)((dword)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))   
+RETURN	 (DWORD)((DWORD)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))   
 
 /// <summary>
 /// Exchange the right and left halves of an integer.
@@ -158,7 +158,7 @@ return (dword)((dword)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))
 /// <returns>
 /// </returns>
 FUNCTION SwapInt(li AS LONG) AS LONG
-RETURN SwapLong(li) 
+	RETURN SwapLong(li) 
 
 /// <summary>
 /// Exchange the right and left halves of a long integer.
@@ -167,7 +167,7 @@ RETURN SwapLong(li)
 /// <returns>
 /// </returns>
 FUNCTION SwapLong(li AS LONG) AS LONG
-return (long)((long)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))
+RETURN	 (LONG)((LONG)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))
 
 /// <summary>
 /// Exchange the right and left halves of a short integer.
@@ -176,7 +176,7 @@ return (long)((long)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))
 /// <returns>
 /// </returns>
 FUNCTION SwapShort(si AS SHORT) AS SHORT
-return 0 // (short)((short)((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
+RETURN	 0 // (short)((short)((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
 
 /// <summary>
 /// Exchange the right and left halves of a word.
@@ -185,7 +185,7 @@ return 0 // (short)((short)((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
 /// <returns>
 /// </returns>
 FUNCTION SwapWord(w AS WORD) AS WORD
-return (word)((word)((w & 0x00ff) << 8) | ((w >> 8) & 0x00ff))
+RETURN	 (WORD)((WORD)((w & 0x00ff) << 8) | ((w >> 8) & 0x00ff))
 
 
 /// <summary>
@@ -195,7 +195,7 @@ return (word)((word)((w & 0x00ff) << 8) | ((w >> 8) & 0x00ff))
 /// </returns>
 FUNCTION TypeString(dwType AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Convert a word to a string containing a 16-bit unsigned integer.
@@ -204,8 +204,8 @@ RETURN String.Empty
 /// <returns>
 /// </returns>
 FUNCTION W2Bin(n AS WORD) AS STRING
-	local byte__Array := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byte__Array)    
+	LOCAL byte__Array := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN System.Text.Encoding.ASCII:GetString(byte__Array)    
 
 /// <summary>
 /// </summary>
@@ -214,4 +214,4 @@ RETURN System.Text.Encoding.ASCII:GetString(byte__Array)
 /// </returns>
 FUNCTION WriteAtomTable(hf AS DWORD) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   

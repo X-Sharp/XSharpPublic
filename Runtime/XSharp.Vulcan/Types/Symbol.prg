@@ -27,6 +27,7 @@ PUBLIC STRUCTURE __Symbol ;
 		SymbolTable.Initialize()
 
     CONSTRUCTOR(value AS string,  upperCase := TRUE AS Logic)
+		
 		IF (upperCase)
 			value := value:ToUpperInvariant()
 		endif

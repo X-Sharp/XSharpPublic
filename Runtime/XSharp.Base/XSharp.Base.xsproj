@@ -8,7 +8,7 @@
     <ProjectGuid>214b74ac-5fc9-4256-9e10-6bdfe5b12ce0</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharp.Internal</RootNamespace>
+    <RootNamespace>XSharp</RootNamespace>
     <AssemblyName>XSharp.Base</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>XSharp.Base</Name>
@@ -42,6 +42,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <Prefer32Bit>False</Prefer32Bit>
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

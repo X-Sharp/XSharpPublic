@@ -4,17 +4,17 @@
 // See License.txt in the project root for license information.
 //
 BEGIN NAMESPACE XSharp
-
-    STATIC INTERNAL CLASS Constants
-   
-        internal const Company := "XSharpBV"													AS string 			
-        internal const Product := "XSharp"														AS string 
-        internal const Version := "1.1.0.0"														AS string 
-        internal const Copyright := "Copyright © XSharp BV 2015-2017"							AS string 
-
-        internal const RegistryKey := "Software\" + Company + "\" + Product						AS string 
-        internal const RegistryKey64 := "Software\WOW6432Node\" + Company + "\" + Product		AS string 
-        internal const RegistryValue := "XSharpPath"											AS string 
-    END CLASS
-
+	
+	STATIC INTERNAL CLASS Constants
+		
+		INTERNAL CONST Company := "XSharpBV"													AS STRING 			
+		INTERNAL CONST Product := "XSharp"														AS STRING 
+		INTERNAL CONST Version := "1.1.0.0"														AS STRING 
+		INTERNAL CONST Copyright := "Copyright © XSharp BV 2015-2017"					AS STRING 
+		
+		INTERNAL CONST RegistryKey := "Software\" + Company + "\" + Product			AS STRING 
+		INTERNAL CONST RegistryKey64 := "Software\WOW6432Node\" + Company + "\" + Product AS STRING 
+		INTERNAL CONST RegistryValue := "XSharpPath"											AS STRING 
+	END CLASS
+	
 END NAMESPACE

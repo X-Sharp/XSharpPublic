@@ -10,14 +10,14 @@ USING System.Runtime.InteropServices
 // because it accesses state and is used to manipulate State
 
 STATIC CLASS XSharp.Internal.CompilerServices
-	STATIC METHOD __StringSubtract (lhs as STRING, rhs as STRING) AS STRING
-		IF lhs != NULL .and. rhs != null
+	STATIC METHOD __StringSubtract (lhs AS STRING, rhs AS STRING) AS STRING
+		IF lhs != NULL .and. rhs != NULL
 			VAR len := lhs:Length + rhs:Length
 			RETURN (lhs:TrimEnd() + rhs:TrimEnd()):PadRight(len)
 		ELSEIF lhs != NULL
-			return lhs
+			RETURN lhs
 		ELSEIF rhs != NULL
-			return rhs
+			RETURN rhs
 		ENDIF
 		RETURN String.Empty
 END CLASS

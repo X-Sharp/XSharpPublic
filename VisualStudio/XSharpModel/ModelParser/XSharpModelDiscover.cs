@@ -140,19 +140,19 @@ namespace XSharpModel
         {
             try
             {
+                var tokens = context.Modifiers?._Tokens;
                 XType newClass = new XType(context.Id?.GetText(),
                    Kind.Class,
-                   decodeModifiers(context.Modifiers?._Tokens),
-                   decodeVisibility(context.Modifiers?._Tokens),
+                   decodeModifiers(tokens), decodeVisibility(tokens),
                    new TextRange(context), new TextInterval(context));
                 //
                 newClass.NameSpace = this.currentNamespace;
                 // and push into the current Namespace
                 //CurrentNamespace.Types.Add(newClass);
                 // Static Class ?
-                newClass.IsStatic = this.isStatic(context.Modifiers?._Tokens);
+                newClass.IsStatic = this.isStatic(tokens);
                 // Partial Class ?
-                newClass.IsPartial = this.isPartial(context.Modifiers?._Tokens);
+                newClass.IsPartial = this.isPartial(tokens);
                 // INHERIT from ?
                 if (context.BaseType != null)
                 {
@@ -199,19 +199,20 @@ namespace XSharpModel
 
         public override void EnterStructure_([NotNull] XSharpParser.Structure_Context context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XType newStruct = new XType(context.Id.GetText(),
                    Kind.Structure,
-                   decodeModifiers(context.Modifiers?._Tokens),
-                   decodeVisibility(context.Modifiers?._Tokens),
+                   decodeModifiers(tokens),
+                   decodeVisibility(tokens),
                    new TextRange(context), new TextInterval(context));
             //
             newStruct.NameSpace = this.currentNamespace;
             // and push into the current Namespace
             //CurrentNamespace.Types.Add(newClass);
             // Static Class ?
-            newStruct.IsStatic = this.isStatic(context.Modifiers?._Tokens);
+            newStruct.IsStatic = this.isStatic(tokens);
             // Partial Class ?
-            newStruct.IsPartial = this.isPartial(context.Modifiers?._Tokens);
+            newStruct.IsPartial = this.isPartial(tokens);
             // IMPLEMENTS ?
             if ((context._Implements != null) && (context._Implements.Count > 0))
             {
@@ -233,19 +234,20 @@ namespace XSharpModel
 
         public override void EnterInterface_([NotNull] XSharpParser.Interface_Context context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XType newIf = new XType(context.Id.GetText(),
                 Kind.Interface,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context));
             //
             newIf.NameSpace = this.currentNamespace;
             // and push into the current Namespace
             //CurrentNamespace.Types.Add(newClass);
             // Static Class ?
-            newIf.IsStatic = this.isStatic(context.Modifiers?._Tokens);
+            newIf.IsStatic = this.isStatic(tokens);
             // Partial Class ?
-            newIf.IsPartial = this.isPartial(context.Modifiers?._Tokens);
+            newIf.IsPartial = this.isPartial(tokens);
             //
             newIf = addType(newIf);
             // Set as Current working Interface
@@ -258,10 +260,11 @@ namespace XSharpModel
 
         public override void EnterEnum_([NotNull] XSharpParser.Enum_Context context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XType newEnum = new XType(context.Id.GetText(),
                 Kind.Enum,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context));
             //
             newEnum.NameSpace = this.currentNamespace;
@@ -277,14 +280,15 @@ namespace XSharpModel
 
         public override void EnterVostruct([NotNull] XSharpParser.VostructContext context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XType newStruct = new XType(context.Id.GetText(),
                     Kind.VOStruct,
-                    decodeModifiers(context.Modifiers?._Tokens),
-                    decodeVisibility(context.Modifiers?._Tokens),
+                    decodeModifiers(tokens),
+                    decodeVisibility(tokens),
                     new TextRange(context), new TextInterval(context));
             //
             // Todo additional properties ?
-
+            newStruct.IsStatic = isStatic(tokens);
             newStruct = addType(newStruct);
             pushType(newStruct);
         }
@@ -295,10 +299,11 @@ namespace XSharpModel
 
         public override void EnterVounion([NotNull] XSharpParser.VounionContext context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XType newStruct = new XType(context.Id.GetText(),
                     Kind.Union,
-                    decodeModifiers(context.Modifiers?._Tokens),
-                    decodeVisibility(context.Modifiers?._Tokens),
+                    decodeModifiers(tokens),
+                    decodeVisibility(tokens),
                     new TextRange(context), new TextInterval(context));
             //
             // Todo additional properties ?
@@ -313,11 +318,13 @@ namespace XSharpModel
         // Delegate is strictly a type but handled as a GLobal method because it has parameters
         public override void EnterDelegate_([NotNull] XSharpParser.Delegate_Context context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
                     Kind.Delegate,
-                    decodeModifiers(context.Modifiers?._Tokens),
-                    decodeVisibility(context.Modifiers?._Tokens),
-                    new TextRange(context), new TextInterval(context));
+                    decodeModifiers(tokens),
+                    decodeVisibility(tokens),
+                    new TextRange(context), new TextInterval(context),
+                    isStatic(tokens));
             //
             // Todo additional properties ?
             addParameters(context.Params, newMethod);
@@ -342,12 +349,14 @@ namespace XSharpModel
         }
         public override void EnterFunction([NotNull] XSharpParser.FunctionContext context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
                 Kind.Function,
-                Modifiers.None,
-                Modifiers.Public,
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context),
-                (context.Type == null) ? "Void" : context.Type.GetText());
+                (context.Type == null) ? "Void" : context.Type.GetText(),
+                    isStatic(tokens));
             //
             addParameters(context.Params, newMethod);
             addGlobalMember(newMethod);
@@ -360,11 +369,12 @@ namespace XSharpModel
 
         public override void EnterProcedure([NotNull] XSharpParser.ProcedureContext context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
                 Kind.Procedure,
-                Modifiers.None,
-                Modifiers.Public,
-                new TextRange(context), new TextInterval(context));
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
+                new TextRange(context), new TextInterval(context), false);
             //
             addParameters(context.Params, newMethod);
             addGlobalMember(newMethod);
@@ -376,12 +386,14 @@ namespace XSharpModel
 
         public override void EnterVodll([NotNull] XSharpParser.VodllContext context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(context.ShortName,
                 Kind.VODLL,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context),
-                context.ReturnType == null ? "Void" : context.ReturnType.GetText());
+                context.ReturnType == null ? "Void" : context.ReturnType.GetText(),
+                    isStatic(tokens));
 
             //
             addParameters(context.Params, newMethod);
@@ -393,8 +405,9 @@ namespace XSharpModel
         }
         public override void EnterVoglobal([NotNull] XSharpParser.VoglobalContext context)
         {
-            this._currentVarVisibility = decodeVisibility(context.Modifiers?._Tokens);
-            this._currentVarStatic = isStatic(context.Modifiers?._Tokens);
+            var tokens = context.Modifiers?._Tokens;
+            this._currentVarVisibility = decodeVisibility(tokens);
+            this._currentVarStatic = isStatic(tokens);
         }
         public override void ExitVoglobal([NotNull] XSharpParser.VoglobalContext context)
         {
@@ -404,7 +417,7 @@ namespace XSharpModel
                 // convert from classvars to voglobal
 
                 var newMember = new XTypeMember(member.Name, Kind.VOGlobal, member.Modifiers,
-                    member.Visibility, member.Range, member.Interval, member.TypeName);
+                    member.Visibility, member.Range, member.Interval, member.TypeName, _currentVarStatic);
                 addGlobalMember(newMember);
             }
             _classVars.Clear();
@@ -413,12 +426,14 @@ namespace XSharpModel
 
         public override void EnterVodefine([NotNull] XSharpParser.VodefineContext context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(context.ShortName,
                 Kind.VODefine,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context),
-                context.ReturnType == null ? "Void" : context.ReturnType.GetText());
+                context.ReturnType == null ? "Void" : context.ReturnType.GetText(),
+                    isStatic(tokens));
             //
             if (context.Expr != null)
             {
@@ -489,7 +504,7 @@ namespace XSharpModel
                     Kind.ClassVar,
                     Modifiers.Public,
                     Modifiers.Public,
-                    new TextRange(context), new TextInterval(context));
+                    new TextRange(context), new TextInterval(context), false);
             //
             // Todo additional properties ?
             newMember.IsArray = context.Dim != null;
@@ -507,7 +522,7 @@ namespace XSharpModel
                 Modifiers.None,
                 Modifiers.None,
                 new TextRange(context), new TextInterval(context),
-                "");
+                "", false);
             //
             addMember(newMember);
         }
@@ -520,12 +535,14 @@ namespace XSharpModel
 
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember("Constructor",
                 Kind.Constructor,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
-                new TextRange(context), new TextInterval(context));
-            //
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
+                new TextRange(context), new TextInterval(context),
+                    isStatic(tokens));
+           //
             addParameters(context.Params, newMethod);
             addMember(newMethod);
 
@@ -548,12 +565,14 @@ namespace XSharpModel
                 kind = Kind.Assign;
             }
             //
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
                 kind,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context),
-                (context.Type == null) ? "Void" : context.Type.GetText());
+                (context.Type == null) ? "Void" : context.Type.GetText(),
+                    isStatic(tokens));
             //
             addParameters(context.Params, newMethod);
             addMember(newMethod);
@@ -580,13 +599,14 @@ namespace XSharpModel
                 name = context.Id.GetText();
             if (context.SELF() != null)
                 name = context.SELF()?.GetText();
-
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(name,
                 Kind.Property,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context),
-                (context.Type == null) ? "Void" : context.Type.GetText());
+                (context.Type == null) ? "Void" : context.Type.GetText(),
+                    isStatic(tokens));
             //
             addParameters(context.Params, newMethod);
             //
@@ -601,11 +621,13 @@ namespace XSharpModel
 
         public override void EnterDestructor([NotNull] XSharpParser.DestructorContext context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember("Destructor",
                 Kind.Destructor,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
-                new TextRange(context), new TextInterval(context), "Void");
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
+                new TextRange(context), new TextInterval(context), "Void",
+                    false);
             //
             addParameters(context.Params, newMethod);
             addMember(newMethod);
@@ -617,12 +639,13 @@ namespace XSharpModel
 
         public override void EnterEvent_([NotNull] XSharpParser.Event_Context context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(context.ShortName,
                 Kind.Event,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context),
-                context.ReturnType == null ? "Void" : context.ReturnType.GetText());
+                context.ReturnType == null ? "Void" : context.ReturnType.GetText(), isStatic(tokens));
             //
             addParameters(context.Params, newMethod);
             addMember(newMethod);
@@ -641,12 +664,14 @@ namespace XSharpModel
         }
         public override void EnterOperator_([NotNull] XSharpParser.Operator_Context context)
         {
+            var tokens = context.Modifiers?._Tokens;
             XTypeMember newMethod = new XTypeMember(context.ShortName,
                 Kind.Operator,
-                decodeModifiers(context.Modifiers?._Tokens),
-                decodeVisibility(context.Modifiers?._Tokens),
+                decodeModifiers(tokens),
+                decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context),
-                context.ReturnType == null ? "Void" : context.ReturnType.GetText());
+                context.ReturnType == null ? "Void" : context.ReturnType.GetText(),
+                    isStatic(tokens));
             //
             addParameters(context.Params, newMethod);
             addMember(newMethod);
@@ -658,9 +683,9 @@ namespace XSharpModel
 
         public override void EnterClassvarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
         {
-            XSharpParser.ClassvarModifiersContext current = (XSharpParser.ClassvarModifiersContext)context;
-            this._currentVarVisibility = decodeVisibility(current?._Tokens);
-            this._currentVarStatic = isStatic(current?._Tokens);
+            var tokens = context._Tokens;
+            this._currentVarVisibility = decodeVisibility(tokens);
+            this._currentVarStatic = isStatic(tokens);
         }
         public override void EnterClassVarList([NotNull] XSharpParser.ClassVarListContext context)
         {
@@ -706,7 +731,7 @@ namespace XSharpModel
                 XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
                     Kind.ClassVar, mods, this._currentVarVisibility,
                     new TextRange(start.Line, start.Column, stop.Line, stop.Column + stop.Text.Length),
-                    interval, typeName);
+                    interval, typeName,_currentVarStatic);
                 newClassVar.File = this._file;
                 newClassVar.IsArray = varContext.Dim != null;
                 //
@@ -965,10 +990,6 @@ namespace XSharpModel
                         case XSharpParser.PUBLIC:
                             //
                             retValue = Modifiers.Public;
-                            break;
-                        case XSharpParser.STATIC:
-                            //
-                            retValue = Modifiers.Static;
                             break;
                     }
                 }

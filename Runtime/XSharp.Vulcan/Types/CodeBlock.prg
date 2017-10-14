@@ -3,53 +3,53 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System.Collections
-using System.Collections.Generic
-using System.Linq
-using System.Diagnostics
-using XSharp
-begin namespace XSharp	
+USING System.Collections
+USING System.Collections.Generic
+USING System.Linq
+USING System.Diagnostics
+USING XSharp
+BEGIN NAMESPACE XSharp	
 	ABSTRACT CLASS @@CodeBlock IMPLEMENTS ICodeBlock
-		private initonly _pcount as INT
-		property PCount as INT GET _pcount
+		PRIVATE INITONLY _pcount AS INT
+		PROPERTY PCount AS INT GET _pcount
 
-		PUBLIC CONSTRUCTOR (pCount as int)
+		PUBLIC CONSTRUCTOR (pCount AS int)
 			_pcount := pCount
 
-		public abstract METHOD Eval(args params __Usual[] ) as __Usual
+		PUBLIC ABSTRACT METHOD Eval(args PARAMS __Usual[] ) AS __Usual
 
-		PUBLIC METHOD EvalBlock(args params object[] ) as OBJECT
-			var num := args:Length
-			var uArgs := <__Usual>{num}
-			FOR VAR i := 1 to num
+		PUBLIC METHOD EvalBlock(args PARAMS object[] ) AS OBJECT
+			VAR num := args:Length
+			VAR uArgs := <__Usual>{num}
+			FOR VAR i := 1 TO num
 				uArgs[i] := (__Usual) args[i]
 			NEXT
 			return SELF:Eval(uArgs)
 
-		PUBLIC OVERRIDE METHOD ToString() as STRING
+		PUBLIC OVERRIDE METHOD ToString() AS STRING
 			return "{|" + SELF:_pcount:ToString() + "| ... }"
 
 	END CLASS
 
 
 	PUBLIC CLASS @@_CodeBlock INHERIT @@CodeBlock
-		PROTECT _innerBlock as ICodeBlock 
-		PROTECT _cMacro		as STRING
-		PUBLIC CONSTRUCTOR(innerBlock as ICodeBlock, cMacro as STRING)
+		PROTECT _innerBlock AS ICodeBlock 
+		PROTECT _cMacro		AS STRING
+		PUBLIC CONSTRUCTOR(innerBlock AS ICodeBlock, cMacro AS STRING)
 			SUPER(innerBlock:Pcount)
 			_innerBlock := innerBlock
 			_cMacro		:= cMacro
 
-		PUBLIC OVERRIDE METHOD Eval(args params __Usual[]) as __Usual
-			var num := args:Length
-			var oArgs := <Object>{num}
-			FOR VAR i := 1 to num
+		PUBLIC OVERRIDE METHOD Eval(args PARAMS __Usual[]) AS __Usual
+			VAR num := args:Length
+			VAR oArgs := <Object>{num}
+			FOR VAR i := 1 TO num
 				oArgs[i] := (Object) args[i]
 			NEXT
-			return (__Usual) SELF:_innerBlock:EvalBlock(oArgs)
+			RETURN (__Usual) SELF:_innerBlock:EvalBlock(oArgs)
 			
-		PUBLIC OVERRIDE METHOD ToString() as STRING
-			return _cMacro
+		PUBLIC OVERRIDE METHOD ToString() AS STRING
+			RETURN _cMacro
 	END CLASS
 
 END NAMESPACE

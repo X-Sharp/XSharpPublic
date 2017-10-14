@@ -895,13 +895,25 @@ namespace XSharpLanguage
             // Add Members for our Project Types
             foreach (XTypeMember elt in xType.Members.Where(x => nameStartsWith(x.Name, startWith)))
             {
-                if (elt.Kind == Kind.Constructor)
-                    continue;
-                if (elt.IsStatic != staticOnly)
-                    continue;
-                if (elt.Visibility < minVisibility)
-                    continue;
-                if (IsHiddenName(elt.Name))
+                bool add = true;
+                switch (elt.Kind)
+                {
+                    case Kind.EnumMember:
+                        add = true;
+                        break;
+                    case Kind.Constructor:
+                        add = false;
+                        break;
+                    default:
+                        if (elt.IsStatic != staticOnly)
+                            add = false; 
+                        if (elt.Visibility < minVisibility)
+                            add = false;
+                        if (IsHiddenName(elt.Name))
+                            add = false;
+                        break;
+                }
+                if (!add)
                     continue;
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);

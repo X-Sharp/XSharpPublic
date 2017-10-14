@@ -20,26 +20,26 @@ CLASS NsxIndex INHERIT BaseIndex
 		_oRDD := oRDD
 		
 METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
-    THROW NotImplementedException{__ENTITY__}
+    THROW NotImplementedException{}
 METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD OrderListDelete(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD OrderListFocus(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD OrderListRebuild( ) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC		
-    THROW NotImplementedException{__ENTITY__}
+    THROW NotImplementedException{}
 VIRTUAL PROPERTY Found as LOGIC	
 GET
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 END GET
 END PROPERTY
 

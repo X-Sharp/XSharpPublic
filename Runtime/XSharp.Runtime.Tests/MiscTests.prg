@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		    //local fi := System.IO.DriveInfo{"C"} as System.IO.DriveInfo
 			//Assert.Equal("DriveInfo",ClassName(fi))
 		//RETURN
-		[Fact];
+		[Fact, Trait("Category", "Misc")]; 
 		METHOD CurDriveTest() as void
 			Assert.Equal("C",CurDrive():ToUpper())
 		RETURN

@@ -9,28 +9,28 @@ BEGIN NAMESPACE XSharp.RDD
 CLASS DBFMEMO INHERIT DbfNtx
 
 VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 VIRTUAL METHOD CloseMemFile( ) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 VIRTUAL METHOD OpenMemFile( ) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 VIRTUAL PROPERTY SysName AS STRING GET typeof(DbfMemo):ToString()
 

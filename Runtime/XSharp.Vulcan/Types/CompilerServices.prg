@@ -8,8 +8,8 @@ using System.Runtime.InteropServices
 
 STATIC CLASS XSharp.Internal.CompilerServices
 
-	STATIC METHOD String2Psz(s as STRING, pszList as List<IntPtr>) AS IntPtr
-		LOCAL pResult as IntPtr
+	STATIC METHOD String2Psz(s AS STRING, pszList AS List<IntPtr>) AS IntPtr
+		LOCAL pResult AS IntPtr
 		IF s == null || s:Length == 0
 			pResult := Marshal.AllocHGlobal(1)
 		ELSE
@@ -22,7 +22,7 @@ STATIC CLASS XSharp.Internal.CompilerServices
 		pszList:Add(pResult)
 		RETURN pResult
 
-	STATIC METHOD String2PszRelease(pszList as List<IntPtr>) AS VOID
+	STATIC METHOD String2PszRelease(pszList AS List<IntPtr>) AS VOID
 		FOREACH VAR p in pszList
 			TRY
 				Marshal.FreeHGlobal(p)

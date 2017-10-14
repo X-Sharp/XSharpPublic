@@ -9,7 +9,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	CLASS IOTests
 
-		[Fact];
+		[Fact, Trait("Category", "Misc")]; 
 		METHOD FileTest() as void
 			Assert.Equal(true,File("c:\windows\system32\shell32.dll"))
 			Assert.Equal(false,File(null))

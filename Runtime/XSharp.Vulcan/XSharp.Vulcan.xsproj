@@ -41,7 +41,7 @@
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>false</VO14>
-    <VO15>true</VO15>
+    <VO15>false</VO15>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
@@ -104,8 +104,8 @@
     <Compile Include="Functions\Functions_Registry.prg" />
     <Compile Include="Functions\Functions_Symbol.prg" />
     <Compile Include="Functions\Functions_Usual.prg" />
+    <Compile Include="Functions\functions_vodb.prg" />
     <Compile Include="Functions\ItemAPI.prg" />
-    <Compile Include="Internal\Functions_StringCompare.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -141,6 +141,11 @@
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

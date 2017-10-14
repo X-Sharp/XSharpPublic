@@ -12,8 +12,8 @@ using XSharp
 /// <returns>
 /// An uninitialized of the given length.
 /// </returns>
-FUNCTION __ArrayCreate(dwDim AS DWORD) AS __Array
-RETURN __Array{(int)dwDim}
+FUNCTION __ArrayCreate(dwDim AS DWORD) AS __Array 
+	RETURN __Array{(int)dwDim}
 
 /// <summary>
 /// Create an initialized __Array.
@@ -45,8 +45,7 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
 	FUNCTION AClone(a AS __Array) AS __Array
-		/// THROW NotImplementedException{}
-	RETURN NULL   
+		RETURN (__Array) a:Clone()
 
 	/// <summary>
 	/// Duplicate an __Array without its sub__Arrays.
@@ -55,8 +54,7 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
 	FUNCTION ACloneShallow(a AS __Array) AS __Array
-		
-	RETURN NULL   
+		RETURN (__Array) a:CloneShallow()
 
 	/// <summary>
 	/// Delete an __Array element.
@@ -105,7 +103,7 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
 	FUNCTION ALen(a AS __Array) AS DWORD
-	RETURN a:Length
+		RETURN a:Length
 
 	/// <summary>
 	/// </summary>
@@ -232,7 +230,12 @@ RETURN NULL
 	/// </returns>
 	FUNCTION ASize(a AS __Array,dwDim AS DWORD) AS __Array
 		a:Resize(dwDim) 
-	RETURN a  
+		RETURN a  
+
+	FUNCTION ASize<T>(a AS __ArrayBase<T>,dwDim AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+		a:Resize(dwDim) 
+		RETURN a  
+
 
 	/// <summary>
 	/// Return the highest numbered element of an __Array.
@@ -241,7 +244,17 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
 	FUNCTION ATail(a AS __Array) AS __USUAL
-	RETURN a:Tail()
+		RETURN a:Tail()
+
+	/// <summary>
+	/// Return the highest numbered element of an __Array.
+	/// </summary>
+	/// <param name="a"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION ATail<T>(a AS __ArrayBase<T>) AS T where T is new()
+		RETURN a:Tail()
+
 
 	/// <summary>
 	/// Copy a typed dynamic object to static allocated memory.

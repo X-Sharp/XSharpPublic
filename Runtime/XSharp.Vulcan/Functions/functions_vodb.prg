@@ -14,7 +14,7 @@ using XSharp.RDD
 /// <returns>
 /// </returns>
 FUNCTION FieldGetArea(dwArea AS DWORD,symField AS __Symbol) AS __Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN __Usual._NIL   
 
 
@@ -27,7 +27,7 @@ RETURN __Usual._NIL
 /// <returns>
 /// </returns>
 FUNCTION FieldPutArea(dwArea AS DWORD,symField AS __Symbol,u AS __Usual) AS __Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN __Usual._NIL   
 
 
@@ -39,7 +39,7 @@ RETURN __Usual._NIL
 /// <returns>
 /// </returns>
 FUNCTION FieldSym(dwPos AS DWORD) AS __Symbol
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN NULL_SYMBOL   
 
 
@@ -53,7 +53,7 @@ RETURN NULL_SYMBOL
 /// <returns>
 /// </returns>
 FUNCTION VODBAliasSym(nArea AS DWORD) AS __SYMBOL
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN NULL_SYMBOL   
 
 
@@ -65,7 +65,7 @@ RETURN NULL_SYMBOL
 /// <returns>
 /// </returns>
 FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -81,7 +81,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBEval(uBlock AS __Usual,uCobFor AS __Usual,uCobWhile AS __Usual,nNext AS __Usual,nRecno AS __Usual,lRest AS LOGIC) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -94,7 +94,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,value REF __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -105,7 +105,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -115,7 +115,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBGetSelect() AS INT
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN 0   
 
 /// <summary>
@@ -124,7 +124,7 @@ RETURN 0
 /// <returns>
 /// </returns>
 FUNCTION VODBGoBottom() AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -134,7 +134,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBGoto(uRecId AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -143,7 +143,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBGoTop() AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -154,7 +154,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -169,7 +169,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBLocate(uCobFor AS __Usual,uCobWhile AS __Usual,nNext AS LONG,uRecId AS __Usual,lRest AS LOGIC) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -186,7 +186,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdCreate(cBagName AS STRING,uOrder AS __Usual,cExpr AS STRING,uCobExpr AS __Usual,lUnique AS LOGIC,ptrCondInfo AS DbOrderCondInfo) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -197,7 +197,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdDestroy(cOrdBag AS STRING,uOrder AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -210,7 +210,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS __Usual,ptrRet REF OBJECT) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -219,7 +219,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrderStatus(ost AS ORDERSTATUS) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -230,7 +230,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdListAdd(cOrdBag AS STRING,uOrder AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -241,7 +241,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdListClear(cOrdBag AS STRING,uOrder AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -254,7 +254,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS __Usual,pszOrder AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -264,7 +264,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBRecno() AS __Usual
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN __Usual._NIL   
 
 
@@ -277,7 +277,7 @@ RETURN __Usual._NIL
 /// <returns>
 /// </returns>
 FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS __Usual,ptrRet REF Object) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -286,7 +286,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBRecordPut(pszRecord AS __Psz) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -297,7 +297,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBRelation(nPos AS DWORD,pszRel AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -307,7 +307,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBRlock(uRecId AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -318,7 +318,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSeek(xValue AS __Usual,lSoft AS LOGIC) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -329,7 +329,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSelect(nNew AS DWORD,riOld AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -340,7 +340,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSetFilter(uCobFilter AS __Usual,cFilter AS STRING) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -351,7 +351,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSetLocate(uCobFor AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -363,7 +363,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSetRelation(cAlias AS STRING,uCobKey AS __Usual,cKey AS STRING) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 
@@ -381,7 +381,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS __Usual,uCobWhile AS __Usual,;
 	nNext AS __Usual,nRecno AS __Usual,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -390,7 +390,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBStatus(wst AS DbWORKAREASTATUS) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -400,7 +400,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSymSelect(sAlias AS __SYMBOL) AS INT
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN 0   
 
 /// <summary>
@@ -416,7 +416,7 @@ RETURN 0
 /// </returns>
 FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS __Usual,uCobWhile AS __Usual,;
 	nNext AS __Usual,nRecno AS __Usual,lRest AS LOGIC) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 
 /// <summary>
@@ -426,6 +426,6 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBUnlock(uRecno AS __Usual) AS LOGIC
-	/// THROW NotImplementedException{}
+	THROW  NotImplementedException{}
 RETURN FALSE   
 

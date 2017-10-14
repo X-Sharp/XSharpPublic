@@ -15,9 +15,11 @@ using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using EnvDTE80;
 using Microsoft.VisualStudio;
+using System.Diagnostics;
 
 namespace XSharpModel
 {
+    [DebuggerDisplay("{Name,nq}")]
     public class XProject
     {
         private ConcurrentDictionary<string, XFile> xSourceFilesDict;

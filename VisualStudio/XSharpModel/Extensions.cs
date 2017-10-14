@@ -17,6 +17,26 @@ namespace XSharpModel
             if (!list.Contains(item,StringComparer.OrdinalIgnoreCase))
                 list.Add(item);
         }
+
+        public static IReadOnlyList<string> Expanded( this IEnumerable<String> source)
+        {
+            var result = new List<String>();
+            result.AddRange(source);
+            foreach (string s in source)
+            {
+                string part = s;
+                while (part.Contains("."))
+                {
+                    part = part.Substring(0, part.LastIndexOf("."));
+                    if (!result.Contains(part))
+                    {
+                        result.Add(part);
+                    }
+                }
+
+            }
+            return result.ToImmutableList();
+        }
     }
 
     public static class DictionaryExtensions

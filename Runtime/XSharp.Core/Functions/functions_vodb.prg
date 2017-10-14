@@ -3,8 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp
-using XSharp.Rdd
+USING XSharp
+USING XSharp.Rdd
 
 
 /// <summary>
@@ -13,8 +13,8 @@ using XSharp.Rdd
 /// <returns>
 /// </returns>
 FUNCTION DBF() AS STRING
-	THrow NotImplementedException{}
-RETURN string.Empty   
+	THROW NotImplementedException{}
+	RETURN string.Empty   
 
 
 /// <summary>
@@ -25,7 +25,7 @@ RETURN string.Empty
 FUNCTION FCount() AS DWORD
 	LOCAL oWA := RDDHelpers.CWA() AS IRDD
 	IF (oWA != NULL)
-		return (DWORD) oWA:FieldCount
+		RETURN (DWORD) oWA:FieldCount
 	ENDIF
 	RETURN 0
 
@@ -39,7 +39,7 @@ FUNCTION FCount() AS DWORD
 FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
 	LOCAL oWA := RDDHelpers.CWA("FieldName") AS IRDD
 	IF (oWA != NULL)
-		return oWA:FieldName((INT) dwFieldPos)
+		RETURN oWA:FieldName((INT) dwFieldPos)
 	ENDIF
 	RETURN String.Empty   
 
@@ -54,7 +54,7 @@ FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
 FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
 	LOCAL oWA := RDDHelpers.CWA("FieldPos") AS IRDD
 	IF (oWA != NULL)
-		return (DWORD) oWA:FieldIndex(sFieldName) 
+		RETURN (DWORD) oWA:FieldIndex(sFieldName) 
 	ENDIF
 	RETURN 0   
 
@@ -70,7 +70,7 @@ FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
 FUNCTION VODBAlias(nArea AS DWORD) AS STRING
 	LOCAL oWAS AS WorkAreas
 	oWAS := RddHelpers.WAS()
-	return oWAS:GetAlias((INT) nArea)
+	RETURN oWAS:GetAlias((INT) nArea)
 
 /// <summary>
 /// Add a new record.
@@ -81,7 +81,7 @@ FUNCTION VODBAlias(nArea AS DWORD) AS STRING
 FUNCTION VODBAppend(lReleaseLocks AS LOGIC) AS LOGIC
 	LOCAL oWA := RDDHelpers.CWA("VODBAppend") AS IRDD
 	IF (oWA != NULL)
-		return oWA:Append(lReleaseLocks)
+		RETURN oWA:Append(lReleaseLocks)
 	ENDIF
 	RETURN FALSE   
 
@@ -106,24 +106,24 @@ FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGI
 /// <returns>
 /// </returns>
 FUNCTION VODBBof() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBBof") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBBof") AS IRDD
 	IF (oWA != NULL)
-		return oWA:BoF
+		RETURN oWA:BoF
 	ENDIF
 	
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION VODBBuffRefresh() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBBuffRefresh") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBBuffRefresh") AS IRDD
 	IF (oWA != NULL)
 		oWA:RecInfo(0, DbRecordInfo.Updated,NULL)
 		RETURN TRUE
 	ENDIF
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Clear a logical filter condition.
@@ -131,11 +131,11 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBClearFilter() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBClearFilter") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBClearFilter") AS IRDD
 	IF (oWA != NULL)
-		return oWA:ClearFilter()
+		RETURN oWA:ClearFilter()
 	ENDIF
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Clear a locate condition by deleting the locate code block.
@@ -143,9 +143,9 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBClearLocate() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBClearLocate") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBClearLocate") AS IRDD
 	IF (oWA != NULL)
-		return oWA:ClearScope()
+		RETURN oWA:ClearScope()
 	ENDIF
 	RETURN FALSE   
 
@@ -155,9 +155,9 @@ FUNCTION VODBClearLocate() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBClearRelation() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBClearRelation") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBClearRelation") AS IRDD
 	IF (oWA != NULL)
-		return oWA:ClearRel()
+		RETURN oWA:ClearRel()
 	ENDIF
 	RETURN FALSE   
 
@@ -166,9 +166,9 @@ FUNCTION VODBClearRelation() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBClearScope() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBClearScope") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBClearScope") AS IRDD
 	IF (oWA != NULL)
-		return oWA:ClearScope()
+		RETURN oWA:ClearScope()
 	ENDIF
 	RETURN FALSE   
 
@@ -180,7 +180,7 @@ FUNCTION VODBClearScope() AS LOGIC
 FUNCTION VODBCloseAll() AS LOGIC
 	LOCAL oWAS AS WorkAreas
 	oWAS := RddHelpers.WAS()
-	return oWAS:CloseAll()
+	RETURN oWAS:CloseAll()
 
 /// <summary>
 /// Close all files in a work area.
@@ -188,9 +188,9 @@ FUNCTION VODBCloseAll() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBCloseArea() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBFlock") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBFlock") AS IRDD
 	IF (oWA != NULL)
-		return oWA:Close()
+		RETURN oWA:Close()
 	ENDIF
 	RETURN FALSE   
 
@@ -200,9 +200,9 @@ FUNCTION VODBCloseArea() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBCommit() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBCommit") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBCommit") AS IRDD
 	IF (oWA != NULL)
-		return oWA:Flush()
+		RETURN oWA:Flush()
 	ENDIF
 	RETURN FALSE   
 
@@ -214,7 +214,7 @@ FUNCTION VODBCommit() AS LOGIC
 FUNCTION VODBCommitAll() AS LOGIC
 	LOCAL oWAS AS WorkAreas
 	oWAS := RddHelpers.WAS()
-	return oWAS:CommitAll()
+	RETURN oWAS:CommitAll()
 
 /// <summary>
 /// Resume a pending locate condition.
@@ -222,9 +222,9 @@ FUNCTION VODBCommitAll() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBContinue() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBContinue") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBContinue") AS IRDD
 	IF (oWA != NULL)
-		return oWA:Continue()
+		RETURN oWA:Continue()
 	ENDIF
 	RETURN FALSE   
 
@@ -234,9 +234,9 @@ FUNCTION VODBContinue() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBDelete() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBDelete") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBDelete") AS IRDD
 	IF (oWA != NULL)
-		return oWA:Delete()
+		RETURN oWA:Delete()
 	ENDIF
 	RETURN FALSE   
 
@@ -246,9 +246,9 @@ FUNCTION VODBDelete() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBDeleted() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBDeleted") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBDeleted") AS IRDD
 	IF (oWA != NULL)
-		return oWA:Deleted
+		RETURN oWA:Deleted
 	ENDIF
 	RETURN FALSE   
 
@@ -260,7 +260,7 @@ FUNCTION VODBDeleted() AS LOGIC
 FUNCTION VODBEof() AS LOGIC
 	LOCAL oWA := RDDHelpers.CWA("VODBEof") AS IRDD
 	IF (oWA != NULL)
-		return oWA:EoF
+		RETURN oWA:EoF
 	ENDIF
 	RETURN FALSE   
 
@@ -277,7 +277,7 @@ FUNCTION VODBEof() AS LOGIC
 /// </returns>
 FUNCTION VODBEval(uBlock AS OBJECT,uCobFor AS OBJECT,uCobWhile AS OBJECT,nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -285,7 +285,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBExit() AS INT
 	THROW  NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Retrieve the value of a specified database field.
@@ -364,12 +364,12 @@ FUNCTION VODBFilePut(nPos AS DWORD,cFile AS STRING) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBFilter() AS STRING
-	LOCAL oWA := RDDHelpers.CWA("VODBFilter") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBFilter") AS IRDD
 	IF (oWA != NULL)
-		return oWA:FilterText
+		RETURN oWA:FilterText
 	ENDIF
-
-RETURN string.Empty   
+	
+	RETURN string.Empty   
 
 /// <summary>
 /// Lock an opened and shared database file.
@@ -379,9 +379,9 @@ RETURN string.Empty
 FUNCTION VODBFlock() AS LOGIC
 	VAR oWA := RDDHelpers.CWA("VODBFlock")
 	IF (oWA != NULL)
-		return oWA:Lock(DbLockMode.Lock)
+		RETURN oWA:Lock(DbLockMode.Lock)
 	ENDIF
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Determine if the previous search operation succeeded.
@@ -391,9 +391,9 @@ RETURN FALSE
 FUNCTION VODBFound() AS LOGIC
 	VAR oWA := RDDHelpers.CWA("VODBFound")
 	IF (oWA != NULL)
-		return oWA:Found
+		RETURN oWA:Found
 	ENDIF
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -401,7 +401,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBFreeDriver() AS VOID
 	THROW  NotImplementedException{}
-RETURN
+	RETURN
 
 /// <summary>
 /// Return the work area number.
@@ -410,7 +410,7 @@ RETURN
 /// </returns>
 FUNCTION VODBGetSelect() AS INT
 	THROW  NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Move to the last logical record.
@@ -418,9 +418,9 @@ RETURN 0
 /// <returns>
 /// </returns>
 FUNCTION VODBGoBottom() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBGoBottom") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBGoBottom") AS IRDD
 	IF (oWA != NULL)
-		return oWA:GoBottom()
+		RETURN oWA:GoBottom()
 	ENDIF
 	RETURN FALSE   
 
@@ -431,9 +431,9 @@ FUNCTION VODBGoBottom() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBGoto(uRecId AS OBJECT) AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBGoto") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBGoto") AS IRDD
 	IF (oWA != NULL)
-		return oWA:GoToId(uRecID)
+		RETURN oWA:GoToId(uRecID)
 	ENDIF
 	RETURN FALSE   
 
@@ -443,11 +443,11 @@ FUNCTION VODBGoto(uRecId AS OBJECT) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBGoTop() AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBGoTop") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBGoTop") AS IRDD
 	IF (oWA != NULL)
-		return oWA:GoTop()
+		RETURN oWA:GoTop()
 	ENDIF
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Retrieve information about a work area.
@@ -457,7 +457,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
-	LOCAL oWA := RDDHelpers.CWA("VODBInfo") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBInfo") AS IRDD
 	IF (oWA != NULL)
 		ptrRet := oWA:Info((INT) nOrdinal, ptrRet)
 		RETURN TRUE
@@ -472,7 +472,7 @@ FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
 /// </returns>
 FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS DbJOINLIST) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return the number of the last record in a database file.
@@ -480,7 +480,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBLastRec() AS LONG
-	LOCAL oWA := RDDHelpers.CWA("VODBLastRec") as IRDD
+	LOCAL oWA := RDDHelpers.CWA("VODBLastRec") AS IRDD
 	IF (oWA != NULL)
 		RETURN oWA:RecCount
 	ENDIF
@@ -499,7 +499,7 @@ FUNCTION VODBLastRec() AS LONG
 /// </returns>
 FUNCTION VODBLocate(uCobFor AS OBJECT,uCobWhile AS OBJECT,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -516,7 +516,7 @@ FUNCTION VODBMemoExt(cDriver AS STRING) AS STRING
 /// </returns>
 FUNCTION VODBOrdBagExt() AS STRING
 	THROW  NotImplementedException{}
-RETURN string.Empty   
+	RETURN string.Empty   
 
 /// <summary>
 /// Set the condition and scope for an order.
@@ -526,7 +526,7 @@ RETURN string.Empty
 /// </returns>
 FUNCTION VODBOrdCondSet(ptrCondInfo AS DbOrderCondInfo) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Create or replace an order in an index file.
@@ -541,7 +541,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBOrdCreate(cBagName AS STRING,uOrder AS OBJECT,cExpr AS STRING,uCobExpr AS OBJECT,lUnique AS LOGIC,ptrCondInfo AS DbOrderCondInfo) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Remove an order from an open index file.
@@ -552,7 +552,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBOrdDestroy(cOrdBag AS STRING,uOrder AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return information about index files and the orders in them.
@@ -565,7 +565,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,ptrRet REF OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -574,7 +574,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBOrderStatus(ost AS OrderStatus) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Open an index file and add specified orders to the order list in a work area.
@@ -585,7 +585,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBOrdListAdd(cOrdBag AS STRING,uOrder AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Remove orders from the order list in a work area and close associated index files.
@@ -596,7 +596,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBOrdListClear(cOrdBag AS STRING,uOrder AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Rebuild all orders in the order list of a work area.
@@ -605,7 +605,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBOrdListRebuild() AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Set the controlling order for a work area.
@@ -617,7 +617,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS OBJECT,pszOrder AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Remove all records that have been marked for deletion from a database file.
@@ -626,7 +626,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBPack() AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -635,7 +635,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBRddCount(nRddType AS DWORD) AS DWORD
 	THROW  NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// </summary>
@@ -643,9 +643,9 @@ RETURN 0
 /// <param name="ptrRet"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBRDDInfo(nOrdinal AS DWORD,ptrRet REF Object) AS LOGIC
+FUNCTION VODBRDDInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Get a list of RDDs in use.
@@ -656,7 +656,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBRddList(rddList AS RddList,nRddType AS DWORD) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return an RDD name.
@@ -665,7 +665,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBRddName() AS STRING
 	THROW  NotImplementedException{}
-RETURN string.Empty   
+	RETURN string.Empty   
 
 /// <summary>
 /// Return and optionally change the default RDD for the application.
@@ -675,7 +675,7 @@ RETURN string.Empty
 /// </returns>
 FUNCTION VODBRddSetDefault(cDrv AS STRING) AS STRING
 	THROW  NotImplementedException{}
-RETURN string.Empty   
+	RETURN string.Empty   
 
 /// <summary>
 /// Restore the current record if it is marked for deletion.
@@ -684,7 +684,7 @@ RETURN string.Empty
 /// </returns>
 FUNCTION VODBRecall() AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return the current record number.
@@ -693,7 +693,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBRecno() AS OBJECT
 	THROW  NotImplementedException{}
-RETURN NULL_OBJECT
+	RETURN NULL_OBJECT
 
 /// <summary>
 /// </summary>
@@ -701,7 +701,7 @@ RETURN NULL_OBJECT
 /// </returns>
 FUNCTION VODBRecordGet() AS STRING
 	THROW  NotImplementedException{}
-RETURN string.Empty   
+	RETURN string.Empty   
 
 /// <summary>
 /// Retrieve information about a record.
@@ -713,16 +713,16 @@ RETURN string.Empty
 /// </returns>
 FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS OBJECT,ptrRet REF OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
 /// <param name="pszRecord"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBRecordPut(pszRecord AS String) AS LOGIC
+FUNCTION VODBRecordPut(pszRecord AS STRING) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return the linking expression of a specified relation.
@@ -733,7 +733,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBRelation(nPos AS DWORD,pszRel AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Lock the current record.
@@ -743,7 +743,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBRlock(uRecId AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return the work area number of a relation.
@@ -753,7 +753,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBRSelect(nPos AS DWORD) AS DWORD
 	THROW  NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Move to the record having the specified key value.
@@ -764,7 +764,7 @@ RETURN 0
 /// </returns>
 FUNCTION VODBSeek(xValue AS OBJECT,lSoft AS LOGIC) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Select a new work area and retrieve the current work area.
@@ -775,7 +775,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSelect(nNew AS DWORD,riOld AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Set a filter condition.
@@ -786,7 +786,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSetFilter(uCobFilter AS OBJECT,cFilter AS STRING) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Set the found flag.
@@ -796,7 +796,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSetFound(lFound AS LOGIC) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Specify the code block for a locate condition.
@@ -806,7 +806,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSetLocate(uCobFor AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Relate a specified work area to the current work area.
@@ -818,7 +818,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSetRelation(cAlias AS STRING,uCobKey AS OBJECT,cKey AS STRING) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -827,7 +827,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSetScope(ptrdbsci AS DBSCOPEINFO) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Select a new work area.
@@ -837,7 +837,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSetSelect(siNew AS INT) AS INT
 	THROW  NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Move the record pointer relative to the current record.
@@ -847,7 +847,7 @@ RETURN 0
 /// </returns>
 FUNCTION VODBSkip(nRecords AS LONG) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -857,7 +857,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBSkipScope(nRecords AS LONG,ptrdbsci AS DBSCOPEINFO) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -872,9 +872,9 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS OBJECT,uCobWhile AS OBJECT,;
-				 nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS LOGIC
+	nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -883,7 +883,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBStatus(wst AS DbWORKAREASTATUS) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 
 /// <summary>
@@ -898,9 +898,9 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS OBJECT,uCobWhile AS OBJECT,;
-					nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
+	nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// </summary>
@@ -910,7 +910,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBTransRec(nDest AS DWORD,fldNames AS DbFieldNames) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Release all locks for a work area.
@@ -920,7 +920,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBUnlock(uRecno AS OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Release all locks for all work areas.
@@ -929,7 +929,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBUnlockAll() AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Open a database file.
@@ -944,7 +944,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS RDDLIST,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Remove all records from open files.
@@ -953,5 +953,5 @@ RETURN FALSE
 /// </returns>
 FUNCTION VODBZap() AS LOGIC
 	THROW  NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 

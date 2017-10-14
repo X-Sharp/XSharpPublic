@@ -4,21 +4,21 @@
 // See License.txt in the project root for license information.
 //
 
-#using System.Reflection
-#using System.Runtime.CompilerServices
+#USING System.Reflection
+#USING System.Runtime.CompilerServices
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 #ifdef DEBUG
-[assembly: AssemblyConfiguration("Debug")]
-#else
-[assembly: AssemblyConfiguration("Release")]
+	[assembly: AssemblyConfiguration("Debug")]
+	#else
+	[ASSEMBLY: AssemblyConfiguration("Release")]
 #endif	
-[assembly: AssemblyProduct(XSharp.Constants.Product)]
-[assembly: AssemblyCompany(XSharp.Constants.Company)]
-[assembly: AssemblyCopyright(XSharp.Constants.Copyright)]
-[assembly: AssemblyCulture("")]
+[ASSEMBLY: AssemblyProduct(XSharp.Constants.Product)]
+[ASSEMBLY: AssemblyCompany(XSharp.Constants.Company)]
+[ASSEMBLY: AssemblyCopyright(XSharp.Constants.Copyright)]
+[ASSEMBLY: AssemblyCulture("")]
 
-[assembly: AssemblyVersion(XSharp.Constants.Version)]
-[assembly: AssemblyFileVersion(XSharp.Constants.Version)]
+[ASSEMBLY: AssemblyVersion(XSharp.Constants.Version)]
+[ASSEMBLY: AssemblyFileVersion(XSharp.Constants.Version)]

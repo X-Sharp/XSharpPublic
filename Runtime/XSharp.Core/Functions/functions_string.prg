@@ -14,14 +14,14 @@
 /// Note: this function is used by the compiler for the "-" operator for strings and/or strings and usuals
 /// </returns>
 
-FUNCTION __StringSubtract (lhs as STRING, rhs as STRING) AS STRING
-	IF lhs != NULL .and. rhs != null
+FUNCTION __StringSubtract (lhs AS STRING, rhs AS STRING) AS STRING
+	IF lhs != NULL .and. rhs != NULL
 		VAR len := lhs:Length + rhs:Length
 		RETURN (lhs:TrimEnd() + rhs:TrimEnd()):PadRight(len)
 	ELSEIF lhs != NULL
-		return lhs
+		RETURN lhs
 	ELSEIF rhs != NULL
-		return rhs
+		RETURN rhs
 	ENDIF
 	RETURN String.Empty
 
@@ -37,14 +37,14 @@ FUNCTION __StringSubtract (lhs as STRING, rhs as STRING) AS STRING
 /// Note this this function should respect SetCollation() and SetInternational() and SetExact()
 /// </returns>
 
-FUNCTION __StringCompare(strA AS STRING, strB AS STRING) as INT
+FUNCTION __StringCompare(strA AS STRING, strB AS STRING) AS INT
 	RETURN String.Compare(strA, strB)
-   
-FUNCTION __StringEquals(strA AS STRING, strB AS STRING) as LOGIC
+
+FUNCTION __StringEquals(strA AS STRING, strB AS STRING) AS LOGIC
 	RETURN String.Compare(strA, strB) == 0
-   
-   
-FUNCTION __StringNotEquals(strA AS STRING, strB AS STRING) as LOGIC
+
+
+FUNCTION __StringNotEquals(strA AS STRING, strB AS STRING) AS LOGIC
 	RETURN String.Compare(strA, strB) != 0
 
 
@@ -56,11 +56,11 @@ FUNCTION __StringNotEquals(strA AS STRING, strB AS STRING) as LOGIC
 /// The original string without leading and trailing spaces
 /// </returns>
 FUNCTION AllTrim(c AS STRING) AS STRING
-	if ( c == null )
-		return c
-	endif
+	IF ( c == NULL )
+		RETURN c
+	ENDIF
 	c := c:Trim()
-RETURN c
+	RETURN c
 
 
 /// <summary>
@@ -71,7 +71,7 @@ RETURN c
 /// </returns>
 FUNCTION Ansi2Oem(cSource AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
@@ -81,7 +81,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION Ansi2OemA(cSource AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Convert a character to its ASCII value.
@@ -90,13 +90,13 @@ RETURN String.Empty
 /// <returns>
 /// </returns>
 FUNCTION Asc(c AS STRING) AS DWORD
-	local ascValue := 0 as dword
-	if ( !string.IsNullOrEmpty(c) ) 
-		local chrBuffer := c:ToCharArray() as char[]
-        local bytBuffer := System.Text.Encoding.GetEncoding(1252):GetBytes(chrBuffer) as byte[]
+	LOCAL ascValue := 0 AS DWORD
+	IF ( !string.IsNullOrEmpty(c) ) 
+		LOCAL chrBuffer := c:ToCharArray() AS CHAR[]
+		LOCAL bytBuffer := System.Text.Encoding.GetEncoding(1252):GetBytes(chrBuffer) AS BYTE[]
 		ascValue := (DWORD) bytBuffer[1]
-	endif
-RETURN ascValue
+	ENDIF
+	RETURN ascValue
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string.
@@ -108,11 +108,11 @@ RETURN ascValue
 /// If cSearch is empty or c is empty, At() returns 0.
 /// </returns>
 FUNCTION At(cSearch AS STRING,c AS STRING) AS DWORD
-	local position := -1 as int
-	if ( c != null && cSearch != null )
+	LOCAL position := -1 AS INT
+	IF ( c != NULL && cSearch != NULL )
 		position := c:IndexOf(cSearch)
-	endif
-RETURN (DWORD) position+1  
+	ENDIF
+	RETURN (DWORD) position+1  
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string.
@@ -124,7 +124,7 @@ RETURN (DWORD) position+1
 /// If cSearch is empty or c is empty, At() returns 0.
 /// </returns>
 FUNCTION At2(cSearch AS STRING,c AS STRING) AS DWORD
-RETURN At(cSearch,c)
+	RETURN At(cSearch,c)
 
 
 /// <summary>
@@ -138,11 +138,11 @@ RETURN At(cSearch,c)
 /// If cSearch is empty or c is empty, At3() returns 0.
 /// </returns>
 FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
-	local position := -1 as int
-	if ( c != null && cSearch != null && dwOff <= c:Length )
-		position := c:IndexOf(cSearch,(int)dwOff-1)
-	endif
-RETURN (DWORD) position+1    
+	LOCAL position := -1 AS INT
+	IF ( c != NULL && cSearch != NULL && dwOff <= c:Length )
+		position := c:IndexOf(cSearch,(INT)dwOff-1)
+	ENDIF
+	RETURN (DWORD) position+1    
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string, without regard for case.
@@ -152,11 +152,11 @@ RETURN (DWORD) position+1
 /// <returns>
 /// </returns>
 FUNCTION AtC(cSearch AS STRING,c AS STRING) AS DWORD
-	local position := -1 as int
-	if ( c != null && cSearch != null )
+	LOCAL position := -1 AS INT
+	IF ( c != NULL && cSearch != NULL )
 		position := c:IndexOf(cSearch,System.StringComparison.OrdinalIgnoreCase)
-	endif
-RETURN (DWORD) position+1    
+	ENDIF
+	RETURN (DWORD) position+1    
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string, without regard for case.
@@ -166,7 +166,7 @@ RETURN (DWORD) position+1
 /// <returns>
 /// </returns>
 FUNCTION AtC2(cSearch AS STRING,c AS STRING) AS DWORD
-RETURN AtC(cSearch,c)  
+	RETURN AtC(cSearch,c)  
 
 /// <summary>
 /// Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
@@ -177,7 +177,7 @@ RETURN AtC(cSearch,c)
 /// </returns>
 FUNCTION ATCLine(cSearch AS STRING,c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
@@ -188,7 +188,7 @@ RETURN 0
 /// </returns>
 FUNCTION ATCLine2(cSearch AS STRING,c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Return the line number of the first occurrence of a substring within a multiple line string.
@@ -199,7 +199,7 @@ RETURN 0
 /// </returns>
 FUNCTION ATLine(cSearch AS STRING,c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Return the line number of the first occurrence of a substring within a multiple line string.
@@ -210,7 +210,7 @@ RETURN 0
 /// </returns>
 FUNCTION ATLine2(cSearch AS STRING,c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// </summary>
@@ -219,7 +219,7 @@ RETURN 0
 /// </returns>
 FUNCTION B64EncFile(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
@@ -228,7 +228,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION B64EncString(cIn AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 
 
@@ -240,21 +240,21 @@ RETURN String.Empty
 /// A string which is assembled from the even characters in <c>.
 /// </returns>
 FUNCTION CharEven(c AS STRING) AS STRING
-	local evenChars:=null as string
-	if ( !string.IsNullOrEmpty(c) ) 
+	LOCAL evenChars:=NULL AS STRING
+	IF ( !string.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToChar__Array() as char[]
-		local isEven := false as  logic
-		local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
-
-		foreach ch as char in c//hars 
-			if isEven
+		LOCAL isEven := FALSE AS  LOGIC
+		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
+		
+		FOREACH ch AS CHAR IN c//hars 
+			IF isEven
 				sb:Append(ch)
-			endif
+			ENDIF
 			isEven := !isEven
-		next
+		NEXT
 		evenChars := sb:ToString()
-	endif
-RETURN evenChars
+	ENDIF
+	RETURN evenChars
 
 /// <summary>
 /// Return a string whose odd-numbered characters and even-numbered characters are from 2 different strings.
@@ -265,7 +265,7 @@ RETURN evenChars
 /// </returns>
 FUNCTION CharMix(c1 AS STRING,c2 AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Return the odd-numbered characters in a string.
@@ -274,22 +274,22 @@ RETURN String.Empty
 /// A string which is assembled from the odd characters in <c>.
 /// </returns>
 FUNCTION CharOdd(c AS STRING) AS STRING
-	local oddChars:=null as string
-	if ( !string.IsNullOrEmpty(c) ) 
+	LOCAL oddChars:=NULL AS STRING
+	IF ( !string.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToChar__Array() as char[]
-		local isOdd  := true as  logic
-		local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
-
-		foreach ch as char in c//chars 
-			if isOdd
+		LOCAL isOdd  := TRUE AS  LOGIC
+		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
+		
+		FOREACH ch AS CHAR IN c//chars 
+			IF isOdd
 				sb:Append(ch)
-			endif
+			ENDIF
 			isOdd := !isOdd
-		next
+		NEXT
 		oddChars := sb:ToString()
-	endif
-RETURN oddChars
- 
+	ENDIF
+	RETURN oddChars
+
 
 /// <summary>
 /// Return a character based on its position in a string.
@@ -301,11 +301,11 @@ RETURN oddChars
 /// of the length of the string String.Empty is returned.
 /// </returns>
 FUNCTION CharPos(c AS STRING,nStart AS DWORD) AS STRING
-	local searchedChar := string.Empty as string
-	if ( nStart >= 1 && nStart <= c:Length )
-		searchedChar := c:SubString((int)nStart-1,1)
-	endif
-RETURN searchedChar
+	LOCAL searchedChar := string.Empty AS STRING
+	IF ( nStart >= 1 && nStart <= c:Length )
+		searchedChar := c:SubString((INT)nStart-1,1)
+	ENDIF
+	RETURN searchedChar
 
 /// <summary>
 /// Encrypt or decrypt a string.
@@ -316,7 +316,7 @@ RETURN searchedChar
 /// </returns>
 FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
@@ -327,7 +327,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION CryptA(cSource AS STRING,cKey AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Decode a file from an e-mail transfer.
@@ -336,7 +336,7 @@ RETURN String.Empty
 /// <param name="hfOut"></param>
 /// <returns>
 /// </returns>
-unsafe FUNCTION DecodeBase64(cMailPart AS STRING,hfOut AS PTR) AS INT
+UNSAFE FUNCTION DecodeBase64(cMailPart AS STRING,hfOut AS PTR) AS INT
 	/// THROW NotImplementedException{}
 RETURN 0   
 
@@ -347,7 +347,7 @@ RETURN 0
 /// </returns>
 FUNCTION DeleteRTRegKey(cSubKey AS STRING) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 
 
@@ -359,7 +359,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION HardCR(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
@@ -368,7 +368,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION Hex2C(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Indicate whether a substring is contained in a string.
@@ -379,13 +379,13 @@ RETURN String.Empty
 /// True if the searched string is in the string.
 /// </returns>
 FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
-	local isInString := false as logic
-	try
+	LOCAL isInString := FALSE AS LOGIC
+	TRY
 		isInString := ( c:IndexOf(cSearch) >= 0 ) 
-	//catch ex as Exception
+		//catch ex as Exception
 		//nop
-	end try
-RETURN isInString   
+	END TRY
+	RETURN isInString   
 
 /// <summary>
 /// Determine if the first character of a string is a kanji character.
@@ -395,9 +395,9 @@ RETURN isInString
 /// </returns>
 FUNCTION ISKANJI(c AS STRING) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
-  
+
 
 /// <summary>
 /// Determine if the given string is a valid VO string.
@@ -407,7 +407,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION IsVOString(cString AS STRING) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Extract a substring beginning with the first character in a string.
@@ -418,10 +418,10 @@ RETURN FALSE
 /// A string of the left first characters in the given length.
 /// </returns>
 FUNCTION Left(c AS STRING,dwLen AS DWORD) AS STRING
-	if ( c==null )
-		return c
-	endif
-RETURN	c:Substring(0,Math.Min(c:Length,(int)dwLen))   
+	IF ( c==NULL )
+		RETURN c
+	ENDIF
+	RETURN	c:Substring(0,Math.Min(c:Length,(INT)dwLen))   
 
 /// <summary>
 /// Convert the uppercase and mixed case characters in a string to lowercase.
@@ -431,11 +431,11 @@ RETURN	c:Substring(0,Math.Min(c:Length,(int)dwLen))
 /// Returns the input string with all characters converted to lowercase.
 /// </returns>
 FUNCTION Lower(cSource AS STRING) AS STRING
-	local loweredString := null as string
-	if ( !string.IsNullOrEMpty(cSource) )
+	LOCAL loweredString := NULL AS STRING
+	IF ( !string.IsNullOrEMpty(cSource) )
 		loweredString := cSource:ToLower()
-	endif
-RETURN loweredString
+	ENDIF
+	RETURN loweredString
 
 /// <summary>
 /// Convert the uppercase and mixed case characters in a string to lowercase, changing the contents of the argument as well as the return value.
@@ -445,7 +445,7 @@ RETURN loweredString
 /// </returns>
 FUNCTION LowerA(cSorce AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Remove leading spaces from a string.
@@ -455,11 +455,11 @@ RETURN String.Empty
 /// The input strings without eading spaces.
 /// </returns>
 FUNCTION LTrim(c AS STRING) AS STRING
-	local trimmedString := null as string
-	if ( !string.IsNullOrEMpty(c) )
+	LOCAL trimmedString := NULL AS STRING
+	IF ( !string.IsNullOrEMpty(c) )
 		trimmedString := c:TrimStart()
-	endif
-RETURN trimmedString  
+	ENDIF
+	RETURN trimmedString  
 
 
 
@@ -471,7 +471,7 @@ RETURN trimmedString
 /// </returns>
 FUNCTION MemLines(c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 
 /// <summary>
@@ -483,13 +483,13 @@ RETURN 0
 /// THe number how often the string to be searched for occurs in the original string.
 /// </returns>
 FUNCTION Occurs(cSearch AS STRING,c AS STRING) AS DWORD
-	local countedOccurances:=0 as int
-	try
-		countedOccurances := c:Split(<string>{ cSearch }, StringSplitOptions.None):Length - 1 
-	catch ex as Exception
-		nop
-	end try
-RETURN (dword)countedOccurances
+	LOCAL countedOccurances:=0 AS INT
+	TRY
+		countedOccurances := c:Split(<STRING>{ cSearch }, StringSplitOptions.None):Length - 1 
+	CATCH ex AS Exception
+		NOP
+	END TRY
+	RETURN (DWORD)countedOccurances
 
 /// <summary>
 /// Return the number of times a substring occurs in a string.
@@ -500,7 +500,7 @@ RETURN (dword)countedOccurances
 /// THe number how often the string to be searched for occurs in the original string.
 /// </returns>
 FUNCTION Occurs2(cSearch AS STRING,c AS STRING) AS DWORD
-RETURN Occurs(cSearch,c)   
+	RETURN Occurs(cSearch,c)   
 
 /// <summary>
 /// Return the number of times a substring occurs in a string, starting at a specified position.
@@ -511,13 +511,13 @@ RETURN Occurs(cSearch,c)
 /// <returns>
 /// </returns>
 FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffs AS DWORD) AS DWORD
-	local countedOccurances:=0 as dword
-	try
-		countedOccurances := Occurs(cSrc,c:SubString((int)nOffs-1))
-	// catch ex as Exception
-	// nop
-	end try
-RETURN countedOccurances  
+	LOCAL countedOccurances:=0 AS DWORD
+	TRY
+		countedOccurances := Occurs(cSrc,c:SubString((INT)nOffs-1))
+		// catch ex as Exception
+		// nop
+	END TRY
+	RETURN countedOccurances  
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters.
@@ -527,7 +527,7 @@ RETURN countedOccurances
 /// </returns>
 FUNCTION Oem2Ansi(cSource AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
@@ -537,7 +537,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION Oem2AnsiA(cSource AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
@@ -546,7 +546,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION OldSpaceFreeString(c AS STRING) AS VOID
 	/// THROW NotImplementedException{}
-RETURN
+	RETURN
 
 /// <summary>
 /// Change the first character of each word to uppercase
@@ -556,11 +556,11 @@ RETURN
 /// The converted string according to the CurrentCulture
 /// </returns>
 FUNCTION Proper(c AS STRING) AS STRING
-	local convertedString:=null as string 
-	if ( !string.IsNullOrEmpty(c) )
+	LOCAL convertedString:=NULL AS STRING 
+	IF ( !string.IsNullOrEmpty(c) )
 		convertedString := System.Globalization.CultureInfo.CurrentCulture:TextInfo:ToTitleCase(c)
-	endif
-RETURN convertedString   
+	ENDIF
+	RETURN convertedString   
 
 /// <summary>
 /// Capitalize a proper name correctly, changing the contents of the argument as well as the return value.
@@ -570,7 +570,7 @@ RETURN convertedString
 /// </returns>
 FUNCTION ProperA(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
@@ -579,7 +579,7 @@ RETURN String.Empty
 /// </returns>
 FUNCTION QPEncString(cIn AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 
 /// <summary>
@@ -591,13 +591,13 @@ RETURN String.Empty
 /// The right most position of the string to be searched inside the searched string.
 /// </returns>
 FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
-	local rightMost := 0 as dword
-	try
-		rightMost:= (dword) c:LastIndexOf(cSearch) + 1
-	// catch ex Exception
-	//    nop
-	end try
-RETURN rightMost
+	LOCAL rightMost := 0 AS DWORD
+	TRY
+		rightMost:= (DWORD) c:LastIndexOf(cSearch) + 1
+		// catch ex Exception
+		//    nop
+	END TRY
+	RETURN rightMost
 
 /// <summary>
 /// Return the position of the last occurrence of a substring within a string.
@@ -608,7 +608,7 @@ RETURN rightMost
 /// The right most position of the string to be searched inside the searched string.
 /// </returns>
 FUNCTION RAt2(cSearch AS STRING,c AS STRING) AS DWORD
-RETURN RAt2(cSearch,c) 
+	RETURN RAt2(cSearch,c) 
 
 /// <summary>
 /// Return the position of the last occurrence of a substring within a string.
@@ -619,13 +619,13 @@ RETURN RAt2(cSearch,c)
 /// <returns>
 /// </returns>
 FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
-	local rightMost := 0 as dword
-	try
-		rightMost := RAt(cSearch,c:SubString((int)dwOff-1))+dwOff-1
-	// catch ex as Exception
-	//    nop
-	end try
-RETURN rightMost   
+	LOCAL rightMost := 0 AS DWORD
+	TRY
+		rightMost := RAt(cSearch,c:SubString((INT)dwOff-1))+dwOff-1
+		// catch ex as Exception
+		//    nop
+	END TRY
+	RETURN rightMost   
 
 /// <summary>
 /// Return the line number of the last occurrence of a substring within a multiline string.
@@ -636,7 +636,7 @@ RETURN rightMost
 /// </returns>
 FUNCTION RATLine(cSearch AS STRING,c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Return the line number of the last occurrence of a substring within a multiline string.
@@ -647,7 +647,7 @@ RETURN 0
 /// </returns>
 FUNCTION RATLine2(cSearch AS STRING,c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Repeat a string a specified number of times.
@@ -658,16 +658,16 @@ RETURN 0
 /// A string which consist of dwCount replications of c.
 /// </returns>
 FUNCTION Repl(c AS STRING,dwCount AS DWORD) AS STRING
-	local replString:=null as string
-    if (!string.IsNullOrEmpty(c))
-        local  builder := System.Text.StringBuilder{c:Length * (int)dwCount} as System.Text.StringBuilder
-		local i as int
-		for i:=1 upto (int)dwCount
+	LOCAL replString:=NULL AS STRING
+	IF (!string.IsNullOrEmpty(c))
+		LOCAL  builder := System.Text.StringBuilder{c:Length * (INT)dwCount} AS System.Text.StringBuilder
+		LOCAL i AS INT
+		FOR i:=1 UPTO (INT)dwCount
 			builder:Append(c)
-		next
-        replString := builder:ToString()
-    endif
-RETURN replString   
+		NEXT
+		replString := builder:ToString()
+	ENDIF
+	RETURN replString   
 
 /// <summary>
 /// Repeat a string a specified number of times.
@@ -679,7 +679,7 @@ RETURN replString
 /// </returns>
 FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
-RETURN Repl(c,dwCount)   
+	RETURN Repl(c,dwCount)   
 
 /// <summary>
 /// Return a substring beginning with the rightmost character.
@@ -690,13 +690,13 @@ RETURN Repl(c,dwCount)
 /// Returns the right most part in the given length.
 /// </returns>
 FUNCTION Right(c AS STRING,dwLen AS DWORD) AS STRING
-	local rightMostPart := null as string
-	try
-		rightMostPart := c:SubString(c:Length-(int)dwLen)
-	// catch ex as Exception
-	//    nop
-	end try
-return rightMostPart
+	LOCAL rightMostPart := NULL AS STRING
+	TRY
+		rightMostPart := c:SubString(c:Length-(INT)dwLen)
+		// catch ex as Exception
+		//    nop
+	END TRY
+RETURN	 rightMostPart
 
 /// <summary>
 /// Remove trailing spaces from a string.
@@ -705,12 +705,12 @@ return rightMostPart
 /// <returns>
 /// </returns>
 FUNCTION RTrim(c AS STRING) AS STRING
-	local trimmedString := null as string
-	if ( !string.IsNullOrEMpty(c) )
+	LOCAL trimmedString := NULL AS STRING
+	IF ( !string.IsNullOrEMpty(c) )
 		trimmedString := c:TrimEnd()
-	endif
-RETURN trimmedString  
-  
+	ENDIF
+	RETURN trimmedString  
+
 
 /// <summary>
 /// Convert single-byte kana characters in a string to their double-byte equivalents.
@@ -720,7 +720,7 @@ RETURN trimmedString
 /// </returns>
 FUNCTION SBTODB(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Create new character variable with the same characters as the original string.
@@ -730,11 +730,11 @@ RETURN String.Empty
 /// A opy of the input string.
 /// </returns>
 FUNCTION SClone(c AS STRING) AS STRING
-	local clonedString := null as string
-	if ( !string.IsNUllOrEMpty(c) )
+	LOCAL clonedString := NULL AS STRING
+	IF ( !string.IsNUllOrEMpty(c) )
 		clonedString := string.Copy(c)
-	endif
-RETURN clonedString
+	ENDIF
+	RETURN clonedString
 
 
 
@@ -745,7 +745,7 @@ RETURN clonedString
 /// <returns>
 /// </returns>
 FUNCTION Space(dwSize AS DWORD) AS STRING
-RETURN string{' ',(int)dwSize}
+	RETURN STRING{' ',(INT)dwSize}
 
 /// <summary>
 /// Return the length of a strongly typed string.
@@ -755,11 +755,11 @@ RETURN string{' ',(int)dwSize}
 /// The length of the string.
 /// </returns>
 FUNCTION SLen(c AS STRING) AS DWORD
-	local len := 0 as dword
-	if (!String.IsNullOrEmpty(c))
-		len := (dword) c:Length
-	endif
-RETURN len  
+	LOCAL len := 0 AS DWORD
+	IF (!String.IsNullOrEmpty(c))
+		len := (DWORD) c:Length
+	ENDIF
+	RETURN len  
 
 /// <summary>
 /// Convert a string to Soundex form.
@@ -769,7 +769,7 @@ RETURN len
 /// </returns>
 FUNCTION SoundEx(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 
 
@@ -781,8 +781,8 @@ RETURN String.Empty
 /// </returns>
 FUNCTION StrEvaluate(s AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
- 
+	RETURN String.Empty   
+
 
 
 
@@ -797,23 +797,23 @@ RETURN String.Empty
 /// A new string with the substring from the starting position in the given length being subsituted with the insert string.
 /// </returns>
 FUNCTION Stuff(c AS STRING,n AS DWORD,nDel AS DWORD,cIns AS STRING) AS STRING
-	local result := cIns as string
-	if !String.IsNullOrEmpty(c)
-		var middlePart:=cIns
-		if string.IsNullOrEmpty(c)
+	LOCAL result := cIns AS STRING
+	IF !String.IsNullOrEmpty(c)
+		VAR middlePart:=cIns
+		IF string.IsNullOrEmpty(c)
 			middlePart := ""
-		endif
-		local part1 := c as string
-		if ( (int)n <= c:Length )
-		    part1 := c:Substring(0,(int)n-1)
-		endif
-		local part2 := "" as string
-		if ( (int)n-1+(int)nDel < c:length )
-			part2 := c:Substring((int)n-1+(int)nDel)
-		endif
+		ENDIF
+		LOCAL part1 := c AS STRING
+		IF ( (INT)n <= c:Length )
+			part1 := c:Substring(0,(INT)n-1)
+		ENDIF
+		LOCAL part2 := "" AS STRING
+		IF ( (INT)n-1+(INT)nDel < c:length )
+			part2 := c:Substring((INT)n-1+(INT)nDel)
+		ENDIF
 		result := part1+middlePart+part2
-	endif
-RETURN result
+	ENDIF
+	RETURN result
 
 /// <summary>
 /// Extract a substring from a string, using strong typing and only two arguments.
@@ -824,15 +824,15 @@ RETURN result
 /// The extracted substring.
 /// </returns>
 FUNCTION SubStr2(c AS STRING,dwStart AS DWORD) AS STRING
-	local result := c as string
-	if !String.IsNullOrEmpty(c)
-		if (dwStart < c:Length)
-		    result := c:Substring((int)dwStart-1)
-		else
-		    result := ""
-		endif
-	endif
-RETURN result 
+	LOCAL result := c AS STRING
+	IF !String.IsNullOrEmpty(c)
+		IF (dwStart < c:Length)
+			result := c:Substring((INT)dwStart-1)
+		ELSE
+			result := ""
+		ENDIF
+	ENDIF
+	RETURN result 
 
 /// <summary>
 /// Extract a substring from a string, using strong typing and three required arguments.
@@ -844,15 +844,15 @@ RETURN result
 /// The extracted substring in the given length.
 /// </returns>
 FUNCTION SubStr3(c AS STRING,dwStart AS DWORD,dwLen AS DWORD) AS STRING
-	local result := c as string
-	if !String.IsNullOrEmpty(c)
-		if (dwStart < c:Length)
-		    result := c:Substring((int)dwStart-1,(int)dwlen)
-		else
-		    result := ""
-		endif
-	endif
-RETURN result 
+	LOCAL result := c AS STRING
+	IF !String.IsNullOrEmpty(c)
+		IF (dwStart < c:Length)
+			result := c:Substring((INT)dwStart-1,(INT)dwlen)
+		ELSE
+			result := ""
+		ENDIF
+	ENDIF
+	RETURN result 
 
 
 /// <summary>
@@ -862,11 +862,11 @@ RETURN result
 /// <returns>
 /// </returns>
 FUNCTION Trim(c AS STRING) AS STRING
-	local result:=c as string
-	if !String.IsNullOrEmpty(c)
+	LOCAL result:=c AS STRING
+	IF !String.IsNullOrEmpty(c)
 		result := result:TrimEnd(' ')
-	endif
-RETURN result
+	ENDIF
+	RETURN result
 
 
 /// <summary>
@@ -876,11 +876,11 @@ RETURN result
 /// <returns>
 /// </returns>
 FUNCTION Upper(cSource AS STRING) AS STRING
-	local result:=cSource as string
-	if !String.IsNullOrEmpty(cSource)
+	LOCAL result:=cSource AS STRING
+	IF !String.IsNullOrEmpty(cSource)
 		result := result:ToUpper()
-	endif
-RETURN result 
+	ENDIF
+	RETURN result 
 
 /// <summary>
 /// Convert the lowercase and mixed case characters in a string to uppercase, changing the contents of the argument as well as the return value.
@@ -890,7 +890,7 @@ RETURN result
 /// </returns>
 FUNCTION UpperA(cSorce AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
@@ -898,7 +898,7 @@ RETURN String.Empty
 /// <param name="hfOut"></param>
 /// <returns>
 /// </returns>
-unsafe FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
+UNSAFE FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
 	/// THROW NotImplementedException{}
 RETURN 0   
 
@@ -909,7 +909,7 @@ RETURN 0
 /// </returns>
 FUNCTION UUEncFile(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
@@ -918,4 +918,4 @@ RETURN String.Empty
 /// </returns>
 FUNCTION UUEncLine(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   

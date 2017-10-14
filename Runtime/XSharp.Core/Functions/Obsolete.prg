@@ -7,7 +7,7 @@
 
 
 [Obsolete];
-FUNCTION SetKidStackSize(dwBytes AS DWORD) AS DWORD
+	FUNCTION SetKidStackSize(dwBytes AS DWORD) AS DWORD
 	/// THROW NotImplementedException{}
 RETURN 0   
 

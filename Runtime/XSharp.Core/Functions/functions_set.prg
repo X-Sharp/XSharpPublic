@@ -5,7 +5,7 @@
 //
 // Most of these settings will Get and Set properties of the Runtime.State class
 #include "GetSet.xh"
-using XSharp
+USING XSharp
 
 /// <summary>
 /// Returns a string representing the morning extension for time strings in 12-hour format.
@@ -13,7 +13,7 @@ using XSharp
 /// <returns>
 /// </returns>
 FUNCTION GetAMExt() AS STRING
-	GETSTATE String Set.AmExt 
+	GETSTATE STRING Set.AmExt 
 
 /// <summary>
 /// Returns a string representing the morning extension for time strings in 12-hour format.
@@ -30,8 +30,8 @@ FUNCTION SetAMExt() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetAMExt(cExt AS STRING) AS STRING
-	SETSTATE String Set.AmExt cExt
-		
+	SETSTATE STRING Set.AmExt cExt
+
 
 /// <summary>
 /// Returns the setting that determines whether time strings are in 12-hour or 24-hour format.
@@ -39,7 +39,7 @@ FUNCTION SetAMExt(cExt AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION GetAmPm() AS LOGIC
-	GETSTATE Logic Set.AmPm
+	GETSTATE LOGIC Set.AmPm
 
 /// <summary>
 /// Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
@@ -48,7 +48,7 @@ FUNCTION GetAmPm() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
-	SETSTATE Logic Set.AmPm lSet
+	SETSTATE LOGIC Set.AmPm lSet
 /// <summary>
 /// Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
 /// </summary>
@@ -57,7 +57,7 @@ FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
 /// </returns>
 FUNCTION SetAnsi(lSet AS OBJECT) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
@@ -67,7 +67,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Return and optionally change the setting that determines whether a beep is sounded by the error system when an error occurs.
@@ -77,7 +77,7 @@ RETURN 0
 /// </returns>
 FUNCTION SetBeep(lSet AS OBJECT) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return and optionally change the setting that determines whether to include or omit century digits in the date format.
@@ -86,7 +86,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION SetCentury(lSet AS OBJECT) AS LOGIC
-	SETSTATE Logic Set.Century lSet
+	SETSTATE LOGIC Set.Century lSet
 
 /// <summary>
 /// </summary>
@@ -95,7 +95,7 @@ FUNCTION SetCentury(lSet AS OBJECT) AS LOGIC
 /// </returns>
 FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
 	/// THROW NotImplementedException{}
-RETURN IntPtr.Zero
+	RETURN IntPtr.Zero
 
 /// <summary>
 /// Return and optionally change the setting that determines the type of central processor you have.
@@ -105,7 +105,7 @@ RETURN IntPtr.Zero
 /// </returns>
 FUNCTION SetCpu(nCpu AS OBJECT) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Return and optionally change the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
@@ -115,7 +115,7 @@ RETURN 0
 /// </returns>
 FUNCTION SetDateCountry(dwCountry AS OBJECT) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 
 /// <summary>
@@ -124,7 +124,7 @@ RETURN 0
 /// <returns>
 /// </returns>
 FUNCTION GetDateFormat() AS STRING
-	GETSTATE String Set.DateFormat
+	GETSTATE STRING Set.DateFormat
 
 /// <summary>
 /// Change the setting that determines the <%APP%> date format.
@@ -133,7 +133,7 @@ FUNCTION GetDateFormat() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetDateFormat(cDateFormat AS STRING) AS STRING
-	SETSTATE String Set.DateFormat cDateFormat
+	SETSTATE STRING Set.DateFormat cDateFormat
 /// <summary>
 /// Return and optionally change the setting that determines the number of decimal places used to display numbers.
 /// </summary>
@@ -175,9 +175,9 @@ FUNCTION SetDefault(cDefault AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetDeleted() AS LOGIC
-	GETSTATE Logic Set.Deleted 
+	GETSTATE LOGIC Set.Deleted 
 FUNCTION SetDeleted(lSet AS LOGIC) AS LOGIC
-	SETSTATE Logic Set.Deleted lSet
+	SETSTATE LOGIC Set.Deleted lSet
 
 /// <summary>
 /// Return and optionally change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
@@ -213,7 +213,7 @@ FUNCTION SetDigitFixed(f AS LOGIC) AS LOGIC
 /// </returns>
 FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return and optionally change the setting that determines how dates without century digits are interpreted.
@@ -235,7 +235,7 @@ FUNCTION SetEpoch(wYear AS DWORD) AS DWORD
 /// </returns>
 FUNCTION SetErrorLog(lSet AS OBJECT) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Toggles an exact match for character string comparisons.
@@ -291,9 +291,9 @@ FUNCTION SetFixed(fFixed AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetMath() AS DWORD
-RETURN 0
+	RETURN 0
 FUNCTION SetMath(nFPU AS DWORD) AS DWORD
-RETURN 0   
+	RETURN 0   
 
 
 
@@ -342,7 +342,7 @@ FUNCTION SetPMExt(cExt AS STRING) AS STRING
 /// </returns>
 FUNCTION SetRTRegInt(cSubKey AS STRING,cKeyName AS STRING,nKeyVal AS DWORD) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Save a string value to the Registry.
@@ -354,7 +354,7 @@ RETURN FALSE
 /// </returns>
 FUNCTION SetRTRegString(cSubKey AS STRING,cKeyName AS STRING,cKeyVal AS STRING) AS LOGIC
 	/// THROW NotImplementedException{}
-RETURN FALSE   
+	RETURN FALSE   
 
 /// <summary>
 /// Return and optionally change the setting that displays numbers in scientific notation.
@@ -364,8 +364,8 @@ RETURN FALSE
 /// </returns>
 FUNCTION SetScience() AS LOGIC
 	GETSTATE LOGIC Set.Science 
-		   
-FUNCTION SetScience(lSet as LOGIC) AS LOGIC
+
+FUNCTION SetScience(lSet AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.Science lSet
 
 /// <summary>
@@ -421,7 +421,7 @@ FUNCTION SetUnique(lSet AS OBJECT) AS LOGIC
 /// </returns>
 FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// </summary>
@@ -430,7 +430,7 @@ RETURN 0
 /// </returns>
 FUNCTION SetWinCompFunc(pFunc AS OBJECT) AS IntPtr
 	/// THROW NotImplementedException{}
-RETURN IntPtr.Zero
+	RETURN IntPtr.Zero
 
 
 /// <summary>

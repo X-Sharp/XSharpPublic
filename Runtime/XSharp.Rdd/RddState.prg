@@ -87,9 +87,10 @@ CLASS RDDState	IMPLEMENTS IDisposable
 	PUBLIC VIRTUAL METHOD Dispose AS VOID
 		IF oWorkAreas != NULL
 			oWorkareas:CloseAll()
-			oWorkAreas := NULL
+			oWorkareas := NULL
 		ENDIF
 		RETURN
 	#endregion 
+	
 END CLASS	
 END NAMESPACE

@@ -12,7 +12,7 @@
 /// </returns>
 FUNCTION Bin2DW(c AS STRING) AS DWORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Convert a string containing a 16-bit signed integer to a short integer.
@@ -22,7 +22,7 @@ RETURN 0
 /// </returns>
 FUNCTION Bin2I(c AS STRING) AS SHORT
 	/// THROW NotImplementedException{}
-RETURN 0
+	RETURN 0
 
 /// <summary>
 /// Convert a string containing a 32-bit signed integer to a long integer.
@@ -32,14 +32,14 @@ RETURN 0
 /// </returns>
 FUNCTION Bin2L(c AS STRING) AS LONG
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
-	/// <summary>
+/// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-unsafe FUNCTION Bin2Ptr(c AS STRING) AS PTR
+UNSAFE FUNCTION Bin2Ptr(c AS STRING) AS PTR
 	/// THROW NotImplementedException{}
 RETURN IntPtr.Zero
 
@@ -51,9 +51,9 @@ RETURN IntPtr.Zero
 /// </returns>
 FUNCTION Bin2Real4(c AS STRING) AS REAL4
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
-	
+
 /// <summary>
 /// Convert a string containing a 32-bit __VOFloating point number to a Real8 value.
 /// </summary>
@@ -62,7 +62,7 @@ RETURN 0
 /// </returns>
 FUNCTION Bin2REAL8(c AS STRING) AS REAL8
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 /// <summary>
 /// Convert a string containing a 16-bit unsigned integer to a word.
@@ -72,7 +72,7 @@ RETURN 0
 /// </returns>
 FUNCTION Bin2W(c AS STRING) AS WORD
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN 0   
 
 
 /// <summary>
@@ -82,7 +82,7 @@ RETURN 0
 /// </returns>
 FUNCTION C2Hex(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Return the high-order (leftmost) byte in a number.
@@ -91,8 +91,8 @@ RETURN String.Empty
 /// <returns>
 /// </returns>
 FUNCTION HiByte(dw AS WORD) AS BYTE
-	local upper := Convert.ToByte(dw >> 8) AS byte
-RETURN (byte) upper   
+	LOCAL upper := Convert.ToByte(dw >> 8) AS BYTE
+	RETURN (BYTE) upper   
 
 /// <summary>
 /// Return the high-order (leftmost) word in a number.
@@ -101,8 +101,8 @@ RETURN (byte) upper
 /// <returns>
 /// </returns>
 FUNCTION HiWord(dw AS DWORD) AS WORD
-	local upper := Convert.ToByte(dw >> 16) AS word
-RETURN (WORD) upper
+	LOCAL upper := Convert.ToByte(dw >> 16) AS WORD
+	RETURN (WORD) upper
 
 
 /// <summary>
@@ -112,8 +112,8 @@ RETURN (WORD) upper
 /// <returns>
 /// </returns>
 FUNCTION I2Bin(n AS SHORT) AS STRING
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byteArray)  
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)  
 
 
 
@@ -124,8 +124,8 @@ RETURN System.Text.Encoding.ASCII:GetString(byteArray)
 /// <returns>
 /// </returns>
 FUNCTION L2Bin(n AS LONG) AS STRING
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byteArray)     
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)     
 
 
 
@@ -136,7 +136,7 @@ RETURN System.Text.Encoding.ASCII:GetString(byteArray)
 /// <returns>
 /// </returns>
 FUNCTION LoByte(dw AS WORD) AS BYTE
-RETURN (byte) (dw & 0x00FF)
+	RETURN (BYTE) (dw & 0x00FF)
 
 /// <summary>
 /// Return the low-order (rightmost) word in a number.
@@ -145,7 +145,7 @@ RETURN (byte) (dw & 0x00FF)
 /// <returns>
 /// </returns>
 FUNCTION LoWord(dw AS DWORD) AS WORD
-RETURN (WORD) (dw & 0xFFFF) 
+	RETURN (WORD) (dw & 0xFFFF) 
 
 
 
@@ -157,7 +157,7 @@ RETURN (WORD) (dw & 0xFFFF)
 /// </returns>
 FUNCTION Multi2Wide(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 
 
 
@@ -168,8 +168,8 @@ RETURN String.Empty
 /// <returns>
 /// </returns>
 FUNCTION Real42Bin(n AS REAL4) AS STRING
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byteArray)        
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)        
 
 /// <summary>
 /// Convert a Real8 value to a string containing an 8-byte __VOFloating point number.
@@ -178,10 +178,8 @@ RETURN System.Text.Encoding.ASCII:GetString(byteArray)
 /// <returns>
 /// </returns>
 FUNCTION Real82Bin(n AS REAL8) AS STRING
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byteArray)   
-
-
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)   
 
 
 /// <summary>
@@ -191,5 +189,5 @@ RETURN System.Text.Encoding.ASCII:GetString(byteArray)
 /// </returns>
 FUNCTION Wide2Multi(cBstr AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	RETURN String.Empty   
 

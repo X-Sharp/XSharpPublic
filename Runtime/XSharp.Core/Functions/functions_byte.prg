@@ -12,5 +12,5 @@
 /// New value with the nibbles swapped.
 /// </returns>
 FUNCTION SwapByte(b AS BYTE) AS WORD
-return (word)((word)((b & 0x0f) << 4) | ((b >> 4) & 0x0f))
+	RETURN (WORD)((WORD)((b & 0x0f) << 4) | ((b >> 4) & 0x0f))
 

@@ -294,7 +294,7 @@ namespace XSharpColorizer
                     if (XSharpLexer.IsComment(token.Type))
                     {
                         result = Token2ClassificationSpan(token, snapshot, xsharpCommentType);
-                        if (token.Type == XSharpLexer.ML_COMMENT)
+                        if (token.Type == XSharpLexer.ML_COMMENT && token.Text.IndexOf("\r") >= 0)
                         {
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));

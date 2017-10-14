@@ -14,30 +14,30 @@ CLASS SDF INHERIT Workarea
 		SELF:_BufferSize := 0
 //	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
 METHOD GoTop() AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 //	METHOD GoBottom() AS LOGIC   
 METHOD GoTo(nRec AS LONG) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD GoToId(oRec AS OBJECT) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 //	METHOD Skip(nToSkip AS INT) AS LOGIC
 //	METHOD SkipFilter(nToSkip AS INT) AS LOGIC
 METHOD SkipRaw(nToSkip AS INT) AS LOGIC 
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 //	METHOD SkipScope(nToSkip AS INT) AS LOGIC
 
 	// Append and Delete
 METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD Delete() AS LOGIC   
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD GetRec() AS BYTE[]  
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 //	METHOD Pack() AS LOGIC
 METHOD PutRec(aRec AS BYTE[]) AS LOGIC 
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD Recall() AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 //	METHOD Zap() AS LOGIC   
 		
 	// Open and Close   
@@ -54,9 +54,9 @@ METHOD Close() 			AS LOGIC
 	ENDIF
 	RETURN SUPER:Close()
 METHOD Create(info AS DbOpenInfo) AS LOGIC  
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD Open(info AS DbOpenInfo) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}		
+	THROW NotImplementedException{}		
 // Filtering and Scoping 
 //	METHOD ClearFilter() 	AS LOGIC
 //	METHOD ClearScope() 	AS LOGIC 
@@ -71,19 +71,20 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 //  METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 //	METHOD FieldName(nFldPos AS LONG) AS STRING 
 METHOD GetValue(nFldPos AS INT) AS OBJECT
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 //  METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 
 //	METHOD GetValueLength(nFldPos AS INT) AS INT
 METHOD Flush() 			AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
+
 METHOD GoCold()			AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 METHOD GoHot()			AS LOGIC   
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 
 METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 // METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	// Locking
 //	METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC  
@@ -120,7 +121,7 @@ METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 
 	// Trans	
 METHOD Trans(info AS DbTransInfo) 		AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 //    METHOD TransRec(info AS DbTransInfo) 	AS LOGIC
 	// Blob
 //	METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
@@ -130,7 +131,7 @@ METHOD Trans(info AS DbTransInfo) 		AS LOGIC
 //	METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT	
 	// Other
 METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
-	THROW NotImplementedException{__ENTITY__}
+	THROW NotImplementedException{}
 //	METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT  
 //	METHOD Sort(info AS DbSortInfo) AS LOGIC
 

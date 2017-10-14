@@ -1,65 +1,95 @@
 ﻿USING System.Collections.Generic
 USING System.Threading
 USING XSharp.Runtime
+USING System
 
-BEGIN NAMESPACE XSharp.Runtime
-CLASS RDDState
+BEGIN NAMESPACE XSharp.RDD
+CLASS RDDState	IMPLEMENTS IDisposable
 	// Static Fields
-	PRIVATE STATIC StateTable AS Dictionary<Thread, RDDState>
-	PRIVATE STATIC MainThread AS Thread   
-	// Static Properties	
-	PRIVATE STATIC PROPERTY MainState AS RDDState GET StateTable[MainThread]
+	PRIVATE STATIC stateTable AS Dictionary<Thread, RDDState>
+	PRIVATE STATIC mainThread AS Thread   
+	PRIVATE STATIC mainState  AS RDDState
+
+	// Normal Fields
+	PRIVATE oWorkareas	AS WorkAreas
+	PRIVATE oThread		AS Thread
+	PRIVATE oLastError	AS Exception
+	PRIVATE oSettings	AS Dictionary<INT, OBJECT>
+
+	
 	// Static Methods and Constructor
-	STATIC CONSTRUCTOR
-		StateTable := Dictionary<Thread, RDDState>{}
-		VAR oCurrent := RDDState{}
-		MainThread := Thread.CurrentThread
-		StateTable:Add(MainThread, oCurrent)				
+	STATIC CONSTRUCTOR()
+		stateTable		:= Dictionary<Thread, RDDState>{}
+		mainThread		:= Thread.CurrentThread
+		mainState       := RDDState{}
 	
 	PUBLIC STATIC METHOD GetInstance() AS RDDState
 		VAR oThread := Thread.CurrentThread
 		LOCAL oState AS RDDState   
-		BEGIN LOCK StateTable
-			IF ! StateTable.ContainsKey(oThread)   
+		BEGIN LOCK stateTable
+			IF ! stateTable.ContainsKey(oThread)   
 				oState := MainState:Clone()
-				StateTable:Add(oThread, oState)
 			ELSE
-				oState := StateTable[oThread]
+				oState := stateTable[oThread]
 			ENDIF                
 		END LOCK            
 		RETURN oState
 
-	// Private Fields		
-	PRIVATE Settings AS Dictionary<INT, OBJECT>
-
 	// Private methods
 	PRIVATE CONSTRUCTOR()       
-		SELF:Name := "State for Thread "+Thread.CurrentThread.ManagedThreadId.ToString()
-		Settings := Dictionary<INT, OBJECT>{}
+		oThread		:= Thread.CurrentThread
+		SELF:Name	:= "RDDState for Thread "+oThread:ManagedThreadId:ToString()
+		oSettings	:= Dictionary<INT, OBJECT>{}
+		oWorkareas  := WorkAreas{}
+		BEGIN LOCK stateTable
+			stateTable:Add(oThread, SELF)
+		END LOCK
 		RETURN
+
 	PRIVATE METHOD Clone() AS RDDState
 		LOCAL oNew AS RDDState
 		oNew := RDDState{}		
-		BEGIN LOCK Settings
+		BEGIN LOCK oSettings
 			// Copy all values from Current State to New state
-			FOREACH VAR element IN Settings     
-				oNew:Settings[element:Key] := element:Value
+			FOREACH VAR element IN oSettings     
+				oNew:SetValue(element:Key, element:Value)
 			NEXT
 		END LOCK
 		RETURN oNew     
 		
 	// Public Fields and Methods		
-	PUBLIC PROPERTY Name AS STRING AUTO
+	PUBLIC PROPERTY Name			 AS STRING AUTO
 	PUBLIC VIRTUAL METHOD ToString() AS STRING
 		RETURN SELF:Name
+	
 	PUBLIC METHOD GetValue<T> (nSetting AS INT) AS T
-		IF Settings.ContainsKey(nSetting)
-			RETURN (T) Settings[nSetting]
-		ENDIF
-		RETURN Default(T)
+		BEGIN LOCK oSettings
+			IF oSettings.ContainsKey(nSetting)
+				RETURN (T) oSettings[nSetting]
+			ENDIF
+		END LOCK
+		RETURN DEFAULT(T)
+
 	PUBLIC METHOD SetValue(nSetting AS INT, oValue AS OBJECT) AS VOID
-		Settings[nSetting] := oValue
+		BEGIN LOCK oSettings
+			oSettings[nSetting] := oValue
+		END LOCK
 		RETURN			
 
+	PUBLIC PROPERTY WorkAreas AS WorkAreas GET oWorkAreas
+
+	PUBLIC STATIC METHOD SetLastError(oError AS Exception) AS VOID
+		VAR oInstance := GetInstance()
+		oInstance:oLastError := oError
+		RETURN
+
+	#region IDisposable
+	PUBLIC VIRTUAL METHOD Dispose AS VOID
+		IF oWorkAreas != NULL
+			oWorkareas:CloseAll()
+			oWorkAreas := NULL
+		ENDIF
+		RETURN
+	#endregion 
 END CLASS	
 END NAMESPACE

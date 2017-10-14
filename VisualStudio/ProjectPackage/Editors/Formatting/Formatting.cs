@@ -193,9 +193,15 @@ namespace XSharp.Project
                 {
                     // What kind of region ? 
                     // Skip comment and using regions
-                    if ((openKeyword == "//") || (openKeyword == "USING"))
+                    switch (openKeyword)
                     {
-                        continue;
+                        case "//":
+                        case "USING":
+                        case "DEFINE":
+                        case "#DEFINE":
+                            continue;
+                        default:
+                            break;
                     }
                     if (openKeyword == "/*")
                     {
@@ -236,9 +242,15 @@ namespace XSharp.Project
                 else if ((snapLine.Start.Position > region.Item1.Start) && (snapLine.End.Position < region.Item2.Start))
                 {
                     // We are inside a Comment or Using region
-                    if ((openKeyword == "//") || (openKeyword == "USING"))
+                    switch (openKeyword)
                     {
-                        continue;
+                        case "//":
+                        case "USING":
+                        case "DEFINE":
+                        case "#DEFINE":
+                            continue;
+                        default:
+                            break;
                     }
                     // We are between the opening Keyword and the closing Keyword
                     indentValue++;
@@ -377,24 +389,11 @@ namespace XSharp.Project
                             keyword = kwSpan.GetText();
                             keyword = keyword.ToUpper();
                             // it could be modifier...
-                            switch (keyword)
+                            if (keywordIsModifier(keyword))
                             {
-                                case "PROTECTED":
-                                case "INTERNAL":
-                                case "HIDDEN":
-                                case "PRIVATE":
-                                case "EXPORT":
-                                case "PUBLIC":
-                                case "STATIC":
-                                case "SEALED":
-                                case "ABSTRACT":
-                                case "VIRTUAL":
-                                case "PARTIAL":
-                                    tagIndex++;
-                                    keyword = "";
-                                    continue;
-                                default:
-                                    break;
+                                tagIndex++;
+                                keyword = "";
+                                continue;
                             }
                         }
                     }
@@ -514,7 +513,7 @@ namespace XSharp.Project
                 "FUNCTION","PROCEDURE",
                 "CONSTRUCTOR","DESTRUCTOR",
                 "ACCESS","ASSIGN",
-                "METHOD","OPERATOR" 
+                "METHOD","OPERATOR"
             };
         }
 
@@ -965,29 +964,18 @@ namespace XSharp.Project
                             keyword = kwSpan.GetText();
                             keyword = keyword.ToUpper();
                             // it could be modifier...
-                            switch (keyword)
+                            if (keywordIsModifier(keyword))
                             {
-                                case "PROTECTED":
-                                case "INTERNAL":
-                                case "HIDDEN":
-                                case "PRIVATE":
-                                case "EXPORT":
-                                case "PUBLIC":
-                                case "STATIC":
-                                case "SEALED":
-                                case "ABSTRACT":
-                                case "VIRTUAL":
-                                case "PARTIAL":
-                                    tagIndex++;
-                                    keyword = "";
-                                    continue;
-                                case "DO":
-                                    tagIndex++;
-                                    keyword = "";
-                                    doSkipped = true;
-                                    continue;
-                                default:
-                                    break;
+                                tagIndex++;
+                                keyword = "";
+                                continue;
+                            }
+                            if (keyword == "DO")
+                            {
+                                tagIndex++;
+                                keyword = "";
+                                doSkipped = true;
+                                continue;
                             }
                         }
                     }
@@ -1012,7 +1000,26 @@ namespace XSharp.Project
             }
             return keyword;
         }
-
+        static bool keywordIsModifier(string keyword)
+        {
+            switch (keyword)
+            {
+                case "PROTECTED":
+                case "INTERNAL":
+                case "HIDDEN":
+                case "PRIVATE":
+                case "EXPORT":
+                case "PUBLIC":
+                case "STATIC":
+                case "SEALED":
+                case "ABSTRACT":
+                case "VIRTUAL":
+                case "PARTIAL":
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
 
         #endregion

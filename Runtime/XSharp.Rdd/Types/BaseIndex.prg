@@ -12,30 +12,30 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		_oArea := oArea
 
 VIRTUAL METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 VIRTUAL METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 
 VIRTUAL METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 
 VIRTUAL METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 
 VIRTUAL METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 
 VIRTUAL METHOD OrderListDelete(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 
 VIRTUAL METHOD OrderListFocus(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 
 VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 
 VIRTUAL METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC
-		THROW NotImplementedException{__ENTITY__}
+		THROW NotImplementedException{}
 
 VIRTUAL PROPERTY Found as LOGIC	GET _oArea:Found
 END CLASS

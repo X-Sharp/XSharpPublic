@@ -13,7 +13,7 @@ using XSharp
 /// <returns>
 /// </returns>
 FUNCTION MAssign(cExp AS STRING,xValue AS __Usual) AS __Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN __Usual._NIL   
 
 
@@ -25,7 +25,7 @@ RETURN __Usual._NIL
 /// <returns>
 /// </returns>
 FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN NULL_OBJECT   
 
 /// <summary>
@@ -35,7 +35,7 @@ RETURN NULL_OBJECT
 /// <returns>
 /// </returns>
 FUNCTION MemVarGet(cVar AS STRING) AS __Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN __Usual._NIL   
 
 /// <summary>
@@ -46,7 +46,7 @@ RETURN __Usual._NIL
 /// <returns>
 /// </returns>
 FUNCTION MemVarPut(cVar AS STRING,u AS __Usual) AS __Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN __Usual._NIL   
 
 
@@ -60,7 +60,7 @@ RETURN __Usual._NIL
 /// <returns>
 /// </returns>
 FUNCTION VarGet(cVar AS STRING) AS __Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN __Usual._NIL   
 
 /// <summary>
@@ -71,7 +71,7 @@ RETURN __Usual._NIL
 /// <returns>
 /// </returns>
 FUNCTION VarPut(cVar AS STRING,u AS __Usual) AS __Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN __Usual._NIL   
 
 

@@ -18,21 +18,19 @@ namespace XSharpModel
         private List<XVariable> _locals;
         private bool _isStatic;
 
-        public XTypeMember(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position ) 
+        public XTypeMember(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position, bool isStatic ) 
             : base(name, kind, modifiers, visibility, span, position)
         {
             this.Parent = null;
             this._parameters = new List<XVariable>();
             this._locals = new List<XVariable>();
             this._typeName = "";
-            if ( modifiers == Modifiers.Static )
-            {
-                this._isStatic = true;
-            }
+            this._isStatic = isStatic;
+
         }
 
-        public XTypeMember(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position, string typeName )
-            : this(name, kind, modifiers, visibility, span, position)
+        public XTypeMember(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position, string typeName, bool isStatic )
+            : this(name, kind, modifiers, visibility, span, position, isStatic)
         {
             _typeName = typeName;
         }

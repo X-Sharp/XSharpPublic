@@ -176,8 +176,8 @@ using XSharp
 	/// <param name="nCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AReplicate(x AS __Usual,nCount AS DWORD) AS __Array
-		local a:=__Array{(int)nCount} as __Array
+	FUNCTION AReplicate<T>(x AS __Usual,nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+		var a:=__ArrayBase<T>{(int)nCount} 
 		//Todo
 		//__Array.ArrayFill(a,x)
 	RETURN a

@@ -8,8 +8,11 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
+
 namespace XSharpModel
 {
+    [DebuggerDisplay("Kind, {Name,nq}")]
     public class XElement
     {
         private Kind _Kind;

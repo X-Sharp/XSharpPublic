@@ -140,7 +140,7 @@ namespace XSharpModel
             // try to find with explicit usings
             if (usings != null)
             {
-                foreach (var name in usings)
+                foreach (var name in usings.Expanded())
                 {
                     var fullname = name + "." + typeName;
                     result = Lookup(fullname, assemblies);

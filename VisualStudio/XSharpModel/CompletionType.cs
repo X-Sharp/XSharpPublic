@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using XSharpModel;
 namespace XSharpModel
 {
     /// <summary>
@@ -175,7 +175,7 @@ namespace XSharpModel
                     // Search using the USING statements in the File that contains the var
                     if (usings != null)
                     {
-                        foreach (string usingStatement in usings)
+                        foreach (string usingStatement in usings.Expanded())
                         {
                             String fqn = usingStatement + "." + typeName;
                             xType = xprj.LookupFullName(fqn, true);
@@ -198,7 +198,7 @@ namespace XSharpModel
             if (codeElt == null)
             {
                 // Search using the USING statements in the File that contains the var
-                foreach (string usingStatement in usings)
+                foreach (string usingStatement in usings.Expanded())
                 {
                     String fqn = usingStatement + "." + typeName;
                     codeElt = xprj.LookupForStranger(fqn, true);

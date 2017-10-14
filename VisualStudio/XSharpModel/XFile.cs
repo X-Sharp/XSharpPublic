@@ -159,14 +159,8 @@ namespace XSharpModel
                         _globalType = type.Value;
                     }
                 }
-                foreach (var u in usings)
-                {
-                    _usings.Add(u);
-                }
-                foreach (var su in staticusings)
-                {
-                    _usingStatics.Add(su);
-                }
+                _usings.AddRange(usings);
+                _usings.AddRange(staticusings);
             }
         }
 

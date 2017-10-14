@@ -226,6 +226,7 @@
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Editors\BraceMatching\BraceMatching.cs" />
     <Compile Include="Editors\EditorHelpers.cs" />
+    <Compile Include="Editors\Formatting\Formatting.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSourceProvider.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpResultSource.cs" />

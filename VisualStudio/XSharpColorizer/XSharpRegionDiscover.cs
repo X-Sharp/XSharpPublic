@@ -92,7 +92,9 @@ namespace XSharpColorizer
         {
             if (!(context.Parent is XSharpParser.IfElseBlockContext) &&
                 !(context.Parent is XSharpParser.CaseBlockContext) &&
-                !(context.Parent is XSharpParser.TryStmtContext) )
+                !(context.Parent is XSharpParser.TryStmtContext) &&
+                !(context.Parent is XSharpParser.CatchBlockContext) &&
+                !(context.Parent is XSharpParser.PropertyAccessorContext))
             {
                 TagRegion(context.Parent, context.Parent.ChildCount - 1);
             }
@@ -239,7 +241,7 @@ namespace XSharpColorizer
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {
             TagRegion(context, context.ChildCount - 1);
-            if ( context.FinBlock != null )
+            if (context.FinBlock != null)
             {
                 // Search the ELSE block, if Any
                 int i = 0;
@@ -266,6 +268,39 @@ namespace XSharpColorizer
                     tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex - 1, 1);
                     _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStopType));
                 }
+            }
+        }
+
+        public override void ExitCatchBlock([NotNull] XSharpParser.CatchBlockContext context)
+        {
+            // Here will have all the informations that are AFTER the CATCH keyword, but we need to include the keyword
+            XSharpParser.TryStmtContext tryStmt = (XSharpParser.TryStmtContext)context.Parent;
+            // Search the CatchBlock
+            int i = 0;
+            LanguageService.SyntaxTree.Tree.IParseTree token = null;
+            for (i = 0; i < tryStmt.ChildCount; i++)
+            {
+                token = tryStmt.GetChild(i);
+                if (token == context)
+                {
+                    // Ok, we found the current CatchBlock, so the Catch is the previous one
+                    if ( i>0)
+                    {
+                        token = tryStmt.GetChild(i-1);
+                        break;
+                    }
+                }
+            }
+            //
+            if ( token != null )
+            {
+                LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)token).Symbol;
+                var tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStartType));
+                //
+                XSharpParser.CatchBlockContext lastTokenInContext = context as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.CatchBlockContext;
+                tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex - 1, 1);
+                _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStopType));
             }
         }
         #endregion

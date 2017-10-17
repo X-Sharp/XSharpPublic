@@ -542,7 +542,7 @@ namespace XSharpModel
                 decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context),
                     isStatic(tokens));
-           //
+            //
             addParameters(context.Params, newMethod);
             addMember(newMethod);
 
@@ -731,7 +731,7 @@ namespace XSharpModel
                 XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
                     Kind.ClassVar, mods, this._currentVarVisibility,
                     new TextRange(start.Line, start.Column, stop.Line, stop.Column + stop.Text.Length),
-                    interval, typeName,_currentVarStatic);
+                    interval, typeName, _currentVarStatic);
                 newClassVar.File = this._file;
                 newClassVar.IsArray = varContext.Dim != null;
                 //
@@ -889,6 +889,7 @@ namespace XSharpModel
 
                     if (primary is XSharpParser.LiteralExpressionContext)
                     {
+                        // LOCAL IMPLIED xxx:= "azertyuiop"
                         XSharpParser.LiteralExpressionContext lit = (XSharpParser.LiteralExpressionContext)primary;
                         XVariable local;
                         String localType = buildLiteralValue(lit.Literal);
@@ -907,10 +908,54 @@ namespace XSharpModel
                             this._currentMethod.Locals.Add(local);
                         }
                     }
-                    else if (primary is XSharpParser.NameExpressionContext )
+                    else if (primary is XSharpParser.NameExpressionContext)
                     {
-
+                        // LOCAL IMPLIED xx:= otherLocalVar
+                        XVariable local;
+                        XSharpParser.NameExpressionContext expr = (XSharpParser.NameExpressionContext)primary;
+                        string name = expr.Name.Id.GetText();
+                        //
+                        String localType = buildValueName(name);
+                        String localName;
+                        localName = context.Id.GetText();
+                        //
+                        local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
+                            new TextRange(context), new TextInterval(context),
+                            localType);
+                        local.File = this._file;
+                        local.IsArray = false;
+                        //
+                        if (this._currentMethod != null)
+                        {
+                            this._currentMethod.Locals.Add(local);
+                        }
                     }
+                    else if (primary is XSharpParser.CtorCallContext)
+                    {
+                        // LOCAL IMPLIED xxxx:= List<STRING>{ }
+                        XVariable local;
+                        XSharpParser.CtorCallContext expr = (XSharpParser.CtorCallContext)primary;
+                        XCodeTypeReference typeRef = buildDataType(expr.Type);
+                        //
+                        String localType = typeRef.TypeName;
+                        String localName;
+                        localName = context.Id.GetText();
+                        //
+                        local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
+                            new TextRange(context), new TextInterval(context),
+                            localType);
+                        local.File = this._file;
+                        local.IsArray = false;
+                        //
+                        if (this._currentMethod != null)
+                        {
+                            this._currentMethod.Locals.Add(local);
+                        }
+                    }
+                }
+                else if (context.Expression is XSharpParser.MethodCallContext)
+                {
+                    // LOCAL IMPLIED xxxxx:= Obj:MethodCall()
 
                 }
             }
@@ -919,6 +964,7 @@ namespace XSharpModel
                 Support.Debug("EnterImpliedvar : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
             }
         }
+
 
         public override void EnterVarLocalDecl([NotNull] XSharpParser.VarLocalDeclContext context)
         {
@@ -1061,6 +1107,216 @@ namespace XSharpModel
             }
             return value;
         }
+
+        private string buildValueName(string name)
+        {
+            String foundType = "";
+            if (this._currentMethod != null)
+            {
+                XVariable xVar = this._currentMethod.Locals.Find(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+                if (xVar != null)
+                {
+                    foundType = xVar.TypeName;
+                }
+            }
+            return foundType;
+        }
+
+        protected XCodeTypeReference buildDataType(XSharpParser.DatatypeContext context)
+        {
+            //
+            // Datatype is ptrDatatype
+            // or arrayDatatype
+            // or simpleDatatype
+            // or nullableDatatype 
+            // they all have a TypeName
+            XSharpParser.TypeNameContext tn = null;
+            if (context is XSharpParser.PtrDatatypeContext)
+            {
+                XSharpParser.PtrDatatypeContext ptrData = (XSharpParser.PtrDatatypeContext)context;
+                tn = ptrData.TypeName;
+            }
+            else if (context is XSharpParser.ArrayDatatypeContext)
+            {
+                XSharpParser.ArrayDatatypeContext aData = (XSharpParser.ArrayDatatypeContext)context;
+                tn = aData.TypeName;
+            }
+            else if (context is XSharpParser.SimpleDatatypeContext)
+            {
+                XSharpParser.SimpleDatatypeContext sdt = (XSharpParser.SimpleDatatypeContext)context;
+                tn = sdt.TypeName;
+            }
+            else if (context is XSharpParser.NullableDatatypeContext)
+            {
+                XSharpParser.NullableDatatypeContext ndc = context as XSharpParser.NullableDatatypeContext;
+                tn = ndc.TypeName;
+            }
+            //
+            XCodeTypeReference expr = null;
+            if (tn.NativeType != null)
+            {
+                expr = buildNativeType(tn.NativeType);
+            }
+            else if (tn.XType != null)
+            {
+                expr = buildXBaseType(tn.XType);
+            }
+            else if (tn.Name != null)
+            {
+                expr = buildName(tn.Name);
+            }
+            //
+            return expr;
+        }
+
+        protected XCodeTypeReference buildName(XSharpParser.NameContext context)
+        {
+            XCodeTypeReference expr = null;
+            //
+            var sName = context.GetText();
+            if (context is XSharpParser.QualifiedNameContext)
+            {
+                XSharpParser.QualifiedNameContext qual = (XSharpParser.QualifiedNameContext)context;
+                expr = buildName(qual.Left);
+                expr = buildTypeReference(expr.TypeName + "." + buildSimpleName(qual.Right).TypeName);
+            }
+            else if (context is XSharpParser.SimpleOrAliasedNameContext)
+            {
+                var alias = context as XSharpParser.SimpleOrAliasedNameContext;
+                var name = alias.Name as XSharpParser.AliasedNameContext;
+
+                //
+                if (name is XSharpParser.AliasQualifiedNameContext)
+                {
+                    XSharpParser.AliasQualifiedNameContext al = (XSharpParser.AliasQualifiedNameContext)name;
+                    expr = buildSimpleName(al.Right);
+                    expr = buildTypeReference(al.Alias.GetText() + "::" + expr.TypeName);
+                }
+                else if (name is XSharpParser.GlobalQualifiedNameContext)
+                {
+                    var gqn = name as XSharpParser.GlobalQualifiedNameContext;
+                    expr = buildSimpleName(gqn.Right);
+                    expr = buildTypeReference("global::" + expr.TypeName);
+                }
+                else if (name is XSharpParser.IdentifierOrGenericNameContext)
+                {
+                    var id = name as XSharpParser.IdentifierOrGenericNameContext;
+                    expr = buildSimpleName(id.Name);
+                }
+            }
+            //
+            return expr;
+        }
+
+        protected XCodeTypeReference buildTypeReference(string name)
+        {
+            return new XCodeTypeReference(name);
+        }
+
+        protected XCodeTypeReference buildNativeType(XSharpParser.NativeTypeContext nativeType)
+        {
+            //
+            Type type;
+            switch (nativeType.Token.Type)
+            {
+                case XSharpParser.BYTE:
+                    type = typeof(System.Byte);
+                    break;
+                case XSharpParser.DWORD:
+                    type = typeof(System.UInt32);
+                    break;
+                case XSharpParser.SHORTINT:
+                    type = typeof(System.Int16);
+                    break;
+                case XSharpParser.INT:
+                case XSharpParser.LONGINT:
+                    type = typeof(System.Int32);
+                    break;
+                case XSharpParser.INT64:
+                    type = typeof(System.Int64);
+                    break;
+                case XSharpParser.UINT64:
+                    type = typeof(System.UInt64);
+                    break;
+                case XSharpParser.LOGIC:
+                    type = typeof(System.Boolean);
+                    break;
+                case XSharpParser.OBJECT:
+                    type = typeof(System.Object);
+                    break;
+                case XSharpParser.REAL4:
+                    type = typeof(System.Single);
+                    break;
+                case XSharpParser.REAL8:
+                    type = typeof(System.Double);
+                    break;
+                case XSharpParser.STRING:
+                    type = typeof(System.String);
+                    break;
+                case XSharpParser.WORD:
+                    type = typeof(System.UInt16);
+                    break;
+                case XSharpParser.VOID:
+                    type = typeof(void);
+                    break;
+                case XSharpParser.DYNAMIC:
+                    type = typeof(System.Object);
+                    break;
+                default:
+                    var strType = nativeType.Token.Text;
+                    return buildTypeReference(strType);
+            }
+            return new XCodeTypeReference(type);
+        }
+
+        protected XCodeTypeReference buildXBaseType(XSharpParser.XbaseTypeContext xbaseType)
+        {
+            return new XCodeTypeReference(xbaseType.Token.Text);
+        }
+
+        protected XCodeTypeReference buildSimpleName(XSharpParser.SimpleNameContext simpleName)
+        {
+            XCodeTypeReference expr = null;
+            //
+            string name = simpleName.Id.GetText();
+            string gen = "";
+            if (simpleName.GenericArgList != null)
+            {
+                string argList = "";
+                int i = 0;
+                foreach (var generic in simpleName.GenericArgList._GenericArgs)
+                {
+                    if (i > 0)
+                        argList += ",";
+                    var tmp = buildDataType(generic);
+                    argList += tmp.TypeName;
+                    i++;
+                }
+                //
+                //gen = "`" + i.ToString() + "[" + argList + "]";
+                gen = "<" + argList + ">";
+            }
+            expr = buildTypeReference(name + gen);
+            //
+            return expr;
+        }
+
+        internal class XCodeTypeReference
+        {
+
+            internal String TypeName { get; set; }
+            internal XCodeTypeReference(string typeName)
+            {
+                TypeName = typeName;
+            }
+
+            internal XCodeTypeReference(System.Type type)
+            {
+                TypeName = type.Name;
+            }
+
+        }
+
 
         #endregion
     }

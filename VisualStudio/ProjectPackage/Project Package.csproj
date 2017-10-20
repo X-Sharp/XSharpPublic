@@ -200,6 +200,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -370,6 +371,10 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
+    <Content Include="XSharpDebugger.pkgdef">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Designers.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -472,9 +477,11 @@
     <Compile Include="Resources.cs" />
     <Compile Include="Nodes\XSharpReferenceContainerNode.cs" />
     <Compile Include="CodeDomProvider\XSharpVSMDProvider.cs" />
-    <None Include="app.config">
+    <Content Include="app.config">
       <SubType>Designer</SubType>
-    </None>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.xsdbs" />
     <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.xsfs" />
     <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.xsmnu" />
@@ -751,6 +758,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\XSharpDebugger\XSharpDebugger.csproj">
+      <Project>{16272550-75E6-4B9D-91E3-653BD141C755}</Project>
+      <Name>XSharpDebugger</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpModel\XSharpModel.csproj">
       <Project>{2c3b9217-e012-4681-97ce-f0a658c40336}</Project>
       <Name>XSharpModel</Name>

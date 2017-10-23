@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace XSharpDebugger.ExpressionCompiler
 {
@@ -52,29 +54,8 @@ namespace XSharpDebugger.ExpressionCompiler
         {
             error = null;
             result = null;
-            using (DebugCompilerContext context = ContextFactory.CreateExpressionContext(inspectionContext, instructionAddress, expression.Text))
-            {
-                context.GenerateQuery();
-
-                error = context.FirstError;
-                if (string.IsNullOrEmpty(error))
-                {
-                    result = DkmCompiledClrInspectionQuery.Create(
-                        instructionAddress.RuntimeInstance,
-                        null,
-                        expression.Language.Id,
-                        new ReadOnlyCollection<byte>(context.GetPeBytes()),
-                        context.ClassName,
-                        context.MethodName,
-                        new ReadOnlyCollection<string>(context.FormatSpecifiers),
-                        context.ResultFlags,
-                        DkmEvaluationResultCategory.Data,
-                        DkmEvaluationResultAccessType.None,
-                        DkmEvaluationResultStorageType.None,
-                        DkmEvaluationResultTypeModifierFlags.None,
-                        null);
-                }
-            }
+            expression.CompileExpression(instructionAddress, inspectionContext, out error, out result);
+            return;
         }
 
         /// <summary>
@@ -92,18 +73,35 @@ namespace XSharpDebugger.ExpressionCompiler
         /// <returns>A local variables query</returns>
         DkmCompiledClrLocalsQuery IDkmClrExpressionCompiler.GetClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
         {
-            using (DebugCompilerContext context = ContextFactory.CreateLocalsContext(inspectionContext, instructionAddress, argumentsOnly))
+            var result = inspectionContext.GetClrLocalVariableQuery(instructionAddress, argumentsOnly);
+            var newlocals = new List<DkmClrLocalVariableInfo>();
+            bool changed = false;
+            foreach (var loc in result.LocalInfo)
             {
-                context.GenerateQuery();
-
-                return DkmCompiledClrLocalsQuery.Create(
-                    inspectionContext.RuntimeInstance,
-                    null,
-                    inspectionContext.Language.Id,
-                    new ReadOnlyCollection<byte>(context.GetPeBytes()),
-                    context.ClassName,
-                    new ReadOnlyCollection<DkmClrLocalVariableInfo>(context.GeneratedLocals));
+                if (loc.VariableName.Contains("$"))
+                {
+                    // do not add
+                    changed = true;
+                }
+                else if (loc.VariableName == "this")
+                {
+                    // rename
+                    var newloc = DkmClrLocalVariableInfo.Create("SELF", "SELF", loc.MethodName, loc.CompilationFlags, loc.ResultCategory, loc.CustomTypeInfo);
+                    newlocals.Add(newloc);
+                    changed = true;
+                }
+                else
+                {
+                    newlocals.Add(loc);
+                }
             }
+            if (changed)
+            {
+                result = DkmCompiledClrLocalsQuery.Create(result.RuntimeInstance,
+                    result.DataContainer, result.LanguageId, result.Binary, result.TypeName,
+                    new ReadOnlyCollection<DkmClrLocalVariableInfo>(newlocals));
+            }
+            return result;
         }
 
         /// <summary>
@@ -123,29 +121,7 @@ namespace XSharpDebugger.ExpressionCompiler
         {
             error = null;
             result = null;
-            using (DebugCompilerContext context = ContextFactory.CreateAssignmentContext(lValue, instructionAddress, expression.Text))
-            {
-                context.GenerateQuery();
-
-                error = context.FirstError;
-                if (string.IsNullOrEmpty(error))
-                {
-                    result = DkmCompiledClrInspectionQuery.Create(
-                        instructionAddress.RuntimeInstance,
-                        null,
-                        expression.Language.Id,
-                        new ReadOnlyCollection<byte>(context.GetPeBytes()),
-                        context.ClassName,
-                        context.MethodName,
-                        new ReadOnlyCollection<string>(context.FormatSpecifiers),
-                        DkmClrCompilationResultFlags.None,
-                        DkmEvaluationResultCategory.Data,
-                        DkmEvaluationResultAccessType.None,
-                        DkmEvaluationResultStorageType.None,
-                        DkmEvaluationResultTypeModifierFlags.None,
-                        null);
-                }
-            }
+            expression.CompileAssignment(instructionAddress, lValue, out error, out result);
         }
     }
 }

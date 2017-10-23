@@ -12,7 +12,7 @@
 
   <DefineGuid Name="guidXSharpFormatterCompId" Value="D6AC95F0-998F-479F-A992-4F0A217ECEB9"/>
   <DefineGuid Name="guidXSharpLanguageId" Value="F579403A-D3D3-47A0-BF03-9709575BEE69"/>
-  
+
   <ManagedComponent
     ComponentId="guidXSharpFormatterCompId"
     ComponentLevel="63000"

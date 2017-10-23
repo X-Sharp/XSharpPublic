@@ -15,9 +15,9 @@
 
   <ManagedComponent
     ComponentId="guidXSharpExpressionCompilerCompId"
-    ComponentLevel="9991900"
+    ComponentLevel="9991900" 
     AssemblyName="XSharpDebugger"
-    Synchronized="true">
+    Synchronized="true">   
 
     <Class Name="XSharpDebugger.ExpressionCompiler.XSharpExpressionCompiler">
       <Implements>

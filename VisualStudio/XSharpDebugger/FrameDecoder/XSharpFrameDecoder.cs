@@ -39,19 +39,16 @@ namespace XSharpDebugger.FrameDecoder
             DkmVariableInfoFlags argumentFlags,
             DkmCompletionRoutine<DkmGetFrameNameAsyncResult> completionRoutine)
         {
-            if (frame is DkmStackFrame)
+            try
             {
-                var dsf = frame as DkmStackFrame;
-                var name = dsf.FrameName;
-                name = name.Replace("Xs$Args", "arguments");
+                string name = TryGetFrameNameHelper(inspectionContext, frame, argumentFlags) ?? "<Unknown Method>";
                 completionRoutine(new DkmGetFrameNameAsyncResult(name));
+
             }
-            else
+            catch (Exception)
             {
                 inspectionContext.GetFrameName(workList, frame, argumentFlags, completionRoutine);
             }
-            //string name = TryGetFrameNameHelper(inspectionContext, frame, argumentFlags) ?? "<Unknown Method>";
-            //completionRoutine(new DkmGetFrameNameAsyncResult(name));
         }
 
         /// <summary>
@@ -74,16 +71,13 @@ namespace XSharpDebugger.FrameDecoder
             DkmCompletionRoutine<DkmGetFrameReturnTypeAsyncResult> completionRoutine)
         {
 
-            if (frame is DkmStackFrame)
+            try
             {
-                var dsf = frame as DkmStackFrame;
-                var name = dsf.ReturnType;
+                string name = TryGetFrameReturnTypeHelper(inspectionContext, frame) ?? "<Unknown>";
                 completionRoutine(new DkmGetFrameReturnTypeAsyncResult(name));
             }
-            else
+            catch (Exception)
             {
-                //string name = TryGetFrameReturnTypeHelper(inspectionContext, frame) ?? "<Unknown>";
-                //completionRoutine(new DkmGetFrameReturnTypeAsyncResult(name));
                 inspectionContext.GetFrameReturnType(workList, frame, completionRoutine);
             }
         }
@@ -110,9 +104,22 @@ namespace XSharpDebugger.FrameDecoder
             if (argumentFlags == DkmVariableInfoFlags.None)
                 return name;
 
+            var type = currentMethod.DeclaringType;
+            if (type.IsStatic && type.Name == "Functions")
+            {
+                ; 
+            }
+            else
+            {
+                if (currentMethod.IsStatic)
+                    name = type.FullName + "." + name;
+                else
+                    name = type.FullName + ":" + name;
+            }
+
             Variable[] args = currentMethod.GetParameters();
             if (args.Length == 0)
-                return name;
+                return name+"()";
 
             StringBuilder nameBuilder = new StringBuilder();
             nameBuilder.Append(name);
@@ -126,7 +133,7 @@ namespace XSharpDebugger.FrameDecoder
                 if (first)
                     first = false;
                 else
-                    nameBuilder.Append("; ");
+                    nameBuilder.Append(", ");
 
                 IrisType argType = arg.Type;
                 if (argType.IsByRef)
@@ -142,7 +149,7 @@ namespace XSharpDebugger.FrameDecoder
                     nameBuilder.Append(" : ");
 
                 if (showTypes)
-                    nameBuilder.Append(argType);
+                    nameBuilder.Append(argType.ToString());
             }
 
             nameBuilder.Append(')');
@@ -156,5 +163,8 @@ namespace XSharpDebugger.FrameDecoder
 
             return scope.TryImportCurrentMethod();
         }
+
+        
+
     }
 }

@@ -50,6 +50,7 @@ namespace XSharpDebugger
             }
         }
 
+
         public Variable[] GetParameters()
         {
             if (_cachedParameters != null)
@@ -69,36 +70,5 @@ namespace XSharpDebugger
             return _cachedParameters;
         }
 
-        public Method ConvertToIrisMethod()
-        {
-            IrisType returnType = _signature.ReturnType;
-            Variable[] parameters = GetParameters();
-
-            if (IsStatic)
-            {
-                return CreateMethodHelper(returnType, parameters);
-            }
-            else
-            {
-                // Iris can call instance methods by passing "this" as parameter 0
-                Variable[] staticParams = new Variable[parameters.Length + 1];
-                IrisType instanceType = DeclaringType.ConvertToIrisType();
-
-                if (instanceType == IrisType.Integer || instanceType == IrisType.Boolean)
-                    instanceType = instanceType.MakeByRefType();
-
-                staticParams[0] = new Variable(instanceType, "this");
-                Array.Copy(parameters, 0, staticParams, 1, parameters.Length);
-                return CreateMethodHelper(returnType, staticParams);
-            }
-        }
-
-        private Method CreateMethodHelper(IrisType returnType, Variable[] parameters)
-        {
-            if (returnType == IrisType.Void)
-                return Procedure.Create(parameters);
-            else
-                return Function.Create(returnType, parameters);
-        }
     }
 }

@@ -43,7 +43,7 @@ namespace XSharpDebugger
         {
             get
             {
-                return false;
+                return _typeDef.Attributes.HasFlag(TypeAttributes.Sealed) && _typeDef.Attributes.HasFlag(TypeAttributes.BeforeFieldInit);
             }
         }
 

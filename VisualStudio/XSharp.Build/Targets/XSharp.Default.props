@@ -21,7 +21,7 @@
     <AssemblyName>$(Name)</AssemblyName>
     <Dialect>Core</Dialect>
   </PropertyGroup>
-  <!-- Set defaults for Configuration, Platform  and Optimize -->
+  <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''" >Debug</Configuration>
     <Platform      Condition="'$(Platform)' == ''" >AnyCPU</Platform>

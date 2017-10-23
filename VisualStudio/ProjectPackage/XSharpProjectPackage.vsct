@@ -90,7 +90,7 @@
         <Strings>
           <CommandName>&amp;Xport a Vulcan.NET Project</CommandName>
           <CanonicalName>Xport a Vulcan.NET Project</CanonicalName>
-          <ButtonText>XSharp XPorter</ButtonText>
+          <ButtonText>X# Vulcan XPorter</ButtonText>
           <ToolTipText>Converts a single Vulcan.NET project or a solution with multiple Vulcan.NET projects to XSharp</ToolTipText>
         </Strings>
       </Button>
@@ -101,7 +101,7 @@
         <Strings>
           <CommandName>&amp;Xport a Visual Objects Project</CommandName>
           <CanonicalName>Xport a Visual Objects Project</CanonicalName>
-          <ButtonText>XSharp VO XPorter</ButtonText>
+          <ButtonText>X# VO XPorter </ButtonText>
           <ToolTipText>Converts Visual Objects sourcecode to XSharp</ToolTipText>
 
         </Strings>

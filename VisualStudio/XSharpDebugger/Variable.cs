@@ -10,19 +10,18 @@ namespace XSharpDebugger
     public sealed class Variable
     {
         public readonly string Name;
-        public readonly IrisType Type;
+        public readonly XSharpType Type;
         public readonly SubRange SubRange; // Only used for arrays
-
-        public Variable(IrisType type, string name)
+        public bool In { get; set; }
+        public bool Out { get; set; }
+        public Variable(XSharpType type, string name)
         {
             Type = type;
             Name = name;
         }
 
-        public Variable(IrisType type, string name, SubRange subRange)
+        public Variable(XSharpType type, string name, SubRange subRange) : this(type, name)
         {
-            Type = type;
-            Name = name;
             SubRange = subRange;
         }
 
@@ -32,7 +31,7 @@ namespace XSharpDebugger
             if (SubRange != null)
                 subRangeStr = "[" + SubRange.ToString() + "]";
 
-            return string.Format("{0}{1} : {2}", Name, subRangeStr, Type);
+            return string.Format("{0}{1} AS {2}", Name, subRangeStr, Type);
         }
     }
 }

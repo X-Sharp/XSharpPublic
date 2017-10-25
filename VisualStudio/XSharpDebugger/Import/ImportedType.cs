@@ -99,7 +99,7 @@ namespace XSharpDebugger
             return _methods.ToArray();
         }
 
-        public ImportedMethod TryFindMethod(string name, bool instance, IrisType returnType, IrisType[] paramTypes)
+        public ImportedMethod TryFindMethod(string name, bool instance, XSharpType returnType, XSharpType[] paramTypes)
         {
             EnsureMethods();
 
@@ -135,20 +135,20 @@ namespace XSharpDebugger
             return null; // Not found
         }
 
-        public IrisType ConvertToIrisType()
+        public XSharpType ConvertToXSharpType()
         {
             switch (FullName)
             {
                 case "System.Boolean":
-                    return IrisType.Boolean;
+                    return XSharpType.Boolean;
                 case "System.Int32":
-                    return IrisType.Integer;
+                    return XSharpType.Integer;
                 case "System.String":
-                    return IrisType.String;
+                    return XSharpType.String;
                 case "System.Void":
-                    return IrisType.Void;
+                    return XSharpType.Void;
                 default:
-                    return IrisType.Invalid;
+                    return XSharpType.Create(FullName);
             }
         }
 

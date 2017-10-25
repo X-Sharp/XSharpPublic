@@ -25,7 +25,6 @@
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
     <Asset d:Source="File" Path="Designers.pkgdef" Type="Microsoft.VisualStudio.VsPackage" TargetPath="|%CurrentProject%|"/>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|XSharpDebugger;PkgdefProjectOutputGroup|" />
   </Assets>
   <Content>
     <ProjectTemplate>ProjectTemplates</ProjectTemplate>

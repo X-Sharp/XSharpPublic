@@ -136,7 +136,7 @@ namespace XSharpDebugger
         //            // to get the variables types.  We can then construct the correlated list of local
         //            // types and names.
                     int localVarSigToken = InstructionAddress.ModuleInstance.GetLocalSignatureToken(CurrentMethodToken);
-                    ImmutableArray<IrisType> localTypes = method.Module.DecodeLocalVariableTypes(localVarSigToken);
+                    ImmutableArray<XSharpType> localTypes = method.Module.DecodeLocalVariableTypes(localVarSigToken);
                     foreach (DkmClrLocalVariable localSymbol in symbols)
                     {
                         int slot = localSymbol.Slot;

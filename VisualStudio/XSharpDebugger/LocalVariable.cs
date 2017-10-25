@@ -12,26 +12,14 @@ namespace XSharpDebugger
         public readonly Variable Variable;
         public readonly int Slot;
 
-        public LocalVariable(string name, IrisType type, int slot)
+        public LocalVariable(string name, XSharpType type, int slot)
         {
             Variable = new Variable(type, name);
             Slot = slot;
         }
 
-        public string Name
-        {
-            get
-            {
-                return Variable.Name;
-            }
-        }
+        public string Name => Variable.Name;
 
-        public IrisType Type
-        {
-            get
-            {
-                return Variable.Type;
-            }
-        }
+        public XSharpType Type => Variable.Type;
     }
 }

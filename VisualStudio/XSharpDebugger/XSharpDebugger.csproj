@@ -17,7 +17,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <RootNamespace>XSharpDebugger</RootNamespace>
+    <RootNamespace>XSharp.Debugger</RootNamespace>
     <AssemblyName>XSharpDebugger</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
@@ -35,12 +35,14 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
-    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <ExtensionInstallationFolder>XSharp\Debugger</ExtensionInstallationFolder>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <VsixType>v3</VsixType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -92,7 +94,6 @@
     </Compile>
     <Compile Include="AddressComparer.cs" />
     <Compile Include="ExpressionCompiler\XSharpExpressionCompiler.cs" />
-    <Compile Include="Formatter\XSharpFormatter.cs" />
     <Compile Include="FrameDecoder\XSharpFrameDecoder.cs" />
     <Compile Include="Import\ImportedField.cs" />
     <Compile Include="Import\ImportedFile.cs" />
@@ -101,7 +102,7 @@
     <Compile Include="Import\ImportedModule.cs" />
     <Compile Include="Import\ImportedType.cs" />
     <Compile Include="Import\Importer.cs" />
-    <Compile Include="Import\IrisTypeProvider.cs" />
+    <Compile Include="Import\XSharpTypeProvider.cs" />
     <Compile Include="LocalVariable.cs" />
     <Compile Include="SubRange.cs" />
     <Compile Include="TypeSystem.cs" />
@@ -112,7 +113,6 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <VsdConfigXmlFiles Include="Formatter\Formatter.vsdconfigxml" />
     <VsdConfigXmlFiles Include="ExpressionCompiler\ExpressionCompiler.vsdconfigxml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -150,7 +150,20 @@
   <ItemGroup>
     <None Include="source.extension.vsixmanifest" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="XSharp.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="XSharpVSIXLogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(ConcordSDKDir)Tools\Bin\Microsoft.VSDebugger.targets" />

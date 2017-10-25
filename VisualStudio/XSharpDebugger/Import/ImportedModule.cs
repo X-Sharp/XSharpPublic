@@ -42,11 +42,11 @@ namespace XSharpDebugger
             }
         }
 
-        internal IrisTypeProvider IrisTypeProvider
+        internal XSharpTypeProvider XSharpTypeProvider
         {
             get
             {
-                return new IrisTypeProvider(_reader);
+                return new XSharpTypeProvider(_reader);
             }
         }
 
@@ -127,11 +127,11 @@ namespace XSharpDebugger
         /// </summary>
         /// <param name="mdToken">Local variable signature metadata token</param>
         /// <returns>Immutable array of local variable types.  The types are ordered by the local slot number</returns>
-        public ImmutableArray<IrisType> DecodeLocalVariableTypes(int mdToken)
+        public ImmutableArray<XSharpType> DecodeLocalVariableTypes(int mdToken)
         {
             StandaloneSignatureHandle localVarSigHandle = (StandaloneSignatureHandle)MetadataTokens.EntityHandle(mdToken);
             StandaloneSignature sig = _reader.GetStandaloneSignature(localVarSigHandle);
-            return sig.DecodeLocalSignature(IrisTypeProvider, genericContext: null);
+            return sig.DecodeLocalSignature(XSharpTypeProvider, genericContext: null);
         }
 
         internal ImportedType ResolveType(TypeDefinitionHandle handle)

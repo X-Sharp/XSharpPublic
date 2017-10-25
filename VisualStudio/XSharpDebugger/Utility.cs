@@ -13,44 +13,32 @@ namespace XSharpDebugger
         /// </summary>
         /// <param name="lmrType">LMR Type</param>
         /// <returns>Iris type</returns>
-        public static IrisType GetIrisTypeForLmrType(Type lmrType)
+        public static XSharpType GetXSharpTypeForLmrType(Type lmrType)
         {
             if (lmrType.IsPrimitive)
             {
-                switch (lmrType.FullName)
-                {
-                    case "System.Int32":
-                        return IrisType.Integer;
-                    case "System.Boolean":
-                        return IrisType.Boolean;
-                }
+                return XSharpType.Create(lmrType.FullName);
             }
             else if (lmrType.IsArray)
             {
-                if (lmrType.GetArrayRank() != 1)
-                    return IrisType.Invalid;
 
-                IrisType elementType = GetIrisTypeForLmrType(lmrType.GetElementType());
-                if (elementType == IrisType.Invalid)
-                    return IrisType.Invalid;
+                XSharpType elementType = GetXSharpTypeForLmrType(lmrType.GetElementType());
 
                 return elementType.MakeArrayType();
             }
             else if (lmrType.IsByRef)
             {
-                IrisType elementType = GetIrisTypeForLmrType(lmrType.GetElementType());
-                if (elementType == IrisType.Invalid)
-                    return IrisType.Invalid;
+                XSharpType elementType = GetXSharpTypeForLmrType(lmrType.GetElementType());
 
                 return elementType.MakeByRefType();
             }
             else if (lmrType.FullName.Equals("System.String"))
             {
-                return IrisType.String;
+                return XSharpType.String;
             }
 
             // Unknown
-            return IrisType.Invalid;
+            return XSharpType.Create(lmrType.FullName);
         }
     }
 }

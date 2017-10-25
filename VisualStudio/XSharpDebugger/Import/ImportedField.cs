@@ -12,7 +12,7 @@ namespace XSharpDebugger
     public class ImportedField : ImportedMember
     {
         private FieldDefinition _fieldDef;
-        private IrisType _cachedType;
+        private XSharpType _cachedType;
 
         internal ImportedField(ImportedModule module, FieldDefinition fieldDef, ImportedType declaringType)
             : base(module, fieldDef.Name, declaringType)
@@ -36,12 +36,12 @@ namespace XSharpDebugger
             }
         }
 
-        public IrisType FieldType
+        public XSharpType FieldType
         {
             get
             {
                 if (_cachedType == null)
-                    _cachedType = _fieldDef.DecodeSignature(Module.IrisTypeProvider, genericContext: null);
+                    _cachedType = _fieldDef.DecodeSignature(Module.XSharpTypeProvider, genericContext: null);
 
                 return _cachedType;
             }

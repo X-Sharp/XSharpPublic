@@ -98,8 +98,6 @@ namespace XSharpDebugger.FrameDecoder
                 return null;
 
             string name = currentMethod.Name;
-            if (string.Equals(name, "$.main", StringComparison.Ordinal))
-                return "<Main Block>";
 
             if (argumentFlags == DkmVariableInfoFlags.None)
                 return name;
@@ -107,10 +105,11 @@ namespace XSharpDebugger.FrameDecoder
             var type = currentMethod.DeclaringType;
             if (type.IsStatic && type.Name == "Functions")
             {
-                ; 
+                ; // No prefix for 'normal' functions
             }
             else
             {
+                // static or instance method ?
                 if (currentMethod.IsStatic)
                     name = type.FullName + "." + name;
                 else
@@ -135,27 +134,31 @@ namespace XSharpDebugger.FrameDecoder
                 else
                     nameBuilder.Append(", ");
 
-                IrisType argType = arg.Type;
-                if (argType.IsByRef)
-                {
-                    nameBuilder.Append("var ");
-                    argType = argType.GetElementType();
-                }
-
+                XSharpType argType = arg.Type;
                 if (showNames)
                     nameBuilder.Append(arg.Name);
 
                 if (showNames && showTypes)
-                    nameBuilder.Append(" : ");
+                {
+                    if (arg.In  && arg.Out)
+                        nameBuilder.Append(" REF ");
+                    else if (arg.Out)
+                        nameBuilder.Append(" OUT ");
+                    else
+                        nameBuilder.Append(" AS ");
+                }
 
                 if (showTypes)
                     nameBuilder.Append(argType.ToString());
             }
 
             nameBuilder.Append(')');
-            return nameBuilder.ToString();
+            var result = nameBuilder.ToString();
+            if (result.Contains(clArgs))
+                result = result.Replace(clArgs, "[ClipperArguments]");
+            return result;
         }
-
+        const string clArgs = "Xs$Args AS USUAL[]";
         private static ImportedMethod TryGetCurrentMethod(DkmInspectionContext inspectionContext, DkmStackWalkFrame frame)
         {
             InspectionSession session = InspectionSession.GetInstance(inspectionContext.InspectionSession);

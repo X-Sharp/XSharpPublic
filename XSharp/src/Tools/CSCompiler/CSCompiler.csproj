@@ -4,9 +4,9 @@
   <Import Project="..\..\..\..\Roslyn\build\Targets\Settings.props" />
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-	<RoslynProjectType>Custom</RoslynProjectType>
+    <RoslynProjectType>Custom</RoslynProjectType>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-	<CfgPath>$(Configuration)_$(Platform)</CfgPath>
+    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9508F118-F62E-4C16-A6F4-7C3B56E166AD}</ProjectGuid>
@@ -32,13 +32,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj">

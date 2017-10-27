@@ -61,26 +61,6 @@
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1591</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARPPRE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <NoWarn>1591</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;COMPILERCORE;XSHARPPRE</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(RoslynSrc)\Compilers\Core\Portable\CodeAnalysisResources.Designer.cs">
       <Link>CodeAnalysisResources.Designer.cs</Link>
@@ -109,14 +89,14 @@
     <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-	  <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
+      <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
       <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
       <LogicalName>Microsoft.CodeAnalysis.CodeAnalysisResources.resources</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpResources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
-	  <CustomToolNamespace>Microsoft.CodeAnalysis.CSharp</CustomToolNamespace>
+      <CustomToolNamespace>Microsoft.CodeAnalysis.CSharp</CustomToolNamespace>
       <LastGenOutput>CSharpResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\Resources\default.win32manifest" />

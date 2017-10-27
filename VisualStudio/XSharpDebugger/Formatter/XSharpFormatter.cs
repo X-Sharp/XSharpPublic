@@ -1,6 +1,8 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
@@ -44,15 +46,14 @@ namespace XSharpDebugger.Formatter
             // are similar to System.Type, but represent types that live in the process being debugged.
             Type lmrType = clrType.GetLmrType();
 
-            IrisType irisType = Utility.GetIrisTypeForLmrType(lmrType);
-            if (irisType == IrisType.Invalid)
+            XSharpType xType = Utility.GetXSharpTypeForLmrType(lmrType);
+            if (xType == XSharpType.Invalid)
             {
-            // We don't know about this type.  Delegate to the C# Formatter to format the
-            // type name.
+                // We don't know about this type.  Delegate to the C# Formatter to format the
+                // type name.
                 return inspectionContext.GetTypeName(clrType, customTypeInfo, formatSpecifiers);
             }
-            //return irisType.ToString();
-            return irisType.ToString();
+            return xType.ToString();
         }
 
         /// <summary>
@@ -121,30 +122,16 @@ namespace XSharpDebugger.Formatter
                 // Error message.  Just show the error.
                 return value.HostObjectValue as string;
             }
-            else if (value.IsNull)
-            {
-                return "<uninitialized>";
-            }
 
             Type lmrType = value.Type.GetLmrType();
-            IrisType irisType = Utility.GetIrisTypeForLmrType(lmrType);
-            if (irisType == IrisType.Invalid)
+            XSharpType xType = Utility.GetXSharpTypeForLmrType(lmrType);
+            if (xType == XSharpType.Invalid)
             {
                 // We don't know how to format this value
                 return null;
             }
 
             uint radix = inspectionContext.Radix;
-            if (irisType.IsArray)
-            {
-                SubRange subrange = new SubRange(value.ArrayLowerBounds.First(), value.ArrayDimensions.First() - 1);
-                return string.Format(
-                    "array[{0}..{1}] of {2}",
-                    FormatInteger(subrange.From, radix),
-                    FormatInteger(subrange.To, radix),
-                    irisType.GetElementType());
-            }
-
             object hostObjectValue = value.HostObjectValue;
             if (hostObjectValue != null)
             {
@@ -155,7 +142,7 @@ namespace XSharpDebugger.Formatter
                     case TypeCode.Int32:
                         return FormatInteger((int)hostObjectValue, radix);
                     case TypeCode.Boolean:
-                        return (bool)hostObjectValue ? "true" : "false";
+                        return (bool)hostObjectValue ? "TRUE" : "FALSE";
                     case TypeCode.String:
                         return FormatString(hostObjectValue.ToString(), inspectionContext.EvaluationFlags);
                 }
@@ -174,7 +161,7 @@ namespace XSharpDebugger.Formatter
             if (flags.HasFlag(DkmEvaluationFlags.NoQuotes))
             {
                 // No quotes - return the raw string.
-                // If Iris handled escaping aside from quotes, we would still want to do escaping.
+                // If X# handled escaping aside from quotes, we would still want to do escaping.
                 return s;
             }
             else

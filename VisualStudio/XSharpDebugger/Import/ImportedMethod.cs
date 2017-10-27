@@ -1,6 +1,8 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -25,6 +27,9 @@ namespace XSharpDebugger
             _methodDef = methodDef;
             _signature = methodDef.DecodeSignature(Module.XSharpTypeProvider, genericContext: null);
         }
+
+        internal MethodSignature<XSharpType> Signature => _signature;
+
         //string _clipperArgs = null;
         //public string ClipperArgs
         //{

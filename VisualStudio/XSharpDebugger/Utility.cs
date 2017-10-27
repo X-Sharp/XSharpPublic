@@ -1,6 +1,8 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 using Type = Microsoft.VisualStudio.Debugger.Metadata.Type;
 
@@ -9,10 +11,10 @@ namespace XSharpDebugger
     internal static class Utility
     {
         /// <summary>
-        /// Convert a type from the debugger's type system into Iris's type system
+        /// Convert a type from the debugger's type system into X# type system
         /// </summary>
         /// <param name="lmrType">LMR Type</param>
-        /// <returns>Iris type</returns>
+        /// <returns>X# type</returns>
         public static XSharpType GetXSharpTypeForLmrType(Type lmrType)
         {
             if (lmrType.IsPrimitive)

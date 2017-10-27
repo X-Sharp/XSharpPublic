@@ -1,6 +1,8 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,9 +13,8 @@ using System.Text;
 namespace XSharpDebugger
 {
     /// <summary>
-    /// Represents a type that can potentially be imported into the Iris compiler.
-    /// ImportedType is an intermediary between .NET's complex type system and Iris's very limited
-    /// type system.
+    /// Represents a type that can potentially be imported into the X# compiler.
+    /// ImportedType is an intermediary between .NET's complex type system and the X# type system
     /// </summary>
     [DebuggerDisplay("ImportedType: {DebugDisplay}")]
     public class ImportedType : ImportedMember
@@ -43,7 +44,7 @@ namespace XSharpDebugger
         {
             get
             {
-                return _typeDef.Attributes.HasFlag(TypeAttributes.Sealed) && _typeDef.Attributes.HasFlag(TypeAttributes.BeforeFieldInit);
+                return _typeDef.Attributes.HasFlag(TypeAttributes.Sealed) && _typeDef.Attributes.HasFlag(TypeAttributes.Abstract);
             }
         }
 

@@ -215,4 +215,7 @@ Tools/Converter/PrjConvert.exe
 
 #Backup files
 *.bak
-.db
+
+# CSharp Project System DB files
+*.opendb
+*.vc.db

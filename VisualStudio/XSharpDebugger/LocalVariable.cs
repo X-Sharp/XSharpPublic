@@ -1,11 +1,13 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 namespace XSharpDebugger
 {
     /// <summary>
-    /// LocalVariable is a pairing of an Iris Variable and the slot number the value is stored in.
+    /// LocalVariable is a pairing of an X# Variable and the slot number the value is stored in.
     /// </summary>
     internal class LocalVariable
     {

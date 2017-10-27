@@ -1,6 +1,8 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using Microsoft.VisualStudio.Debugger;
 using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Debugger.Symbols;
@@ -17,7 +19,7 @@ namespace XSharpDebugger
     /// A scope to do evaluations in.
     /// 
     /// This class does translation from the debug engine's / CLR's understanding of the current
-    /// scope into scope information that's understood by the Iris compiler.
+    /// scope into scope information that's understood by the X# compiler.
     /// </summary>
     internal class InspectionScope
     {
@@ -126,15 +128,15 @@ namespace XSharpDebugger
         {
             if (method != null)
             {
-        //        // Get the local symbols from the PDB (symbol file).  If symbols aren't loaded, we
-        //        // can't show any local variables
+                // Get the local symbols from the PDB (symbol file).  If symbols aren't loaded, we
+                // can't show any local variables
                 DkmClrLocalVariable[] symbols = GetLocalSymbolsFromPdb().ToArray();
                 if (symbols.Length != 0)
                 {
-        //            // To determine the local types, we need to decode the local variable signature
-        //            // token.  Get the token from the debugger, then use the Iris Compiler's importer
-        //            // to get the variables types.  We can then construct the correlated list of local
-        //            // types and names.
+                    // To determine the local types, we need to decode the local variable signature
+                    // token.  Get the token from the debugger, then use our importer
+                    // to get the variables types.  We can then construct the correlated list of local
+                    // types and names.
                     int localVarSigToken = InstructionAddress.ModuleInstance.GetLocalSignatureToken(CurrentMethodToken);
                     ImmutableArray<XSharpType> localTypes = method.Module.DecodeLocalVariableTypes(localVarSigToken);
                     foreach (DkmClrLocalVariable localSymbol in symbols)

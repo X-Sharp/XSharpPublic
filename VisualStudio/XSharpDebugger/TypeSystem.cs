@@ -1,6 +1,8 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +10,7 @@ using System.Text;
 namespace XSharpDebugger
 {
     /// <summary>
-    /// A type in the Iris type system.  Each unique type should have one and only one instance of
+    /// A type in the XSharp type system.  Each unique type should have one and only one instance of
     /// the XSharpType class.  This allows us to use reference equality to equate types.
     /// </summary>
     public class XSharpType

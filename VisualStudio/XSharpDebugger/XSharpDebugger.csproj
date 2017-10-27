@@ -94,6 +94,7 @@
     </Compile>
     <Compile Include="AddressComparer.cs" />
     <Compile Include="ExpressionCompiler\XSharpExpressionCompiler.cs" />
+    <Compile Include="Formatter\XSharpFormatter.cs" />
     <Compile Include="FrameDecoder\XSharpFrameDecoder.cs" />
     <Compile Include="Import\ImportedField.cs" />
     <Compile Include="Import\ImportedFile.cs" />
@@ -104,7 +105,6 @@
     <Compile Include="Import\Importer.cs" />
     <Compile Include="Import\XSharpTypeProvider.cs" />
     <Compile Include="LocalVariable.cs" />
-    <Compile Include="SubRange.cs" />
     <Compile Include="TypeSystem.cs" />
     <Compile Include="Variable.cs" />
     <Compile Include="InspectionScope.cs" />
@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <VsdConfigXmlFiles Include="ExpressionCompiler\ExpressionCompiler.vsdconfigxml" />
+    <VsdConfigXmlFiles Include="Formatter\Formatter.vsdconfigxml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -151,6 +152,9 @@
     <None Include="source.extension.vsixmanifest" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

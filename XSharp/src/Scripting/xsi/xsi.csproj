@@ -34,13 +34,6 @@
     <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\..\src\Tools\csc\csc.csproj">
       <Project>{4B45CA0C-03A0-400F-B454-3D4BCB16AF38}</Project>

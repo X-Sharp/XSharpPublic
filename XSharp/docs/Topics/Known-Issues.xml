@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Known Issues</title>
   <body>
     <header>
@@ -20,8 +20,8 @@
     </list>
     <para styleclass="Heading2">Visual Studio</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The Smartindent feature is not working</li>
-      <li styleclass="Normal"><text styleclass="List">FormatDocument is not working</text></li>
+      <li styleclass="Normal">Intellisense still needs some work</li>
+      <li styleclass="Normal">New features in the Debugger, such as a window for Globals and RDD Workareas</li>
     </list>
     <para styleclass="Heading2">VO Xporter</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

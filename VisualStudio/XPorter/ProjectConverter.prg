@@ -35,7 +35,7 @@ METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING) AS LOGIC
 		RETURN FALSE
 	ENDIF                            
 	SELF:WalkNode(oDoc)   
-	if (!lHasProjectExtensions )
+	if (!lHasProjectExtensions ) .and. oProjectNode != NULL_OBJECT
 		VAR oExt := oDoc:CreateElement("ProjectExtensions",cSchema)
 		VAR oCap := oDoc:CreateElement("ProjectCapabilities",cSchema)
 		oExt:AppendChild(oCap)
@@ -124,6 +124,13 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			IF oAttribute:Value:ToLower():Contains("vulcan.net")
 				oAttribute:Value := "$(MSBuildExtensionsPath)\XSharp\XSharp.targets"
 			ENDIF
+		CASE "project"
+			// Only for main project node, not for project node inside projectreference
+			if (oParent is XMLDocument)
+				// Import the schema
+				SELF:oProjectNode := oElement
+			ENDIF
+
 		CASE "projectguid"   
 			// new guid
 			oElement:InnerText := cGuid

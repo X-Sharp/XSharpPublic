@@ -1,6 +1,6 @@
 1 VERSIONINFO
- FILEVERSION 		1,0,3,3
- PRODUCTVERSION 	1,0,3,3
+ FILEVERSION 		1,1,0,0
+ PRODUCTVERSION 	1,1,0,0
  FILEFLAGSMASK 		0x3F
  FILEFLAGS 		    0x0
  FILESUBTYPE 		0x0
@@ -11,12 +11,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "XSharp BV"
             VALUE "FileDescription", "X# VOXporter"
-            VALUE "FileVersion", "1, 0, 3, 3"
+            VALUE "FileVersion", "1, 1, 0, 0"
             VALUE "InternalName", "VOXporter"
             VALUE "LegalCopyright", "Copyright © XSharp BV 2017"
             VALUE "OriginalFilename", "VOXporter"
             VALUE "ProductName", "VOXporter"
-            VALUE "ProductVersion", "1.0.3.3"
+            VALUE "ProductVersion", "1.1.0.0"
         END
     END
     BLOCK "VarFileInfo"

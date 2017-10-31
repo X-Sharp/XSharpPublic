@@ -1,6 +1,8 @@
 
 FUNCTION Start( ) AS VOID
-	System.Console.WriteLine("Hello x#!")
+	System.Console.WriteLine("Hello x#!")       
+	? File1()
+	? File2()
 RETURN
 
 

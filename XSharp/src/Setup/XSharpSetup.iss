@@ -57,8 +57,8 @@
 #define DocFolder       "C:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "C:\Xsharp\Dev\XSharp\Xide\"
 #define SnippetsSource  "C:\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
-#define XIDESetup       "XIDE_Set_up_1.10.exe"
-#define XIDEVersion     "1.10"
+#define XIDESetup       "XIDE_Set_up_1.11.exe"
+#define XIDEVersion     "1.11"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define Provider        "XSharp.CodeDom.XSharpCodeDomProvider, Culture=neutral, PublicKeyToken=31c59c566fa38f21, Version="
@@ -633,7 +633,7 @@ Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Paramet
 
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio14 {#HelpInstall2}";     StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
 Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     StatusMsg:"Installing VS Help for VS2017";  Flags: waituntilidle;
-Components: XIDE;        Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  
+Components: XIDE;        Filename: "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  
 
 Components: main\ngen;  Filename: "{app}\uninst\instngen.cmd";      Check: CreateNGenTask(); Flags: Runhidden ; StatusMsg: "Generating Native images, please wait.....";
 Components: vs2015;     Filename: "{app}\uninst\deployvs2015.cmd";  Check: DeployToVs2015(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2015 , please wait.....";
@@ -649,19 +649,16 @@ Components: main\ngen;  Filename: "{app}\uninst\uninstngen.cmd";  Flags: Runhidd
 
 [InstallDelete]
 ; The old License.rtf file.
-; Template cache, component cache and previous installation of our project system
-; vs2015
+; Template cache, component cache and previous installation of our project system vs2015
 ; Also the CodeDom provider from the GAC
 
 Type: filesandordirs; Name: "{win}\Microsoft.NET\assembly\GAC_MSIL\XSharpCodeDomProvider";
 Type: files;          Name: "{app}\License.rtf"; 
 Type: filesandordirs; Name: "{app}\Xide"; 
 Type: filesandordirs; Name: "{app}\VOXporter"; 
-#ifdef FOX
-Type: filesandordirs; Name: "{app}\Bin\Debug"; 
-Type: filesandordirs; Name: "{app}\Bin\Release"; 
-#endif
 Type: filesandordirs; Name: "{app}\Bin"; 
+Type: filesandordirs; Name: "{app}\Extension"; 
+
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            
 Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";       

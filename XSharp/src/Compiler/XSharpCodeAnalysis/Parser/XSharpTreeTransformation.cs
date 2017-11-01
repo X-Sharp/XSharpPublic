@@ -6258,7 +6258,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private bool GenerateChr(XP.MethodCallContext context)
         {
-            // Pseudo function _GetInst()
+            // Pseudo function _Chr and Chr()
             ArgumentListSyntax argList;
             ExpressionSyntax expr;
             int count = 0;
@@ -6301,13 +6301,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ch = (char)number;
                 else
                     overflow = true;
-                var literal = GenerateLiteral(ch.ToString());
-                if (overflow)
+                if (number > 0 && number <= 127)
                 {
-                    literal = literal.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                    var literal = GenerateLiteral(ch.ToString());
+                    if (overflow)
+                    {
+                        literal = literal.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                    }
+                    context.Put(literal);
+                    return true;
                 }
-                context.Put(literal);
-                return true;
             }
             if (_options.IsDialectVO)
             {

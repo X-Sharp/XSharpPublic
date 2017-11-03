@@ -269,6 +269,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case VulcanAssemblyNames.VulcanRT:
                     options.VulcanAssemblies |= VulcanAssemblies.VulcanRT;
                     break;
+                case "mscorlib":
+                case "system":
+                    if (! options.ClrVersionWasSet )
+                    {
+                        if (filename.ToLower().Contains("\\v2"))
+                        {
+                            options.ClrVersionWasSet = true;
+                            options.ClrVersion = 2;
+                        }
+                        else if (filename.ToLower().Contains("\\v3"))
+                        {
+                            options.ClrVersionWasSet = true;
+                            options.ClrVersion = 2;
+                        }
+                        else if (filename.ToLower().Contains("\\v4"))
+                        {
+                            options.ClrVersionWasSet = true;
+                            options.ClrVersion = 4;
+                        }
+
+                    }
+                    break;
             }
 
         }

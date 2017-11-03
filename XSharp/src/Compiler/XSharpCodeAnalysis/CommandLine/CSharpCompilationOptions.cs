@@ -21,6 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     public sealed partial class CSharpCompilationOptions
     {
         public bool ArrayZero { get; private set; }
+        public int ClrVersion { get; private set; }
         public bool MacroScript { get; private set; }
         public string DefaultIncludeDir { get; set; }
         public string WindowsDir { get; set; }
@@ -77,6 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (opt != null)
             {
                 ArrayZero = opt.ArrayZero;
+                ClrVersion = opt.ClrVersion;
                 //VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
                 VirtualInstanceMethods = opt.Vo3;
@@ -109,6 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)
         {
             ArrayZero = opt.ArrayZero;
+            ClrVersion = opt.ClrVersion;
             MacroScript = opt.MacroScript;
             DefaultIncludeDir = opt.DefaultIncludeDir;
             WindowsDir = opt.WindowsDir;

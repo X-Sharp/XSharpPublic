@@ -45,6 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Other options have flags, for the preprocessor macros, such as __VO1__
 
         public bool ArrayZero { get; private set; }
+        public int ClrVersion { get; private set; }
         public bool MacroScript { get; private set; }
 
         public bool DebugEnabled { get; private set; }
@@ -107,6 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (opt != null)
             {
                 ArrayZero = opt.ArrayZero;
+                ClrVersion = opt.ClrVersion;
                 Dialect = opt.Dialect;
                 DefaultNamespace = opt.NameSpace;
                 DefaultIncludeDir = opt.DefaultIncludeDir;
@@ -155,6 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public void SetXSharpSpecificOptions(CSharpParseOptions opt)
         {
             ArrayZero = opt.ArrayZero;
+            ClrVersion = opt.ClrVersion;
             MacroScript = opt.MacroScript;
             DebugEnabled = opt.DebugEnabled;
             DefaultIncludeDir = opt.DefaultIncludeDir;

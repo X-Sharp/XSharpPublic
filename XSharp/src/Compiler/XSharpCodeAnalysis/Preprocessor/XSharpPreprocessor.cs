@@ -220,10 +220,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
             macroDefines.Add("__ARRAYBASE__", () => new XSharpToken(XSharpLexer.INT_CONST, _options.ArrayZero ? "0" : "1"));
-            macroDefines.Add("__CLR2__", () => new XSharpToken(XSharpLexer.STRING_CONST, "\"__CLR2__\""));
-            macroDefines.Add("__CLR4__", () => new XSharpToken(XSharpLexer.STRING_CONST, "\"__CLR4__\""));
-            macroDefines.Add("__CLRVERSION__", () => new XSharpToken(XSharpLexer.STRING_CONST, "\"__CLRVERSION__\""));
-            macroDefines.Add("__DATE__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"'));
+            if (_options.ClrVersion == 2)
+                macroDefines.Add("__CLR2__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+            if (_options.ClrVersion == 4)
+               macroDefines.Add("__CLR4__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+            macroDefines.Add("__CLRVERSION__", () => new XSharpToken(XSharpLexer.STRING_CONST, "\""+_options.ClrVersion.ToString()+".0\""));
+                macroDefines.Add("__DATE__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"'));
             macroDefines.Add("__DATETIME__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"'));
             if (_options.DebugEnabled)
                 macroDefines.Add("__DEBUG__", () => new XSharpToken(XSharpLexer.TRUE_CONST));

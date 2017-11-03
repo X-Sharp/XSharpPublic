@@ -26,6 +26,7 @@ namespace XSharpModel
         ManagedResource,
         XAML,
         Settings,
+        License
     }
 
     public static class XFileTypeHelpers
@@ -88,6 +89,8 @@ namespace XSharpModel
                     return XFileType.Settings;
                 case ".resx":
                     return XFileType.ManagedResource;
+                case ".licx":
+                    return XFileType.License;
                 case ".rc":
                     return XFileType.NativeResource;
                 default:

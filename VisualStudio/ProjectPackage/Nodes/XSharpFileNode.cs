@@ -437,14 +437,14 @@ namespace XSharp.Project
                     }
                     break;
                 case XFileType.ManagedResource:
+                case XFileType.License:
                     if (!String.Equals(itemType, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase))
                     {
                         this.ItemNode.ItemName = ProjectFileConstants.EmbeddedResource;
                     }
                     break;
-                //case XSharpFileType.Settings:
-                //    this.ItemNode.ItemName = ProjectFileConstants.None;
-                //    break;
+                
+
                 default:
                     break;
             }

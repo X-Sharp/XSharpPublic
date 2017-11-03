@@ -47,6 +47,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public bool ArrayZero { get; internal set; } = false;
         public bool CaseSensitive { get; internal set; } = false;
+        public bool ClrVersionWasSet { get; internal set; } = false;
+        public int ClrVersion { get; internal set; } = 4;
         public bool CompactFramework { get; internal set; } = false;
         public string DefaultIncludeDir { get; internal set; } = _defaultIncludeDir;
         public XSharpDialect Dialect { get; internal set; } = XSharpDialect.Core;

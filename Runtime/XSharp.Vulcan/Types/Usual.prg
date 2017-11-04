@@ -1893,17 +1893,17 @@ BEGIN NAMESPACE XSharp
 		member @@CodeBlock	:=9
 		member @@Symbol		:=10
 		// see below for missing values
-		member @@Psz		:=17
-		member @@PTR		:=18
-		member @@Usual		:=19	// USUAL by Ref, not implemented in Vulcan
-		member @@Int64		:=22
 		// The follow numbers are defined but never stored inside a USUAL in VO and Vulcan
 		member @@Byte		:=11
 		member @@ShortInt	:=12
 		member @@Word		:=13
 		member @@DWord		:=14
 		member @@Real4		:=15
-		member @@Real8		:=16
+		MEMBER @@Real8		:=16
+		member @@Psz		:=17
+		member @@PTR		:=18
+		member @@Usual		:=19	// USUAL by Ref, not implemented in Vulcan
+		member @@Int64		:=22
 		member @@Uint64     :=23
 		member @@Char		:=24    // not stored in a usual
 		member @@Dynamic    :=25 

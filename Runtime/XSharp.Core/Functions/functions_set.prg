@@ -5,6 +5,7 @@
 //
 // Most of these settings will Get and Set properties of the Runtime.State class
 #include "GetSet.xh"
+
 USING XSharp
 
 /// <summary>
@@ -85,7 +86,7 @@ FUNCTION SetBeep(lSet AS OBJECT) AS LOGIC
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetCentury(lSet AS OBJECT) AS LOGIC
+FUNCTION SetCentury(lSet AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.Century lSet
 
 /// <summary>
@@ -377,7 +378,7 @@ FUNCTION SetScience(lSet AS LOGIC) AS LOGIC
 FUNCTION SetSoftSeek() AS LOGIC
 	GETSTATE LOGIC Set.SoftSeek 
 
-FUNCTION SetSoftSeek(lSet AS OBJECT) AS LOGIC
+FUNCTION SetSoftSeek(lSet AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.SoftSeek lSet
 
 /// <summary>
@@ -411,7 +412,7 @@ FUNCTION SetTimeSep(dwChar AS DWORD) AS DWORD
 FUNCTION SetUnique() AS LOGIC
 	GETSTATE LOGIC Set.Unique 
 
-FUNCTION SetUnique(lSet AS OBJECT) AS LOGIC
+FUNCTION SetUnique(lSet AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.Unique lSet
 
 /// <summary>

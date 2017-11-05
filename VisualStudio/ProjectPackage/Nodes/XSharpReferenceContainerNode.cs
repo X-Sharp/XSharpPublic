@@ -168,8 +168,12 @@ namespace XSharp.Project
               string caption = assemblyName.Name;
               if (isDuplicateNode(caption, ref existing))
               {
-                  //
-                  return existing;
+                    //
+                    string existingUrl = existing.Url;
+                    if (File.Exists(existingUrl))
+                        return existing;
+                    // file does not exist so this new node is better
+                    existing.Remove(false);
               }
           }
           //

@@ -41,15 +41,21 @@ namespace XSharp.Project
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             // On what line are we ?
+            bool alignOnPrev = false;
             int lineNumber = line.LineNumber;
             int? indentation = null;
             if ((lineNumber > 0) && previous)
             {
                 //
+                if (caret.Position < line.End.Position)
+                {
+                    alignOnPrev = true;
+                }
+                //
                 var editSession = _buffer.CreateEdit();
                 // This will calculate the desired indentation of the current line, based on the previous one
                 // and may de-Indent the previous line if needed
-                indentation = getDesiredIndentation(line, editSession);
+                indentation = getDesiredIndentation(line, editSession, alignOnPrev);
                 //
                 try
                 {
@@ -563,7 +569,7 @@ namespace XSharp.Project
 
         }
 
-        private int? getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession)
+        private int? getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
         {
             try
             {
@@ -583,10 +589,12 @@ namespace XSharp.Project
                     bool doSkipped;
                     string keyword = getFirstKeywordInLine(prevLine, out doSkipped, out indentValue);
                     //
-                    if (indentValue > -1)
-                        _lastIndentValue = indentValue;
+                    //if (indentValue > -1)
+                    _lastIndentValue = indentValue;
+                    if (alignOnPrev)
+                        return _lastIndentValue;
                     // ok, now check what we have, starting the previous line
-                    if (!String.IsNullOrEmpty(keyword) && !doSkipped)
+                    if (!String.IsNullOrEmpty(keyword))// && !doSkipped)
                     {
                         // Start of a block of code ?
                         if (_codeBlockKeywords.Contains<String>(keyword))
@@ -649,18 +657,29 @@ namespace XSharp.Project
                             }
                             else
                             {
-                                // We could have "special" middle keyword : CASE or OTHERWISE
-                                startToken = this.searchSpecialMiddleKeyword(keyword);
-                                if (startToken != null)
+                                if (doSkipped && String.Equals(keyword, "CASE", StringComparison.InvariantCulture))
                                 {
-                                    // The startToken is a list of possible tokens
-                                    specialIndentValue = alignToSpecificTokens(line, startToken);
-                                    // The can be aligned to SWITCH/DO CASE or indented
                                     if (!_alignDoCase)
                                     {
-                                        specialIndentValue += _tabSize;
+                                        indentValue += _tabSize;
                                     }
                                 }
+                                else
+                                {
+                                    // We could have "special" middle keyword : CASE or OTHERWISE
+                                    startToken = this.searchSpecialMiddleKeyword(keyword);
+                                    if (startToken != null)
+                                    {
+                                        // The startToken is a list of possible tokens
+                                        specialIndentValue = alignToSpecificTokens(line, startToken);
+                                        // The can be aligned to SWITCH/DO CASE or indented
+                                        if (!_alignDoCase)
+                                        {
+                                            specialIndentValue += _tabSize;
+                                        }
+                                    }
+                                }
+
                             }
                             if (specialIndentValue != null)
                             {
@@ -941,13 +960,14 @@ namespace XSharp.Project
             List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line);
             String keyword = "";
             //
+            String startOfLine = line.GetText();
+            startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
+            // So, at least, to align to previous line, we will need...
+            minIndent = (startOfLine.Length - startOfLine.TrimStart(' ').Length);
+            //
             if (tagList.Count > 0)
             {
                 IMappingSpan currentSpan = tagList[0].Span;
-                String startOfLine = line.GetText();
-                startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
-                // So, at least, to align to previous line, we will need...
-                minIndent = (startOfLine.Length - startOfLine.TrimStart(' ').Length);
                 //
                 int tagIndex = 0;
                 while (tagIndex < tagList.Count)

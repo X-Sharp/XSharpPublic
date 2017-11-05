@@ -28,11 +28,11 @@ namespace XSharp.Project.OptionsPages
             set { keywordCase = value; }
         }
 
-        private bool identifierCase = true;
+        //private bool identifierCase = false;
         public bool IdentifierCase
         {
-            get { return identifierCase; }
-            set { identifierCase = value; }
+            get { return false /*identifierCase */; }
+            //set { identifierCase = value; }
         }
 
         private bool alignDoCase = false;

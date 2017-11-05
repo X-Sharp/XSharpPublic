@@ -115,11 +115,11 @@ namespace XSharp.CodeDom
 
         #region Members Cache
         private Dictionary<string, XMemberType> _members;  // member cache for our members and parent class members
-        private void addMember(XMemberType type)
+        private void addMember(XMemberType mtype)
         {
-            if (!_members.ContainsKey(type.Name)) // overloads ?
+            if (!_members.ContainsKey(mtype.Name)) // overloads ?
             {
-                this._members.Add(type.Name, type);
+                this._members.Add(mtype.Name, mtype);
             }
         }
         private bool findMember(Type type, string name, MemberTypes mtype)
@@ -167,6 +167,8 @@ namespace XSharp.CodeDom
         {
             if (_members.ContainsKey(name))
             {
+                // no need to include the type itself in the cache. This cache only 
+                // has fields and properties for the current window/control in the designer
                 return _members[name].MemberType == mtype;
             }
             bool result = false;

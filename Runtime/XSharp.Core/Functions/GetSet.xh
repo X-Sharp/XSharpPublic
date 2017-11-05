@@ -5,14 +5,8 @@
 //
 
 #command GETSTATE <type> <set>	      =>				 ;
-		RETURN XSharp.Runtime.State.GetInstance():GetValue\< <type> \>( <set> )
+		RETURN XSharp.Runtime.State.GetValue\< <type> \>( <set> )
 
 #command SETSTATE <type> <set>	<value> =>				 ;
-		LOCAL oldValue as <type>						 ;;
-		VAR oState := XSharp.Runtime.State.GetInstance() ;;
-		BEGIN LOCK oState								 ;;
-			oldValue := oState:GetValue\< <type> \>(<set>) ;;
-			oState:SetValue(<set> , <value> )			 ;;
-		END LOCK										 ;;
-		RETURN oldValue
+		RETURN XSharp.Runtime.State.SetValue\< <type> \>( <set> , <value> )			 ;;
 

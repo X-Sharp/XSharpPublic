@@ -162,6 +162,12 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     </CreateItem>
     
   </Target>
+   <!-- Fix up FrameworkPathOverride, which is primarily used to determine the location of mscorlib.dll in the 
+        (relatively uncommon) situation where the reference assemblies, in which it's usually found, are not 
+        installed. -->
+   <PropertyGroup Condition="'$(MSBuildAssemblyVersion)' == ''">
+      <FrameworkPathOverride Condition="!Exists('$(FrameworkPathOverride)\mscorlib.dll')">$(MSBuildFrameworkToolsPath)</FrameworkPathOverride>
+   </PropertyGroup>
 
   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
 
@@ -237,7 +243,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    NoConfig="true"
 	    NoLogo="$(NoLogo)"
 	    NoStandardDefs="$(NoStandardDefs)"
-	    NoStandardLib="$(NoStdLib)"
+		NoStandardLib="$(NoCompilerStandardLib)"
 	    NoWin32Manifest="$(NoWin32Manifest)"
 	    Optimize="$(Optimize)"
 	    OutputAssembly="@(IntermediateAssembly)"

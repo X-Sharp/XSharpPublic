@@ -132,11 +132,15 @@ namespace XSharp.Project
                     case XSharpBuildAction.EmbeddedResource:
                         return BuildActionEnum.EmbeddedResource;
                     default:
+                        var xnode = this.Node as XSharpFileNode;
+                        if (xnode.FileType == XSharpModel.XFileType.License)
+                            return BuildActionEnum.EmbeddedResource; 
                         var action = BuildActionEnum.None;
                         if (Enum.TryParse<BuildActionEnum>(XSharpBuildAction.ToString(), out action))
                             return action;
                         return BuildActionEnum.None;
                 }
+
             }
 
             set

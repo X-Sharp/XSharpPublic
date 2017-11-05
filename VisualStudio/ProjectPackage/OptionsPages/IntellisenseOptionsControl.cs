@@ -71,7 +71,7 @@ namespace XSharp.Project.OptionsPages
 
         private void chkIdentifierCase_CheckedChanged(object sender, EventArgs e)
         {
-            optionsPage.IdentifierCase = chkIdentifierCase.Checked;
+            //optionsPage.IdentifierCase = chkIdentifierCase.Checked;
         }
 
         private void chkAlignDoCase_CheckedChanged(object sender, EventArgs e)

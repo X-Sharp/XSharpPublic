@@ -69,16 +69,15 @@
 #define XSScript            "XSharpScript"
 
 ; FOlders and registry keys defined by others
-#define VulcanEditorGuid "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
-#define VulcanWedGuid "Editors\{{e9eecf7e-7aa2-490e-affc-c55fa2acc5a3}\Extensions"
-#define VulcanMedGuid "Editors\{{adee1755-5ac3-485b-b857-f82d902362ca}\Extensions"
-#define VulcanDEdGuid "Editors\{{5325db94-5d6c-41fd-be44-c5b277612ce6}\Extensions"
-#define VulcanFEdGuid "Editors\{{4849278c-aacb-4bbe-9a15-d96da837aeb7}\Extensions"
-#define VS14RegPath      "Software\Microsoft\VisualStudio\14.0"
-#define VS15RegPath      "Software\Microsoft\VisualStudio\15.0"
-#define VS14LocalDir     "{localappdata}\Microsoft\VisualStudio\14.0"
-#define VS15LocalDir     "{localappdata}\Microsoft\VisualStudio\15.0_"
-#define SnippetsPath     "\Snippets\1033"
+#define VulcanEditorGuid  "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
+#define VulcanWedGuid     "Editors\{{e9eecf7e-7aa2-490e-affc-c55fa2acc5a3}\Extensions"
+#define VulcanMedGuid     "Editors\{{adee1755-5ac3-485b-b857-f82d902362ca}\Extensions"
+#define VulcanDedGuid     "Editors\{{5325db94-5d6c-41fd-be44-c5b277612ce6}\Extensions"
+#define VulcanFedGuid     "Editors\{{4849278c-aacb-4bbe-9a15-d96da837aeb7}\Extensions"
+#define VS14RegPath       "Software\Microsoft\VisualStudio\14.0"
+#define VS14LocalDir      "{localappdata}\Microsoft\VisualStudio\14.0"
+#define VS15LocalDir      "{localappdata}\Microsoft\VisualStudio\15.0_"
+#define SnippetsPath      "\Snippets\1033"
 
 ; Snippets of code for the Help installer.
 #define HelpInstall1  "/operation install /silent /catalogname "
@@ -403,8 +402,10 @@ Components: vs2015 or vs2017; Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";   
 #endif
 
 ; Codedom provider must go to the gac because of WPF
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{app}\Extension\Project"; StrongAssemblyName: "{#Provider}{#Version}"; Flags: {#StdFlags} {#GACInstall};
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+; always install this, also on a build server
+
+Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{app}\Extension\Project"; StrongAssemblyName: "{#Provider}{#Version}"; Flags: {#StdFlags} {#GACInstall};
+Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
 
 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpColorizer.dll";               DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
@@ -528,7 +529,6 @@ Components: vs2017\help; Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"
 ; set the VSHelp to Offline
 Components: vs2015\help;  Root: HKCU; Subkey: "{#Vs14RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Flags: noerror;
 ; Cannot set VS 2017 Online help off. It is in a private registry
-;Components: vs2017\help; Root: HKCU; Subkey: "{#Vs15RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Flags: noerror;
 
 ; When Vulcan is Installed then update its extension registration so we can handle the priorities in our project system
 

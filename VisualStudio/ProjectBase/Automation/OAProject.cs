@@ -32,7 +32,8 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get { return this.project; }
         }
-        internal ProjectNode ProjectNode {
+        internal ProjectNode ProjectNode 
+		{
             get { return this.project; }
         }
 
@@ -70,7 +71,8 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
         }
 
-        public void Dispose() {
+        public void Dispose() 
+		{
             configurationManager = null;
         }
 
@@ -111,7 +113,8 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
         }
 
-        internal void CheckProjectIsValid() {
+        internal void CheckProjectIsValid() 
+		{
             if (this.project == null || this.project.Site == null || this.project.IsClosed) {
                 throw new InvalidOperationException();
             }
@@ -312,7 +315,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public virtual EnvDTE.Globals Globals
         {
-            get { return null; }
+            get { return this.project.Globals;  }
         }
 
         /// <summary>

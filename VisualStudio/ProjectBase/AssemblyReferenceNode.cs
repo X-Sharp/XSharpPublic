@@ -125,7 +125,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("root");
             }
-			if (String.IsNullOrEmpty(assemblyPath))
+			if (string.IsNullOrEmpty(assemblyPath))
             {
                 throw new ArgumentNullException("assemblyPath");
             }
@@ -256,7 +256,7 @@ namespace Microsoft.VisualStudio.Project
         {
             ReferenceContainerNode referencesFolder = this.ProjectMgr.FindChild(ReferenceContainerNode.ReferencesNodeVirtualName) as ReferenceContainerNode;
             Debug.Assert(referencesFolder != null, "Could not find the References node");
-			bool shouldCheckPath = !String.IsNullOrEmpty(this.Url);
+			bool shouldCheckPath = !string.IsNullOrEmpty(this.Url);
 
             for(HierarchyNode n = referencesFolder.FirstChild; n != null; n = n.NextSibling)
             {

@@ -458,6 +458,10 @@ namespace XSharpLanguage
             if (dotPos != -1)
                 startLen = dotPos + 1;
             //
+            // Resolve projects. This adds them also to the AssemblyReferences
+            //
+            var sprjs = project.StrangerProjects;
+            var prjs = project.ReferencedProjects;
             foreach (AssemblyInfo assemblyInfo in project.AssemblyReferences)
             {
                 foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
@@ -491,18 +495,18 @@ namespace XSharpLanguage
             //
             // And our own Types
             AddXSharpTypeNames(compList, project, startWith);
-            // We should also add the external TypeNames
-            var prjs = project.ReferencedProjects;
-            foreach (var prj in prjs)
-            {
-                AddXSharpTypeNames(compList, prj, startWith);
-            }
-            // And Stranger Projects
-            var sprjs = project.StrangerProjects;
-            foreach (var prj in sprjs)
-            {
-                AddStrangerTypeNames(compList, prj, startWith);
-            }
+            //// We should also add the external TypeNames
+            //var prjs = project.ReferencedProjects;
+            //foreach (var prj in prjs)
+            //{
+            //    AddXSharpTypeNames(compList, prj, startWith);
+            //}
+            //// And Stranger Projects
+            //var sprjs = project.StrangerProjects;
+            //foreach (var prj in sprjs)
+            //{
+            //    AddStrangerTypeNames(compList, prj, startWith);
+            //}
         }
 
         private bool IsHiddenName(string realTypeName)
@@ -1378,7 +1382,7 @@ namespace XSharpLanguage
             // return "OUR" copy of the assembly. Most likely we have it
             var name = args.Name;
             var request = args.RequestingAssembly;
-            var asm = SystemTypeController.FindAssembly(name);
+            var asm = SystemTypeController.FindAssemblyByName(name);
             return asm;
         }
 
@@ -2643,9 +2647,7 @@ namespace XSharpLanguage
             //
             if (!file.HasLocals)
             {
-                var xsWalker = new SourceWalker(file, currentBuffer);
-                var xTree = xsWalker.Parse();
-                xsWalker.BuildModel(xTree, true);
+                file.GetLocals(currentBuffer);
             }
             foundElement = null;
             if (currentMember == null)

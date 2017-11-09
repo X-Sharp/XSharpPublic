@@ -202,22 +202,22 @@ namespace XSharp.Project
 
         // Gets the output file name depending on current OutputType.
         // View GeneralProperyPage
+        string _outputFile;
+        string _configName;
         public string OutputFile
         {
             get
             {
-                string assemblyName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
-                string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
-                OutputType outputType = (OutputType)Enum.Parse(typeof(OutputType), outputTypeAsString);
-                if (outputType == OutputType.Library)
+                if (_outputFile == null && _configName != CurrentConfig.ConfigName)
                 {
-                    assemblyName += ".dll";
+                    _outputFile = this.GetProjectProperty(ProjectFileConstants.TargetPath);
+                    _configName = CurrentConfig.ConfigName;
                 }
-                else
-                {
-                    assemblyName += ".dll";
-                }
-                return assemblyName;
+                return _outputFile;
+            }
+            internal set
+            {
+                _outputFile = value;
             }
         }
         #endregion
@@ -326,7 +326,7 @@ namespace XSharp.Project
                 case unchecked((int)VSConstants.VSITEMID_ROOT):
                     return this;
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
-                    return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
+                    return this.RootNameSpace;
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
                     return GetOutPutType();
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
@@ -1043,113 +1043,11 @@ namespace XSharp.Project
             return base.InvokeMsBuild(target);
         }
 
-        //private XSharpVSMDProvider codeDomProvider;
-        ///// Retrieve the CodeDOM provider
-        ///// </summary>
-        //public Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider CodeDomProvider
-        //{
-        //    get
-        //    {
-        //        if (codeDomProvider == null)
-        //            codeDomProvider = new XSharpVSMDProvider( );
-        //        return codeDomProvider;
-        //    }
-        //}
 
         protected override NodeProperties CreatePropertiesObject()
         {
             return new XSharpProjectNodeProperties(this);
-            //return new ProjectNodeProperties(this);
         }
-        /*
-               /// <summary>
-               ///  IVsProjectSpecificEditorMap2 interface
-               /// </summary>
-               /// <param name="pszMkDocument"></param>
-               /// <param name="pguidEditorType"></param>
-               /// <returns></returns>
-                public int GetSpecificEditorType(string pszMkDocument, out Guid pguidEditorType)
-                {
-                    switch (XSharpFileNode.GetFileType(pszMkDocument))
-                    {
-                        case XSharpFileType.VODBServer:
-                            pguidEditorType = GuidStrings.guidVOServerEditorFactory;
-                            break;
-                        case XSharpFileType.VOFieldSpec:
-                            pguidEditorType = GuidStrings.guidVOFieldSpecEditorFactory;
-                            break;
-                        case XSharpFileType.VOMenu:
-                            pguidEditorType = GuidStrings.guidVOMenuEditorFactory;
-                            break;
-                        case XSharpFileType.VOForm:
-                            pguidEditorType = GuidStrings.guidVOFormEditorFactory;
-                            break;
-                        case XSharpFileType.SourceCode:
-                        case XSharpFileType.Header:
-                        case XSharpFileType.PreprocessorOutput:
-                            pguidEditorType = GuidStrings.guidSourcecodeEditorFactory;
-                            break;
-                        default:
-                            pguidEditorType = Guid.Empty;
-                            break;
-                    }
-                    return VSConstants.S_OK;
-                }
-
-                public int GetSpecificLanguageService(string pszMkDocument, out Guid pguidLanguageService)
-                {
-                    pguidLanguageService = Guid.Empty;
-                    return VSConstants.S_OK;
-                }
-
-                public int GetSpecificEditorProperty(string pszMkDocument, int propid, out object pvar)
-                {
-                    pvar = true;
-                    switch (XSharpFileNode.GetFileType(pszMkDocument))
-                    {
-                        case XSharpFileType.VODBServer:
-                        case XSharpFileType.VOFieldSpec:
-                        case XSharpFileType.VOMenu:
-                        case XSharpFileType.VOForm:
-                        case XSharpFileType.SourceCode:
-                        case XSharpFileType.Header:
-                        case XSharpFileType.PreprocessorOutput:
-                        default:
-                            if (propid == (int)__VSPSEPROPID.VSPSEPROPID_ProjectDefaultEditorName)
-                            {
-                                pvar = "XSharp Editor";
-                            }
-                            else if (propid == (int)__VSPSEPROPID.VSPSEPROPID_UseGlobalEditorByDefault)
-                            {
-                                pvar = false;
-                            }
-                            else
-                            {
-                                pvar = false;
-                            }
-                            break;
-                    }
-                    return VSConstants.S_OK;
-                }
-
-                public int SetSpecificEditorProperty(string pszMkDocument, int propid, object var)
-                {
-                    switch (XSharpFileNode.GetFileType(pszMkDocument))
-                    {
-                        case XSharpFileType.VODBServer:
-                        case XSharpFileType.VOFieldSpec:
-                        case XSharpFileType.VOMenu:
-                        case XSharpFileType.VOForm:
-                        case XSharpFileType.SourceCode:
-                        case XSharpFileType.Header:
-                        case XSharpFileType.PreprocessorOutput:
-                        default:
-                            break;
-                    }
-                    return VSConstants.S_OK;
-                }
-
-        */
         #endregion
 
 
@@ -1402,12 +1300,25 @@ namespace XSharp.Project
                     textView.SetTopLine(0);
             }
         }
+        string _rootNamespace = null;
 
         public string RootNameSpace
         {
             get
             {
-                return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
+                if (_rootNamespace == null)
+                {
+                    lock (this)
+                    {
+                        if (_rootNamespace == null)
+                            _rootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
+                    }
+                }
+                return _rootNamespace;
+            }
+            internal set
+            {
+                _rootNamespace = value;
             }
         }
         #endregion

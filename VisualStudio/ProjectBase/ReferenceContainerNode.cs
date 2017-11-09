@@ -79,7 +79,7 @@ namespace Microsoft.VisualStudio.Project
         private static string[] supportedReferenceTypes = new string[] {
             ProjectFileConstants.ProjectReference,
             ProjectFileConstants.Reference,
-            ProjectFileConstants.COMReference,
+            ProjectFileConstants.COMReference
         };
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         protected virtual string[] SupportedReferenceTypes

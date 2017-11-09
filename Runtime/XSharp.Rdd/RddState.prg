@@ -4,6 +4,7 @@ USING XSharp.Runtime
 USING System
 
 BEGIN NAMESPACE XSharp.RDD
+//Todo: Use ThreadLocal<T>
 CLASS RDDState	IMPLEMENTS IDisposable
 	// Static Fields
 	PRIVATE STATIC stateTable AS Dictionary<Thread, RDDState>

@@ -91,6 +91,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="ModelParser\TextSpanExtensions.cs" />
     <Compile Include="ModelParser\SourceWalker.cs" />
+    <Compile Include="ModelParser\XSharpModelDiscoverWithLocals.cs" />
     <Compile Include="ModelParser\XSharpModelDiscover.cs" />
     <Compile Include="ModelWalker.cs" />
     <Compile Include="SystemTypeController.cs" />

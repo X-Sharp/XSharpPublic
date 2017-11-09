@@ -10,6 +10,9 @@ USING XSharp
 /// Please note that unlike in Visual Objects and Vulcan.NET every thread has its own copy of the runtime state.</br>
 /// The runtime state from a new thread is a copy of the state of the main thread at that moment.
 /// </Remarks>
+
+//Todo: Use ThreadLocal<T>
+
 CLASS XSharp.Runtime.State
 	// Static Fields
 	PRIVATE STATIC stateTable AS Dictionary<Thread, State>

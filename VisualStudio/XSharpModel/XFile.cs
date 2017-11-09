@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Collections.Immutable;
 using System.Collections.Concurrent;
+using LanguageService.SyntaxTree;
+using LanguageService.CodeAnalysis;
+
 namespace XSharpModel
 {
     [DebuggerDisplay("{FullPath,nq}")]
@@ -25,6 +28,9 @@ namespace XSharpModel
         private DateTime _lastWritten;
         private bool _hasLocals;
         private XFileType _type;
+        private SyntaxTree _tree;
+        private bool _hasParseErrors = false;
+        private ITokenStream _TokenStream;
 
         public XFile(string fullPath)
         {
@@ -41,6 +47,32 @@ namespace XSharpModel
             _lastWritten = DateTime.MinValue;
             //_hashCode = 0;
 
+        }
+
+
+        public void GetLocals(string currentBuffer)
+        {
+            var xsWalker = new SourceWalker(this, currentBuffer);
+            var xTree = xsWalker.Parse();
+            xsWalker.BuildModel(xTree, true);
+        }
+
+
+        public ITokenStream TokenStream
+        {
+            get { return _TokenStream; }
+            set { _TokenStream = value; }
+        }
+        public SyntaxTree Tree
+        {
+            get { return _tree; }
+            set { _tree = value; }
+        }
+
+        public bool HasParseErrors
+        {
+            get { return _hasParseErrors; }
+            set { _hasParseErrors = value; }
         }
 
         /// <summary>

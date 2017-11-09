@@ -30,7 +30,7 @@ FUNCTION Start() AS VOID
 //	oOptions:RemoveInitAxitReturnClause := TRUE
 //	oOptions:RemoveAssignReturnClause := TRUE
 	oOptions:RemoveDeclareMethod := TRUE
-	oOptions:AddMissingConstrutors := TRUE
+	oOptions:AddMissingConstrutors := FALSE
 	oOptions:AllClassesPartial := FALSE
 	oOptions:IgnoreDuplicateDefines := TRUE
 	oOptions:DontGenerateEmptyFiles := TRUE
@@ -2410,7 +2410,7 @@ FUNCTION GetRelativePath(cSourceDir AS STRING , cTarget AS STRING) AS STRING
 	oRelative := oSource:MakeRelativeUri(oTarget)
 	cRelative := oRelative:ToString()
 	cRelative := Uri.UnescapeDataString(cRelative)
-	cRelative := cRelative:Replace("/" , "\\")
+	cRelative := cRelative:Replace("/" , "\")
 RETURN cRelative
 
 FUNCTION GetFilename(cFullPath AS STRING) AS STRING

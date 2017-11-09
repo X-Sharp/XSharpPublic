@@ -24,32 +24,43 @@ namespace XSharp.CodeDom
     [DebuggerDisplay("{ToString()}")]
     internal class XMemberType
     {
-        internal XMemberType(string name, MemberTypes memberType, bool inherited, System.Type type)
+        internal XMemberType(string name, MemberTypes memberType, bool inherited, System.Type type, string typeName)
         {
             Name = name;
             MemberType = memberType;
             Inherited = inherited;
             Type = type;
+            TypeName = typeName;
         }
         internal XMemberType(string name, MemberTypes memberType, bool inherited) :
-            this(name, memberType, inherited, typeof(void))
+            this(name, memberType, inherited, typeof(void), "System.Void")
         {
         }
 
         internal string Name { get; private set; }
         internal MemberTypes MemberType { get; private set; }
         internal System.Type Type { get; private set; }
+        internal String TypeName { get; private set; }
         internal bool Inherited { get; private set; }
         public override string ToString()
         {
-            if (Name == null || Type == null)
+            if (Name == null || TypeName == null)
                 return "";
-            return Name + "," + Type.Name;
+            return Name + "," + TypeName;
+        }
+    }
+    [DebuggerDisplay("{Name}")]
+    internal class XCodeMemberField : CodeMemberField
+    {
+        internal XCodeMemberField() : base()
+        {
+
         }
     }
     /// <summary>
     /// Enhanced Type reference with System.Type property, since CodeTypeReference does not hold on to the type
     /// </summary>
+    [DebuggerDisplay("{Type.Name}")]
     internal class XCodeTypeReference : CodeTypeReference
     {
 
@@ -68,7 +79,7 @@ namespace XSharp.CodeDom
     {
 
         private CodeMemberMethod initComponent;
-        private IList<string> _locals;          // used to keep track of local vars
+        private IDictionary<string, System.Type> _locals;          // used to keep track of local vars
 
 
         public XSharpClassDiscover(IProjectTypeHelper projectNode) : base(projectNode)
@@ -83,7 +94,7 @@ namespace XSharp.CodeDom
             this.NamespaceStack = new Stack<CodeNamespace>();
             // To store intermediate declarations
             this.LocalDecls = new Stack<XSharpParser.LocalvarContext>();
-            this._locals = new List<string>();
+            this._locals = new Dictionary<string,System.Type>(StringComparer.OrdinalIgnoreCase);
             this._members = new Dictionary<string, XMemberType>(StringComparer.OrdinalIgnoreCase);
             //
             this.CurrentFile = "";
@@ -115,20 +126,20 @@ namespace XSharp.CodeDom
 
         #region Members Cache
         private Dictionary<string, XMemberType> _members;  // member cache for our members and parent class members
-        private void addMember(XMemberType mtype)
+        private void addClassMember(XMemberType mtype)
         {
             if (!_members.ContainsKey(mtype.Name)) // overloads ?
             {
                 this._members.Add(mtype.Name, mtype);
             }
         }
-        private bool findMember(Type type, string name, MemberTypes mtype)
+        private bool hasClassMember(Type baseType, string name, MemberTypes mtype)
         {
             if (_members.ContainsKey(name))
             {
-                return _members[name].MemberType == mtype;
+                return (_members[name].MemberType | mtype) != 0;
             }
-            var mi = type.GetMember(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
+            var mi = baseType.GetMember(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
             if (mi != null)
             {
                 foreach (var m in mi)
@@ -138,83 +149,85 @@ namespace XSharp.CodeDom
                     {
                         case MemberTypes.Field:
                             t = ((FieldInfo)m).FieldType;
-                            addMember(new XMemberType(name, m.MemberType, true, t));
+                            addClassMember (new XMemberType(name, m.MemberType, true, t, t?.FullName));
                             break;
                         case MemberTypes.Property:
                             t = ((PropertyInfo)m).PropertyType;
-                            addMember(new XMemberType(name, m.MemberType, true, t));
+                            addClassMember (new XMemberType(name, m.MemberType, true, t, t?.FullName));
                             break;
                         case MemberTypes.Method:
                             t = ((MethodInfo)m).ReturnType;
-                            addMember(new XMemberType(name, m.MemberType, true, t));
+                            addClassMember (new XMemberType(name, m.MemberType, true, t, t?.FullName));
                             break;
                         case MemberTypes.Event:
-                            addMember(new XMemberType(name, m.MemberType, true, typeof(void)));
+                            addClassMember (new XMemberType(name, m.MemberType, true, typeof(void), "Void"));
                             break;
                         case MemberTypes.Constructor:
                             t = ((ConstructorInfo)m).DeclaringType;
-                            addMember(new XMemberType(name, m.MemberType, true, t));
+                            addClassMember (new XMemberType(name, m.MemberType, true, t,t?.FullName));
                             break;
                     }
-                    if (m.MemberType == mtype)
+                    if ((m.MemberType | mtype) != 0)
                         return true;
                 }
             }
             return false;
         }
 
-        private bool findMember(XType type, string name, MemberTypes mtype)
+        private bool hasClassMember(XType baseType, string name, MemberTypes mtype)
         {
             if (_members.ContainsKey(name))
             {
                 // no need to include the type itself in the cache. This cache only 
                 // has fields and properties for the current window/control in the designer
-                return _members[name].MemberType == mtype;
+                return (_members[name].MemberType | mtype) != 0;
             }
             bool result = false;
-            XElement element = type.Members.Find(x => String.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            XElement element = baseType.Members.Find(x => String.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
             if (element != null)
             {
                 System.Type t = typeof(void);
+                var tm = element as XTypeMember;
+                t = findType(tm?.TypeName);
                 switch (element.Kind)
                 {
                     case Kind.Field:
-                        result = true;
-                        addMember(new XMemberType(name, MemberTypes.Field, true, t));
+                        result = (mtype | MemberTypes.Field )!= 0;
+                        addClassMember (new XMemberType(name, MemberTypes.Field, true, t, t?.FullName));
                         break;
                     case Kind.Property:
                     case Kind.Access:
                     case Kind.Assign:
-                        result = true;
-                        addMember(new XMemberType(name, MemberTypes.Property, true, t));
+                        result = (mtype | MemberTypes.Property) != 0;
+                        addClassMember (new XMemberType(name, MemberTypes.Property, true, t, t?.FullName));
                         break;
                     case Kind.Method:
-                        result = true;
-                        addMember(new XMemberType(name, MemberTypes.Method, true, t));
+                        result = (mtype | MemberTypes.Method) != 0;
+                        addClassMember (new XMemberType(name, MemberTypes.Method, true, t, t?.FullName));
                         break;
                     case Kind.Event:
-                        result = true;
-                        addMember(new XMemberType(name, MemberTypes.Event, true, t));
+                        result = (mtype | MemberTypes.Event) != 0;
+                        addClassMember (new XMemberType(name, MemberTypes.Event, true, t, t?.FullName));
                         break;
                     case Kind.Constructor:
-                        result = true;
-                        addMember(new XMemberType(name, MemberTypes.Constructor, true, t));
+                        result = (mtype | MemberTypes.Constructor) != 0;
+                        addClassMember (new XMemberType(name, MemberTypes.Constructor, true, t, t?.FullName));
                         break;
                 }
             }
             return result;
         }
 
-        private bool findMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
+        private bool hasClassMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
         {
             if (_members.ContainsKey(name))
             {
                 return _members[name].MemberType == mtype;
             }
-            return searchMember(type, name, mtype);
+            return searchExternalClassMember(type, name, mtype);
         }
 
-        private bool searchMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
+        private bool searchExternalClassMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
         {
             bool result = false;
             //
@@ -254,19 +267,19 @@ namespace XSharp.CodeDom
                         {
                             case EnvDTE.vsCMElement.vsCMElementEvent:
                                 result = true;
-                                addMember(new XMemberType(name, MemberTypes.Event, true, t));
+                                addClassMember (new XMemberType(name, MemberTypes.Event, true, t, t?.FullName));
                                 break;
                             case EnvDTE.vsCMElement.vsCMElementVariable:
                                 result = true;
-                                addMember(new XMemberType(name, MemberTypes.Field, true, t));
+                                addClassMember (new XMemberType(name, MemberTypes.Field, true, t, t?.FullName));
                                 break;
                             case EnvDTE.vsCMElement.vsCMElementFunction:
                                 result = true;
-                                addMember(new XMemberType(name, MemberTypes.Method, true, t));
+                                addClassMember (new XMemberType(name, MemberTypes.Method, true, t, t?.FullName));
                                 break;
                             case EnvDTE.vsCMElement.vsCMElementProperty:
                                 result = true;
-                                addMember(new XMemberType(name, MemberTypes.Property, true, t));
+                                addClassMember (new XMemberType(name, MemberTypes.Property, true, t, t?.FullName));
                                 break;
                         }
                         if (result)
@@ -282,7 +295,7 @@ namespace XSharp.CodeDom
                             if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
                             {
                                 //
-                                result = searchMember(parent, name, mtype);
+                                result = searchExternalClassMember(parent, name, mtype);
                                 if (result)
                                     break;
                             }
@@ -305,7 +318,7 @@ namespace XSharp.CodeDom
                 baseType = findType(typeName);
                 if (baseType != null)
                 {
-                    if (findMember(baseType, name, mtype))
+                    if (hasClassMember(baseType, name, mtype))
                     {
                         return true;
                     }
@@ -316,7 +329,7 @@ namespace XSharp.CodeDom
                     baseXType = findReferencedType(typeName);
                     if (baseXType != null)
                     {
-                        if (findMember(baseXType, name, mtype))
+                        if (hasClassMember(baseXType, name, mtype))
                         {
                             return true;
                         }
@@ -327,7 +340,7 @@ namespace XSharp.CodeDom
                         baseSType = findStrangerType(typeName);
                         if (baseSType != null)
                         {
-                            if (findMember(baseSType, name, mtype))
+                            if (hasClassMember(baseSType, name, mtype))
                             {
                                 return true;
                             }
@@ -339,6 +352,16 @@ namespace XSharp.CodeDom
         }
 
 
+        private System.Type getClassMemberType (string name, MemberTypes memberType)
+        {
+            if (_members.ContainsKey(name) )
+            {
+                var mem = _members[name];
+                if (mem.MemberType == memberType)
+                    return mem.Type;
+            }
+            return null;
+        }
         private bool isField(string name)
         {
             if (_members.ContainsKey(name) && _members[name].MemberType == MemberTypes.Field)
@@ -365,10 +388,18 @@ namespace XSharp.CodeDom
             }
             return findMemberInBaseTypes(name, MemberTypes.Method);
         }
+        private bool isEvent(string name)
+        {
+            if (_members.ContainsKey(name) && _members[name].MemberType == MemberTypes.Event)
+            {
+                return true;
+            }
+            return findMemberInBaseTypes(name, MemberTypes.Event);
+        }
 
         private bool isLocal(string name)
         {
-            return _locals.Contains(name.ToLower());
+            return _locals.ContainsKey(name);
         }
 
         #endregion
@@ -430,17 +461,28 @@ namespace XSharp.CodeDom
             }
             else
             {
-                // PARTIAL ?
-                if (context.Modifiers.PARTIAL().Length > 0)
-                    newClass.IsPartial = true;
-                //
-                if (context.Modifiers.SEALED().Length > 0)
-                    newClass.Attributes |= MemberAttributes.Final;
-                if (context.Modifiers.ABSTRACT().Length > 0)
-                    newClass.Attributes |= MemberAttributes.Abstract;
-                if (context.Modifiers.INTERNAL().Length > 0)
-                    newClass.Attributes |= MemberAttributes.Private;
-
+                // Modifiers
+                foreach (var t in context.Modifiers._Tokens)
+                {
+                    switch (t.Type)
+                    {
+                        case XSharpParser.PARTIAL:
+                            newClass.IsPartial = true;
+                            break;
+                        case XSharpParser.SEALED:
+                            newClass.Attributes |= MemberAttributes.Final;
+                            break;
+                        case XSharpParser.ABSTRACT:
+                            newClass.Attributes |= MemberAttributes.Abstract;
+                            break;
+                        case XSharpParser.INTERNAL:
+                            newClass.Attributes |= MemberAttributes.Assembly;
+                            break;
+                        case XSharpParser.PUBLIC:
+                            newClass.Attributes |= MemberAttributes.Public;
+                            break;
+                    }
+                }
                 // What Visibility ?
                 newClass.TypeAttributes = ContextToClassModifiers(context.Modifiers);
             }
@@ -468,7 +510,7 @@ namespace XSharp.CodeDom
                 foreach (var f in fields)
                 {
                     newClass.Members.Add(f);
-                    addMember(new XMemberType(f.Name, MemberTypes.Field, false));
+                    addClassMember (new XMemberType(f.Name, MemberTypes.Field, false,findType(f.Type.BaseType), f.Type.BaseType));
                 }
             }
         }
@@ -532,7 +574,7 @@ namespace XSharp.CodeDom
             }
             //
             this.CurrentClass.Members.Add(newMethod);
-            this.addMember(new XMemberType(newMethod.Name, MemberTypes.Method, false, returnType.Type));
+            this.addClassMember (new XMemberType(newMethod.Name, MemberTypes.Method, false, returnType.Type, returnType.Type?.FullName));
 
         }
 
@@ -580,7 +622,7 @@ namespace XSharp.CodeDom
             }
             //
             this.CurrentClass.Members.Add(evt);
-            this.addMember(new XMemberType(evt.Name, MemberTypes.Event, false, typeof(void)));
+            this.addClassMember (new XMemberType(evt.Name, MemberTypes.Event, false, typeof(void),"Void"));
         }
 
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
@@ -672,7 +714,7 @@ namespace XSharp.CodeDom
                 CodeMethodReturnStatement ret = new CodeMethodReturnStatement();
                 if (context.Expr != null)
                 {
-                    ret.Expression = new CodeSnippetExpression(context.Expr.GetText());
+                    ret.Expression = BuildSnippetExpression(context.Expr.GetText());
                 }
                 initComponent.Statements.Add(ret);
             }
@@ -719,7 +761,7 @@ namespace XSharp.CodeDom
                         stmt = new CodeRemoveEventStatement(cere, right);
                     break;
                 default:
-                    var snip = new CodeSnippetExpression(exp.GetText());
+                    var snip = BuildSnippetExpression(exp.GetText());
                     stmt = new CodeExpressionStatement(snip);
                     break;
             }
@@ -756,9 +798,9 @@ namespace XSharp.CodeDom
                 local.InitExpression = BuildExpression(context.Expression, false);
             }
             var name = local.Name.ToLower();
-            if (!_locals.Contains(name))
+            if (!_locals.ContainsKey(name))
             {
-                _locals.Add(name);
+                _locals.Add(name, findType(localType.BaseType));
             }
             return local;
         }
@@ -845,83 +887,267 @@ namespace XSharp.CodeDom
             }
             return expr;
         }
-        private CodeExpression BuildAccessMember(XSharpParser.AccessMemberContext member, bool right)
+        private System.Type findType(CodeExpression expr)
         {
-            //what is the left hand side ?
-            //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
-            // else --> query if member from parent type
-            // else assume it is a property
-            System.Type type = null;
-            string name = member.GetText();
-            CodeExpression expr = null;
-            if (!name.Contains(":"))
+            System.Type type;
+            if (expr is CodeFieldReferenceExpression)
             {
-
-                type = findType(name);
+                var cfr = expr as CodeFieldReferenceExpression;
+                if (isField(cfr.FieldName) && (cfr.TargetObject is CodeThisReferenceExpression || cfr.TargetObject is CodeBaseReferenceExpression ))
+                {
+                    return getClassMemberType(cfr.FieldName, MemberTypes.Field);
+                }
+                type = findType(cfr.TargetObject);
                 if (type != null)
-                    return new CodeTypeReferenceExpression(type);
-            }
-            string lhsName = member.Expr.GetText();
-            string rhsName = member.Name.GetText();
-            // Expression could be something like  System.Drawing.Color.White
-            // If that is the case then we can find the Color class and its White Property
-            if (!lhsName.Contains(":") && lhsName.ToLower() != "self" && lhsName.ToLower() != "super")
+                {
+                    var f = type.GetField(cfr.FieldName);
+                    if (f != null)
+                        return f.FieldType;
+                }
+            }                    
+            if (expr is CodePropertyReferenceExpression)
             {
-                type = findType(lhsName);
+                var cpr = expr as CodePropertyReferenceExpression;
+                if (isProperty(cpr.PropertyName) && (cpr.TargetObject is CodeThisReferenceExpression || cpr.TargetObject is CodeBaseReferenceExpression))
+                {
+                    return getClassMemberType(cpr.PropertyName, MemberTypes.Property);
+                }
+                type = findType(cpr.TargetObject);
+                if (type != null)
+                {
+                    var p = type.GetProperty(cpr.PropertyName);
+                    if (p != null)
+                        return p.PropertyType;
+                }
             }
+            if (expr is CodeMethodInvokeExpression)
+            {
+                var cmi = expr as CodeMethodInvokeExpression;
+                if (isMethod(cmi.Method.MethodName) && (cmi.Method.TargetObject is CodeThisReferenceExpression || cmi.Method.TargetObject is CodeBaseReferenceExpression))
+                {
+                    return getClassMemberType(cmi.Method.MethodName, MemberTypes.Method);
+
+                }
+                type = findType(cmi.Method.TargetObject);
+                if (type != null)
+                {
+                    var m = type.GetMethod(cmi.Method.MethodName);
+                    if (m != null)
+                        return m.ReturnType;
+                }
+            }
+            if (expr is CodeVariableReferenceExpression)
+            {
+                var cvr = expr as CodeVariableReferenceExpression;
+                if (_locals.ContainsKey(cvr.VariableName))
+                    return _locals[cvr.VariableName];
+            }
+            return null;
+        }
+
+        private CodeExpression buildTypeMemberExpression(System.Type type, string name)
+        {
+            var l = new CodeTypeReferenceExpression(type);
+            if (type.GetFields().Where(f => String.Compare(f.Name, name,true) == 0).Count() > 0)
+            {
+                return new CodeFieldReferenceExpression(l, name);
+            }
+            if (type.GetProperties().Where(p => String.Compare(p.Name, name, true) == 0).Count() > 0)
+            {
+                return new CodePropertyReferenceExpression(l, name);
+            }
+            if (type.GetMethods().Where(m => String.Compare(m.Name, name, true) == 0).Count() > 0)
+            {
+                return new CodeMethodReferenceExpression(l, name);
+            }
+            if (type.GetEvents().Where(e => String.Compare(e.Name, name, true) == 0).Count() > 0)
+            {
+                return new CodeEventReferenceExpression(l, name);
+            }
+            return null;
+        }
+
+        private CodeExpression buildTypeMemberExpression(CodeExpression target, System.Type type, string name, out System.Type memberType)
+        {
+            MemberInfo m = null;
+            CodeExpression expr = null;
+            memberType = null;
             if (type != null)
             {
-                expr = _MemberExpression(type, rhsName);
-                if (expr != null)
-                    return expr;
+                var mi = type.GetMember(name);
+                if (mi.Length > 0)
+                {
+                    m = mi[0];
+                    switch (m.MemberType)
+                    {
+                        case MemberTypes.Field:
+                            expr = new CodeFieldReferenceExpression(target, name);
+                            memberType = ((FieldInfo)m).FieldType;
+                            break;
+                        case MemberTypes.Property:
+                            expr = new CodePropertyReferenceExpression(target, name);
+                            memberType = ((PropertyInfo)m).PropertyType;
+                            break;
+                        case MemberTypes.Method:
+                            expr = new CodeMethodReferenceExpression(target, name);
+                            memberType = ((MethodInfo)m).ReturnType;
+                            break;
+                        case MemberTypes.Event:
+                            expr = new CodeEventReferenceExpression(target, name);
+                            memberType = ((EventInfo)m).EventHandlerType;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return expr;
+        }
+
+        private CodeExpression buildSelfExpression(CodeExpression target, string name, out System.Type memberType)
+        {
+            CodeExpression expr = null;
+            memberType = null;
+            if (!_members.ContainsKey(name))
+            {
+                findMemberInBaseTypes(name, MemberTypes.All);
+            }
+            if (_members.ContainsKey(name))
+            {
+                var mi = _members[name];
+                memberType = mi.Type;
+                switch (mi.MemberType)
+                {
+                    case MemberTypes.Field:
+                        expr = new CodeFieldReferenceExpression(target, name);
+                        break;
+                    case MemberTypes.Property:
+                        expr = new CodePropertyReferenceExpression(target, name);
+                        break;
+                    case MemberTypes.Method:
+                        expr = new CodeMethodReferenceExpression(target, name);
+                        break;
+                    case MemberTypes.Event:
+                        expr = new CodeEventReferenceExpression(target, name);
+                        break;
+                }
+            }
+            return expr;
+        }
+        private CodeExpression BuildAccessMember(XSharpParser.AccessMemberContext amc, bool right)
+        {
+            var elements = new List<XSharpParser.AccessMemberContext>();
+            System.Type type = null;
+            // if the top level element has a Dot it may be a type of a field of a type.
+            if (amc.Op.Type == XSharpParser.DOT)
+            {
+                // aa.bb.cc.dd
+                type = findType(amc.Expr.GetText());
+                if (type != null)
+                {
+
+                    var result = buildTypeMemberExpression(type, amc.Name.GetText());
+                    if (result != null)
+                        return result;
+                }
+                type = findType(amc.GetText());
+                if (type != null)
+                {
+                    return new CodeTypeReferenceExpression(type);
+                }
             }
 
-            bool isLocal = false;
-            CodeExpression left = BuildExpression(member.Expr, false);
-            if (left is CodeThisReferenceExpression)
+            // Build a list of the elements from Left to Right so we can easily find without recursion
+            // are AccessMember 
+            // LHS of first element is usually:
+            // - self
+            // - super
+            // - cast with params
+            // - local variable
+            // - what else ?
+            var element = amc;
+            while (true)
             {
-                expr = ResolveSelfExpression(left, rhsName);
-                if (expr != null)
-                    return expr;
-            }
-            else if (left is CodeBaseReferenceExpression)
-            {
-                expr = ResolveSelfExpression(left, rhsName);
-                if (expr != null)
-                    return expr;
-            }
-            else if (left is CodeVariableReferenceExpression)
-            {
-                isLocal = this.isLocal(lhsName);
-            }
-            if (isLocal)
-            {
-                expr = new CodePropertyReferenceExpression(left, rhsName);
-            }
-            if (expr == null)
-            {
-                // Let's guess that on the Left member, we should have a Property if it is not a Field
-                if (!right)
+                elements.Insert(0, element);
+                if (element.Expr is XSharpParser.AccessMemberContext)
                 {
-                    expr = new CodePropertyReferenceExpression(left, rhsName);
+                    element = (XSharpParser.AccessMemberContext)element.Expr;
                 }
                 else
                 {
-                    // We are processing the Right member of an Assignment...
-                    // Most likely Enum Value, which is a typereference expression followed by a DOT and a field
-                    if (member.Op.Type == XSharpLexer.DOT)
+                    break;
+                }
+            }
+            // Determine the type of the first expression
+            
+            CodeExpression lhs = null;
+            bool isSelf = false;
+            amc = elements[0];    // Access Member
+            type = null;
+            switch (amc.Expr.Start.Type)
+            {
+                case XSharpParser.SELF:
+                    lhs = new CodeThisReferenceExpression();
+                    isSelf = true;
+                    break;
+                case XSharpParser.SUPER:
+                    lhs = new CodeBaseReferenceExpression();
+                    isSelf = true;
+                    break;
+                case XSharpParser.LPAREN:
+                    var pe = amc.Expr as XSharpParser.PrimaryExpressionContext;
+                    var pec = pe.Expr as XSharpParser.ParenExpressionContext;
+                    var exp = pec.Expr as XSharpParser.TypeCastContext;
+                    type = findType(exp.Type.GetText());
+                    lhs = BuildExpression(pec.Expr, false);
+                    lhs = new CodeCastExpression(type, lhs);
+                    break;
+                case XSharpParser.ID:
+                    var lname = amc.Expr.GetText();
+                    if (this.isLocal(lname))
                     {
-                        var typeexpr = new CodeTypeReferenceExpression(lhsName);
-                        expr = new CodeFieldReferenceExpression(typeexpr, rhsName);
+                        type = _locals[lname];
+                        lhs = new CodeVariableReferenceExpression(lname);
+                    }
+                    break;
+                default:
+                    // what else ?
+                    break;
+            }
+            // expr should have a value here
+            if (lhs != null)
+            {
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    amc = elements[i] ;
+                    var rhs = amc.Name.GetText();
+                    System.Type memberType = null;
+                    if (i == 0)
+                    {
+                        if (isSelf)
+                        {
+                            lhs = buildSelfExpression(lhs, rhs, out memberType);
+
+                        }
+                        else
+                        {
+                            lhs = buildTypeMemberExpression(lhs, type, rhs, out memberType);
+                        }
                     }
                     else
                     {
-                        expr = new CodeSnippetExpression(member.GetText());
+                        lhs = buildTypeMemberExpression(lhs, type, rhs, out memberType);
                     }
+                    type = memberType;
+                    if (type == null)
+                        break;
                 }
             }
-
-            return expr;
+            else
+            {
+                lhs = BuildSnippetExpression(amc.GetText());
+            }
+            return lhs;
         }
 
         private CodeMethodInvokeExpression BuildMethodCall(XSharpParser.MethodCallContext meth)
@@ -997,7 +1223,10 @@ namespace XSharp.CodeDom
                 expr = BuildExpression(tc.Expr, true);
                 expr = new CodeCastExpression(typeref, expr);
             }
-            else
+            else if (expression is XSharpParser.BinaryExpressionContext)
+            {
+                expr = BuildBinaryExpression(expression as XSharpParser.BinaryExpressionContext);
+            }
             // Unhandled expression types
             // ArrayAccessExpressionContext
             // CondAccessExpressionContext
@@ -1005,15 +1234,101 @@ namespace XSharp.CodeDom
             // AwaitExpressionContext
             // PrefixExpressionContext
             // TypeCheckExpressionContext
-            // BinaryExpressionContext
             // AssignmentExpressionContext: Handled separately because CodeDom wants a Assign Statement
+            else
             {
-                expr = new CodeSnippetExpression(expression.GetText());
+                expr = BuildSnippetExpression(expression.GetText());
             }
             //
             return expr;
         }
 
+        private CodeExpression BuildBinaryExpression(XSharpParser.BinaryExpressionContext be)
+        {
+            var l = BuildExpression(be.Left, false);
+            var r = BuildExpression(be.Right, true);
+            var op = CodeBinaryOperatorType.Add;
+            switch (be.Op.Type)
+            {
+                case XSharpParser.EXP:
+                    // cannot be expressed in codedom
+                    return BuildSnippetExpression(be.GetText());
+                // MULT|DIV|MOD
+                case XSharpParser.MULT:
+                    op = CodeBinaryOperatorType.Multiply;
+                    break;
+                case XSharpParser.DIV:
+                    op = CodeBinaryOperatorType.Divide;
+                    break;
+                case XSharpParser.MOD:
+                    op = CodeBinaryOperatorType.Modulus;
+                    break;
+                // PLUS|MINUS
+                case XSharpParser.PLUS:
+                    op = CodeBinaryOperatorType.Add;
+                    break;
+                case XSharpParser.MINUS:
+                    op = CodeBinaryOperatorType.Subtract;
+                    break;
+                // LSHIFT
+                // RSHIFT
+                case XSharpParser.LSHIFT:
+                case XSharpParser.RSHIFT:
+                    // cannot be expressed in codedom
+                    return BuildSnippetExpression(be.GetText());
+                // LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ | NEQ2
+                case XSharpParser.LT:
+                    op = CodeBinaryOperatorType.LessThan;
+                    break;
+                case XSharpParser.LTE:
+                    op = CodeBinaryOperatorType.LessThanOrEqual;
+                    break;
+                case XSharpParser.GT:
+                    op = CodeBinaryOperatorType.GreaterThan;
+                    break;
+                case XSharpParser.GTE:
+                    op = CodeBinaryOperatorType.GreaterThanOrEqual;
+                    break;
+                case XSharpParser.EQ:
+                case XSharpParser.EEQ:
+                    op = CodeBinaryOperatorType.IdentityEquality;
+                    break;
+                case XSharpParser.NEQ:
+                case XSharpParser.NEQ2:
+                    op = CodeBinaryOperatorType.IdentityInequality;
+                    break;
+                case XSharpParser.SUBSTR:
+                    // cannot be expressed in codedom
+                    return BuildSnippetExpression(be.GetText());
+                // AMP
+                case XSharpParser.AMP:
+                    op = CodeBinaryOperatorType.BitwiseAnd;
+                    break;
+                // TILDE
+                case XSharpParser.TILDE:
+                    // cannot be expressed in codedom
+                    return BuildSnippetExpression(be.GetText());
+                // PIPE
+                case XSharpParser.PIPE:
+                    op = CodeBinaryOperatorType.BitwiseOr;
+                    break;
+                // LOGIC_AND | AND
+                case XSharpParser.LOGIC_AND:
+                case XSharpParser.AND:
+                    op = CodeBinaryOperatorType.BooleanAnd;
+                    break;
+                // LOGIC_OR | OR
+                case XSharpParser.LOGIC_OR:
+                case XSharpParser.OR:
+                    op = CodeBinaryOperatorType.BooleanOr;
+                    break;
+                // DEFAULT
+                case XSharpParser.DEFAULT:
+                    // cannot be expressed in codedom
+                    return BuildSnippetExpression(be.GetText());
+            }
+            return new CodeBinaryOperatorExpression(l, op, r);
+        }
         private CodeExpression BuildPrimaryExpression(XSharpParser.PrimaryExpressionContext expression)
         {
             CodeExpression expr = null;
@@ -1047,7 +1362,7 @@ namespace XSharp.CodeDom
                 }
                 else
                 {
-                    expr = new CodeSnippetExpression(arr.GetText());
+                    expr = BuildSnippetExpression(arr.GetText());
                 }
             }
             else if (ctx is XSharpParser.DelegateCtorCallContext)
@@ -1131,7 +1446,7 @@ namespace XSharp.CodeDom
                 }
                 else
                 {
-                    expr = new CodeSnippetExpression(ctx.GetText());
+                    expr = BuildSnippetExpression(ctx.GetText());
                 }
             }
             else
@@ -1154,7 +1469,7 @@ namespace XSharp.CodeDom
             // MacroContext
             // ArgListExpressionContext
             {
-                expr = new CodeSnippetExpression(ctx.GetText());
+                expr = BuildSnippetExpression(ctx.GetText());
             }
             return expr;
         }
@@ -1164,872 +1479,8 @@ namespace XSharp.CodeDom
 
     }
 
-    internal class XSharpFieldsDiscover : XSharpBaseDiscover
-    {
-
-        internal Stack<ParserRuleContext> classes;
-        internal ParserRuleContext currentClass;
-        private MemberAttributes classVarModifiers;
-
-        internal XSharpFieldsDiscover(IProjectTypeHelper projectNode) : base(projectNode)
-        {
-            classes = new Stack<ParserRuleContext>();
-            currentClass = null;
-        }
-
-        public override void EnterClass_(XSharpParser.Class_Context context)
-        {
-            classes.Push(currentClass);
-            currentClass = context;
-            FieldList.Add(context, new List<CodeMemberField>());
-        }
-        public override void ExitClass_(XSharpParser.Class_Context context)
-        {
-            currentClass = classes.Pop();
-        }
-        public override void EnterClassvarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
-        {
-
-            this.classVarModifiers = MemberAttributes.Public;
-            //
-            ITerminalNode[] visibility;
-            //
-            visibility = context.INTERNAL();
-            if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Assembly;
-            //
-            visibility = context.HIDDEN();
-            if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Private;
-            //
-            visibility = context.PRIVATE();
-            if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Private;
-            //
-            visibility = context.PROTECTED();
-            if (visibility.Length > 0)
-            {
-                visibility = context.INTERNAL();
-                if (visibility.Length > 0)
-                    this.classVarModifiers = MemberAttributes.FamilyOrAssembly;
-                else
-                    this.classVarModifiers = MemberAttributes.Family;
-            }
-            //
-            visibility = context.EXPORT();
-            if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Public;
-            //
-            if (context.CONST().Length > 0)
-                this.classVarModifiers |= MemberAttributes.Const;
-            if (context.STATIC().Length > 0)
-                this.classVarModifiers |= MemberAttributes.Static;
-        }
-        public override void EnterClassVarList([NotNull] XSharpParser.ClassVarListContext context)
-        {
-            //
-            if (context.DataType != null)
-            {
-                var fieldType = BuildDataType(context.DataType);
-                //
-                foreach (var varContext in context._Var)
-                {
-                    CodeMemberField field = new CodeMemberField();
-                    field.Name = varContext.Id.GetText();
-                    field.Type = fieldType;
-                    field.Attributes = this.classVarModifiers;
-                    if (varContext.Initializer != null)
-                    {
-                        if (varContext.Initializer is XSharpParser.PrimaryExpressionContext)
-                        {
-                            XSharpParser.PrimaryContext ctx = ((XSharpParser.PrimaryExpressionContext)varContext.Initializer).Expr;
-                            if (ctx is XSharpParser.LiteralExpressionContext)
-                            {
-                                XSharpParser.LiteralExpressionContext lit = (XSharpParser.LiteralExpressionContext)ctx;
-                                field.InitExpression = BuildLiteralValue(lit.Literal);
-                            }
-                        }
-                        else
-                        {
-                            field.InitExpression = new CodeSnippetExpression(varContext.Initializer.GetText());
-                        }
-                    }
-                    FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
-                    //
-                    FieldList[currentClass].Add(field);
-                }
-                //
-            }
-        }
-
-
-    }
-
-    internal class XSharpBaseDiscover : XSharpBaseListener
-    {
-
-        protected IProjectTypeHelper _projectNode;
-        protected Dictionary<string, Type> _types;    // type cache
-        protected Dictionary<string, XType> _xtypes;    // XSharp type cache
-        protected Dictionary<string, EnvDTE.CodeElement> _stypes;    // ENVDTE.CodeElement kind = type cache
-        protected IList<string> _usings;          // uses for type lookup
-        protected IList<IToken> _tokens;          // used to find comments 
-
-        internal Dictionary<ParserRuleContext, List<CodeMemberField>> FieldList { get; set; }
-        internal string SourceCode { get; set; }
-        internal string CurrentFile { get; set; }
-
-
-        internal XSharpBaseDiscover(IProjectTypeHelper projectNode) : base()
-        {
-            FieldList = new Dictionary<ParserRuleContext, List<CodeMemberField>>();
-            _projectNode = projectNode;
-            this._types = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
-            this._usings = new List<string>();
-            this._xtypes = new Dictionary<string, XType>(StringComparer.OrdinalIgnoreCase);
-            this._stypes = new Dictionary<string, EnvDTE.CodeElement>(StringComparer.OrdinalIgnoreCase);
-        }
-
-        public override void EnterSource([NotNull] XSharpParser.SourceContext context)
-        {
-            var source = (XSharpLexer)context.Start.TokenSource;
-            source.Reset();
-            _tokens = source.GetAllTokens();
-        }
-
-        public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
-        {
-            var import = new CodeNamespaceImport(context.Name.GetText());
-        }
-
-        #region Helpers
-
-        protected XCodeTypeReference BuildDataType(XSharpParser.DatatypeContext context)
-        {
-            //
-            // Datatype is ptrDatatype
-            // or arrayDatatype
-            // or simpleDatatype
-            // or nullableDatatype 
-            // they all have a TypeName
-            XSharpParser.TypeNameContext tn = null;
-            if (context is XSharpParser.PtrDatatypeContext)
-            {
-                XSharpParser.PtrDatatypeContext ptrData = (XSharpParser.PtrDatatypeContext)context;
-                tn = ptrData.TypeName;
-            }
-            else if (context is XSharpParser.ArrayDatatypeContext)
-            {
-                XSharpParser.ArrayDatatypeContext aData = (XSharpParser.ArrayDatatypeContext)context;
-                tn = aData.TypeName;
-            }
-            else if (context is XSharpParser.SimpleDatatypeContext)
-            {
-                XSharpParser.SimpleDatatypeContext sdt = (XSharpParser.SimpleDatatypeContext)context;
-                tn = sdt.TypeName;
-            }
-            else if (context is XSharpParser.NullableDatatypeContext)
-            {
-                XSharpParser.NullableDatatypeContext ndc = context as XSharpParser.NullableDatatypeContext;
-                tn = ndc.TypeName;
-            }
-            XCodeTypeReference expr = null;
-
-            if (tn.NativeType != null)
-            {
-                expr = BuildNativeType(tn.NativeType);
-            }
-            else if (tn.XType != null)
-            {
-                expr = BuildXBaseType(tn.XType);
-            }
-            else if (tn.Name != null)
-            {
-                expr = BuildName(tn.Name);
-            }
-            //
-            return expr;
-        }
-        protected CodeExpression BuildLiteralValue(XSharpParser.LiteralValueContext context)
-        {
-            CodeExpression expr = null;
-            string value;
-            //
-            switch (context.Token.Type)
-            {
-                case XSharpParser.BIN_CONST:
-                case XSharpParser.INT_CONST:
-                case XSharpParser.HEX_CONST:
-                case XSharpParser.REAL_CONST:
-                    expr = new CodePrimitiveExpression(GetNumericValue(context));
-                    break;
-                case XSharpParser.TRUE_CONST:
-                    expr = new CodePrimitiveExpression(true);
-                    break;
-                case XSharpParser.FALSE_CONST:
-                    expr = new CodePrimitiveExpression(true);
-                    break;
-                case XSharpParser.STRING_CONST:
-                case XSharpParser.ESCAPED_STRING_CONST:
-                    value = context.GetText();
-                    value = value.Substring(1, value.Length - 2);
-                    if (context.Token.Type == XSharpParser.ESCAPED_STRING_CONST)
-                        value = BuildUnEscapedString(value);
-                    expr = new CodePrimitiveExpression(value);
-                    break;
-                case XSharpParser.CHAR_CONST:
-                    value = context.GetText();
-                    value = value.Substring(1, value.Length - 2);
-                    if (value.Length >= 1)
-                        expr = new CodePrimitiveExpression(value[0]);
-                    break;
-                case XSharpParser.NULL:
-                    expr = new CodePrimitiveExpression(null);
-                    break;
-                case XSharpParser.NIL:
-                case XSharpParser.NULL_ARRAY:
-                case XSharpParser.NULL_CODEBLOCK:
-                case XSharpParser.NULL_DATE:
-                case XSharpParser.NULL_OBJECT:
-                case XSharpParser.NULL_PSZ:
-                case XSharpParser.NULL_PTR:
-                case XSharpParser.NULL_STRING:
-                case XSharpParser.NULL_SYMBOL:
-                case XSharpParser.SYMBOL_CONST:
-                case XSharpParser.DATE_CONST:
-                default:
-                    expr = new CodeSnippetExpression(context.Token.Text);
-                    break;
-            }
-            return expr;
-        }
-        protected XCodeTypeReference BuildName(XSharpParser.NameContext context)
-        {
-            XCodeTypeReference expr = null;
-            //
-            var sName = context.GetText();
-            System.Type type = findType(sName);
-            if (type != null)
-                return new XCodeTypeReference(type);
-            if (context is XSharpParser.QualifiedNameContext)
-            {
-                XSharpParser.QualifiedNameContext qual = (XSharpParser.QualifiedNameContext)context;
-                expr = BuildName(qual.Left);
-                expr = BuildTypeReference(expr.BaseType + "." + BuildSimpleName(qual.Right).BaseType);
-            }
-            else if (context is XSharpParser.SimpleOrAliasedNameContext)
-            {
-                var alias = context as XSharpParser.SimpleOrAliasedNameContext;
-                var name = alias.Name as XSharpParser.AliasedNameContext;
-
-                //
-                if (name is XSharpParser.AliasQualifiedNameContext)
-                {
-                    XSharpParser.AliasQualifiedNameContext al = (XSharpParser.AliasQualifiedNameContext)name;
-                    expr = BuildSimpleName(al.Right);
-                    expr = BuildTypeReference(al.Alias.GetText() + "::" + expr.BaseType);
-                }
-                else if (name is XSharpParser.GlobalQualifiedNameContext)
-                {
-                    var gqn = name as XSharpParser.GlobalQualifiedNameContext;
-                    expr = BuildSimpleName(gqn.Right);
-                    expr = BuildTypeReference("global::" + expr.BaseType);
-                }
-                else if (name is XSharpParser.IdentifierOrGenericNameContext)
-                {
-                    var id = name as XSharpParser.IdentifierOrGenericNameContext;
-                    expr = BuildSimpleName(id.Name);
-                }
-            }
-            //
-            return expr;
-        }
-        protected TypeAttributes ContextToClassModifiers(XSharpParser.ClassModifiersContext modifiers)
-        {
-            TypeAttributes retValue = TypeAttributes.Public;
-            ITerminalNode[] visibility;
-            //
-            visibility = modifiers.INTERNAL();
-            if (visibility.Length > 0)
-                retValue = TypeAttributes.NestedAssembly;
-            //
-            visibility = modifiers.HIDDEN();
-            if (visibility.Length > 0)
-                retValue = TypeAttributes.NestedPrivate;
-            //
-            visibility = modifiers.PRIVATE();
-            if (visibility.Length > 0)
-                retValue = TypeAttributes.NestedPrivate;
-            //
-            visibility = modifiers.PROTECTED();
-            if (visibility.Length > 0)
-            {
-                visibility = modifiers.INTERNAL();
-                if (visibility.Length > 0)
-                    retValue = TypeAttributes.NestedFamORAssem;
-                else
-                    retValue = TypeAttributes.NestedFamily;
-            }
-            //
-            visibility = modifiers.EXPORT();
-            if (visibility.Length > 0)
-                retValue = TypeAttributes.Public;
-            //
-            return retValue;
-        }
-
-        protected MemberAttributes decodeMemberAttributes(IList<IToken> tokens)
-        {
-            MemberAttributes retValue = MemberAttributes.Public;
-            bool bHasProtect = false;
-            bool bHasInternal = false;
-            foreach (var token in tokens)
-            {
-                switch (token.Type)
-                {
-                    case XSharpParser.INTERNAL:
-                        bHasInternal = true;
-                        if (bHasProtect)
-                            retValue = MemberAttributes.FamilyOrAssembly;
-                        else
-                            retValue = MemberAttributes.Assembly;
-                        break;
-                    case XSharpParser.PROTECTED:
-                        bHasProtect = true;
-                        if (bHasInternal)
-                            retValue = MemberAttributes.FamilyOrAssembly;
-                        else
-                            retValue = MemberAttributes.Family;
-                        break;
-                    case XSharpParser.PRIVATE:
-                    case XSharpParser.HIDDEN:
-                        retValue = MemberAttributes.Private;
-                        break;
-                    case XSharpParser.EXPORT:
-                    case XSharpParser.PUBLIC:
-                        //
-                        retValue = MemberAttributes.Public;
-                        break;
-                }
-            }
-            return retValue;
-        }
-        protected MemberAttributes ContextToMethodModifiers(XSharpParser.MemberModifiersContext modifiers)
-        {
-            return decodeMemberAttributes(modifiers._Tokens);
-        }
-        protected MemberAttributes ContextToConstructorModifiers(XSharpParser.ConstructorModifiersContext modifiers)
-        {
-            return decodeMemberAttributes(modifiers._Tokens);
-        }
-
-        protected MemberAttributes ContextToEventModifiers(XSharpParser.EventModifiersContext modifiers)
-        {
-            return decodeMemberAttributes(modifiers._Tokens);
-        }
-
-        protected bool IsEmpty(CodeNamespace nspace)
-        {
-            return (nspace.Types.Count == 0);
-        }
-
-        protected CodeParameterDeclarationExpressionCollection GetParametersList(XSharpParser.ParameterListContext paramList)
-        {
-            CodeParameterDeclarationExpressionCollection pList = new CodeParameterDeclarationExpressionCollection();
-            //
-            if (paramList != null)
-            {
-                foreach (var param in paramList._Params)
-                {
-                    CodeParameterDeclarationExpression pm = new CodeParameterDeclarationExpression();
-                    pm.Name = param.Id.GetText();
-                    pm.Type = BuildDataType(param.Type);
-                    pm.Direction = FieldDirection.In;
-                    if (param.Modifiers != null)
-                    {
-
-                        if (param.Modifiers.REF() != null)
-                        {
-                            pm.Direction = FieldDirection.Ref;
-                        }
-                        else if (param.Modifiers.OUT() != null)
-                        {
-                            pm.Direction = FieldDirection.Out;
-                        }
-                    }
-                    //
-                    pList.Add(pm);
-                }
-            }
-            //
-            return pList;
-        }
-
-
-        protected void FillCodeDomDesignerData(CodeObject newElement, int line, int col)
-        {
-            CodeDomDesignerData data = new CodeDomDesignerData();
-            //
-            data.CaretPosition = new System.Drawing.Point(col, line);
-            data.FileName = this.CurrentFile;
-            // point is where the designer will try to focus if the
-            // user wants to add event handler stuff.  
-            newElement.UserData[typeof(CodeDomDesignerData)] = data;
-            newElement.UserData[typeof(System.Drawing.Point)] = data.CaretPosition;
-        }
-
-        protected void FillCodeSource(CodeObject element, IToken endOfFirstLine, ParserRuleContext context)
-        {
-            int length = context.Stop.StopIndex - endOfFirstLine.StopIndex - 2;
-            string extract = "";
-            if (length > 0)
-                extract = this.SourceCode.Substring(endOfFirstLine.StopIndex + 1, length).TrimStart();
-            element.UserData[XSharpCodeConstants.USERDATA_CODE] = extract;
-        }
-
-        protected CodeSnippetTypeMember CreateSnippetMember(ParserRuleContext context)
-        {
-            // The original source code
-            string sourceCode = context.GetText();
-            //
-            CodeSnippetTypeMember snippet = new CodeSnippetTypeMember(sourceCode);
-            FillCodeDomDesignerData(snippet, context.Start.Line, context.Start.Column);
-            return snippet;
-        }
-
-        /// <summary>
-        /// Get a LiteralValueContext containing a BIN_CONST, INT_CONST, HEX_CONST, or a REAL_CONST
-        /// as a string, and convert it to the "real" value, with the corresponding Type.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns>An Object of the needed Type, with the value</returns>
-        protected object GetNumericValue(XSharpParser.LiteralValueContext context)
-        {
-            Object ret = null;
-            string value = context.Token.Text;
-            var type = context.Token.Type;
-            //
-            if (type == XSharpParser.BIN_CONST || type == XSharpParser.INT_CONST || type == XSharpParser.HEX_CONST)
-            {
-                bool isUnsigned = value.EndsWith("u", StringComparison.OrdinalIgnoreCase);
-                bool isSigned = value.EndsWith("l", StringComparison.OrdinalIgnoreCase);
-                if (isSigned || isUnsigned)
-                {
-                    value = value.Substring(0, value.Length - 1);
-                }
-                // -1 for Unsigned; -2 for 0x or 0b
-                int len = value.Length - (context.BIN_CONST() != null || context.HEX_CONST() != null ? 2 : 0);
-                //
-                if (context.BIN_CONST() != null)
-                {
-                    if (len > 64)
-                    {
-                        ret = Double.NaN;
-                    }
-                    else
-                    {
-                        // Don't forget to remove the prefix !!!
-                        value = value.Substring(2);
-                        // BIN are always unsigned (??)
-                        UInt64 bin64;
-                        try
-                        {
-                            bin64 = Convert.ToUInt64(value, 2);
-                            // Maybe 32 bits is enough ?
-                            if (bin64 <= UInt32.MaxValue)
-                            {
-                                UInt32 bin32 = Convert.ToUInt32(bin64);
-                                ret = bin32;
-                            }
-                            else
-                            {
-                                ret = bin64;
-                            }
-                        }
-                        catch
-                        {
-                            ret = Double.NaN;
-                        }
-                    }
-                }
-                else if (type == XSharpParser.HEX_CONST)
-                {
-                    if (len > 16)
-                    {
-                        ret = Double.NaN;
-                    }
-                    else
-                    {
-                        // Don't forget to remove the prefix !!!
-                        value = value.Substring(2);
-                        // HEX are always unsigned (??)
-                        UInt64 hex64;
-                        try
-                        {
-                            hex64 = Convert.ToUInt64(value, 16);
-                            // Maybe 32 bits is enough ?
-                            if (hex64 <= UInt32.MaxValue)
-                            {
-                                UInt32 hex32 = Convert.ToUInt32(hex64);
-                                ret = hex32;
-                            }
-                            else
-                            {
-                                ret = hex64;
-                            }
-                        }
-                        catch
-                        {
-                            ret = Double.NaN;
-                        }
-                    }
-                }
-                else
-                {
-                    // context.INT_CONST() != null
-                    if (len > 64)
-                    {
-                        ret = Double.NaN;
-                    }
-                    else if (isUnsigned)
-                    {
-                        UInt64 myUInt64;
-                        try
-                        {
-                            myUInt64 = Convert.ToUInt64(value, 10);
-                            // Maybe 32 bits is enough ?
-                            if (myUInt64 <= UInt32.MaxValue)
-                            {
-                                UInt32 myUInt32 = Convert.ToUInt32(myUInt64);
-                                ret = myUInt32;
-                            }
-                            else
-                            {
-                                ret = myUInt64;
-                            }
-                        }
-                        catch
-                        {
-                            ret = Double.NaN;
-                        }
-                    }
-                    else
-                    {
-                        Int64 myInt64;
-                        try
-                        {
-                            myInt64 = Convert.ToInt64(value, 10);
-                            // Maybe 32 bits is enough ?
-                            if ((myInt64 >= UInt32.MinValue) && (myInt64 <= UInt32.MaxValue))
-                            {
-                                Int32 myInt32 = Convert.ToInt32(myInt64);
-                                ret = myInt32;
-                            }
-                            else
-                            {
-                                ret = myInt64;
-                            }
-                        }
-                        catch
-                        {
-                            ret = Double.NaN;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                double d;
-                if (value.EndsWith("m", StringComparison.OrdinalIgnoreCase) ||
-                    value.EndsWith("r", StringComparison.OrdinalIgnoreCase) ||
-                    value.EndsWith("d", StringComparison.OrdinalIgnoreCase))
-                {
-                    value = value.Substring(0, value.Length - 1);
-                }
-                try
-                {
-                    d = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
-                }
-                catch (Exception)
-                {
-                    d = Double.NaN;
-                }
-                ret = d;
-            }
-            return ret;
-        }
-
-        /// <summary>
-        /// UnEscape the string, converting the Escape sequence into it's "real" form
-        /// https://en.wikipedia.org/wiki/Escape_sequences_in_C
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public string BuildUnEscapedString(string text)
-        {
-            if (string.IsNullOrEmpty(text))
-            {
-                return text;
-            }
-            StringBuilder retval = new StringBuilder(text.Length);
-            for (int ix = 0; ix < text.Length;)
-            {
-                // Search the next escape char '\'
-                int jx = text.IndexOf('\\', ix);
-                // If none, or too far (at least one char is needed AFTER the escape)
-                if (jx < 0 || jx == text.Length - 1)
-                    jx = text.Length;
-                // Copy all text, up to that escape char
-                retval.Append(text, ix, jx - ix);
-                // End ?
-                if (jx >= text.Length)
-                    break;
-                // Get the next one
-                switch (text[jx + 1])
-                {
-                    case 'a':
-                        // Alarm
-                        retval.Append('\a');
-                        break;
-                    case 'b':
-                        // BackSpace
-                        retval.Append('\b');
-                        break;
-                    case 'f':
-                        // Form feed
-                        retval.Append('\f');
-                        break;
-                    case 'n':
-                        // Line feed
-                        retval.Append('\n');
-                        break;
-                    case 'r':
-                        // Carriage return
-                        retval.Append('\r');
-                        break;
-                    case 't':
-                        // Tab
-                        retval.Append('\t');
-                        break;
-                    case 'v':
-                        // Vertical Tab
-                        retval.Append('\v');
-                        break;
-                    case '\\':
-                        // Don't escape
-                        retval.Append('\\');
-                        break;
-                    case '\'':
-                        // Simple Quote
-                        retval.Append('\'');
-                        break;
-                    case '\"':
-                        // Double Quote
-                        retval.Append('\"');
-                        break;
-                    case '?':
-                        // Question Mark
-                        retval.Append('?');
-                        break;
-                    case '0':
-                        // EOS
-                        retval.Append('\0');
-                        break;
-                    case 'x':
-                        // Hexadecimal code is following
-                        // We need at least ONE char after the "\x"
-                        if (jx + 2 >= text.Length)
-                        {
-                            break;
-                        }
-                        // Move after the 'x'
-                        jx = jx + 2;
-                        int digits = 0;
-                        char[] hex = new char[4];
-                        while (jx < text.Length && digits < 4)
-                        {
-                            char hexChar = text[jx];
-                            if ((hexChar >= '0' && hexChar <= '9') || (hexChar >= 'a' && hexChar <= 'f') || (hexChar >= 'A' && hexChar <= 'F'))
-                            {
-                                hex[digits] = hexChar;
-                                digits++;
-                                jx++;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        // Something wrong in the value
-                        if (digits == 0)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            // Put the Digits in a string
-                            string hexValue = new string(hex, 0, digits);
-                            // and convert....
-                            UInt32 intValue = Convert.ToUInt32(hexValue, 16);
-                            Char asciiChar = (char)intValue;
-                            retval.Append(asciiChar);
-                        }
-                        // Adjust jx, because we have jx+2 for the loop
-                        jx = jx - 2;
-                        break;
-                    default:
-                        // Unrecognized, copy as-is
-                        retval.Append('\\').Append(text[jx + 1]);
-                        break;
-                }
-                // Jump over the escape char and the next one
-                ix = jx + 2;
-            }
-            return retval.ToString();
-        }
-
-        protected XCodeTypeReference BuildTypeReference(string name)
-        {
-            System.Type type;
-            type = findType(name);
-            if (type != null)
-            {
-                return new XCodeTypeReference(type);
-            }
-            else
-                return new XCodeTypeReference(name);
-
-        }
-        protected System.Type findType(string typeName)
-        {
-            if (_types.ContainsKey(typeName))
-            {
-                return _types[typeName];
-            }
-            var type = _projectNode.ResolveType(typeName, _usings.ToImmutableArray());
-            if (type != null)
-                _types.Add(typeName, type);
-            return type;
-
-        }
-
-        protected XType findReferencedType(string typeName)
-        {
-            if (_xtypes.ContainsKey(typeName))
-            {
-                return _xtypes[typeName];
-            }
-            var type = _projectNode.ResolveReferencedType(typeName, _usings.ToImmutableArray());
-            //
-            if (type != null)
-                _xtypes.Add(typeName, type);
-            return type;
-        }
-
-        protected EnvDTE.CodeElement findStrangerType(string typeName)
-        {
-            if (_stypes.ContainsKey(typeName))
-            {
-                return _stypes[typeName];
-            }
-            var type = _projectNode.ResolveStrangerType(typeName, _usings.ToImmutableArray());
-            //
-            if (type != null)
-                _stypes.Add(typeName, type);
-            return type;
-        }
-
-        protected XCodeTypeReference BuildNativeType(XSharpParser.NativeTypeContext nativeType)
-        {
-            //
-            Type type;
-            switch (nativeType.Token.Type)
-            {
-                case XSharpParser.BYTE:
-                    type = typeof(System.Byte);
-                    break;
-                case XSharpParser.DWORD:
-                    type = typeof(System.UInt32);
-                    break;
-                case XSharpParser.SHORTINT:
-                    type = typeof(System.Int16);
-                    break;
-                case XSharpParser.INT:
-                case XSharpParser.LONGINT:
-                    type = typeof(System.Int32);
-                    break;
-                case XSharpParser.INT64:
-                    type = typeof(System.Int64);
-                    break;
-                case XSharpParser.UINT64:
-                    type = typeof(System.UInt64);
-                    break;
-                case XSharpParser.LOGIC:
-                    type = typeof(System.Boolean);
-                    break;
-                case XSharpParser.OBJECT:
-                    type = typeof(System.Object);
-                    break;
-                case XSharpParser.REAL4:
-                    type = typeof(System.Single);
-                    break;
-                case XSharpParser.REAL8:
-                    type = typeof(System.Double);
-                    break;
-                case XSharpParser.STRING:
-                    type = typeof(System.String);
-                    break;
-                case XSharpParser.WORD:
-                    type = typeof(System.UInt16);
-                    break;
-                case XSharpParser.VOID:
-                    type = typeof(void);
-                    break;
-                case XSharpParser.DYNAMIC:
-                    type = typeof(System.Object);
-                    break;
-                default:
-                    var strType = nativeType.Token.Text;
-                    return BuildTypeReference(strType);
-            }
-            return new XCodeTypeReference(type);
-        }
-
-        protected XCodeTypeReference BuildXBaseType(XSharpParser.XbaseTypeContext xbaseType)
-        {
-            return new XCodeTypeReference(xbaseType.Token.Text);
-        }
-
-        protected XCodeTypeReference BuildSimpleName(XSharpParser.SimpleNameContext simpleName)
-        {
-            XCodeTypeReference expr = null;
-            //
-            string name = simpleName.Id.GetText();
-            string gen = "";
-            if (simpleName.GenericArgList != null)
-            {
-                string argList = "";
-                int i = 0;
-                foreach (var generic in simpleName.GenericArgList._GenericArgs)
-                {
-                    if (i > 0)
-                        argList += ",";
-                    var tmp = BuildDataType(generic);
-                    argList += tmp.BaseType;
-                    i++;
-                }
-                //
-                gen = "`" + i.ToString() + "[" + argList + "]";
-            }
-            expr = BuildTypeReference(name + gen);
-            //
-            return expr;
-        }
-
-
-        #endregion
-    }
-    static class ParseHelpers
+ 
+     static class ParseHelpers
     {
         public static CodeCommentStatement[] GetLeadingComments(this ParserRuleContext context, IList<IToken> tokens)
         {

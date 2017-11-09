@@ -288,7 +288,8 @@ namespace Microsoft.VisualStudio.Project.Automation
                     try
                     {
                         IVsRunningDocumentTable rdt = this.Node.ProjectMgr.Site.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-                        if (rdt == null) {
+                        if (rdt == null) 
+						{
                             throw new InvalidOperationException("Could not get running document table from the services exposed by this project");
                         }
 

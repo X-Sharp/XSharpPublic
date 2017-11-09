@@ -589,7 +589,8 @@ namespace Microsoft.VisualStudio.Project
 
       private bool alreadyHandledOverwritePrompts = false;
 
-
+      private EnvDTE.Globals globals;
+ 
         #endregion
 
         #region abstract properties
@@ -6708,6 +6709,19 @@ namespace Microsoft.VisualStudio.Project
         {
             this.ID = VSConstants.VSITEMID_ROOT;
             this.tracker = new TrackDocumentsHelper(this);
+            globals = new Microsoft.VisualStudio.Project.Automation.OAGlobals(this);
+        }
+
+ 
+        public void InitializeGlobals()
+        {
+            ((Microsoft.VisualStudio.Project.Automation.OAGlobals)globals).Initialize();
+        }
+
+
+        public EnvDTE.Globals Globals
+        {
+            get { return this.globals; }
         }
 
         /// <summary>

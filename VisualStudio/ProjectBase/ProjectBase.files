@@ -80,6 +80,10 @@
     </Compile>
 
     <!-- Automation Objects -->
+    <Compile Include="$(ProjectBasePath)Automation\OAGlobals.cs">
+      <Link>ProjectBase\Automation\OAGlobals.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
     <Compile Include="$(ProjectBasePath)Automation\AutomationScope.cs">
       <Link>ProjectBase\Automation\AutomationScope.cs</Link>
       <Visible>true</Visible>

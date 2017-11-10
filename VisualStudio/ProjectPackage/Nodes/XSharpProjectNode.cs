@@ -1146,24 +1146,64 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="sProject"></param>
         /// <returns>The EnvDTE.Project found, or null</returns>
-        public EnvDTE.Project FindProject(String sProject)
+        /// 
+
+        private static IList<EnvDTE.Project> GetSolutionFolderProjects(EnvDTE.Project solutionFolder)
         {
-            EnvDTE.Project prj = null;
-            //
-            EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
-            if (dte != null)
+            List<EnvDTE.Project> list = new List<EnvDTE.Project>();
+            for (var i = 1; i <= solutionFolder.ProjectItems.Count; i++)
             {
-                foreach (EnvDTE.Project p in dte.Solution.Projects)
+                var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
+                if (subProject == null)
                 {
-                    if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        prj = p;
-                        break;
-                    }
+                    continue;
+                }
+
+                // If this is another solution folder, do a recursive call, otherwise add
+                if (subProject.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                {
+                    list.AddRange(GetSolutionFolderProjects(subProject));
+                }
+                else
+                {
+                    list.Add(subProject);
                 }
             }
-            //
-            return prj;
+            return list;
+        }
+
+        private List<EnvDTE.Project> GetSolutionProjects()
+        {
+            List<EnvDTE.Project> list = new List<EnvDTE.Project>();
+            EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
+            foreach (EnvDTE.Project p in dte.Solution.Projects)
+            {
+                if (p == null)
+                {
+                    continue;
+                }
+
+                if (p.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                {
+                    list.AddRange(GetSolutionFolderProjects(p));
+                }
+                else
+                {
+                    list.Add(p);
+                }
+            }
+            return list;
+        }
+        public EnvDTE.Project FindProject(String sProject)
+        {
+            foreach (var p in GetSolutionProjects())
+            { 
+                if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return p;
+                }
+            }
+            return null;
         }
 
         public override void RemoveURL(String url)

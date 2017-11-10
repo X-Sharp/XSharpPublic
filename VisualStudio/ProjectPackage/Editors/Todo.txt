@@ -9,8 +9,3 @@
 - Implement Event Handler after += on Event property
 - Looking up Description from XML comment files for assemblies (SVsXMLMemberIndexService, IVsXMLMemberIndex  )
 - Delay lookups because the customer may still be typing
-- Limit the completion list to a certain number of items
-- Add keyword case synchroniation
-- Add smart indenting
-- Add intellisense for Globals
-- Goto definition for Functions

@@ -222,10 +222,17 @@ namespace XSharpModel
 
         }
 
+        private bool hasUnprocessedReferences => 
+            _unprocessedProjectReferences.Count + 
+            _unprocessedStrangerProjectReferences.Count > 0;
+
         public void ResolveProjectReferenceDLLs()
         {
-            ResolveUnprocessedProjectReferences();
-            ResolveUnprocessedStrangerReferences();
+            if (hasUnprocessedReferences)
+            {
+                ResolveUnprocessedProjectReferences();
+                ResolveUnprocessedStrangerReferences();
+            }
             foreach (var DLL in _projectOutputDLLs.Values)
             {
                 if (SystemTypeController.FindAssemblyByLocation(DLL) == null)
@@ -318,6 +325,8 @@ namespace XSharpModel
 
         private void ResolveUnprocessedProjectReferences()
         {
+            if (_unprocessedProjectReferences.Count == 0)
+                return;
             List<string> existing = new List<string>();
             foreach (string sProject in _unprocessedProjectReferences)
             {
@@ -373,6 +382,8 @@ namespace XSharpModel
 
         private void ResolveUnprocessedStrangerReferences()
         {
+            if (_unprocessedStrangerProjectReferences.Count == 0)
+                return;
             List<string> existing = new List<string>();
             foreach (string sProject in _unprocessedStrangerProjectReferences)
             {

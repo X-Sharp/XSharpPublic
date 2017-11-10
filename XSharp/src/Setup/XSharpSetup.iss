@@ -18,9 +18,9 @@
 #define SetupExeName    "XSharpSetup110Public"
 #endif
 
-#define Version         "1.1.0.0"
-#define VIVersion       "1.1.0.0"
-#define TouchDate       "2017-10-27"
+#define Version         "1.1.0.1"
+#define VIVersion       "1.1.0.1"
+#define TouchDate       "2017-11-10"
 #define TouchTime       "01:01:00"
 
 
@@ -451,7 +451,10 @@ Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\H*.Zip";      
 Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Code";        Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{app}\Extension\Project\ItemTemplates\Resources";   Flags: recursesubdirs {#StdFlags}; 
 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{app}\Extension\Project\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*test*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Test";     Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*unit*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Test";     Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\C*.zip";           DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*App*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
 ; Snippets
 Components: vs2015 or vs2017; Source: "{#SnippetsSource}\*.*";                          DestDir: "{app}\Extension\{# SnippetsPath}";          Flags: recursesubdirs {#StdFlags}; 
 

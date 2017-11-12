@@ -20,6 +20,7 @@ namespace XSharpModel
 
         string RootNameSpace { get; }
         string Url { get; }
+        string OutputFile { get; }
         void SetStatusBarText(string message);
         void SetStatusBarAnimation(bool onOff, short id);
         void OpenElement(string file, int line, int column);

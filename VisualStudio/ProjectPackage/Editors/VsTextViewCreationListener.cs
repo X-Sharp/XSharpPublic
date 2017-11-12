@@ -19,16 +19,16 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace XSharp.Project
 {
     // This code is used to determine if a file is opened inside a Vulcan project
     // or another project.
-    // When the language service is set to our language service then we get the ProjectItem through DTE.
-    // When the project item type is defined inside an assembly that has 'vulcan' in its
-    // name then we assume it is a vulcan filenode, and then we will set the language service
-    // to that from vulcan.
-    // You must make sure that the projectpackage is also added as a MEF component to the vsixmanifest
+    // When the language service is set to our language service then we look for the file in the RDT
+    // and ask for a property where we know what X# returns. When then result is different then 
+    // we assume it is a Vulcan file, and we will set the language service to that from Vulcan.
+    // You must make sure that the Project System package is also added as a MEF component to the vsixmanifest
     // otherwise the Export will not work.
 
     [Export(typeof(IVsTextViewCreationListener))]
@@ -52,7 +52,6 @@ namespace XSharp.Project
         [Import]
         IBufferTagAggregatorFactoryService aggregator = null;
 
-
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IVsTextLines textlines;
@@ -64,7 +63,7 @@ namespace XSharp.Project
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
                     string fileName = FilePathUtilities.GetFilePath(textlines);
-                    if (!EditorHelpers.IsOurFile(fileName))       // is this a file node from Vulcan ?
+                    if (!IsOurFile(fileName))       // is this a file node from Vulcan ?
                     {
                         Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);
@@ -82,7 +81,27 @@ namespace XSharp.Project
                 }
             }
         }
-
+        internal static bool IsOurFile(string fileName)
+        {
+            var serviceProvider = XSharpEditorFactory.GetServiceProvider();
+            // Find the document in the Running Document Table and Get Its hierarchy object
+            // so we can ask for a property that we can use to see if this is 'Ours' 
+            IVsRunningDocumentTable rdt = serviceProvider.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
+            uint itemID;
+            IVsHierarchy hierarchy;
+            IntPtr unkDocData;
+            uint cookie;
+            rdt.FindAndLockDocument((uint)(_VSRDTFLAGS.RDT_NoLock), fileName, out hierarchy, out itemID, out unkDocData, out cookie);
+            if (unkDocData != IntPtr.Zero)
+            {
+                Marshal.Release(unkDocData);
+            }
+            object result;
+            // Ask for the Language. X# returns the product name
+            // the implementation for this property is inside XSharpFileNode.
+            hierarchy.GetProperty(itemID, (int)__VSHPROPID8.VSHPROPID_DiagHubLanguage, out result);
+            return (result is string && (string)result == Constants.Product);
+        }
     }
 
 }

@@ -41,7 +41,16 @@ namespace XSharpModel
 
         }
 
-        public static Assembly FindAssembly(string fullName)
+        public static Assembly FindAssemblyByLocation(string location)
+        {
+            if (assemblies.ContainsKey(location))
+            { 
+                return assemblies[location].Assembly;
+            }
+            return null;
+        }
+
+        public static Assembly FindAssemblyByName(string fullName)
         {
             foreach (var item in assemblies)
             {

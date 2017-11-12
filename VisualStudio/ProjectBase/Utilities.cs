@@ -68,19 +68,19 @@ namespace Microsoft.VisualStudio.Project
                     msBuildPath = (string)vsKey.GetValue("MSBuildBinPath", null);
                 }
             }
-			if (!String.IsNullOrEmpty(msBuildPath))
+			if (!string.IsNullOrEmpty(msBuildPath))
             {
                 return msBuildPath;
             }
 
             // The path to MSBuild was not found in the VisualStudio's registry hive, so try to
             // find it in the new MSBuild hive.
-			string registryPath = String.Format(CultureInfo.InvariantCulture, "Software\\Microsoft\\MSBuild\\ToolsVersions\\{0}", version);
+			string registryPath = string.Format(CultureInfo.InvariantCulture, "Software\\Microsoft\\MSBuild\\ToolsVersions\\{0}", version);
             using(Microsoft.Win32.RegistryKey msbuildKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(registryPath, false))
             {
                 msBuildPath = (string)msbuildKey.GetValue("MSBuildToolsPath", null);
             }
-			if (String.IsNullOrEmpty(msBuildPath))
+			if (string.IsNullOrEmpty(msBuildPath))
             {
                 string error = SR.GetString(SR.ErrorMsBuildRegistration, CultureInfo.CurrentUICulture);
                 throw new FileLoadException(error);
@@ -559,30 +559,39 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>true if file name is invalid</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0",
             Justification = "The name is validated.")]
-        public static bool ContainsInvalidFileNameChars(string name) {
-            if (String.IsNullOrEmpty(name)) {
+        public static bool ContainsInvalidFileNameChars(string name) 
+		{
+            if (String.IsNullOrEmpty(name)) 
+			{
                 return true;
             }
 
-            try {
-                if (Path.IsPathRooted(name) && !name.StartsWith(@"\\", StringComparison.Ordinal)) {
+            try 
+			{
+                if (Path.IsPathRooted(name) && !name.StartsWith(@"\\", StringComparison.Ordinal)) 
+				{
                     string root = Path.GetPathRoot(name);
                     name = name.Substring(root.Length);
                 }
             }
                 // The Path methods used by ContainsInvalidFileNameChars return argument exception if the filePath contains invalid characters.
-            catch (ArgumentException) {
+            catch (ArgumentException) 
+			{
                 return true;
             }
 
             Microsoft.VisualStudio.Shell.Url uri = new Microsoft.VisualStudio.Shell.Url(name);
 
             // This might be confusing bur Url.IsFile means that the uri represented by the name is either absolut or relative.
-            if (uri.IsFile) {
+            if (uri.IsFile) 
+			{
                 string[] segments = uri.Segments;
-                if (segments != null && segments.Length > 0) {
-                    foreach (string segment in segments) {
-                        if (IsFilePartInValid(segment)) {
+                if (segments != null && segments.Length > 0) 
+				{
+                    foreach (string segment in segments) 
+					{
+                        if (IsFilePartInValid(segment)) 
+						{
                             return true;
                         }
                     }
@@ -591,14 +600,18 @@ namespace Microsoft.VisualStudio.Project
                     string lastSegment = segments[segments.Length - 1];
                     string filePart = Path.GetFileNameWithoutExtension(lastSegment);
                     // if the file is only an extension (.fob) then it's ok, otherwise we need to do the special checks.
-                    if (filePart.Length != 0 && (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart))) {
+                    if (filePart.Length != 0 && (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart))) 
+					{
                         return true;
                     }
                 }
-            } else {
+            } 
+			else 
+			{
                 // The assumption here is that we got a file name.
                 string filePart = Path.GetFileNameWithoutExtension(name);
-                if (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart)) {
+                if (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart)) 
+				{
                     return true;
                 }
 

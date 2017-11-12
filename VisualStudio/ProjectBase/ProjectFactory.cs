@@ -159,6 +159,7 @@ namespace Microsoft.VisualStudio.Project
             node.BuildEngine = this.buildEngine;
             node.BuildProject = this.buildProject;
             node.Package = this.package as ProjectPackage;
+			node.InitializeGlobals();
             return node;
         }
 

@@ -125,6 +125,7 @@ namespace XSharpColorizer
             var file = _file;
             if (file != null)
             {
+                file.Tree = null;
                 var xsWalker = new SourceWalker(file, snapshot);
                 var TokenStream = xsWalker.LexFile();
                 Debug("Ending lex at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());

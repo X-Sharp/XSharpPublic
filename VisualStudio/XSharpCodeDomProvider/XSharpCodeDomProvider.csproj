@@ -77,7 +77,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XSharpCodeParser.cs" />
     <Compile Include="XSharpKeywords.cs" />
-    <Compile Include="XSharpTreeDiscover.cs" />
+    <Compile Include="XSharpTreeDiscoverClass.cs" />
+    <Compile Include="XSharpTreeDiscoverFields.cs" />
+    <Compile Include="XSharpTreeDiscoverBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ReadMe-MachineConfig.txt" />

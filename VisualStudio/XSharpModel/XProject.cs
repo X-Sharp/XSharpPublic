@@ -15,6 +15,7 @@ using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using EnvDTE80;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
 using System.Diagnostics;
 
 namespace XSharpModel
@@ -41,6 +42,12 @@ namespace XSharpModel
         // List of assembly references
         private List<AssemblyInfo> _AssemblyReferences = new List<AssemblyInfo>();
 
+        // List of output DLLs for referenced (X# and other) projects
+        private Dictionary<string, string> _projectOutputDLLs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+
+        XSharpParseOptions _parseOptions = null;
+
         public XProject(IXSharpProject project)
         {
             _projectNode = project;
@@ -53,6 +60,27 @@ namespace XSharpModel
 
             }
         }
+
+        public XSharpParseOptions ParseOptions
+        {
+            get
+            {
+
+                if (_parseOptions == null)
+                {
+                    if (ProjectNode == null)
+                    {
+                        _parseOptions  = XSharpParseOptions.Default;
+                    }
+                    else
+                    {
+                        _parseOptions = ProjectNode.ParseOptions;
+                    }
+                }
+                return _parseOptions;
+            }
+        }
+
 
         public string Name
         {
@@ -172,6 +200,53 @@ namespace XSharpModel
             return false;
         }
 
+
+        public void AddProjectOutput(string sProjectURL, string sOutputDLL)
+        {
+            if (_projectOutputDLLs.ContainsKey(sProjectURL))
+            {
+                _projectOutputDLLs[sProjectURL] = sOutputDLL;
+            }
+            else
+            {
+                _projectOutputDLLs.Add(sProjectURL, sOutputDLL);
+            }
+        }
+        public void RemoveProjectOutput(string sProjectURL)
+        {
+            if (_projectOutputDLLs.ContainsKey(sProjectURL))
+            {
+                RemoveProjectReferenceDLL(_projectOutputDLLs[sProjectURL]);
+                _projectOutputDLLs.Remove(sProjectURL);
+            }
+
+        }
+
+        private bool hasUnprocessedReferences => 
+            _unprocessedProjectReferences.Count + 
+            _unprocessedStrangerProjectReferences.Count > 0;
+
+        public void ResolveProjectReferenceDLLs()
+        {
+            if (hasUnprocessedReferences)
+            {
+                ResolveUnprocessedProjectReferences();
+                ResolveUnprocessedStrangerReferences();
+            }
+            foreach (var DLL in _projectOutputDLLs.Values)
+            {
+                if (SystemTypeController.FindAssemblyByLocation(DLL) == null)
+                {
+                    AddAssemblyReference(DLL);
+                }
+            }
+        }
+
+        public void RemoveProjectReferenceDLL(string DLL)
+        {
+            this.RemoveAssemblyReference(DLL);
+        }
+
         public bool AddProjectReference(string url)
         {
             if (!_unprocessedProjectReferences.Contains(url))
@@ -195,15 +270,18 @@ namespace XSharpModel
                 XProject prj = XSolution.FindProject(url);
                 if (_ReferencedProjects.Contains(prj))
                 {
+                    var outputname = prj.ProjectNode.OutputFile;
                     _ReferencedProjects.Remove(prj);
                     return true;
                 }
+                RemoveProjectOutput(url);
             }
             return false;
         }
 
         public bool AddStrangerProjectReference(string url)
         {
+            // We do not process it yet. Wait till we really need it.
             if (!_unprocessedStrangerProjectReferences.Contains(url))
             {
                 _unprocessedStrangerProjectReferences.Add(url);
@@ -221,9 +299,10 @@ namespace XSharpModel
             }
             else
             {
+                RemoveProjectOutput(url);
                 // Does this url belongs to a project in the Solution ?
                 EnvDTE.Project prj = this.ProjectNode.FindProject(url);
-                if (_StrangerProjects.Contains(prj))
+                if (prj != null && _StrangerProjects.Contains(prj))
                 {
                     _StrangerProjects.Remove(prj);
                     return true;
@@ -239,24 +318,90 @@ namespace XSharpModel
         {
             get
             {
-                List<string> existing = new List<string>();
-                foreach (string s in _unprocessedProjectReferences)
-                {
-                    XProject p = XSolution.FindProject(s);
-                    if (p != null)
-                    {
-                        existing.Add(s);
-                        _ReferencedProjects.Add(p);
-                    }
-                }
-                foreach (string s in existing)
-                {
-                    _unprocessedProjectReferences.Remove(s);
-                }
+                ResolveUnprocessedProjectReferences();
                 return _ReferencedProjects.ToImmutableList();
             }
         }
 
+        private void ResolveUnprocessedProjectReferences()
+        {
+            if (_unprocessedProjectReferences.Count == 0)
+                return;
+            List<string> existing = new List<string>();
+            foreach (string sProject in _unprocessedProjectReferences)
+            {
+                XProject p = XSolution.FindProject(sProject);
+                if (p != null)
+                {
+                    existing.Add(sProject);
+                    _ReferencedProjects.Add(p);
+                    var outputFile = p.ProjectNode.OutputFile;
+                    AddProjectOutput(sProject, outputFile);
+                }
+            }
+            foreach (string s in existing)
+            {
+                _unprocessedProjectReferences.Remove(s);
+            }
+        }
+
+        private string GetStrangerOutputDLL(string sProject, EnvDTE.Project p)
+        {
+            string outputFile = null;
+            try
+            {
+                var config = p.ConfigurationManager.ActiveConfiguration;
+                var item = config.Properties.Item("OutputPath");
+                string path = "";
+                if (item != null)
+                {
+                    path = (string)item.Value;
+                }
+                foreach (EnvDTE.OutputGroup og in config.OutputGroups)
+                {
+                    if (og.FileCount == 1 && og.CanonicalName == "Built")
+                    {
+                        var names = (Array)og.FileNames;
+                        foreach (string str in names)
+                        {
+                            outputFile = System.IO.Path.Combine(path, str);
+                        }
+                    }
+                }
+                if (!System.IO.Path.IsPathRooted(outputFile))
+                {
+                    outputFile = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(sProject), outputFile);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            return outputFile;
+        }
+
+        private void ResolveUnprocessedStrangerReferences()
+        {
+            if (_unprocessedStrangerProjectReferences.Count == 0)
+                return;
+            List<string> existing = new List<string>();
+            foreach (string sProject in _unprocessedStrangerProjectReferences)
+            {
+                EnvDTE.Project p = this.ProjectNode.FindProject(sProject);
+                if (p != null)
+                {
+                    existing.Add(sProject);
+                    _StrangerProjects.Add(p);
+                    var outputFile = GetStrangerOutputDLL(sProject, p);
+                    AddProjectOutput(sProject, outputFile);
+                }
+            }
+            foreach (string s in existing)
+            {
+                _unprocessedStrangerProjectReferences.Remove(s);
+            }
+
+        }
 
         /// <summary>
         /// List of stranger Projects that our "current" project is referencing.
@@ -266,20 +411,7 @@ namespace XSharpModel
         {
             get
             {
-                List<string> existing = new List<string>();
-                foreach (string s in _unprocessedStrangerProjectReferences)
-                {
-                    EnvDTE.Project p = this.ProjectNode.FindProject(s);
-                    if (p != null)
-                    {
-                        existing.Add(s);
-                        _StrangerProjects.Add(p);
-                    }
-                }
-                foreach (string s in existing)
-                {
-                    _unprocessedStrangerProjectReferences.Remove(s);
-                }
+                ResolveUnprocessedStrangerReferences();
                 return _StrangerProjects.ToImmutableList();
             }
         }
@@ -313,6 +445,7 @@ namespace XSharpModel
 
         public System.Type FindSystemType(string name, IReadOnlyList<string> usings)
         {
+            ResolveProjectReferenceDLLs();
             return _typeController.FindType(name, usings, _AssemblyReferences);
         }
 
@@ -612,6 +745,7 @@ namespace XSharpModel
         public XSharpParseOptions ParseOptions => XSharpParseOptions.Default;
 
         public string RootNameSpace => "";
+        public string OutputFile => "";
         public string Url => "";
 
         public void AddIntellisenseError(string file, int line, int column, int Length, string errCode, string message, DiagnosticSeverity sev)
@@ -688,3 +822,4 @@ namespace XSharpModel
         }
     }
 }
+

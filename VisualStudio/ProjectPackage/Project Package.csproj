@@ -75,12 +75,11 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
-      <VSSDKRoot Condition="'$(DevEnvDir)'!='' and Exists('$(DevEnvDir)..\..\VSSDK\VisualStudioIntegration\')">$([System.IO.Path]::GetFullPath('$(DevEnvDir)..\..\VSSDK\'))</VSSDKRoot>
+    <VSSDKRoot Condition="'$(DevEnvDir)'!='' and Exists('$(DevEnvDir)..\..\VSSDK\VisualStudioIntegration\')">$([System.IO.Path]::GetFullPath('$(DevEnvDir)..\..\VSSDK\'))</VSSDKRoot>
     <VSSDKRoot Condition="'$(VSSDKRoot)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\VSIP\14.0\@InstallDir)</VSSDKRoot>
     <VSSDKRoot Condition="'$(VSSDKRoot)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\VSIP\14.0\@InstallDir)</VSSDKRoot>
     <VSSDKRoot Condition="'$(VSSDKRoot)'!='' and '$(VSSDKRoot.EndsWith(&quot;\&quot;))'=='false'">$(VSSDKRoot)\</VSSDKRoot>
   </PropertyGroup>
-
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -260,7 +259,6 @@
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Editors\BraceMatching\BraceMatching.cs" />
-    <Compile Include="Editors\EditorHelpers.cs" />
     <Compile Include="Editors\Formatting\Formatting.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSourceProvider.cs" />

@@ -202,22 +202,22 @@ namespace XSharp.Project
 
         // Gets the output file name depending on current OutputType.
         // View GeneralProperyPage
+        string _outputFile;
+        string _configName;
         public string OutputFile
         {
             get
             {
-                string assemblyName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
-                string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
-                OutputType outputType = (OutputType)Enum.Parse(typeof(OutputType), outputTypeAsString);
-                if (outputType == OutputType.Library)
+                if (_outputFile == null && _configName != CurrentConfig.ConfigName)
                 {
-                    assemblyName += ".dll";
+                    _outputFile = this.GetProjectProperty(ProjectFileConstants.TargetPath);
+                    _configName = CurrentConfig.ConfigName;
                 }
-                else
-                {
-                    assemblyName += ".dll";
-                }
-                return assemblyName;
+                return _outputFile;
+            }
+            internal set
+            {
+                _outputFile = value;
             }
         }
         #endregion
@@ -326,7 +326,7 @@ namespace XSharp.Project
                 case unchecked((int)VSConstants.VSITEMID_ROOT):
                     return this;
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
-                    return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
+                    return this.RootNameSpace;
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
                     return GetOutPutType();
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
@@ -1043,113 +1043,11 @@ namespace XSharp.Project
             return base.InvokeMsBuild(target);
         }
 
-        //private XSharpVSMDProvider codeDomProvider;
-        ///// Retrieve the CodeDOM provider
-        ///// </summary>
-        //public Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider CodeDomProvider
-        //{
-        //    get
-        //    {
-        //        if (codeDomProvider == null)
-        //            codeDomProvider = new XSharpVSMDProvider( );
-        //        return codeDomProvider;
-        //    }
-        //}
 
         protected override NodeProperties CreatePropertiesObject()
         {
             return new XSharpProjectNodeProperties(this);
-            //return new ProjectNodeProperties(this);
         }
-        /*
-               /// <summary>
-               ///  IVsProjectSpecificEditorMap2 interface
-               /// </summary>
-               /// <param name="pszMkDocument"></param>
-               /// <param name="pguidEditorType"></param>
-               /// <returns></returns>
-                public int GetSpecificEditorType(string pszMkDocument, out Guid pguidEditorType)
-                {
-                    switch (XSharpFileNode.GetFileType(pszMkDocument))
-                    {
-                        case XSharpFileType.VODBServer:
-                            pguidEditorType = GuidStrings.guidVOServerEditorFactory;
-                            break;
-                        case XSharpFileType.VOFieldSpec:
-                            pguidEditorType = GuidStrings.guidVOFieldSpecEditorFactory;
-                            break;
-                        case XSharpFileType.VOMenu:
-                            pguidEditorType = GuidStrings.guidVOMenuEditorFactory;
-                            break;
-                        case XSharpFileType.VOForm:
-                            pguidEditorType = GuidStrings.guidVOFormEditorFactory;
-                            break;
-                        case XSharpFileType.SourceCode:
-                        case XSharpFileType.Header:
-                        case XSharpFileType.PreprocessorOutput:
-                            pguidEditorType = GuidStrings.guidSourcecodeEditorFactory;
-                            break;
-                        default:
-                            pguidEditorType = Guid.Empty;
-                            break;
-                    }
-                    return VSConstants.S_OK;
-                }
-
-                public int GetSpecificLanguageService(string pszMkDocument, out Guid pguidLanguageService)
-                {
-                    pguidLanguageService = Guid.Empty;
-                    return VSConstants.S_OK;
-                }
-
-                public int GetSpecificEditorProperty(string pszMkDocument, int propid, out object pvar)
-                {
-                    pvar = true;
-                    switch (XSharpFileNode.GetFileType(pszMkDocument))
-                    {
-                        case XSharpFileType.VODBServer:
-                        case XSharpFileType.VOFieldSpec:
-                        case XSharpFileType.VOMenu:
-                        case XSharpFileType.VOForm:
-                        case XSharpFileType.SourceCode:
-                        case XSharpFileType.Header:
-                        case XSharpFileType.PreprocessorOutput:
-                        default:
-                            if (propid == (int)__VSPSEPROPID.VSPSEPROPID_ProjectDefaultEditorName)
-                            {
-                                pvar = "XSharp Editor";
-                            }
-                            else if (propid == (int)__VSPSEPROPID.VSPSEPROPID_UseGlobalEditorByDefault)
-                            {
-                                pvar = false;
-                            }
-                            else
-                            {
-                                pvar = false;
-                            }
-                            break;
-                    }
-                    return VSConstants.S_OK;
-                }
-
-                public int SetSpecificEditorProperty(string pszMkDocument, int propid, object var)
-                {
-                    switch (XSharpFileNode.GetFileType(pszMkDocument))
-                    {
-                        case XSharpFileType.VODBServer:
-                        case XSharpFileType.VOFieldSpec:
-                        case XSharpFileType.VOMenu:
-                        case XSharpFileType.VOForm:
-                        case XSharpFileType.SourceCode:
-                        case XSharpFileType.Header:
-                        case XSharpFileType.PreprocessorOutput:
-                        default:
-                            break;
-                    }
-                    return VSConstants.S_OK;
-                }
-
-        */
         #endregion
 
 
@@ -1248,24 +1146,64 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="sProject"></param>
         /// <returns>The EnvDTE.Project found, or null</returns>
-        public EnvDTE.Project FindProject(String sProject)
+        /// 
+
+        private static IList<EnvDTE.Project> GetSolutionFolderProjects(EnvDTE.Project solutionFolder)
         {
-            EnvDTE.Project prj = null;
-            //
-            EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
-            if (dte != null)
+            List<EnvDTE.Project> list = new List<EnvDTE.Project>();
+            for (var i = 1; i <= solutionFolder.ProjectItems.Count; i++)
             {
-                foreach (EnvDTE.Project p in dte.Solution.Projects)
+                var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
+                if (subProject == null)
                 {
-                    if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        prj = p;
-                        break;
-                    }
+                    continue;
+                }
+
+                // If this is another solution folder, do a recursive call, otherwise add
+                if (subProject.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                {
+                    list.AddRange(GetSolutionFolderProjects(subProject));
+                }
+                else
+                {
+                    list.Add(subProject);
                 }
             }
-            //
-            return prj;
+            return list;
+        }
+
+        private List<EnvDTE.Project> GetSolutionProjects()
+        {
+            List<EnvDTE.Project> list = new List<EnvDTE.Project>();
+            EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
+            foreach (EnvDTE.Project p in dte.Solution.Projects)
+            {
+                if (p == null)
+                {
+                    continue;
+                }
+
+                if (p.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                {
+                    list.AddRange(GetSolutionFolderProjects(p));
+                }
+                else
+                {
+                    list.Add(p);
+                }
+            }
+            return list;
+        }
+        public EnvDTE.Project FindProject(String sProject)
+        {
+            foreach (var p in GetSolutionProjects())
+            { 
+                if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return p;
+                }
+            }
+            return null;
         }
 
         public override void RemoveURL(String url)
@@ -1402,12 +1340,25 @@ namespace XSharp.Project
                     textView.SetTopLine(0);
             }
         }
+        string _rootNamespace = null;
 
         public string RootNameSpace
         {
             get
             {
-                return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
+                if (_rootNamespace == null)
+                {
+                    lock (this)
+                    {
+                        if (_rootNamespace == null)
+                            _rootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
+                    }
+                }
+                return _rootNamespace;
+            }
+            internal set
+            {
+                _rootNamespace = value;
             }
         }
         #endregion

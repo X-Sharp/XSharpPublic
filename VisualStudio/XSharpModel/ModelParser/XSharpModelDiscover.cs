@@ -16,6 +16,7 @@ using System.Collections.Immutable;
 
 namespace XSharpModel
 {
+
     /// <summary>
     /// This class finds the types, namespaces and regions <br/>
     /// Internally it is NOT thread safe.
@@ -24,27 +25,23 @@ namespace XSharpModel
     partial class XSharpModelDiscover : XSharpBaseListener
     {
         //public List<XSharpParser.IEntityContext> entities = new List<XSharpParser.IEntityContext>();
-        private readonly XFile _file;
+        protected readonly XFile _file;
         private readonly Stack<XType> _currentTypes;
         private readonly Stack<XType> _currentNSpaces;
-        private readonly Stack<XSharpParser.LocalvarContext> _localDecls;
         private readonly XSharpParseOptions _options;
-        private readonly Dictionary<string, XType> _types;
-        private readonly List<string> _usings;
-        private readonly List<string> _staticusings;
+        protected readonly Dictionary<string, XType> _types;
+        protected readonly List<string> _usings;
+        protected readonly List<string> _staticusings;
         private readonly XType _globalType;
         private readonly List<XTypeMember> _classVars;
-        private XTypeMember _currentMethod;
+        protected XTypeMember _currentMethod;
         private Modifiers _currentVarVisibility;
         private bool _currentVarStatic;
         private string _defaultNS;
-        private readonly bool _buildLocals;
-        public XSharpModelDiscover(XFile file, bool buildLocals)
+        public XSharpModelDiscover(XFile file)
         {
             // To store intermediate declarations
             this._file = file;
-            this._buildLocals = buildLocals;
-            this._localDecls = new Stack<XSharpParser.LocalvarContext>();
             //
             this._currentTypes = new Stack<XType>();
             this._currentNSpaces = new Stack<XType>();
@@ -89,7 +86,6 @@ namespace XSharpModel
             {
                 return _file;
             }
-
         }
 
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
@@ -105,7 +101,7 @@ namespace XSharpModel
         public override void ExitSource([NotNull] XSharpParser.SourceContext context)
         {
             // Reset TypeList for this file
-            this.File.SetTypes(_types, _usings, _staticusings, _buildLocals);
+            this.File.SetTypes(_types, _usings, _staticusings, false);
         }
 
 
@@ -492,9 +488,8 @@ namespace XSharpModel
                 System.Threading.Thread.Sleep(100);
             }
         }
-        private void endMember(LanguageService.SyntaxTree.ParserRuleContext context)
+        protected virtual  void endMember(LanguageService.SyntaxTree.ParserRuleContext context)
         {
-            addVariables(context);
             _currentMethod = null;
         }
 
@@ -776,82 +771,7 @@ namespace XSharpModel
         #endregion
 
         #region Method Body
-        public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
-        {
-            if (!this._buildLocals)
-                return;
-            try
-            {
-                if (context.DataType != null)
-                {
-                    XVariable local;
-                    String localType = context.DataType.GetText();
-                    String localName;
-                    // Push to stack so we can manage all contexts in one loop
-                    _localDecls.Push(context);
 
-                    while (_localDecls.Count > 0)
-                    {
-                        XSharpParser.LocalvarContext tmpContext = _localDecls.Pop();
-                        localName = tmpContext.Id.GetText();
-                        //
-                        local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
-                            new TextRange(tmpContext), new TextInterval(tmpContext),
-                            localType);
-                        local.File = this._file;
-                        local.IsArray = tmpContext.Dim != null;
-                        //
-                        if (this._currentMethod != null)
-                        {
-                            this._currentMethod.Locals.Add(local);
-                        }
-                    }
-                }
-                else
-                {
-                    // We may have something like
-                    // LOCAL x,y as STRING
-                    // for x, we don't have a DataType, so save it
-                    _localDecls.Push(context);
-                }
-            }
-            catch (Exception ex)
-            {
-                Support.Debug("EnterLocalvar : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
-            }
-        }
-
-        private void addVariables([NotNull] ParserRuleContext context)
-        {
-            if (!this._buildLocals || this._currentMethod == null)
-                return;
-            // Don't forget to add Self and Super as Local vars
-            if ((context is XSharpParser.ConstructorContext) ||
-                (context is XSharpParser.DestructorContext) ||
-                (context is XSharpParser.MethodContext) ||
-                (context is XSharpParser.PropertyContext))
-            {
-                XVariable local;
-                //
-                local = new XVariable(this._currentMethod, "Self", Kind.Local, Modifiers.Public,
-                    new TextRange(context), new TextInterval(context),
-                    this._currentMethod.ParentName);
-                //
-                local.File = this._file;
-                this._currentMethod.Locals.Add(local);
-                //
-                if (!String.IsNullOrEmpty(_currentMethod.Parent.ParentName))
-                {
-                    local = new XVariable(this._currentMethod, "Super", Kind.Local, Modifiers.Public,
-                    new TextRange(context), new TextInterval(context),
-                    this._currentMethod.Parent.ParentName);
-                    local.File = this._file;
-                    this._currentMethod.Locals.Add(local);
-                }
-                //
-
-            }
-        }
 
         private void addParameters(IList<XSharpParser.ParameterContext> ctxtParams, XTypeMember newMethod)
         {
@@ -1092,7 +1012,7 @@ namespace XSharpModel
             return retValue;
         }
 
-        private String buildLiteralValue(XSharpParser.LiteralValueContext context)
+        protected String buildLiteralValue(XSharpParser.LiteralValueContext context)
         {
             string value = "";
             //
@@ -1205,7 +1125,10 @@ namespace XSharpModel
             //
             return expr;
         }
+        protected virtual void addVariables([NotNull] ParserRuleContext context)
+        {
 
+        }
         protected XCodeTypeReference buildName(XSharpParser.NameContext context)
         {
             XCodeTypeReference expr = null;

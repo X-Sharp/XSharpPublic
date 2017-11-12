@@ -291,6 +291,9 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(ApplicationIcon), this.applicationIcon);
             this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(VulcanCompatibleResources), this.vulcanCompatibleResources.ToString());
+            // reset properties for projectnode
+            ((XSharpProjectNode)this.ProjectMgr).OutputFile = null;
+            ((XSharpProjectNode)this.ProjectMgr).RootNameSpace = this.rootNamespace;
             if (reloadRequired)
             {
                 if (MessageBox.Show(SR.GetString(SR.ReloadPromptOnTargetFxChanged), SR.GetString(SR.ReloadPromptOnTargetFxChangedCaption), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)

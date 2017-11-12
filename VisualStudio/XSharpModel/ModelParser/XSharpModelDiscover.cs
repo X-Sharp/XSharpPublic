@@ -915,13 +915,24 @@ namespace XSharpModel
                         XSharpParser.NameExpressionContext expr = (XSharpParser.NameExpressionContext)primary;
                         string name = expr.Name.Id.GetText();
                         //
-                        String localType = buildValueName(name);
                         String localName;
                         localName = context.Id.GetText();
-                        //
-                        local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
-                            new TextRange(context), new TextInterval(context),
-                            localType);
+                        String localType = buildValueName(name);
+                        if (localType == XVariable.VarType)
+                        {
+                            XVariable xVar = findLocal(name);
+                            //
+                            local = new XVariable(this._currentMethod, localName, Kind.Var, Modifiers.Public,
+                                new TextRange(context), xVar.Interval,
+                                XVariable.VarType);
+                        }
+                        else
+                        {
+                            //
+                            local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
+                                new TextRange(context), new TextInterval(context),
+                                localType);
+                        }
                         local.File = this._file;
                         local.IsArray = false;
                         //
@@ -956,7 +967,23 @@ namespace XSharpModel
                 else if (context.Expression is XSharpParser.MethodCallContext)
                 {
                     // LOCAL IMPLIED xxxxx:= Obj:MethodCall()
-
+                    XSharpParser.MethodCallContext callCtxEx = (XSharpParser.MethodCallContext)context.Expression;
+                    XSharpParser.ExpressionContext exprCtx = callCtxEx.Expr;
+                    String mtdCall = exprCtx.GetText();
+                    XVariable local;
+                    String localName;
+                    localName = context.Id.GetText();
+                    //
+                    local = new XVariable(this._currentMethod, localName, Kind.Var, Modifiers.Public,
+                        new TextRange(context), new TextInterval(exprCtx),
+                        XVariable.VarType );
+                    local.File = this._file;
+                    local.IsArray = false;
+                    //
+                    if (this._currentMethod != null)
+                    {
+                        this._currentMethod.Locals.Add(local);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1108,12 +1135,22 @@ namespace XSharpModel
             return value;
         }
 
+        private XVariable findLocal(string name)
+        {
+            XVariable xVar = null;
+            if (this._currentMethod != null)
+            {
+                xVar = this._currentMethod.Locals.Find(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+            }
+            return xVar;
+        }
+
         private string buildValueName(string name)
         {
             String foundType = "";
             if (this._currentMethod != null)
             {
-                XVariable xVar = this._currentMethod.Locals.Find(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+                XVariable xVar = findLocal(name);
                 if (xVar != null)
                 {
                     foundType = xVar.TypeName;

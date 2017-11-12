@@ -505,7 +505,8 @@ namespace XSharpModel
         VOStruct,
         Union,
         EnumMember,
-        Keyword
+        Keyword,
+        Var
     }
 
     /// <summary>

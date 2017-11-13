@@ -36,6 +36,7 @@ namespace XSharpModel
 
         List<IXErrorPosition> GetIntellisenseErrorPos(string fileName);
         XSharpParseOptions ParseOptions { get; }
+        XSharpParseOptions LexOptions { get; }
         EnvDTE.Project FindProject(String sProject);
         string IntermediateOutputPath { get; }
 

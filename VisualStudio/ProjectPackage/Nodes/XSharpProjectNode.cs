@@ -275,22 +275,22 @@ namespace XSharp.Project
 
         public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
         {
-            if (options != null)
+            if (this.options != null)
             {
-                var xoptions = options as XSharpProjectOptions;
+                var xoptions = this.options as XSharpProjectOptions;
                 if (xoptions.ConfigCanonicalName != configCanonicalName)
                 {
-                    options = null;
+                    this.options = null;
                 }
             }
-            if (options == null)
+            if (this.options == null)
             {
-                options = base.GetProjectOptions(configCanonicalName);
-                var xoptions = options as XSharpProjectOptions;
+                this.options = base.GetProjectOptions(configCanonicalName);
+                var xoptions = this.options as XSharpProjectOptions;
                 xoptions.ConfigCanonicalName = configCanonicalName;
                 xoptions.BuildCommandLine();
             }
-            return options;
+            return this.options;
         }
         public override string GetProjectProperty(string propertyName, bool resetCache)
         {
@@ -1666,8 +1666,14 @@ namespace XSharp.Project
         {
             return this.FindChild(strFileName) != null;
         }
-
-
+        public XSharpParseOptions LexOptions
+        {
+            get
+            {
+                var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                return xoptions.LexOptions;
+            }
+        }
         public XSharpParseOptions ParseOptions
         {
             get

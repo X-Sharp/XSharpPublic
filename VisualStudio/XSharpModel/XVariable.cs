@@ -60,5 +60,7 @@ namespace XSharpModel
         }
         public bool IsArray { get; set; }
 
+        public static readonly String VarType = "$VAR$";
+
     }
 }

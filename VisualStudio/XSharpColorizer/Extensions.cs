@@ -84,6 +84,27 @@ namespace XSharpColorizer
             return null;
 
         }
-
+        internal static bool IsXSharpDocument(this ITextDocumentFactoryService factory, ITextBuffer buffer)
+        {
+            string path = "";
+            if (buffer.Properties.ContainsProperty(typeof(XFile)))
+            {
+                return buffer.GetFile() != null;
+            }
+            // When not found then locate the file in the XSolution by its name
+            if (factory != null)
+            {
+                ITextDocument doc = null;
+                if (factory.TryGetTextDocument(buffer, out doc))
+                {
+                    path = doc.FilePath;
+                }
+            }
+            // Find and attach the X# document when we have it, or a null to indicate that we have searched 
+            // and not found it
+            var file = XSolution.FindFile(path);
+            buffer.Properties.AddProperty(typeof(XFile), file);
+            return file != null;
+        }
     }
 }

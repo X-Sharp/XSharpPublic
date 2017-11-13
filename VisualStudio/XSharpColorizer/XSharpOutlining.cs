@@ -40,7 +40,7 @@ namespace XSharpColorizer
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             //create a single tagger for each buffer.
-            if (!SupportFunctions.IsXSharpDocument(factory, buffer))
+            if (!factory.IsXSharpDocument(buffer))
                 return null;
             ITagger<T> outliner = buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(
                 () =>  new XSharpOutliningTagger(buffer, aggregator, ClassificationRegistry) as ITagger<T>);
@@ -68,10 +68,7 @@ namespace XSharpColorizer
             this.buffer = buffer;
             if (buffer.Properties.ContainsProperty(typeof(XFile)))
             {
-                var file = (XFile) buffer.Properties.GetProperty(typeof(XFile)) ;
-                if (file == null)
-                    return;
-                _file = file;
+                _file =  buffer.GetFile();
             }
 
             if (! buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))

@@ -8,7 +8,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
-
+using XSharpModel;
 namespace XSharpColorizer
 {
     /// <summary>
@@ -43,34 +43,13 @@ namespace XSharpColorizer
         /// <returns>A classifier for the text buffer, or null if the provider cannot do so in its current state.</returns>
         public IClassifier GetClassifier(ITextBuffer buffer)
         {
-            if (! SupportFunctions.IsXSharpDocument(factory, buffer))
+            // only return a classifier when this is really our document
+            if (!factory.IsXSharpDocument( buffer))
                 return null;
             return buffer.Properties.GetOrCreateSingletonProperty<XSharpClassifier>(creator: () => XSharpClassifier.GetColorizer(buffer, this.classificationRegistry, this.factory));
         }
 
         #endregion
     }
-    internal static class SupportFunctions
-    {
-        internal static bool IsXSharpDocument(ITextDocumentFactoryService factory, ITextBuffer buffer)
-        {
-            string path = "";
-            if (buffer.Properties.ContainsProperty(typeof(XSharpModel.XFile)))
-            {
-                return buffer.Properties.GetProperty(typeof(XSharpModel.XFile)) != null;
-            }
-            if (factory != null)
-            {
-                ITextDocument doc = null;
-                if (factory.TryGetTextDocument(buffer, out doc))
-                {
-                    path = doc.FilePath;
-                }
-            }
-            // check if X# document
-            var file = XSharpModel.XSolution.FindFile(path);
-            buffer.Properties.AddProperty(typeof(XSharpModel.XFile), file );
-            return file != null;
-        }
-    }
+  
 }

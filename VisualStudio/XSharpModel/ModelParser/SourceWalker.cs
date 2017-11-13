@@ -15,21 +15,25 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.CodeAnalysis.XSharp.Syntax;
 using System.Collections.Immutable;
+using LanguageService.CodeAnalysis;
+
 namespace XSharpModel
 {
     public class SourceWalker
     {
         private string _source;
-        private readonly ITextSnapshot _snapshot;
+        private ITextSnapshot _snapshot;
         private IXSharpProject _prjNode;
         private XFile _file;
+        private XSharpParser.SourceContext _tree;
+        private ITokenStream _tokenStream;
+        private bool _hasParseErrors;
 
         public SourceWalker(XFile file, ITextSnapshot snapshot)
         {
             _file = file;
             _prjNode = _file?.Project?.ProjectNode;
-            _snapshot = snapshot;
-            _source = snapshot.GetText();
+            Snapshot = snapshot;
         }
         public SourceWalker(XFile file, string source)
         {
@@ -55,88 +59,107 @@ namespace XSharpModel
             }
         }
 
-        public ITextSnapshot Snapshot => _snapshot;
-
-
-        public ITokenStream TokenStream
+        public ITextSnapshot Snapshot
         {
             get
             {
-                return _file.TokenStream;
+                return _snapshot;
             }
-
+            set
+            {
+                _snapshot = value;
+                _source = _snapshot.GetText();
+                _tree = null;
+                _tokenStream = null;
+            }
         }
-
-        public bool HasParseErrors
+        public ITokenStream TokenStream => _tokenStream;
+        public XSharpParser.SourceContext Tree =>_tree;
+        public bool HasParseErrors => _hasParseErrors;
+        XSharpParseOptions parseOptions
         {
             get
             {
-                if (_file != null)
-                    return _file.HasParseErrors;
-                return false;
+                if (_prjNode == null)
+                {
+                    return XSharpParseOptions.Default;
+                }
+                else
+                {
+                    return _prjNode.ParseOptions;
+                }
+
             }
         }
 
-        public ITokenStream LexFile()
+        public ITokenStream LexFile(bool first)
         {
             try
             {
-                CallAntlrParser(true);
-            }
-            catch (Exception e)
-            {
-                Support.Debug("SourceWalker.Lexfile: "+ e.Message);
-            }
-            return _file.TokenStream;            
-        }
-        
-
-        private XSharpParser.SourceContext CallAntlrParser(bool force)
-        {
-            var tree = _file.Tree;
-            XSharpParser.SourceContext xTree = null;
-            if (tree == null || force)
-            {
-                try
+                SyntaxTree syntaxtree;
+                lock (this)
                 {
-
-                    tree = XSharpSyntaxTree.ParseText(_source, _file.Project.ParseOptions, _file.FullPath);
-                    _file.Tree = tree;
-                    var syntaxRoot = tree.GetRoot();
-                    var cu = syntaxRoot as CompilationUnitSyntax;
-                    // Get the antlr4 parse tree root
-                    if (cu.ContainsDiagnostics)
+                    if (first)
                     {
-                        var errors = cu.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);
-                        _file.HasParseErrors = errors.Count() > 0;
+                        syntaxtree = XSharpSyntaxTree.ParseText(_source, _file.Project.ProjectNode.LexOptions, _file.FullPath);
                     }
                     else
                     {
-                        _file.HasParseErrors = false;
+                        syntaxtree = XSharpSyntaxTree.ParseText(_source, _file.Project.ProjectNode.ParseOptions, _file.FullPath);
                     }
-                    _file.TokenStream = cu.XTokens;
+                    var unit = (CompilationUnitSyntax) syntaxtree.GetRoot();
+                    _tokenStream = unit.XTokens;
+                    _tree = unit.XSource;
                 }
-                catch (Exception e)
-                {
-                    _file.Tree = tree = null;
-                    _file.TokenStream = null;
-                    Support.Debug("SourceWalker.Parse: " + e.Message);
-                    _file.HasParseErrors = true;
-                }
+                return this._tokenStream;
             }
-            if (tree != null)
+            catch (Exception e)
             {
-                var syntaxRoot = tree.GetRoot();
-                var cu = syntaxRoot as CompilationUnitSyntax;
-                xTree = cu.XSource;
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                
             }
-            return xTree;
+            return null;
         }
 
         public XSharpParser.SourceContext Parse()
         {
-            return CallAntlrParser(false);
+            lock (this)
+            {
+                var tree = _tree;
+                if (tree == null)
+                {
+                    try
+                    {
+
+                        var syntaxTree = XSharpSyntaxTree.ParseText(_source, _file.Project.ParseOptions, _file.FullPath);
+                        var unit = (CompilationUnitSyntax)syntaxTree.GetRoot();
+                        _tokenStream = unit.XTokens;
+                        _tree = unit.XSource;
+
+                        // Get the antlr4 parse tree root
+                        if (unit.ContainsDiagnostics)
+                        {
+                            var errors = unit.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);
+                            _hasParseErrors = errors.Count() > 0;
+                        }
+                        else
+                        {
+                            _hasParseErrors = false;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        _tree = tree = null;
+                        _tokenStream = null;
+                        Support.Debug("SourceWalker.Parse: " + e.Message);
+                        _hasParseErrors = true;
+                    }
+                }
+                return _tree;
+            }
+            
         }
+
 
         IEnumerable<LanguageService.CodeAnalysis.Diagnostic> errors = null;
         object _gate = new object();

@@ -28,9 +28,6 @@ namespace XSharpModel
         private DateTime _lastWritten;
         private bool _hasLocals;
         private XFileType _type;
-        private SyntaxTree _tree;
-        private bool _hasParseErrors = false;
-        private ITokenStream _TokenStream;
 
         public XFile(string fullPath)
         {
@@ -57,23 +54,6 @@ namespace XSharpModel
             xsWalker.BuildModel(xTree, true);
         }
 
-
-        public ITokenStream TokenStream
-        {
-            get { return _TokenStream; }
-            set { _TokenStream = value; }
-        }
-        public SyntaxTree Tree
-        {
-            get { return _tree; }
-            set { _tree = value; }
-        }
-
-        public bool HasParseErrors
-        {
-            get { return _hasParseErrors; }
-            set { _hasParseErrors = value; }
-        }
 
         /// <summary>
         /// Reset the TypeList associated with the File, reCreating the GlobalType

@@ -19,6 +19,7 @@ CLASS XSharpDesignWindowItem inherit DesignWindowItem
 		IF !String.IsNullOrEmpty(cResult) .and. oXSharpDesigner != NULL_OBJECT
 			LOCAL aStyles := cResult:Split("|":ToCharArray()) AS STRING[]
 			oXSharpDesigner:AddStyles(aStyles)
+			oXSharpDesigner:AddStyles(<STRING>{"WS_VISIBLE"})
 		ENDIF
 		return cResult
 

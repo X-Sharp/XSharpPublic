@@ -98,18 +98,24 @@ namespace XSharp.CodeDom
                 tn = ndc.TypeName;
             }
             XCodeTypeReference expr = null;
-
-            if (tn.NativeType != null)
+            if (tn != null)
             {
-                expr = BuildNativeType(tn.NativeType);
+                if (tn.NativeType != null)
+                {
+                    expr = BuildNativeType(tn.NativeType);
+                }
+                else if (tn.XType != null)
+                {
+                    expr = BuildXBaseType(tn.XType);
+                }
+                else if (tn.Name != null)
+                {
+                    expr = BuildName(tn.Name);
+                }
             }
-            else if (tn.XType != null)
+            else
             {
-                expr = BuildXBaseType(tn.XType);
-            }
-            else if (tn.Name != null)
-            {
-                expr = BuildName(tn.Name);
+                expr = new XCodeTypeReference(typeof(void));
             }
             //
             return expr;

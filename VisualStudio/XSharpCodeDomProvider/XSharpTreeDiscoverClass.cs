@@ -21,7 +21,7 @@ using XSharpModel;
 namespace XSharp.CodeDom
 {
 
-    [DebuggerDisplay("{ToString()}")]
+    [DebuggerDisplay("{ToString(),nq}")]
     internal class XMemberType
     {
         internal XMemberType(string name, MemberTypes memberType, bool inherited, System.Type type, string typeName)
@@ -49,7 +49,7 @@ namespace XSharp.CodeDom
             return Name + "," + TypeName;
         }
     }
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{Name,nq}")]
     internal class XCodeMemberField : CodeMemberField
     {
         internal XCodeMemberField() : base()
@@ -60,17 +60,21 @@ namespace XSharp.CodeDom
     /// <summary>
     /// Enhanced Type reference with System.Type property, since CodeTypeReference does not hold on to the type
     /// </summary>
-    [DebuggerDisplay("{Type.Name}")]
+    [DebuggerDisplay("{_typeName,nq}")]
     internal class XCodeTypeReference : CodeTypeReference
     {
 
         internal System.Type Type { get; set; }
+        internal string _typeName;
         internal XCodeTypeReference(string typeName) : base(typeName)
-        { }
+        {
+            _typeName = typeName;
+        }
 
         internal XCodeTypeReference(System.Type type) : base(type)
         {
             Type = type;
+            _typeName = type.FullName;
         }
 
     }
@@ -948,6 +952,11 @@ namespace XSharp.CodeDom
         private CodeExpression buildTypeMemberExpression(System.Type type, string name)
         {
             var l = new CodeTypeReferenceExpression(type);
+            if (name.StartsWith("@@"))
+            {
+                name = name.Substring(2);
+            }
+
             if (type.GetFields().Where(f => String.Compare(f.Name, name, true) == 0).Count() > 0)
             {
                 return new CodeFieldReferenceExpression(l, name);

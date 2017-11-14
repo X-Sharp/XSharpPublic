@@ -10,7 +10,7 @@ Adds X# language support to the callstack, locals window and more</Description>
     <Icon>XSharp.ico</Icon>
     <PreviewImage>XSharpVSIXLogo.png</PreviewImage>
   </Metadata>
-  <Installation AllUsers="true">
+  <Installation>
     <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Pro"  />
     <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Community" />
     <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Enterprise" />
@@ -22,8 +22,7 @@ Adds X# language support to the callstack, locals window and more</Description>
     <Prerequisite Id="Microsoft.VisualStudio.Debugger" Version="[15.0,)" DisplayName="Visual Studio Debugger" />
   </Prerequisites>
   <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%"  Path="XSharpDebugger.pkgdef" />
+    <Asset Source="File" Path="XSharpDebugger.pkgdef" Type="Microsoft.VisualStudio.VsPackage" TargetPath="|%CurrentProject%|"/>
     <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharpDebugger.vsdconfig" />
   </Assets>
 </PackageManifest>

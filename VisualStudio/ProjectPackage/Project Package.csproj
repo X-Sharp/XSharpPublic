@@ -403,10 +403,6 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
-    <Content Include="XSharpDebugger.pkgdef">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Designers.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -840,14 +836,10 @@
     </ZipItem>
   </ItemGroup>
   <ItemGroup />
-  <!-- This import the files which makes up the project base classes -->
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-  </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
+  <!-- This import the files which makes up the project base classes -->
   <Import Project="..\ProjectBase\ProjectBase.Files" />
   <PropertyGroup>
     <!--

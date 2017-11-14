@@ -58,14 +58,56 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return base.Name;
-            }
-            set
-            {
-                throw new InvalidOperationException();
+                VSLangProj.Reference r = Node.Object as VSLangProj.Reference;
+                return r.Name;
             }
         }
 
+        /// <summary>
+        /// Gets or sets the name of the object.
+        /// </summary>
+        public string Identity
+        {
+            get
+            {
+                VSLangProj.Reference r = Node.Object as VSLangProj.Reference;
+                return r.Identity;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the PublicKeyToken of the object.
+        /// </summary>
+        public string PublicKeyToken
+        {
+            get
+            {
+                VSLangProj.Reference r = Node.Object as VSLangProj.Reference;
+                return r.PublicKeyToken;
+            }
+        }
+        /// <summary>
+        /// Gets or sets the Path of the object.
+        /// </summary>
+        public string Path
+        {
+            get
+            {
+                VSLangProj.Reference r = Node.Object as VSLangProj.Reference;
+                return r.Path;
+            }
+        }
+        /// <summary>
+        /// Gets or sets the version of the object.
+        /// </summary>
+        public string Version
+        {
+            get
+            {
+                VSLangProj.Reference r = Node.Object as VSLangProj.Reference;
+                return r.Version;
+            }
+        }
         /// <summary>
         /// Gets the ProjectItems collection containing the ProjectItem object supporting this property.
         /// </summary>

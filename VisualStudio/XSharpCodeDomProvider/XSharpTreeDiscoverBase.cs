@@ -30,7 +30,7 @@ namespace XSharp.CodeDom
         protected IList<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments 
 
-        internal Dictionary<ParserRuleContext, List<CodeMemberField>> FieldList { get; set; }
+        internal Dictionary<ParserRuleContext, List<XCodeMemberField>> FieldList { get; set; }
         internal string SourceCode { get; set; }
         internal string CurrentFile { get; set; }
         const string SnippetsTxt = @"D:\Snippets.txt";
@@ -46,7 +46,7 @@ namespace XSharp.CodeDom
 
         internal XSharpBaseDiscover(IProjectTypeHelper projectNode) : base()
         {
-            FieldList = new Dictionary<ParserRuleContext, List<CodeMemberField>>();
+            FieldList = new Dictionary<ParserRuleContext, List<XCodeMemberField>>();
             _projectNode = projectNode;
             this._types = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             this._usings = new List<string>();
@@ -61,10 +61,6 @@ namespace XSharp.CodeDom
             _tokens = source.GetAllTokens();
         }
 
-        public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
-        {
-            var import = new CodeNamespaceImport(context.Name.GetText());
-        }
 
         #region Helpers
 
@@ -676,6 +672,16 @@ namespace XSharp.CodeDom
 
         }
 
+        protected XType findXType(string typeName)
+        {
+            if (_xtypes.ContainsKey(typeName))
+                return _xtypes[typeName];
+            var type = _projectNode.ResolveXType(typeName, _usings.ToImmutableArray());
+            if (type != null)
+                _xtypes.Add(typeName, type);
+            return type;
+        }
+
         protected XType findReferencedType(string typeName)
         {
             if (_xtypes.ContainsKey(typeName))
@@ -788,8 +794,31 @@ namespace XSharp.CodeDom
             //
             return expr;
         }
+        #endregion
+        #region Common Methods
+        private XCodeNamespace _currentNamespace;
+        public XCodeNamespace CurrentNamespace
+        {
+            get
+            {
+                if (_currentNamespace == null)
+                {
+                    _currentNamespace = new XCodeNamespace("");
+                }
+                return _currentNamespace;
+            }
 
-
+            internal set
+            {
+                _currentNamespace = value;
+            }
+        }
+        public override void EnterUsing_([NotNull] XSharpParser.Using_Context context)
+        {
+            var import = new XCodeNamespaceImport(context.Name.GetText());
+            CurrentNamespace.Imports.Add(import);
+            _usings.Add(import.Namespace);
+        }
         #endregion
     }
 }

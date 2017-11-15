@@ -68,6 +68,7 @@
       <Link>Constants.cs</Link>
     </Compile>
     <Compile Include="IProjectTypeHelper.cs" />
+    <Compile Include="XCodeTypes.cs" />
     <Compile Include="XSharpCodeCompiler.cs" />
     <Compile Include="XSharpCodeConstants.cs" />
     <Compile Include="XSharpCodeGenerator.cs" />

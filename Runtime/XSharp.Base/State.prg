@@ -15,29 +15,15 @@ USING XSharp
 
 CLASS XSharp.Runtime.State
 	// Static Fields
-	PRIVATE STATIC stateTable AS Dictionary<Thread, State>
-	PRIVATE STATIC mainThread AS Thread   
-	// Static Properties	
 	PRIVATE STATIC mainState  AS State 
 	// Static Methods and Constructor
-
+	PRIVATE STATIC currentState := ThreadLocal<State>{ {=>  mainState:Clone()} }  as ThreadLocal<State> 
 	STATIC CONSTRUCTOR
-		stateTable := Dictionary<Thread, State>{}
-		mainState  := State{}
-	
+		mainState	 := State{}
+		
 	/// <Summary>Retrieve the runtime state for the current thread</Summary>
 	PUBLIC STATIC METHOD GetInstance() AS State
-		VAR oThread := Thread.CurrentThread
-		LOCAL oState AS State   
-		BEGIN LOCK stateTable
-			IF ! stateTable.ContainsKey(oThread)   
-				oState := mainState:Clone()
-				stateTable:Add(oThread, oState)
-			ELSE
-				oState := stateTable[oThread]
-			ENDIF                
-		END LOCK            
-		RETURN oState
+		RETURN currentState:Value
 
 	/// <Summary>List of number - value pairs </Summary>
 	PRIVATE oSettings AS Dictionary<INT, OBJECT>
@@ -47,9 +33,11 @@ CLASS XSharp.Runtime.State
 		VAR oThread := Thread.CurrentThread
 		SELF:Name := "State for Thread "+oThread:ManagedThreadId:ToString()
 		oSettings  := Dictionary<INT, OBJECT>{}
-		stateTable:Add(oThread, SELF)			
-
 		RETURN
+
+	DESTRUCTOR()
+		// What do we need to clean ?
+		oSettings:Clear()
 
 	PRIVATE METHOD Clone() AS State
 		LOCAL oNew AS State
@@ -72,12 +60,10 @@ CLASS XSharp.Runtime.State
 		RETURN SELF:Name
 
 	PUBLIC STATIC METHOD GetValue<T> (nSetting AS INT) AS T
-		VAR oState := GetInstance()
-		return oState:GetInstanceValue<T>(nSetting);
+		return currentState:Value:GetInstanceValue<T>(nSetting);
 
 	PUBLIC STATIC METHOD SetValue<T> (nSetting AS INT, oValue AS T) AS T
-		VAR oState := GetInstance()
-		RETURN oState:SetInstanceValue<T>(nSetting, oValue)
+		RETURN currentState:Value:SetInstanceValue<T>(nSetting, oValue)
 
 
 	/// <Summary>Get the value for a certain setting</Summary>
@@ -91,6 +77,7 @@ CLASS XSharp.Runtime.State
 			ENDIF
 		END LOCK
 		RETURN Default(T)
+
 	/// <Summary>Set the value for a certain setting</Summary>
 	/// <param Name="nSetting"> The number of the setting to change</param>
 	/// <param Name="oValue"> The new value of the setting.</param>

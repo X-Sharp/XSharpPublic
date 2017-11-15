@@ -7,9 +7,8 @@ BEGIN NAMESPACE XSharp.RDD
 //Todo: Use ThreadLocal<T>
 CLASS RDDState	IMPLEMENTS IDisposable
 	// Static Fields
-	PRIVATE STATIC stateTable AS Dictionary<Thread, RDDState>
-	PRIVATE STATIC mainThread AS Thread   
 	PRIVATE STATIC mainState  AS RDDState
+	PRIVATE STATIC CurrentState := ThreadLocal<RDDState>{ {=>  mainState:Clone()} }  as ThreadLocal<RDDState> 
 
 	// Normal Fields
 	PRIVATE oWorkareas	AS WorkAreas
@@ -20,21 +19,10 @@ CLASS RDDState	IMPLEMENTS IDisposable
 	
 	// Static Methods and Constructor
 	STATIC CONSTRUCTOR()
-		stateTable		:= Dictionary<Thread, RDDState>{}
-		mainThread		:= Thread.CurrentThread
 		mainState       := RDDState{}
 	
 	PUBLIC STATIC METHOD GetInstance() AS RDDState
-		VAR oThread := Thread.CurrentThread
-		LOCAL oState AS RDDState   
-		BEGIN LOCK stateTable
-			IF ! stateTable.ContainsKey(oThread)   
-				oState := MainState:Clone()
-			ELSE
-				oState := stateTable[oThread]
-			ENDIF                
-		END LOCK            
-		RETURN oState
+		RETURN currentState:Value
 
 	// Private methods
 	PRIVATE CONSTRUCTOR()       
@@ -42,9 +30,12 @@ CLASS RDDState	IMPLEMENTS IDisposable
 		SELF:Name	:= "RDDState for Thread "+oThread:ManagedThreadId:ToString()
 		oSettings	:= Dictionary<INT, OBJECT>{}
 		oWorkareas  := WorkAreas{}
-		BEGIN LOCK stateTable
-			stateTable:Add(oThread, SELF)
-		END LOCK
+		RETURN
+
+	DESTRUCTOR()
+		// Close all
+		oWorkAreas:CloseAll()
+		oSettings:Clear()
 		RETURN
 
 	PRIVATE METHOD Clone() AS RDDState
@@ -53,7 +44,7 @@ CLASS RDDState	IMPLEMENTS IDisposable
 		BEGIN LOCK oSettings
 			// Copy all values from Current State to New state
 			FOREACH VAR element IN oSettings     
-				oNew:SetValue(element:Key, element:Value)
+				oNew:oSettings:Add(element:Key, element:Value)
 			NEXT
 		END LOCK
 		RETURN oNew     
@@ -71,11 +62,17 @@ CLASS RDDState	IMPLEMENTS IDisposable
 		END LOCK
 		RETURN DEFAULT(T)
 
-	PUBLIC METHOD SetValue(nSetting AS INT, oValue AS OBJECT) AS VOID
+	PUBLIC METHOD SetValue<T>(nSetting AS INT, oValue AS OBJECT) AS T
+		LOCAL result AS T
 		BEGIN LOCK oSettings
+			IF oSettings.ContainsKey(nSetting)
+				result :=  (T) oSettings[nSetting]
+			ELSE
+				result := Default(T)
+			ENDIF
 			oSettings[nSetting] := oValue
 		END LOCK
-		RETURN			
+		RETURN result
 
 	PUBLIC PROPERTY WorkAreas AS WorkAreas GET oWorkAreas
 

@@ -38,7 +38,7 @@ namespace XSharp.CodeDom
             // pop previous class
             classes.Push(currentClass);
             currentClass = context;
-            FieldList.Add(context, new List<CodeMemberField>());
+            FieldList.Add(context, new List<XCodeMemberField>());
         }
         public override void ExitClass_(XSharpParser.Class_Context context)
         {
@@ -92,7 +92,7 @@ namespace XSharp.CodeDom
                 //
                 foreach (var varContext in context._Var)
                 {
-                    CodeMemberField field = new XCodeMemberField();
+                    var  field = new XCodeMemberField();
                     field.Name = varContext.Id.GetText();
                     field.Type = fieldType;
                     field.Attributes = this.classVarModifiers;

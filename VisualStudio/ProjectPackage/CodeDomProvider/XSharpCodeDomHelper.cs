@@ -338,6 +338,10 @@ namespace XSharp.CodeDom
                 WriteLineIndent(stmt.Expression.GetType().ToString());
                 DumpExpression(stmt.Expression);
             }
+            if (s.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
+            { 
+                WriteLineIndent("Original code: " + s.UserData[XSharpCodeConstants.USERDATA_CODE].ToString());
+            }
             indent--;
         }
 

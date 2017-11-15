@@ -5993,6 +5993,11 @@ namespace Microsoft.VisualStudio.Project
                 this.BuildInProgress = true;
                 return true;
             }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return false;
+            }
             finally
             {
                 // If we were denied the privilege of starting a design-time build,

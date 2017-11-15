@@ -854,8 +854,6 @@ namespace XSharp.Project
             base.OnAfterProjectOpen(sender, e);
 
             // initialize the parser
-            //var parser = new XSharpCodeParser(this);
-            //parser.Parse("CLASS Foo\n CONSTRUCTOR()\nEND CLASS\n");
 
             if (filechangemanager == null)
             {
@@ -1442,6 +1440,28 @@ namespace XSharp.Project
             var model = this.ProjectModel;
             return model.FindSystemType(name, usings);
         }
+
+        public XType ResolveXType(string name, IReadOnlyList<string> usings)
+        {
+            var model = this.ProjectModel;
+            //
+            XType result = model.LookupFullName(name,true);
+            if (result != null)
+                return result;
+            // try to find with explicit usings
+            if (usings != null)
+            {
+                foreach (var usingName in usings)
+                {
+                    var fullname = usingName + "." + name;
+                    result = model.LookupFullName(fullname, true);
+                    if (result != null)
+                        return result;
+                }
+            }
+            return result;
+        }
+
 
         public XType ResolveReferencedType(string name, IReadOnlyList<string> usings)
         {

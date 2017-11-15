@@ -2439,9 +2439,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // check if class has Ctor. 
             foreach (var mem in members.ToList())
             {
-                if (mem is ConstructorDeclarationSyntax)
+                // when an instant constructors then remember this
+                if (mem is ConstructorDeclarationSyntax && ! ((ConstructorDeclarationSyntax) mem).IsStatic())
                 {
-                    context.Data.HasCtor = true;
+                    context.Data.HasInstanceCtor = true;
                     break;
                 }
             }

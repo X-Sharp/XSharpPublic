@@ -980,43 +980,47 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             var members = classdecl.Members;
-            context.Data.HasCtor = false;
-            foreach (var m in members)
+            // No need to create an instance constructor for a static class
+            if (!classdecl.IsStatic())
             {
-                if (m is ConstructorDeclarationSyntax)
+                context.Data.HasInstanceCtor = false;
+                foreach (var m in members)
                 {
-                    context.Data.HasCtor = true;
-                    break;
+                    if (m is ConstructorDeclarationSyntax && !((ConstructorDeclarationSyntax)m).IsStatic())
+                    {
+                        context.Data.HasInstanceCtor = true;
+                        break;
+                    }
                 }
-            }
 
-            if (!context.Data.Partial && !context.Data.HasCtor && _options.VOClipperConstructors)
-            {
-                //
-                // generate new class constructor
-                // 
-                var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
-                var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
-                newmembers.AddRange(classdecl.Members);
-                if (ctor != null)
+                if (!context.Data.Partial && !context.Data.HasInstanceCtor && _options.VOClipperConstructors)
                 {
-                    newmembers.Add(ctor);
+                    //
+                    // generate new class constructor
+                    // 
+                    var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
+                    var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                    newmembers.AddRange(classdecl.Members);
+                    if (ctor != null)
+                    {
+                        newmembers.Add(ctor);
+                    }
+                    classdecl = classdecl.Update(
+                        classdecl.AttributeLists,
+                        classdecl.Modifiers,
+                        classdecl.Keyword,
+                        classdecl.Identifier,
+                        classdecl.TypeParameterList,
+                        classdecl.BaseList,
+                        classdecl.ConstraintClauses,
+                        classdecl.OpenBraceToken,
+                        newmembers,
+                        classdecl.CloseBraceToken,
+                        classdecl.SemicolonToken);
+                    _pool.Free(newmembers);
+                    context.Put(classdecl);
+                    context.Data.HasInstanceCtor = true;
                 }
-                classdecl = classdecl.Update(
-                    classdecl.AttributeLists,
-                    classdecl.Modifiers,
-                    classdecl.Keyword,
-                    classdecl.Identifier,
-                    classdecl.TypeParameterList,
-                    classdecl.BaseList,
-                    classdecl.ConstraintClauses,
-                    classdecl.OpenBraceToken,
-                    newmembers,
-                    classdecl.CloseBraceToken,
-                    classdecl.SemicolonToken);
-                _pool.Free(newmembers);
-                context.Put(classdecl);
-                context.Data.HasCtor = true;
             }
         }
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)

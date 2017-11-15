@@ -54,14 +54,14 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>121</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
+    <DisabledWarnings>165</DisabledWarnings>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>..\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
+    <NoStandardDefs>true</NoStandardDefs>
+    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -76,14 +76,14 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings />
-    <SignAssembly>false</SignAssembly>
+    <DisabledWarnings>165</DisabledWarnings>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>..\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
+    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
@@ -167,6 +167,7 @@
       <Link>xPorter.prg</Link>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="AssembyInfo.prg" />
     <None Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\ReadMe.rtf">
       <Link>ReadMe.rtf</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -205,6 +206,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Properties" />
     <Folder Include="Templates" />
   </ItemGroup>
   <ItemGroup>

@@ -55,7 +55,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 	
 		LOCAL oResourceManager AS System.Resources.ResourceManager
 
-		oResourceManager := System.Resources.ResourceManager{ "Designers" , System.Reflection.Assembly.GetExecutingAssembly() }
+		oResourceManager := System.Resources.ResourceManager{ "designers" , System.Reflection.Assembly.GetExecutingAssembly() }
 
 		SELF:oExitButton := System.Windows.Forms.Button{}
 		SELF:oGroupBox3 := System.Windows.Forms.GroupBox{}
@@ -320,7 +320,8 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 			END CASE
 		CATCH e AS Exception
 			cSolutionName := "SolutionName"
-			cAppName := "AppName"
+			cAppName := "AppName" 
+			System.Diagnostics.Debug.WriteLine(e:Message)
 		END TRY
 		SELF:oTextSolutionName:Text := cSolutionName
 		SELF:oTextAppName:Text := cAppName

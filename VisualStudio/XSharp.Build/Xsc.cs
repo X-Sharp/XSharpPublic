@@ -19,7 +19,6 @@ namespace XSharp.Build
     public class Xsc : ManagedCompiler
     {
         // These are settings
-        internal string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
 
         #region VO Compatible properties
 
@@ -480,17 +479,25 @@ namespace XSharp.Build
             {
                 // If used after MSI Installer, value should be in the Registry
                 string InstallPath = String.Empty;
+                string node;
+                if (IntPtr.Size == 4)
+                    node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
+                else
+                    node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey64;
+
                 try
                 {
-                    InstallPath = (string)Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
-
+                    InstallPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
                 }
-                catch (Exception) { }
-                // Nothing in the Registry ?
-                if (!string.IsNullOrEmpty(InstallPath))
+                catch (Exception)
                 {
-                    CompilerPath = Utilities.AddSlash(InstallPath) + "Bin\\";
+                    // Registry entry not found  x64 ?
                 }
+                if (string.IsNullOrEmpty(InstallPath))
+                {
+                    InstallPath = @"C:\Program Files (x86)\XSharp";
+                }
+                CompilerPath = Utilities.AddSlash(InstallPath) + "Bin\\";
                 // Allow to override the path when developing.
                 // Please note that this must be a complete path, for example "d:\Xsharp\Dev\XSharp\Binaries\Debug"
 

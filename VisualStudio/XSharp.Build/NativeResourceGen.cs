@@ -16,24 +16,34 @@ namespace XSharp.Build {
 
     public class NativeResourceCompiler : ToolTask {
 
-        const string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
         const string outputName = "NativeResources.res";
         static string InstallPath = String.Empty;
         /// <summary>
         /// Read XSharp Installation location from the Registry
         /// </summary>
         static NativeResourceCompiler() {
-            try {
-                InstallPath = (string)Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
-            } catch(Exception) {
-                // Registry entry not found ...
+            string node;
+            if (IntPtr.Size == 4)
+                node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
+            else
+                node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey64;
+
+            try
+            {
+                InstallPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
+            }
+            catch (Exception)
+            {
+                // Registry entry not found  x64 ?
+            }
+            if (string.IsNullOrEmpty(InstallPath))
+            {
                 InstallPath = @"C:\Program Files (x86)\XSharp";
             }
         }
 
         public NativeResourceCompiler() : base()
         {
-            //System.Diagnostics.Debugger.Launch();
         }
 
 
@@ -110,6 +120,7 @@ namespace XSharp.Build {
         }
 
         private string FindRc(string toolName) {
+            /*
             if(string.IsNullOrEmpty(CompilerPath)) {
                 // Nothing in the Registry ?
                 if(!string.IsNullOrEmpty(InstallPath)) {
@@ -123,7 +134,10 @@ namespace XSharp.Build {
             }
             // Return the tool name itself.
             // Windows will search common paths for the tool.
+            
             return toolName;
+            */
+            return @"c:\Program Files (x86)\XSharp\Bin\rc.exe";
         }
 
         /// <summary>

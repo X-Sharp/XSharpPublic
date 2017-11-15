@@ -609,7 +609,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
     internal static class RuleExtensions
     {
-
+#if !TEST
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {
             return classdecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
@@ -619,6 +619,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return ctordecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
         }
+#endif
         internal static void Put<T>([NotNull] this IXParseTree t, T node)
             where T : InternalSyntax.CSharpSyntaxNode
         {

@@ -113,12 +113,12 @@ RETURN Left(c , (DWORD)dwLen)
 FUNCTION Left(c AS STRING , dwLen AS DWORD) AS STRING
 RETURN iif(dwLen >= c:Length , c , c:Substring(0 , (INT)dwLen ))
 
-FUNCTION xRight(c AS STRING , dwLen AS INT) AS STRING
+FUNCTION Right(c AS STRING , dwLen AS INT) AS STRING
 RETURN Right(c , (DWORD)dwLen)
 FUNCTION Right(c AS STRING , dwLen AS DWORD) AS STRING
 RETURN IIF( dwLen >= c:Length , c , c:Substring(c:Length - (INT)dwLen , (INT)dwLen))
 
-FUNCTION xSLen(c AS STRING) AS DWORD
+FUNCTION SLen(c AS STRING) AS DWORD
 RETURN (DWORD)c:Length
 
 FUNCTION SubStr2(c AS STRING, wLen AS DWORD) AS STRING
@@ -126,9 +126,9 @@ RETURN c:Substring((INT)wLen - 1)
 
 FUNCTION SubStr3(c AS STRING , iStart AS DWORD , wLen AS DWORD) AS STRING
 RETURN SubStr(c , (INT)iStart , (INT)wLen)
-FUNCTION xSubStr(c AS STRING , iStart AS DWORD , wLen AS DWORD) AS STRING
+FUNCTION SubStr(c AS STRING , iStart AS DWORD , wLen AS DWORD) AS STRING
 RETURN SubStr(c , (INT)iStart , (INT)wLen)
-FUNCTION xSubStr(c AS STRING , iStart AS INT , wLen AS INT) AS STRING
+FUNCTION SubStr(c AS STRING , iStart AS INT , wLen AS INT) AS STRING
 	IF iStart > c:Length
 		RETURN ""
 	ENDIF
@@ -137,20 +137,20 @@ FUNCTION xSubStr(c AS STRING , iStart AS INT , wLen AS INT) AS STRING
 	ENDIF
 RETURN c:Substring(iStart - 1 , Math.Min(c:Length - iStart + 1 , wLen))
 
-FUNCTION xAt(cSearch AS STRING , c AS STRING) AS DWORD
+FUNCTION At(cSearch AS STRING , c AS STRING) AS DWORD
 RETURN (DWORD)c:IndexOf(cSearch) + 1
-FUNCTION xRAt(cSearch AS STRING , c AS STRING) AS DWORD
+FUNCTION RAt(cSearch AS STRING , c AS STRING) AS DWORD
 RETURN (DWORD)c:LastIndexOf(cSearch) + 1
 
 FUNCTION AScanExact(a AS STRING[] , cSearch AS STRING) AS INT
 RETURN System.Array.IndexOf(a, cSearch) + 1
 
-FUNCTION xUpper(s AS STRING) AS STRING
+FUNCTION Upper(s AS STRING) AS STRING
 RETURN s:ToUpper()
-FUNCTION xLower(s AS STRING) AS STRING
+FUNCTION Lower(s AS STRING) AS STRING
 RETURN s:ToLower()
 
-FUNCTION xInStr(cSearch AS STRING , c AS STRING) AS LOGIC
+FUNCTION InStr(cSearch AS STRING , c AS STRING) AS LOGIC
 	IF cSearch == NULL .or. c == NULL
 		RETURN FALSE
 	ENDIF
@@ -158,21 +158,21 @@ RETURN c:Contains(cSearch)
 
 
 
-//FUNCTION Empty(c AS STRING) AS LOGIC
-	//LOCAL nChar AS INT
-	//LOCAL n AS INT
-	//IF String.IsNullOrEmpty(c)
-		//RETURN TRUE
-	//ENDIF
-	//FOR n := 0 UPTO c:Length - 1
-		//nChar := (INT)c[n] 
-		//IF nChar != 9 .and. nChar != 10 .and. nChar != 13 .and. nChar != 32
-			//RETURN FALSE
-		//ENDIF
-	//NEXT
-//RETURN TRUE
-//
-FUNCTION xStrTran(c AS STRING , cSearch AS STRING , cReplace AS STRING) AS STRING
+FUNCTION Empty(c AS STRING) AS LOGIC
+	LOCAL nChar AS INT
+	LOCAL n AS INT
+	IF String.IsNullOrEmpty(c)
+		RETURN TRUE
+	ENDIF
+	FOR n := 0 UPTO c:Length - 1
+		nChar := (INT)c[n] 
+		IF nChar != 9 .and. nChar != 10 .and. nChar != 13 .and. nChar != 32
+			RETURN FALSE
+		ENDIF
+	NEXT
+RETURN TRUE
+
+FUNCTION StrTran(c AS STRING , cSearch AS STRING , cReplace AS STRING) AS STRING
 RETURN c:Replace(cSearch , cReplace)
 
 

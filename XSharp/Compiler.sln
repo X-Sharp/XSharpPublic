@@ -101,9 +101,6 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestMacroCompiler", "src\Compiler\TestMacroCompiler\TestMacroCompiler.xsproj", "{DE0191E1-E0C1-4651-B999-0F28167EB96B}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\Roslyn\src\Scripting\Core\ScriptingShared.projitems*{014963ae-d6d1-4ff8-8d8a-8d417f5d8d1f}*SharedItemsImports = 4
 		..\Roslyn\src\Scripting\CSharp\CSharpScriptingShared.projitems*{014963ae-d6d1-4ff8-8d8a-8d417f5d8d1f}*SharedItemsImports = 4

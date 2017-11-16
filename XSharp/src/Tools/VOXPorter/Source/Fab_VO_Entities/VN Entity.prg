@@ -164,13 +164,13 @@ CLASS	FabVNEntity	INHERIT FabEntityBase
             x := 10*/
 
         
-        STATIC NEW METHOD GetKeywords() AS STRING[]
+        STATIC METHOD GetKeywords() AS STRING[]
             IF (FabVNEntity.__aKeywords == NULL )
                 FabVNEntity.InitEntityMarkers()
             ENDIF
         RETURN FabVNEntity.__VNaKeywords
 
-        PROTECT NEW STATIC METHOD InitEntityMarkers() AS VOID
+        PROTECT STATIC METHOD InitEntityMarkers() AS VOID
             //
             FabVNEntity.__VNaKeywords := <STRING>{ 	"BEGIN", "CLASS", "METHOD", "ACCESS", "ASSIGN", "PROPERTY", "CONSTRUCTOR", "DESTRUCTOR", ;
                                 "OPERATOR", "EVENT", ;

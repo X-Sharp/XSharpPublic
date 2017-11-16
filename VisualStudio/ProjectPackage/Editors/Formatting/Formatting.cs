@@ -28,6 +28,10 @@ namespace XSharp.Project
     partial class CommandFilter
     {
 
+        public CommandFilter()
+        {
+            getKeywords();
+        }
 
 
 #if SMARTINDENT
@@ -36,7 +40,6 @@ namespace XSharp.Project
         {
             //
             getOptions();
-            getKeywords();
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
@@ -79,7 +82,6 @@ namespace XSharp.Project
         {
             // Read Settings
             getOptions();
-            getKeywords();
             // Try to retrieve an already parsed list of Tags
             XSharpClassifier xsClassifier = null;
             if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))

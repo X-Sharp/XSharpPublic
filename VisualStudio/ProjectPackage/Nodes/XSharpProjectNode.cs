@@ -1645,6 +1645,7 @@ namespace XSharp.Project
             return;
         }
 
+        public bool IsVsBuilding => VsShellUtilities.IsSolutionBuilding(this.Site);
         #endregion
         public bool IsDocumentOpen(string documentName)
         {

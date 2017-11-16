@@ -17,7 +17,7 @@ namespace XSharpModel
 {
     public interface IXSharpProject
     {
-
+        bool IsVsBuilding { get; }
         string RootNameSpace { get; }
         string Url { get; }
         string OutputFile { get; }

@@ -16,7 +16,7 @@
     
 #define Version             "1.1.0.0"
 #define VIVersion           "1.1.0.0"
-#define TouchDate           "2017-11-15"
+#define TouchDate           "2017-11-16"
 #define TouchTime           "01:01:00"
 
 
@@ -63,9 +63,11 @@
 #define MetadataVersion     "System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 
 ; Write version to VSIX files
-#expr Exec('c:\xsharp\dev\xsharp\src\setup\setvers.cmd', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,'',1,sw_ShowNormal)
-#expr Exec('c:\xsharp\dev\xsharp\src\setup\setvers.cmd', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,'',1,sw_ShowNormal)
+;#expr Exec('c:\xsharp\dev\xsharp\src\setup\setvers.cmd', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,'',1,sw_ShowNormal)
+;#expr Exec('c:\xsharp\dev\xsharp\src\setup\setvers.cmd', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,'',1,sw_ShowNormal)
 
+#expr Exec('c:\XSharp\Dev\XSharp\src\Setup\updatevsix.exe', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,'c:\XSharp\Dev\XSharp\src\Setup',1,sw_ShowNormal)
+#expr Exec('c:\XSharp\Dev\XSharp\src\Setup\updatevsix.exe', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,'c:\XSharp\Dev\XSharp\src\Setup',1,sw_ShowNormal)
 
 ; Registry name for prgx extension
 #define XSScript            "XSharpScript"

@@ -7,7 +7,8 @@
 USING System.XML
 
 FUNCTION Start (args AS STRING[]) AS VOID	
-	LOCAL oDoc AS XMLDocument
+	LOCAL oDoc AS XMLDocument                                 
+	LOCAL lChanged := FALSE AS LOGIC
 	IF args:Length != 2
 		Console.WriteLine("2 arguments expected")
 		Console.ReadLine()
@@ -41,6 +42,7 @@ FUNCTION Start (args AS STRING[]) AS VOID
 				FOREACH  oAtt AS XmlAttribute IN oID:Attributes
 					IF oAtt:Name:ToUpper() == "VERSION" 
 						oAtt:Value:= cVersion
+						lChanged := TRUE
 					ENDIF
 				NEXT
 			ENDIF
@@ -55,5 +57,15 @@ FUNCTION Start (args AS STRING[]) AS VOID
     oDoc:WriteTo(oWriter)
 	cString := oStringWriter:ToString()
 	System.IO.File.WriteAllText(cFile, cString)
+	IF lChanged
+		Console.ForegroundColor := ConsoleColor.Yellow
+		Console.WriteLine("Updated version info for file: "+cFile)
+		System.Threading.Thread.Sleep(500)
+	ELSE                  
+		Console.ForegroundColor := ConsoleColor.Red                                        
+		Console.WriteLine("FAILED to update version info for file: "+cFile)
+		COnsole.ReadLine()
+	ENDIF
+	
 	RETURN
 	

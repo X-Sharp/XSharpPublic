@@ -2994,6 +2994,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(m);
             }
             var type = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+            type.XVoDecl = true;
             var atts = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var id = context.Id.Get<SyntaxToken>();
             // check for a property with a just a set accessor and no get accessor

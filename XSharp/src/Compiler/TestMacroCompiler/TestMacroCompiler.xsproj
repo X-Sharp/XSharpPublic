@@ -78,14 +78,14 @@
       <AssemblyName>VulcanRT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\VNRuntime\4.0.1\v4.0\VulcanRT.dll</HintPath>
+      <HintPath>..\..\..\..\VNRuntime\4.0.1\v4.0\VulcanRT.dll</HintPath>
     </Reference>
     <Reference Include="VulcanRTFuncs, Version=4.0.401.0, Culture=neutral, PublicKeyToken=0e73a8bf006af00c">
       <Name>VulcanRTFuncs</Name>
       <AssemblyName>VulcanRTFuncs.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\VNRuntime\4.0.1\v4.0\VulcanRTFuncs.dll</HintPath>
+      <HintPath>..\..\..\..\VNRuntime\4.0.1\v4.0\VulcanRTFuncs.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

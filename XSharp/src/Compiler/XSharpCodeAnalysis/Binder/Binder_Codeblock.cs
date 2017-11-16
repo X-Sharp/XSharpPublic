@@ -25,6 +25,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         private BoundExpression BindCodeblock(SyntaxNode syntax, UnboundLambda unboundLambda, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
         {
+            if (!Compilation.Options.IsDialectVO)
+                return null;
             var isCodeblock = syntax.XIsCodeBlock;
             if (!isCodeblock)
             {

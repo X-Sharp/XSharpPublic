@@ -2447,7 +2447,14 @@ namespace XSharpLanguage
                     tokenList.Add(token);
                 //
                 if (triggerToken != null)
+                {
+                    var last = triggerToken;
                     triggerToken = GetPreviousToken(tokens, triggerToken);
+                    // BOF reached
+                    if (last == triggerToken)
+                        break;
+                }
+
             }
             // 
             tokenList.Reverse();

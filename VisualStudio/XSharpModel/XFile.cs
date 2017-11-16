@@ -99,6 +99,19 @@ namespace XSharpModel
 
         public XType GlobalType => _globalType;
 
+
+        bool _hasParseErrors = false;
+        public bool HasParseErrors
+        {
+            get
+            {
+                return _hasParseErrors;
+            }
+            internal set
+            {
+                _hasParseErrors = value;
+            }
+        }
         public string FullPath
         {
             get

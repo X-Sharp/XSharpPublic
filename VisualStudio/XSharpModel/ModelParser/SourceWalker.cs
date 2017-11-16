@@ -28,6 +28,7 @@ namespace XSharpModel
         private XSharpParser.SourceContext _tree;
         private ITokenStream _tokenStream;
         private bool _hasParseErrors;
+        private IEnumerable<Diagnostic> _errors;
 
         public SourceWalker(XFile file, ITextSnapshot snapshot)
         {
@@ -92,24 +93,20 @@ namespace XSharpModel
             }
         }
 
-        public ITokenStream LexFile(bool first)
-        {
+        public ITokenStream Lex()
+        { 
             try
             {
                 SyntaxTree syntaxtree;
                 lock (this)
                 {
-                    if (first)
-                    {
-                        syntaxtree = XSharpSyntaxTree.ParseText(_source, _file.Project.ProjectNode.LexOptions, _file.FullPath);
-                    }
-                    else
-                    {
-                        syntaxtree = XSharpSyntaxTree.ParseText(_source, _file.Project.ProjectNode.ParseOptions, _file.FullPath);
-                    }
+                    syntaxtree = XSharpSyntaxTree.ParseText(_source, _file.Project.ProjectNode.LexOptions, _file.FullPath);
                     var unit = (CompilationUnitSyntax) syntaxtree.GetRoot();
                     _tokenStream = unit.XTokens;
                     _tree = unit.XSource;
+                    _errors = unit.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);
+                    _hasParseErrors = _errors.Count() > 0;
+
                 }
                 return this._tokenStream;
             }
@@ -125,41 +122,28 @@ namespace XSharpModel
         {
             lock (this)
             {
-                var tree = _tree;
-                if (tree == null)
+                try
                 {
-                    try
-                    {
 
-                        var syntaxTree = XSharpSyntaxTree.ParseText(_source, _file.Project.ParseOptions, _file.FullPath);
-                        var unit = (CompilationUnitSyntax)syntaxTree.GetRoot();
-                        _tokenStream = unit.XTokens;
-                        _tree = unit.XSource;
-
-                        // Get the antlr4 parse tree root
-                        if (unit.ContainsDiagnostics)
-                        {
-                            var errors = unit.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);
-                            _hasParseErrors = errors.Count() > 0;
-                        }
-                        else
-                        {
-                            _hasParseErrors = false;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        _tree = tree = null;
-                        _tokenStream = null;
-                        Support.Debug("SourceWalker.Parse: " + e.Message);
-                        _hasParseErrors = true;
-                    }
+                    var syntaxTree = XSharpSyntaxTree.ParseText(_source, _file.Project.ParseOptions, _file.FullPath);
+                    var unit = (CompilationUnitSyntax)syntaxTree.GetRoot();
+                    _tokenStream = unit.XTokens;
+                    _tree = unit.XSource;
+                    _errors = unit.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);
+                    _hasParseErrors = _errors.Count() > 0;
                 }
-                return _tree;
+                catch (Exception e)
+                {
+                    _tree = null;
+                    _tokenStream = null;
+                    Support.Debug("SourceWalker.Parse: " + e.Message);
+                    _hasParseErrors = true;
+                }
+                _file.HasParseErrors = _hasParseErrors;
             }
-            
+            return _tree;
         }
-
+            
 
         IEnumerable<LanguageService.CodeAnalysis.Diagnostic> errors = null;
         object _gate = new object();
@@ -215,9 +199,9 @@ namespace XSharpModel
 
                     XSharpModelDiscover mdiscover;
                     if (buildLocals)
-                        mdiscover = new XSharpModelDiscoverWithLocals(_file,true);
+                        mdiscover = new XSharpModelDiscoverWithLocals(_file,xTree, _errors);
                     else
-                        mdiscover = new XSharpModelDiscover(_file);
+                        mdiscover = new XSharpModelDiscover(_file, xTree, _errors);
 
     	            var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
                     //

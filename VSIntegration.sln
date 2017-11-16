@@ -31,8 +31,6 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVoEditors", "VisualSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpDebugger", "VisualStudio\XSharpDebugger\XSharpDebugger.csproj", "{16272550-75E6-4B9D-91E3-653BD141C755}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOXporter", "VisualStudio\VOXporter\VOXporter.xsproj", "{10A5791A-E568-47B8-B61F-10639B487063}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,14 +119,6 @@ Global
 		{16272550-75E6-4B9D-91E3-653BD141C755}.Release|Any CPU.Build.0 = Release|Any CPU
 		{16272550-75E6-4B9D-91E3-653BD141C755}.Release|x86.ActiveCfg = Release|Any CPU
 		{16272550-75E6-4B9D-91E3-653BD141C755}.Release|x86.Build.0 = Release|Any CPU
-		{10A5791A-E568-47B8-B61F-10639B487063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10A5791A-E568-47B8-B61F-10639B487063}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10A5791A-E568-47B8-B61F-10639B487063}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{10A5791A-E568-47B8-B61F-10639B487063}.Debug|x86.Build.0 = Debug|Any CPU
-		{10A5791A-E568-47B8-B61F-10639B487063}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10A5791A-E568-47B8-B61F-10639B487063}.Release|Any CPU.Build.0 = Release|Any CPU
-		{10A5791A-E568-47B8-B61F-10639B487063}.Release|x86.ActiveCfg = Release|Any CPU
-		{10A5791A-E568-47B8-B61F-10639B487063}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,6 +5,7 @@
 //
 
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.CodeAnalysis;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
 using LanguageService.CodeAnalysis.XSharp;
@@ -25,7 +26,7 @@ namespace XSharpModel
     internal class XSharpModelDiscoverWithLocals : XSharpModelDiscover
     {
         private readonly Stack<XSharpParser.LocalvarContext> _localDecls;
-        public XSharpModelDiscoverWithLocals(XFile file, bool buildLocals) : base(file)
+        public XSharpModelDiscoverWithLocals(XFile file, XSharpParser.SourceContext ctx, IEnumerable<Diagnostic> errors) : base(file, ctx, errors)
         {
             this._localDecls = new Stack<XSharpParser.LocalvarContext>();
 

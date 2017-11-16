@@ -17,8 +17,6 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD", "Runtime\XShar
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core", "Runtime\XSharp.Core\XSharp.Core.xsproj", "{535DFF14-EFB7-43F5-A4E1-71C1C4280040}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Vulcan", "Runtime\XSharp.Vulcan\XSharp.Vulcan.xsproj", "{4E1BC90B-3696-4715-B7A4-17521172979C}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO", "Runtime\XSharp.VO\XSharp.VO.xsproj", "{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}"
 EndProject
 Global
@@ -43,10 +41,6 @@ Global
 		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E1BC90B-3696-4715-B7A4-17521172979C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E1BC90B-3696-4715-B7A4-17521172979C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E1BC90B-3696-4715-B7A4-17521172979C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E1BC90B-3696-4715-B7A4-17521172979C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Release|Any CPU.ActiveCfg = Release|Any CPU

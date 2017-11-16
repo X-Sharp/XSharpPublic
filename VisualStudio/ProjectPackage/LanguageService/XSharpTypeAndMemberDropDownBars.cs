@@ -60,7 +60,7 @@ namespace XSharp.LanguageService
             String srcFile = src.GetFilePath();
             //
             XFile file = XSharpModel.XSolution.FindFullPath(srcFile);
-            if (file == null)
+            if (file == null )
             {
                 // Uhh !??, Something went wrong
                 return false;
@@ -137,14 +137,17 @@ namespace XSharp.LanguageService
             dropDownMembers.Clear();
             if (typeAtPos == null)
                 typeAtPos = typeGlobal;
+            int lastBefore = -1;
+            int lastLineBefore = -1;
             if (typeAtPos != null)
             {
                 nSelMbr = -1;
-                foreach (XTypeMember member in typeAtPos.Members.OrderBy(x => x.Name))
+                var members = typeAtPos.Members.OrderBy(x => x.Name);
+                foreach (XTypeMember member in members)
                 {
                     TextSpan spM = this.TextRangeToTextSpan(member.Range);
                     //
-                    if (TextSpanHelper.ContainsInclusive(spM, line, col))
+                    if (spM.iStartLine <= line && spM.iEndLine >= line)
                     {
                         ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                         bInSel = true;
@@ -162,24 +165,22 @@ namespace XSharp.LanguageService
                     {
                         nSelMbr = nTemp;
                     }
-                    else if (nSelMbr == -1 && TextSpanHelper.IsAfterEndOf(spM, line, col))
+                    else if (nSelMbr == -1 && spM.iEndLine <= line && spM.iEndLine > lastLineBefore)
                     {
-                        nSelMbr = nTemp;
+                        lastBefore = nTemp;
+                        lastLineBefore = spM.iEndLine;
                     }
                 }
-                if (nSelMbr == -1 && typeAtPos.Members.Count() > 0)
+            }
+            if (nSelMbr == -1 )
+            {
+                if (lastBefore != -1)
+                    nSelMbr = lastBefore;
+                else
                     nSelMbr = 0;
             }
-            //
-            //if (nSelType > -1)
-            {
-                selectedType = nSelType;
-            }
-            //if (nSelMbr > -1)
-            {
-                selectedMember = nSelMbr;
-            }
-            //
+            selectedType = nSelType;
+            selectedMember = nSelMbr;
             return bModification;
         }
 

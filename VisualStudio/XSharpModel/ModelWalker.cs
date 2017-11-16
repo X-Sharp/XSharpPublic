@@ -67,7 +67,7 @@ namespace XSharpModel
                 {
                     _projects.Enqueue(xProject);
                 }
-                if (!IsWalkerRunning)
+                if (!IsWalkerRunning && ! xProject.ProjectNode.IsVsBuilding)
                 {
                     Walk();
                 }
@@ -121,9 +121,13 @@ namespace XSharpModel
         {
             XProject project = null;
             //
+            if (_projects.Count == 0)
+                return;
+            if (_projects.First().ProjectNode.IsVsBuilding)
+                return;
             do
             {
-                if (suspendLevel != 0)
+                if (suspendLevel != 0 )
                 {
                     // Abort and put project back in the list
                     if (project != null)
@@ -161,6 +165,10 @@ namespace XSharpModel
                     if (project.Loaded)
                     {
                         iProcessed += 1;
+                        while (project.ProjectNode.IsVsBuilding)
+                        {
+                            Thread.Sleep(1000);
+                        }
                         project.ProjectNode.SetStatusBarText(String.Format("Walking {0} : Processing File {1} ({2} of {3})", project.Name, file.Name, iProcessed, aFiles.Length));
                         FileWalk(file);
                     }

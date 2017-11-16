@@ -741,6 +741,7 @@ namespace XSharpModel
             get { return project; }
             set { project = value; }
         }
+        public bool IsVsBuilding => false;
         public string IntermediateOutputPath => "";
         public XSharpParseOptions ParseOptions => XSharpParseOptions.Default;
         public XSharpParseOptions LexOptions  => XSharpParseOptions.Default;

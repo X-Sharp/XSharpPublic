@@ -20,7 +20,7 @@ namespace Microsoft.VisualStudio.Project
 {
 
     [CLSCompliant(false)]
-    public abstract class SolutionListener : IVsSolutionEvents3, IVsSolutionEvents4, IDisposable
+    public abstract class SolutionListener : IVsSolutionEvents3, IVsSolutionEvents4, IDisposable, IVsSolutionEvents5, IVsSolutionEvents6
     {
 
         #region fields
@@ -235,5 +235,24 @@ namespace Microsoft.VisualStudio.Project
             }
         }
         #endregion
+
+        #region IVsSolutionEvents5
+        public void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
+        {
+            return;
+        }
+        #endregion
+        #region IVsSolutionEvents6
+        public int OnBeforeProjectRegisteredInRunningDocumentTable(Guid projectID, string projectFullPath)
+        {
+            return VSConstants.E_NOTIMPL;
+        }
+
+        public int OnAfterProjectRegisteredInRunningDocumentTable(Guid projectID, string projectFullPath, uint docCookie)
+        {
+            return VSConstants.E_NOTIMPL;
+        }
+        #endregion
+
     }
 }

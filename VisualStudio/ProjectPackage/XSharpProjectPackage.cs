@@ -198,11 +198,12 @@ namespace XSharp.Project
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
+    public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent, IVsShellPropertyEvents
     {
         private uint m_componentID;
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
+        private uint shellCookie;
 
         // =========================================================================================
         // Properties
@@ -288,7 +289,9 @@ namespace XSharp.Project
             }
             // Initialize Custom Menu Items
             XSharp.Project.XSharpMenuItems.Initialize(this);
-
+            // register property changed event handler
+            var shell = this.GetService(typeof(SVsShell)) as IVsShell;
+            shell.AdviseShellPropertyChanges(this, out shellCookie);
         }
 
 
@@ -420,21 +423,40 @@ namespace XSharp.Project
 
         public void OnAppActivate(int fActive, uint dwOtherThreadID)
         {
+            //System.Diagnostics.Debug.WriteLine($"OnAppActivate: {fActive} {dwOtherThreadID}");
         }
 
         public void OnEnterState(uint uStateID, int fEnter)
         {
+            //    System.Diagnostics.Debug.WriteLine($"OnEnterState: {uStateID} {fEnter}");
         }
 
         public void OnLoseActivation()
         {
+            //  System.Diagnostics.Debug.WriteLine($"OnLoseActivation");
         }
 
         public void Terminate()
         {
+            var shell = this.GetService(typeof(SVsShell)) as IVsShell;
+            if (shell != null)
+            {
+                shell.UnadviseShellPropertyChanges(shellCookie);
+                shellCookie = 0;
+            }
         }
 
-#endregion
+        public int OnShellPropertyChange(int propid, object var)
+        {
+            // A modal dialog has been opened. Editor Options ?
+            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal)
+            {
+                CommandFilter.InvalidateOptions();
+            }
+            return VSConstants.S_OK;
+        }
+
+        #endregion
 
 
     }

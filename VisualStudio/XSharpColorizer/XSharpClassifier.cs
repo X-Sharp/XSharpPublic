@@ -16,7 +16,7 @@ using System.ComponentModel;
 using XSharpModel;
 using System.Linq;
 using System.Collections.Immutable;
-
+using System.Threading;
 namespace XSharpColorizer
 {
     /// <summary>
@@ -125,7 +125,6 @@ namespace XSharpColorizer
                 var snapshot = e.After;
                 _bwClassify.RunWorkerAsync(snapshot);
             }
-            // when busy then we will detect the new version later and take care of repainting
         }
 
         private void ClassifyBuffer(ITextSnapshot snapshot)
@@ -150,17 +149,22 @@ namespace XSharpColorizer
         private void DoClassify(object sender, DoWorkEventArgs e)
         {
             // Note this runs in the background
-            ClassifyBuffer((ITextSnapshot) e.Argument);
-            e.Result = e.Argument;
+            // Wait a little and then get the current snapshot. They may have typed fast or the buffer may have been updated by the formatter
+            var snapshot = (ITextSnapshot)e.Argument;
+            ClassifyBuffer(snapshot);
+            e.Result = snapshot;
         }
         private void triggerRepaint(ITextSnapshot snapshot)
         {
             lock (gate)
             {
-                if (_buffer.CurrentSnapshot.Version == snapshot.Version && !_first )
+                if (snapshot != null)
                 {
-                    ClassificationChanged(this, new ClassificationChangedEventArgs(
-                           new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
+                    if (_buffer.CurrentSnapshot.Version == snapshot.Version && !_first)
+                    {
+                        ClassificationChanged(this, new ClassificationChangedEventArgs(
+                               new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
+                    }
                 }
             }
 
@@ -169,13 +173,29 @@ namespace XSharpColorizer
         {
             lock (gate)
             {
+                if (e.Cancelled)
+                {
+                    return;
+                }
                 if (e.Error == null )
                 {
                     var snapshot = e.Result as ITextSnapshot;
-                    triggerRepaint(snapshot);
-                    if (!_bwBuildModel.IsBusy)
+                    if (snapshot != null)
                     {
-                        _bwBuildModel.RunWorkerAsync(snapshot);
+                        triggerRepaint(snapshot);
+                        var newSnapshot = _buffer.CurrentSnapshot;
+                        if (newSnapshot.Version != snapshot.Version)
+                        {
+                            // buffer was changed, so restart
+                            _bwClassify.RunWorkerAsync(newSnapshot);
+                        }
+                        else
+                        {
+                            if (!_bwBuildModel.IsBusy)
+                            {
+                                _bwBuildModel.RunWorkerAsync(snapshot);
+                            }
+                        }
                     }
                 }
             }
@@ -403,7 +423,7 @@ namespace XSharpColorizer
         private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot,
             IImmutableList<ClassificationSpan> parserRegionTags)
         {
-            Debug("Starting colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             List<ClassificationSpan> newtags;
             var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
@@ -471,7 +491,7 @@ namespace XSharpColorizer
                     _tagsRegion = regionTags.ToImmutableList();
                 }
             }
-            Debug("Ending colorize at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             triggerRepaint(snapshot);
         }
 

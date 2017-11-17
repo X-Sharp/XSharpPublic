@@ -28,10 +28,161 @@ namespace XSharp.Project
     partial class CommandFilter
     {
 
-        public CommandFilter()
+        #region Keywords Definitions
+        private static String[] _indentKeywords;
+        private static String[] _codeBlockKeywords;
+        private static String[] _specialCodeBlockKeywords;
+        private static String[][] _middleKeywords;
+        private static String[][] _specialKeywords;
+        private static String[][] _specialOutdentKeywords;
+
+        private static void getKeywords()
+        {
+            if (_indentKeywords == null)
+            {
+                // Build list for Indent tokens
+                _indentKeywords = getIndentKeywords();
+                // Start of Method, Function, ...
+                _codeBlockKeywords = getStartOfCodeKeywords();
+                _specialCodeBlockKeywords = getSpecialStartOfCodeKeywords();
+                // Middle Keywords : ELSE, ELSEIF, ...
+                _middleKeywords = getMiddleKeywords();
+                // Name is Self-explanatory
+                _specialKeywords = getSpecialMiddleKeywords();
+                // Build list for Outdent tokens
+                _specialOutdentKeywords = getSpecialOutdentKeywords();
+            }
+        }
+
+
+        private static String[] getIndentKeywords()
+        {
+            // "DO" is removed by getFirstKeywordInLine(), so it is useless here...
+            return new String[]{
+                "DO","FOR","FOREACH","WHILE","IF",
+                "BEGIN","TRY","REPEAT",
+                "INTERFACE","ENUM","CLASS","STRUCTURE","VOSTRUCT"};
+        }
+
+        private static String[][] getSpecialOutdentKeywords()
+        {
+            // These are keywords that we have between other keywords
+            // "CASE" is the keyword that will trigger the process
+            // "DO,SWITCH,BEGIN" is the list of possible start keyword
+            // ...
+            return new String[][]
+            {
+                new String[]{ "ENDIF","IF" },
+                new String[]{ "ENDCASE", "DO" },
+                new String[]{ "NEXT", "FOR,FOREACH" },
+                new String[]{ "UNTIL", "REPEAT" },
+                new String[]{ "END", "BEGIN,DO,IF,TRY,WHILE,GET,SET,PROPERTY" },
+                new String[]{ "ENDDO", "DO,WHILE" }
+            };
+        }
+
+        private static String[] getStartOfCodeKeywords()
+        {
+            // 
+            return new String[]{
+                "FUNCTION","PROCEDURE",
+                "CONSTRUCTOR","DESTRUCTOR",
+                "ACCESS","ASSIGN",
+                "METHOD","OPERATOR"
+            };
+        }
+
+        // These are special Start of Code, because they have an END
+        private static String[] getSpecialStartOfCodeKeywords()
+        {
+            // 
+            return new String[]{
+                "GET", "SET", "PROPERTY"
+            };
+        }
+
+        private static String[][] getMiddleKeywords()
+        {
+            // These are keywords that we have between other keywords
+            //
+            // "ELSE" is the keyword that will trigger the process
+            // "IF" is the keyword to align to
+            // ...
+            return new String[][]
+            {
+                new String[]{ "ELSE","IF" },
+                new String[]{ "ELSEIF", "IF" },
+                new String[]{ "FINALLY", "TRY" },
+                new String[]{ "CATCH", "TRY" },
+                new String[]{ "RECOVER", "BEGIN" }
+            };
+        }
+
+        private static String[][] getSpecialMiddleKeywords()
+        {
+            // These are keywords that we have between other keywords
+            // "CASE" is the keyword that will trigger the process
+            // "DO,SWITCH,BEGIN" is the list of possible start keyword
+            // ...
+            return new String[][]
+            {
+                new String[]{ "CASE","DO,SWITCH,BEGIN" },
+                new String[]{ "OTHERWISE", "DO,SWITCH,BEGIN" }
+            };
+        }
+        private static string searchMiddleKeyword(string keyword)
+        {
+            string startToken = null;
+            for (int i = 0; i < _middleKeywords.Length; i++)
+            {
+                var pair = _middleKeywords[i];
+                if (String.Compare(keyword, pair[0], true) == 0)
+                {
+                    startToken = pair[1];
+                    break;
+                }
+            }
+            return startToken;
+        }
+
+        private static string searchSpecialMiddleKeyword(string keyword)
+        {
+            string startToken = null;
+            for (int i = 0; i < _specialKeywords.Length; i++)
+            {
+                var pair = _specialKeywords[i];
+                if (String.Compare(keyword, pair[0], true) == 0)
+                {
+                    startToken = pair[1];
+                    break;
+                }
+            }
+            return startToken;
+        }
+
+        private static string searchSpecialOutdentKeyword(string keyword)
+        {
+            string startToken = null;
+            for (int i = 0; i < _specialOutdentKeywords.Length; i++)
+            {
+                var pair = _specialOutdentKeywords[i];
+                if (String.Compare(keyword, pair[0], true) == 0)
+                {
+                    startToken = pair[1];
+                    break;
+                }
+            }
+            return startToken;
+        }
+
+        static CommandFilter()
         {
             getKeywords();
+            getOptions();
         }
+
+        #endregion
+
 
 
 #if SMARTINDENT
@@ -40,6 +191,8 @@ namespace XSharp.Project
         {
             //
             getOptions();
+            _buffer = this.TextView.TextBuffer;
+            _tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
@@ -82,6 +235,9 @@ namespace XSharp.Project
         {
             // Read Settings
             getOptions();
+            _buffer = this.TextView.TextBuffer;
+            _tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
+
             // Try to retrieve an already parsed list of Tags
             XSharpClassifier xsClassifier = null;
             if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
@@ -216,7 +372,7 @@ namespace XSharp.Project
                         // Get the current indentation
                         SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
                         String lineText = sSpan.GetText();
-                        lineText = lineText.Replace("\t", new String(' ', this._tabSize));
+                        lineText = lineText.Replace("\t", new String(' ', _tabSize));
                         mlCmtSpaces = (lineText.Length - lineText.TrimStart().Length);
                         // What is the difference with the start
                         length = region.Item1.End - region.Item1.Start + 1;
@@ -224,13 +380,13 @@ namespace XSharp.Project
                             length = 1;
                         sSpan = new SnapshotSpan(snapLine.Snapshot, region.Item1.Start, length);
                         lineText = sSpan.GetText();
-                        lineText = lineText.Replace("\t", new String(' ', this._tabSize));
+                        lineText = lineText.Replace("\t", new String(' ', _tabSize));
                         mlCmtSpaces = mlCmtSpaces - (lineText.Length - lineText.TrimStart().Length);
                         //
                         continue;
                     }
                     // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
-                    string startToken = this.searchMiddleKeyword(openKeyword);
+                    string startToken = searchMiddleKeyword(openKeyword);
                     if (startToken != null)
                     {
                         indentValue--;
@@ -240,7 +396,7 @@ namespace XSharp.Project
                     if (_alignDoCase)
                     {
                         // Move back keywords ( CASE, OTHERWISE )
-                        startToken = this.searchSpecialMiddleKeyword(openKeyword);
+                        startToken = searchSpecialMiddleKeyword(openKeyword);
                         if (startToken != null)
                         {
                             indentValue--;
@@ -263,7 +419,7 @@ namespace XSharp.Project
                     // We are between the opening Keyword and the closing Keyword
                     indentValue++;
                     // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
-                    string startToken = this.searchMiddleKeyword(openKeyword);
+                    string startToken = searchMiddleKeyword(openKeyword);
                     if (startToken != null)
                     {
                         indentValue--;
@@ -284,7 +440,7 @@ namespace XSharp.Project
                     {
                         // Don't indent
                         // Move back keywords ( CASE, OTHERWISE )
-                        string startToken = this.searchSpecialMiddleKeyword(openKeyword);
+                        string startToken = searchSpecialMiddleKeyword(openKeyword);
                         if (startToken != null)
                         {
                             indentValue--;
@@ -431,139 +587,47 @@ namespace XSharp.Project
 
         #region SmartIndent
         // SmartIndent
-        private int _lastIndentValue;
-        private int _tabSize;
-        private int _indentSize;
-        private bool _alignDoCase;
-        private bool _alignMethod;
-        private vsIndentStyle _indentStyle;
+        private static int _lastIndentValue;
+        private static int _tabSize;
+        private static int _indentSize;
+        private static bool _alignDoCase;
+        private static bool _alignMethod;
+        private static vsIndentStyle _indentStyle;
+        private static bool _optionsValid = false;
         //private IEditorOptions _options;
-        private String[] _indentKeywords;
-        private String[] _codeBlockKeywords;
-        private String[] _specialCodeBlockKeywords;
-        private String[][] _middleKeywords;
-        private String[][] _specialKeywords;
-        private String[][] _specialOutdentKeywords;
         //
         private ITextBuffer _buffer;
         private ITagAggregator<IClassificationTag> _tagAggregator;
 
-
-        private void getOptions()
+        internal static void InvalidateOptions()
         {
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            var textManager = package.GetTextManager();
-            //
-            _alignDoCase = optionsPage.AlignDoCase;
-            _alignMethod = optionsPage.AlignMethod;
-            var languagePreferences = new LANGPREFERENCES3[1];
-            languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
-            var result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
-            if (result == VSConstants.S_OK)
+            _optionsValid = false;
+        }
+
+        private static void getOptions()
+        {
+            if (!_optionsValid)
             {
-                _indentStyle = languagePreferences[0].IndentStyle;
-                _tabSize = (int)languagePreferences[0].uTabSize;
-                _indentSize = (int)languagePreferences[0].uIndentSize;
+                var package = XSharp.Project.XSharpProjectPackage.Instance;
+                var optionsPage = package.GetIntellisenseOptionsPage();
+                var textManager = package.GetTextManager();
+                //
+                _alignDoCase = optionsPage.AlignDoCase;
+                _alignMethod = optionsPage.AlignMethod;
+                var languagePreferences = new LANGPREFERENCES3[1];
+                languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
+                var result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
+                if (result == VSConstants.S_OK)
+                {
+                    _indentStyle = languagePreferences[0].IndentStyle;
+                    _tabSize = (int)languagePreferences[0].uTabSize;
+                    _indentSize = (int)languagePreferences[0].uIndentSize;
+                }
+                _optionsValid = true;
             }
             //
-            _buffer = this.TextView.TextBuffer;
-            _tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
         }
 
-        #region Keywords Definitions
-        private void getKeywords()
-        {
-            // Build list for Indent tokens
-            _indentKeywords = this.getIndentKeywords();
-            // Start of Method, Function, ...
-            _codeBlockKeywords = this.getStartOfCodeKeywords();
-            _specialCodeBlockKeywords = this.getSpecialStartOfCodeKeywords();
-            // Middle Keywords : ELSE, ELSEIF, ...
-            _middleKeywords = this.getMiddleKeywords();
-            // Name is Self-explanatory
-            _specialKeywords = this.getSpecialMiddleKeywords();
-            // Build list for Outdent tokens
-            _specialOutdentKeywords = this.getSpecialOutdentKeywords();
-        }
-
-
-        private String[] getIndentKeywords()
-        {
-            // "DO" is removed by getFirstKeywordInLine(), so it is useless here...
-            return new String[]{
-                "DO","FOR","FOREACH","WHILE","IF",
-                "BEGIN","TRY","REPEAT",
-                "INTERFACE","ENUM","CLASS","STRUCTURE","VOSTRUCT"};
-        }
-
-        private String[][] getSpecialOutdentKeywords()
-        {
-            // These are keywords that we have between other keywords
-            // "CASE" is the keyword that will trigger the process
-            // "DO,SWITCH,BEGIN" is the list of possible start keyword
-            // ...
-            return new String[][]
-            {
-                new String[]{ "ENDIF","IF" },
-                new String[]{ "ENDCASE", "DO" },
-                new String[]{ "NEXT", "FOR,FOREACH" },
-                new String[]{ "UNTIL", "REPEAT" },
-                new String[]{ "END", "BEGIN,DO,IF,TRY,WHILE,GET,SET,PROPERTY" },
-                new String[]{ "ENDDO", "DO,WHILE" }
-            };
-        }
-
-        private String[] getStartOfCodeKeywords()
-        {
-            // 
-            return new String[]{
-                "FUNCTION","PROCEDURE",
-                "CONSTRUCTOR","DESTRUCTOR",
-                "ACCESS","ASSIGN",
-                "METHOD","OPERATOR"
-            };
-        }
-
-        // These are special Start of Code, because they have an END
-        private String[] getSpecialStartOfCodeKeywords()
-        {
-            // 
-            return new String[]{
-                "GET", "SET", "PROPERTY"
-            };
-        }
-
-        private String[][] getMiddleKeywords()
-        {
-            // These are keywords that we have between other keywords
-            //
-            // "ELSE" is the keyword that will trigger the process
-            // "IF" is the keyword to align to
-            // ...
-            return new String[][]
-            {
-                new String[]{ "ELSE","IF" },
-                new String[]{ "ELSEIF", "IF" },
-                new String[]{ "FINALLY", "TRY" },
-                new String[]{ "CATCH", "TRY" },
-                new String[]{ "RECOVER", "BEGIN" }
-            };
-        }
-
-        private String[][] getSpecialMiddleKeywords()
-        {
-            // These are keywords that we have between other keywords
-            // "CASE" is the keyword that will trigger the process
-            // "DO,SWITCH,BEGIN" is the list of possible start keyword
-            // ...
-            return new String[][]
-            {
-                new String[]{ "CASE","DO,SWITCH,BEGIN" },
-                new String[]{ "OTHERWISE", "DO,SWITCH,BEGIN" }
-            };
-        }
-        #endregion
 
         private void Options_OptionChanged(object sender, EditorOptionChangedEventArgs e)
         {
@@ -618,7 +682,7 @@ namespace XSharp.Project
                             //
                             indentValue += _tabSize;
                         }
-                        else if ((outdentToken = this.searchSpecialOutdentKeyword(keyword)) != null)
+                        else if ((outdentToken = searchSpecialOutdentKeyword(keyword)) != null)
                         {
                             if (this.hasRegions())
                             {
@@ -650,7 +714,7 @@ namespace XSharp.Project
                         }
                         else
                         {
-                            string startToken = this.searchMiddleKeyword(keyword);
+                            string startToken = searchMiddleKeyword(keyword);
                             int? specialIndentValue = null;
                             if (startToken != null)
                             {
@@ -669,7 +733,7 @@ namespace XSharp.Project
                                 else
                                 {
                                     // We could have "special" middle keyword : CASE or OTHERWISE
-                                    startToken = this.searchSpecialMiddleKeyword(keyword);
+                                    startToken = searchSpecialMiddleKeyword(keyword);
                                     if (startToken != null)
                                     {
                                         // The startToken is a list of possible tokens
@@ -695,7 +759,7 @@ namespace XSharp.Project
                                 }
                                 catch (Exception ex)
                                 {
-                                    Trace.WriteLine("Indentation of line : " + ex.Message);
+                                    Trace.WriteLine("Error indenting of line : " + ex.Message);
                                 }
                             }
                         }
@@ -713,51 +777,6 @@ namespace XSharp.Project
                 Trace.WriteLine("SmartIndent.GetDesiredIndentation Exception : " + ex.Message);
             }
             return _lastIndentValue;
-        }
-
-        private string searchMiddleKeyword(string keyword)
-        {
-            string startToken = null;
-            for (int i = 0; i < this._middleKeywords.Length; i++)
-            {
-                var pair = this._middleKeywords[i];
-                if (String.Compare(keyword, pair[0], true) == 0)
-                {
-                    startToken = pair[1];
-                    break;
-                }
-            }
-            return startToken;
-        }
-
-        private string searchSpecialMiddleKeyword(string keyword)
-        {
-            string startToken = null;
-            for (int i = 0; i < this._specialKeywords.Length; i++)
-            {
-                var pair = this._specialKeywords[i];
-                if (String.Compare(keyword, pair[0], true) == 0)
-                {
-                    startToken = pair[1];
-                    break;
-                }
-            }
-            return startToken;
-        }
-
-        private string searchSpecialOutdentKeyword(string keyword)
-        {
-            string startToken = null;
-            for (int i = 0; i < this._specialOutdentKeywords.Length; i++)
-            {
-                var pair = this._specialOutdentKeywords[i];
-                if (String.Compare(keyword, pair[0], true) == 0)
-                {
-                    startToken = pair[1];
-                    break;
-                }
-            }
-            return startToken;
         }
 
         private int? alignToSpecificTokens(ITextSnapshotLine currentLine, String tokenList)
@@ -815,7 +834,7 @@ namespace XSharp.Project
                                 }
                                 // Here we should also check for nested construct or we might get false positive...
                                 string outdentToken;
-                                if ((outdentToken = this.searchSpecialOutdentKeyword(currentKeyword)) != null)
+                                if ((outdentToken = searchSpecialOutdentKeyword(currentKeyword)) != null)
                                 {
                                     context.Push(tokenList);
                                     tokenList = outdentToken;

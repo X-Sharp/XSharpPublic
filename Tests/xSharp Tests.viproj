@@ -57353,7 +57353,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C566 - Ambiguous call error with iif in lambda expression in VO/Vulcan dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C567 - Failed to emit module error with lambda expression in Core *************
 Application = C567 - Failed to emit module error with lambda expression in Core
 IDEVersion = 1.06
@@ -58150,7 +58150,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C572 - Check for conditionals in include files
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C573 - Problem RETURNing VOSTRUCT PTR from PROPERTY *************
 Application = C573 - Problem RETURNing VOSTRUCT PTR from PROPERTY
 IDEVersion = 1.06
@@ -58450,7 +58450,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C575 - Interface in usual
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C576 - Problem with STATIC classes and /vo16+ *************
 Application = C576 - Problem with STATIC classes and /vo16+
 IDEVersion = 1.06

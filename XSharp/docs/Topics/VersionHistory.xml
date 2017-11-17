@@ -25,6 +25,8 @@
       <li styleclass="List">ASTYPE has been changed to a positional keyword</li>
       <li styleclass="List">Fixed a problem with the Chr() and _Chr() functions for literal numbers &gt; 127</li>
       <li styleclass="List">Added support for the __CLR2__ and __CLR4__ compiler macros. The version is derived from the folder name of mscorlib.dll and/or system.dll</li>
+      <li styleclass="List">The Codeblock syntax was not working in the Core dialect.</li>
+      <li styleclass="List">Some new keywords, such as REPEAT, UNTIL, CATCH, FINALLY,VAR, IMPLIED, NAMESPACE, LOCK, SCOPE, YIELD, SWITCH etc are now also positional and will only be recognized as keyword when at the start of a line or after a matching other keyword. <br/>This should help prevent cryptic error messages when these keywords are used as function names.</li>
     </list>
     <para styleclass="Heading2">Visual Studio </para>
     <para styleclass="Heading3">Source code editor</para>
@@ -37,7 +39,7 @@
       <li styleclass="List">Compiler Generated types are now suppressed from the completion lists.</li>
       <li styleclass="List">Added partial support for intellisense for LOCAL IMPLIED and VAR variables</li>
       <li styleclass="List">Added support for Format Document. This also sets the case for identifiers according to the tools defined in the Tools/Options menu</li>
-      <li styleclass="List">Performance improvements for the background file scanner </li>
+      <li styleclass="List">Performance improvements for the background file scanner. This scanner is also paused during the build process to improve the compilation speed.&#32;</li>
     </list>
     <para styleclass="Heading3">Project System and MsBuild</para>
     <list id="45" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -49,15 +51,18 @@
       <li styleclass="List">License.Licx files are now added as &quot;Embedded Resource&quot;</li>
       <li styleclass="List">Fixed a problem with the automatic adding of License files</li>
       <li styleclass="List">When a project has a &quot;broken reference&quot; and a new reference is added with the correct location, then the broken reference will be deleted and the new references will be added instead.</li>
+      <li styleclass="List">The MSBuild support DLL was unable to find the location of the compiler and native resource compiler when running inside a 64 bit process</li>
     </list>
     <para styleclass="Heading3">Form Editor</para>
     <list id="45" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Improved Windows Form Editor support for types defined in project references. We will now detect the location of the output files for these projects, like the C# and VB project systems.</li>
+      <li styleclass="List">The Code parser for the Form Editor was having problems with untyped methods. This has been fixed.</li>
     </list>
     <para styleclass="Heading3">VO Window and Menu Editor</para>
     <list id="45" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The code generator for the Window and Menu editor will delete old unused defines.</li>
       <li styleclass="List">Changed the item template for VO windows to fix a problem when adding an event handler to a window that has not been saved yet</li>
+      <li styleclass="List">The code generator for the Window editor was not outputting a style for WS_VISIBLE. This has been fixed.</li>
     </list>
     <para styleclass="Heading3">Debugger</para>
     <para styleclass="List">This build introduces a first version of the XSharp debugger support</para>

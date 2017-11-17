@@ -57,6 +57,69 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;
         }
 
+        private int fixPositionalKeywords(int keyword)
+        {
+            switch (keyword)
+            {
+                //case CONSTRUCTOR: to many prefixes allowed (EOS, modifiers, attributes etc)
+                //case EVENT: to many prefixes allowed (EOS, modifiers, attributes etc)
+                //case ENUM: to many prefixes allowed (EOS, modifiers, attributes etc)
+                //case PROPERTY: to many prefixes allowed (EOS, END, modifiers, attributes etc)
+                // case GET many options: after CRLF or SET or ID or Type ....
+                // case SET many options: after CRLF or GET or ID or Type ....
+                // case ADD many options: after CRLF or REMOVE or ID or Type ....
+                // case REMOVE many options: after CRLF or ADD or ID or Type ....
+                case EXPLICIT:
+                case IMPLICIT:
+                    if (_lastToken != OPERATOR)
+                    {
+                        return ID;
+                    }
+                    break;
+                case DESTRUCTOR:
+                    // can also appear after attribute
+                    if (_lastToken != EOS && _lastToken != NL && _lastToken != EXTERN && _lastToken != RBRKT)
+                    {
+                        return ID;
+                    }
+                    break;
+                case FINALLY:
+                case CATCH:
+                case REPEAT:
+                case UNTIL:
+                case YIELD:
+                    if (_lastToken != EOS && _lastToken != NL)
+                    {
+                        return ID;
+                    }
+                    break;
+                case SWITCH:  
+                    if (_lastToken != EOS && _lastToken != NL && _lastToken != BEGIN && _lastToken != DO && _lastToken != END)
+                    {
+                        return ID;
+                    }
+                    break;
+                case IMPLIED:
+                case VAR:
+                    if (_lastToken != EOS && _lastToken != NL && _lastToken != LOCAL && _lastToken != STATIC
+                        && _lastToken != FOR && _lastToken != FOREACH && _lastToken != USING)
+                    {
+                        return ID;
+                    }
+                    break;
+                case NAMESPACE:
+                case SCOPE:
+                case LOCK:
+                    if (_lastToken != BEGIN && _lastToken != END )
+                    {
+                        return ID;
+                    }
+                    break;
+
+            }
+            return keyword;
+        }
+
         public bool HasPreprocessorTokens => _hasPPTokens;
         bool _inId = false;
         bool _inPp = false;
@@ -741,6 +804,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (KwIds.TryGetValue(t.Text, out kwtype))
                 {
                     t.Type = kwtype;
+                    t.Type = fixPositionalKeywords(t.Type);
+                    type = t.Type;
                 }
             }
             /*else if (type == KWID) {

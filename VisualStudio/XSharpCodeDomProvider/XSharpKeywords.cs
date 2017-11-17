@@ -40,11 +40,11 @@ namespace XSharp.CodeDom
         "VOLATILE", "WHERE", "YIELD", "ARRAY", "BYTE", "CHAR", "CODEBLOCK", "DATE",
         "DWORD", "FLOAT", "INT", "LOGIC", "LONGINT", "OBJECT", "PSZ", "PTR", "REAL4",
         "REAL8", "REF", "SHORTINT", "STRING", "SYMBOL", "USUAL", "VOID", "WORD",
-        "INT64", "UINT64", "DYNAMIC", "NIL", "NULL", "NULL_ARRAY", "NULL_CODEBLOCK",
-        "NULL_DATE", "NULL_OBJECT", "NULL_PSZ", "NULL_PTR", "NULL_STRING", "NULL_SYMBOL"
+        "INT64", "UINT64", "DYNAMIC", "DECIMAL", "DATETIME", "NIL", "NULL", "NULL_ARRAY",
+        "NULL_CODEBLOCK","NULL_DATE", "NULL_OBJECT", "NULL_PSZ", "NULL_PTR", "NULL_STRING", "NULL_SYMBOL"
         };
 
-        private static HashSet<string> _keywords = new HashSet<string>();
+        private static HashSet<string> _keywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         internal static bool Contains(string value)
         {

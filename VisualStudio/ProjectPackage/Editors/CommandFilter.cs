@@ -38,8 +38,6 @@ namespace XSharp.Project
         public ICompletionBroker CompletionBroker { get; private set; }
         public IOleCommandTarget Next { get; set; }
 
-
-
         ISignatureHelpBroker SignatureBroker;
         ISignatureHelpSession _signatureSession;
         ITextStructureNavigator m_navigator;
@@ -540,11 +538,13 @@ namespace XSharp.Project
 
     static class CommandFilterHelper
     {
+        private static System.Globalization.TextInfo txtInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
         /// <summary>
         /// Format the Keywords and Identifiers in the Line, using the EditSession
         /// </summary>
         /// <param name="editSession"></param>
         /// <param name="line"></param>
+
         static public void FormatLine(IBufferTagAggregatorFactoryService Aggregator, ITextView TextView, ITextEdit editSession, ITextSnapshotLine line, int? desiredIndentation)
         {
             CommandFilterHelper.FormatLineCase(Aggregator, TextView, editSession, line);
@@ -593,8 +593,6 @@ namespace XSharp.Project
                                 transform = keyword.ToLower();
                                 break;
                             case 3:
-                                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US", false);
-                                System.Globalization.TextInfo txtInfo = culture.TextInfo;
                                 transform = txtInfo.ToTitleCase(keyword.ToLower());
                                 break;
                         }

@@ -51,7 +51,7 @@ namespace XSharpColorizer
         private readonly SourceWalker _sourceWalker;
         private readonly ITextBuffer _buffer;
 
-        private IImmutableList<ClassificationSpan> _tags = ImmutableList<ClassificationSpan>.Empty;
+        private XClassificationSpans _tags = new XClassificationSpans();
         private IImmutableList<ClassificationSpan> _tagsRegion = ImmutableList<ClassificationSpan>.Empty;
         private ITextDocumentFactoryService _txtdocfactory;
         private bool _hasParserErrors = false;
@@ -424,7 +424,7 @@ namespace XSharpColorizer
             IImmutableList<ClassificationSpan> parserRegionTags)
         {
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            List<ClassificationSpan> newtags;
+            XClassificationSpans newtags;
             var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
             {
@@ -434,7 +434,7 @@ namespace XSharpColorizer
                 int iLastSLComment = -1;
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
-                newtags = new List<ClassificationSpan>();
+                newtags = new XClassificationSpans();
                 for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
                     var token = tokenStream.Get(iToken);
@@ -477,7 +477,7 @@ namespace XSharpColorizer
             }
             else
             {
-                newtags = _tags.ToList();
+                newtags = _tags;
             }
             lock (gate)
             {
@@ -485,7 +485,7 @@ namespace XSharpColorizer
                 {
                     regionTags.AddRange(parserRegionTags);
                 }
-                _tags = newtags.ToImmutableList();
+                _tags = newtags;
                 if (!_hasParserErrors && parserRegionTags != null)
                 {
                     _tagsRegion = regionTags.ToImmutableList();
@@ -573,22 +573,19 @@ namespace XSharpColorizer
             // In that case we need to keep a reference to the tokenstream in stead of the tags
             // There also must be a smart way to find the first matching tag.
             var result = new List<ClassificationSpan>();
-            IList<ClassificationSpan> originaltags;
-            lock (gate)
+            var tags = _tags;
+            if (tags.Count == 0)
+                return result;
+            int iStart = span.Start.GetContainingLine().LineNumber;
+            int iEnd = span.End.GetContainingLine().LineNumber;
+            for (int i = iStart; i <= iEnd; i++)
             {
-                // No need to copy. tags is only assigned to and never directly modified
-                originaltags = _tags.ToImmutableList();
-            }
-            for (int i = 0; i < originaltags.Count; i++)
-            {
-                var tag = originaltags[i];
+                var tagsForLine = tags.GetItemsForLine(i);
                 // Use the Span.Span property to avoid the check for the same Snapshot
-                if (tag.Span.Span.OverlapsWith(span.Span))
-                {
-                    result.Add(tag);
+                if (tagsForLine != null)
+                { 
+                    result.AddRange(tagsForLine);
                 }
-                if (tag.Span.Start > span.Span.End)
-                    break;
             }
             return result;
         }
@@ -609,6 +606,42 @@ namespace XSharpColorizer
                 System.Diagnostics.Debug.WriteLine(String.Format("XColorizer: " + msg, o));
 #endif
         }
+    }
+
+    internal class XClassificationSpans
+    {
+        private IList<ClassificationSpan> _tags;
+        private IDictionary<int, List<ClassificationSpan>> _hash;
+        internal XClassificationSpans()
+        {
+            _tags = new List<ClassificationSpan>();
+            _hash = new Dictionary<int, List<ClassificationSpan>>();
+        }
+        internal void Add(ClassificationSpan span)
+        {
+            _tags.Add(span);
+            int line = span.Span.Start.GetContainingLine().LineNumber;
+            if (!_hash.ContainsKey(line))
+            {
+                _hash.Add(line, new List<ClassificationSpan>());
+            }
+            _hash[line].Add(span);
+        }
+        internal List<ClassificationSpan> GetItemsForLine(int line)
+        {
+            if (_hash.ContainsKey(line))
+            {
+                return _hash[line];
+            }
+            return null;
+        }
+        internal int Count => _tags.Count;
+        internal void Clear()
+        {
+            _tags.Clear();
+            _hash.Clear();
+        }
+        internal ImmutableList<ClassificationSpan> Tags => _tags.ToImmutableList();
     }
 }
 

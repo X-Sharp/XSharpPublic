@@ -427,6 +427,13 @@ namespace Microsoft.CodeAnalysis
             {
                 bool hasValue;
                 string value;
+#if XSHARP
+                if (IsClientArgsOption(arg, "/credits", out hasValue, out value))
+                {
+                    errorMessage = CodeAnalysisResources.Credits;
+                    return false;  
+                }
+#endif                
                 if (IsClientArgsOption(arg, "/keepalive", out hasValue, out value))
                 {
                     if (string.IsNullOrEmpty(value))

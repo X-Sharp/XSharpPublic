@@ -594,4 +594,17 @@
   <data name="Stream_contains_invalid_data" xml:space="preserve">
     <value>Stream contains invalid data</value>
   </data>
+  <data name="Credits" xml:space="preserve">
+    <value>
+	The XSharp development team:
+	
+		Fabrice Foray (France)
+		Nikos Kokkalis (Greece)
+		Chris Pyrgas (Greece)
+		Robert van der Hulst (The Netherlands)
+	
+	More info on www.xsharp.info
+    </value>
+  </data>
+
 </root>

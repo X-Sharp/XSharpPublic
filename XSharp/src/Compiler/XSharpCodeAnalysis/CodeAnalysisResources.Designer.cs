@@ -11,8 +11,8 @@
 namespace LanguageService.CodeAnalysis {
     using System;
     using System.Reflection;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -402,6 +402,21 @@ namespace LanguageService.CodeAnalysis {
         internal static string Constructor {
             get {
                 return ResourceManager.GetString("Constructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XSharp development team:
+        ///Fabrice Foray (France)
+        ///Nikos Kokkalis (Greece)
+        ///Chris Pyrgas (Greece)
+        ///Robert van der Hulst (The Netherlands)
+        ///More info on www.xsharp.info
+        ///    .
+        /// </summary>
+        internal static string Credits {
+            get {
+                return ResourceManager.GetString("Credits", resourceCulture);
             }
         }
         

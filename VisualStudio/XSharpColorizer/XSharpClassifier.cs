@@ -182,7 +182,6 @@ namespace XSharpColorizer
                     var snapshot = e.Result as ITextSnapshot;
                     if (snapshot != null)
                     {
-                        triggerRepaint(snapshot);
                         var newSnapshot = _buffer.CurrentSnapshot;
                         if (newSnapshot.Version != snapshot.Version)
                         {
@@ -191,6 +190,7 @@ namespace XSharpColorizer
                         }
                         else
                         {
+                            triggerRepaint(snapshot);
                             if (!_bwBuildModel.IsBusy)
                             {
                                 _bwBuildModel.RunWorkerAsync(snapshot);
@@ -612,28 +612,69 @@ namespace XSharpColorizer
     {
         private IList<ClassificationSpan> _tags;
         private IDictionary<int, List<ClassificationSpan>> _hash;
+        private IList<ClassificationSpan> _multilineTokens;
         internal XClassificationSpans()
         {
             _tags = new List<ClassificationSpan>();
             _hash = new Dictionary<int, List<ClassificationSpan>>();
+            _multilineTokens = new List<ClassificationSpan>();
         }
         internal void Add(ClassificationSpan span)
         {
             _tags.Add(span);
-            int line = span.Span.Start.GetContainingLine().LineNumber;
-            if (!_hash.ContainsKey(line))
+            int start = span.Span.Start.GetContainingLine().LineNumber;
+            int end = span.Span.End.GetContainingLine().LineNumber;
+            if (end > start +1)
+                _multilineTokens.Add(span);
+            else
             {
-                _hash.Add(line, new List<ClassificationSpan>());
+                if (!_hash.ContainsKey(start))
+                {
+                    _hash.Add(start, new List<ClassificationSpan>());
+                }
+                _hash[start].Add(span);
             }
-            _hash[line].Add(span);
         }
         internal List<ClassificationSpan> GetItemsForLine(int line)
         {
-            if (_hash.ContainsKey(line))
+            List< ClassificationSpan > result;
             {
-                return _hash[line];
+                if (_hash.ContainsKey(line))
+                {
+                    result = _hash[line];
+                }
+                else
+                {
+                    result = new List<ClassificationSpan>();
+                }
             }
-            return null;
+            if (_multilineTokens.Count > 0)
+            {
+                List<ClassificationSpan> multi = null;
+                foreach (var span in _multilineTokens)
+                {
+
+                    if (span.Span.Start.GetContainingLine().LineNumber <= line && span.Span.End.GetContainingLine().LineNumber >= line)
+                    {
+                        if (multi == null)
+                            multi = new List<ClassificationSpan>();
+                        multi.Add(span);
+                    }
+                }
+                if (multi?.Count > 0)
+                {
+                    if (result.Count == 0)
+                    {
+                        result = multi;
+                    }
+                    else
+                    {
+                        multi.AddRange(result);
+                        result = multi;
+                    }
+                }
+            }
+            return result;
         }
         internal int Count => _tags.Count;
         internal void Clear()

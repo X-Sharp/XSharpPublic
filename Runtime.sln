@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Runtime.Tests", "Runtime\XSharp.Runtime.Tests\XSharp.Runtime.Tests.xsproj", "{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}"
 EndProject
@@ -16,8 +16,6 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD", "Runtime\XSharp.Rdd\XSharp.RDD.xsproj", "{E83C6C8C-773F-4B01-A597-3D38398A9362}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core", "Runtime\XSharp.Core\XSharp.Core.xsproj", "{535DFF14-EFB7-43F5-A4E1-71C1C4280040}"
-EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Vulcan", "Runtime\XSharp.Vulcan\XSharp.Vulcan.xsproj", "{4E1BC90B-3696-4715-B7A4-17521172979C}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO", "Runtime\XSharp.VO\XSharp.VO.xsproj", "{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}"
 EndProject
@@ -43,10 +41,6 @@ Global
 		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E1BC90B-3696-4715-B7A4-17521172979C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E1BC90B-3696-4715-B7A4-17521172979C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E1BC90B-3696-4715-B7A4-17521172979C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E1BC90B-3696-4715-B7A4-17521172979C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -54,5 +48,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}
 	EndGlobalSection
 EndGlobal

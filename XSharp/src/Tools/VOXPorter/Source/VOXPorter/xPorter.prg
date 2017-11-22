@@ -227,6 +227,8 @@ END INTERFACE
 CLASS xPorter
 	STATIC EXPORT Options AS xPorterOptions
 	STATIC EXPORT uiForm AS xPorterUI
+
+	STATIC EXPORT ExportXideBinaries := TRUE AS LOGIC
 	
 
 	STATIC PROPERTY OverWriteProjectFiles AS LOGIC AUTO
@@ -1047,7 +1049,23 @@ CLASS ApplicationDescriptor
 			
 			FOREACH oDesigner AS Designer IN oModule:Designers
 				IF oDesigner:MustExport
-					File.WriteAllBytes(cFolder + "\" + oModule:PathValidName + "." + oDesigner:FileName , oDesigner:Bytes)
+					LOCAL cBinary AS STRING
+					LOCAL cModule AS STRING
+					LOCAL cPrg AS STRING
+					cModule := cFolder + "\" + oModule:PathValidName
+					cPrg := cModule + ".prg"
+					cBinary := cModule + "." + oDesigner:FileName
+					File.WriteAllBytes(cBinary , oDesigner:Bytes)
+					IF xPorter.ExportXideBinaries
+						TRY
+							DO CASE
+							CASE oDesigner:Type == 10
+								VOWindowEditor.ProjectImportVNFrm(cPrg , cBinary)
+							CASE oDesigner:Type == 16
+								VOMenuEditor.ProjectImportVNMnu(cPrg , cBinary)
+							END CASE
+						END TRY
+					END IF
 				ENDIF
 			NEXT
 
@@ -1055,30 +1073,65 @@ CLASS ApplicationDescriptor
 				LOCAL aResources AS SortedList<STRING,OutputCode>
 				aResources := oModule:GenerateResources()
 				IF aResources:Count != 0
-					LOCAL oResources AS OutputCode
 					LOCAL cResFileName AS STRING
-					oResources := OutputCode{}
+					LOCAL oXideResources, oWedResources AS OutputCode
+					oXideResources := OutputCode{}
+					oWedResources := OutputCode{}
 					FOREACH oPair AS KeyValuePair<STRING , OutputCode> IN aResources
+
 						// For VS:
-						LOCAL cName AS STRING
+						LOCAL cName, cUpperName AS STRING
 						cName := oPair:Key
+						cUpperName := cName:ToUpperInvariant()
+
+						#warning WTF, the following never executes!
 						DO CASE
-						CASE cName:ToUpper():StartsWith("IDM_")
+						CASE cUpperName:StartsWith("IDM_")
 							cName := cName:Substring(4)
-						CASE cName:ToUpper():StartsWith("IDA_")
+							cUpperName := cName:ToUpperInvariant()
+						CASE cUpperName:ToUpper():StartsWith("IDA_")
 							cName := cName:Substring(4) + "_Accelerator"
+							cUpperName := cName:ToUpperInvariant()
 						END CASE
+
 						cResFileName := oModule:PathValidName + "." + cName + ".rc"
 						File.WriteAllLines(cFolder + "\" + cResFileName , oPair:Value:GetContents() , System.Text.Encoding.Default)
 						oModule:AddVSrc(cResFileName)
+
 						// For XIDE:
-						oResources:Combine(oPair:Value)
+						LOCAL lWedRc := FALSE AS LOGIC
+						FOREACH oDesigner AS Designer IN oModule:Designers
+							IF cUpperName == oDesigner:Name:ToUpperInvariant() .or. cUpperName == oDesigner:Name:ToUpperInvariant() + "_ACCELERATOR"
+								lWedRc := TRUE
+								EXIT
+							END IF
+						NEXT
+						IF lWedRc
+							oWedResources:Combine(oPair:Value)
+						ELSE
+							oXideResources:Combine(oPair:Value)
+						END IF
+
 					NEXT
+
 					// For XIDE:
-					cResFileName := oModule:PathValidName + ".rc"
-	//				cResFileName := oModule:PathValidName + ".prg.rc"
-					File.WriteAllLines(cFolder + "\" + cResFileName , oResources:GetContents() , System.Text.Encoding.Default)
-					oModule:AddXIDErc(cResFileName)
+					IF xPorter.ExportXideBinaries
+						IF .not. oXideResources:IsEmpty()
+							cResFileName := oModule:PathValidName + ".rc"
+							File.WriteAllLines(cFolder + "\" + cResFileName , oXideResources:GetContents() , System.Text.Encoding.Default)
+							oModule:AddXIDErc(cResFileName)
+						END IF
+
+						IF .not. oWedResources:IsEmpty()
+							cResFileName := oModule:PathValidName + ".prg.rc"
+							File.WriteAllLines(cFolder + "\" + cResFileName , oWedResources:GetContents() , System.Text.Encoding.Default)
+						END IF
+					ELSE
+						oXideResources:Combine(oWedResources)
+						cResFileName := oModule:PathValidName + ".rc"
+						File.WriteAllLines(cFolder + "\" + cResFileName , oXideResources:GetContents() , System.Text.Encoding.Default)
+						oModule:AddXIDErc(cResFileName)
+					END IF
 				END IF
 			END IF
 

@@ -408,6 +408,8 @@
   <PropertyGroup>
     <PreBuildEvent>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Parser\XSharpLexer.g4 -o $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Generated -Dlanguage=CSharp_v4_5
 java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar  -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)src\Compiler\XSharpCodeAnalysis\Generated -Dlanguage=CSharp_v4_5
+$(SolutionDir)src\Compiler\XSharpCodeAnalysis\TouchFiles.exe $(SolutionDir)src\Compiler\XSharpCodeAnalysis\parser\XSharp.g4        $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpParser.cs  $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpListener.cs $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpBaseListener.cs $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharp.tokens
+$(SolutionDir)src\Compiler\XSharpCodeAnalysis\TouchFiles.exe $(SolutionDir)src\Compiler\XSharpCodeAnalysis\parser\XSharpLexer.g4 $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpLexer.cs  $(SolutionDir)src\Compiler\XSharpCodeAnalysis\generated\XSharpLexer.tokens
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

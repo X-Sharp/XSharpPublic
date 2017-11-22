@@ -609,7 +609,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var xnode = val.Type;
                         ctxt = xnode;
-                        if (xnode.Data.HasCtor)
+                        if (xnode.Data.HasInstanceCtor)
                         {
                             hasctor = true;
                         }
@@ -699,7 +699,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             clsmembers.Clear();
                             var classdecl = ctxt.Get<ClassDeclarationSyntax>();
-                            if (!hasctor && trans != null && _options.VOClipperConstructors)
+                            if (!hasctor && !classdecl.IsStatic() && _options.VOClipperConstructors && trans != null )
                             {
                                 var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
                                 if (ctor != null)

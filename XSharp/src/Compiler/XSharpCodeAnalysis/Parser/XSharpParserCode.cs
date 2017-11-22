@@ -132,7 +132,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             UsesGetMParam = 1 << 6,     // Member property
             MustBeVoid = 1 << 7,        // Member property
             IsInitAxit = 1 << 8,        // Member property
-            HasCtor = 1 << 9,           // Class property
+            HasInstanceCtor = 1 << 9,   // Class property
             Partial = 1 << 10,          // Class property
             PartialProps = 1 << 11,     // Class property
             HasDimVar = 1 << 12,        // Member property
@@ -191,10 +191,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 set { if (value) flags |= EntityFlags.IsInitAxit; else flags &= ~EntityFlags.IsInitAxit; }
             }
 
-            public bool HasCtor
+            public bool HasInstanceCtor
             {
-                get { return flags.HasFlag(EntityFlags.HasCtor); }
-                set { if (value) flags |= EntityFlags.HasCtor; else flags &= ~EntityFlags.HasCtor; }
+                get { return flags.HasFlag(EntityFlags.HasInstanceCtor); }
+                set { if (value) flags |= EntityFlags.HasInstanceCtor; else flags &= ~EntityFlags.HasInstanceCtor; }
             }
             public bool Partial
             {
@@ -609,6 +609,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
     internal static class RuleExtensions
     {
+#if !TEST
+        internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
+        {
+            return classdecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
+        }
+
+        internal static bool IsStatic(this InternalSyntax.ConstructorDeclarationSyntax ctordecl)
+        {
+            return ctordecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
+        }
+#endif
         internal static void Put<T>([NotNull] this IXParseTree t, T node)
             where T : InternalSyntax.CSharpSyntaxNode
         {

@@ -1,83 +1,87 @@
 
-#define Compression     "lzma2/ultra"
+#define Compression     "lzma2/ultra64"
 ;#define Compression     "none"
 
 ;
 ; preprocess the help cab files
 ;
-#expr Exec('c:\xsharp\dev\xsharp\src\setup\makecabs.cmd')
-
-; use the preprocessor to copy all files for extension to helper folder
-
-
+#expr Exec('c:\XSharp\Dev\XSharp\src\Setup\makecabs.cmd')
 
 #define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetup110Fox"
-#else
-#define SetupExeName    "XSharpSetup110Public"
+#define SetupExeName        "XSharpSetup110Fox"
+#else   
+#define SetupExeName        "XSharpSetup110Public"
 #endif
+    
+#define Version             "1.1.0.0"
+#define VIVersion           "1.1.0.0"
+#define TouchDate           "2017-11-16"
+#define TouchTime           "01:01:00"
 
-#define Version         "1.1.0.1"
-#define VIVersion       "1.1.0.1"
-#define TouchDate       "2017-11-10"
-#define TouchTime       "01:01:00"
 
 
 ; version info and similar stuff.
-#define Product         "XSharp"
-#define ProdBuild       "XSharp General Release"
-#define Company         "XSharp BV"
-#define RegCompany      "XSharpBV"
-#define XSharpURL       "http://www.xsharp.info"
-#define CopyRight       "Copyright © 2015-2017 XSharp B.V."
-#define InstallPath     "XSharpPath"
+#define Product             "XSharp"
+#define ProdBuild           "XSharp General Release"
+#define Company             "XSharp BV"
+#define RegCompany          "XSharpBV"
+#define XSharpURL           "http://www.xsharp.info"
+#define CopyRight           "Copyright © 2015-2017 XSharp B.V."
+#define InstallPath         "XSharpPath"
 
 
 ; Code Signing
-#define KeyFile         "c:\XSharp\Dev\XSharp\build\Signatures\XSharpCert.pfx"
-#define TimeStampURL    "http://timestamp.globalsign.com/scripts/timstamp.dll"
-#define KeyPassword     "J1O39dGG6FPLXWj"
-#define Description     "XSharp, xBase compiler for .Net"
+#define KeyFile             "C:\XSharp\Dev\XSharp\build\Signatures\XSharpCert.pfx"
+#define TimeStampURL        "http://timestamp.globalsign.com/scripts/timstamp.dll"
+#define KeyPassword         "J1O39dGG6FPLXWj"
+#define Description         "XSharp, xBase compiler for .Net"
 
 ;Source Folders and other related stuff
-#define BinDFolder      "C:\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
-#define BinRFolder      "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
-#define BinPFolder      "C:\Xsharp\DevPublic\Binaries\Debug\"
-#define BinRtFolder     "C:\Xsharp\DevPublic\Binaries\Release\"
-#define DebuggerObjFolder  "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpDebugger\"
-#define ProjectObjFolder   "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpProject\"
-#define CommonFolder    "C:\Xsharp\Dev\XSharp\src\Common\"
-#define ToolsFolder     "C:\Xsharp\Dev\XSharp\src\Tools\"
-#define VOXporterFolder "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\"
-#define VOXporterBinFolder "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\Bin\Debug\"
-#define ExamplesFolder  "C:\Xsharp\DevPublic\Samples\"
-#define ScriptFolder    "C:\XSharp\DevPublic\ScriptSamples\"
-#define OutPutFolder    "C:\XSharp\Dev\XSharp\Binaries\Setup"
-#define DocFolder       "C:\Xsharp\Dev\XSharp\Binaries\Help\"
-#define XIDEFolder      "C:\Xsharp\Dev\XSharp\Xide\"
-#define SnippetsSource  "C:\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
-#define XIDESetup       "XIDE_Set_up_1.11.exe"
-#define XIDEVersion     "1.11"
-#define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
-#define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
-#define Provider        "XSharp.CodeDom.XSharpCodeDomProvider, Culture=neutral, PublicKeyToken=31c59c566fa38f21, Version="
-#define ImmutableVersion "System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-#define MetadataVersion  "System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+#define BinDFolder          "C:\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
+#define BinRFolder          "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
+#define BinPFolder          "C:\Xsharp\DevPublic\Binaries\Debug\"
+#define BinRtFolder         "C:\Xsharp\DevPublic\Binaries\Release\"
+#define DebuggerObjFolder   "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpDebugger\"
+#define ProjectObjFolder    "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpProject\"
+#define CommonFolder        "C:\Xsharp\Dev\XSharp\src\Common\"
+#define ToolsFolder         "C:\Xsharp\Dev\XSharp\src\Tools\"
+#define VOXporterFolder     "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\"
+#define VOXporterBinFolder  "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\Bin\Release\"
+#define ExamplesFolder      "C:\Xsharp\DevPublic\Samples\"
+#define ScriptFolder        "C:\XSharp\DevPublic\ScriptSamples\"
+#define OutPutFolder        "C:\XSharp\Dev\XSharp\Binaries\Setup"
+#define DocFolder           "C:\Xsharp\Dev\XSharp\Binaries\Help\"
+#define XIDEFolder          "C:\Xsharp\Dev\XSharp\Xide\"
+#define SnippetsSource      "C:\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
+#define XIDESetup           "XIDE_Set_up_1.11.exe"
+#define XIDEVersion         "1.11"
+#define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
+#define GACInstall          "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
+#define Provider            "XSharp.CodeDom.XSharpCodeDomProvider, Culture=neutral, PublicKeyToken=31c59c566fa38f21, Version="
+#define ImmutableVersion    "System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+#define MetadataVersion     "System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+
+; Write version to VSIX files
+;#expr Exec('c:\xsharp\dev\xsharp\src\setup\setvers.cmd', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,'',1,sw_ShowNormal)
+;#expr Exec('c:\xsharp\dev\xsharp\src\setup\setvers.cmd', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,'',1,sw_ShowNormal)
+
+#expr Exec('c:\XSharp\Dev\XSharp\src\Setup\updatevsix.exe', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,'c:\XSharp\Dev\XSharp\src\Setup',1,sw_ShowNormal)
+#expr Exec('c:\XSharp\Dev\XSharp\src\Setup\updatevsix.exe', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,'c:\XSharp\Dev\XSharp\src\Setup',1,sw_ShowNormal)
 
 ; Registry name for prgx extension
 #define XSScript            "XSharpScript"
 
 ; FOlders and registry keys defined by others
-#define VulcanEditorGuid  "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
-#define VulcanWedGuid     "Editors\{{e9eecf7e-7aa2-490e-affc-c55fa2acc5a3}\Extensions"
-#define VulcanMedGuid     "Editors\{{adee1755-5ac3-485b-b857-f82d902362ca}\Extensions"
-#define VulcanDedGuid     "Editors\{{5325db94-5d6c-41fd-be44-c5b277612ce6}\Extensions"
-#define VulcanFedGuid     "Editors\{{4849278c-aacb-4bbe-9a15-d96da837aeb7}\Extensions"
-#define VS14RegPath       "Software\Microsoft\VisualStudio\14.0"
-#define VS14LocalDir      "{localappdata}\Microsoft\VisualStudio\14.0"
-#define VS15LocalDir      "{localappdata}\Microsoft\VisualStudio\15.0_"
-#define SnippetsPath      "\Snippets\1033"
+#define VulcanEditorGuid     "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
+#define VulcanWedGuid        "Editors\{{e9eecf7e-7aa2-490e-affc-c55fa2acc5a3}\Extensions"
+#define VulcanMedGuid        "Editors\{{adee1755-5ac3-485b-b857-f82d902362ca}\Extensions"
+#define VulcanDedGuid        "Editors\{{5325db94-5d6c-41fd-be44-c5b277612ce6}\Extensions"
+#define VulcanFedGuid        "Editors\{{4849278c-aacb-4bbe-9a15-d96da837aeb7}\Extensions"
+#define VS14RegPath          "Software\Microsoft\VisualStudio\14.0"
+#define VS14LocalDir         "{localappdata}\Microsoft\VisualStudio\14.0"
+#define VS15LocalDir         "{localappdata}\Microsoft\VisualStudio\15.0_"
+#define SnippetsPath         "\Snippets\1033"
 
 ; Snippets of code for the Help installer.
 #define HelpInstall1  "/operation install /silent /catalogname "
@@ -280,7 +284,7 @@ Source: "{#BinPFolder}xporter.pdb";                       DestDir: "{app}\bin"; 
 ; VO XPorter
 ;
 Source: "{#VOXPorterBinFolder}VOXporter.exe";             DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} signonce; 
-Source: "{#VOXPorterBinFolder}Fab_VO_Entities.dll";       DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+;Source: "{#VOXPorterBinFolder}Fab_VO_Entities.dll";       DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}XICOMMON.dll";              DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}XIRES.dll";                 DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}SDK_DEFINES.dll";           DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
@@ -291,7 +295,7 @@ Source: "{#VOXPorterFolder}Templates\*";                 DestDir: "{app}\VOXPort
 
 ; pdb files needed ?
 Source: "{#VOXPorterBinFolder}VOXporter.pdb";             DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
-Source: "{#VOXPorterBinFolder}Fab_VO_Entities.pdb";       DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+;Source: "{#VOXPorterBinFolder}Fab_VO_Entities.pdb";       DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}XICOMMON.pdb";              DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}XIRES.pdb";                 DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}SDK_DEFINES.pdb";           DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
@@ -639,8 +643,8 @@ Components: vs2017\help; Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Paramet
 Components: XIDE;        Filename: "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  
 
 Components: main\ngen;  Filename: "{app}\uninst\instngen.cmd";      Check: CreateNGenTask(); Flags: Runhidden ; StatusMsg: "Generating Native images, please wait.....";
-Components: vs2015;     Filename: "{app}\uninst\deployvs2015.cmd";  Check: DeployToVs2015(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2015 , please wait.....";
-Components: vs2017;     Filename: "{app}\uninst\deployvs2017.cmd";  Check: DeployToVs2017(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2017 , please wait.....";
+Components: vs2015;     Filename: "{app}\uninst\deployvs2015.cmd";  Check: DeployToVs2015(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2015, please wait.....";
+Components: vs2017;     Filename: "{app}\uninst\deployvs2017.cmd";  Check: DeployToVs2017(); Flags: Runhidden ; StatusMsg: "Deploying extension to VS 2017, please wait.....";
 
 [UninstallRun]
 Components: vs2015\help; Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
@@ -985,6 +989,28 @@ begin
 
 end;
 
+function DelFolder(path: String) : String;
+begin
+  result := 'IF EXIST "'+path+'\*.*" RD "'+path+'" /s /q'+#13+#10;
+end;
+
+function DelUserFolders(path: String) : String;
+begin
+  result := '';
+  result := result + DelFolder(path+'\ComponentModelCache');
+  result := result + DelFolder(path+'\VTC');
+  result := result + DelFolder(path+'Exp\ComponentModelCache');
+  result := result + DelFolder(path+'Exp\Vtc');
+end;
+
+function CopyToVsFolder(path: String) : String;
+begin
+  result := '';
+  result := result+ 'XCOPY '+ExpandConstant('"{app}\Extension\*.*" "')+path+'Extensions\XSharp" /i /s /y'+#13+#10;
+  result := result + '"'+path+'Devenv.exe" /updateconfiguration'+#13+#10;
+
+end;
+
 function DeployToVs2015: Boolean;
 var commands: string;
 begin
@@ -992,11 +1018,10 @@ begin
   if result then 
   begin
       commands := '';
-      commands := commands + 'RD "'+Vs2015Path+'Extensions\XSharp" /s /q'+#13+#10;
-      commands := commands + Vs2015Path+'Devenv.exe /updateconfiguration'+#13+#10
-      commands := commands + 'XCOPY '+ExpandConstant('"{app}\Extension\*.*" "')+Vs2015Path+'Extensions\XSharp" /i /s /y'+#13+#10;
-      commands := commands + Vs2015Path+'Devenv.exe /updateconfiguration'+#13+#10
-      SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2015.cmd '), commands, False);
+      commands := commands + DelFolder(Vs2015Path+'Extensions\XSharp');
+      commands := commands + DelUserFolders(ExpandConstant('{#VS14LocalDir}'));
+      commands := commands + CopyToVsFolder(Vs2015Path);
+      SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2015.cmd'), commands, False);
   end
 end;
 
@@ -1025,27 +1050,24 @@ begin
       commands := '';
       if HasVs2017_1() then 
       begin
-        commands := commands + 'RD "'+Vs2017Path1+'Extensions\XSharp" /s /q'+#13+#10;
-        commands := commands + Vs2017Path1+'Devenv.exe /updateconfiguration'+#13+#10
-        commands := commands + 'XCOPY '+ExpandConstant('"{app}\Extension\*.*" "')+Vs2017Path1+'Extensions\XSharp" /i /s /y'+#13+#10;
-        commands := commands + Vs2017Path1+'Devenv.exe /updateconfiguration'+#13+#10
+        commands := commands + DelFolder(Vs2017Path1+'Extensions\XSharp');
+        commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId1));
+        commands := commands + CopyToVsFolder(Vs2017Path1);
        end
       if HasVs2017_2() then 
       begin
-        commands := commands + 'RD "'+Vs2017Path2+'Extensions\XSharp" /s /q'+#13+#10;
-        commands := commands + Vs2017Path2+'Devenv.exe /updateconfiguration'+#13+#10
-        commands := commands + 'XCOPY '+ExpandConstant('"{app}\Extension\*.*" "')+Vs2017Path2+'Extensions\XSharp" /i /s /y'+#13+#10;
-        commands := commands + Vs2017Path2+'Devenv.exe /updateconfiguration'+#13+#10
+        commands := commands + DelFolder(Vs2017Path2+'Extensions\XSharp');
+        commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId2));
+        commands := commands + CopyToVsFolder(Vs2017Path2);
        end
       if HasVs2017_3() then 
       begin
-        commands := commands + 'RD "'+Vs2017Path3+'Extensions\XSharp" /s /q'+#13+#10;
-        commands := commands + Vs2017Path3+'Devenv.exe /updateconfiguration'+#13+#10
-        commands := commands + 'XCOPY '+ExpandConstant('"{app}\Extension\*.*" "')+Vs2017Path3+'Extensions\XSharp" /i /s /y'+#13+#10;
-        commands := commands + Vs2017Path3+'Devenv.exe /updateconfiguration'+#13+#10
+        commands := commands + DelFolder(Vs2017Path3+'Extensions\XSharp');
+        commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId3));
+        commands := commands + CopyToVsFolder(Vs2017Path3);
       end
 
-      SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2017.cmd '), commands, False);
+      SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2017.cmd'), commands, False);
   end
 end;
 

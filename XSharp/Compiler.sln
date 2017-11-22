@@ -96,6 +96,10 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VisualBasicSyntaxGenerator"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VisualBasicErrorFactsGenerator", "..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\VisualBasicErrorFactsGenerator\VisualBasicErrorFactsGenerator.vbproj", "{909B656F-6095-4AC2-A5AB-C3F032315C45}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSVulcanMacroCompiler", "src\Compiler\XSVulcanMacroCompiler\XSVulcanMacroCompiler.xsproj", "{5DC40ADC-F250-4611-AD89-B67B150BBC8E}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestMacroCompiler", "src\Compiler\TestMacroCompiler\TestMacroCompiler.xsproj", "{DE0191E1-E0C1-4651-B999-0F28167EB96B}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\Roslyn\src\Scripting\Core\ScriptingShared.projitems*{014963ae-d6d1-4ff8-8d8a-8d417f5d8d1f}*SharedItemsImports = 4
@@ -318,6 +322,22 @@ Global
 		{909B656F-6095-4AC2-A5AB-C3F032315C45}.Release|Any CPU.Build.0 = Release|Any CPU
 		{909B656F-6095-4AC2-A5AB-C3F032315C45}.Release|x64.ActiveCfg = Release|x64
 		{909B656F-6095-4AC2-A5AB-C3F032315C45}.Release|x64.Build.0 = Release|x64
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E}.Debug|x64.Build.0 = Debug|Any CPU
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E}.Release|x64.ActiveCfg = Release|Any CPU
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E}.Release|x64.Build.0 = Release|Any CPU
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B}.Debug|x64.Build.0 = Debug|Any CPU
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B}.Release|x64.ActiveCfg = Release|Any CPU
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -362,5 +382,7 @@ Global
 		{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC} = {D2E017BC-986A-4D64-A8B9-D9068F19A257}
 		{6AA96934-D6B7-4CC8-990D-DB6B9DD56E34} = {DFB67BA4-B8A2-4968-B745-D201B4F4EF11}
 		{909B656F-6095-4AC2-A5AB-C3F032315C45} = {DFB67BA4-B8A2-4968-B745-D201B4F4EF11}
+		{5DC40ADC-F250-4611-AD89-B67B150BBC8E} = {CC5C64CB-F448-4C25-88EB-E22B4A5C9504}
+		{DE0191E1-E0C1-4651-B999-0F28167EB96B} = {CC5C64CB-F448-4C25-88EB-E22B4A5C9504}
 	EndGlobalSection
 EndGlobal

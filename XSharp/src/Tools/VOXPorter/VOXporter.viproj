@@ -1,6 +1,6 @@
 [General]
 PROJECT = VOXPorter
-IDEVersion = 1.10b
+IDEVersion = 1.11
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 465D6C49-8695-4D98-AC32-A781064D6E52
@@ -33,7 +33,7 @@ DefaultPropertiesGuid = DC6FD78A-F117-431E-8C2D-F6667142861F
 
 ; ************** APPLICATION VOXPorter *************
 Application = VOXPorter
-IDEVersion = 1.10b
+IDEVersion = 1.11
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -56,7 +56,7 @@ GUID = FD056C5F-6DE1-465A-90E4-0145DEB734D2
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
-IncludePath = 
+IncludePath = c:\XSharp\DevPublic\Common
 SignAssembly = 0
 KeyFile = 
 
@@ -74,6 +74,9 @@ FileType = Code
 File = %AppPath%\ReadMe.rtf
 FileGUID = 8FF6A571-39E5-4144-B7E5-C1AB15E9FD8D
 FileType = Text
+File = %AppPath%\AssemblyInfo.prg
+FileGUID = 5106C14A-9E94-4FC3-966E-E57E575F8846
+FileType = Code
 [VOXPorter References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
@@ -137,7 +140,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   ForceConsole=0
   ForceX86=0
 AppConfig = Release,22222222-2222-2222-2222-222222222222
-  Switches=
+  Switches=/optimize
   SwitchesCF=
   CommandLine=
   CommandLineCF=
@@ -153,7 +156,7 @@ ENDApplication = VOXPorter
 
 ; ************** APPLICATION Fab_VO_Entities *************
 Application = Fab_VO_Entities
-IDEVersion = 1.10b
+IDEVersion = 1.11
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -176,7 +179,7 @@ GUID = D5679723-DA91-4572-B699-5FDEC084BDB5
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
-IncludePath = 
+IncludePath = c:\XSharp\DevPublic\Common
 SignAssembly = 0
 KeyFile = 
 
@@ -230,12 +233,15 @@ FileType = Text
 File = %AppPath%\_xCompatinility.prg
 FileGUID = 3DF59AA6-E659-4A6E-8F67-DE50C11F7441
 FileType = Code
+File = %AppPath%\AssemblyInfo.prg
+FileGUID = 64324B9A-DD4C-41BF-8386-AA3795DF080B
+FileType = Code
 [Fab_VO_Entities References]
 [Fab_VO_Entities Resources]
 [Fab_VO_Entities Native Resources]
 [Fab_VO_Entities License files]
 [Fab_VO_Entities General Options]
-Switches=/parallel-
+Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -275,7 +281,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   ForceConsole=0
   ForceX86=0
 AppConfig = Release,22222222-2222-2222-2222-222222222222
-  Switches=
+  Switches=/optimize
   SwitchesCF=
   CommandLine=
   CommandLineCF=

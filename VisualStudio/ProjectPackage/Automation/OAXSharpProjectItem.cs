@@ -20,7 +20,7 @@ namespace XSharp.Project
     /// </summary>
     [CLSCompliant(false), ComVisible(true)]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
-    public class OAXSharpProject : OAProject
+    public class OAXSharpProject : OAVSProject
     {
         // =========================================================================================
         // Member variables
@@ -59,8 +59,8 @@ namespace XSharp.Project
                 return this.properties;
             }
         }
-		
-        public virtual VSProjectEvents Events
+        VSProjectEvents events;
+        public override VSProjectEvents Events
         {
             get
             {

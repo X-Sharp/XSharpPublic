@@ -59,6 +59,20 @@ namespace XSharp.Project
                 return this.properties;
             }
         }
+		
+        public virtual VSProjectEvents Events
+        {
+            get
+            {
+				// return our events class that also supports ImportsEvents which Resharper wants
+                if(events == null)
+				{
+                    events = new OAXSharpVSProjectEvents(this);
+				}
+                return events;
+            }
+        }
+		
     }
     /// <summary>
     /// Represents an automation friendly version of a language-specific project.

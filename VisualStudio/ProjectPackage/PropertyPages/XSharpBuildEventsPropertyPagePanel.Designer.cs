@@ -34,7 +34,6 @@ namespace XSharp.Project
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XBuildEventsPropertyPagePanel));
             XSharp.Project.XGroupBox preBuildGroupBox;
             XSharp.Project.XGroupBox postBuildGroupBox;
             System.Windows.Forms.Label runLabel;
@@ -48,61 +47,89 @@ namespace XSharp.Project
             postBuildGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
-            // preBuildEditor
-            // 
-            resources.ApplyResources(this.preBuildEditor, "preBuildEditor");
-            this.preBuildEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.preBuildEditor.Name = "preBuildEditor";
-            // 
-            // postBuildEditor
-            // 
-            resources.ApplyResources(this.postBuildEditor, "postBuildEditor");
-            this.postBuildEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.postBuildEditor.Name = "postBuildEditor";
-            // 
-            // runPostBuildComboBox
-            // 
-            resources.ApplyResources(this.runPostBuildComboBox, "runPostBuildComboBox");
-            this.runPostBuildComboBox.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.runPostBuildComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.runPostBuildComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.runPostBuildComboBox.FormattingEnabled = true;
-            this.runPostBuildComboBox.Items.AddRange(new object[] {
-            resources.GetString("runPostBuildComboBox.Items"),
-            resources.GetString("runPostBuildComboBox.Items1"),
-            resources.GetString("runPostBuildComboBox.Items2")});
-            this.runPostBuildComboBox.Name = "runPostBuildComboBox";
-            // 
             // preBuildGroupBox
             // 
             preBuildGroupBox.Controls.Add(this.preBuildEditor);
-            preBuildGroupBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            resources.ApplyResources(preBuildGroupBox, "preBuildGroupBox");
+            preBuildGroupBox.Location = new System.Drawing.Point(3, 3);
             preBuildGroupBox.Name = "preBuildGroupBox";
+            preBuildGroupBox.Padding = new System.Windows.Forms.Padding(20, 20, 20, 0);
+            preBuildGroupBox.Size = new System.Drawing.Size(544, 152);
+            preBuildGroupBox.TabIndex = 0;
+            preBuildGroupBox.TabStop = false;
+            preBuildGroupBox.Text = "P&re-build Event Command Line";
+            // 
+            // preBuildEditor
+            // 
+            this.preBuildEditor.ButtonText = "Ed&it Pre-build...";
+            this.preBuildEditor.EditorFormText = "Pre-build Event Command Line";
+            this.preBuildEditor.Location = new System.Drawing.Point(20, 20);
+            this.preBuildEditor.Margin = new System.Windows.Forms.Padding(4);
+            this.preBuildEditor.Name = "preBuildEditor";
+            this.preBuildEditor.Size = new System.Drawing.Size(521, 132);
+            this.preBuildEditor.TabIndex = 0;
             // 
             // postBuildGroupBox
             // 
             postBuildGroupBox.Controls.Add(this.postBuildEditor);
             postBuildGroupBox.Controls.Add(this.runPostBuildComboBox);
             postBuildGroupBox.Controls.Add(runLabel);
-            postBuildGroupBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            resources.ApplyResources(postBuildGroupBox, "postBuildGroupBox");
+            postBuildGroupBox.Location = new System.Drawing.Point(3, 164);
             postBuildGroupBox.Name = "postBuildGroupBox";
+            postBuildGroupBox.Padding = new System.Windows.Forms.Padding(20, 20, 20, 0);
+            postBuildGroupBox.Size = new System.Drawing.Size(544, 197);
+            postBuildGroupBox.TabIndex = 1;
+            postBuildGroupBox.TabStop = false;
+            postBuildGroupBox.Text = "P&ost-build Event Command Line";
+            // 
+            // postBuildEditor
+            // 
+            this.postBuildEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.postBuildEditor.ButtonText = "Edit Post-b&uild...";
+            this.postBuildEditor.EditorFormText = "Post-build Event Command Line";
+            this.postBuildEditor.Location = new System.Drawing.Point(20, 20);
+            this.postBuildEditor.Margin = new System.Windows.Forms.Padding(4);
+            this.postBuildEditor.Name = "postBuildEditor";
+            this.postBuildEditor.Size = new System.Drawing.Size(521, 132);
+            this.postBuildEditor.TabIndex = 0;
+            // 
+            // runPostBuildComboBox
+            // 
+            this.runPostBuildComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.runPostBuildComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.runPostBuildComboBox.FormattingEnabled = true;
+            this.runPostBuildComboBox.Items.AddRange(new object[] {
+            "Always",
+            "On successful build",
+            "When the build updates the project output"});
+            this.runPostBuildComboBox.Location = new System.Drawing.Point(20, 171);
+            this.runPostBuildComboBox.Name = "runPostBuildComboBox";
+            this.runPostBuildComboBox.Size = new System.Drawing.Size(521, 21);
+            this.runPostBuildComboBox.TabIndex = 2;
             // 
             // runLabel
             // 
-            resources.ApplyResources(runLabel, "runLabel");
+            runLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             runLabel.AutoEllipsis = true;
-            runLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            runLabel.AutoSize = true;
+            runLabel.Location = new System.Drawing.Point(17, 155);
             runLabel.Name = "runLabel";
+            runLabel.Size = new System.Drawing.Size(126, 13);
+            runLabel.TabIndex = 1;
+            runLabel.Text = "Ru&n the post-build event:";
             // 
             // XBuildEventsPropertyPagePanel
             // 
-            resources.ApplyResources(this, "$this");
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(postBuildGroupBox);
             this.Controls.Add(preBuildGroupBox);
+            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.Name = "XBuildEventsPropertyPagePanel";
+            this.Size = new System.Drawing.Size(550, 364);
             preBuildGroupBox.ResumeLayout(false);
             postBuildGroupBox.ResumeLayout(false);
             postBuildGroupBox.PerformLayout();

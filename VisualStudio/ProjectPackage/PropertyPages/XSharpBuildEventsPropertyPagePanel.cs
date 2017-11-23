@@ -6,8 +6,10 @@
 
 namespace XSharp.Project
 {
+    using Microsoft.VisualStudio.PlatformUI;
     using System;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Text;
     using System.Windows.Forms;
 
@@ -42,6 +44,28 @@ namespace XSharp.Project
             this.preBuildEditor.TextBox.Tag = XProjectFileConstants.PreBuildEvent;
             this.postBuildEditor.TextBox.Tag = XProjectFileConstants.PostBuildEvent;
             this.runPostBuildComboBox.Tag = XProjectFileConstants.RunPostBuildEvent;
+
+            Color defaultBackground = System.Drawing.SystemColors.ButtonFace;
+            Color defaultForeground = System.Drawing.SystemColors.WindowText;
+            UpdateWindowColors(this, defaultBackground, defaultForeground);
+        }
+        /// <summary>
+        /// Adjust the  color values. Adjusts the text color and text 
+        /// area background color
+        /// </summary>
+        /// <param name="clrBackground">The desired color for the background of the text area</param>
+        /// <param name="clrForeground">The desired text color</param>
+        static void UpdateWindowColors(Control control, Color clrBackground, Color clrForeground)
+        {
+            // Update the window background
+            control.BackColor = clrBackground;
+            control.ForeColor = clrForeground;
+
+            // Also update the label
+            foreach (Control child in control.Controls)
+            {
+                UpdateWindowColors(child, clrBackground, clrForeground);
+            }
         }
     }
 }

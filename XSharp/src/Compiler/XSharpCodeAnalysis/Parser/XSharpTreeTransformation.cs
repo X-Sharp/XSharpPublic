@@ -5354,7 +5354,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCaseStmt([NotNull] XP.CaseStmtContext context)
         {
             if (context.CaseStmt != null)
-                context.SetSequencePoint(context.CaseStmt.Cond);
+                context.SetSequencePoint(context.CaseStmt.Start, context.CaseStmt.end.Start);
             else
                 context.SetSequencePoint(context.end);
             StatementSyntax caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
@@ -5366,7 +5366,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Key.Type == XP.OTHERWISE)
             {
-                context.SetSequencePoint();
+                context.SetSequencePoint(context.end);
                 context.Put(context.StmtBlk.Get<StatementSyntax>());
             }
             else

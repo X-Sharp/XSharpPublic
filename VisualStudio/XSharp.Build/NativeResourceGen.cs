@@ -40,6 +40,7 @@ namespace XSharp.Build {
             {
                 InstallPath = @"C:\Program Files (x86)\XSharp";
             }
+            InstallPath = System.IO.Path.Combine(InstallPath, "Bin");
         }
 
         public NativeResourceCompiler() : base()
@@ -113,31 +114,8 @@ namespace XSharp.Build {
             return FindRc(this.ToolName);
         }
 
-        private String _compilerPath;
-        public String CompilerPath {
-            set { _compilerPath = value; }
-            get { return _compilerPath; }
-        }
-
         private string FindRc(string toolName) {
-            /*
-            if(string.IsNullOrEmpty(CompilerPath)) {
-                // Nothing in the Registry ?
-                if(!string.IsNullOrEmpty(InstallPath)) {
-                    CompilerPath = Utilities.AddSlash(InstallPath) + "Bin\\";
-                }
-             }
-            var rcPath = Path.Combine(Path.GetDirectoryName(CompilerPath), toolName);
-            if(File.Exists(rcPath)) {
-                // The tool has been found.
-                return rcPath;
-            }
-            // Return the tool name itself.
-            // Windows will search common paths for the tool.
-            
-            return toolName;
-            */
-            return @"c:\Program Files (x86)\XSharp\Bin\rc.exe";
+            return System.IO.Path.Combine(InstallPath, ToolName);
         }
 
         /// <summary>

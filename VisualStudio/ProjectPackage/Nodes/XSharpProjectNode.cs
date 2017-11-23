@@ -1851,6 +1851,36 @@ namespace XSharp.Project
             }
             return result;
         }
+
+        private bool updateProperty(Microsoft.Build.Construction.ProjectPropertyElement prop)
+        {
+            try
+            {
+                if (string.Equals(prop.Name,"documentationfile",StringComparison.OrdinalIgnoreCase) )
+                {
+                    string sValue = prop.Value;
+                    if (string.Equals(sValue, "true",StringComparison.OrdinalIgnoreCase))
+                    {
+                        var prop2 = this.BuildProject.Properties.Where(p => p.Name.ToLower() == "assemblyname").FirstOrDefault();
+                        if (!String.IsNullOrEmpty(prop2?.UnevaluatedValue))
+                            prop.Value = System.IO.Path.ChangeExtension(prop2.UnevaluatedValue, ".Xml");
+                        else
+                            prop.Value = "";
+                        return true;
+                    }
+                    else if (string.Equals(sValue, "false", StringComparison.OrdinalIgnoreCase))
+                    {
+                        prop.Value = "";
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Error updating documentationfle: " + e.Message);
+            }
+            return false;
+        }
         private void FixProjectFile(string filename)
         {
             bool changed = false;
@@ -1858,35 +1888,33 @@ namespace XSharp.Project
             var groups = xml.PropertyGroups.ToList();
             var groupDict = new Dictionary<string, MBC.ProjectPropertyGroupElement>();
             
-            foreach (var group in groups)
+            foreach (var group in groups.Where( grp => grp.Condition.Trim().Length > 0))
             {
-                if (group.Condition.Length > 0)
+                string condition = group.Condition;
+                if (condition.IndexOf(config, StringComparison.OrdinalIgnoreCase) > -1 &&
+                    condition.IndexOf(configPlatform, StringComparison.OrdinalIgnoreCase) == -1)
                 {
-                    string condition = group.Condition;
-                    if (condition.IndexOf(config, StringComparison.OrdinalIgnoreCase) > -1 &&
-                        condition.IndexOf(configPlatform, StringComparison.OrdinalIgnoreCase) == -1)
-                    {
-                        if (condition.IndexOf("'Debug", StringComparison.OrdinalIgnoreCase) > 0)
-                            condition = conditionDebug;
-                        else
-                            condition = conditionRelease;
-                        changed = true;
-                    }
-                    if (condition.Contains("'=='"))
-                    {
-                        condition = condition.Replace("'=='", "' == '");
-                        changed = true;
-
-                    }
-                    condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
-                    group.Condition = condition;
-                    if (!groupDict.ContainsKey(condition))
-                    {
-                        groupDict.Add(condition, group);
-                    }
-                    
+                    if (condition.IndexOf("'Debug", StringComparison.OrdinalIgnoreCase) > 0)
+                        condition = conditionDebug;
+                    else
+                        condition = conditionRelease;
+                    changed = true;
                 }
+                if (condition.Contains("'=='"))
+                {
+                    condition = condition.Replace("'=='", "' == '");
+                    changed = true;
+
+                }
+                condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+                group.Condition = condition;
+                if (!groupDict.ContainsKey(condition))
+                {
+                    groupDict.Add(condition, group);
+                }
+                    
             }
+            // remove the first of each condition combination from the list
             foreach (var group in groupDict.Values)
             {
                 groups.Remove(group);
@@ -1943,6 +1971,14 @@ namespace XSharp.Project
                     changed = true;
                 }
             }
+            foreach (var group in groupDict.Values)
+            {
+                foreach (var prop in group.Properties)
+                {
+                    if (updateProperty(prop))
+                        changed = true;
+                }
+            }
             // check for the XSharpProjectExtensionsPath property inside the first propertygroup
             bool ok = false;
             foreach (var child in xml.Properties)
@@ -1957,19 +1993,6 @@ namespace XSharp.Project
             {
                 var item = groups[0].AddProperty("XSharpProjectExtensionsPath", @"$(MSBuildExtensionsPath)\XSharp\");
             }
-            var props = new List<MSBuild.ProjectProperty>();
-            foreach (var prop in this.BuildProject.Properties)
-            {
-                if (prop.Name.ToLower() == "documentationfile")
-                {
-                    props.Add(prop);
-                }
-            }
-            foreach (var prop in props)
-            {
-                this.BuildProject.RemoveProperty(prop);
-            }
-
             MBC.ProjectImportElement iTargets = null;
             changed = moveImports(ref iTargets, filename) || changed;
             changed = moveBuildEvents(iTargets) || changed;

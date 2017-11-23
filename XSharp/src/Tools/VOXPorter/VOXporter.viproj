@@ -79,12 +79,13 @@ FileGUID = 5106C14A-9E94-4FC3-966E-E57E575F8846
 FileType = Code
 [VOXPorter References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = %ProjectPath%\Dll\XICOMMON.dll,1,1
-ReferenceBrowse = %ProjectPath%\Dll\XIRES.dll,1,1
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceProject = D5679723-DA91-4572-B699-5FDEC084BDB5,1,0,Fab_VO_Entities
 ReferenceBrowse = %ProjectPath%\Dll\SDK_Defines.dll,1,1
+ReferenceBrowse = %ProjectPath%\Dll\XICOMMON.dll,1,1
+ReferenceBrowse = %ProjectPath%\Dll\XIRES.dll,1,1
+ReferenceBrowse = %ProjectPath%\Dll\XIDED.dll,1,1
 [VOXPorter Resources]
 ResourceFile = Designers , %AppPath%\Resources\Designers.resources
 ResourceFileGuid = 369B3304-1BF5-4D80-AA97-2B60C561DEDF

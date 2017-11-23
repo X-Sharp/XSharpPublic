@@ -1645,7 +1645,24 @@ namespace XSharp.Project
             return;
         }
 
-        public bool IsVsBuilding => VsShellUtilities.IsSolutionBuilding(this.Site);
+        public bool IsVsBuilding
+        {
+            get
+            {
+                try
+                {
+                    if (this.Site !=  null )
+                    {
+                        return VsShellUtilities.IsSolutionBuilding(this.Site);
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error fetching IsVsBuilding: " + e.Message);
+                }
+                return false;
+            }
+        }
         #endregion
         public bool IsDocumentOpen(string documentName)
         {

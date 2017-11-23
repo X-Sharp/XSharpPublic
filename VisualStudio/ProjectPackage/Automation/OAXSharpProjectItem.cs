@@ -20,7 +20,7 @@ namespace XSharp.Project
     /// </summary>
     [CLSCompliant(false), ComVisible(true)]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
-    public class OAXSharpProject : OAVSProject
+    public class OAXSharpProject : OAProject
     {
         // =========================================================================================
         // Member variables
@@ -59,19 +59,6 @@ namespace XSharp.Project
                 return this.properties;
             }
         }
-        VSProjectEvents events;
-        public override VSProjectEvents Events
-        {
-            get
-            {
-				// return our events class that also supports ImportsEvents which Resharper wants
-                if(events == null)
-				{
-                    events = new OAXSharpVSProjectEvents(this);
-				}
-                return events;
-            }
-        }
 		
     }
     /// <summary>
@@ -82,15 +69,25 @@ namespace XSharp.Project
     public class OAXSharpVSProject : OAVSProject
     {
         private OAVSProjectImports imports;
+        private VSProjectEvents events;
         internal OAXSharpVSProject(ProjectNode project) : base(project)
         {
             this.imports = new OAVSProjectImports(this.Project);
+            this.events = new OAVSProjectEvents(this);
         }
         public override Imports Imports
         {
             get
             {
                 return imports;
+            }
+        }
+        
+        public override VSProjectEvents Events
+        {
+            get
+            {
+                return events;
             }
         }
 
@@ -175,24 +172,4 @@ namespace XSharp.Project
             }
         }
     }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
-    [ComVisible(true), CLSCompliant(false)]
-    public class OAXSharpVSProjectEvents : OAVSProjectEvents
-    {
-        private VSLangProj.ImportsEvents importsEvents;
-
-        public OAXSharpVSProjectEvents(OAVSProject vsProject) : base(vsProject)
-        {
-            this.importsEvents = new VSLangProj.ImportsEventsClass();
-        }
-
-        public override ImportsEvents ImportsEvents
-        {
-            get
-            {
-                return importsEvents;
-            }
-        }
-    }
-
 }

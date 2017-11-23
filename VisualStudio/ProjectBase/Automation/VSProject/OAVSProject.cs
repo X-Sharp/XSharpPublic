@@ -43,7 +43,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual ProjectItem AddWebReference(string bstrUrl)
         {
-			Debug.Fail("VSProject.AddWebReference not implemented");
+            Debug.Fail("VSProject.AddWebReference not implemented");
             throw new NotImplementedException();
         }
 
@@ -57,13 +57,13 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual void CopyProject(string bstrDestFolder, string bstrDestUNCPath, prjCopyProjectOption copyProjectOption, string bstrUsername, string bstrPassword)
         {
-			Debug.Fail("VSProject.References not implemented");
+            Debug.Fail("VSProject.References not implemented");
             throw new NotImplementedException();
         }
 
         public virtual ProjectItem CreateWebReferencesFolder()
         {
-			Debug.Fail("VSProject.CreateWebReferencesFolder not implemented");
+            Debug.Fail("VSProject.CreateWebReferencesFolder not implemented");
             throw new NotImplementedException();
         }
 
@@ -79,7 +79,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                if(events == null)
+                if (events == null)
                     events = new OAVSProjectEvents(this);
                 return events;
             }
@@ -87,19 +87,19 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual void Exec(prjExecCommand command, int bSuppressUI, object varIn, out object pVarOut)
         {
-			Debug.Fail("VSProject.Exec not implemented");
+            Debug.Fail("VSProject.Exec not implemented");
             throw new NotImplementedException(); ;
         }
 
         public virtual void GenerateKeyPairFiles(string strPublicPrivateFile, string strPublicOnlyFile)
         {
-			Debug.Fail("VSProject.GenerateKeyPairFiles not implemented");
+            Debug.Fail("VSProject.GenerateKeyPairFiles not implemented");
             throw new NotImplementedException(); ;
         }
 
         public virtual string GetUniqueFilename(object pDispatch, string bstrRoot, string bstrDesiredExt)
         {
-			Debug.Fail("VSProject.GetUniqueFilename not implemented");
+            Debug.Fail("VSProject.GetUniqueFilename not implemented");
             throw new NotImplementedException();
         }
 
@@ -137,7 +137,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             get
             {
                 ReferenceContainerNode references = project.GetReferenceContainer() as ReferenceContainerNode;
-                if(null == references)
+                if (null == references)
                 {
                     return new OAReferences(null, project);
                 }
@@ -147,7 +147,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual void Refresh()
         {
-			Debug.Fail("VSProject.Refresh not implemented");
+            Debug.Fail("VSProject.Refresh not implemented");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
@@ -155,7 +155,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-				Debug.Fail("VSProject.TemplatePath not implemented");
+                Debug.Fail("VSProject.TemplatePath not implemented");
                 throw new NotImplementedException();
             }
         }
@@ -165,7 +165,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-				Debug.Fail("VSProject.WebReferencesFolder not implemented");
+                Debug.Fail("VSProject.WebReferencesFolder not implemented");
                 throw new NotImplementedException();
             }
         }
@@ -175,12 +175,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-				Debug.Fail("VSProject.WorkOffLine not implemented");
+                Debug.Fail("VSProject.WorkOffLine not implemented");
                 throw new NotImplementedException();
             }
             set
             {
-				Debug.Fail("VSProject.Set_WorkOffLine not implemented");
+                Debug.Fail("VSProject.Set_WorkOffLine not implemented");
                 throw new NotImplementedException();
             }
         }
@@ -221,8 +221,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                Debug.Fail("VSProjectEvents.ImportsEvents not implemented");
-                throw new NotImplementedException();
+                //Debug.Fail("VSProjectEvents.ImportsEvents not implemented");
+                //throw new NotImplementedException();
+                return null;
             }
         }
 
@@ -236,7 +237,6 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         #endregion
     }
-
 
 }
 

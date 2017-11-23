@@ -356,14 +356,18 @@ namespace XSharp.Project
             return base.GetProperty(propId);
         }
 
-
+        private object automationobject;
         /// <summary>
         /// Returns an automation object representing this node
         /// </summary>
         /// <returns>The automation object</returns>
         public override object GetAutomationObject()
         {
-            return new OAXSharpProject(this);
+            if (automationobject == null)
+            {
+                automationobject = new OAXSharpProject(this);
+            }
+            return automationobject;
         }
 
         /// <summary>

@@ -24,6 +24,7 @@ namespace XSharp.CodeDom
     [DebuggerDisplay("{ToString(),nq}")]
     internal class XMemberType
     {
+
         internal XMemberType(string name, MemberTypes memberType, bool inherited, System.Type type, string typeName)
         {
             Name = name;
@@ -32,6 +33,7 @@ namespace XSharp.CodeDom
             Type = type;
             TypeName = typeName;
         }
+
         internal XMemberType(string name, MemberTypes memberType, bool inherited) :
             this(name, memberType, inherited, typeof(void), "System.Void")
         {
@@ -42,6 +44,7 @@ namespace XSharp.CodeDom
         internal System.Type Type { get; private set; }
         internal String TypeName { get; private set; }
         internal bool Inherited { get; private set; }
+
         public override string ToString()
         {
             if (Name == null || TypeName == null)
@@ -49,6 +52,28 @@ namespace XSharp.CodeDom
             return Name + "," + TypeName;
         }
     }
+
+    internal class TypeXType
+    {
+        internal System.Type Type { get; private set; }
+        internal XType xType { get; private set; }
+
+        internal TypeXType(System.Type type) { Type = type; }
+        internal TypeXType(XType xtype) { xType = xtype; }
+        internal TypeXType(TypeXType txtype)
+        {
+            if (txtype.Type != null)
+            {
+                Type = txtype.Type;
+            }
+            else
+            {
+                xType = txtype.xType;
+            }
+        }
+
+    }
+
     class XSharpClassDiscover : XSharpBaseDiscover
     {
 
@@ -873,44 +898,90 @@ namespace XSharp.CodeDom
             return null;
         }
 
-        private CodeExpression buildTypeMemberExpression(CodeExpression target, System.Type type, string name, out System.Type memberType)
+        private CodeExpression buildTypeMemberExpression(CodeExpression target, TypeXType txtype, string name, out TypeXType memberType)
         {
-            MemberInfo m = null;
             CodeExpression expr = null;
             memberType = null;
-            if (type != null)
+            while (txtype != null)
             {
-                var mi = type.GetMember(name);
-                if (mi.Length > 0)
+                System.Type type = txtype.Type;
+                XType xtype = txtype.xType;
+                if (xtype != null)
                 {
-                    m = mi[0];
-                    switch (m.MemberType)
+                    var mi = xtype.GetMember(name);
+                    if (mi.Count == 0)
                     {
-                        case MemberTypes.Field:
-                            expr = new XCodeFieldReferenceExpression(target, name);
-                            memberType = ((FieldInfo)m).FieldType;
-                            break;
-                        case MemberTypes.Property:
-                            expr = new XCodePropertyReferenceExpression(target, name);
-                            memberType = ((PropertyInfo)m).PropertyType;
-                            break;
-                        case MemberTypes.Method:
-                            expr = new XCodeMethodReferenceExpression(target, name);
-                            memberType = ((MethodInfo)m).ReturnType;
-                            break;
-                        case MemberTypes.Event:
-                            expr = new XCodeEventReferenceExpression(target, name);
-                            memberType = ((EventInfo)m).EventHandlerType;
-                            break;
-                        default:
-                            break;
+                        // Member not found !? MayBe in the parent, which can be a System.Type
+                        txtype = findTypeXType(xtype.ParentName);
+                        continue;
+                    }
+                    //
+                    if (mi.Count > 0)
+                    {
+                        XTypeMember m = mi[0];
+                        switch (m.Kind)
+                        {
+                            case Kind.Field:
+                            case Kind.ClassVar:
+                                expr = new XCodeFieldReferenceExpression(target, name);
+                                memberType = new TypeXType(findTypeXType(m.TypeName));
+                                break;
+                            case Kind.Access:
+                            case Kind.Assign:
+                            case Kind.Property:
+                                expr = new XCodePropertyReferenceExpression(target, name);
+                                memberType = new TypeXType(findTypeXType(m.TypeName));
+                                break;
+                            case Kind.Method:
+                                expr = new XCodeMethodReferenceExpression(target, name);
+                                memberType = new TypeXType(findTypeXType(m.TypeName));
+                                break;
+                            case Kind.Event:
+                                expr = new XCodeEventReferenceExpression(target, name);
+                                memberType = new TypeXType(findTypeXType(m.TypeName));
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
+                //
+                if (type != null)
+                {
+                    var mi = type.GetMember(name);
+                    if (mi.Length > 0)
+                    {
+                        MemberInfo m = mi[0];
+                        switch (m.MemberType)
+                        {
+                            case MemberTypes.Field:
+                                expr = new XCodeFieldReferenceExpression(target, name);
+                                memberType = new TypeXType(((FieldInfo)m).FieldType);
+                                break;
+                            case MemberTypes.Property:
+                                expr = new XCodePropertyReferenceExpression(target, name);
+                                memberType = new TypeXType(((PropertyInfo)m).PropertyType);
+                                break;
+                            case MemberTypes.Method:
+                                expr = new XCodeMethodReferenceExpression(target, name);
+                                memberType = new TypeXType(((MethodInfo)m).ReturnType);
+                                break;
+                            case MemberTypes.Event:
+                                expr = new XCodeEventReferenceExpression(target, name);
+                                memberType = new TypeXType(((EventInfo)m).EventHandlerType);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                //
+                break;
             }
             return expr;
         }
 
-        private CodeExpression buildSelfExpression(CodeExpression target, string name, out System.Type memberType)
+        private CodeExpression buildSelfExpression(CodeExpression target, string name, out TypeXType memberType)
         {
             CodeExpression expr = null;
             memberType = null;
@@ -921,7 +992,6 @@ namespace XSharp.CodeDom
             if (_members.ContainsKey(name))
             {
                 var mi = _members[name];
-                memberType = mi.Type;
                 switch (mi.MemberType)
                 {
                     case MemberTypes.Field:
@@ -937,9 +1007,19 @@ namespace XSharp.CodeDom
                         expr = new XCodeEventReferenceExpression(target, name);
                         break;
                 }
+                //
+                if (mi.Type != null)
+                {
+                    memberType = new TypeXType(mi.Type);
+                }
+                else
+                {
+                    memberType = findTypeXType(mi.TypeName);
+                }
             }
             return expr;
         }
+
         private CodeExpression BuildAccessMember(XSharpParser.AccessMemberContext amc, bool right)
         {
             var elements = new List<XSharpParser.AccessMemberContext>();
@@ -1023,11 +1103,12 @@ namespace XSharp.CodeDom
             // expr should have a value here
             if (lhs != null)
             {
+                TypeXType txtype = new TypeXType(type);
                 for (int i = 0; i < elements.Count; i++)
                 {
                     amc = elements[i];
                     var rhs = amc.Name.GetText();
-                    System.Type memberType = null;
+                    TypeXType memberType = null;
                     if (i == 0)
                     {
                         if (isSelf)
@@ -1037,15 +1118,15 @@ namespace XSharp.CodeDom
                         }
                         else
                         {
-                            lhs = buildTypeMemberExpression(lhs, type, rhs, out memberType);
+                            lhs = buildTypeMemberExpression(lhs, txtype, rhs, out memberType);
                         }
                     }
                     else
                     {
-                        lhs = buildTypeMemberExpression(lhs, type, rhs, out memberType);
+                        lhs = buildTypeMemberExpression(lhs, txtype, rhs, out memberType);
                     }
-                    type = memberType;
-                    if (type == null)
+                    txtype = memberType;
+                    if (txtype == null)
                         break;
                 }
             }
@@ -1384,7 +1465,7 @@ namespace XSharp.CodeDom
 
 
 
- 
+
     }
     static class ParseHelpers
     {

@@ -71,6 +71,23 @@ namespace XSharpModel
 
         }
 
+        public IImmutableList<XTypeMember> GetMember(string elementName)
+        {
+            List<XTypeMember> tempMembers = new List<XTypeMember>();
+            //
+            foreach (var member in Members.Where(x => nameEquals(x.Name, elementName)))
+            {
+                tempMembers.Add(member);
+            }
+            return tempMembers.ToImmutableArray();
+        }
+
+        private bool nameEquals(string name, string compareWith)
+        {
+            return (name.ToLower().CompareTo(compareWith.ToLower()) == 0);
+        }
+
+
         override public string FullName
         {
             get
@@ -262,6 +279,8 @@ namespace XSharpModel
                 return desc;
             }
         }
+
+
 
         public static XType CreateGlobalType(XFile file)
         {

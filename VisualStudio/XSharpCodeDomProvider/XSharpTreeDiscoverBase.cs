@@ -708,6 +708,29 @@ namespace XSharp.CodeDom
             return type;
         }
 
+        protected TypeXType findTypeXType(string typeName)
+        {
+            TypeXType txtype = null;
+            var type = findType(typeName);
+            if (type != null)
+            {
+                txtype = new TypeXType(type);
+            }
+            else
+            {
+                var xtype = findXType(typeName);
+                if (xtype == null)
+                {
+                    xtype = findReferencedType(typeName);
+                }
+                if (xtype != null)
+                {
+                    txtype = new TypeXType(xtype);
+                }
+            }
+            return txtype;
+        }
+
         protected XCodeTypeReference BuildNativeType(XSharpParser.NativeTypeContext nativeType)
         {
             //

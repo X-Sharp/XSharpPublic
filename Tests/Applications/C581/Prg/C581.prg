@@ -6,11 +6,11 @@
 #define COMPILE(c) &("{||" + c + "}")
 
 // ok:
-//#translate COMPILE(c) => &("{||" + c + "}")
+//#translate COMPILE(<c>) => &("{||" + <c> + "}")
 FUNCTION Start() AS VOID
-LOCAL c AS STRING
+LOCAL cTest AS STRING
 LOCAL u AS USUAL
-c := "1+2"
-u := COMPILE(c)
+cTest := "1+2"
+u := COMPILE(cTest)
 ? Eval(u)
 RETURN

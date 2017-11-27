@@ -58949,6 +58949,206 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C580 - Inconsistent warning about missing SUPER() in Core/Vulcan dialects
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C581 - Compiler crash with complex #define *************
+Application = C581 - Compiler crash with complex #define
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C581\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C581
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2F82E454-5BF7-4273-8B2A-5C36D52A5635
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C581 - Compiler crash with complex #define FileGroups]
+[C581 - Compiler crash with complex #define Files]
+File = %AppPath%\Prg\C581.prg
+FileGUID = ADF8B9B6-F638-4B9F-BD90-1F503776BC3B
+FileType = Code
+[C581 - Compiler crash with complex #define References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C581 - Compiler crash with complex #define Resources]
+[C581 - Compiler crash with complex #define Native Resources]
+[C581 - Compiler crash with complex #define License files]
+[C581 - Compiler crash with complex #define General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C581 - Compiler crash with complex #define Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C581 - Compiler crash with complex #define
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C582 - Cannot use alias expression with field named after a keyword *************
+Application = C582 - Cannot use alias expression with field named after a keyword
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C582\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C582
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 10C9CF1F-C117-4C75-ACD4-F7E57F45E588
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C582 - Cannot use alias expression with field named after a keyword FileGroups]
+[C582 - Cannot use alias expression with field named after a keyword Files]
+File = %AppPath%\Prg\C582.prg
+FileGUID = A84542B8-06AC-46E7-A409-045CDB2CD8C5
+FileType = Code
+[C582 - Cannot use alias expression with field named after a keyword References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C582 - Cannot use alias expression with field named after a keyword Resources]
+[C582 - Cannot use alias expression with field named after a keyword Native Resources]
+[C582 - Cannot use alias expression with field named after a keyword License files]
+[C582 - Cannot use alias expression with field named after a keyword General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C582 - Cannot use alias expression with field named after a keyword Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C582 - Cannot use alias expression with field named after a keyword
 [EndApplications]
 
 [Configurations]

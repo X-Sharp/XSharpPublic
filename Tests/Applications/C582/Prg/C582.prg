@@ -4,7 +4,7 @@ FUNCTION Start() AS VOID
 
 	LOCAL cDbf AS STRING
 	LOCAL aDbfStruct AS ARRAY
-	cDbf := System.Environment.CurrentDirectory + "\C391.dbf"
+	cDbf := System.Environment.CurrentDirectory + "\C582.dbf"
 	IF System.IO.File.Exists(cDbf)
 		System.IO.File.Delete(cDbf)
 	END IF

@@ -3393,8 +3393,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     ReportDiagnosticsIfObsolete(diagnostics, resultMember, nonNullSyntax, hasBaseReceiver: isBaseConstructorInitializer);
 
 #if XSHARP
-                    if (voDefaultCtorCall)
+                    if (voDefaultCtorCall && resultMember?.ParameterCount > 0)
                     {
+                        
                         diagnostics.Add(ErrorCode.WRN_ImplicitParentConstructorInitializer, nonNullSyntax.GetLocation());
                     }
 #endif

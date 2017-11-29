@@ -353,7 +353,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private void ValidateXSharpSettings(List<Diagnostic> diagnostics) {
             bool isVo = false;
             var newDialect = options.Dialect;
-            if (options.Dialect == XSharpDialect.VO || options.Dialect == XSharpDialect.Vulcan) {
+            if (options.Dialect.IsDialectVO()) {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
                     // Ok;
                     isVo = true;

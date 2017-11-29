@@ -58850,7 +58850,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C579 - String class fields get reset to "" with /vo2, even if they have non-null values
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C580 - Inconsistent warning about missing SUPER() in Core/Vulcan dialects *************
 Application = C580 - Inconsistent warning about missing SUPER() in Core/Vulcan dialects
 IDEVersion = 1.06
@@ -58861,7 +58861,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Core
+Dialect = Vulcan
 Folder = %ProjectPath%\Applications\C580\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 

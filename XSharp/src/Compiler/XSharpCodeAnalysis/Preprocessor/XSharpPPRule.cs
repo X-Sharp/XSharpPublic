@@ -191,6 +191,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             _matchtokens = matchTokens.ToArray();
+            var linearlist = new List<PPMatchToken>();
+            addMatchTokens(_matchtokens, linearlist);
+            _matchTokensFlattened = linearlist.ToArray();
+            tokenCount = _matchTokensFlattened.Length;
             _resulttokens = resultTokens.ToArray();
             checkMatchingTokens(_resulttokens, markers);
             return _errorMessages == null || _errorMessages.Count == 0;
@@ -354,7 +358,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool allOk = true;
             // Set all marker indices
-            for (int i = 0; i < _matchTokensFlattened.Length; i++)
+            if (_matchTokensFlattened == null)
+            {
+                addErrorMessage(this._matchtokens[0].Token, "Syntax Error in Preprocessor Rule");
+                return false;
+            }
+            for (int i = 0; i < _matchTokensFlattened?.Length; i++)
             {
                 var mt = _matchTokensFlattened[i];
                 mt.Index = i;

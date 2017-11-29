@@ -1063,6 +1063,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected LiteralExpressionSyntax GenerateLiteral(string text)
         {
+            if (text.StartsWith("@@"))
+                text = text.Substring(2);
             return _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,
                                                 SyntaxFactory.Literal(null, text, text, null));
         }
@@ -5252,12 +5254,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Step.SetSequencePoint();
                     break;
                 case XP.UPTO:
-                case XP.TO:
-                default:
                     whileExpr = _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
                             iterExpr,
                             SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
                             context.FinalExpr.Get<ExpressionSyntax>());
+
+                    incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
+                                iterExpr,
+                                SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
+                                context.Step.Get<ExpressionSyntax>());
+                    whileExpr.XNode = context.FinalExpr;
+                    incrExpr.XNode = context.Step;
+                    context.FinalExpr.SetSequencePoint();
+                    context.Step.SetSequencePoint();
+                    break;
+                case XP.TO:
+                default:
+                    // 
+                    var compExpr = _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanExpression,
+                        context.Step.Get<ExpressionSyntax>(), 
+                        SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
+                        GenerateLiteral(0));
+                    var ltExpr = _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
+                            iterExpr,
+                            SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
+                            context.FinalExpr.Get<ExpressionSyntax>());
+                    var gtExpr = _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanOrEqualExpression,
+                            iterExpr,
+                            SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken),
+                            context.FinalExpr.Get<ExpressionSyntax>());
+                    whileExpr = _syntaxFactory.ConditionalExpression(compExpr,
+                        SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                        ltExpr,
+                        SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                        gtExpr);
+
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
                                 iterExpr,
                                 SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),

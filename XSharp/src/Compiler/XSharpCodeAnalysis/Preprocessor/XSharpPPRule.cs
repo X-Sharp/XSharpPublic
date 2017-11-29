@@ -520,27 +520,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             i = i + more.Count + 1;
 
                             var nested = analyzeMatchTokens(more.ToArray(), markers, result.Count, nestLevel + 1);
+                            PPMatchToken first = null;
                             if (nested.Length > 0)
                             {
                                 // the '[' is added to the result list
                                 // and the nested elements are added as children
                                 // the type for '[' is MatchOptional
+                                first = nested[0];
                                 PPMatchToken marker = null;
                                 foreach (var e in nested)
                                 {
                                     if (e.IsMarker)
                                         marker = e;
                                 }
-                                if (marker == null)
-                                {
-                                    _errorMessages.Add(new PPErrorMessage(token, "Optional block does not contain a match marker"));
-                                }
-                                else
-                                {
-                                    element = new PPMatchToken(token, PPTokenType.MatchOptional, marker.Key);
-                                    element.Children = nested;
-                                    result.Add(element);
-                                }
+                                string key = marker == null ? "**"+first.Key: marker.Key;
+                                element = new PPMatchToken(token, PPTokenType.MatchOptional, key);
+                                element.Children = nested;
+                                result.Add(element);
                             }
                         }
 

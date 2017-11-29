@@ -58950,7 +58950,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C580 - Inconsistent warning about missing SUPER() in Core/Vulcan dialects
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C581 - Compiler crash with complex #define *************
 Application = C581 - Compiler crash with complex #define
 IDEVersion = 1.06
@@ -59050,7 +59050,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C581 - Compiler crash with complex #define
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C582 - Cannot use alias expression with field named after a keyword *************
 Application = C582 - Cannot use alias expression with field named after a keyword
 IDEVersion = 1.06
@@ -59150,7 +59150,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C582 - Cannot use alias expression with field named after a keyword
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C583 - (x)Harbour syntax currently nor supported in Harbour dialect *************
 Application = C583 - (x)Harbour syntax currently nor supported in Harbour dialect
 IDEVersion = 1.06
@@ -59250,7 +59250,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C583 - (x)Harbour syntax currently nor supported in Harbour dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C584 - Preprocessor error with DBCmds.vh file *************
 Application = C584 - Preprocessor error with DBCmds.vh file
 IDEVersion = 1.06
@@ -59317,7 +59317,7 @@ VO14=0
 VO16=0
 LateBound=0
 Unsafe=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ResponseOnly=0
@@ -59350,7 +59350,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C584 - Preprocessor error with DBCmds.vh file
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C585 - FOR Next with negative step *************
 Application = C585 - FOR Next with negative step
 IDEVersion = 1.06

@@ -191,6 +191,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             _matchtokens = matchTokens.ToArray();
+            var linearlist = new List<PPMatchToken>();
+            addMatchTokens(_matchtokens, linearlist);
+            _matchTokensFlattened = linearlist.ToArray();
+            tokenCount = _matchTokensFlattened.Length;
             _resulttokens = resultTokens.ToArray();
             checkMatchingTokens(_resulttokens, markers);
             return _errorMessages == null || _errorMessages.Count == 0;
@@ -354,7 +358,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool allOk = true;
             // Set all marker indices
-            for (int i = 0; i < _matchTokensFlattened.Length; i++)
+            if (_matchTokensFlattened == null)
+            {
+                addErrorMessage(this._matchtokens[0].Token, "Syntax Error in Preprocessor Rule");
+                return false;
+            }
+            for (int i = 0; i < _matchTokensFlattened?.Length; i++)
             {
                 var mt = _matchTokensFlattened[i];
                 mt.Index = i;
@@ -610,7 +619,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return mt;
         }
-        void addMatchTokens( PPMatchToken[] source, List<PPMatchToken> list)
+        void addMatchTokens(PPMatchToken[] source, List<PPMatchToken> list)
         {
             foreach (var token in source)
             {
@@ -709,7 +718,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // whitespace tokens have been skipped
                     var ppWs = new XSharpToken(token, XSharpLexer.WS, " ");
-                    ppWs.Channel = ppWs.OriginalChannel = XSharpLexer.Hidden; 
+                    ppWs.Channel = ppWs.OriginalChannel = XSharpLexer.Hidden;
                     result.Add(new PPResultToken(ppWs, PPTokenType.Token));
                 }
                 lastTokenIndex = token.TokenIndex;
@@ -896,7 +905,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result += this.Type.ToString() + " ";
                     foreach (var token in _matchtokens)
                     {
-                        result += token.SyntaxText +" ";
+                        result += token.SyntaxText + " ";
                     }
                     return result.Trim();
                 }
@@ -1194,7 +1203,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             return end;
         }
-        internal bool Matches(IList<XSharpToken> tokens,  out PPMatchRange[] matchInfo)
+        internal bool Matches(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
             int iRule = 0;
             int iSource = 0;
@@ -1277,7 +1286,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal IList<XSharpToken> Replace(IList<XSharpToken> tokens, PPMatchRange[] matchInfo)
         {
             Debug.Assert(matchInfo.Length == tokenCount);
-            return Replace(_resulttokens, tokens, matchInfo,0);
+            return Replace(_resulttokens, tokens, matchInfo, 0);
 
         }
         internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset)
@@ -1395,7 +1404,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!range.Empty)
             {
                 // No special handling for List markers. Everything is copied including commas etc.
-                if (range.MatchCount > 1 )
+                if (range.MatchCount > 1)
                 {
                     range = range.Children[offset];
                 }
@@ -1427,8 +1436,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (end - start > 4)
             {
                 if (tokens[start].Type == XSharpLexer.LCURLY &&
-                    (tokens[start + 1].Type == XSharpLexer.PIPE  ||
-                     tokens[start + 1].Type == XSharpLexer.OR ) &&
+                    (tokens[start + 1].Type == XSharpLexer.PIPE ||
+                     tokens[start + 1].Type == XSharpLexer.OR) &&
                     tokens[end].Type == XSharpLexer.RCURLY)
                 {
                     addBlockMarker = false;
@@ -1502,7 +1511,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
                 }
             }
-            
+
             switch (rule.RuleTokenType)
             {
                 // Handle 3 kind of stringifies:
@@ -1661,7 +1670,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var range = matchInfo[rule.MatchMarker.Index];
             if (!range.Empty)
             {
-                if (range.MatchCount > 1 )
+                if (range.MatchCount > 1)
                 {
                     range = range.Children[offset];
                 }
@@ -1757,7 +1766,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return current;
         }
-     }
+    }
 }
 
 

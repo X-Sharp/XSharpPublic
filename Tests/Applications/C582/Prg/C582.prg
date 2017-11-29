@@ -18,8 +18,8 @@ FUNCTION Start() AS VOID
 	DBAppend()
 
 	// compiler error. probably it's ok and we cannot workaround it with @@, but see blow
-	test->FOR := "abc"
-	? test->FOR
+	//test->FOR := "abc"
+	//? test->FOR
 
 	// the following compiles, but does not work at runtime, tries to use a field named "@@FOR"
 	test->@@FOR := "abc"

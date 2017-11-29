@@ -26,6 +26,9 @@
                         [VALID <valid>]                                 ;
                         [WHEN <when>]                                   ;
                         [SEND <msg>]                                    ;
+                        [SEND <msg2>]                                   ;
+                        [SEND <msg3>]                                   ;
+                        [SEND <msg4>]                                   ;
                                                                         ;
       => SetPos( <row>, <col> )                                         ;
        ; AAdd(                                                          ;
@@ -34,7 +37,10 @@
              )                                                          ;
        ;atail(Getlist):reader := {|x| zGEReader(x) } ;
        ;atail(Getlist):cargo := ARRAY(CARGO_ELEMENTS) ;
-      [; ATail(GetList):<msg>]
+      [; ATail(GetList):<msg>]    ;
+      [; ATail(GetList):<msg2>]   ;
+      [; ATail(GetList):<msg3>]   ;
+      [; ATail(GetList):<msg4>]
 
 /***
 *   @..SAY..GET

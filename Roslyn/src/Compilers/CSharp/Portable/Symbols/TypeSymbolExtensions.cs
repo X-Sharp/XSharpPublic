@@ -345,11 +345,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             for (int i = 0; i < names.Length; i++)
             {
-                if ((object)symbol == null || symbol.Name != names[i]) return false;
-                symbol = symbol.ContainingSymbol;
+                if (symbol != null)
+                {
+                    if (symbol.Name == names[i])
+                        return true;
+                }
             }
 
-            return true;
+            return false;
         }
 
         public static bool IsDelegateType(this TypeSymbol type)

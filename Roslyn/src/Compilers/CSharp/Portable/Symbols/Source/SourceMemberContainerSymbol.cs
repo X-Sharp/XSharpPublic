@@ -2134,9 +2134,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             (f.Type as Symbols.Metadata.PE.PENamedTypeSymbol)?.IsVoStructOrUnion() == true ||
                             (f.Type.SpecialType == SpecialType.System_IntPtr )||
                             (f.Type.SpecialType == SpecialType.System_UIntPtr) ||
-                            (f.Type as NamedTypeSymbol) == DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan___Psz) ||
-                            (f.Type as NamedTypeSymbol) == DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan___WinBool) ||
-                            (f.Type as NamedTypeSymbol) == DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan___Symbol) ||
+                                (f.Type as NamedTypeSymbol) == DeclaringCompilation.PszType() ||
+                                (f.Type as NamedTypeSymbol) == DeclaringCompilation.WinBoolType() ||
+                                (f.Type as NamedTypeSymbol) == DeclaringCompilation.SymbolType() ||
                             f.Type.FixedBufferElementSizeInBytes() != 0))
                         {
                             diagnostics.Add(ErrorCode.ERR_IllegalVoStructMemberType, f.Locations[0]);

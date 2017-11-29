@@ -34,8 +34,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     var moduleSymbol = this.ContainingPEModule;
                     var module = moduleSymbol.Module;
 
-                    var getMethods = GetSimpleNonTypeMembers(VulcanFunctionNames.GetElement);
-                    var setMethods = GetSimpleNonTypeMembers(VulcanFunctionNames.SetElement);
+                    var getMethods = GetSimpleNonTypeMembers(XSharpFunctionNames.GetElement);
+                    var setMethods = GetSimpleNonTypeMembers(XSharpFunctionNames.SetElement);
 
                     if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
                     {
@@ -66,8 +66,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     var moduleSymbol = this.ContainingPEModule;
                     var module = moduleSymbol.Module;
 
-                    var getMethods = GetSimpleNonTypeMembers(VulcanFunctionNames.GetElement);
-                    var setMethods = GetSimpleNonTypeMembers(VulcanFunctionNames.SetElement);
+                    var getMethods = GetSimpleNonTypeMembers(XSharpFunctionNames.GetElement);
+                    var setMethods = GetSimpleNonTypeMembers(XSharpFunctionNames.SetElement);
 
                     if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
                     {

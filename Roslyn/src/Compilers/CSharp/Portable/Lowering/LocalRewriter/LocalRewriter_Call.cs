@@ -933,7 +933,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (defaultConstantValue == null)
                     return null;
                 if ( parameterType is NamedTypeSymbol &&
-                    ((NamedTypeSymbol) parameterType).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                    ((NamedTypeSymbol) parameterType).ConstructedFrom == _compilation.PszType())
                 {
 
                     if (defaultConstantValue.StringValue != null)

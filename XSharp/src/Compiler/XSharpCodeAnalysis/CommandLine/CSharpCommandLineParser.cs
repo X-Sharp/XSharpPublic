@@ -263,11 +263,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
             {
-                case VulcanAssemblyNames.VulcanRTFuncs:
-                    options.VulcanAssemblies |= VulcanAssemblies.VulcanRTFuncs;
+                case OurAssemblyNames.VulcanRTFuncs:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRTFuncs;
                     break;
-                case VulcanAssemblyNames.VulcanRT:
-                    options.VulcanAssemblies |= VulcanAssemblies.VulcanRT;
+                case OurAssemblyNames.VulcanRT:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
+                    break;
+                case OurAssemblyNames.XSharpBase:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpBase;
+                    break;
+                case OurAssemblyNames.XSharpCore:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
+                    break;
+                case OurAssemblyNames.XSharpVO:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
                     break;
                 case "mscorlib":
                 case "system":
@@ -349,12 +358,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Ok;
                     isVo = true;
                 }
+                else if (options.XSharpVOIncluded) {
+                    // Ok;
+                    isVo = true;
+                }
                 else if(options.CreatingRuntime) {
                     // Ok
                     isVo = true;
                 }
                 else {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(), "VulcanRT.DLL and VulcanRTFuncs.DLL");
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(), "VulcanRT.DLL and VulcanRTFuncs.DLL or XSharp.VO.DLL");
                     newDialect = XSharpDialect.Core;
                 }
             }

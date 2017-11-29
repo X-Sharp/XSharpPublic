@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 elsz = f.Type.VoStructOrUnionLargestElementSizeInBytes();
                             }
-                            else if (f.Type == DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan___WinBool))
+                            else if (f.Type == DeclaringCompilation.WinBoolType())
                             {
                                 elsz = sz = 4;
                             }
@@ -115,7 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal SynthesizedAttributeData GetVoStructAttributeData()
         {
             var syntax = ((CSharpSyntaxNode)declaration.SyntaxReferences.FirstOrDefault()?.GetSyntax());
-            var attributeType = DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VOStructAttribute);
+            var attributeType = DeclaringCompilation.VOStructAttributeType();
             var int32type = DeclaringCompilation.GetSpecialType(SpecialType.System_Int32);
             var attributeConstructor = attributeType.GetMembers(".ctor").FirstOrDefault() as MethodSymbol;
             var constructorArguments = ArrayBuilder<TypedConstant>.GetInstance();

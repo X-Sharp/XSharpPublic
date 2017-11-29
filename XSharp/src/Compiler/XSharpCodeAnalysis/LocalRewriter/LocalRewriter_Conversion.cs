@@ -59,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (_compilation.Options.IsDialectVO)
             {
-                var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                var usualType = _compilation.UsualType();
                 if (nts != null)
                 {
                     nts = nts.ConstructedFrom;
@@ -69,7 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (nts == usualType)
                 {
                     // USUAL -> WINBOOL, use LOGIC as intermediate type
-                    if (rewrittenType== _compilation.GetWellKnownType(WellKnownType.Vulcan___WinBool))
+                    if (rewrittenType== _compilation.WinBoolType())
                     {
                         MethodSymbol m = null;
                         m = getImplicitOperator(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
@@ -97,12 +97,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else if (rewrittenType.SpecialType == SpecialType.System_DateTime)
                     {
-                        rewrittenOperand = _factory.StaticCall(usualType, VulcanFunctionNames.VulcanToObject, rewrittenOperand);
+                        rewrittenOperand = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject , rewrittenOperand);
                         return ConversionKind.Unboxing;
                     }
                     else // System.Decimals, Objects and reference types, but not String
                     {
-                        rewrittenOperand = _factory.StaticCall(usualType, VulcanFunctionNames.VulcanToObject, rewrittenOperand);
+                        rewrittenOperand = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject , rewrittenOperand);
                         if (rewrittenType.IsObjectType())
                         {
                             conversionKind = ConversionKind.Identity;
@@ -118,7 +118,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                var floatType = _compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
+                var floatType = _compilation.FloatType();
                 if (nts == floatType && rewrittenType is NamedTypeSymbol)
                 {
                     MethodSymbol m = getExplicitOperator(floatType, rewrittenType as NamedTypeSymbol);
@@ -137,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
                     if (rewrittenType == _compilation.GetSpecialType(SpecialType.System_Object) ||
-                        rewrittenType == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                        rewrittenType == _compilation.UsualType())
                     {
                         return ConversionKind.Boxing;
 

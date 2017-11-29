@@ -1,5 +1,18 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿/*
+   Copyright 2016-2017 XSharp B.V.
 
+Licensed under the X# compiler source code License, Version 1.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.xsharp.info/licenses
+
+Unless required by applicable law or agreed to in writing, software
+Distributed under the License is distributed on an "as is" basis,
+without warranties or conditions of any kind, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -60,13 +73,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                if (!compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute).IsErrorType() &&
-                    !compilation.GetWellKnownType(WellKnownType.Vulcan_VulcanImplicitNamespaceAttribute).IsErrorType()
-                    && !compilation.GetWellKnownType(WellKnownType.Vulcan___Usual).IsErrorType())
+                if (!compilation.ClassLibraryType().IsErrorType() &&
+                    !compilation.ImplicitNamespaceType().IsErrorType()
+                    && !compilation.UsualType().IsErrorType())
                 {
                     var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                     var _diagnostics = DiagnosticBag.GetInstance();
-                    string[] defNs = { VulcanNameSpaces.Vulcan};
+                    string[] defNs = { OurNameSpaces.Vulcan, OurNameSpaces.XSharp};
                     foreach (var n in defNs)
                     {
                         var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
@@ -89,8 +102,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                         }
                     }
-                    var vcla = compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
-                    var vins = compilation.GetWellKnownType(WellKnownType.Vulcan_VulcanImplicitNamespaceAttribute);
+                    var vcla = compilation.ClassLibraryType();
+                    var vins = compilation.ImplicitNamespaceType();
                     var refMan = compilation.GetBoundReferenceManager();
                     foreach (var r in refMan.ReferencedAssemblies)
                     {

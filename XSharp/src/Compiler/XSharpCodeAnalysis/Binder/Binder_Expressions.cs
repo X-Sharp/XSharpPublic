@@ -63,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]
                     // No need to worry about /AZ. This has been handled already
                     // make sure that PSZ(ptr) is not dereferenced !
-                    bool canConvert = operand.Type.IsVoidPointer() && targetType != Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
+                    bool canConvert = operand.Type.IsVoidPointer() && targetType != Compilation.PszType();
                     if ( ! canConvert)
                     {
                         PointerTypeSymbol pt = operand.Type as PointerTypeSymbol;
@@ -92,8 +92,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             BinaryOperatorKind opKind;
             int compoundStringLength = 0;
             var type = expr.Type;
-
-            if (!type.SpecialType.IsNumericType() && ! type.IsUsual() && ! type.IsObjectType())
+            
+            if (!type.SpecialType.IsNumericType() && type != Compilation.UsualType() && ! type.IsObjectType())
             {
                 return expr;
             }
@@ -145,9 +145,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (Compilation.Options.IsDialectVO)
             {
-                var arrayType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
-                var usualType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                var pszType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
+                var arrayType = Compilation.ArrayType();
+                var usualType = Compilation.UsualType();
+                var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
                 // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
                 if (cf == pszType && !Compilation.Options.ArrayZero && Compilation.Options.Dialect == XSharpDialect.VO )
@@ -331,18 +331,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (leftType is NamedTypeSymbol)
                         {
                             var nts = leftType as NamedTypeSymbol;
-                            isUsual = nts.ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                            isArray = nts.ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
+                            isUsual = nts.ConstructedFrom == Compilation.UsualType();
+                            isArray = nts.ConstructedFrom == Compilation.ArrayType();
                         }
                     }
                     // Late bound will only work for OBJECT or USUAL
                     if (isObject || isUsual || isArray)
                     {
-                        var returnType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                        var returnType = Compilation.UsualType();
                         if (isArray)
                         {
                             // When method does not exist then do a late bound ASend()
-                            var m = Compilation.GetWellKnownType(WellKnownType.Vulcan___Array).GetMembers(propName);
+                            var m = Compilation.ArrayType().GetMembers(propName);
                             earlyBound = m.Length > 0;
                         }
                         else if (isUsual)
@@ -395,12 +395,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (source.Type != null && source.Type.SpecialType == SpecialType.System_String &&
                 Compilation.Options.IsDialectVO &&
-                (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz)
+                (destination == Compilation.PszType()
                 || destination.IsVoidPointer()))
             {
                 // Note this calls the constructor for __PSZ with a string.
                 // The allocated pointer inside the PSZ is never freed by Vulcan !
-                TypeSymbol psz = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
+                TypeSymbol psz = Compilation.PszType();
                 MethodSymbol stringctor = null;
                 var ctors = psz.GetMembers(".ctor");
                 foreach (MethodSymbol ctor in ctors)
@@ -737,7 +737,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (argument.Kind == BoundKind.Literal)
             {
-                if (type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                if (type == Compilation.PszType())
                 {
                     var lit = argument as BoundLiteral;
                     if (lit.IsLiteralNull())
@@ -751,7 +751,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private BoundExpression PszFromNull(BoundExpression expression)
         {
-            var targetType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
+            var targetType = Compilation.PszType();
             return new BoundDefaultOperator(expression.Syntax, targetType);
         }
     }

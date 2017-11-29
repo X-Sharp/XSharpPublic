@@ -49,8 +49,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.IsDialectVO && this.Compilation.Options.VOStringComparisons)
             {
                 // VO Style String Comparison
-                type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
-                string methodName = VulcanFunctionNames.StringCompare;
+                type = Compilation.FunctionsType();
+                string methodName = XSharpFunctionNames.StringCompare ;
                 var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
                 if (symbols.Length == 1)
                 {
@@ -80,8 +80,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
-            var type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
-            var methodName = VulcanFunctionNames.StringEquals; 
+            var type = Compilation.FunctionsType();
+            var methodName = XSharpFunctionNames.StringEquals; 
             var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 1)
             {
@@ -107,7 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindVOUsualOther(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right)
         {
-            var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+            var usualType = Compilation.UsualType();
             BoundExpression opCall = null;
             ImmutableArray<Symbol> symbols;
             if (node.OperatorToken.Kind() == SyntaxKind.MinusToken)
@@ -161,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindVOPszCompare(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
                 ref BoundExpression left, ref BoundExpression right)
         {
-            var pszType = this.GetWellKnownType(WellKnownType.Vulcan___Psz, diagnostics, node);
+            var pszType = Compilation.PszType();
             if (right.Type != pszType)
             {
                 if (IsNullNode(right))
@@ -189,7 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindVOSymbolCompare(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
                 ref BoundExpression left, ref BoundExpression right)
         {
-            var symType = this.GetWellKnownType(WellKnownType.Vulcan___Symbol, diagnostics, node);
+            var symType = Compilation.SymbolType();
             if (right.Type != symType)
             {
                 right = CreateConversion(right, symType, diagnostics);
@@ -218,8 +218,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
-            var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
-            var methodName = VulcanFunctionNames.InExactEquals; ;
+            var usualType = Compilation.UsualType();
+            var methodName = XSharpFunctionNames.InExactEquals  ;
             var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
@@ -262,8 +262,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
-            var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
-            var methodName = VulcanFunctionNames.InExactNotEquals; ;
+            var usualType = Compilation.UsualType();
+            var methodName = XSharpFunctionNames.InExactNotEquals ;
             var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
@@ -305,8 +305,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
-            var type = this.GetWellKnownType(WellKnownType.Vulcan_Internal_CompilerServices, diagnostics, node);
-            var methodName = VulcanFunctionNames.StringSubtract;
+            var type = Compilation.CompilerServicesType();
+            var methodName = XSharpFunctionNames.StringSubtract ;
             var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 1)
             {
@@ -382,9 +382,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (Compilation.Options.IsDialectVO)
             {
-                var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                var typePSZ = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
-                var typeSym = Compilation.GetWellKnownType(WellKnownType.Vulcan___Symbol);
+                var typeUsual = Compilation.UsualType();
+                var typePSZ = Compilation.PszType();
+                var typeSym = Compilation.SymbolType();
                 NamedTypeSymbol typeDate;
                 NamedTypeSymbol typeFloat;
 
@@ -483,8 +483,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         if (opType == VOOperatorType.None)
                         { 
-                            typeDate = Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
-                            typeFloat = Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
+                            typeDate = Compilation.DateType();
+                            typeFloat = Compilation.FloatType();
 
                             // Add or Subtract USUAL with other type
                             // LHS   - RHS 
@@ -575,7 +575,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpParser.LOGIC_XOR:
                 case XSharpParser.AND:
                 case XSharpParser.OR:
-                    var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+                    var usualType = Compilation.UsualType();
                     var boolType = this.GetSpecialType(SpecialType.System_Boolean,diagnostics, node);
                     if (left.Type == usualType)
                     {
@@ -657,7 +657,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (trueType != falseType && Compilation.Options.IsDialectVO)
                 {
                     // convert to usual when one of the two is a usual
-                    var usualType = GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+                    var usualType = Compilation.UsualType();
                     if (trueType == usualType)
                     {
                         falseType = trueType;

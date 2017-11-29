@@ -36,16 +36,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
 
             Conversion conv = Conversion.ImplicitReference;
-
-            if (!destination.IsCodeblock() && !destination.IsObjectType())
+            if (destination != Compilation.CodeBlockType() && !destination.IsObjectType())
             {
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                conv = Conversions.ClassifyConversionFromType(Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), destination, ref useSiteDiagnostics);
+                conv = Conversions.ClassifyConversionFromType(Compilation.CodeBlockType(), destination, ref useSiteDiagnostics);
                 diagnostics.Add(syntax, useSiteDiagnostics);
             }
             if (Compilation.Options.IsDialectVO)
             {
-                Debug.Assert(destination.IsCodeblock() || conv.Exists);
+                Debug.Assert(destination == Compilation.CodeBlockType()|| conv.Exists);
             }
             if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript)
             {
@@ -54,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             AnonymousTypeManager manager = this.Compilation.AnonymousTypeManager;
             var delegateSignature = new TypeSymbol[unboundLambda.ParameterCount + 1];
-            var usualType = this.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+            var usualType = this.Compilation.UsualType();
             for (int i = 0; i < delegateSignature.Length; i++)
             {
                 delegateSignature[i] = usualType;
@@ -79,7 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; ;
             if (conv != Conversion.ImplicitReference)
             {
-                cbInst = new BoundConversion(syntax, cbInst, Conversion.ImplicitReference, false, false, ConstantValue.NotAvailable, Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock))
+                cbInst = new BoundConversion(syntax, cbInst, Conversion.ImplicitReference, false, false, ConstantValue.NotAvailable, Compilation.CodeBlockType())
                 { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; ;
             }
             if (!conv.IsValid || (!isCast && conv.IsExplicit))
@@ -110,7 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static BoundBlock FixCodeBlockProblems(LambdaSymbol lambdaSymbol, Binder lambdaBodyBinder, BoundBlock block, DiagnosticBag diagnostics)
         {
             // check for a Lambda that returns a USUAL
-            var usualType = lambdaBodyBinder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+            var usualType = lambdaBodyBinder.Compilation.UsualType();
             if (lambdaSymbol.ReturnType != usualType)
                 return block;
             // handle 2 problems:

@@ -712,7 +712,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
         }
 
-        protected TypeSyntax GetExpressionType(XP.ExpressionContext expr, ref bool isConst)
+        protected virtual TypeSyntax GetExpressionType(XP.ExpressionContext expr, ref bool isConst)
         {
 
             TypeSyntax type = null;
@@ -770,23 +770,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.INCOMPLETE_STRING_CONST:
                         type = stringType;
                         break;
-                    case XP.NIL:
-                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
-                        break;
 
-                    case XP.NULL_ARRAY:
-                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
-                        break;
-                    case XP.NULL_DATE:
-                    case XP.DATE_CONST:
-                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Date);
-                        isConst = false;
-                        break;
-                    case XP.NULL_SYMBOL:
-                    case XP.SYMBOL_CONST:
-                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Symbol);
-                        isConst = false;
-                        break;
                 }
             }
             else if (expr is XP.PrimaryExpressionContext)
@@ -837,10 +821,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (prim.Expr is XP.CodeblockExpressionContext)
                 {
+                    if (_options.XSharpRuntime)
+                        type = GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
+                    else
                     type = GenerateQualifiedName(VulcanQualifiedTypeNames.Codeblock);
                 }
                 else if (prim.Expr is XP.LiteralArrayExpressionContext)
                 {
+                    if (_options.XSharpRuntime)
+                        type = GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
+                    else
                     type = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
                 }
                 else if (prim.Expr is XP.UsualTypeNameExpressionContext)
@@ -5354,7 +5344,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCaseStmt([NotNull] XP.CaseStmtContext context)
         {
             if (context.CaseStmt != null)
+            {
                 context.SetSequencePoint(context.CaseStmt.Start, context.CaseStmt.end.Start);
+            }
             else
                 context.SetSequencePoint(context.end);
             StatementSyntax caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
@@ -6316,7 +6308,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (_options.IsDialectVO)
             {
-                context.Put(GenerateMethodCall(VulcanQualifiedFunctionNames.Chr, argList));
+               context.Put(GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Chr : VulcanQualifiedFunctionNames.Chr, argList));
             }
             else
             {

@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var list = new List<ICustomAttribute>();
             foreach (var att in attribs)
             {
-                if (!att.ToString().Contains(VulcanTypeNames.ClipperCallingConventionAttribute))
+                if (!att.ToString().Contains(OurTypeNames.ClipperCallingConventionAttribute))
                     list.Add(att);
             }
             if (ctor.ParameterCount != 0)

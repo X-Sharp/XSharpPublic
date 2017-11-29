@@ -280,6 +280,19 @@ namespace Microsoft.CodeAnalysis
         Vulcan___Usual,
         Vulcan___Array,
         Vulcan___WinBool,
+        XSharp_Internal_VOStructAttribute,
+        XSharp_Internal_ClassLibraryAttribute,
+        XSharp_Internal_CompilerServices,
+        XSharp_Internal_ImplicitNamespaceAttribute,
+        XSharp_Runtime_Functions,
+        XSharp_Codeblock,
+        XSharp___VOFloat,
+        XSharp___VODate,
+        XSharp___Symbol,
+        XSharp___Psz,
+        XSharp___Usual,
+        XSharp___Array,
+        XSharp___WinBool,
 #endif
 
         NextAvailable,
@@ -555,7 +568,20 @@ namespace Microsoft.CodeAnalysis
             "Vulcan.__Psz",
             "Vulcan.__Usual",
             "Vulcan.__Array",
-            "Vulcan.__WinBool"
+            "Vulcan.__WinBool",
+            "XSharp.Internal.VOStructAttribute",
+            "XSharp.Internal.ClassLibraryAttribute",
+            "XSharp.Internal.CompilerServices",
+            "XSharp.Internal.ImplicitNamespaceAttribute",
+            "XSharp.Runtime.Functions",
+            "XSharp.Codeblock",
+            "XSharp.__VOFloat",
+            "XSharp.__VODate",
+            "XSharp.__Symbol",
+            "XSharp.__Psz",
+            "XSharp.__Usual",
+            "XSharp.__Array",
+            "XSharp.__WinBool"
 #endif
         };
 
@@ -598,7 +624,7 @@ namespace Microsoft.CodeAnalysis
                         continue;
                     case (WellKnownType.NextAvailable - 1):
 #if XSHARP
-                        typeIdName = "Vulcan.__WinBool";
+                        typeIdName = "XSharp.__WinBool";
 #else
                         typeIdName = "Microsoft.CodeAnalysis.Runtime.Instrumentation";
 #endif

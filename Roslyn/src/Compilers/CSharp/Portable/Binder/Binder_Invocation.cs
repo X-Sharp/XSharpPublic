@@ -236,7 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Bind Late bound call.
             else if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding &&
                 boundExpression.Kind != BoundKind.MethodGroup && (object)boundExpression.Type != null && 
-                (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)) &&
+                (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.UsualType()) &&
                 !(expression.IsKind(SyntaxKind.SimpleMemberAccessExpression) && GetName((ExpressionSyntax)expression) == ".ctor"))
             {
                 ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);
@@ -248,7 +248,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     analyzedArguments.GetNames(),
                     analyzedArguments.RefKinds.ToImmutableOrNull(),
                     ImmutableArray<MethodSymbol>.Empty,
-                    Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                    Compilation.UsualType(),
                     hasErrors);
             }
 #endif

@@ -81,11 +81,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo14 { get; internal set; } = false;
         public bool Vo15 { get; internal set; } = false;
         public bool Vo16 { get; internal set; } = false;
-        public bool VulcanRTFuncsIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRTFuncs);
-        public bool VulcanRTIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRT);
+        public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
+        public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
+        public bool XSharpVOIncluded=> RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
         public bool CreatingRuntime { get; internal set; } = false;
         public bool ExplicitVO15 { get; internal set; } = false;
-        internal VulcanAssemblies VulcanAssemblies { get; set; } = VulcanAssemblies.None;
+        internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;
         public bool Overflow { get; internal set; } = false;
         public bool OverflowHasBeenSet { get; internal set; } = false;
         public string PreviousArgument { get; internal set; } = string.Empty;

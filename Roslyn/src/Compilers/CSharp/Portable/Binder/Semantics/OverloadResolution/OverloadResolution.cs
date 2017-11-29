@@ -502,7 +502,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // when calling a USUAL[] function we allow 1 usual param and wrap it as params as well
             // REF USUAL is not allowed
             if (allowUnexpandedForm && Compilation.Options.IsDialectVO
-                && arguments.Arguments.Count == 1 && arguments.Arguments[0].Type.IsUsual())
+                && arguments.Arguments.Count == 1 && arguments.Arguments[0].Type  == Compilation.UsualType())
             {
                 if (arguments.RefKinds.Count == 0 ||arguments.RefKinds[0] == RefKind.None)
                 {
@@ -2111,11 +2111,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (Conversions.Compilation.Options.IsDialectVO)
             {
-                if (type1 == Conversions.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)
+                if (type1 == Conversions.Compilation.UsualType()
                     && type2.SpecialType == SpecialType.System_Object)
                     return BetterResult.Right;
                 if (type1.SpecialType == SpecialType.System_Object && 
-                    type2 == Conversions.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    type2 == Conversions.Compilation.UsualType())
                     return BetterResult.Left;
             }
 

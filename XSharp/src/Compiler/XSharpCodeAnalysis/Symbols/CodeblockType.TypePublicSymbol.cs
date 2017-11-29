@@ -49,12 +49,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics
             {
-                get { return this.Manager.Vulcan_Codeblock; }
+                get { return this.DeclaringCompilation.CodeBlockType(); }
             }
 
             internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<Symbol> basesBeingResolved)
             {
-                return this.Manager.Vulcan_Codeblock;
+                return this.DeclaringCompilation.CodeBlockType();
             }
 
             internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
@@ -152,7 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 AnonymousTypeTemplateSymbol anonymousType = (AnonymousTypeTemplateSymbol)this.ContainingType;
                 var cbDel = (anonymousType.GetMembers()[0] as AnonymousTypePropertySymbol).BackingField;
                 MethodSymbol invokeMethod = cbDel.Type.GetDelegateType().DelegateInvokeMethod();
-                MethodSymbol argMethod = manager.Vulcan_Codeblock.GetMembers("_BlockArg").First() as MethodSymbol;
+                MethodSymbol argMethod = DeclaringCompilation.CodeBlockType().GetMembers("_BlockArg").First() as MethodSymbol;
 
                 BoundExpression paramArr = F.Parameter(_parameters[0]);
 

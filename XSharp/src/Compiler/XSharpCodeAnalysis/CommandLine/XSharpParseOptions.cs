@@ -21,11 +21,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
 
     [Flags]
-    public enum VulcanAssemblies : byte
+    public enum RuntimeAssemblies : byte
     {
         None = 0,
         VulcanRT = 1,
-        VulcanRTFuncs = 2
+        VulcanRTFuncs = 2,
+        XSharpBase = 8,
+        XSharpCore = 16,
+        XSharpVO = 32
     }
 
     [Flags]
@@ -79,10 +82,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool IsDialectVO { get { return this.Dialect.IsDialectVO(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
-        public bool VulcanRTFuncsIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRTFuncs);
-        public bool VulcanRTIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRT);
+        public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
+        public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
+        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
+            RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpBase) |
+            RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool VOUntypedAllowed { get; private set; } = true;
-        public VulcanAssemblies VulcanAssemblies { get; private set; } = VulcanAssemblies.None;
+        public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
         public TextWriter ConsoleOutput { get; private set; }
@@ -138,7 +144,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOUntypedAllowed = opt.Vo15;
                 VOClipperConstructors = opt.Vo16;
 
-                VulcanAssemblies = opt.VulcanAssemblies;
+                RuntimeAssemblies = opt.RuntimeAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
                 ParseLevel = opt.ParseLevel;
@@ -189,7 +195,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOFloatConstants = opt.VOFloatConstants; // vo14
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
             VOClipperConstructors = opt.VOClipperConstructors; // vo16
-            VulcanAssemblies = opt.VulcanAssemblies;
+            RuntimeAssemblies = opt.RuntimeAssemblies;
             Overflow = opt.Overflow;
             ConsoleOutput = opt.ConsoleOutput;
             CommandLineArguments = opt.CommandLineArguments;

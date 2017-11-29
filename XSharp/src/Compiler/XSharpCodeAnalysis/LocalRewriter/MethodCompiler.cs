@@ -37,7 +37,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpSpecialNames.ExitProc:
                     body = LocalRewriter.RewriteExit(method, body, diagnostics);
                     break;
-                case VulcanFunctionNames.RunInitProcs:
+                case XSharpFunctionNames.RunInitProcs:
                     body = LocalRewriter.RewriteRunInitProc(method,body,diagnostics);
                     break;
             }

@@ -550,7 +550,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     (op.Kind.Operator() == BinaryOperatorKind.Addition || op.Kind.Operator() == BinaryOperatorKind.Subtraction))
                 {
                     // only include op_Addition op_Subtraction  with 2 float parameters.
-                    if (op.ReturnType == Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat)
+                    if (op.ReturnType == Compilation.FloatType() 
                         && op.LeftType != op.RightType)
                         continue;
                 }

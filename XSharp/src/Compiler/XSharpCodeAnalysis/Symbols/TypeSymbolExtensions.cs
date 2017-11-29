@@ -27,39 +27,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     {
 
 
-        private static readonly string[] s_VulcanNamespace = { VulcanNameSpaces.Vulcan, "" };
-
         public static bool IsVulcanRTAttribute(this NamedTypeSymbol atype, String name)
         {
             if (atype == null)
                 return false;
-            return (String.Equals(atype.Name, name, System.StringComparison.OrdinalIgnoreCase)
-                && String.Equals(atype.ContainingAssembly.Name, VulcanAssemblyNames.VulcanRT, System.StringComparison.OrdinalIgnoreCase));
+            string aName = atype.ContainingAssembly.Name;
+            if (String.Equals(aName, OurAssemblyNames.VulcanRT, System.StringComparison.OrdinalIgnoreCase) ||
+                String.Equals(aName, OurAssemblyNames.XSharpBase, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return String.Equals(atype.Name, name, System.StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
 
         }
-        public static bool IsVulcanType(this TypeSymbol _type, string TypeName)
-        {
-            // TODO (nvk): there must be a better way!
-            NamedTypeSymbol type = null;
-            if (_type != null)
-                type = _type.OriginalDefinition as NamedTypeSymbol;
-            return
-                (object)type != null &&
-                type.Arity == 0 &&
-                !type.MangleName &&
-                type.Name == TypeName &&
-                CheckFullName(type.ContainingSymbol, s_VulcanNamespace);
-        }
-        public static bool IsCodeblock(this TypeSymbol _type)
-        {
-            return _type.IsVulcanType(VulcanTypeNames.CodeBlockType);
-        }
-
-        public static bool IsUsual(this TypeSymbol _type)
-        {
-            return _type.IsVulcanType(VulcanTypeNames.UsualType);
-        }
-
+ 
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
@@ -78,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var attr in attrs)
                     {
                         var atype = attr.AttributeClass;
-                        if (atype.IsVulcanRTAttribute(VulcanTypeNames.VOStructAttribute))
+                        if (atype.IsVulcanRTAttribute(OurTypeNames.VOStructAttribute))
                             return true;
                     }
                 }
@@ -108,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var attr in attrs)
                     {
                         var atype = attr.AttributeClass;
-                        if (atype.IsVulcanRTAttribute(VulcanTypeNames.VOStructAttribute))
+                        if (atype.IsVulcanRTAttribute(OurTypeNames.VOStructAttribute))
                         {
                             return attr.ConstructorArguments.FirstOrNullable()?.DecodeValue<int>(SpecialType.System_Int32) ?? 0;
                         }
@@ -140,7 +121,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var attr in attrs)
                     {
                         var atype = attr.AttributeClass;
-                        if (atype.IsVulcanRTAttribute(VulcanTypeNames.VOStructAttribute))
+                        if (atype.IsVulcanRTAttribute(OurTypeNames.VOStructAttribute))
                         {
                             return attr.ConstructorArguments.LastOrNullable()?.DecodeValue<int>(SpecialType.System_Int32) ?? 0;
                         }
@@ -168,7 +149,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // TODO (nvk): there must be a better way!
             return
                 (object)_asm != null &&
-                (_asm.Name.ToLower() == VulcanAssemblyNames.VulcanRTFuncs || _asm.Name.ToLower() == VulcanAssemblyNames.VulcanRT);
+                (_asm.Name.ToLower() == OurAssemblyNames.VulcanRTFuncs || _asm.Name.ToLower() == OurAssemblyNames.VulcanRT);
+        }
+        public static bool IsXSharpRT(this AssemblySymbol _asm)
+        {
+            // TODO (nvk): there must be a better way!
+            return
+                (object)_asm != null &&
+                (_asm.Name.ToLower() == OurAssemblyNames.XSharpBase|| _asm.Name.ToLower() == OurAssemblyNames.XSharpCore || _asm.Name.ToLower() == OurAssemblyNames.XSharpVO);
         }
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)
@@ -179,7 +167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 foreach (var attr in attrs)
                 {
                     var atype = attr.AttributeClass;
-                    if (atype.IsVulcanRTAttribute(VulcanTypeNames.DefaultParameterAttribute))
+                    if (atype.IsVulcanRTAttribute(OurTypeNames.DefaultParameterAttribute))
                         return true;
                 }
             }
@@ -194,7 +182,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 foreach (var attr in attrs)
                 {
                     var atype = attr.AttributeClass;
-                    if (atype.IsVulcanRTAttribute(VulcanTypeNames.DefaultParameterAttribute))
+                    if (atype.IsVulcanRTAttribute(OurTypeNames.DefaultParameterAttribute))
                     {
                         int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
 
@@ -254,7 +242,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 foreach (var attr in attrs)
                 {
                     var atype = attr.AttributeClass;
-                    if (atype.IsVulcanRTAttribute(VulcanTypeNames.ActualTypeAttribute))
+                    if (atype.IsVulcanRTAttribute(OurTypeNames.ActualTypeAttribute))
                     {
                         object t = attr.CommonConstructorArguments[0].DecodeValue<object>(SpecialType.None);
                         if (t is TypeSymbol)
@@ -285,12 +273,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         public NamedTypeSymbol Vulcan_Codeblock
         {
-            get { return this.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock); }
+            get { return this.Compilation.CodeBlockType(); }
         }
 
         public NamedTypeSymbol Vulcan_Usual
         {
-            get { return this.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual); }
+            get { return this.Compilation.UsualType(); }
         }
     }
 }

@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (method.Name != XSharpSpecialNames.AppExit)
                 return statement;
             var refMan = method.DeclaringCompilation.GetBoundReferenceManager();
-            var vcla = method.DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
+            var vcla = method.DeclaringCompilation.ClassLibraryType();
             var newstatements = new List<BoundStatement>();
 
             foreach (var rkv in refMan.GetReferencedAssemblies())
@@ -223,7 +223,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         static List<BoundStatement> GetInitStatements(CSharpCompilation compilation, BoundStatement statement, bool localOnly)
         {
             var newstatements = new List<BoundStatement>();
-            var vcla = compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
+            var vcla = compilation.ClassLibraryType();
             var refMan = compilation.GetBoundReferenceManager();
             var init1 = new List<ISymbol>();
             var init2 = new List<ISymbol>();
@@ -276,7 +276,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics)
 
         {
-            if ( method.Name != VulcanFunctionNames.RunInitProcs)
+            if ( method.Name != XSharpFunctionNames.RunInitProcs)
                 return statement;
             var oldbody = statement as BoundBlock;
             var newstatements = new List<BoundStatement>();

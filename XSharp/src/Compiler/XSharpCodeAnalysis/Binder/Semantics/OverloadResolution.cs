@@ -43,12 +43,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var asm2 = m2.Member.ContainingAssembly;
                 if (asm1 != asm2)
                 {
-                    if (asm1.IsVulcanRT())
+                    if (asm1.IsVulcanRT() || asm1.IsXSharpRT())
                     {
                         result = BetterResult.Right;
                         return true;
                     }
-                    else if (asm2.IsVulcanRT())
+                    else if (asm2.IsVulcanRT() || asm2.IsXSharpRT())
                     {
                         result = BetterResult.Left;
                         return true;
@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // we have different / extended rules compared to C#
                     var parsLeft  = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
-                    var usualType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                    var usualType = Compilation.UsualType();
                     var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
                     var len = parsLeft.Length;
                     if (arguments.Count < len)
@@ -177,7 +177,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return true;
                             }
                             // VoFloat prefers overload with double over all other conversions
-                            if (argType == Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat))
+                            if (argType == Compilation.FloatType())
                             {
                                 var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
                                 if (parLeft.Type == doubleType )
@@ -198,8 +198,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // when both methods are in a functions class from different assemblies
                 // pick the first one in the references list
                 if (asm1 != asm2
-                    && string.Equals(m1.Member.ContainingType.Name, VulcanFunctionNames.FunctionsClass, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(m2.Member.ContainingType.Name, VulcanFunctionNames.FunctionsClass, StringComparison.OrdinalIgnoreCase) )
+                    && string.Equals(m1.Member.ContainingType.Name, XSharpFunctionNames.FunctionsClass, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(m2.Member.ContainingType.Name, XSharpFunctionNames.FunctionsClass, StringComparison.OrdinalIgnoreCase) )
                 {
                     foreach (var reference in Compilation.ReferencedAssemblyNames)
                     {
@@ -429,18 +429,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.IsDialectVO)
             {
-                if (!left.Type.IsUsual())
+                var usualType = Compilation.UsualType();
+                if (left.Type != usualType)
                 {
-                    if (!op1.RightType.IsUsual() && op2.RightType.IsUsual())
+                    if (op1.RightType != usualType && op2.RightType == usualType)
                         return BetterResult.Left;
-                    if (!op2.RightType.IsUsual() && op1.RightType.IsUsual())
+                    if (op2.RightType != usualType && op1.RightType == usualType)
                         return BetterResult.Right;
                 }
-                if (!right.Type.IsUsual())
+                if (right.Type != usualType)
                 {
-                    if (!op1.LeftType.IsUsual() && op2.LeftType.IsUsual())
+                    if (op1.LeftType != usualType && op2.LeftType == usualType)
                         return BetterResult.Left;
-                    if (!op2.LeftType.IsUsual() && op1.LeftType.IsUsual())
+                    if (op2.LeftType != usualType && op1.LeftType == usualType)
                         return BetterResult.Right;
                 }
             }

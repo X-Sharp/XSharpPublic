@@ -52,7 +52,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!result && _binder.Compilation.Options.IsDialectVO && destination != null && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
-                if (nts.ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                if (nts.ConstructedFrom == _binder.Compilation.UsualType())
                 {
                     var constructedFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
@@ -60,9 +60,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // do not box string, array, codeblock  and clipperargs
                         result = destination.SpecialType != SpecialType.System_String 
                             && constructedFrom != null
-                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Array)
-                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock)
-                            && constructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
+                            && constructedFrom != _binder.Compilation.ArrayType()
+                            && constructedFrom != _binder.Compilation.CodeBlockType()
+                            && constructedFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
                     }
                     else if (destination.IsPointerType())
@@ -78,13 +78,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // do not box symbol, psz, vofloat, vodate
                         result = destination.SpecialType == SpecialType.None
                             && constructedFrom != null
-                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Symbol)
-                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz)
-                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat)
-                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
+                            && constructedFrom != _binder.Compilation.SymbolType()
+                            && constructedFrom != _binder.Compilation.PszType()
+                            && constructedFrom != _binder.Compilation.FloatType()
+                            && constructedFrom != _binder.Compilation.DateType();
                     }
                 }
-                else if (nts.ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat))
+                else if (nts.ConstructedFrom == _binder.Compilation.FloatType())
                 {
                     if (destination != null && destination.SpecialType.IsNumericType())
                     {
@@ -101,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_binder.Compilation.Options.IsDialectVO && destination is NamedTypeSymbol)
             {
-                var usualType = _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                var usualType = _binder.Compilation.UsualType();
                 var nts = destination as NamedTypeSymbol;
                 if ( nts.ConstructedFrom == usualType)
                 {
@@ -128,12 +128,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.IsDialectVO)
             {
-                if (type.IsCodeblock() || type.IsUsual() || type.IsObjectType())
+                if (type == Compilation.CodeBlockType() || type == Compilation.UsualType() || type.IsObjectType())
                 {
                     return LambdaConversionResult.Success;
                 }
 
-                var conv = Compilation.ClassifyConversion(Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), type);
+                var conv = Compilation.ClassifyConversion(Compilation.CodeBlockType(), type);
                 if (conv.Exists)
                 {
                     return LambdaConversionResult.Success;
@@ -256,7 +256,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (voCast && source.CanVOCast() && destination.CanVOCast())
             {
                 // No _CAST on USUAL
-                if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                if (source == Compilation.UsualType())
                 {
                     return Conversion.NoConversion;
                 }
@@ -315,13 +315,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return Conversion.Identity;
                     }
-                    if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                    if (source == Compilation.PszType())
                     {
                         return Conversion.Identity;
                     }
                 }
                 // Allow cast -> PSZ
-                if (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                if (destination == Compilation.PszType())
                 {
                     return Conversion.Identity;
                 }
@@ -338,10 +338,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+            if (source == Compilation.UsualType())
             {
                 // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
-                if (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                if (destination == Compilation.UsualType())
                     return Conversion.NoConversion;
                 if (dstType == SpecialType.System_Decimal)
                     return Conversion.Boxing;
@@ -423,7 +423,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz) ||
+            if (destination == Compilation.PszType() || 
                 destination.IsVoidPointer())
             {
                 if (source.SpecialType == SpecialType.System_String)
@@ -467,7 +467,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var ats = args as ArrayTypeSymbol;
                 if (Compilation.Options.IsDialectVO)
                 {
-                    result = (ats.ElementType == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual));
+                    result = (ats.ElementType == Compilation.UsualType());
                 }
 
             }

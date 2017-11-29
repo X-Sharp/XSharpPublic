@@ -70,6 +70,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool vo16 => VOClipperConstructors;
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
 
+        public RuntimeAssemblies RuntimeAssemblies ;
+        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
+            RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpBase) |
+            RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }
 
@@ -101,6 +105,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 CreatingRuntime = opt.CreatingRuntime;
                 ConsoleOutput = opt.ConsoleOutput;
                 ParseLevel = opt.ParseLevel;
+                RuntimeAssemblies = opt.RuntimeAssemblies;
             }
         }
 
@@ -120,7 +125,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImplicitNameSpace = opt.ImplicitNameSpace;
             LateBinding = opt.LateBinding;
             CreatingRuntime = opt.CreatingRuntime;
-
+            RuntimeAssemblies = opt.RuntimeAssemblies;
             //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
             VONullStrings = opt.VONullStrings; // vo2
             VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3   

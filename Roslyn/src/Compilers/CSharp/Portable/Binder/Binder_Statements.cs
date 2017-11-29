@@ -1803,7 +1803,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //Dynamic operation for VO & Latebinding -> use conversion
                 else if (Compilation.Options.IsDialectVO && 
                     Compilation.Options.LateBinding &&
-                    op1.Type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    op1.Type == Compilation.UsualType())
                 {
                     op2 = conversion;
                 }
@@ -2429,7 +2429,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 diagnostics = new DiagnosticBag();
             }
 #if XSHARP
-            if (Compilation.Options.IsDialectVO && targetType == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+            if (Compilation.Options.IsDialectVO && targetType == Compilation.PszType())
             {
                 if (IsNullNode(expression))
                 {

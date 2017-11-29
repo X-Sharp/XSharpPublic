@@ -59,8 +59,8 @@ entity              : namespace_
                     | destructor                // Destructor Class xxx syntax
                     | globalAttributes          // Assembly attributes, Module attributes etc.
                     | using_                    // Using Namespace
-                    | voglobal                  // This will become part of the 'Globals' class
                     | vodefine                  // This will become part of the 'Globals' class
+                    | voglobal                  // This will become part of the 'Globals' class
                     | vodll                     // External method of the Globals class
                     | vostruct					// Compatibility (unsafe) structure
                     | vounion					// Compatibility (unsafe) structure with members aligned at FieldOffSet 0

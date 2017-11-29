@@ -145,7 +145,10 @@ using_              : USING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? N
                     ;
 
 
-voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList allowedgarbage? end=eos
+                    // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
+                    // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
+voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList allowedgarbage? end=eos 
+                    | (Attributes=attributes)? STATIC (Const=CONST)? Vars=classVarList allowedgarbage? end=eos 
                     ;
 
 

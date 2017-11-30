@@ -167,19 +167,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     snode = sn;
                     enode = sn;
                 }
-                var start = snode.XNode?.Position ?? 0;
-                var length = enode.XNode?.FullWidth ?? 0;
+                var start = 0;
+                var length = 0;
                 string fn = file;
-                if (snode.XNode?.SourceSymbol != null)
+                if (snode.XNode != null)
                 {
-                    start = snode.XNode.SourceSymbol.StartIndex;
-                    length = snode.XNode.SourceSymbol.StopIndex - start + 1;
-                    fn = snode.XNode.SourceFileName;
-                    if (string.IsNullOrEmpty(fn))
+                    var xNode = snode.XNode as XSharpParserRuleContext;
+                    start = xNode.Position ;
+                    length = xNode.FullWidth ;
+                    fn = xNode.SourceFileName;
+                    var symbol = xNode.SourceSymbol as XSharpToken;
+                    if (symbol != null )
                     {
-                        fn = (snode.XNode.SourceSymbol as XSharpToken).SourceName;
+                        // for a define or UDC we want the location in the source and not in the #include 
+                        start = symbol.StartIndex;
+                        length = symbol.StopIndex - start + 1;
+                        fn = symbol.InputStream.SourceName;
                     }
-
                 }
                 if (length < 0)
                     length = 0;

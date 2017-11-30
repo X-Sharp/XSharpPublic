@@ -55300,7 +55300,7 @@ ReferenceProject = 3FD20812-F1F2-477B-9734-FE2697DED8D6,1,0,C460_helper
 [C547 - Preprocessor issue with harbour code Native Resources]
 [C547 - Preprocessor issue with harbour code License files]
 [C547 - Preprocessor issue with harbour code General Options]
-Switches=
+Switches=/verbose
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -58054,7 +58054,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = Core
@@ -58086,7 +58086,7 @@ FileGUID = B0A9BC47-EFAD-4CF8-B8A2-0D43244E8762
 FileType = Code
 File = %AppPath%\Prg\C572.vh
 FileGUID = 55ADA5B1-8B28-4750-809E-D0DACBC94209
-FileType = Code
+FileType = Text
 File = %AppPath%\Prg\C572a.prg
 FileGUID = A0BB5E38-A956-4682-A790-CE0175ABABB8
 FileType = Code
@@ -58117,7 +58117,7 @@ VO14=0
 VO16=0
 LateBound=0
 Unsafe=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ResponseOnly=0

@@ -49,6 +49,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return sb.ToString();
         }
 
+        internal static string AsTokenString(this IList<XSharpToken> tokens)
+        {
+            return ((IList<IToken>)tokens).AsTokenString();
+        }
         internal static string TrailingWs(this IToken token)
         {
             if (token == null || token.TokenSource == null)
@@ -147,22 +151,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return TrimAllWithInplaceCharArray(result);
         }
-        internal static IList<IToken> ToIListIToken(this IList<XSharpToken> tokens) 
-        {
-            var clone = new IToken[tokens.Count];
-            int i = 0;
-            foreach (var t in tokens)
-            {
-                clone[i] =t;
-                i++;
-            }
-            return clone;
-        }
-        internal static XSharpToken[] ToArrayXSharpToken(this IList<IToken> tokens)
+
+        internal static IList<IToken> CloneArray(this IList<IToken> tokens)
         {
             var clone = new XSharpToken[tokens.Count];
-            tokens.CopyTo(clone, 0);
-            return clone;
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                clone[i] = new XSharpToken(tokens[i]);
+            }
+            return clone ;
         }
         internal static bool IsName(this IToken token)
         {

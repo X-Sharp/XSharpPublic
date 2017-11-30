@@ -3,12 +3,14 @@
 // User : robert
 
 #ifdef FILE1
-FUNCTION File1() AS STRING
+FUNCTION File1() AS STRING   
+	? "File1 start"
 	RETURN "File1"
 #endif
 
 #ifdef FILE2
 FUNCTION File2() AS STRING
-	RETURN "File2"
+	? "File2 start"
+	RETURN "File2"             
 #endif
 	

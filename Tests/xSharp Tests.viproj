@@ -58046,7 +58046,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C571 Internal class - Attribute visibility problem
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C572 - Check for conditionals in include files *************
 Application = C572 - Check for conditionals in include files
 IDEVersion = 1.06

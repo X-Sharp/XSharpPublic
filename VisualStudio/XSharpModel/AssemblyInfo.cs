@@ -245,16 +245,22 @@ namespace XSharpModel
             catch (ReflectionTypeLoadException e)
             {
                 Support.Debug("Cannot load types from {0}", Assembly.GetName().Name);
-                for (int i = 0; i < e.LoaderExceptions.Length; i++)
+                Support.Debug("Exception details:");
+                foreach (var le in e.LoaderExceptions)
                 {
-                    var le = e.LoaderExceptions[i];
-                    var t = e.Types[i];
-                    Support.Debug("Cannot load type {0}: {1}", t.Name, le.Message);
+                    Support.Debug(le.Message);
+                }
+                Support.Debug("Types loaded:");
+                foreach (var t in e.Types)
+                {
+                    Support.Debug(t.FullName);
                 }
                 this.Assembly = null;
             }
-            catch
+            catch (Exception e)
             {
+                Support.Debug("Generic exception:");
+                Support.Debug(e.Message);
             }
             // Has Types ?
             currentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;

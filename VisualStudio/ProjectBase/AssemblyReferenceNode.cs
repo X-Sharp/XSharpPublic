@@ -322,15 +322,28 @@ namespace Microsoft.VisualStudio.Project
         {
             if(Path.IsPathRooted(path))
             {
-                return path;
+                if (File.Exists(path))
+                    return path;
+                else
+                {
+                    this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, null);
+                    return string.Empty;
+                }
             }
             else
             {
                 Uri uri = new Uri(this.ProjectMgr.BaseURI.Uri, path);
-
-                if(uri != null)
+                
+                if(uri != null )
                 {
-                    return Microsoft.VisualStudio.Shell.Url.Unescape(uri.LocalPath, true);
+                    string sPath = Microsoft.VisualStudio.Shell.Url.Unescape(uri.LocalPath, true);
+                    if (File.Exists(sPath))
+                        return sPath;
+                    else
+                    {
+                        this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, null);
+                        return String.Empty;
+                        }
                 }
             }
 
@@ -404,7 +417,7 @@ namespace Microsoft.VisualStudio.Project
 			// Set a default HintPath for msbuild to be able to resolve the reference.
 			this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, this.assemblyPath);
 
-			// Resolve assembly referernces. This is needed to make sure that properties like the full path
+			// Resolve assembly references. This is needed to make sure that properties like the full path
 			// to the assembly or the hint path are set.
 			var instance = this.ProjectMgr.ProjectInstance;
 			bool buildResultIsOk = BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);

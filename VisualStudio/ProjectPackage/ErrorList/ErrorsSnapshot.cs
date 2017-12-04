@@ -102,8 +102,13 @@ namespace XSharp.Project
                         content = "";
                         return true;
                     case StandardTableKeyNames.HelpLink:
-                        content = "https://www.xsharp.info/help/"+error.ErrorCode.ToLower()+".html";
-                        return true;
+                        string errorcode = error?.ErrorCode.ToLower();
+                        if (errorcode != null && errorcode.StartsWith("xs"))
+                        {
+                            content = "https://www.xsharp.info/help/" + errorcode + ".html";
+                            return true;
+                        }
+                        break;
                     case StandardTableKeyNames.ErrorCodeToolTip:
                         content = "Get help for '"+error.ErrorCode+"' from the XSharp website";
                         return true;

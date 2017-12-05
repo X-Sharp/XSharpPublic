@@ -352,8 +352,23 @@ namespace XSharp.CodeDom
         protected CodeSnippetTypeMember CreateSnippetMember(ParserRuleContext context)
         {
             // The original source code
-            string sourceCode = context.GetText();
-            //
+            var xtoken = context.Start as XSharpToken;
+            var start = xtoken.OriginalTokenIndex;
+            while (start > 0)
+            {
+                if (_tokens[start-1].Channel == XSharpLexer.Hidden)
+                {
+                    start = start - 1;
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            var startIndex = _tokens[start].StartIndex;
+            int length = context.Stop.StopIndex - startIndex + 1;
+            string sourceCode = this.SourceCode.Substring(startIndex, length);
             CodeSnippetTypeMember snippet = new CodeSnippetTypeMember(sourceCode);
             FillCodeDomDesignerData(snippet, context.Start.Line, context.Start.Column);
             return snippet;
@@ -823,7 +838,7 @@ namespace XSharp.CodeDom
         #endregion
         #region Common Methods
         private XCodeNamespace _currentNamespace;
-        public XCodeNamespace CurrentNamespace
+        public XCodeNamespace CurrentNamespace  
         {
             get
             {

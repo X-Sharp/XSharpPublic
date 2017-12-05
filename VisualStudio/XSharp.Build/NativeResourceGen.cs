@@ -107,7 +107,13 @@ namespace XSharp.Build {
                 cmdline.Append(" /dDEBUG");
             else
                 cmdline.Append(" /dNDEBUG");
-             return cmdline.ToString();
+            if (!string.IsNullOrEmpty(DefineConstants))
+            {
+                var defs = Utilities.GetDefineConstantsSwitch(DefineConstants, Log);
+                defs = defs.Replace(";", " /d");
+                cmdline.Append(" /d" + defs);
+            }
+            return cmdline.ToString();
         }
 
         protected override string GenerateFullPathToTool() {
@@ -297,7 +303,10 @@ namespace XSharp.Build {
         /// Location of the Output file (not the name!)
         /// </summary>
         public string OutputPath { get; set; }
-        
+
+
+        public string DefineConstants { get; set; }
+
         /// <summary>
         /// Compile with Debug Info ?
         /// </summary>

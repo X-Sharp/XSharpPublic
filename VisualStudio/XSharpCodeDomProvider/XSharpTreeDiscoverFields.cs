@@ -86,7 +86,7 @@ namespace XSharp.CodeDom
         public override void EnterClassVarList([NotNull] XSharpParser.ClassVarListContext context)
         {
             //
-            if (context.DataType != null)
+            if (context.DataType != null && currentClass != null)
             {
                 var fieldType = BuildDataType(context.DataType);
                 //

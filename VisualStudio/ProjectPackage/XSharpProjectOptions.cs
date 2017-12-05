@@ -77,6 +77,10 @@ namespace XSharp.Project
                 args.Add("/errorendlocation");
                 args.Add("/r:vulcanrt.dll");
                 args.Add("/r:vulcanrtfuncs.dll");
+                if (String.Equals(ConfigCanonicalName.ConfigName, "DEBUG", StringComparison.OrdinalIgnoreCase))
+                {
+                    args.Add("/debug:full");
+                }
                 var tmp = "";
 
                 foreach (var d in DefinedPreprocessorSymbols)

@@ -150,6 +150,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
        IncludePaths="$(IncludePaths)"
        OutputPath="$(IntermediateOutputPath)"
        EmitDebugInformation="$(EmitDebugInformation)"
+       DefineConstants="$(DefineConstants)"
        Condition="'@(NativeResource)' != ''">
     </NativeResourceCompiler>
 
@@ -243,7 +244,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    NoConfig="true"
 	    NoLogo="$(NoLogo)"
 	    NoStandardDefs="$(NoStandardDefs)"
-		NoStandardLib="$(NoCompilerStandardLib)"
+		  NoStandardLib="$(NoCompilerStandardLib)"
 	    NoWin32Manifest="$(NoWin32Manifest)"
 	    Optimize="$(Optimize)"
 	    OutputAssembly="@(IntermediateAssembly)"

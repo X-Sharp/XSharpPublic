@@ -673,6 +673,17 @@ namespace XSharp.CodeDom
             base.Output.WriteLine();
         }
 
+        private void writeCodeBefore(IDictionary userData)
+        {
+            if (userData.Contains(XSharpCodeConstants.USERDATA_CODEBEFORE))
+            {
+                if (!userData.Contains(XSharpCodeConstants.USERDATA_FROMDESIGNER))
+                {
+                    string before = (string)userData[XSharpCodeConstants.USERDATA_CODEBEFORE];
+                    this.Output.Write(before);
+                }
+            }
+        }
 
         protected override void GenerateNamespace(CodeNamespace e)
         {
@@ -680,8 +691,7 @@ namespace XSharp.CodeDom
                 this.GenerateCommentStatements(e.Comments);
 
             // Generate Imports BEFORE the NameSpace
-            this.GenerateNamespaceImports(e);
-            //this.Output.WriteLine("");
+            writeCodeBefore(e.UserData);
             //
             this.GenerateNamespaceStart(e);
             //this.Output.WriteLine("");
@@ -944,12 +954,14 @@ namespace XSharp.CodeDom
                     base.Output.Write("ENUM");
                 }
                 base.Output.WriteLine();
+                this.Options.BlankLinesBetweenMembers = false;
             }
         }
 
         protected override void GenerateTypeStart(CodeTypeDeclaration e)
         {
             this.Options.BlankLinesBetweenMembers = true;
+            writeCodeBefore(e.UserData);
             if (e.CustomAttributes.Count > 0)
             {
                 this.GenerateAttributes(e.CustomAttributes);

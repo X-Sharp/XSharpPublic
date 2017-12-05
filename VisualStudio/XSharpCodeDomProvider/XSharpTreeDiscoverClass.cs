@@ -18,6 +18,8 @@ using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
 using System.Collections.Immutable;
 using XSharpModel;
+using System.Collections;
+
 namespace XSharp.CodeDom
 {
 
@@ -79,7 +81,7 @@ namespace XSharp.CodeDom
 
         private XCodeMemberMethod initComponent;
         private IDictionary<string, System.Type> _locals;          // used to keep track of local vars
-
+        private int _startToken = 0;
 
         public XSharpClassDiscover(IProjectTypeHelper projectNode) : base(projectNode)
         {
@@ -97,6 +99,7 @@ namespace XSharp.CodeDom
             this._members = new Dictionary<string, XMemberType>(StringComparer.OrdinalIgnoreCase);
             //
             this.CurrentFile = "";
+            _startToken = 0;
             _tokens = null;
         }
 
@@ -105,6 +108,16 @@ namespace XSharp.CodeDom
         public XCodeTypeDeclaration CurrentClass { get; private set; }
         public Stack<XCodeNamespace> NamespaceStack { get; private set; }
         public Stack<XSharpParser.LocalvarContext> LocalDecls { get; private set; }
+
+        private void AddCodeBefore(IDictionary userData, int startIndex)
+        {
+            if (startIndex > _startToken)
+            {
+                int length = startIndex - _startToken;
+                string sourceCode = this.SourceCode.Substring(_startToken, length);
+                userData[XSharpCodeConstants.USERDATA_CODEBEFORE] = sourceCode.TrimStart();
+            }
+        }
 
         #region Members Cache
         private Dictionary<string, XMemberType> _members;  // member cache for our members and parent class members
@@ -386,6 +399,11 @@ namespace XSharp.CodeDom
                 newNamespaceName = this.CurrentNamespace.Name + "." + newNamespaceName;
             }
             XCodeNamespace newNamespace = new XCodeNamespace(newNamespaceName);
+            if (NamespaceStack.Count == 0)
+            {
+                AddCodeBefore(newNamespace.UserData, context.Start.StartIndex);
+                _startToken = context._Entities[0].Start.StartIndex;
+            }
             //
             newNamespace.Comments.AddRange(context.GetLeadingComments(_tokens));
             this.NamespaceStack.Push(this.CurrentNamespace);
@@ -421,6 +439,7 @@ namespace XSharp.CodeDom
         {
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetText());
             // Set as Current working Class
+            AddCodeBefore(newClass.UserData, context.Start.StartIndex);
             CurrentClass = newClass;
             // and push into the Namespace
             CurrentNamespace.Types.Add(newClass);
@@ -486,6 +505,16 @@ namespace XSharp.CodeDom
                     addClassMember(new XMemberType(f.Name, MemberTypes.Field, false, findType(f.Type.BaseType), f.Type.BaseType));
                 }
             }
+            var token = context.Stop as XSharpToken;
+            var tokenIndex = token.OriginalTokenIndex;
+            var line = token.Line;
+            while (tokenIndex <= _tokens.Count)
+            {
+                tokenIndex++;
+                if (_tokens[tokenIndex].Line > line)
+                    break;
+            }
+            _startToken = _tokens[tokenIndex].StartIndex;
         }
 
         public override void ExitClass_([NotNull] XSharpParser.Class_Context context)

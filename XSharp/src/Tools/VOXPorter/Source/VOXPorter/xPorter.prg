@@ -2293,12 +2293,15 @@ CLASS EntityDescriptor
 			aWords := AnalyzeLine(cLine)
 			cLine := ""
 			FOREACH oWord AS WordObject IN aWords
+				
+				LOCAL cPrevWord := "" AS STRING
 
 				LOCAL cWord, cUpper AS STRING
 				cWord := oWord:cWord
 				cUpper := cWord:ToUpper()
 
 				IF oLine:oEntity != NULL .and. cUpper == "RESOURCE"
+					cPrevWord := cWord
 					LOOP
 				END IF
 
@@ -2343,10 +2346,24 @@ CLASS EntityDescriptor
 				END CASE
 
 				cLine += cWord:Replace(tag , "%") // bring back the original text, if we have not modified it
+/*
+In resource headers like:
+
+RESOURCE IconEntity Icon "C:\some\folder\testico.ico"
+
+when file paths are included in quotes we need to double the slashes, because those are escaped 
+strings and if there are escape sequences inside (like \t), the resource compiler will not find the file
+Probably we need to do that also to every other string in every line in the resource?
+*/
+				IF lFirstLine .and. cWord == "\" .and. oWord:eStatus == WordStatus.Literal .and. cPrevWord != "\"
+					cLine += "\"
+				END IF
 
 /*				IF oLine:oEntity != NULL
 					cLine := cLine:Trim()
 				END IF*/
+				
+				cPrevWord := cWord
 
 			NEXT
 

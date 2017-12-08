@@ -508,8 +508,10 @@ namespace XSharp.CodeDom
             var token = context.Stop as XSharpToken;
             var tokenIndex = token.OriginalTokenIndex;
             var line = token.Line;
-            while (tokenIndex <= _tokens.Count)
+            for (;;)
             {
+                if (tokenIndex >= _tokens.Count - 1)
+                    break;
                 tokenIndex++;
                 if (_tokens[tokenIndex].Line > line)
                     break;

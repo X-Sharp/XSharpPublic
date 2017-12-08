@@ -174,9 +174,12 @@ namespace XSharp.CodeDom
             XCodeTypeReference expr = null;
             //
             var sName = context.GetText();
-            System.Type type = findType(sName);
-            if (type != null)
-                return new XCodeTypeReference(type);
+            if (!sName.EndsWith(">"))
+            {
+                System.Type type = findType(sName);
+                if (type != null)
+                    return new XCodeTypeReference(type);
+            }
             if (context is XSharpParser.QualifiedNameContext)
             {
                 XSharpParser.QualifiedNameContext qual = (XSharpParser.QualifiedNameContext)context;

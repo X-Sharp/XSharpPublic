@@ -78,7 +78,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				IF oProject != NULL_OBJECT
 					VAR sb := StringBuilder{aLines:Count * 80}
 					FOREACH VAR line in aLines
-						sb:AppendLine(line)
+						sb:AppendLine(AddPartial(line))
 					NEXT
 					lSuccess := oProject:ProjectNode:DocumentSetText(oFile:FullPath, sb:ToString())
 				ENDIF
@@ -89,7 +89,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				SELF:oStream:SetLength(0)
 				VAR oWriter := StreamWriter{SELF:oStream , SELF:oEncoding}
 				FOREACH VAR cLine IN aLines
-					oWriter:WriteLine(cLine)
+					oWriter:WriteLine(AddPartial(cLine))
 				NEXT
 				lSuccess := TRUE
 				oWriter:Flush()
@@ -101,5 +101,15 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		END IF
 	RETURN lSuccess
 
+	METHOD AddPartial(line AS STRING) AS STRING
+		if (line:IndexOf("class",StringComparison.OrdinalIgnoreCase) >= 0)
+			var line2 := line:TrimStart():ToUpper()
+			IF line2:StartsWith("CLASS ")
+				var prefixlength := line:Length-line2:Length 
+				VAR spaces		 := line:Substring(0, prefixlength)
+				line := spaces+ "PARTIAL "+line:Substring(prefixlength)
+			ENDIF
+		endif
+		return line
 END CLASS
 

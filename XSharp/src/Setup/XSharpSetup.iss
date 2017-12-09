@@ -12,21 +12,21 @@
 ;
 #expr Exec( SetupFolder+'makecabs.cmd')
 
-;#define FOX
+#define FOX
 #ifdef FOX
-#define SetupExeName        "XSharpSetup110Fox"
+#define SetupExeName        "XSharpSetup111Fox"
 #define BinFolder          "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
 #else   
-#define SetupExeName        "XSharpSetup110Public"
+#define SetupExeName        "XSharpSetup111Public"
 #define BinFolder          "C:\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
 #endif
 
 ; version info and similar stuff.
   
-#define Version             "1.1.0.0"
-#define VIVersion           "1.1.0.0"
-#define TouchDate           "2017-11-18"
-#define TouchTime           "01:01:00"
+#define Version             "1.1.1.0"
+#define VIVersion           "1.1.1.0"
+#define TouchDate           "2017-12-09"
+#define TouchTime           "01:11:00"
 
 #define Product             "XSharp"
 #define ProdBuild           "XSharp General Release"
@@ -244,10 +244,10 @@ Source: "{#BinFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; 
 Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall};
 
 ; 'Normal' Ms Runtime DLLs needed by 4.6 version
-Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";                  DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}System.Security.Crypt*.Alg*.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Text.Encoding.*.dll";                    DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Valuetuple.dll";                         DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinFolder}System.Security.Crypt*.Alg*.dll";    DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinFolder}System.Text.Encoding.*.dll";         DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+Source: "{#BinFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
 
 ; 'Normal' Ms Runtime DLLs needed by Portable Version
 Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\portable"; Flags: {#StdFlags} ; 
@@ -308,27 +308,10 @@ Source: "Baggage\License.txt";                            DestDir: "{app}";     
 Source: "{#CommonFolder}*.xh";                            DestDir: "{app}\Include"; Flags: touch {#StdFlags}; 
 
 ;MsBuild Files
-Components: vs2015; Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; 
-Components: vs2015; Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags}; 
-Components: vs2015; Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags}; 
-Components: vs2015; Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags}; 
-
-; MsBuild files for VS2017 in a private directory per installation
-Components: vs2017; Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:GetVs2017BaseDir1}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Check: HasVs2017_1;
-Components: vs2017; Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:GetVs2017BaseDir1}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_1;
-Components: vs2017; Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:GetVs2017BaseDir1}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_1;
-Components: vs2017; Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{code:GetVs2017BaseDir1}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_1;
-
-Components: vs2017; Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:GetVs2017BaseDir2}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Check: HasVs2017_1;
-Components: vs2017; Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:GetVs2017BaseDir2}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_2; 
-Components: vs2017; Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:GetVs2017BaseDir2}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_2;
-Components: vs2017; Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{code:GetVs2017BaseDir2}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_2;
-
-Components: vs2017; Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:GetVs2017BaseDir3}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Check: HasVs2017_3;
-Components: vs2017; Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:GetVs2017BaseDir3}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_3;
-Components: vs2017; Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:GetVs2017BaseDir3}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_3;
-Components: vs2017; Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{code:GetVs2017BaseDir3}\MsBuild\{#Product}";        Flags: {#StdFlags}; Check: HasVs2017_3;
-
+Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{app}\MsBuild\Rules";  Flags: {#StdFlags}; 
+Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{app}\MsBuild";        Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{app}\MsBuild";        Flags: {#StdFlags}; 
+Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{app}\MsBuild";        Flags: {#StdFlags}; 
 
 ;Documentation
 Source: "{#DocFolder}XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
@@ -646,6 +629,7 @@ Type: filesandordirs; Name: "{app}\Xide";
 Type: filesandordirs; Name: "{app}\VOXporter"; 
 Type: filesandordirs; Name: "{app}\Bin"; 
 Type: filesandordirs; Name: "{app}\Extension"; 
+Type: filesandordirs; Name: "{app}\MsBuild"; 
 
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            
 Components: vs2015; Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            
@@ -658,9 +642,12 @@ Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017I
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId2}\ComponentModelCache";       Check: HasVs2017_2;
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId3}\vtc";                       Check: HasVs2017_3;
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId3}\ComponentModelCache";       Check: HasVs2017_3;
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir1}\Extensions\XSharp";       Check: HasVs2017_1;
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir2}\Extensions\XSharp";       Check: HasVs2017_2;
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir3}\Extensions\XSharp";       Check: HasVs2017_3;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir1}\Extensions\XSharp" ;  Check: HasVs2017_1;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir1}\MsBuild\XSharp";  Check: HasVs2017_1;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir2}\Extensions\XSharp";  Check: HasVs2017_2;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir2}\MsBuild\XSharp";  Check: HasVs2017_2;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir3}\Extensions\XSharp";  Check: HasVs2017_3;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir3}\MsBuild\XSharp";  Check: HasVs2017_3;
 
 Type: filesandordirs; Name: "{group}" ;
 
@@ -674,12 +661,17 @@ Type: filesandordirs; Name: "{app}\Portable"                      ;
 Type: filesandordirs; Name: "{app}\ProjectSystem"                 ; 
 Type: filesandordirs; Name: "{app}\Redist"                        ; 
 Type: filesandordirs; Name: "{app}\Tools"                         ; 
-Type: filesandordirs; Name: "{app}\Uninst"                        ; 
+Type: filesandordirs; Name: "{app}\Uninst"                        ;
+Type: filesandordirs; Name: "{app}\MsBuild";                      
 Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"             ; 
-Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";  
-Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir1}\Extensions\XSharp";  Check: HasVs2017_1;
+Components: vs2015; Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"  ;  
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir1}\Extensions\XSharp" ;  Check: HasVs2017_1;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir1}\MsBuild\XSharp";  Check: HasVs2017_1;
 Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir2}\Extensions\XSharp";  Check: HasVs2017_2;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir2}\MsBuild\XSharp";  Check: HasVs2017_2;
 Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017IdeDir3}\Extensions\XSharp";  Check: HasVs2017_3;
+Components: vs2017; Type: filesandordirs; Name: "{code:GetVs2017BaseDir3}\MsBuild\XSharp";  Check: HasVs2017_3;
+
 Type: filesandordirs; Name: "{commondocs}\XSharp\Examples";
 Type: filesandordirs; Name: "{commondocs}\XSharp\Scripting";
 Type: dirifempty;     Name: "{commondocs}\XSharp"; 
@@ -1028,6 +1020,13 @@ begin
   result := result + DelFolder(path+'Exp\Vtc');
 end;
 
+function CopyMsBuild(path: String) : String;
+begin
+  result := '';
+  result := result+ 'XCOPY ' + ExpandConstant('"{app}\MsBuild\*.*" "')+path+'" /i /s /y'+#13+#10;
+
+end;
+
 function CopyToVsFolder(path: String) : String;
 begin
   result := '';
@@ -1046,6 +1045,8 @@ begin
       commands := commands + DelFolder(Vs2015Path+'Extensions\XSharp');
       commands := commands + DelUserFolders(ExpandConstant('{#VS14LocalDir}'));
       commands := commands + CopyToVsFolder(Vs2015Path);
+      commands := commands + DelFolder(ExpandConstant('{pf}\MsBuild\XSharp'));
+      commands := commands + CopyMsBuild(ExpandConstant('{pf}\MsBuild\XSharp'));
       SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2015.cmd'), commands, False);
   end
 end;
@@ -1078,18 +1079,24 @@ begin
         commands := commands + DelFolder(Vs2017Path1+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId1));
         commands := commands + CopyToVsFolder(Vs2017Path1);
+        commands := commands + DelFolder(Vs2017BaseDir1+'\MsBuild\XSharp');
+        commands := commands + CopyMsBuild(Vs2017BaseDir1+'\MsBuild\XSharp');
        end
       if HasVs2017_2() then 
       begin
         commands := commands + DelFolder(Vs2017Path2+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId2));
         commands := commands + CopyToVsFolder(Vs2017Path2);
+        commands := commands + DelFolder(Vs2017BaseDir2+'\MsBuild\XSharp');
+        commands := commands + CopyMsBuild(Vs2017BaseDir2+'\MsBuild\XSharp');
        end
       if HasVs2017_3() then 
       begin
         commands := commands + DelFolder(Vs2017Path3+'Extensions\XSharp');
         commands := commands + DelUserFolders(ExpandConstant('{#VS15LocalDir}'+vs2017InstanceId3));
         commands := commands + CopyToVsFolder(Vs2017Path3);
+        commands := commands + DelFolder(Vs2017BaseDir3+'\MsBuild\XSharp');
+        commands := commands + CopyMsBuild(Vs2017BaseDir3+'\MsBuild\XSharp');
       end
 
       SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2017.cmd'), commands, False);

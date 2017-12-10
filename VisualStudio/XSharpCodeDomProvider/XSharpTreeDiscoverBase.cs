@@ -185,6 +185,11 @@ namespace XSharp.CodeDom
                 XSharpParser.QualifiedNameContext qual = (XSharpParser.QualifiedNameContext)context;
                 expr = BuildName(qual.Left);
                 expr = BuildTypeReference(expr.BaseType + "." + BuildSimpleName(qual.Right).BaseType);
+                if (sName.Contains(">"))
+                {
+                    // work around to fix type problems with generics
+                    expr.UserData[XSharpCodeConstants.USERDATA_CODE] = sName;
+                }
             }
             else if (context is XSharpParser.SimpleOrAliasedNameContext)
             {

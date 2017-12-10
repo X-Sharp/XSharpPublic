@@ -185,11 +185,6 @@ namespace XSharp.CodeDom
                 XSharpParser.QualifiedNameContext qual = (XSharpParser.QualifiedNameContext)context;
                 expr = BuildName(qual.Left);
                 expr = BuildTypeReference(expr.BaseType + "." + BuildSimpleName(qual.Right).BaseType);
-                if (sName.Contains(">"))
-                {
-                    // work around to fix type problems with generics
-                    expr.UserData[XSharpCodeConstants.USERDATA_CODE] = sName;
-                }
             }
             else if (context is XSharpParser.SimpleOrAliasedNameContext)
             {
@@ -214,6 +209,11 @@ namespace XSharp.CodeDom
                     var id = name as XSharpParser.IdentifierOrGenericNameContext;
                     expr = BuildSimpleName(id.Name);
                 }
+            }
+            if (sName.Contains(">"))
+            {
+                // work around to fix type problems with generics
+                expr.UserData[XSharpCodeConstants.USERDATA_CODE] = sName;
             }
             //
             return expr;

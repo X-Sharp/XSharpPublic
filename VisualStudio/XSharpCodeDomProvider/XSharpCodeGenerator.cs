@@ -1135,6 +1135,12 @@ namespace XSharp.CodeDom
         {
             string str = string.Empty;
             CodeTypeReference arrayElementType = typeRef;
+            if (typeRef.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
+            {
+                // some types with parsing problems have their definition saved as userdata
+                return typeRef.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
+            }
+                
             while (arrayElementType.ArrayElementType != null)
             {
                 arrayElementType = arrayElementType.ArrayElementType;

@@ -231,43 +231,43 @@ namespace XSharp.Project
                         m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
                     }
                 }
-                else if (elt is EnvDTE.CodeElement)
-                {
-                    EnvDTE.CodeElement element = elt as EnvDTE.CodeElement;
-                    XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
-                    if (analysis.IsInitialized)
-                    {
-                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan, comma));
-                        //
-                        if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
-                        {
-                            EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
-                            if (method.Parent is EnvDTE.CodeElement)
-                            {
-                                EnvDTE.CodeElement owner = (EnvDTE.CodeElement)method.Parent;
-                                if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                                {
-                                    EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
-                                    StrangerNameSake(envClass, signatures, element.Name, analysis.Prototype, comma);
-                                    // Hey, we should also walk the Parent's parents, no ?
-                                    EnvDTE.CodeElements bases = envClass.Bases;
-                                    if (bases != null)
-                                    {
-                                        foreach (EnvDTE.CodeElement parent in bases)
-                                        {
-                                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                                            {
-                                                StrangerNameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype,comma);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        //
-                        m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
-                    }
-                }
+                //else if (elt is EnvDTE.CodeElement)
+                //{
+                //    EnvDTE.CodeElement element = elt as EnvDTE.CodeElement;
+                //    XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
+                //    if (analysis.IsInitialized)
+                //    {
+                //        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan, comma));
+                //        //
+                //        if (element.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
+                //        {
+                //            EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)element;
+                //            if (method.Parent is EnvDTE.CodeElement)
+                //            {
+                //                EnvDTE.CodeElement owner = (EnvDTE.CodeElement)method.Parent;
+                //                if (owner.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                //                {
+                //                    EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)owner;
+                //                    StrangerNameSake(envClass, signatures, element.Name, analysis.Prototype, comma);
+                //                    // Hey, we should also walk the Parent's parents, no ?
+                //                    EnvDTE.CodeElements bases = envClass.Bases;
+                //                    if (bases != null)
+                //                    {
+                //                        foreach (EnvDTE.CodeElement parent in bases)
+                //                        {
+                //                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+                //                            {
+                //                                StrangerNameSake((EnvDTE.CodeClass)parent, signatures, element.Name, analysis.Prototype,comma);
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //        }
+                //        //
+                //        m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+                //    }
+                //}
                 session.Dismissed += OnSignatureHelpSessionDismiss;
             }
             catch (Exception ex)

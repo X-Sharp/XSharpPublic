@@ -722,18 +722,18 @@ namespace XSharp.CodeDom
             return type;
         }
 
-        protected EnvDTE.CodeElement findStrangerType(string typeName)
-        {
-            if (_stypes.ContainsKey(typeName))
-            {
-                return _stypes[typeName];
-            }
-            var type = _projectNode.ResolveStrangerType(typeName, _usings.ToImmutableArray());
-            //
-            if (type != null)
-                _stypes.Add(typeName, type);
-            return type;
-        }
+        //protected EnvDTE.CodeElement findStrangerType(string typeName)
+        //{
+        //    if (_stypes.ContainsKey(typeName))
+        //    {
+        //        return _stypes[typeName];
+        //    }
+        //    var type = _projectNode.ResolveStrangerType(typeName, _usings.ToImmutableArray());
+        //    //
+        //    if (type != null)
+        //        _stypes.Add(typeName, type);
+        //    return type;
+        //}
 
         protected TypeXType findTypeXType(string typeName)
         {

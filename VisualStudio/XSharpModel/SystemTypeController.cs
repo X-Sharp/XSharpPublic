@@ -88,7 +88,7 @@ namespace XSharpModel
             }
             if (lastWriteTime != assembly.Modified)
             {
-                assembly.UpdateAssembly();
+                assembly.UpdateAssembly(true);
             }
             if (Path.GetFileName(cFileName).ToLower() == "system.dll")
             {

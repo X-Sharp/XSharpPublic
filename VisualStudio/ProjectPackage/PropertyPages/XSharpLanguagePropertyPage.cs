@@ -344,11 +344,11 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(LB), this.lb.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(OVF), this.ovf.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(Unsafe), this.@unsafe.ToString().ToLower());
-
+            
 
             this.ProjectMgr.SetProjectProperty(nameof(INS), this.ins.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(NS), this.ns.ToString().ToLower());
-
+            ((XSharpProjectNode)this.ProjectMgr).PrefixClassesWithDefaultNamespace = this.ns;
 
             this.ProjectMgr.SetProjectProperty(nameof(VO1), this.vo1.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO2), this.vo2.ToString().ToLower());

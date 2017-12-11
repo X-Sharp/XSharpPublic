@@ -1342,6 +1342,32 @@ namespace XSharp.Project
                     textView.SetTopLine(0);
             }
         }
+
+        string _prefix = null;
+
+        public bool PrefixClassesWithDefaultNamespace
+        {
+            get
+            {
+                if (_prefix == null)
+                {
+                    lock (this)
+                    {
+                        if (_prefix == null)
+                            _prefix = GetProjectProperty("NS") ;
+                        if (_prefix == null)
+                            _prefix = "false";
+                    }
+
+                }
+                return _prefix.ToLower() == "true";
+            }
+            internal set
+            {
+                _prefix = value.ToString().ToLower();
+            }
+
+        }
         string _rootNamespace = null;
 
         public string RootNameSpace

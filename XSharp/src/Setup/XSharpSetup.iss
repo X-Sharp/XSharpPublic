@@ -25,7 +25,7 @@
   
 #define Version             "1.1.1.0"
 #define VIVersion           "1.1.1.0"
-#define TouchDate           "2017-12-09"
+#define TouchDate           "2017-12-11"
 #define TouchTime           "01:11:00"
 
 #define Product             "XSharp"
@@ -61,8 +61,8 @@
 #define DocFolder           "C:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder          "C:\Xsharp\Dev\XSharp\Xide\"
 #define SnippetsSource      "C:\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets\"
-#define XIDESetup           "XIDE_Set_up_1.11.exe"
-#define XIDEVersion         "1.11"
+#define XIDESetup           "XIDE_Set_up_1.12.exe"
+#define XIDEVersion         "1.12"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define Provider            "XSharp.CodeDom.XSharpCodeDomProvider, Culture=neutral, PublicKeyToken=31c59c566fa38f21, Version="

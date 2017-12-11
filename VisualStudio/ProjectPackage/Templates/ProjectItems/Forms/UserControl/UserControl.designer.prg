@@ -4,7 +4,7 @@
        /// <summary>
        /// Required designer variable.
        /// </summary>
-       PRIVATE INSTANCE components AS System.ComponentModel.IContainer
+       PRIVATE INSTANCE components := NULL AS System.ComponentModel.IContainer
     
        /// <summary>
        /// Clean up any resources being used.

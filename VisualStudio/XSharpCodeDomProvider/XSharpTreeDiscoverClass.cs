@@ -305,7 +305,7 @@ namespace XSharp.CodeDom
         {
             System.Type baseType;
             XType baseXType;
-            EnvDTE.CodeElement baseSType;
+            //EnvDTE.CodeElement baseSType;
             //
             foreach (XCodeTypeReference basetype in CurrentClass.BaseTypes)
             {
@@ -328,11 +328,11 @@ namespace XSharp.CodeDom
                     return hasClassMember(baseXType, name, mtype);
                 }
                 // External C#/VB/... Project
-                baseSType = findStrangerType(typeName);
-                if (baseSType != null)
-                {
-                    return hasClassMember(baseSType, name, mtype);
-                }
+            //    baseSType = findStrangerType(typeName);
+            //    if (baseSType != null)
+            //    {
+            //        return hasClassMember(baseSType, name, mtype);
+            //    }
             }
             return false;
         }

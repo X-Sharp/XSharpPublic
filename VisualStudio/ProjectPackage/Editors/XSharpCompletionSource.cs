@@ -558,7 +558,7 @@ namespace XSharpLanguage
                 }
             }
         }
-
+        /*
         private void AddStrangerTypeNames(CompletionList compList, EnvDTE.Project project, string startWith)
         {
             //
@@ -636,7 +636,7 @@ namespace XSharpLanguage
                 }
             }
         }
-
+        */
 
         private void AddXSharpTypesTypeNames(CompletionList compList, string startWith)
         {
@@ -702,11 +702,11 @@ namespace XSharpLanguage
                 AddXSharpNamespaces(compList, prj, startWith, icon);
             }
             // And Stranger Projects
-            var sprjs = project.StrangerProjects;
-            foreach (var prj in sprjs)
-            {
-                AddStrangerNamespaces(compList, prj, startWith, icon);
-            }
+            //var sprjs = project.StrangerProjects;
+            //foreach (var prj in sprjs)
+            //{
+            //    AddStrangerNamespaces(compList, prj, startWith, icon);
+            //}
         }
 
         private void AddXSharpNamespaces(CompletionList compList, XProject project, String startWith, ImageSource icon)
@@ -734,42 +734,42 @@ namespace XSharpLanguage
             }
         }
 
-        private void AddStrangerNamespaces(CompletionList compList, EnvDTE.Project project, String startWith, ImageSource icon)
-        {
-            // Calculate the length we must remove
-            int startLen = 0;
-            int dotPos = startWith.LastIndexOf('.');
-            if (dotPos != -1)
-                startLen = dotPos + 1;
-            // get all the items in each project
-            foreach (EnvDTE.ProjectItem item in project.ProjectItems)
-            {
-                EnvDTE.FileCodeModel filecodemodel = null; //  item.FileCodeModel as EnvDTE.FileCodeModel;
-                if (filecodemodel == null)
-                    continue;
-                foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)
-                {
-                    //
-                    if (codeElement.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
-                    {
-                        String realNamespace = codeElement.FullName;
-                        if (nameStartsWith(realNamespace, startWith))
-                        {
-                            // remove the start
-                            if (startLen > 0)
-                                realNamespace = realNamespace.Substring(startLen);
-                            // Do we have another part 
-                            dotPos = realNamespace.IndexOf('.');
-                            // Then remove it
-                            if (dotPos > 0)
-                                realNamespace = realNamespace.Substring(0, dotPos);
-                            if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + codeElement.FullName, icon, null, Kind.Namespace)))
-                                break;
-                        }
-                    }
-                }
-            }
-        }
+        //private void AddStrangerNamespaces(CompletionList compList, EnvDTE.Project project, String startWith, ImageSource icon)
+        //{
+        //    // Calculate the length we must remove
+        //    int startLen = 0;
+        //    int dotPos = startWith.LastIndexOf('.');
+        //    if (dotPos != -1)
+        //        startLen = dotPos + 1;
+        //    // get all the items in each project
+        //    foreach (EnvDTE.ProjectItem item in project.ProjectItems)
+        //    {
+        //        EnvDTE.FileCodeModel filecodemodel = null; //  item.FileCodeModel as EnvDTE.FileCodeModel;
+        //        if (filecodemodel == null)
+        //            continue;
+        //        foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)
+        //        {
+        //            //
+        //            if (codeElement.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
+        //            {
+        //                String realNamespace = codeElement.FullName;
+        //                if (nameStartsWith(realNamespace, startWith))
+        //                {
+        //                    // remove the start
+        //                    if (startLen > 0)
+        //                        realNamespace = realNamespace.Substring(startLen);
+        //                    // Do we have another part 
+        //                    dotPos = realNamespace.IndexOf('.');
+        //                    // Then remove it
+        //                    if (dotPos > 0)
+        //                        realNamespace = realNamespace.Substring(0, dotPos);
+        //                    if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + codeElement.FullName, icon, null, Kind.Namespace)))
+        //                        break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
 
         private void BuildCompletionList(CompletionList compList, XTypeMember currentMember, String startWith)

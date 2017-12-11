@@ -22,6 +22,7 @@ namespace XSharpModel
         private bool lLoadedTypes;
         private Assembly _Assembly;
         private string _GlobalClassName;
+        private int _failed = 0;
 
         private Hashtable _NameSpaces;
         private List<string> _NameSpaceTexts;
@@ -178,9 +179,11 @@ namespace XSharpModel
             this.Modified = File.GetLastWriteTime(FileName);
         }
 
-        internal void UpdateAssembly()
+        internal void UpdateAssembly(bool force = false)
         {
             Type[] types = null;
+            if (this._failed > 3 && ! force)
+                return;
             var aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             var aExtensions = new List<MethodInfo>();
             //
@@ -241,21 +244,31 @@ namespace XSharpModel
                 {
                     types = this.Assembly.GetTypes();
                 }
+                this._failed = 0;
             }
             catch (ReflectionTypeLoadException e)
             {
                 Support.Debug("Cannot load types from {0}", Assembly.GetName().Name);
                 Support.Debug("Exception details:");
+                string lastMsg = null;
                 foreach (var le in e.LoaderExceptions)
                 {
-                    Support.Debug(le.Message);
+                    if (le.Message != lastMsg)
+                    {
+                        Support.Debug(le.Message);
+                        lastMsg = le.Message;
+                    }
                 }
                 Support.Debug("Types loaded:");
                 foreach (var t in e.Types)
                 {
-                    Support.Debug(t.FullName);
+                    if (t != null)
+                    {
+                        Support.Debug(t.FullName);
+                    }
                 }
                 this.Assembly = null;
+                this._failed += 1;
             }
             catch (Exception e)
             {
@@ -361,6 +374,7 @@ namespace XSharpModel
                     this.lLoadedTypes = true;
                     this._aTypes = aTypes.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
                     this._aExtensions = aExtensions.ToImmutableList();
+                    this._failed = 0;
                 }
                 catch
                 {

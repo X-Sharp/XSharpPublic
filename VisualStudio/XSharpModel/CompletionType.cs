@@ -151,12 +151,12 @@ namespace XSharpModel
                             if (this.IsInitialized)
                                 break;
                         }
-                        if (!this.IsInitialized)
-                        {
+                        //if (!this.IsInitialized)
+                        //{
                             // Not Found ? 
                             // now try with Referenced Foreign Projects
-                            CheckStrangerProjectType(typeName, xFile.Project, usings);
-                        }
+                            //CheckStrangerProjectType(typeName, xFile.Project, usings);
+                        //}
                     }
                 }
             }

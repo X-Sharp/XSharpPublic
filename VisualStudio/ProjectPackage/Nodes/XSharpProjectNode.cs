@@ -1468,7 +1468,10 @@ namespace XSharp.Project
                     return typeof(String);
             }
             var model = this.ProjectModel;
-            return model.FindSystemType(name, usings);
+            var myusings = new List<string>();
+            myusings.AddRange(usings);
+            myusings.AddUnique("System");
+            return model.FindSystemType(name, myusings);
         }
 
         public XType ResolveXType(string name, IReadOnlyList<string> usings)
@@ -1514,24 +1517,24 @@ namespace XSharp.Project
             return result;
         }
 
-        public CodeElement ResolveStrangerType(string name, IReadOnlyList<string> usings)
-        {
-            var model = this.ProjectModel;
-            // First, easy way..Use the simple name
-            CodeElement codeElt = model.LookupForStranger(name, true);
-            if (codeElt == null)
-            {
-                // Search using the USING statements in the File that contains the var
-                foreach (string usingStatement in usings)
-                {
-                    String fqn = usingStatement + "." + name;
-                    codeElt = model.LookupForStranger(fqn, true);
-                    if (codeElt != null)
-                        break;
-                }
-            }
-            return codeElt;
-        }
+        //public CodeElement ResolveStrangerType(string name, IReadOnlyList<string> usings)
+        //{
+        //    var model = this.ProjectModel;
+        //    // First, easy way..Use the simple name
+        //    CodeElement codeElt = model.LookupForStranger(name, true);
+        //    if (codeElt == null)
+        //    {
+        //        // Search using the USING statements in the File that contains the var
+        //        foreach (string usingStatement in usings)
+        //        {
+        //            String fqn = usingStatement + "." + name;
+        //            codeElt = model.LookupForStranger(fqn, true);
+        //            if (codeElt != null)
+        //                break;
+        //        }
+        //    }
+        //    return codeElt;
+        //}
 
         #endregion
         #region IVsSingleFileGeneratorFactory

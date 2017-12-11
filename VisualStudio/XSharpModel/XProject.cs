@@ -743,6 +743,7 @@ namespace XSharpModel
         }
         public bool IsVsBuilding => false;
         public string IntermediateOutputPath => "";
+        public bool PrefixClassesWithDefaultNamespace => false;
         public XSharpParseOptions ParseOptions => XSharpParseOptions.Default;
         public XSharpParseOptions LexOptions  => XSharpParseOptions.Default;
         public string RootNameSpace => "";

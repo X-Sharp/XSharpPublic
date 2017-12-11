@@ -62,7 +62,10 @@ namespace XSharpModel
             {
                 if (this._file.Project.Loaded)       // this will fail if the project file is already unloaded
                 {
-                    this._defaultNS = this._file.Project.ProjectNode.RootNameSpace;
+                    if (this._file.Project.ProjectNode.PrefixClassesWithDefaultNamespace)
+                    {
+                        this._defaultNS = this._file.Project.ProjectNode.RootNameSpace;
+                    }
                 }
             }
         }

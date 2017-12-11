@@ -174,6 +174,10 @@ namespace XSharp.CodeDom
             XCodeTypeReference expr = null;
             //
             var sName = context.GetText();
+            //if (!sName.Contains(".") && !sName.Contains(":") && !sName.Contains(">"))
+            //{
+            //    return BuildTypeReference(sName);
+            //}
             if (!sName.EndsWith(">"))
             {
                 System.Type type = findType(sName);

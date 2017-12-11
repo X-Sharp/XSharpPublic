@@ -19,6 +19,7 @@ namespace XSharpModel
     {
         bool IsVsBuilding { get; }
         string RootNameSpace { get; }
+        bool PrefixClassesWithDefaultNamespace { get; }
         string Url { get; }
         string OutputFile { get; }
         void SetStatusBarText(string message);

@@ -70,12 +70,11 @@ namespace XSharp.Project
 
         private static void _errorList_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            foreach (var element in _projects)
-            {
-                element.Value.dirty = true;
-                element.Value.Refresh();
-
-            }
+            //foreach (var element in _projects)
+            //{
+            //    element.Value.dirty = true;
+            //    element.Value.Refresh();
+            //}
         }
 
         internal void DeleteIntellisenseErrorsFromFile(string fileName)

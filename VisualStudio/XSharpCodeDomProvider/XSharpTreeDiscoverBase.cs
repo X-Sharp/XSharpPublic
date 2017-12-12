@@ -133,7 +133,7 @@ namespace XSharp.CodeDom
                     expr = new CodePrimitiveExpression(true);
                     break;
                 case XSharpParser.FALSE_CONST:
-                    expr = new CodePrimitiveExpression(true);
+                    expr = new CodePrimitiveExpression(false);
                     break;
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.ESCAPED_STRING_CONST:

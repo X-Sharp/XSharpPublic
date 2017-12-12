@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Runtime.Tests", "Runtime\XSharp.Runtime.Tests\XSharp.Runtime.Tests.xsproj", "{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}"
 EndProject
@@ -48,5 +48,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}
 	EndGlobalSection
 EndGlobal

@@ -57,22 +57,11 @@ namespace XSharp.CodeDom
 
     internal class TypeXType
     {
-        internal System.Type Type { get; private set; }
-        internal XType xType { get; private set; }
+        internal System.Type Type { get; private set; } 
+        internal XType xType { get; private set; } 
 
-        internal TypeXType(System.Type type) { Type = type; }
-        internal TypeXType(XType xtype) { xType = xtype; }
-        internal TypeXType(TypeXType txtype)
-        {
-            if (txtype.Type != null)
-            {
-                Type = txtype.Type;
-            }
-            else
-            {
-                xType = txtype.xType;
-            }
-        }
+        internal TypeXType(System.Type type) { Type = type; xType = null; }
+        internal TypeXType(XType xtype) { xType = xtype; Type = null; }
 
     }
 
@@ -128,7 +117,18 @@ namespace XSharp.CodeDom
                 this._members.Add(mtype.Name, mtype);
             }
         }
-        private bool hasClassMember(Type baseType, string name, MemberTypes mtype)
+        private bool hasClassMember(TypeXType baseType, string name, MemberTypes mtype)
+        {
+            if (baseType != null)
+            {
+                if (baseType.Type != null)
+                    return hasClassMember(baseType.Type, name, mtype);
+                else if (baseType.xType != null)
+                    return hasClassMember(baseType.xType, name, mtype);
+            }
+            return false;
+        }
+        private bool hasClassMember(System.Type baseType, string name, MemberTypes mtype)
         {
             if (_members.ContainsKey(name))
             {
@@ -210,129 +210,120 @@ namespace XSharp.CodeDom
                         break;
                 }
             }
-            return result;
-        }
-
-        private bool hasClassMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
-        {
-            if (_members.ContainsKey(name))
+            else
             {
-                return _members[name].MemberType == mtype;
-            }
-            return searchExternalClassMember(type, name, mtype);
-        }
-
-        private bool searchExternalClassMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
-        {
-            bool result = false;
-            //
-            if ((type.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
-                (type.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
-                (type.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
-            {
-
-                //
-                EnvDTE.CodeElements members = null;
-                EnvDTE.CodeElements bases = null; ;
-                if (type.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                {
-                    EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)type;
-                    members = envClass.Members;
-                    bases = envClass.Bases;
-                }
-                else if (type.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
-                {
-                    EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)type;
-                    members = envEnum.Members;
-                    bases = envEnum.Bases;
-                }
-                else if (type.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
-                {
-                    EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)type;
-                    members = envStruct.Members;
-                    bases = envStruct.Bases;
-                }
-                //
-                System.Type t = typeof(void);
-                foreach (EnvDTE.CodeElement member in members)
-                {
-                    if (String.Equals(member.Name, name, StringComparison.OrdinalIgnoreCase))
-                    {
-                        switch (member.Kind)
-                        {
-                            case EnvDTE.vsCMElement.vsCMElementEvent:
-                                result = true;
-                                addClassMember(new XMemberType(name, MemberTypes.Event, true, t, t?.FullName));
-                                break;
-                            case EnvDTE.vsCMElement.vsCMElementVariable:
-                                result = true;
-                                addClassMember(new XMemberType(name, MemberTypes.Field, true, t, t?.FullName));
-                                break;
-                            case EnvDTE.vsCMElement.vsCMElementFunction:
-                                result = true;
-                                addClassMember(new XMemberType(name, MemberTypes.Method, true, t, t?.FullName));
-                                break;
-                            case EnvDTE.vsCMElement.vsCMElementProperty:
-                                result = true;
-                                addClassMember(new XMemberType(name, MemberTypes.Property, true, t, t?.FullName));
-                                break;
-                        }
-                        if (result)
-                            break;
-                    }
-                }
-                if (!result)
-                {
-                    if (bases != null)
-                    {
-                        foreach (EnvDTE.CodeElement parent in bases)
-                        {
-                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                            {
-                                //
-                                result = searchExternalClassMember(parent, name, mtype);
-                                if (result)
-                                    break;
-                            }
-                        }
-                    }
-                }
+                // not in our class, maybe in a parent class
+                var parentType = findTypeXType(baseType.ParentName);
+                return hasClassMember(parentType, name, mtype);
             }
             return result;
         }
+
+        //private bool hasClassMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
+        //{
+        //    if (_members.ContainsKey(name))
+        //    {
+        //        return _members[name].MemberType == mtype;
+        //    }
+        //    return searchExternalClassMember(type, name, mtype);
+        //}
+
+        //private bool searchExternalClassMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
+        //{
+        //    bool result = false;
+        //    //
+        //    if ((type.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
+        //        (type.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
+        //        (type.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
+        //    {
+
+        //        //
+        //        EnvDTE.CodeElements members = null;
+        //        EnvDTE.CodeElements bases = null; ;
+        //        if (type.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+        //        {
+        //            EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)type;
+        //            members = envClass.Members;
+        //            bases = envClass.Bases;
+        //        }
+        //        else if (type.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
+        //        {
+        //            EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)type;
+        //            members = envEnum.Members;
+        //            bases = envEnum.Bases;
+        //        }
+        //        else if (type.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
+        //        {
+        //            EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)type;
+        //            members = envStruct.Members;
+        //            bases = envStruct.Bases;
+        //        }
+        //        //
+        //        System.Type t = typeof(void);
+        //        foreach (EnvDTE.CodeElement member in members)
+        //        {
+        //            if (String.Equals(member.Name, name, StringComparison.OrdinalIgnoreCase))
+        //            {
+        //                switch (member.Kind)
+        //                {
+        //                    case EnvDTE.vsCMElement.vsCMElementEvent:
+        //                        result = true;
+        //                        addClassMember(new XMemberType(name, MemberTypes.Event, true, t, t?.FullName));
+        //                        break;
+        //                    case EnvDTE.vsCMElement.vsCMElementVariable:
+        //                        result = true;
+        //                        addClassMember(new XMemberType(name, MemberTypes.Field, true, t, t?.FullName));
+        //                        break;
+        //                    case EnvDTE.vsCMElement.vsCMElementFunction:
+        //                        result = true;
+        //                        addClassMember(new XMemberType(name, MemberTypes.Method, true, t, t?.FullName));
+        //                        break;
+        //                    case EnvDTE.vsCMElement.vsCMElementProperty:
+        //                        result = true;
+        //                        addClassMember(new XMemberType(name, MemberTypes.Property, true, t, t?.FullName));
+        //                        break;
+        //                }
+        //                if (result)
+        //                    break;
+        //            }
+        //        }
+        //        if (!result)
+        //        {
+        //            if (bases != null)
+        //            {
+        //                foreach (EnvDTE.CodeElement parent in bases)
+        //                {
+        //                    if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
+        //                    {
+        //                        //
+        //                        result = searchExternalClassMember(parent, name, mtype);
+        //                        if (result)
+        //                            break;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return result;
+        //}
 
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {
-            System.Type baseType;
-            XType baseXType;
-            //EnvDTE.CodeElement baseSType;
-            //
             foreach (XCodeTypeReference basetype in CurrentClass.BaseTypes)
             {
                 string typeName = basetype.BaseType;
-                // Referenced type in external assembly ?
-                baseType = findType(typeName);
+                var baseType = findTypeXType(typeName);
                 if (baseType != null)
                 {
                     return hasClassMember(baseType, name, mtype);
                 }
-                // Our own XType ?
-                baseXType = findXType(typeName);
-                if (baseXType == null)
-                {
-                    // XType in External XSharp Project ?
-                    baseXType = findReferencedType(typeName);
-                }
-                if (baseXType != null)
-                {
-                    return hasClassMember(baseXType, name, mtype);
-                }
                 // External C#/VB/... Project
-            //    baseSType = findStrangerType(typeName);
-            //    if (baseSType != null)
-            //    {
-            //        return hasClassMember(baseSType, name, mtype);
-            //    }
+                // EnvDTE.CodeElement baseSType;
+                //    baseSType = findStrangerType(typeName);
+                //    if (baseSType != null)
+                //    {
+                //        return hasClassMember(baseSType, name, mtype);
+                //    }
             }
             return false;
         }
@@ -955,21 +946,21 @@ namespace XSharp.CodeDom
                             case Kind.Field:
                             case Kind.ClassVar:
                                 expr = new XCodeFieldReferenceExpression(target, name);
-                                memberType = new TypeXType(findTypeXType(m.TypeName));
+                                memberType = findTypeXType(m.TypeName);
                                 break;
                             case Kind.Access:
                             case Kind.Assign:
                             case Kind.Property:
                                 expr = new XCodePropertyReferenceExpression(target, name);
-                                memberType = new TypeXType(findTypeXType(m.TypeName));
+                                memberType = findTypeXType(m.TypeName);
                                 break;
                             case Kind.Method:
                                 expr = new XCodeMethodReferenceExpression(target, name);
-                                memberType = new TypeXType(findTypeXType(m.TypeName));
+                                memberType = findTypeXType(m.TypeName);
                                 break;
                             case Kind.Event:
                                 expr = new XCodeEventReferenceExpression(target, name);
-                                memberType = new TypeXType(findTypeXType(m.TypeName));
+                                memberType = findTypeXType(m.TypeName);
                                 break;
                             default:
                                 break;

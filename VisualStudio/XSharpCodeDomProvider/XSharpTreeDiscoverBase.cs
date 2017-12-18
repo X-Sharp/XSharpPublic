@@ -394,6 +394,26 @@ namespace XSharp.CodeDom
             Object ret = null;
             string value = context.Token.Text;
             var type = context.Token.Type;
+            // try to check if this literal has a Prefix
+            try
+            {
+                if ( context.Parent.Parent is XSharpParser.PrimaryExpressionContext )
+                {
+                    var prim = context.Parent.Parent as XSharpParser.PrimaryExpressionContext;
+                    if ( prim.Parent is XSharpParser.PrefixExpressionContext )
+                    {
+                        var pref = prim.Parent as XSharpParser.PrefixExpressionContext;
+                        if( pref.MINUS() != null )
+                        {
+                            value = "-" + value;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // eat the troubles and ignore please...
+            }
             //
             if (type == XSharpParser.BIN_CONST || type == XSharpParser.INT_CONST || type == XSharpParser.HEX_CONST)
             {

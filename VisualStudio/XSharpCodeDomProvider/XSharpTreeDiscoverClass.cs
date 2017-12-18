@@ -931,6 +931,11 @@ namespace XSharp.CodeDom
 
         private CodeExpression buildTypeMemberExpression(CodeExpression target, TypeXType txtype, string name, out TypeXType memberType)
         {
+            // Special Name ? (Keyword)
+            if (name.StartsWith("@@"))
+            {
+                name = name.Substring(2);
+            }
             CodeExpression expr = null;
             memberType = null;
             while (txtype != null)
@@ -1244,6 +1249,22 @@ namespace XSharp.CodeDom
             else if (expression is XSharpParser.BinaryExpressionContext)
             {
                 expr = BuildBinaryExpression(expression as XSharpParser.BinaryExpressionContext);
+            }
+            else if (expression is XSharpParser.PrefixExpressionContext)
+            {
+                var pref = expression as XSharpParser.PrefixExpressionContext;
+                if (pref.PLUS() != null)
+                {
+                    expr = BuildExpression(pref.Expr, true);
+                }
+                else if (pref.MINUS() != null)
+                {
+                    expr = BuildExpression(pref.Expr, true);
+                }
+                else
+                {
+                    expr = BuildSnippetExpression(expression.GetText());
+                }
             }
             // Unhandled expression types
             // ArrayAccessExpressionContext
@@ -1562,7 +1583,16 @@ namespace XSharp.CodeDom
             }
             return stmts.ToArray();
         }
+
+        public static System.Boolean IsNumeric(System.Object Expression)
+        {
+            if (Expression == null || Expression is DateTime)
+                return false;
+
+            if (Expression is Int16 || Expression is Int32 || Expression is Int64 || Expression is Decimal || Expression is Single || Expression is Double || Expression is Boolean)
+                return true;
+
+            return false;
+        }
     }
-
-
 }

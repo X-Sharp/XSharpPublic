@@ -14,6 +14,10 @@ DEFINE Pi   := 3.14
 DEFINE NOTHING := {}
 DEFINE NOTS := NIL                   
 STATIC DEFINE istrue := TRUE
+
+DEFINE NewDefine := istrue
+GLOBAL NewGlobal := istrue AS LOGIC
+
 DEFINE foo  :=  Left(name,1) AS STRING
 DEFINE bar  :=  iif( !istrue, foo,  "L")
 

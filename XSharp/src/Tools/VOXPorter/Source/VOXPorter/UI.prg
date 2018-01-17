@@ -332,6 +332,23 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		ELSE
 			SELF:oLabelSource:Text := "Source folder:"
 		END IF
+		IF (sender == SELF:oRadioSDKFromFolder .or. sender == SELF:oRadioSDKDefines)
+			IF String.IsNullOrEmpty(SELF:oTextSource:Text)
+				LOCAL cVOLibFolder AS STRING
+				IF VOFolder.IsValid()
+					cVOLibFolder := VOFolder.Get() + "\VOLib"
+					TRY
+						IF Directory.Exists(cVOLibFolder)
+							SELF:oTextSource:Text := cVOLibFolder
+						END IF
+					END TRY
+				ENDIF
+			END IF
+		ELSE
+			IF SELF:oTextSource:Text:EndsWith("\VOLib")
+				SELF:oTextSource:Text := ""
+			END IF
+		ENDIF
 		SELF:EnableDisableControls()
 	RETURN
 

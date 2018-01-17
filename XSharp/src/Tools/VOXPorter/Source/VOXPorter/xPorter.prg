@@ -2089,6 +2089,22 @@ CLASS EntityDescriptor
 			CASE cLineUpper:Contains("PJOINLIST.UIDESTSEL := DWTO")
 				cLine := cLine:Replace('.' , ':')
 				RETURN cLine
+			CASE cLineUpper:Contains("PSZRELTEXT") .or. cLineUpper:Contains("PSZSTUFF")
+				DO CASE
+				CASE cLineUpper:Contains("LOCAL")
+					cLine := cLine:Replace("pszStuff" , "cStuff")
+					cLine := cLine:Replace("pszRelText" , "cRelText")
+					cLine := cLine:Replace("PSZ" , "STRING")
+				CASE cLineUpper:Contains("VODBRELATION(") .or. cLineUpper:Contains("VODBORDSETFOCUS(")
+					cLine := cLine:Replace("@pszRelText" , "REF cRelText")
+					cLine := cLine:Replace("@pszStuff" , "REF cStuff")
+				CASE cLine:Contains("cRelation := Psz2String( pszRelText )")
+					cLine := cLine:Replace("Psz2String( pszRelText )" , "cRelText")
+				END CASE
+				RETURN cLine
+			CASE cLineUpper:Contains("_DLL") .and. cLineUpper:Contains("VO28RUN")
+				cLine := "// " + cLine
+				RETURN cLine
 			END CASE
 		END CASE
 

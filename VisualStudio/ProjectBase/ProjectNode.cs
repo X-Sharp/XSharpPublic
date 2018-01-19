@@ -2483,16 +2483,17 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "vsopts")]
         public virtual BuildResult Build(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target)
         {
+            System.Diagnostics.Trace.WriteLine("<<-- ProjectNode.Build()");
+            BuildResult result = BuildResult.FAILED;
             lock (ProjectNode.BuildLock)
             {
                 bool engineLogOnlyCritical = BuildPrelude(output);
-                BuildResult result = BuildResult.FAILED;
-
                 this.SetBuildConfigurationProperties(configCanonicalName);
                 result = this.InvokeMsBuild(target);
-
-                return result;
+                
             }
+            System.Diagnostics.Trace.WriteLine("-->> ProjectNode.Build()");
+            return result;
         }
 
         public string GetBuildMacroValue(string propertyName)

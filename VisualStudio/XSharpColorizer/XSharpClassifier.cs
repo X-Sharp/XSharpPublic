@@ -156,6 +156,7 @@ namespace XSharpColorizer
         }
         private void triggerRepaint(ITextSnapshot snapshot)
         {
+            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
             lock (gate)
             {
                 if (snapshot != null)
@@ -167,10 +168,11 @@ namespace XSharpColorizer
                     }
                 }
             }
-
+            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
         }
         private void ClassifyCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
             lock (gate)
             {
                 if (e.Cancelled)
@@ -199,6 +201,7 @@ namespace XSharpColorizer
                     }
                 }
             }
+            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.ClassifyCompleted()");
         }
 
         #endregion
@@ -206,6 +209,7 @@ namespace XSharpColorizer
         #region Parser Methods
         private void BuildModelDoWork(object sender, DoWorkEventArgs e)
         {
+            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
             // Note this runs in the background
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
@@ -233,6 +237,7 @@ namespace XSharpColorizer
                     Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 }
             }
+            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
         }
         #endregion
 
@@ -250,6 +255,7 @@ namespace XSharpColorizer
         }
         public IImmutableList<ClassificationSpan> BuildRegionTags(XSharpParser.SourceContext xTree, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
         {
+            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildRegionTags()");
             IImmutableList<ClassificationSpan> regions = null;
             lock (gate)
             {
@@ -272,8 +278,9 @@ namespace XSharpColorizer
                         Debug("BuildRegionTags failed: " + e.Message);
                     }
                 }
-                return regions;
             }
+            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
+            return regions;
         }
 
 
@@ -479,6 +486,7 @@ namespace XSharpColorizer
             {
                 newtags = _tags;
             }
+            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
             lock (gate)
             {
                 if (parserRegionTags != null)
@@ -491,6 +499,7 @@ namespace XSharpColorizer
                     _tagsRegion = regionTags.ToImmutableList();
                 }
             }
+            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             triggerRepaint(snapshot);
         }
@@ -534,10 +543,14 @@ namespace XSharpColorizer
 
         public IImmutableList<ClassificationSpan> GetRegionTags()
         {
+            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
+            IImmutableList<ClassificationSpan> ret;
             lock (gate)
             {
-                return _tagsRegion;
+                ret = _tagsRegion;
             }
+            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");
+            return ret;
         }
 
         #region IClassifier

@@ -56,6 +56,8 @@ namespace XSharpLanguage
 
         private XFile _file;
         private bool showTabs;
+
+
         internal static bool StringEquals(string lhs, string rhs)
         {
             if (String.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase))
@@ -77,6 +79,7 @@ namespace XSharpLanguage
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
+            Trace.WriteLine("-->> AugmentCompetionSessions");
             try
             {
                 XSharpModel.ModelWalker.Suspend();
@@ -360,11 +363,15 @@ namespace XSharpLanguage
                         }
                         break;
                 }
+                //
+                //compList = new CompletionList();
+                //ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupMethod, StandardGlyphItem.GlyphItemPublic);
+                //compList.Add(new XSCompletion("Fab", "Fab(", "Yes Fab !", icon, null, Kind.Method));
+                
                 // Sort in alphabetical order
                 // and put in the SelectionList
                 var values = compList.Values;
                 completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
-
                 if (showTabs)
                 {
                     if (compList.HasEnumMembers)
@@ -416,6 +423,7 @@ namespace XSharpLanguage
             {
                 XSharpModel.ModelWalker.Resume();
             }
+            Trace.WriteLine("<<-- AugmentCompetionSessions");
         }
 
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
@@ -1113,7 +1121,12 @@ namespace XSharpLanguage
 
         public void Dispose()
         {
-            _disposed = true;
+            if (!_disposed)
+            {
+                // Was missing, but doesn't solved the Deadlock with Intellisense
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
         /// <summary>

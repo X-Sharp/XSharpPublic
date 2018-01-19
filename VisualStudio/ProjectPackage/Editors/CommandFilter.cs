@@ -33,15 +33,18 @@ namespace XSharp.Project
 {
     internal sealed partial class CommandFilter : IOleCommandTarget
     {
-        ICompletionSession _completionSession;
         public ITextView TextView { get; private set; }
-        public ICompletionBroker CompletionBroker { get; private set; }
         public IOleCommandTarget Next { get; set; }
 
-        ISignatureHelpBroker SignatureBroker;
+        ICompletionBroker _completionBroker;
+        ICompletionSession _completionSession;
+
+
+        ISignatureHelpBroker _signatureBroker;
         ISignatureHelpSession _signatureSession;
+
         ITextStructureNavigator m_navigator;
-        IBufferTagAggregatorFactoryService Aggregator;
+        IBufferTagAggregatorFactoryService _aggregator;
 
 
 
@@ -54,9 +57,9 @@ namespace XSharp.Project
             _signatureSession = null;
 
             TextView = textView;
-            CompletionBroker = completionBroker;
-            SignatureBroker = signatureBroker;
-            Aggregator = aggregator;
+            _completionBroker = completionBroker;
+            _signatureBroker = signatureBroker;
+            _aggregator = aggregator;
         }
 
         private char GetTypeChar(IntPtr pvaIn)
@@ -282,9 +285,14 @@ namespace XSharp.Project
         {
             if (_completionSession == null)
                 return;
-            _completionSession.SelectedCompletionSet.Filter();
-            _completionSession.SelectedCompletionSet.SelectBestMatch();
-            //_currentSession.SelectedCompletionSet.Recalculate();
+            if (_completionSession.SelectedCompletionSet != null)
+            {
+                _completionSession.SelectedCompletionSet.Filter();
+                _completionSession.SelectedCompletionSet.SelectBestMatch();
+                // It seems that it solves our Deadlock 
+                _completionSession.SelectedCompletionSet.Recalculate();
+            }
+            //_completionSession.Filter();
         }
 
         bool CancelCompletionSession()
@@ -301,35 +309,37 @@ namespace XSharp.Project
         {
             if (_completionSession == null)
                 return false;
-
-            if (!_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected && !force)
+            if (_completionSession.SelectedCompletionSet != null)
             {
-                _completionSession.Dismiss();
-                return false;
+                if (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected || force)
+                {
+                    //
+                    _completionSession.Commit();
+                    return true;
+                }
             }
-            else
-            {
-                //
-                _completionSession.Commit();
-                return true;
-            }
+            _completionSession.Dismiss();
+            return false;
         }
 
         bool StartCompletionSession(uint nCmdId, char typedChar)
         {
             if (_completionSession != null)
-                return false;
+            {
+                if (!_completionSession.IsDismissed)
+                    return false;
+            }
 
             SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = caret.Snapshot;
 
-            if (!CompletionBroker.IsCompletionActive(TextView))
+            if (!_completionBroker.IsCompletionActive(TextView))
             {
-                _completionSession = CompletionBroker.CreateCompletionSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+                _completionSession = _completionBroker.CreateCompletionSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
             }
             else
             {
-                _completionSession = CompletionBroker.GetSessions(TextView)[0];
+                _completionSession = _completionBroker.GetSessions(TextView)[0];
             }
 
             _completionSession.Dismissed += OnCompletionSessionDismiss;
@@ -363,6 +373,8 @@ namespace XSharp.Project
                     }
                     string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
                     method = method.Substring(0, method.Length - 1);
+                    _completionSession.Dismiss();
+
                     StartSignatureSession(false, cType, method);
                 }
             }
@@ -371,12 +383,15 @@ namespace XSharp.Project
 
         private void OnCompletionSessionDismiss(object sender, EventArgs e)
         {
+            _completionSession.Dismissed -= OnCompletionSessionDismiss;
+            _completionSession.Committed -= OnCompletionSessionCommitted;
             _completionSession = null;
         }
         #endregion
 
 
         #region Signature Session
+        
         bool StartSignatureSession(bool comma, XSharpModel.CompletionType cType = null, string methodName = null)
         {
             if (_signatureSession != null)
@@ -452,13 +467,13 @@ namespace XSharp.Project
                 SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
                 ITextSnapshot snapshot = caret.Snapshot;
                 //
-                if (!SignatureBroker.IsSignatureHelpActive(TextView))
+                if (!_signatureBroker.IsSignatureHelpActive(TextView))
                 {
-                    _signatureSession = SignatureBroker.CreateSignatureHelpSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+                    _signatureSession = _signatureBroker.CreateSignatureHelpSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
                 }
                 else
                 {
-                    _signatureSession = SignatureBroker.GetSessions(TextView)[0];
+                    _signatureSession = _signatureBroker.GetSessions(TextView)[0];
                 }
 
                 _signatureSession.Dismissed += OnSignatureSessionDismiss;
@@ -505,6 +520,8 @@ namespace XSharp.Project
         {
             _signatureSession = null;
         }
+
+        
         #endregion
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)

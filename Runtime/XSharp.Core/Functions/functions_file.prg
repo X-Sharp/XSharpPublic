@@ -238,7 +238,7 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL renamed := TRUE AS LOGIC
 			TRY
 				System.IO.File.Move(oldFile, newFile)
-			CATCH ex AS Exception 
+			CATCH 
 				FError((DWORD)Marshal.GetLastWin32Error())
 				renamed := FALSE
 			END TRY
@@ -251,7 +251,7 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL isDeleted := TRUE AS LOGIC
 			TRY
 				System.IO.File.Delete(fileName)
-			CATCH ex AS Exception
+			CATCH 
 				FError((DWORD)Marshal.GetLastWin32Error())
 				isDeleted := FALSE
 			END TRY
@@ -261,7 +261,7 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL isDeleted := TRUE AS LOGIC
 			TRY
 				System.IO.File.Copy(fileName,destination,TRUE)
-			CATCH ex AS Exception
+			CATCH 
 				FError((DWORD)Marshal.GetLastWin32Error())
 				isDeleted := FALSE
 			END TRY

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -6,97 +6,89 @@
 #using XSharp
 BEGIN NAMESPACE XSharp
 	/// <Summary>Values that match the Visual Objects SET_* defines </Summary>
-	ENUM Set
-		MEMBER EXACT       := 1	
-		MEMBER FIXED		 := 2	
-		MEMBER DECIMALS    := 3	
-		MEMBER DATEFORMAT  := 4	
-		MEMBER EPOCH       := 5	
-		MEMBER PATH        := 6	
-		MEMBER DEFAULT		:= 7	
-		MEMBER EXCLUSIVE   := 8	
-		MEMBER SOFTSEEK    := 9	
-		MEMBER UNIQUE      := 10	
-		MEMBER DELETED     := 11	
-		MEMBER CANCEL      := 12	
+	ENUM Set                                
+		MEMBER EXACT       := 1			// LOGIC
+		MEMBER FIXED	   := 2			// LOGIC
+		MEMBER DECIMALS    := 3			// INT
+		MEMBER DATEFORMAT  := 4			// STRING
+		MEMBER EPOCH       := 5			// INT
+		MEMBER PATH        := 6			// STRING
+		MEMBER DEFAULT	   := 7			// STRING
+		MEMBER EXCLUSIVE   := 8			// LOGIC
+		MEMBER SOFTSEEK    := 9			// LOGIC
+		MEMBER UNIQUE      := 10		// LOGIC
+		MEMBER DELETED     := 11		// LOGIC
+		MEMBER CANCEL      := 12		// LOGIC
 		MEMBER @@DEBUG     := 13	
-		MEMBER TYPEAHEAD   := 14	
-		MEMBER COLOR       := 15	
-		MEMBER CURSOR      := 16	
-		MEMBER CONSOLE     := 17	
-		MEMBER ALTERNATE   := 18	
-		MEMBER ALTFILE     := 19	
-		MEMBER DEVICE      := 20	
-		MEMBER EXTRA       := 21	
-		MEMBER EXTRAFILE   := 22	
-		MEMBER PRINTER     := 23	
-		MEMBER PRINTFILE   := 24	
-		MEMBER MARGIN      := 25	
-		MEMBER BELL        := 26	
-		MEMBER CONFIRM     := 27	
-		MEMBER ESCAPE      := 28	
-		MEMBER INSERT      := 29	
-		MEMBER @@EXIT      := 30	
-		MEMBER INTENSITY   := 31	
-		MEMBER SCOREBOARD  := 32	
-		MEMBER DELIMITERS  := 33	
-		MEMBER DELIMCHARS  := 34	
-		MEMBER WRAP        := 35	
-		MEMBER MESSAGE     := 36	
-		MEMBER MCENTER     := 37	
-		MEMBER SCROLLBREAK := 38	
-		
-		MEMBER EVENTMASK   := 39  /* CA-Cl*pper 5.3 compatible */
-		MEMBER VIDEOMODE   := 40  /* CA-Cl*pper 5.3 compatible */
-		MEMBER MBLOCKSIZE  := 41  /* CA-Cl*pper 5.3 compatible */
-		MEMBER MFILEEXT    := 42  /* CA-Cl*pper 5.3 compatible */
-		MEMBER STRICTREAD  := 43  /* CA-Cl*pper 5.3 compatible */
-		MEMBER OPTIMIZE    := 44  /* CA-Cl*pper 5.3 compatible */
-		MEMBER AUTOPEN     := 45  /* CA-Cl*pper 5.3 compatible */
-		MEMBER AUTORDER    := 46  /* CA-Cl*pper 5.3 compatible */
-		MEMBER AUTOSHARE   := 47  /* CA-Cl*pper 5.3 compatible */ 		
+		MEMBER TYPEAHEAD   := 14		// INT
+		MEMBER COLOR       := 15		// STRING
+		MEMBER CURSOR      := 16		// INT
+		MEMBER CONSOLE     := 17		// LOGIC
+		MEMBER ALTERNATE   := 18		// LOGIC
+		MEMBER ALTFILE     := 19		// STRING
+		MEMBER DEVICE      := 20		// STRING
+		MEMBER EXTRA       := 21		// LOGIC
+		MEMBER EXTRAFILE   := 22		// STRING
+		MEMBER PRINTER     := 23		// LOGIC
+		MEMBER PRINTFILE   := 24		// STRING
+		MEMBER MARGIN      := 25		// INT
+		MEMBER BELL        := 26		// LOGIC
+		MEMBER CONFIRM     := 27		// LOGIC
+		MEMBER ESCAPE      := 28		// LOGIC
+		MEMBER INSERT      := 29		// LOGIC
+		MEMBER @@EXIT      := 30		// LOGIC
+		MEMBER INTENSITY   := 31		// LOGIC
+		MEMBER SCOREBOARD  := 32		// LOGIC
+		MEMBER DELIMITERS  := 33		// STRING
+		MEMBER DELIMCHARS  := 34		// STRING
+		MEMBER WRAP        := 35		// LOGIC
+		MEMBER MESSAGE     := 36		// INT
+		MEMBER MCENTER     := 37		// LOGIC
+		MEMBER SCROLLBREAK := 38		// LOGIC
+
 		// 48 and 49 unused
-		MEMBER DIGITS      := 50	// Vulcan had 39
-		MEMBER NETERR      := 51	// Vulcan had 40
-		MEMBER HPLOCK      := 52    // Vulcan had 41
-		MEMBER @@ANSI      := 53	// Vulcan had 44
-		MEMBER @@YIELD     := 54	// Vulcan had 45
-		MEMBER LOCKTRIES   := 55	// Vulcan had 46
-		MEMBER AmExt		 := 56
-		MEMBER AmPm		    := 57
-		MEMBER PmExt	    := 58
-		MEMBER Century	    := 59
-		MEMBER DigitFixed  := 60
-		MEMBER DecimalSep  := 60
-		MEMBER ThousandSep := 61
-		MEMBER TimeSep     := 62
-		MEMBER FieldStore  := 63
-		MEMBER Science     := 64
+		MEMBER DIGITS      	:= 50	// INT   Vulcan had 39
+		MEMBER NETERR      	:= 51	// LOGIC Vulcan had 40
+		MEMBER @@ANSI      	:= 53	// LOGIC Vulcan had 44
+		MEMBER @@YIELD     	:= 54	// LOGIC Vulcan had 45
+		MEMBER LOCKTRIES   	:= 55	// INT   Vulcan had 46
+		MEMBER AMEXT		:= 56	// STRING
+		MEMBER AMPM		    := 57	// STRING
+		MEMBER PMEXT	    := 58	// STRING
+		MEMBER CENTURY	    := 59
+		MEMBER DIGITFIXED  	:= 60	// LOGIC
+		MEMBER DECIMALSEP  	:= 60	// INT
+		MEMBER THOUSANDSEP 	:= 61	// INT
+		MEMBER TIMESEP     	:= 62	// INT
+		MEMBER FIELDSTORE  	:= 63
+		MEMBER SCIENCE     	:= 64	// LOGIC
+		MEMBER CPU			:= 65	// INT
+		MEMBER FLOATDELTA	:= 66	// System.Double
+		MEMBER MATH			:= 67	// INT
+		MEMBER INTERNATIONAL:= 68	// STRING
+		MEMBER DATECOUNTRY  := 69	// INT
 		// 65 - 97 unused
-		MEMBER DICT        := 98	
-		MEMBER INTL        := 99	
+		MEMBER DICT        := 98	// LOGIC
+		MEMBER INTL        := 99	// LOGIC
+
+		// Vulcan RDDInfo Settings
+		MEMBER RDDINFO		:= 100
+		MEMBER MEMOBLOCKSIZE:= 101		// INT
+		MEMBER DEFAULTRDD	:= 102		// STRING
+		MEMBER MEMOEXT	    := 103		// STRING
+		MEMBER AUTOOPEN     := 104		// LOGIC
+		MEMBER AUTOORDER    := 105		// LOGIC
+		MEMBER HPLOCKING    := 106      // LOGIC 
+		MEMBER NEWINDEXLOCK := 107      // LOGIC 
+		MEMBER AUTOSHARE    := 108		// LOGIC
+		MEMBER STRICTREAD   := 109		// LOGIC
+		MEMBER BLOBCIRCREF	:= 110			
+		MEMBER OPTIMIZE     := 111		// LOGIC
+		MEMBER FOXLOCK      := 112		// LOGIC
+		MEMBER WINCODEPAGE	:= 113
+		MEMBER DOSCODEPAGE	:= 114
+		MEMBER COLLATIONMODE:= 115		// COLLATIONMODE (STRING)
 		
-		// 100 - 117 Harbour extensions
-		MEMBER LANGUAGE       :=  100  
-		MEMBER IDLEREPEAT     :=  101 
-		MEMBER FILECASE       :=  102 
-		MEMBER DIRCASE        :=  103 
-		MEMBER DIRSEPARATOR   :=  104 
-		MEMBER EOF            :=  105 
-		MEMBER HARDCOMMIT     :=  106 
-		MEMBER FORCEOPT       :=  107 
-		MEMBER DBFLOCKSCHEME  :=  108 
-		MEMBER DEFEXTENSIONS  :=  109 
-		MEMBER EOL            :=  110 
-		MEMBER TRIMFILENAME   :=  111 
-		MEMBER HBOUTLOG       :=  112 
-		MEMBER HBOUTLOGINFO   :=  113 
-		MEMBER CODEPAGE       :=  114 
-		MEMBER OSCODEPAGE     :=  115 
-		MEMBER TIMEFORMAT     :=  116 
-		MEMBER DBCODEPAGE     :=  117				// -> To RDD Settings ?
-		
-		// 118 - 149 unused
 		// Advantage extensions
 		MEMBER AXSLOCKING           := 150
 		MEMBER RIGHTSCHECKING       := 151
@@ -105,6 +97,26 @@ BEGIN NAMESPACE XSharp
 		MEMBER SQL_QUERY            := 154
 		MEMBER SQL_TABLE_PASSWORDS  := 155
 		MEMBER COLLATION_NAME       := 156
+
+		// 100 - 117 Harbour extensions
+		MEMBER LANGUAGE       :=  180  
+		MEMBER IDLEREPEAT     :=  181 
+		MEMBER FILECASE       :=  182			
+		MEMBER DIRCASE        :=  183 
+		MEMBER DIRSEPARATOR   :=  184 
+		MEMBER EOF            :=  185 
+		MEMBER HARDCOMMIT     :=  186 
+		MEMBER FORCEOPT       :=  187 
+		MEMBER DBFLOCKSCHEME  :=  188 
+		MEMBER DEFEXTENSIONS  :=  189 
+		MEMBER EOL            :=  190 
+		MEMBER TRIMFILENAME   :=  191	
+		MEMBER HBOUTLOG       :=  192 
+		MEMBER HBOUTLOGINFO   :=  193 
+		MEMBER CODEPAGE       :=  194				// Map to Vulcan setting ?
+		MEMBER OSCODEPAGE     :=  195				// Map to Vulcan setting ?
+		MEMBER TIMEFORMAT     :=  196			
+		MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
 		
 		// Start of user values
 		MEMBER User           := 200
@@ -155,37 +167,51 @@ END NAMESPACE
 	DEFINE _SET_MESSAGE     := Set.MESSAGE     	
 	DEFINE _SET_MCENTER     := Set.MCENTER     	
 	DEFINE _SET_SCROLLBREAK := Set.SCROLLBREAK 	
+
+	// 48 and 49 unused
+	DEFINE _SET_DIGITS      	:= Set.DIGITS      
+	DEFINE _SET_NETERR      	:= Set.NETERR      
+	DEFINE _SET_ANSI      		:= Set.ANSI      
+	DEFINE _SET_YIELD     		:= Set.YIELD     
+	DEFINE _SET_LOCKTRIES   	:= Set.LOCKTRIES   
+	DEFINE _SET_AMEXT			:= Set.AMEXT		
+	DEFINE _SET_AMPM			:= Set.AMPM		   
+	DEFINE _SET_PMEXT	    	:= Set.PMEXT	   
+	DEFINE _SET_CENTURY	    	:= Set.CENTURY	   
+	DEFINE _SET_DIGITFIXED  	:= Set.DIGITFIXED  
+	DEFINE _SET_DECIMALSEP  	:= Set.DECIMALSEP  
+	DEFINE _SET_THOUSANDSEP 	:= Set.THOUSANDSEP 
+	DEFINE _SET_TIMESEP     	:= Set.TIMESEP     
+	DEFINE _SET_FIELDSTORE  	:= Set.FIELDSTORE  
+	DEFINE _SET_SCIENCE     	:= Set.SCIENCE     
+	DEFINE _SET_CPU				:= Set.CPU			
+	DEFINE _SET_FLOATDELTA		:= Set.FLOATDELTA	
+	DEFINE _SET_MATH			:= Set.MATH			
+	DEFINE _SET_INTERNATIONAL	:= Set.INTERNATIONAL
+	DEFINE _SET_DATECOUNTRY		:= Set.DATECOUNTRY
+	DEFINE _SET_DICT			:= Set.Dict			
+	DEFINE _SET_INTL			:= Set.Intl		
 	
-	DEFINE _SET_EVENTMASK   := Set.EVENTMASK   	
-	DEFINE _SET_VIDEOMODE   := Set.VIDEOMODE   	
-	DEFINE _SET_MBLOCKSIZE  := Set.MBLOCKSIZE  	
-	DEFINE _SET_MFILEEXT    := Set.MFILEEXT    	
-	DEFINE _SET_STRICTREAD  := Set.STRICTREAD  	
-	DEFINE _SET_OPTIMIZE    := Set.OPTIMIZE    	
-	DEFINE _SET_AUTOPEN     := Set.AUTOPEN     	
-	DEFINE _SET_AUTORDER    := Set.AUTORDER    	
-	DEFINE _SET_AUTOSHARE   := Set.AUTOSHARE   	
-	
-	DEFINE _SET_DIGITS      := Set.DIGITS      	
-	DEFINE _SET_NETERR      := Set.NETERR      	
-	DEFINE _SET_HPLOCK      := Set.HPLOCK      	
-	DEFINE _SET_ANSI        := Set.ANSI        	
-	DEFINE _SET_YIELD       := Set.YIELD       	
-	DEFINE _SET_LOCKTRIES   := Set.LOCKTRIES   	
-	DEFINE _SET_AMEXT		:= Set.AmExt		
-	DEFINE _SET_AMPM		:= Set.AmPm			
-	DEFINE _SET_PMEXT		:= Set.PmExt		
-	DEFINE _SET_CENTURY		:= Set.Century		
-	DEFINE _SET_DIGITFIXED	:= Set.DigitFixed	
-	DEFINE _SET_DECIMALSEP  := Set.DecimalSep   
-	DEFINE _SET_THOUSANDSEP := Set.ThousandSep  
-	DEFINE _SET_TIMESEP     := Set.TimeSep      
-	DEFINE _SET_FIELDSTORE	:= Set.FieldStore	
-	DEFINE _SET_SCIENCE  	:= Set.Science		
-	
-	DEFINE _SET_DICT        := Set.Dict			
-	DEFINE _SET_INTL        := Set.Intl			
-	
+	DEFINE _SET_COLLATIONMODE	:= Set.COLLATIONMODE	
+
+	// Vulcan RDDInfo Settings
+	DEFINE _SET_RDDINFO				:= Set.RDDINFO		
+	DEFINE _SET_MEMOBLOCKSIZE		:= Set.MEMOBLOCKSIZE
+	DEFINE _SET_DEFAULTRDD			:= Set.DEFAULTRDD	
+	DEFINE _SET_MEMOEXT	    		:= Set.MEMOEXT	    
+	DEFINE _SET_AUTOOPEN    		:= Set.AUTOOPEN     
+	DEFINE _SET_AUTOORDER   		:= Set.AUTOORDER    
+	DEFINE _SET_HPLOCKING   		:= Set.HPLOCKING    
+	DEFINE _SET_NEWINDEXLOCK		:= Set.NEWINDEXLOCK 
+	DEFINE _SET_AUTOSHARE   		:= Set.AUTOSHARE    
+	DEFINE _SET_STRICTREAD  		:= Set.STRICTREAD   
+	DEFINE _SET_BLOBCIRCREF			:= Set.BLOBCIRCREF	
+	DEFINE _SET_OPTIMIZE    		:= Set.OPTIMIZE     
+	DEFINE _SET_FOXLOCK     		:= Set.FOXLOCK      
+	DEFINE _SET_WINCODEPAGE			:= Set.WINCODEPAGE	
+	DEFINE _SET_DOSCODEPAGE			:= Set.DOSCODEPAGE	
+
+	// Harbour extensions
 	DEFINE _SET_LANGUAGE       :=  Set.LANGUAGE      	
 	DEFINE _SET_IDLEREPEAT     :=  Set.IDLEREPEAT    	
 	DEFINE _SET_FILECASE       :=  Set.FILECASE      	
@@ -215,3 +241,4 @@ END NAMESPACE
 	DEFINE _SET_COLLATION_NAME       := Set.COLLATION_NAME     
 	
 #endregion
+

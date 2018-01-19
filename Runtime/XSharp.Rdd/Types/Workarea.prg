@@ -41,8 +41,8 @@ CLASS Workarea IMPLEMENTS IRdd
 	INTERNAL _Flush			AS LOGIC		// Must flush ? 
 
 	// Memo and Order Implementation
-	INTERNAL _Memo			as IMemo
-	INTERNAL _Order			as IOrder
+	INTERNAL _Memo			AS IMemo
+	INTERNAL _Order			AS IOrder
 
 	#endregion
 
@@ -52,7 +52,17 @@ CLASS Workarea IMPLEMENTS IRdd
         SELF:_OrderCondInfo := DbOrderCondInfo{}
 		SELF:_Parents	 := 0   
 		SELF:_Memo		 := BaseMemo{SELF}
-		SELF:_Order		 := BaseIndex{SELF}          
+		SELF:_Order		 := BaseIndex{SELF}     
+		SELF:_Result	 := NULL
+		SELF:_FileName	 := String.Empty
+		SELF:_Fields	 := NULL
+		SELF:_Area		 := -1
+		SELF:_Shared	 := FALSE
+		SELF:_ReadOnly   := FALSE
+		SELF:_MaxFieldNameLength := 10
+		SELF:_RelInfo    := NULL
+		SELF:_Alias		 := String.Empty
+		SELF:_RecordBuffer := NULL
 			
 VIRTUAL METHOD DbEval(info AS XSharp.RDD.DbEvalInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
@@ -466,18 +476,19 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	CASE DBI_GETLOCKARRAY
 		oResult := <LONG>{}
 	CASE DBI_BOF           
-		oResult := _BOF
+		oResult := SELF:_BOF
 	CASE DBI_EOF           
-		oResult := _EOF   
+		oResult := SELF:_EOF   
 	CASE DBI_DBFILTER      
-		oResult := _FilterInfo?:FilterText
+		oResult := SELF:_FilterInfo?:FilterText
 	CASE DBI_FOUND
-		oResult := _Found
+		oResult := SELF:_Found
 	CASE DBI_FCOUNT
 		oResult := (INT) _Fields?:Length
 	CASE DBI_ALIAS
 		oResult := _Alias
-
+	CASE DBI_FULLPATH
+		oResult := SELF:_FileName
 	// CASE DBI_CHILDCOUNT:
 	// CASE DBI_TABLEEXT
 	// CASE DBI_SCOPEDRELATION
@@ -520,7 +531,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 
 	VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText
 
-	VIRTUAL PROPERTY Found AS LOGIC GET _Order:Found
+	VIRTUAL PROPERTY Found AS LOGIC GET _Order:Found SET _Order:Found := VALUE
 
 
 	VIRTUAL PROPERTY RecCount AS INT GET 0
@@ -534,3 +545,4 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 
 END CLASS
 END NAMESPACE
+

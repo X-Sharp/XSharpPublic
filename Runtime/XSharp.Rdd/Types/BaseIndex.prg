@@ -8,7 +8,7 @@
 CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 	PRIVATE _oArea AS WorkArea
 
-	CONSTRUCTOR(oArea as WorkArea)
+	CONSTRUCTOR(oArea AS WorkArea)
 		_oArea := oArea
 
 VIRTUAL METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
@@ -37,5 +37,5 @@ VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
 VIRTUAL METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC
 		THROW NotImplementedException{}
 
-VIRTUAL PROPERTY Found as LOGIC	GET _oArea:Found
+VIRTUAL PROPERTY Found AS LOGIC	GET _oArea:_Found SET _oArea:_Found := VALUE
 END CLASS

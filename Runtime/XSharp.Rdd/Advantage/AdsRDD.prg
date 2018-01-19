@@ -107,14 +107,14 @@ CONSTRUCTOR()
         RETURN SELF:m_hTable
 
     PRIVATE METHOD AxCheckVODeletedFlag() AS DWord
-        SELF:ACECALL(ACE.AdsShowDeleted(IIF(RuntimeState.Deleted,(Word)0 ,(Word)1 )))
+        SELF:ACECALL(ACE.AdsShowDeleted(IIF(Runtime.State.Deleted,(Word)0 ,(Word)1 )))
         RETURN 0
   
     PRIVATE METHOD AxCheckVODateFormat() AS Logic
-        SELF:ACECALL(ACE.AdsSetDateFormat(RuntimeState.DateFormat))
-        SELF:ACECALL(ACE.AdsSetExact(IIF(RuntimeState.Exact,(Word)1 ,(Word)0 )))
-        SELF:ACECALL(ACE.AdsSetDecimals((Word)Runtimestate.Decimals ))
-        SELF:ACECALL(ACE.AdsSetEpoch((Word)Runtimestate.Epoch ))
+        SELF:ACECALL(ACE.AdsSetDateFormat(Runtime.State.DateFormat))
+        SELF:ACECALL(ACE.AdsSetExact(IIF(Runtime.State.Exact,(Word)1 ,(Word)0 )))
+        SELF:ACECALL(ACE.AdsSetDecimals((Word)Runtime.State.Decimals ))
+        SELF:ACECALL(ACE.AdsSetEpoch((Word)Runtime.State.Epoch ))
         RETURN TRUE
     
     PRIVATE METHOD AxAnsi2Unicode(source AS Char[], iLength AS Long) AS string
@@ -529,7 +529,7 @@ CONSTRUCTOR()
                 SELF:ACECALL(ulRetCode)
             ENDIF
         ELSE
-            IF RuntimeState.Optimize
+            IF Runtime.State.Optimize
                 SELF:ACECALL(ACE.AdsSetAOF(SELF:m_hTable, fi:FilterText, (WORD) ACE.ADS_RESOLVE_DYNAMIC | ACE.ADS_DYNAMIC_AOF))
             ELSE
                 SELF:ACECALL(ACE.AdsSetFilter(SELF:m_hTable, fi:FilterText))

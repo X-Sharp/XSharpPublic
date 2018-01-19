@@ -11,7 +11,7 @@ CLASS DBFNSX INHERIT DBFSMT
 		SELF:_oIndex := NsxIndex{SELF}
 		RETURN
 		
-	PROPERTY SysName AS STRING GET typeof(DbfCdx):ToString()
+	PROPERTY SysName AS STRING GET typeof(DbfNsx):ToString()
 
 CLASS NsxIndex INHERIT BaseIndex    
 	PROTECT _oRDD AS DBF
@@ -37,7 +37,7 @@ METHOD OrderListRebuild( ) AS LOGIC
 	THROW NotImplementedException{}
 METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC		
     THROW NotImplementedException{}
-VIRTUAL PROPERTY Found as LOGIC	
+VIRTUAL PROPERTY Found AS LOGIC	
 GET
 	THROW NotImplementedException{}
 END GET

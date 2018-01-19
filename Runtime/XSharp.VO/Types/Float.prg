@@ -122,10 +122,10 @@ begin namespace XSharp
 		return __VoFloat{value, 0}
 
 	static operator implicit(value as Real4) as __VoFLoat
-		return __VoFloat{value, RuntimeState.Decimals}
+		return __VoFloat{value, Runtime.State.Decimals}
 
 	static operator implicit(value as Real8) as __VoFLoat
-		return __VoFloat{value, RuntimeState.Decimals}
+		return __VoFloat{value, Runtime.State.Decimals}
 
 	static operator implicit(value as __VoFLoat) as REAL8
 		return value._value
@@ -187,10 +187,10 @@ begin namespace XSharp
 			RETURN __VoFloat{ lhs:_value * rhs:_value, lhs:Decimals + rhs:Decimals}
 
 		OPERATOR/(lhs AS __VoFloat, rhs AS __VoFLoat) AS __VoFLoat
-			RETURN __VoFloat{ lhs:_value / rhs:_value, RuntimeState.Decimals}
+			RETURN __VoFloat{ lhs:_value / rhs:_value, Runtime.State.Decimals}
 
 		OPERATOR%(lhs AS __VoFloat, rhs AS __VoFLoat) AS __VoFLoat
-			RETURN __VoFloat{ lhs:_value % rhs:_value, RuntimeState.Decimals}
+			RETURN __VoFloat{ lhs:_value % rhs:_value, Runtime.State.Decimals}
 
 		OPERATOR ++ (value AS __VoFLoat) AS __VoFLoat
 			return __VoFLoat{value:_value+1, value:Digits, value:Decimals}

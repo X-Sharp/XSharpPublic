@@ -16,7 +16,7 @@ INTERFACE XSharp.RDD.IOrder
 	METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 	METHOD OrderListRebuild() AS LOGIC 
 	METHOD Seek(info AS DbSeekInfo) AS LOGIC
-	PROPERTY Found AS LOGIC GET 
+	PROPERTY Found AS LOGIC GET SET
 END INTERFACE	
 
 

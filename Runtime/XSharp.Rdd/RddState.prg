@@ -1,14 +1,13 @@
-﻿USING System.Collections.Generic
+USING System.Collections.Generic
 USING System.Threading
 USING XSharp.Runtime
 USING System
 
 BEGIN NAMESPACE XSharp.RDD
-//Todo: Use ThreadLocal<T>
 CLASS RDDState	IMPLEMENTS IDisposable
 	// Static Fields
 	PRIVATE STATIC mainState  AS RDDState
-	PRIVATE STATIC CurrentState := ThreadLocal<RDDState>{ {=>  mainState:Clone()} }  as ThreadLocal<RDDState> 
+	PRIVATE STATIC currentState := ThreadLocal<RDDState>{ {=>  mainState:Clone()} }  AS ThreadLocal<RDDState> 
 
 	// Normal Fields
 	PRIVATE oWorkareas	AS WorkAreas
@@ -60,7 +59,7 @@ CLASS RDDState	IMPLEMENTS IDisposable
 				RETURN (T) oSettings[nSetting]
 			ENDIF
 		END LOCK
-		RETURN DEFAULT(T)
+		RETURN Default(T)
 
 	PUBLIC METHOD SetValue<T>(nSetting AS INT, oValue AS OBJECT) AS T
 		LOCAL result AS T

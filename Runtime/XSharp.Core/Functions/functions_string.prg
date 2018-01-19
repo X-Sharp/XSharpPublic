@@ -486,7 +486,7 @@ FUNCTION Occurs(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL countedOccurances:=0 AS INT
 	TRY
 		countedOccurances := c:Split(<STRING>{ cSearch }, StringSplitOptions.None):Length - 1 
-	CATCH ex AS Exception
+	CATCH
 		NOP
 	END TRY
 	RETURN (DWORD)countedOccurances

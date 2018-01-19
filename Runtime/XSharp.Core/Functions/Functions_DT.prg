@@ -42,7 +42,7 @@ FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
 		elapedTime := DateTime.ParseExact(cEndTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 		:Subtract(DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
 		:ToString()
-	CATCH ex AS Exception
+	CATCH 
 		NOP
 	END TRY
 	RETURN elapedTime

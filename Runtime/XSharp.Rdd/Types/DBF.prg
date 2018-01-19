@@ -362,7 +362,7 @@ STRUCTURE DbfHeader
 	[FieldOffSet(03)] PUBLIC Day		AS BYTE
 	[FieldOffSet(04)] PUBLIC RecCount	AS LONG
 	[FieldOffSet(08)] PUBLIC HeaderLen	AS SHORT 		// Position of first data record
-	[FieldOffSet(10)] PUBLIC RecordLen	AS SHORT  		// Length of one data record, including delete flag
+	[FieldOffSet(10)] PUBLIC RecordLen	AS SHORT  		// Length of one data record, including deleted flag
 	[FieldOffSet(12)] PUBLIC Reserved1	AS SHORT
 	[FieldOffSet(14)] PUBLIC Transaction AS BYTE
 	[FieldOffSet(15)] PUBLIC Encrypted	AS BYTE

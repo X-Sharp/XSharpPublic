@@ -17,18 +17,18 @@ Function Start() as void
 	Conversion()
 	Strings()
 	Numeric()
-	Wait()
+	DoWait() 
 	Arrays()
 	Symbols()
 	LateBinding()
-	Wait()
+	DoWait()
 
 	Workarea()
-	Wait()
+	DoWait()
 	Macros()
-	Wait()
+	DoWait()
 	CodeBlocks()
-	Wait()
+	DoWait()
 
 	Console.ForegroundColor := startingColor
 
@@ -40,7 +40,7 @@ FUNCTION ConsoleHeading(s AS STRING, c := ConsoleColor.Yellow AS ConsoleColor) A
 	Console.WriteLine(s)
 	Console.ForegroundColor := originalColor
 
-FUNCTION Wait() AS VOID
+FUNCTION DoWait() AS VOID
 	ConsoleHeading("Press any key to continue...",ConsoleColor.Green)
 	Console.ReadKey()
 

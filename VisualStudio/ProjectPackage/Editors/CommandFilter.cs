@@ -119,19 +119,19 @@ namespace XSharp.Project
                         break;
 
                     case VSConstants.VSStd2KCmdID.TYPECHAR:
-                        char ch = GetTypeChar(pvaIn);
-                        if (_completionSession != null)
-                        {
-                            if (Char.IsLetterOrDigit(ch) || ch == '_')
-                                Filter();
-                            else
-                                CancelCompletionSession();
-                        }
-                        // Comma starts signature session
-                        if (ch == ',')
-                        {
-                            StartSignatureSession(true);
-                        }
+                        //char ch = GetTypeChar(pvaIn);
+                        //if (_completionSession != null)
+                        //{
+                        //    if (Char.IsLetterOrDigit(ch) || ch == '_')
+                        //        Filter();
+                        //    else
+                        //        CancelCompletionSession();
+                        //}
+                        //// Comma starts signature session
+                        //if (ch == ',')
+                        //{
+                        //    StartSignatureSession(true);
+                        //}
                         break;
                 }
             }
@@ -163,6 +163,11 @@ namespace XSharp.Project
                                 {
                                     StartCompletionSession(nCmdID, ch);
                                 }
+                                if (Char.IsLetterOrDigit(ch) || ch == '_')
+                                    Filter();
+                                else
+                                    CancelCompletionSession();
+                                //
                             }
                             else
                             {
@@ -184,6 +189,9 @@ namespace XSharp.Project
                                             _signatureSession.Dismiss();
                                             _signatureSession = null;
                                         }
+                                        break;
+                                    case ',':
+                                        StartSignatureSession(true);
                                         break;
                                     default:
                                         break;
@@ -285,12 +293,17 @@ namespace XSharp.Project
         {
             if (_completionSession == null)
                 return;
+            //
             if (_completionSession.SelectedCompletionSet != null)
             {
                 _completionSession.SelectedCompletionSet.Filter();
-                _completionSession.SelectedCompletionSet.SelectBestMatch();
-                // It seems that it solves our Deadlock 
-                _completionSession.SelectedCompletionSet.Recalculate();
+                if (_completionSession.SelectedCompletionSet.Completions.Count == 0)
+                    CancelCompletionSession();
+                else
+                {
+                    _completionSession.SelectedCompletionSet.SelectBestMatch();
+                    _completionSession.SelectedCompletionSet.Recalculate();
+                }
             }
             //_completionSession.Filter();
         }
@@ -383,6 +396,11 @@ namespace XSharp.Project
 
         private void OnCompletionSessionDismiss(object sender, EventArgs e)
         {
+            if (_completionSession.SelectedCompletionSet != null)
+            {
+                _completionSession.SelectedCompletionSet.Filter();
+            }
+            //
             _completionSession.Dismissed -= OnCompletionSessionDismiss;
             _completionSession.Committed -= OnCompletionSessionCommitted;
             _completionSession = null;
@@ -391,7 +409,7 @@ namespace XSharp.Project
 
 
         #region Signature Session
-        
+
         bool StartSignatureSession(bool comma, XSharpModel.CompletionType cType = null, string methodName = null)
         {
             if (_signatureSession != null)
@@ -521,7 +539,7 @@ namespace XSharp.Project
             _signatureSession = null;
         }
 
-        
+
         #endregion
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)

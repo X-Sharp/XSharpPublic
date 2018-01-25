@@ -549,20 +549,23 @@ namespace XSharpLanguage
             //
             foreach (XFile file in project.SourceFiles)
             {
-                foreach (XType typeInfo in file.TypeList.Values.Where(ti => nameStartsWith(ti.FullName, startWith)))
+                if (file.TypeList != null)
                 {
-                    String realTypeName = typeInfo.FullName;
-                    // remove the start
-                    if (startLen > 0)
-                        realTypeName = realTypeName.Substring(startLen);
-                    // Do we have another part 
-                    dotPos = realTypeName.IndexOf('.');
-                    // Then remove it
-                    if (dotPos > 0)
-                        realTypeName = realTypeName.Substring(0, dotPos);
-                    ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
-                    if (compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
-                        break;
+                    foreach (XType typeInfo in file.TypeList.Values.Where(ti => nameStartsWith(ti.FullName, startWith)))
+                    {
+                        String realTypeName = typeInfo.FullName;
+                        // remove the start
+                        if (startLen > 0)
+                            realTypeName = realTypeName.Substring(startLen);
+                        // Do we have another part 
+                        dotPos = realTypeName.IndexOf('.');
+                        // Then remove it
+                        if (dotPos > 0)
+                            realTypeName = realTypeName.Substring(0, dotPos);
+                        ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
+                        if (compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
+                            break;
+                    }
                 }
             }
         }
@@ -2520,6 +2523,9 @@ namespace XSharpLanguage
             {
                 return null;
             }
+            if (file.TypeList == null)
+                return null;
+            //
             XType found = null;
             foreach (XType eltType in file.TypeList.Values)
             {
@@ -2591,43 +2597,46 @@ namespace XSharpLanguage
             // but we might be after the code of the last Function in the file, so the parser don't know where we are
             // Keep it in lastElt, and check Members
             XTypeMember lastTypeElement = null;
-            foreach (XType eltType in file.TypeList.Values)
+            if (file.TypeList != null)
             {
-                if (eltType.Interval.ContainsInclusive(position))
+                foreach (XType eltType in file.TypeList.Values)
                 {
-                    foreach (XTypeMember elt in eltType.Members)
+                    if (eltType.Interval.ContainsInclusive(position))
                     {
-                        if (elt.Interval.ContainsInclusive(position))
+                        foreach (XTypeMember elt in eltType.Members)
                         {
-                            return elt;
-                        }
-                        if (lastTypeElement == null && elt.Interval.Start < position)
-                        {
-                            lastTypeElement = elt;
-                        }
-                        else if (lastTypeElement != null && elt.Interval.Stop > lastTypeElement.Interval.Stop
-                            && elt.Interval.Start < position)
-                        {
-                            lastTypeElement = elt;
+                            if (elt.Interval.ContainsInclusive(position))
+                            {
+                                return elt;
+                            }
+                            if (lastTypeElement == null && elt.Interval.Start < position)
+                            {
+                                lastTypeElement = elt;
+                            }
+                            else if (lastTypeElement != null && elt.Interval.Stop > lastTypeElement.Interval.Stop
+                                && elt.Interval.Start < position)
+                            {
+                                lastTypeElement = elt;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    // we simply want to find the last member that starts before the current position
-                    foreach (XTypeMember elt in eltType.Members)
+                    else
                     {
-                        if (lastTypeElement == null && elt.Interval.Start < position)
+                        // we simply want to find the last member that starts before the current position
+                        foreach (XTypeMember elt in eltType.Members)
                         {
-                            lastTypeElement = elt;
+                            if (lastTypeElement == null && elt.Interval.Start < position)
+                            {
+                                lastTypeElement = elt;
+                            }
+                            else if (lastTypeElement != null && elt.Interval.Stop > lastTypeElement.Interval.Stop
+                                && elt.Interval.Start < position)
+                            {
+                                lastTypeElement = elt;
+                            }
                         }
-                        else if (lastTypeElement != null && elt.Interval.Stop > lastTypeElement.Interval.Stop
-                            && elt.Interval.Start < position)
-                        {
-                            lastTypeElement = elt;
-                        }
-                    }
 
+                    }
                 }
             }
             if (lastGlobalElement != null)

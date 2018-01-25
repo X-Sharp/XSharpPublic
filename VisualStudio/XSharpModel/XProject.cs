@@ -70,7 +70,7 @@ namespace XSharpModel
                 {
                     if (ProjectNode == null)
                     {
-                        _parseOptions  = XSharpParseOptions.Default;
+                        _parseOptions = XSharpParseOptions.Default;
                     }
                     else
                     {
@@ -222,8 +222,8 @@ namespace XSharpModel
 
         }
 
-        private bool hasUnprocessedReferences => 
-            _unprocessedProjectReferences.Count + 
+        private bool hasUnprocessedReferences =>
+            _unprocessedProjectReferences.Count +
             _unprocessedStrangerProjectReferences.Count > 0;
 
         public void ResolveProjectReferenceDLLs()
@@ -416,7 +416,7 @@ namespace XSharpModel
             }
         }
 
-        public  XTypeMember FindFunction(string name)
+        public XTypeMember FindFunction(string name)
         {
             foreach (var file in this.SourceFiles)
             {
@@ -492,34 +492,37 @@ namespace XSharpModel
             var aFiles = this.xSourceFilesDict.Values.ToArray();
             foreach (XFile file in aFiles)
             {
-                // The dictionary is case insensitive
-                file.TypeList.TryGetValue(typeName, out xTemp);
-                if (xTemp != null && !caseInvariant)
+                if (file.TypeList != null)
                 {
-                    if (xType.FullName != typeName && xType.Name != typeName)
+                    // The dictionary is case insensitive
+                    file.TypeList.TryGetValue(typeName, out xTemp);
+                    if (xTemp != null && !caseInvariant)
                     {
-                        xType = null;
-                    }
-                }
-                if (xTemp != null)
-                {
-                    if (xTemp.IsPartial)
-                    {
-                        // Do we have the other parts ?
-                        if (xType != null)
+                        if (xType.FullName != typeName && xType.Name != typeName)
                         {
-                            xType = xType.Merge(xTemp);
+                            xType = null;
+                        }
+                    }
+                    if (xTemp != null)
+                    {
+                        if (xTemp.IsPartial)
+                        {
+                            // Do we have the other parts ?
+                            if (xType != null)
+                            {
+                                xType = xType.Merge(xTemp);
+                            }
+                            else
+                            {
+                                // We need to Copy the type, unless we will modify the original one !
+                                xType = xTemp.Duplicate();
+                            }
                         }
                         else
                         {
-                            // We need to Copy the type, unless we will modify the original one !
-                            xType = xTemp.Duplicate();
+                            xType = xTemp;
+                            break;
                         }
-                    }
-                    else
-                    {
-                        xType = xTemp;
-                        break;
                     }
                 }
             }
@@ -551,38 +554,41 @@ namespace XSharpModel
             foreach (XFile file in aFiles)
             {
                 XType x = null;
-                // The dictionary is case insensitive
-                if (file.TypeList.TryGetValue(typeName, out x))
+                if (file.TypeList != null)
                 {
-                    xTemp = x;
-                    if (!caseInvariant)
+                    // The dictionary is case insensitive
+                    if (file.TypeList.TryGetValue(typeName, out x))
                     {
-                        if (x.FullName != typeName && x.Name != typeName)
+                        xTemp = x;
+                        if (!caseInvariant)
                         {
-                            xTemp = null;
+                            if (x.FullName != typeName && x.Name != typeName)
+                            {
+                                xTemp = null;
+                            }
                         }
                     }
-                }
 
-                if (xTemp != null)
-                {
-                    if (xTemp.IsPartial)
+                    if (xTemp != null)
                     {
-                        // Do we have the other parts ?
-                        if (xType != null)
+                        if (xTemp.IsPartial)
                         {
-                            xType = xType.Merge(xTemp);
+                            // Do we have the other parts ?
+                            if (xType != null)
+                            {
+                                xType = xType.Merge(xTemp);
+                            }
+                            else
+                            {
+                                // We need to Copy the type, unless we will modify the original one !
+                                xType = xTemp.Duplicate();
+                            }
                         }
                         else
                         {
-                            // We need to Copy the type, unless we will modify the original one !
-                            xType = xTemp.Duplicate();
+                            xType = xTemp;
+                            break;
                         }
-                    }
-                    else
-                    {
-                        xType = xTemp;
-                        break;
                     }
                 }
             }
@@ -718,16 +724,19 @@ namespace XSharpModel
                 var aFiles = this.SourceFiles.ToArray();
                 foreach (XFile file in aFiles)
                 {
-                    var aTypes = file.TypeList.Values;
-                    foreach (XType elmt in aTypes)
+                    if (file.TypeList != null)
                     {
-                        if (elmt.Kind == Kind.Namespace)
+                        var aTypes = file.TypeList.Values;
+                        foreach (XType elmt in aTypes)
                         {
-                            // Check for Duplicates
-                            XType duplicate = ns.Find(x => x.Name.ToLowerInvariant() == elmt.Name.ToLowerInvariant());
-                            if (duplicate == null)
+                            if (elmt.Kind == Kind.Namespace)
                             {
-                                ns.Add(elmt);
+                                // Check for Duplicates
+                                XType duplicate = ns.Find(x => x.Name.ToLowerInvariant() == elmt.Name.ToLowerInvariant());
+                                if (duplicate == null)
+                                {
+                                    ns.Add(elmt);
+                                }
                             }
                         }
                     }
@@ -753,7 +762,7 @@ namespace XSharpModel
         public string IntermediateOutputPath => "";
         public bool PrefixClassesWithDefaultNamespace => false;
         public XSharpParseOptions ParseOptions => XSharpParseOptions.Default;
-        public XSharpParseOptions LexOptions  => XSharpParseOptions.Default;
+        public XSharpParseOptions LexOptions => XSharpParseOptions.Default;
         public string RootNameSpace => "";
         public string OutputFile => "";
         public string Url => "";

@@ -277,6 +277,8 @@ namespace XSharpModel
         {
             if (!IsSource)
                 return null;
+            if (TypeList == null)
+                return null;
             lock (_lock)
             {
                 foreach (var type in TypeList.Values)

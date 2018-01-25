@@ -82,9 +82,12 @@ namespace XSharp.LanguageService
             //int distanceM = int.MaxValue;
             DROPDOWNFONTATTR ft;
             //
+            if (file.TypeList == null)
+                return false;
+            //
             if (file.TypeList.Count > 0)
                 nSelType = 0;
-            //
+
             List<XType> xList = file.TypeList.Values.ToList<XType>();
             xList.Sort(delegate (XType elt1, XType elt2)
             {

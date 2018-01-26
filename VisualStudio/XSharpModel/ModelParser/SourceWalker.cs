@@ -94,7 +94,8 @@ namespace XSharpModel
         }
 
         public ITokenStream Lex()
-        { 
+        {
+            System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Lex()");
             try
             {
                 SyntaxTree syntaxtree;
@@ -115,11 +116,13 @@ namespace XSharpModel
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 
             }
+            System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.Lex()");
             return null;
         }
 
         public XSharpParser.SourceContext Parse()
         {
+            System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Parse()");
             lock (this)
             {
                 try
@@ -141,6 +144,7 @@ namespace XSharpModel
                 }
                 _file.HasParseErrors = _hasParseErrors;
             }
+            System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.Parse()");
             return _tree;
         }
             
@@ -152,6 +156,7 @@ namespace XSharpModel
             // To list errors: But how to add to errorlist from here ?
             if (_prjNode == null)
                 return;
+            System.Diagnostics.Trace.WriteLine("-->> SourceWalker.ShowErrorsAsync()");
             lock (_gate)
             {
                 errors = syntaxRoot.GetDiagnostics();
@@ -182,6 +187,7 @@ namespace XSharpModel
                 }
             //});
             //thread.Start();
+            System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.ShowErrorsAsync()");
         }
 
         public void BuildModel(XSharpParser.SourceContext xTree, bool buildLocals )

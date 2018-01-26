@@ -52,6 +52,7 @@ namespace XSharpModel
 
         internal void AddProject(XProject xProject)
         {
+            System.Diagnostics.Trace.WriteLine("-->> ModelWalker.AddProject()");
             lock (this)
             {
                 bool lAdd2Queue = true;
@@ -72,6 +73,7 @@ namespace XSharpModel
                     Walk();
                 }
             }
+            System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.AddProject()");
         }
 
 
@@ -137,6 +139,7 @@ namespace XSharpModel
                     break;
                 }
                 // 
+                System.Diagnostics.Trace.WriteLine("-->> ModelWalker.Walker()");
                 lock (this)
                 {
                     // need to continue ?
@@ -151,6 +154,7 @@ namespace XSharpModel
                     project.ProjectNode.SetStatusBarText($"Start scanning project {project.Name}");
                     //
                 }
+                System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.Walker()");
                 var aFiles = project.SourceFiles.ToArray();
                 int iProcessed = 0;
                 var options = new ParallelOptions ();

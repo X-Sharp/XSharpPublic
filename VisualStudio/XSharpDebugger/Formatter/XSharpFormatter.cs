@@ -124,13 +124,16 @@ namespace XSharpDebugger.Formatter
             }
 
             Type lmrType = value.Type.GetLmrType();
+            if (lmrType.IsEnum)
+            {
+                return value.GetValueString(inspectionContext, null);
+            }
             XSharpType xType = Utility.GetXSharpTypeForLmrType(lmrType);
             if (xType == XSharpType.Invalid)
             {
                 // We don't know how to format this value
                 return null;
             }
-
             uint radix = inspectionContext.Radix;
             object hostObjectValue = value.HostObjectValue;
             if (hostObjectValue != null)

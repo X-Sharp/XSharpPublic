@@ -131,10 +131,14 @@ namespace XSharpModel
             {
                 if (!IsSource)
                     return null;
+                System.Diagnostics.Trace.WriteLine("-->> XFile.Usings");
+                ImmutableList<string> ret;
                 lock (_lock)
                 {
-                    return _usings.ToImmutableList();
+                    ret = _usings.ToImmutableList();
                 }
+                System.Diagnostics.Trace.WriteLine("<<-- XFile.Usings");
+                return ret;
             }
 
         }
@@ -144,9 +148,10 @@ namespace XSharpModel
             {
                 if (!IsSource)
                     return null;
+                System.Diagnostics.Trace.WriteLine("-->> XFile.AllUsingStatics");
+                List<string> statics = new List<string>();
                 lock (_lock)
                 {
-                    List<string> statics = new List<string>();
                     statics.AddRange(_usingStatics);
                     if (this.Project != null && this.Project.ProjectNode != null && this.Project.ProjectNode.ParseOptions.IsDialectVO)
                     {
@@ -159,8 +164,9 @@ namespace XSharpModel
                             }
                         }
                     }
-                    return statics.ToImmutableList();
                 }
+                System.Diagnostics.Trace.WriteLine("<<-- XFile.AllUsingStatics");
+                return statics.ToImmutableList();
             }
 
         }
@@ -170,6 +176,7 @@ namespace XSharpModel
         {
             if (!IsSource)
                 return;
+            System.Diagnostics.Trace.WriteLine("-->> XFile.SetTypes()");
             lock (this)
             {
                 _typeList.Clear();
@@ -187,6 +194,7 @@ namespace XSharpModel
                 _usings.AddRange(usings);
                 _usings.AddRange(staticusings);
             }
+            System.Diagnostics.Trace.WriteLine("<<-- XFile.SetTypes()");
         }
 
         public IImmutableDictionary<string, XType> TypeList
@@ -224,10 +232,12 @@ namespace XSharpModel
             get
             {
                 bool retValue;
+                System.Diagnostics.Trace.WriteLine("-->> XFile.Parsed");
                 lock (_lock)
                 {
                     retValue = _parsed;
                 }
+                System.Diagnostics.Trace.WriteLine("<<-- XFile.Parsed");
                 return retValue;
             }
 
@@ -241,6 +251,7 @@ namespace XSharpModel
             if (!IsSource)
                 return ;
             //_parsedEvent.WaitOne();
+            System.Diagnostics.Trace.WriteLine("-->> XFile.WaitParsing()");
             lock (_lock)
             {
                 if ( !Parsed )
@@ -259,11 +270,14 @@ namespace XSharpModel
                     }
                 }
             }
+            System.Diagnostics.Trace.WriteLine("<<-- XFile.WaitParsing()");
         }
 
         public XTypeMember FirstMember()
         {
             if (!IsSource)
+                return null;
+            if (TypeList == null)
                 return null;
             lock (_lock)
             {

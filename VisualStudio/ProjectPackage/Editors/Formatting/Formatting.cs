@@ -192,7 +192,7 @@ namespace XSharp.Project
             //
             getOptions();
             _buffer = this.TextView.TextBuffer;
-            _tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
+            _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
@@ -219,9 +219,9 @@ namespace XSharp.Project
                     // so, do it before indenting the current line.
                     lineNumber = lineNumber - 1;
                     ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                    CommandFilterHelper.FormatLineCase(this.Aggregator, this.TextView, editSession, prevLine);
+                    CommandFilterHelper.FormatLineCase(this._aggregator, this.TextView, editSession, prevLine);
                     //
-                    CommandFilterHelper.FormatLineIndent(this.Aggregator, this.TextView, editSession, line, indentation);
+                    CommandFilterHelper.FormatLineIndent(this._aggregator, this.TextView, editSession, line, indentation);
                 }
                 finally
                 {
@@ -236,7 +236,7 @@ namespace XSharp.Project
             // Read Settings
             getOptions();
             _buffer = this.TextView.TextBuffer;
-            _tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
+            _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
 
             // Try to retrieve an already parsed list of Tags
             XSharpClassifier xsClassifier = null;
@@ -297,7 +297,7 @@ namespace XSharp.Project
                     {
                         indentSize = getDesiredIndentationInDocument(snapLine, regions, indentSize);
                         //
-                        CommandFilterHelper.FormatLine(this.Aggregator, this.TextView, editSession, snapLine, indentSize);
+                        CommandFilterHelper.FormatLine(this._aggregator, this.TextView, editSession, snapLine, indentSize);
                     }
                     //
                 }
@@ -684,14 +684,14 @@ namespace XSharp.Project
                         }
                         else if ((outdentToken = searchSpecialOutdentKeyword(keyword)) != null)
                         {
-                            if (this.hasRegions())
-                            {
-                                // We are aligning on the Open Token
-                                indentValue = alignToOpenToken(prevLine);
-                                if (indentValue < 0)
-                                    indentValue = 0;
-                            }
-                            else
+                            //if (this.hasRegions())
+                            //{
+                            //    // We are aligning on the Open Token
+                            //    indentValue = alignToOpenToken(prevLine);
+                            //    if (indentValue < 0)
+                            //        indentValue = 0;
+                            //}
+                            //else
                             {
                                 // Ok, let's try to make it smooth...
                                 int? specialOutdentValue = null;
@@ -705,7 +705,7 @@ namespace XSharp.Project
                             // De-Indent previous line !!!
                             try
                             {
-                                XSharp.Project.CommandFilterHelper.FormatLineIndent(this.Aggregator, this.TextView, editSession, prevLine, indentValue);
+                                XSharp.Project.CommandFilterHelper.FormatLineIndent(this._aggregator, this.TextView, editSession, prevLine, indentValue);
                             }
                             catch (Exception ex)
                             {
@@ -755,7 +755,7 @@ namespace XSharp.Project
                                 // De-Indent previous line !!!
                                 try
                                 {
-                                    XSharp.Project.CommandFilterHelper.FormatLineIndent(this.Aggregator, this.TextView, editSession, prevLine, specialIndentValue);
+                                    XSharp.Project.CommandFilterHelper.FormatLineIndent(this._aggregator, this.TextView, editSession, prevLine, specialIndentValue);
                                 }
                                 catch (Exception ex)
                                 {

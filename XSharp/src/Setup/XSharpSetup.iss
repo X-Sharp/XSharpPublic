@@ -14,26 +14,26 @@
 
 #define FOX
 #ifdef FOX
-#define SetupExeName        "XSharpSetup111Fox"
+#define SetupExeName        "XSharpSetup112Fox"
 #define BinFolder          "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
 #else   
-#define SetupExeName        "XSharpSetup111Public"
+#define SetupExeName        "XSharpSetup112Public"
 #define BinFolder          "C:\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
 #endif
 
 ; version info and similar stuff.
   
-#define Version             "1.1.1.0"
-#define VIVersion           "1.1.1.0"
-#define TouchDate           "2017-12-12"
-#define TouchTime           "01:11:00"
+#define Version             "1.1.2.0"
+#define VIVersion           "1.1.2.0"
+#define TouchDate           "2018-01-31"
+#define TouchTime           "01:12:00"
 
 #define Product             "XSharp"
 #define ProdBuild           "XSharp General Release"
 #define Company             "XSharp BV"
 #define RegCompany          "XSharpBV"
 #define XSharpURL           "http://www.xsharp.info"
-#define CopyRight           "Copyright © 2015-2017 XSharp B.V."
+#define CopyRight           "Copyright © 2015-2018 XSharp B.V."
 #define InstallPath         "XSharpPath"
 
 ; Code Signing

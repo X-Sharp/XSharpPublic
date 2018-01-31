@@ -631,7 +631,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             else if (expr.Kind ==BoundKind.UnaryOperator)
             {
                 var unary = expr as BoundUnaryOperator;
-                return VOGetType(unary.Operand);
+                var type = VOGetType(unary.Operand);
+                if (unary.OperatorKind == UnaryOperatorKind.IntUnaryMinus)
+                {
+                    // see if we must change unsigned into signed
+                    if (type == Compilation.GetSpecialType(SpecialType.System_Byte))
+                    {
+                        type = Compilation.GetSpecialType(SpecialType.System_Int16);
+                    }
+                    else if (type == Compilation.GetSpecialType(SpecialType.System_UInt16))
+                    {
+                        type = Compilation.GetSpecialType(SpecialType.System_Int32);
+                    }
+                    else if (type == Compilation.GetSpecialType(SpecialType.System_UInt32))
+                    {
+                        type = Compilation.GetSpecialType(SpecialType.System_Int64);
+                    }
+                }
+                return type;
             }
             return expr.Type;
         }

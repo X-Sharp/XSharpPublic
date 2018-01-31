@@ -150,7 +150,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check for #pragma in the lexerTokenStream
             _lexerTokenStream.Fill();
             var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size-1, XSharpLexer.PRAGMACHANNEL);
-            if (pragmaTokens.Count > 0)
+            if (pragmaTokens?.Count > 0)
             {
                 foreach (var pragmaToken in pragmaTokens)
                 {

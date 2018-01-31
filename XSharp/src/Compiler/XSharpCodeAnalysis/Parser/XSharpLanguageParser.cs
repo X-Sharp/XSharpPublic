@@ -44,8 +44,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly bool _isScript;
         private readonly bool _isMacroScript;
 
-        private ITokenStream _lexerTokenStream;
-        private ITokenStream _preprocessorTokenStream;
+        private BufferedTokenStream _lexerTokenStream;
+        private BufferedTokenStream _preprocessorTokenStream;
 
         //#if DEBUG
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
@@ -145,7 +145,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Lexing completed in {0}",ts);
             }
 #endif
+
             var parseErrors = ParseErrorData.NewBag();
+            // Check for #pragma in the lexerTokenStream
+            _lexerTokenStream.Fill();
+            var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size-1, XSharpLexer.PRAGMACHANNEL);
+            if (pragmaTokens.Count > 0)
+            {
+                foreach (var pragmaToken in pragmaTokens)
+                {
+                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
+                }
+            }
+            pragmaTokens = null;
             XSharpPreprocessor pp = null;
             BufferedTokenStream ppStream = null;
             if (! _options.MacroScript)

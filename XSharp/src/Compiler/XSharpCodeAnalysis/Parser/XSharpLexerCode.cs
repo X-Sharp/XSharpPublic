@@ -1447,7 +1447,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return lexer;
         }
 
-        public ITokenStream GetTokenStream()
+        public BufferedTokenStream GetTokenStream()
         {
             var tokenstream = new BufferedTokenStream(this);
             tokenstream.Fill();

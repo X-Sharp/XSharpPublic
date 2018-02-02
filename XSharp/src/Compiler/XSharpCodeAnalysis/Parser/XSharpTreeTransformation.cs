@@ -7630,7 +7630,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
              *   #define BT_PTR          18      // raw ptr
              *   #define BT_POLY         19      // polymorphic
              * */
-            switch (context.Token.Type)
+            int type;
+            if (context.XType != null)
+                type = context.XType.Token.Type;
+            else
+                type = context.NativeType.Token.Type;
+            switch (type)
             {
                 case XSharpLexer.ARRAY:
                     context.Put(GenerateLiteral(5));
@@ -7710,7 +7715,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 default:
                     context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(ErrorCode.ERR_UnknownLiteralTypeName, context.Token.Text)));
+                        new SyntaxDiagnosticInfo(ErrorCode.ERR_UnknownLiteralTypeName, context.GetText())));
                     break;
             }
         }

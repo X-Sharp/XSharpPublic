@@ -50,6 +50,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return (iToken > XSharpLexer.FIRST_TYPE && iToken < XSharpLexer.LAST_TYPE);
         }
+        public static bool IsPositionalKeyword(int iToken)
+        {
+            if (iToken > FIRST_POSITIONAL_KEYWORD && iToken < LAST_POSITIONAL_KEYWORD)
+                return true;
+            return false;
+        }
 
 
         public static bool IsComment(int iToken)
@@ -57,28 +63,27 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;
         }
 
-        private int fixPositionalKeywords(int keyword)
+        bool _xBaseVars = false;
+        public bool AllowXBaseVariables
+        {
+            get { return _xBaseVars; }
+            set { _xBaseVars = value; }
+        }
+
+        private int fixPositionalKeyword(int keyword, int lastToken)
         {
             switch (keyword)
             {
-                //case CONSTRUCTOR: to many prefixes allowed (EOS, modifiers, attributes etc)
-                //case EVENT: to many prefixes allowed (EOS, modifiers, attributes etc)
-                //case ENUM: to many prefixes allowed (EOS, modifiers, attributes etc)
-                //case PROPERTY: to many prefixes allowed (EOS, END, modifiers, attributes etc)
-                // case GET many options: after CRLF or SET or ID or Type ....
-                // case SET many options: after CRLF or GET or ID or Type ....
-                // case ADD many options: after CRLF or REMOVE or ID or Type ....
-                // case REMOVE many options: after CRLF or ADD or ID or Type ....
                 case EXPLICIT:
                 case IMPLICIT:
-                    if (_lastToken != OPERATOR)
+                    if (lastToken != OPERATOR)
                     {
                         return ID;
                     }
                     break;
                 case DESTRUCTOR:
                     // can also appear after attribute
-                    if (_lastToken != EOS && _lastToken != NL && _lastToken != EXTERN && _lastToken != RBRKT)
+                    if (lastToken != EOS && lastToken != NL && lastToken != EXTERN && lastToken != RBRKT)
                     {
                         return ID;
                     }
@@ -88,21 +93,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case REPEAT:
                 case UNTIL:
                 case YIELD:
-                    if (_lastToken != EOS && _lastToken != NL)
+                    if (lastToken != EOS && lastToken != NL)
                     {
                         return ID;
                     }
                     break;
-                case SWITCH:  
-                    if (_lastToken != EOS && _lastToken != NL && _lastToken != BEGIN && _lastToken != DO && _lastToken != END)
+                case SWITCH:
+                    if (lastToken != EOS && lastToken != NL && lastToken != BEGIN && lastToken != DO && lastToken != END)
                     {
                         return ID;
                     }
                     break;
                 case IMPLIED:
                 case VAR:
-                    if (_lastToken != EOS && _lastToken != NL && _lastToken != LOCAL && _lastToken != STATIC
-                        && _lastToken != FOR && _lastToken != FOREACH && _lastToken != USING)
+                    if (lastToken != EOS && lastToken != NL && lastToken != LOCAL && lastToken != STATIC
+                        && lastToken != FOR && lastToken != FOREACH && lastToken != USING)
                     {
                         return ID;
                     }
@@ -110,22 +115,81 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case NAMESPACE:
                 case SCOPE:
                 case LOCK:
-                    if (_lastToken != BEGIN && _lastToken != END )
+                    if (lastToken != BEGIN && lastToken != END)
                     {
                         return ID;
                     }
                     break;
-
+                case MEMVAR:
+                case PARAMETERS:
+                    if (!_xBaseVars)
+                        return ID;
+                    if (lastToken != EOS && lastToken != NL)
+                    {
+                        return ID;
+                    }
+                    break;
             }
             return keyword;
         }
+        private bool findKeyWord(XSharpToken token, int lastToken)
+        {
+            if (token.Type == ID && token.Channel == Lexer.DefaultTokenChannel )
+            {
+                int kwtype;
+                if (KwIds.TryGetValue(token.Text, out kwtype))
+                {
+                    if (IsPositionalKeyword(kwtype) && (lastToken == COLON || lastToken == DOT))
+                    {
+                        ; // do nothing, no new keywords after colon or dot
+                    }
+                    else
+                    {
+                        kwtype = fixPositionalKeyword(kwtype, lastToken);
+                        token.Type = kwtype;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        internal List<XSharpToken> ReclassifyTokens(List<XSharpToken> tokens)
+        {
+            int lastType = EOS;
+            XSharpToken last = null;
+            foreach (XSharpToken token in tokens)
+            {
+                // Some keywords may have been seen as identifier because they were
+                // originally in the Preprocessor Channel and for example not on a start 
+                // of a line or command
+                if (token.Channel == Lexer.DefaultTokenChannel)
+                {
+                    findKeyWord(token, lastType);
+                }
+                // Identifier tokens before a DOT are never Keyword but always a type or field/property
+                if (token.Type == DOT)
+                {
+                    if (last != null && _isValidIdentifier(last))
+                    {
+                        last.Type = ID;
+                    }
+                }
+                last = token;
+                if (token.Type != WS)
+                {
+                    lastType = token.Type;
+                }
+            }
+            return tokens;
+        }
 
         public bool HasPreprocessorTokens => _hasPPTokens;
-        bool _inId = false;
+        bool _inDottedIdentifier = false;     
         bool _inPp = false;
         bool _hasEos = true;
         bool _hasPPTokens = false;
-        private bool _isKw(IToken t)
+        private bool _isValidIdentifier(IToken t)
         {
             switch (t.Channel)
             {
@@ -548,7 +612,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         _textSb.Clear();
                         _textSb.Append((char)c);
                         InputStream.Consume();
-                        if (!_inId)
+                        if (!_inDottedIdentifier)       // Do not translate .OR., .AND. etc Keywords that are part of a dotted identifier
                         {
                             if (InputStream.La(2) == '.')
                             {
@@ -798,19 +862,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             //System.Diagnostics.Debug.WriteLine("T[{0},{1}]:{2}",t.Line,t.Column,t.Text);
             var type = t.Type;
-            if (type == ID)
+            if (findKeyWord(t, _lastToken))
             {
-                int kwtype;
-                if (KwIds.TryGetValue(t.Text, out kwtype))
-                {
-                    t.Type = kwtype;
-                    t.Type = fixPositionalKeywords(t.Type);
-                    type = t.Type;
-                }
+                type = t.Type;
             }
-            /*else if (type == KWID) {
-                t.Type = ID;
-            }*/
             else if (type == SYMBOL_CONST && (LastToken == NL || LastToken == UDCSEP))
             {
                 int symtype;
@@ -832,25 +887,35 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            if (!_inId)
+            if (!_inDottedIdentifier)
             {
-                if (_isKw(t) && InputStream.La(1) == (int)'.')
+                // Check if the current token is a valid Identifier (starts with A..Z or _) and is followed by a DOT
+                // In that case we change the type from Keyword to ID
+                if (_isValidIdentifier(t) && InputStream.La(1) == (int)'.')
                 {
                     if (t.Type != SELF && t.Type != SUPER)
                     {
                         t.Type = ID;
                     }
-                    _inId = true;
+                    _inDottedIdentifier = true;
                 }
                 else if (type == ID || type == KWID)
-                    _inId = true;
+                {
+                    _inDottedIdentifier = true;
+                }
             }
             else
             {
-                if (_isKw(t))
+                // Check if the current token is a valid Identifier (starts with A..Z or _) 
+                if (_isValidIdentifier(t))
+                {
                     t.Type = ID;
+                    // keep _inDottedIdentifier true
+                }
                 else if (type != DOT && type != ID && type != KWID)
-                    _inId = false;
+                {
+                    _inDottedIdentifier = false;
+                }
             }
             if (type == NL || type == SEMI)
             {
@@ -859,10 +924,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (type == SEMI)
                     {
                         if (_lastToken != SEMI)
+                        {
                             t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
+                        }
                     }
                     else
+                    {
                         t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
+                    }
                 }
                 else
                 {
@@ -880,7 +949,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 _hasEos = true;
             }
             if (t.Channel == TokenConstants.DefaultChannel)
+            {
                 _lastToken = type; // nvk: Note that this is the type before any modifications!!!
+            }
 
             if (_inPp)
             {

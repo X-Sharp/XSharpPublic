@@ -792,6 +792,10 @@ typeName			: NativeType=nativeType
                     | Name=name
                     ;
 
+usualTypeName		: NativeType=nativeType					// just type typenames that are allowed for USUAL variables
+					| XType=xbaseType				
+					;
+
                     // Separate rule for Array with zero elements, to prevent entering the first arrayElement rule
                     // with a missing Expression which would not work for the core dialect
 literalArray		: (LT Type=datatype GT)? LCURLY RCURLY															// {}
@@ -893,10 +897,11 @@ identifier			: Token=(ID  | KWID)
 identifierString	: Token=(ID | KWID | STRING_CONST)
                     | VnToken=keywordvn
                     | XsToken=keywordxs
-                    ;
+					;
+
 
 // xBaseTypes are NOT available in the Core dialect and therefore separated here.
-xbaseType			: Token=
+xbaseType			: Token=	// Aphabetical order
                     ( ARRAY
                     | CODEBLOCK
                     | DATE
@@ -906,13 +911,13 @@ xbaseType			: Token=
                     | USUAL)
                     ;
 
-nativeType			: Token=
+nativeType			: Token=		// Aphabetical order
                     ( BYTE
+					| CHAR
 					| DATETIME
 					| DECIMAL
                     | DWORD
                     | DYNAMIC
-                    | SHORTINT
                     | INT
                     | INT64
                     | LOGIC
@@ -921,42 +926,14 @@ nativeType			: Token=
                     | PTR
                     | REAL4
                     | REAL8
+                    | SHORTINT
                     | STRING
                     | UINT64
-                    | WORD
-                    | VOID
-                    | CHAR )
+					| VOID                  
+					| WORD
+                     )
                     ;
 
-usualTypeName		: Token=
-					( ARRAY
-					| BYTE
-					| CHAR				// New in XSharp
-					| CODEBLOCK
-					| DATE
-					| DATETIME
-					| DECIMAL
-					| DWORD
-					| DYNAMIC			// new in XSharp
-					| FLOAT
-					| SHORTINT
-					| INT
-					| INT64				// New in Vulcan
-					| LOGIC
-					| LONGINT
-					| OBJECT
-					| PSZ
-					| PTR
-					| REAL4
-					| REAL8
-					| SHORTINT
-					| STRING
-					| SYMBOL
-					| UINT64			// New in Vulcan
-					| USUAL
-					| VOID
-					| WORD)
-					;
 literalValue		: Token=
                     ( TRUE_CONST
                     | FALSE_CONST
@@ -991,9 +968,9 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SIZEOF | SUPER
                     | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
-					// The following new keywords cannot be in the keywordVN list because it will match an expression when used on their own
-					| REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY 
-					)
+                    // The following new keywords cannot be in the keywordVN list because it will match an expression when used on their own
+                    | REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY 
+                    )
                     ;
 
 
@@ -1007,11 +984,11 @@ keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | AS
                     | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR  | DECIMAL | DATETIME 
                     | MEMVAR | PARAMETERS  // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
-					| DEFINE| DELEGATE | ENUM | GLOBAL | INHERIT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
-					// The following are never used 'alone' and are harmless as identifiers
-					| ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
-					| FASTCALL | FIELD | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
-					| STEP | STRICT | TO | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
-					//| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
-					)
+                    | DEFINE| DELEGATE | ENUM | GLOBAL | INHERIT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
+                    // The following 'old' keywords are never used 'alone' and are harmless as identifiers
+                    | ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
+                    | FASTCALL | FIELD | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
+                    | STEP | STRICT | TO | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
+                    //| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
+                    )
                     ;

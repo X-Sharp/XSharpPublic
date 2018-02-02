@@ -134,6 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var sourceText = _text.ToString();
             var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
+            lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
             _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
@@ -162,7 +163,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             BufferedTokenStream ppStream = null;
             if (! _options.MacroScript)
             {
-                pp = new XSharpPreprocessor(_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+                pp = new XSharpPreprocessor(lexer,_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             }
             // Macros do not need the preprocessor
             bool mustPreprocess = !_options.MacroScript;
@@ -174,7 +175,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (mustPreprocess)
             {
                 var ppTokens = pp.PreProcess();
-                // no need to filter. The preprocessor does this already
 	            ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
             }
             else

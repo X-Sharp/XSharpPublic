@@ -178,7 +178,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
+        XSharpLexer _lexer;
         ITokenStream _lexerStream;
         CSharpParseOptions _options;
 
@@ -368,9 +368,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _ppoStream = null;
         }
 
-        internal XSharpPreprocessor(ITokenStream lexerStream, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
+        internal XSharpPreprocessor(XSharpLexer lexer, ITokenStream lexerStream, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
             PPIncludeFile.ClearOldIncludes();
+            _lexer = lexer;
             _lexerStream = lexerStream;
             _options = options;
             _fileName = fileName;
@@ -1157,7 +1158,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private void doIfDefDirective(List<XSharpToken> line, bool isIfDef)
+        private void doIfDefDirective(IList<XSharpToken> line, bool isIfDef)
         {
             Debug.Assert(line?.Count > 0);
             if (IsActive())
@@ -1319,7 +1320,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (IsActive())
             {
                 Debug.Assert(line?.Count > 0);
-                List<XSharpToken> result;
+                List<XSharpToken> result = null;
                 bool changed = true;
                 // repeat this loop as long as there are matches
                 while (changed)
@@ -1348,6 +1349,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             changed = true;
                             line = result;
                         }
+                    }
+                    if (changed && result != null)
+                    {
+                        result = _lexer.ReclassifyTokens(result);
                     }
                 }
             }

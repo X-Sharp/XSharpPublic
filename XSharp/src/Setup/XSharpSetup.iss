@@ -25,7 +25,7 @@
   
 #define Version             "1.1.2.0"
 #define VIVersion           "1.1.2.0"
-#define TouchDate           "2018-01-31"
+#define TouchDate           "2018-02-02"
 #define TouchTime           "01:12:00"
 
 #define Product             "XSharp"

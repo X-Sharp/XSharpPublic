@@ -101,9 +101,8 @@ RETURN String.Empty
 /// </returns>
 FUNCTION Day(d AS __VODate) AS DWORD
 	local day := 0  as dword
-	if d != null
-        local dt := d as Datetime
-		day := (dword) dt:Day		   
+	if ! d:IsEmpty
+		day :=  d:DDay
 	endif
 return day
 
@@ -116,7 +115,7 @@ return day
 /// </returns>
 FUNCTION DoW(d AS __VODate) AS DWORD
 	local day := 0  as dword
-	if d != null
+	if ! d:IsEmpty
         local dt := d as Datetime
 		day := (dword) dt:DayOfWeek	   
 	endif
@@ -133,7 +132,7 @@ return day
 FUNCTION DToC(d AS __VODate) AS STRING
 	local result:="" as string		
 
-	if d != null
+	if ! d:IsEmpty
         local dt := d as Datetime
 		result := d:ToString()
 	else
@@ -150,7 +149,7 @@ return result
 /// </returns>
 FUNCTION DToS(d AS __VODate) AS STRING
 	local result:="        " as string		
-	if d != null
+	if ! d:IsEmpty
         local dt := d as Datetime
 		result := d:ToString("yyyyMMdd")
 	endif
@@ -192,9 +191,8 @@ RETURN String.Empty
 /// </returns>
 FUNCTION Month(d AS __VODate) AS DWORD
 	local month := 0  as dword
-	if d != null
-        local dt := d as Datetime
-		month := (dword) dt:Month
+	if !d:IsEmpty
+		month :=  d:DMonth
 	endif
 return month
 
@@ -223,8 +221,7 @@ RETURN convertedDate
 /// </returns>
 FUNCTION Year(d AS __VODate) AS DWORD
 	local year := 0  as dword
-	if d != null
-        local dt := d as Datetime
-		year := (dword) dt:Year
+	if ! d:IsEmpty
+		year := d:DYear
 	endif
 return year

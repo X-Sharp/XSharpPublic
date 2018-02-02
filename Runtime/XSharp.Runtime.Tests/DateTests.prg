@@ -33,22 +33,22 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 		[Fact, Trait("Category", "Date")];
 		METHOD CDOWTest() as void
-		//	Assert.Equal("Dienstag",CDOW(CTOD("24/05/2016")))
+		//	Assert.Equal("Dienstag",CDOW(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD CMonthTest() as void
-			//Assert.Equal("Mai",CMonth(CTOD("24/05/2016")))
+			//Assert.Equal("Mai",CMonth(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD DayTest() as void
-			Assert.Equal((dword)24,Day(CTOD("24/05/2016")))
+			Assert.Equal((dword)24,Day(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD DOWTest() as void
-			Assert.Equal((dword)2,DOW(CTOD("24/05/2016")))
+			Assert.Equal((dword)2,DOW(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
@@ -58,17 +58,17 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 		[Fact, Trait("Category", "Date")];
 		METHOD DTOSTest() as void
-			Assert.Equal("20160524",DTOS(CTOD("24/05/2016")))
+			Assert.Equal("20160524",DTOS(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD MonthTest() as void
-			Assert.Equal((dword)5,MONTH(CTOD("24/05/2016")))
+			Assert.Equal((dword)5,MONTH(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD YearTest() as void
-			Assert.Equal((dword)2016,YEAR(CTOD("24/05/2016")))
+			Assert.Equal((dword)2016,YEAR(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
@@ -88,6 +88,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		VAR d2 := __VoDate{2017,09,26}	// different day
 		Assert.True(d1 < d2)
 		Assert.True(d1 <= d2)
+		Assert.True(d1+1 == d2)
 		Assert.False(d1 > d2)
 		Assert.False(d1 >= d2)
 

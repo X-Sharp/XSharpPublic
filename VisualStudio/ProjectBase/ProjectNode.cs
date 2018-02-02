@@ -1783,6 +1783,8 @@ namespace Microsoft.VisualStudio.Project
                     case VsCommands.Exit:
                     case VsCommands.ProjectSettings:
                     case VsCommands.BuildSln:
+                    case VsCommands.BuildSel:
+                    case VsCommands.BatchBuildDlg:
                     case VsCommands.BuildCtx:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
@@ -1825,7 +1827,7 @@ namespace Microsoft.VisualStudio.Project
                         return VSConstants.S_OK;
 
                     case VsCommands2K.EXCLUDEFROMPROJECT:
-                        result |= QueryStatusResult.SUPPORTED | QueryStatusResult.INVISIBLE;
+                        result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
 
                     case (VsCommands2K) XVsConstants.CommandExploreFolderInWindows:

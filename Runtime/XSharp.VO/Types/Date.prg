@@ -93,7 +93,8 @@ BEGIN NAMESPACE XSharp
 			end try
 		return
 
-		constructor(year as DWord, month as DWord, day as DWord)
+		CONSTRUCTOR(year AS DWORD, month AS DWORD, day AS DWORD)
+			// Chain to Int constructor
             self( (Int) year, (int) month, (int) day)
 		return
 
@@ -108,8 +109,7 @@ BEGIN NAMESPACE XSharp
 		METHOD CompareTo(rhs as __VODate) as Long
 		    RETURN _value:CompareTo(rhs:_value)
 
-
-		override METHOD GetHashCode() as Long
+		OVERRIDE METHOD GetHashCode() as Long
 		    RETURN _value:GetHashCode()
 
 		METHOD GetTypeCode() as System.TypeCode
@@ -219,10 +219,12 @@ BEGIN NAMESPACE XSharp
 				return false
 			elseif lhs:_year > rhs:_year
 				return true
-			elseif lhs:_year == rhs:_year .and. lhs:_month > rhs:_month
-				return true
-			elseif lhs:_year == rhs:_year .and. lhs:_month == rhs:_month .and. lhs:_day > rhs:_day
-				return true
+			ELSEIF lhs:_year == rhs:_year 
+				if lhs:_month > rhs:_month
+					return true
+				elseif lhs:_month == rhs:_month .and. lhs:_day > rhs:_day
+					RETURN TRUE
+				endif
 			endif
 		    RETURN false
 
@@ -233,10 +235,12 @@ BEGIN NAMESPACE XSharp
 				return true
 			elseif lhs:_year > rhs:_year
 				return true
-			elseif lhs:_year == rhs:_year .and. lhs:_month > rhs:_month
-				return true
-			elseif lhs:_year == rhs:_year .and. lhs:_month == rhs:_month .and. lhs:_day > rhs:_day
-				return true
+			ELSEIF lhs:_year == rhs:_year 
+				IF lhs:_month > rhs:_month
+					return true
+				ELSEIF lhs:_month == rhs:_month .and. lhs:_day >= rhs:_day
+					RETURN TRUE
+				endif
 			endif
 		    RETURN false
 
@@ -253,10 +257,12 @@ BEGIN NAMESPACE XSharp
 				return false
 			elseif lhs:_year < rhs:_year
 				return true
-			elseif lhs:_year == rhs:_year .and. lhs:_month < rhs:_month
-				return true
-			elseif lhs:_year == rhs:_year .and. lhs:_month == rhs:_month .and. lhs:_day < rhs:_day
-				return true
+			ELSEIF lhs:_year == rhs:_year 
+				IF lhs:_month < rhs:_month
+					return true
+				elseif lhs:_month == rhs:_month .and. lhs:_day < rhs:_day
+					RETURN TRUE
+				endif
 			endif
 		    RETURN false
 
@@ -267,12 +273,14 @@ BEGIN NAMESPACE XSharp
 				return true
 			elseif lhs:_year < rhs:_year
 				return true
-			elseif lhs:_year == rhs:_year .and. lhs:_month < rhs:_month
-				return true
-			elseif lhs:_year == rhs:_year .and. lhs:_month == rhs:_month .and. lhs:_day < rhs:_day
-				return true
+			ELSEIF lhs:_year == rhs:_year 
+				IF lhs:_month < rhs:_month
+					return true 
+				elseif lhs:_month == rhs:_month .and. lhs:_day <= rhs:_day
+					RETURN TRUE
+				endif
 			endif
-		    RETURN false
+		    RETURN false 
 		#endregion
 
 		#region Add and Subtract Methods
@@ -423,7 +431,11 @@ BEGIN NAMESPACE XSharp
 
 		PROPERTY Month	AS INT GET _month 
 		PROPERTY Year	AS INT GET _year 
-		PROPERTY Day	AS INT Get _day 
+		PROPERTY Day	AS INT GET _day 
+		// Next properties for easy access in right type
+		INTERNAL PROPERTY DYear		as DWORD Get _year
+		INTERNAL PROPERTY DMonth	as DWORD Get _month
+		INTERNAL PROPERTY DDay		as DWORD Get _day
 
 	internal class DateDebugView
 		private _value as __VoDate

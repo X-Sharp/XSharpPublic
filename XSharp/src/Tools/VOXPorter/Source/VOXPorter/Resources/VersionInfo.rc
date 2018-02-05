@@ -1,22 +1,25 @@
+#include "Buildnumber.h"
 1 VERSIONINFO
- FILEVERSION 		1,1,0,0
- PRODUCTVERSION 	1,1,0,0
+ FILEVERSION 		FILEVERSION_NUMBER
+ PRODUCTVERSION 	FILEVERSION_NUMBER
  FILEFLAGSMASK 		0x3F
  FILEFLAGS 		    0x0
  FILESUBTYPE 		0x0
+ FILETYPE 			0x01
+ FILEOS				0x04
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "XSharp BV"
+            VALUE "CompanyName", COMPANY_NAME
             VALUE "FileDescription", "X# VOXporter"
-            VALUE "FileVersion", "1, 1, 0, 0"
+            VALUE "FileVersion", FILEVERSION_NUMBER_STR
             VALUE "InternalName", "VOXporter"
-            VALUE "LegalCopyright", "Copyright © XSharp BV 2017"
+            VALUE "LegalCopyright", COPYRIGHT_STR
             VALUE "OriginalFilename", "VOXporter"
             VALUE "ProductName", "VOXporter"
-            VALUE "ProductVersion", "1.1.0.0"
+            VALUE "ProductVersion", FILEVERSION_NUMBER_STR
         END
     END
     BLOCK "VarFileInfo"

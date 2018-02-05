@@ -1,3 +1,5 @@
+// the files below is in c:\XSharp\DevPublic\Common
+#include "buildnumber.h"
 USING System.IO
 USING System.Reflection
 USING System.Windows.Forms
@@ -91,7 +93,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:MaximizeBox := FALSE
 		SELF:MinimizeBox := FALSE
 		SELF:Name := "xPorterUI"
-		SELF:Text := "VO-xPorter version 1.1.0"
+		SELF:Text := "VO-xPorter version "+VERSION_NUMBER_STR
 
 		SELF:CancelButton := SELF:oExitButton
 		SELF:oExitButton:Click += SELF:ExitButtonClick

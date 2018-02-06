@@ -6,8 +6,8 @@
     <ProjectGuid>10a5791a-e568-47b8-b61f-10639b487063</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VOXporter</RootNamespace>
-    <AssemblyName>VOXporter</AssemblyName>
+    <RootNamespace>VOXPorter</RootNamespace>
+    <AssemblyName>VOXPorter</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -55,9 +55,10 @@
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>165</DisabledWarnings>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>..\xsharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>true</NoStandardDefs>
@@ -108,6 +109,13 @@
       <Private>True</Private>
       <HintPath>..\..\..\Dev\XSharp\src\Tools\VOXPorter\Dll\XICOMMON.dll</HintPath>
     </Reference>
+    <Reference Include="XIDED, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>XIDED</Name>
+      <AssemblyName>XIDED.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\Dev\XSharp\src\Tools\VOXPorter\Dll\XIDED.dll</HintPath>
+    </Reference>
     <Reference Include="XIRES, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <Name>XIRES</Name>
       <AssemblyName>XIRES.dll</AssemblyName>
@@ -117,48 +125,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\AEF File.prg">
-      <Link>AEF File.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\Application Abstract.prg">
-      <Link>Application Abstract.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\Base Object.prg">
-      <Link>Base Object.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\Definitions.prg">
-      <Link>Definitions.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\EntityBase.prg">
-      <Link>EntityBase.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\FabTools.prg">
-      <Link>FabTools.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\MEF Entity.prg">
-      <Link>MEF Entity.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\MEF File.prg">
-      <Link>MEF File.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\ModuleBase.prg">
-      <Link>ModuleBase.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\PRG Entity.prg">
-      <Link>PRG Entity.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\PRG File.prg">
-      <Link>PRG File.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\VN Entity.prg">
-      <Link>VN Entity.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\VN File.prg">
-      <Link>VN File.prg</Link>
-    </Compile>
-    <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\_xCompatinility.prg">
-      <Link>_xCompatinility.prg</Link>
-    </Compile>
     <Compile Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\VOXPorter\UI.prg">
       <Link>UI.prg</Link>
       <SubType>Form</SubType>
@@ -168,6 +134,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AssembyInfo.prg" />
+    <Compile Include="Designer.Designer.prg">
+      <DependentUpon>Designer.resx</DependentUpon>
+    </Compile>
     <None Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\ReadMe.rtf">
       <Link>ReadMe.rtf</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -175,9 +144,6 @@
     <None Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\Fab_VO_Entities\GlobalDefines.vh">
       <Link>GlobalDefines.vh</Link>
     </None>
-    <EmbeddedResource Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\VOXPorter\Resources\Designers.resources">
-      <Link>Designers.resources</Link>
-    </EmbeddedResource>
     <None Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\VOXPorter\Resources\XSharp.ico">
       <Link>XSharp.ico</Link>
     </None>
@@ -213,6 +179,19 @@
     <NativeResource Include="..\..\..\Dev\XSharp\src\Tools\VOXPorter\Source\VOXPorter\Resources\VersionInfo.rc">
       <Link>VersionInfo.rc</Link>
     </NativeResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FabVOEntities\Fab_VO_Entities.xsproj">
+      <Name>Fab_VO_Entities</Name>
+      <Project>{9b7f2a7d-4755-42bf-abff-7a36832cc7a9}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Designer.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace> </CustomToolNamespace>
+    </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

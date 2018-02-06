@@ -42,14 +42,6 @@
               <task-config-value name="make4status">*</task-config-value>
             </task-config-group>
           </export-task>
-          <export-task name="Publish as HXS" format="HXS">
-            <task-config-group name="settings">
-              <task-config-value name="outputfile">..\Binaries\Help\XSharp.mshc</task-config-value>
-              <task-config-value name="deletetemp">1</task-config-value>
-              <task-config-value name="make2include">HXS</task-config-value>
-              <task-config-value name="make2status">*</task-config-value>
-            </task-config-group>
-          </export-task>
         </export-tasks>
       </export-task-group>
     </export-task-groups>
@@ -474,7 +466,6 @@
       <config-value name="googleanalytics">UA-68123763-1</config-value>
       <config-value name="outputfile">..\Binaries\Help\HTML\index.html</config-value>
       <config-value name="highlighthotspots">1</config-value>
-      <config-group name="htmlpopupjavaoptions"/>
     </config-group>
     <config-group name="user">
       <config-group name="robert">

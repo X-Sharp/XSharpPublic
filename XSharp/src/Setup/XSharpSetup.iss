@@ -25,7 +25,7 @@
   
 #define Version             "1.1.2.0"
 #define VIVersion           "1.1.2.0"
-#define TouchDate           "2018-02-02"
+#define TouchDate           "2018-02-06"
 #define TouchTime           "01:12:00"
 
 #define Product             "XSharp"
@@ -696,11 +696,11 @@ Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017I
 Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017InstanceId3}\ComponentModelCache";        Check: HasVs2017_3;
 
 [Messages]
-WelcomeLabel1=Welcome to {# Product} (X#)
-WelcomeLabel2=This installer will install {#ProdBuild} on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
-WizardInfoBefore=Warning
-InfoBeforeLabel=You are about to install Beta software
-InfoBeforeClickLabel=Only continue the installation if you are aware of the following:
+WelcomeLabel1=Welcome to {# Product} (X#) 
+WelcomeLabel2=This installer will install {#ProdBuild} {# Version} on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+;WizardInfoBefore=Warning
+;InfoBeforeLabel=You are about to install Beta software
+;InfoBeforeClickLabel=Only continue the installation if you are aware of the following:
 
 
 

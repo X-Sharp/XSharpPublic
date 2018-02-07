@@ -1407,7 +1407,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node);
                 return false;
-
+            }
+            if (expr.Kind == BoundKind.Literal && ((BoundLiteral)expr).IsLiteralNull() 
+                && kind == BindValueKind.RefOrOut && Compilation.Options.VOImplicitCastsAndConversions)
+            {
+                // C590 Allow NULL as argument for REF variables)
+                return true;
             }
 
 #endif

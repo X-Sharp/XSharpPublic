@@ -2972,17 +2972,29 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
 #if XSHARP
+                    bool literalNull = false;
                     if (Compilation.Options.VOImplicitCastsAndConversions)
                     {
-                        var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
-                            : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
-                            : default(ImmutableArray<RefKind>);
-                        RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
-                        if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+                        // C590 Allow NULL as argument for REF variables)
+                        if (argument.Kind == BoundKind.Literal && ((BoundLiteral) argument).IsLiteralNull())
                         {
-                            argument = (argument as BoundAddressOfOperator).Operand;
+                            literalNull = true;
+                        }
+                        if (! literalNull)
+                        {
+                            var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
+                                : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
+                                : default(ImmutableArray<RefKind>);
+                            RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
+                            if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+                            {
+                                argument = (argument as BoundAddressOfOperator).Operand;
+                            }
                         }
                     }
+                    if (literalNull)
+                        conversion = Conversion.Identity;
+                    else
 #endif
                     conversion = CheckArgumentForApplicability(candidate, argument, argumentRefKind, parameters.ParameterTypes[argumentPosition], parameterRefKind, ignoreOpenTypes, ref useSiteDiagnostics);
 

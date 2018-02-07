@@ -582,6 +582,15 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
             }
             else
             {
+#if XSHARP
+                if (argument.Kind == BoundKind.Literal && ((BoundLiteral) argument).IsLiteralNull() 
+                    && refKind == RefKind.Ref )
+                {
+                    // C590 Allow NULL as argument for REF variables. We will only get here if VOImplicitCastsAndConversions is TRUE
+                    EmitExpression(argument, true);
+                    return;
+                }
+#endif
                 var temp = EmitAddress(argument, AddressKind.Writeable);
                 Debug.Assert(temp == null, "passing args byref should not clone them into temps");
             }

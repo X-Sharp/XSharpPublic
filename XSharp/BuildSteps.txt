@@ -39,4 +39,4 @@ Steps to create a new XSharp build
 - Start Facebook add campaign when needed
 - Create a tag in Github for the private and public repo.
 - Merge the Compiler and VSIntegration branches into their master branches
-
+- Update the what's new document on the website.

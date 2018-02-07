@@ -51,8 +51,8 @@ ApplicationGroup = C400-C449,C8A205F1-7289-4E5A-A714-71E5A29AFFCE,715D7617-320E-
 ApplicationGroup = C450-C499,6E592304-313A-42E3-8A1D-C66384522531,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C300-C349,DBAFC850-8A63-413C-9C9F-0450290A3721,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C500-C549,A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C550-C599,EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB,A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C550-C599,EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 
@@ -38619,7 +38619,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = External , %AppPath%\Prg\C386.rc
@@ -54685,9 +54685,9 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C541.rc
@@ -59845,7 +59845,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C589 - #pragma options recognised but are ignored
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C590 - Cannot pass NULL to REF params in vulcan dialect *************
 Application = C590 - Cannot pass NULL to REF params in vulcan dialect
 IDEVersion = 1.06
@@ -59945,7 +59945,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C590 - Cannot pass NULL to REF params in vulcan dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C591 - Runtime error with Default(@param , NULL_OBJECT) *************
 Application = C591 - Runtime error with Default(@param , NULL_OBJECT)
 IDEVersion = 1.06
@@ -60045,7 +60045,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C591 - Runtime error with Default(@param , NULL_OBJECT)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C592 - Failed to emit module error with default values := NULL_* in params *************
 Application = C592 - Failed to emit module error with default values := NULL_* in params
 IDEVersion = 1.06

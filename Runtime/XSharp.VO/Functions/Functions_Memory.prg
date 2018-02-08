@@ -8,9 +8,22 @@ USING System.Runtime.InteropServices
 USING System.Reflection
 USING System.Reflection.Emit
 USING System.Collections.Generic
-
+USING System.Diagnostics
 
 #region Basic Memory Allocation
+
+
+FUNCTION MemTrace(lSet AS LOGIC) AS LOGIC
+	LOCAL lOld AS LOGIC
+	lOld := FixedMemory.MemTrace
+	FixedMemory.MemTrace := lSet
+	RETURN lOld
+
+FUNCTION MemTrace() AS LOGIC
+	LOCAL lOld AS LOGIC
+	lOld := FixedMemory.MemTrace
+	RETURN lOld
+
 
 /// <summary>
 /// Allocate a static memory buffer of a specified size.
@@ -19,7 +32,7 @@ USING System.Collections.Generic
 /// <returns>
 /// </returns>
 FUNCTION MemAlloc(cb AS DWORD) AS IntPtr
-	RETURN FixedMemory.Alloc(0, cb)
+	RETURN FixedMemory.Alloc(1, cb)
 
 
 /// <summary>
@@ -38,7 +51,7 @@ FUNCTION MemFree(pMem as IntPtr) AS WORD
 /// A pointer to the allocated space if there is sufficient memory available; otherwise, a NULL_PTR.  You should always check the return value for a successful allocation.
 /// </returns>
 FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS IntPtr
-	RETURN FixedMemory.Alloc(0, ui * cbCell)
+	RETURN FixedMemory.Alloc(1, ui * cbCell)
 
 
 
@@ -66,6 +79,7 @@ FUNCTION MemTotal() AS DWORD
 
 #region Memory Groups
 
+[DebuggerDisplay("Group {ID}")];
 INTERNAL CLASS XSharp.MemGroup
 	EXPORT ID			as DWORD
 	EXPORT Allocated	AS DWORD	
@@ -147,6 +161,27 @@ FUNCTION MemGrpClose(dwGroup AS DWORD) AS WORD
 RETURN result
 
 
+/// <summary>
+/// Enumerate all the pointers allocated in a memory group
+/// </summary>
+/// <param name="dwGroup">The group you want to compact</param>
+/// <param name="pEnum">MemWalker Delegate</param>
+/// <returns>TRUE when all delegate calls return TRUE</returns>
+
+UNSAFE FUNCTION MemGrpEnum(dwGroup AS DWORD, pEnum AS MemWalker) AS LOGIC
+	LOCAL lOk AS LOGIC
+	lOk := TRUE
+	FOREACH VAR element IN FixedMemory.AllocatedBlocks
+		if FixedMemory:GetGroup(element:Key) == dwGroup
+			IF ! pEnum(element:Key, element:Value)
+				lOk := FALSE
+				EXIT
+			ENDIF
+		ENDIF
+	NEXT
+RETURN lOk
+
+
 
 #endregion
 
@@ -171,26 +206,8 @@ FUNCTION MemCompact() AS DWORD
 
 
 
-[ObsoleteAttribute( "'MemWalk()' is not supported and has no effect" )] ;
-FUNCTION MemWalk() AS LOGIC
-	RETURN FALSE   
-
-
 [ObsoleteAttribute( "'MemGrpCompact()' is not supported and has no effect" )] ;
 FUNCTION MemGrpCompact(dwGroup AS DWORD) AS DWORD
-	VAR result := FixedMemory.SUCCESS
-RETURN result
-
-
-/// <summary>
-/// Enumerate all the pointers allocated in a memory group
-/// </summary>
-/// <param name="dwGroup">The group you want to compact</param>
-/// <param name="pFunction"></param>
-/// <returns>
-/// </returns>
-[ObsoleteAttribute( "'MemGrpEnum()' is not supported and has no effect" )] ;
-UNSAFE FUNCTION MemGrpEnum(dwGroup AS DWORD, pFunction AS PTR) AS LONG
 	VAR result := FixedMemory.SUCCESS
 RETURN result
 
@@ -260,7 +277,7 @@ UNSAFE FUNCTION MemChr( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYT
 /// <param name="pMemory">A pointer to the memory buffer to fill.</param>
 /// <param name="dwCount">The number of bytes to fill.</param>
 /// <returns>A pointer to the filled memory buffer.</returns>
-UNSAFE FUNCTION MemClear( pMemory AS PTR, dwCount AS DWORD ) AS PTR
+FUNCTION MemClear( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError("MemClear",nameof(pMemory), 1)
 	ENDIF
@@ -477,7 +494,7 @@ UNSAFE FUNCTION MemMove( pDestination AS PTR, pSource AS PTR, nSize AS DWORD ) A
 /// <param name="bValue">The code for the character, as a number from 0 to 255.</param>
 /// <param name="dwCount">The number of bytes to fill.</param>
 /// <returns>A pointer to the filled memory buffer.</returns>
-UNSAFE FUNCTION MemSet( pMemory AS PTR, bValue AS BYTE, dwCount AS DWORD ) AS PTR
+FUNCTION MemSet( pMemory AS IntPtr, bValue AS BYTE, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError("MemSet",nameof(pMemory), 1)
 	ENDIF
@@ -547,6 +564,18 @@ UNSAFE FUNCTION MemWord( pMemory AS PTR, wValue AS WORD, dwCount AS DWORD ) AS W
 	NEXT
 	RETURN pRet
 
+FUNCTION MemWalk(pEnum AS MemWalker) AS LOGIC
+	LOCAL lOk AS LOGIC
+	lOk := TRUE
+	FOREACH VAR element IN FixedMemory.AllocatedBlocks
+		IF ! pEnum(element:Key, element:Value)
+			lOk := FALSE
+			EXIT
+		ENDIF
+	NEXT
+	RETURN lOk   
+
+
 /// <summary>
 /// </summary>
 /// <param name="dwGroup"></param>
@@ -601,6 +630,7 @@ FUNCTION PtrLen( lpv AS IntPtr ) AS DWORD
 		ENDIF
 	ENDIF
 	RETURN uiSize
+
 	
 
 /// <summary>

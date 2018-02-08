@@ -95,7 +95,6 @@
     <Compile Include="Set.prg" />
     <Compile Include="State.prg" />
     <Compile Include="Types\Attributes.prg" />
-    <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\WrappedException.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">

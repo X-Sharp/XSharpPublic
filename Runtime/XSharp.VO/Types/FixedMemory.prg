@@ -9,11 +9,11 @@ USING System.Reflection
 USING System.Reflection.Emit
 USING System.Collections.Generic
 
-#define CLEARBLOCK
-
 
 /// <Summary>Class that holds the Fixed Memory allocation support</Summary>
 ///
+
+DELEGATE MemWalker(pMem as IntPtr, nSize as DWORD) AS LOGIC
 
 
 STATIC UNSAFE CLASS XSharp.FixedMemory
@@ -22,14 +22,18 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 	INTERNAL STATIC Groups		AS Dictionary<DWORD, MemGroup>
 	INTERNAL STATIC LastGroup	AS DWORD
 	INTERNAL STATIC Total		AS DWORD
+	INTERNAL STATIC MemTrace	AS LOGIC
+	INTERNAL STATIC AllocatedBlocks as Dictionary<IntPtr, DWORD> 
 	PRIVATE STATIC _memSetDelegate  AS Action<IntPtr, BYTE, INT>		
 	PRIVATE STATIC _memCopyDelegate AS Action<IntPtr, IntPtr, INT>		
 
 	STATIC CONSTRUCTOR()
-		Groups := Dictionary<DWORD, MemGroup>{}
-		AddGroup(0)
-		LastGroup := 0
+		Groups			:= Dictionary<DWORD, MemGroup>{}
+		AllocatedBlocks := Dictionary<IntPtr, DWORD>{}
+		AddGroup(1)
+		LastGroup := 1
 		Total	  := 0
+		MemTrace  := FALSE
 
 
 		// Generate 2 dynamic methods for speedy MemSet and MemCopy
@@ -81,58 +85,86 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 		ENDIF
 		RETURN lOk
 
+	INTERNAL STATIC METHOD GetGroup(pMemory AS IntPtr) AS DWORD
+		VAR pMemBlockStart := _GetMemBlockStart(pMemory)
+		IF pMemBlockStart:IsValid()
+			RETURN pMemBlockStart:dwGroup
+		ENDIF
+		RETURN 0
 
-	STATIC UNSAFE METHOD Alloc(nGroup AS DWORD, nSize AS DWORD) AS IntPtr
-		LOCAL pResult AS BYTE PTR
-		LOCAL pBlock  AS BYTE PTR
+	PRIVATE STATIC METHOD _GetMemBlockStart (pMemory as IntPtr) AS FixedMemBlockStart PTR
+		LOCAL pMemBlockStart  AS FixedMemBlockStart PTR
+		IF IntPtr.Size == 4
+			pMemBlockStart := (FixedMemBlockStart PTR) (pMemory:ToInt32() - Sizeof(FixedMemBlockStart))
+		ELSE
+			pMemBlockStart := (FixedMemBlockStart PTR) (pMemory:ToInt64() - Sizeof(FixedMemBlockStart))
+		ENDIF
+		RETURN pMemBlockStart
+
+	PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory as IntPTR ) AS FixedMemBlockEnd PTR
+		VAR pMemBlockStart := _GetMemBlockStart (pMemory)
+		IF IntPtr.Size == 4
+			RETURN ( FixedMemBlockEnd PTR) ( pMemory:ToInt32() + pMemBlockStart:dwSize)
+		ENDIF
+		RETURN ( FixedMemBlockEnd PTR) (pMemory:ToInt64() + pMemBlockStart:dwSize)
+
+
+		
+	STATIC METHOD Alloc(nGroup AS DWORD, nSize AS DWORD) AS IntPtr
+		LOCAL pResult AS IntPtr
+		LOCAL pBlock  AS IntPtr
 		LOCAL nTotal  AS DWORD
-		LOCAL pMemBlockStart AS MemBlockStart PTR
-		LOCAL pMemBlockEnd AS MemBlockEnd PTR
+		LOCAL pMemBlockStart AS FixedMemBlockStart PTR
 		LOCAL oGroup	AS MemGroup
 		oGroup := FindGroup(nGroup)
 		IF oGroup == NULL_OBJECT
 			RETURN IntPtr.Zero
 		ENDIF 
-		nTotal	:= nSize + SIZEOF(MemBlockStart) + SIZEOF(MemBlockEnd)
+		nTotal	:= nSize + SIZEOF(FixedMemBlockStart) + SIZEOF(FixedMemBlockEnd)
 		pBlock := Marshal.AllocHGlobal( (INT) nTotal)
 		IF pBlock != IntPtr.Zero
+			// Keep track of allocated memory per Group and Total
 			oGroup:Allocated += nSize
-			Total += nSize				// Keep track of total allocated memory
-			pMemBlockStart := (MemBlockStart PTR) ((DWORD) pBlock )
-			
+			Total 			 += nSize				
+			pMemBlockStart := (FixedMemBlockStart PTR) pBlock 
 			pMemBlockStart:Initialize(nGroup, nSize)
-			pResult		 := (Byte PTR)        ((INT) pBlock + SIZEOF(MemBlockStart) )
-			pMemBlockEnd := (MemBlockEnd Ptr) ((INT) pBlock + SIZEOF(MemBlockStart) + nSize )
+			IF IntPtr.Size == 4
+				pResult		 := (IntPtr) (pBlock:ToInt32() + SIZEOF(FixedMemBlockStart) )
+			ELSE
+				pResult		 := (IntPtr) (pBlock:ToInt64() + SIZEOF(FixedMemBlockStart) )
+			ENDIF
+			VAR pMemBlockEnd := _GetMemBlockEnd(pResult)
 			pMemBlockEnd:Initialize()
+			// Clear data Part of the Block
 			_memSetDelegate(pResult, 0, (int) nSize)
 		ELSE
 			pResult := NULL
 		ENDIF
+		IF MemTrace
+			AllocatedBlocks:Add(pResult, nSize)
+		ENDIF
 		RETURN pResult
 
-	STATIC UNSAFE METHOD Free(pMem AS IntPtr) AS WORD // For compatibility with VO
-		LOCAL pMemBlockStart  AS MemBlockStart PTR
+	STATIC METHOD Free(pMem AS IntPtr) AS WORD // For compatibility with VO
 		LOCAL result	AS WORD
 		LOCAL oGroup	as MemGroup
-		result := FixedMemory.FAILURE	// VO defines this as error
+		result := FixedMemory.FAILURE	
 		TRY
 			IF Validate(pMem)
-				LOCAL pStart	as IntPtr
-				pMemBlockStart := (MemBlockStart PTR) ((INT) pMem - SIZEOF(MemBlockStart))
-
-				pStart := pMemBlockStart
-
 				LOCAL nSize AS DWORD
-				nSize := pMemBlockStart:dwSize
-				VAR nTotal	:= nSize + SIZEOF(MemBlockStart) + SIZEOF(MemBlockEnd)
+				IF AllocatedBlocks:ContainsKey(pMem)
+					AllocatedBlocks:Remove(pMem)
+				ENDIF
+				VAR pMemBlockStart  := _GetMemBlockStart (pMem)
+				nSize 				:= pMemBlockStart:dwSize
+				VAR nTotal			:= nSize + SIZEOF(FixedMemBlockStart) + SIZEOF(FixedMemBlockEnd)
 				Total -= nSize
 				oGroup := FindGroup(pMemBlockStart:dwGroup)
-#ifdef CLEARBLOCK
-					Set(pMemBlockStart, 0, (INT) nTotal)			// Clear memory so it will not be valid anymore
-#endif
+				// Clear memory so it will not be valid anymore
+				Set(pMemBlockStart, 0, (INT) nTotal)			
 				IF oGroup != NULL_OBJECT
 					oGroup:Allocated -= nSize
-					Marshal.FreeHGlobal(pStart)
+					Marshal.FreeHGlobal(pMemBlockStart)
 					result := FixedMemory.SUCCESS
 				ENDIF
 			ENDIF
@@ -141,16 +173,14 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 		END TRY
 		RETURN result
 
-	STATIC UNSAFE METHOD Validate(pMem AS IntPtr) AS LOGIC
-		LOCAL pMemBlockStart AS MemBlockStart PTR
-		LOCAL pMemBlockEnd AS MemBlockEnd PTR
+	STATIC METHOD Validate(pMem AS IntPtr) AS LOGIC
 		LOCAL lValid := FALSE	AS LOGIC
 		TRY
-			IF (pMem != NULL_PTR)
-				pMemBlockStart := (MemBlockStart PTR) ((INT) pMem - SizeOf(MemBlockStart))
-				IF pMemBlockStart:IsValid()
-					pMemBlockEnd := (MemBlockEnd PTR) ((INT) pMem + pMemBlockStart:dwSize) 
-					IF (pMemBlockEnd:IsValid())
+			IF (pMem != IntPtr.Zero)
+				VAR pMemBlockStart := _GetMemBlockStart (pMem)
+				IF pMemBlockStart:IsValid() 
+					VAR pMemBlockEnd   := _GetMemBlockEnd (pMem)
+					IF pMemBlockEnd:IsValid()
 						lValid := TRUE
 					ENDIF
 				ENDIF
@@ -160,19 +190,15 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 		END TRY
 		RETURN lValid
 
-	STATIC UNSAFE METHOD ValidateSize(pMem AS IntPtr, nSize as DWORD) AS LOGIC
-		LOCAL pMemBlockStart AS MemBlockStart PTR
-		LOCAL pMemBlockEnd AS MemBlockEnd PTR
+	STATIC METHOD ValidateSize(pMem AS IntPtr, nSize as DWORD) AS LOGIC
 		LOCAL lValid := FALSE	AS LOGIC
 		TRY
-			IF (pMem != NULL_PTR)
-				pMemBlockStart := (MemBlockStart PTR) ((INT) pMem - SIZEOF(MemBlockStart))
-				IF pMemBlockStart:IsValid()
-					pMemBlockEnd := (MemBlockEnd PTR) ((INT) pMem + pMemBlockStart:dwSize) 
-					IF (pMemBlockEnd:IsValid())
-						IF pMemBlockStart:dwSize == nSize
-							lValid := TRUE
-						ENDIF
+			IF (pMem != IntPtr.Zero)
+				VAR pMemBlockStart := _GetMemBlockStart (pMem)
+				IF pMemBlockStart:IsValid() 
+					VAR pMemBlockEnd   := _GetMemBlockEnd (pMem)
+					IF pMemBlockEnd:IsValid() .AND. pMemBlockStart:dwSize == nSize
+						lValid := TRUE
 					ENDIF
 				ENDIF
 			ENDIF
@@ -181,12 +207,11 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 		END TRY
 		RETURN lValid
 
-	STATIC UNSAFE METHOD BlockSize(pMem AS IntPtr) AS DWORD
-		LOCAL pMemBlockStart AS MemBlockStart PTR
+	STATIC METHOD BlockSize(pMem AS IntPtr) AS DWORD
 		LOCAL nSize  := 0 as DWORD
 		TRY
-			IF (pMem != NULL_PTR)
-				pMemBlockStart := (MemBlockStart PTR) ((INT) pMem - SIZEOF(MemBlockStart))
+			IF (pMem != IntPtr.Zero)
+				VAR pMemBlockStart := _GetMemBlockStart( pMem )
 				IF pMemBlockStart:IsValid()
 					nSize := pMemBlockStart:dwSize
 				ENDIF
@@ -196,15 +221,13 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 		END TRY
 		RETURN nSize
 
-	STATIC UNSAFE METHOD Realloc(pMem AS IntPtr, nNewSize AS DWORD) AS IntPtr
-		LOCAL pMemBlockStart AS MemBlockStart PTR
-		LOCAL pMemBlockEnd AS MemBlockEnd PTR
-		LOCAL pResult := NULL	AS IntPtr
+	STATIC METHOD Realloc(pMem AS IntPtr, nNewSize AS DWORD) AS IntPtr
+		LOCAL pResult := IntPtr.Zero AS IntPtr
 		TRY
-			IF (pMem != NULL_PTR)
-				pMemBlockStart := (MemBlockStart PTR) ((INT) pMem - SIZEOF(MemBlockStart))
+			IF (pMem != IntPtr.Zero)
+				VAR pMemBlockStart := _GetMemBlockStart(pMem)
 				IF pMemBlockStart:IsValid()
-					pMemBlockEnd := (MemBlockEnd PTR) ((INT) pMem + pMemBlockStart:dwSize) 
+					VAR pMemBlockEnd := _GetMemBlockEnd(pMem)
 					IF (pMemBlockEnd:IsValid())
 						LOCAL nOldSize as DWORD
 						nOldSize := pMemBlockStart:dwSize
@@ -212,7 +235,13 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 							pResult := pMem
 						ELSEIF nOldSize > nNewSize
 							// clear end of block
-							Clear( (PTR) ((DWORD)pMem + nOldSize), (int) (nOldSize - (int) nNewSize))
+							LOCAL pClear as IntPtr
+							IF IntPtr.Size = 4
+								pClear := (IntPtr) pMem:ToInt32()+ nOldSize
+							ELSE
+								pClear := (IntPtr) pMem:ToInt64()+ nOldSize
+							ENDIF
+							Clear( pClear, (int) (nOldSize - (int) nNewSize))
 							pResult := pMem
 						ELSE
 							// allocate new block
@@ -233,36 +262,32 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 		RETURN pResult
 
 		INTERNAL STATIC METHOD Clear(pMemory AS IntPtr, iCount AS INT) AS IntPTR
-			// No pointer validation. Should be done in wrapper function
+			// No pointer validation for speed. Should be done in wrapper function
 			_memSetDelegate(pMemory, 0, iCount)
 			return pMemory
 			
 
 		INTERNAL STATIC METHOD Copy( pDestination AS IntPtr, pSource AS IntPtr, iCount AS INT ) AS IntPtr
-			// No pointer validation. Should be done in wrapper function
+			// No pointer validation for speed. Should be done in wrapper function
 			_memCopyDelegate(pDestination, pSource, iCount)
 			RETURN pDestination
 
 		INTERNAL STATIC METHOD Set( pMemory AS IntPtr, b AS BYTE, iCount AS INT ) AS IntPtr
-			// No pointer validation. Should be done in wrapper function
+			// No pointer validation for speed. Should be done in wrapper function
 			_memSetDelegate(pMemory, b, iCount)
 			RETURN pMemory
  
-		INTERNAL STATIC METHOD Walk() AS VOID
-			#ifdef LINKEDBLOCKS
-				// Use the linked list of blocks to walk the allocated memory
-			#endif
-
-
+		
 END CLASS
 
-// Guard Block structures
+
+/// <Summary>Guard Block preceding MemAlloc return value</Summary>
 [StructLayout(LayoutKind.Explicit)];
-STRUCTURE XSharp.MemBlockStart
-   [FieldOffSet(00)] EXPORT dwMagic as DWORD
+STRUCTURE XSharp.FixedMemBlockStart
+   [FieldOffSet(00)] EXPORT dwMagic as DWORD	// Checksum
    [FieldOffSet(04)] EXPORT dwCargo as DWORD    // Can be used by them
-   [FieldOffSet(08)] EXPORT dwGroup as DWORD    // Since we have no real groups
-   [FieldOffSet(12)] EXPORT dwSize  as DWORD
+   [FieldOffSet(08)] EXPORT dwGroup as DWORD    // Group Number
+   [FieldOffSet(12)] EXPORT dwSize  as DWORD	// Size of Data Block excluding Guard Blocks
    CONST MAGIC  := 0x21522358 AS DWORD  // !R#X
 
    METHOD Initialize(nGroup as DWORD, nSize as DWORD) AS VOID
@@ -277,10 +302,11 @@ STRUCTURE XSharp.MemBlockStart
 
 END STRUCTURE
 
+/// <Summary>Guard Block following MemAlloc return value</Summary>
 [StructLayout(LayoutKind.Explicit)];
-STRUCTURE XSharp.MemBlockEnd
-   [FieldOffSet(00)] EXPORT dwZero  as DWORD
-   [FieldOffSet(04)] EXPORT dwMagic as DWORD
+STRUCTURE XSharp.FixedMemBlockEnd
+   [FieldOffSet(00)] EXPORT dwZero  as DWORD			// Give them 1 extra DWORD to protect against overflows
+   [FieldOffSet(04)] EXPORT dwMagic as DWORD			// Checksum
    CONST MAGIC  := 0x524E4643 AS DWORD  // Chris, Fabrice, Nikos, Robert 
 
 

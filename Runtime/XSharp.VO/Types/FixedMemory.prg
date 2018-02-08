@@ -8,6 +8,7 @@ USING System.Runtime.InteropServices
 USING System.Reflection
 USING System.Reflection.Emit
 USING System.Collections.Generic
+using System.Runtime.CompilerServices
 
 
 /// <Summary>Class that holds the Fixed Memory allocation support</Summary>
@@ -19,6 +20,7 @@ DELEGATE MemWalker(pMem as IntPtr, nSize as DWORD) AS LOGIC
 STATIC UNSAFE CLASS XSharp.FixedMemory
 	PUBLIC CONST FAILURE := 65535 AS WORD
 	PUBLIC CONST SUCCESS := 0 AS WORD
+	INTERNAL INITONLY Static Is32Bits AS LOGIC
 	INTERNAL STATIC Groups		AS Dictionary<DWORD, MemGroup>
 	INTERNAL STATIC LastGroup	AS DWORD
 	INTERNAL STATIC Total		AS DWORD
@@ -34,9 +36,10 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 		LastGroup := 1
 		Total	  := 0
 		MemTrace  := FALSE
-
+		Is32Bits  := IntPtr.Size == 4
 
 		// Generate 2 dynamic methods for speedy MemSet and MemCopy
+		// using IL instructions that C# and X# do not have. 
 		var atts := MethodAttributes.Public | MethodAttributes.Static
 		var dm := DynamicMethod{"Memset", atts, CallingConventions.Standard, null,  <System.Type> { typeof(IntPtr), typeof(byte), typeof(int) }, typeof(FixedMemory), true}
         var generator	  := dm:GetILGenerator()
@@ -91,23 +94,26 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 			RETURN pMemBlockStart:dwGroup
 		ENDIF
 		RETURN 0
-
+	// Only available in 4.5
+	//[MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE STATIC METHOD _GetMemBlockStart (pMemory as IntPtr) AS FixedMemBlockStart PTR
 		LOCAL pMemBlockStart  AS FixedMemBlockStart PTR
-		IF IntPtr.Size == 4
+		IF Is32Bits
 			pMemBlockStart := (FixedMemBlockStart PTR) (pMemory:ToInt32() - Sizeof(FixedMemBlockStart))
 		ELSE
 			pMemBlockStart := (FixedMemBlockStart PTR) (pMemory:ToInt64() - Sizeof(FixedMemBlockStart))
 		ENDIF
 		RETURN pMemBlockStart
 
+	// Only available in 4.5
+	//[MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory as IntPTR ) AS FixedMemBlockEnd PTR
 		VAR pMemBlockStart := _GetMemBlockStart (pMemory)
-		IF IntPtr.Size == 4
+		IF Is32Bits
 			RETURN ( FixedMemBlockEnd PTR) ( pMemory:ToInt32() + pMemBlockStart:dwSize)
+		ELSE
+			RETURN ( FixedMemBlockEnd PTR) (pMemory:ToInt64() + pMemBlockStart:dwSize)
 		ENDIF
-		RETURN ( FixedMemBlockEnd PTR) (pMemory:ToInt64() + pMemBlockStart:dwSize)
-
 
 		
 	STATIC METHOD Alloc(nGroup AS DWORD, nSize AS DWORD) AS IntPtr
@@ -128,7 +134,7 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 			Total 			 += nSize				
 			pMemBlockStart := (FixedMemBlockStart PTR) pBlock 
 			pMemBlockStart:Initialize(nGroup, nSize)
-			IF IntPtr.Size == 4
+			IF Is32Bits
 				pResult		 := (IntPtr) (pBlock:ToInt32() + SIZEOF(FixedMemBlockStart) )
 			ELSE
 				pResult		 := (IntPtr) (pBlock:ToInt64() + SIZEOF(FixedMemBlockStart) )
@@ -236,7 +242,7 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 						ELSEIF nOldSize > nNewSize
 							// clear end of block
 							LOCAL pClear as IntPtr
-							IF IntPtr.Size = 4
+							IF Is32Bits
 								pClear := (IntPtr) pMem:ToInt32()+ nOldSize
 							ELSE
 								pClear := (IntPtr) pMem:ToInt64()+ nOldSize

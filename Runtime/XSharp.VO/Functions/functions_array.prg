@@ -256,32 +256,3 @@ RETURN NULL
 		RETURN a:Tail()
 
 
-	/// <summary>
-	/// Copy a typed dynamic object to static allocated memory.
-	/// </summary>
-	/// <param name="a"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynToOldSpace__Array(a AS __Array) AS __Array
-		/// THROW NotImplementedException{}
-	RETURN NULL   
-
-	/// <summary>
-	/// Check to see if a typed dynamic object is static.
-	/// </summary>
-	/// <param name="a"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IsOldSpace__Array(a AS __Array) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="a"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION OldSpaceFree__Array(a AS __Array) AS VOID
-		/// THROW NotImplementedException{}
-	RETURN 
-

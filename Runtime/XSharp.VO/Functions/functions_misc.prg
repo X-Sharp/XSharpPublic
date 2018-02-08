@@ -669,14 +669,6 @@ using XSharp
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
-	/// <summary>
-	/// Get a description of the error which was discovered by an internal function that is used by the system to check dynamic memory for consistency.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynCheckError() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
 
 	/// <summary>
 	/// </summary>
@@ -694,69 +686,9 @@ using XSharp
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
-	/// <summary>
-	/// Return the number of bytes available for dynamic memory allocation.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynInfoFree() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+ 
 
-	/// <summary>
-	/// Return the number of bytes of contiguous memory available for dynamic memory allocation.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynInfoMax() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Return the size of dynamic memory in 64 KB segments.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynInfoSize() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Return the number of bytes of dynamic memory in use.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynInfoUsed() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Lock dynamic memory and prevent the Garbage Collector from activating.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynLock() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Protect dynamic memory that is not currently in use.
-	/// </summary>
-	/// <param name="lSet"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynProtect(lSet AS LOGIC) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-	/// <summary>
-	/// Shrink the dynamic memory pool to its minimum size.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynShrink() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+ 
 
 	/// <summary>
 	/// </summary>
@@ -766,34 +698,9 @@ using XSharp
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
-	/// <summary>
-	/// Copy a dynamic object to static allocated memory.
-	/// </summary>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynToOldSpace(u AS __Usual) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
 
-	/// <summary>
-	/// Copy a typed dynamic object to static allocated memory.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynToOldSpaceObject(o AS OBJECT) AS OBJECT
-		/// THROW NotImplementedException{}
-	RETURN NULL_OBJECT   
 
-	/// <summary>
-	/// Unlock dynamic memory and restart the Garbage Collector.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION DynUnLock() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+
 
 	/// <summary>
 	/// Determine if the result of an expression is empty.
@@ -1006,15 +913,7 @@ using XSharp
 		/// THROW NotImplementedException{}
 	RETURN String.Empty   
 
-	/// <summary>
-	/// To free objects that have been created using the CreateInstanceStatic( ) function.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FreeStaticObject(o AS OBJECT) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+
 
 	/// <summary>
 	/// Set the file pointer to a new position.
@@ -1303,25 +1202,6 @@ using XSharp
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
-	/// <summary>
-	/// Check to see if a dynamic object is static.
-	/// </summary>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IsOldSpace(u AS __Usual) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-	/// <summary>
-	/// Check to see if a typed dynamic object is static.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IsOldSpaceObject(o AS OBJECT) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
 
 	/// <summary>
 	/// Determine if a value is a pointer.
@@ -1658,57 +1538,6 @@ using XSharp
 	RETURN FALSE   
 
 	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION MemCompact() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION MemExit() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Open up a new memory group.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION MemGrpOpen() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION MemInit() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Report the total number of bytes used by other memory manager functions.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION MemTotal() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Walk through the memory system, checking for validity.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION MemWalk() AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-	/// <summary>
 	/// Create a class list in the form of an __Array for the specified object.
 	/// </summary>
 	/// <param name="o"></param>
@@ -1876,24 +1705,6 @@ using XSharp
 		/// THROW NotImplementedException{}
 	RETURN NULL_OBJECT   
 
-	/// <summary>
-	/// Free up static memory created by DynToOldSpace().
-	/// </summary>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION OldSpaceFree(u AS __Usual) AS VOID
-		/// THROW NotImplementedException{}
-	RETURN
-
-	/// <summary>
-	/// </summary>
-	/// <param name="o"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION OldSpaceFreeObject(o AS OBJECT) AS VOID
-		/// THROW NotImplementedException{}
-	RETURN
 
 	/// <summary>
 	/// </summary>

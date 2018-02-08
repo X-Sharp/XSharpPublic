@@ -8,6 +8,18 @@ using System.Runtime.InteropServices
 
 STATIC CLASS XSharp.Internal.CompilerServices
 
+	STATIC METHOD __StringSubtract (lhs AS STRING, rhs AS STRING) AS STRING
+		IF lhs != NULL .and. rhs != NULL
+			VAR len := lhs:Length + rhs:Length
+			RETURN (lhs:TrimEnd() + rhs:TrimEnd()):PadRight(len)
+		ELSEIF lhs != NULL
+			RETURN lhs
+		ELSEIF rhs != NULL
+			RETURN rhs
+		ENDIF
+		RETURN String.Empty
+
+
 	STATIC METHOD String2Psz(s AS STRING, pszList AS List<IntPtr>) AS IntPtr
 		LOCAL pResult AS IntPtr
 		IF s == null || s:Length == 0

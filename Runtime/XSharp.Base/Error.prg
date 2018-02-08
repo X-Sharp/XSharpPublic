@@ -67,5 +67,17 @@ BEGIN NAMESPACE XSharp
 		err:Description := Description
 		return err
 
+	   STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS INT ) AS Error
+		  LOCAL e AS Error
+		  e := Error{ ArgumentNullException{} }
+		  e:Severity    := ES_ERROR
+		  e:GenCode     := EG_ARG
+		  e:SubSystem   := "BASE"
+		  e:FuncSym     := cFuncName
+		  e:Arg         := cArgName
+		  e:ArgNum      := iArgNum
+		  //e:Description := SR.GetString( SR.ArgIsNULL )
+		  RETURN e
+
 	END CLASS
 END NAMESPACE // XSharp.Rdd

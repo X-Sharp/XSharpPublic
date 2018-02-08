@@ -10,7 +10,7 @@
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
+    <Unsafe>true</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
     <VO1>false</VO1>
@@ -31,6 +31,8 @@
     <StartupObject />
     <ApplicationIcon />
     <Prefer32Bit>False</Prefer32Bit>
+    <VO15>false</VO15>
+    <VO16>false</VO16>
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.Default.props" />
   <PropertyGroup>
@@ -54,7 +56,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>165</DisabledWarnings>
@@ -133,6 +135,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MemoryTests.prg" />
     <Compile Include="WinBoolTest.prg" />
     <Compile Include="DynamicTest.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">

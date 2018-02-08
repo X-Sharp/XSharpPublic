@@ -1570,7 +1570,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_NoExplicitCast = 9060,
         ERR_PtrCastNotAllowed = 9061,
         ERR_TypeNameMatchesGlobalNamespace = 9062,
-
+        WRN_NullPointerForRefParameter = 9063
         #endregion X#-only messages
     }
 }

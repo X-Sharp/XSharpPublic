@@ -1412,6 +1412,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 && expr.Kind == BoundKind.Literal && ((BoundLiteral)expr).IsLiteralNull() )
             {
                 // C590 Allow NULL as argument for REF parameters
+                Error(diagnostics, ErrorCode.WRN_NullPointerForRefParameter, node);
                 return true;
             }
 

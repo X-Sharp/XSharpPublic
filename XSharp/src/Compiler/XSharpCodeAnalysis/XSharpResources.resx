@@ -5250,5 +5250,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_NoExplicitCast" xml:space="preserve">
     <value>Cannot cast type '{0}' to '{1}'</value>
   </data>
-
+  <data name="WRN_NullPointerForRefParameter" xml:space="preserve">
+    <value>Passing a NULL pointer to a REF variable is allowed (with /vo7) but strongly discouraged. You MUST make sure that the function being called does a check for NULL pointers for the REF parameter.</value>
+  </data>
+  
 </root>

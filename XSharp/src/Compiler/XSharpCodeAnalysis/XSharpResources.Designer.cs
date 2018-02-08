@@ -13830,6 +13830,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Passing a NULL pointer to a REF variable is allowed (with /vo7) but strongly discouraged. You MUST make sure that the function being called does a check for NULL pointers for the REF parameter..
+        /// </summary>
+        internal static string WRN_NullPointerForRefParameter {
+            get {
+                return ResourceManager.GetString("WRN_NullPointerForRefParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Obsolete member &apos;{0}&apos; overrides non-obsolete member &apos;{1}&apos;.
         /// </summary>
         internal static string WRN_ObsoleteOverridingNonObsolete {

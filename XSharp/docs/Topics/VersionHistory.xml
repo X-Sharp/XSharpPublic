@@ -7,6 +7,12 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading2">Changes in x.x.x</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">You can now pass NULL for parameters declared by reference for compatibility with VO &amp; Vulcan. <br/>We STRONGLY advise not to do this, unless you make sure that the function expects this and does not assign to the reference parameter without checking for a NULL reference first. This will only work when the /vo7 compiler option.</li>
+    </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Changes in 1.1.2</para>
     <para styleclass="Heading3">Compiler</para>
     <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

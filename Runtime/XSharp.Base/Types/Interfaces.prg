@@ -11,6 +11,7 @@ BEGIN NAMESPACE XSharp
 		METHOD		EvalBlock( args PARAMS OBJECT[]) AS OBJECT
 		PROPERTY	PCount AS LONG GET
 	END INTERFACE
+
 	/// <summary>
 	/// This interface defines Date values
 	/// </summary>
@@ -31,6 +32,7 @@ BEGIN NAMESPACE XSharp
 		/// <returns>Logical value</returns>
 		PROPERTY IsEmpty	AS LOGIC GET
 	END INTERFACE
+
 	/// <summary>
 	/// This interface defines FLOAT values
 	/// </summary>

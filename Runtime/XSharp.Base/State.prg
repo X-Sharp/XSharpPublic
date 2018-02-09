@@ -15,7 +15,7 @@ USING XSharp
 
 CLASS XSharp.Runtime.State
 	// Static Fields
-	PRIVATE STATIC mainState  AS State 
+	PRIVATE INITONLY STATIC mainState  AS State 
 	// Static Methods and Constructor
 	PRIVATE STATIC currentState := ThreadLocal<State>{ {=>  mainState:Clone()} }  AS ThreadLocal<State> 
 	STATIC CONSTRUCTOR

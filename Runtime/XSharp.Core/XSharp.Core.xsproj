@@ -126,11 +126,11 @@
     <Compile Include="Functions\functions_string.prg" />
     <Compile Include="Functions\functions_unsafe.prg" />
     <Compile Include="Functions\functions_vodb.prg" />
-    <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Functions\GetSet.xh" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">

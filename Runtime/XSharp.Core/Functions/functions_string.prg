@@ -4,26 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-/// <summary>
-/// Concatenate 2 strings and move trailing spaces to the end
-/// </summary>
-/// <param name="lhs">The first string .</param>
-/// <param name="rhs">The second string.</param>
-/// <returns>
-/// The combined strings where trailing spaces from the first string are moved to the end.
-/// Note: this function is used by the compiler for the "-" operator for strings and/or strings and usuals
-/// </returns>
-
-FUNCTION __StringSubtract (lhs AS STRING, rhs AS STRING) AS STRING
-	IF lhs != NULL .and. rhs != NULL
-		VAR len := lhs:Length + rhs:Length
-		RETURN (lhs:TrimEnd() + rhs:TrimEnd()):PadRight(len)
-	ELSEIF lhs != NULL
-		RETURN lhs
-	ELSEIF rhs != NULL
-		RETURN rhs
-	ENDIF
-	RETURN String.Empty
 
 /// <summary>
 /// Compare 2 strings

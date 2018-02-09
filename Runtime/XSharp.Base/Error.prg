@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp
 		err:Description := Description
 		return err
 
-	   STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS INT ) AS Error
+	STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS INT ) AS Error
 		  LOCAL e AS Error
 		  e := Error{ ArgumentNullException{} }
 		  e:Severity    := ES_ERROR

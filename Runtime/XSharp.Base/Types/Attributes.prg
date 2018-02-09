@@ -12,7 +12,7 @@ BEGIN NAMESPACE XSharp.Internal
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Parameter)];
 	SEALED CLASS ActualTypeAttribute INHERIT Attribute
-		PRIVATE _value AS System.Type
+		PRIVATE INITONLY _value AS System.Type
 		
 		PROPERTY Value AS System.Type GET _value
 		
@@ -26,8 +26,8 @@ BEGIN NAMESPACE XSharp.Internal
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
 	SEALED CLASS ClassLibraryAttribute INHERIT Attribute
-		PRIVATE _globalClassName AS STRING
-		PRIVATE _defaultNameSpace AS STRING
+		PRIVATE INITONLY _globalClassName AS STRING
+		PRIVATE INITONLY _defaultNameSpace AS STRING
 		
 		PROPERTY GlobalClassName AS STRING GET _globalClassName
 		PROPERTY DefaultNameSpace AS STRING GET _defaultNameSpace
@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.Internal
 	
 	[AttributeUsage(AttributeTargets.Method)];
 	SEALED CLASS ClipperCallingConventionAttribute INHERIT Attribute
-		PRIVATE _parameterNames AS STRING[]
+		PRIVATE INITONLY _parameterNames AS STRING[]
 		
 		PROPERTY ParameterNames AS STRING[] GET _parameterNames
 		
@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.Internal
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
 		SEALED CLASS CompilerVersionAttribute INHERIT Attribute
-		PRIVATE _version AS STRING
+		PRIVATE INITONLY _version AS STRING
 		
 		PROPERTY Version AS STRING GET _version
 		
@@ -77,14 +77,14 @@ BEGIN NAMESPACE XSharp.Internal
 	/// Flag means:
 	/// 0 = Regular .Net default value 
 	/// 1 = NIL
-	/// 2 = Date (value is LONG ticks, empty for NULL_DATE
-	/// 3 = Symbol, value can be empty of a string
+	/// 2 = Date (value is LONG ticks, empty for NULL_DATE)
+	/// 3 = Symbol, value can be empty or a string
 	/// 4 = PSZ, null = empty, or a string
 	/// 5 = IntPtr (can be 0 for NullPtr)
 	/// </summary>
 	SEALED CLASS DefaultParameterValueAttribute INHERIT Attribute
-		PRIVATE _value AS OBJECT
-		PRIVATE _flag  AS INT
+		PRIVATE INITONLY _value AS OBJECT
+		PRIVATE INITONLY _flag  AS INT
 		
 		PROPERTY Value AS OBJECT GET _value
 		PROPERTY Flag  AS INT    GET _flag
@@ -101,7 +101,7 @@ BEGIN NAMESPACE XSharp.Internal
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
 	SEALED CLASS ImplicitNamespaceAttribute INHERIT Attribute
-		PRIVATE _namespace AS STRING
+		PRIVATE INITONLY _namespace AS STRING
 		
 		PROPERTY Namespace AS STRING GET _namespace
 		

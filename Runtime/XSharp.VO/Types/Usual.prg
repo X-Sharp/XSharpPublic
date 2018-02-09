@@ -1204,7 +1204,7 @@ BEGIN NAMESPACE XSharp
 			CASE __UsualType.String
 				SWITCH rhs:UsualType
 				CASE __UsualType.String
-					return __StringSubtract(lhs, rhs)
+					return CompilerServices.__StringSubtract(lhs, rhs)
 				OTHERWISE
 					throw BinaryError("-", "Argument Not String", false, lhs, rhs)
 				END SWITCH
@@ -1806,15 +1806,15 @@ BEGIN NAMESPACE XSharp
 	RETURN "?"
 
 	STATIC METHOD ConversionError(toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
-		var err := Error{InvalidCastException{}}
-		err:GenCode		 := GenCode.DataType
-		err:Severity	 := Severity.Error
-		err:ArgTypeReq	 := toType
-		err:ArgNum		 := 1
-		err:FuncSym		 := "USUAL => "+toTypeString
-		err:ArgType		 := toTypeString
-		err:Description  := i"Conversion Error from USUAL ({u:TypeString()})  to {toTypeString}"  
-		err:Arg			 := u:ToString()
+		var err			:= Error{InvalidCastException{}}
+		err:GenCode		:= GenCode.DataType
+		err:Severity	:= Severity.Error
+		err:ArgTypeReq	:= toType
+		err:ArgNum		:= 1
+		err:FuncSym		:= "USUAL => "+toTypeString
+		err:ArgType		:= toTypeString
+		err:Description := i"Conversion Error from USUAL ({u:TypeString()})  to {toTypeString}"  
+		err:Arg			:= u:ToString()
 		RETURN err
 
 	STATIC METHOD OverflowError(ex as OverflowException, toTypeString as string, toType AS System.Type, u AS __Usual) AS Error
@@ -1828,6 +1828,7 @@ BEGIN NAMESPACE XSharp
 		err:Description  := i"Overflow error converting from USUAL({u:TypeString()})  to {toTypeString}"  
 		err:Arg			 := u:ToString()
 		RETURN err
+
 	STATIC METHOD BinaryError( operator as STRING, message as STRING, left as logic, lhs as __Usual, rhs as __Usual) as Error
 		var err := Error{ArgumentException{}}
 		err:GenCode		 := GenCode.ARG

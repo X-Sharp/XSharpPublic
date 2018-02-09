@@ -122,3 +122,37 @@ FUNCTION IsOldSpaceObject(o AS OBJECT) AS LOGIC
 [ObsoleteAttribute( "'MemCheckPtr()' is not supported and always returns TRUE" )] ;
 UNSAFE FUNCTION MemCheckPtr( pMemory AS PTR, dwSize AS DWORD ) AS LOGIC
 	RETURN TRUE
+
+	
+[ObsoleteAttribute( "'SetKidStackSize()' is not supported and always returns 0" )] ;
+FUNCTION SetKidStackSize(dwBytes AS DWORD) AS DWORD
+RETURN 0   
+
+[ObsoleteAttribute( "'SetMaxDynSize()' is not supported and always returns 0" )] ;
+FUNCTION SetMaxDynSize(dwBytes AS DWORD) AS DWORD
+RETURN 0   
+
+[ObsoleteAttribute( "'SetMaxRegisteredAxitMethods()' is not supported and always returns 0" )] ;
+FUNCTION SetMaxRegisteredAxitMethods(dwCount AS DWORD) AS DWORD
+RETURN 0   
+
+[ObsoleteAttribute( "'SetMaxRegisteredKids()' is not supported and always returns 0" )] ;
+FUNCTION SetMaxRegisteredKids(dwCount AS DWORD) AS DWORD
+RETURN 0   
+
+[ObsoleteAttribute( "'SetMaxThreadDynSize()' is not supported and always returns 0" )] ;
+FUNCTION SetMaxThreadDynSize(dwBytes AS DWORD) AS DWORD
+RETURN 0   
+
+[ObsoleteAttribute( "'SetWipeDynSpace()' is not supported and always returns FALSE" )] ;
+FUNCTION SetWipeDynSpace(lWipe AS LOGIC) AS LOGIC
+RETURN FALSE   
+
+
+[ObsoleteAttribute( "'PtrLen()' is not supported and always returns 0" )] ;
+FUNCTION PtrLen( lpv AS IntPtr ) AS DWORD
+	RETURN 0
+	
+[ObsoleteAttribute( "'PtrLenWrite()' is not supported and always returns 0" )] ;
+FUNCTION PtrLenWrite( lpv AS IntPtr ) AS DWORD
+	RETURN 0

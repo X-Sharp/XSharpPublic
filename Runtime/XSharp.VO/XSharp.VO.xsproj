@@ -105,7 +105,6 @@
     <Compile Include="Functions\functions_array.prg" />
     <Compile Include="Functions\Functions_Codeblock.prg" />
     <Compile Include="Functions\functions_date.prg" />
-    <Compile Include="Functions\Functions_DynMem.prg" />
     <Compile Include="Functions\Functions_Float.prg" />
     <Compile Include="Functions\functions_internal.prg" />
     <Compile Include="Functions\Functions_Macro.prg" />
@@ -115,6 +114,7 @@
     <Compile Include="Functions\Functions_Meta.prg" />
     <Compile Include="Functions\functions_misc.prg" />
     <Compile Include="Functions\functions_multibyte.prg" />
+    <Compile Include="Functions\functions_Obsolete.prg" />
     <Compile Include="Functions\functions_psz.prg" />
     <Compile Include="Functions\Functions_Registry.prg" />
     <Compile Include="Functions\Functions_Symbol.prg" />

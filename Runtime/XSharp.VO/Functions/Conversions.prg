@@ -7,7 +7,7 @@
 /// <returns>
 /// </returns>
 unsafe FUNCTION Psz2Float(ptrBuff AS PTR,nLen AS INT,nDec AS INT) AS __VOFloat
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN 0   
 
 /// <summary>
@@ -17,6 +17,6 @@ RETURN 0
 /// <returns>
 /// </returns>
 unsafe FUNCTION Psz2Usual(ptrSource AS PTR) AS __Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 RETURN __Usual._NIL   
 

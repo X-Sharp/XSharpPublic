@@ -172,7 +172,7 @@ vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=
                     ;
 
 vostruct			: (Modifiers=votypeModifiers)?
-                      VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? eos
+                      VOSTRUCT (Namespace=nameDot)? Id=identifier? (ALIGN Alignment=INT_CONST)? e=eos
                       (Members+=vostructmember)+
                     ;
 
@@ -182,7 +182,7 @@ vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As
 
 
 vounion				: (Modifiers=votypeModifiers)?
-                      UNION (Namespace=nameDot)? Id=identifier eos
+                      UNION (Namespace=nameDot)? Id=identifier? e=eos
                       (Members+=vostructmember)+
                     ;
 
@@ -190,15 +190,15 @@ votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
                     ;
 
 
-namespace_			: BEGIN NAMESPACE Name=name eos
+namespace_			: BEGIN NAMESPACE Name=name? e=eos
                       (Entities+=entity)*
                       END NAMESPACE allowedgarbage? eos
                     ;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
-                      INTERFACE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
+                      INTERFACE (Namespace=nameDot)? Id=identifier? TypeParameters=typeparameters?
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* eos         // Optional typeparameterconstraints for Generic Class
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos         // Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
                       END INTERFACE allowedgarbage? eos
 					  ;
@@ -207,10 +207,10 @@ interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
                     ;
 
 class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
-                      CLASS (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?		// TypeParameters indicate Generic Class
+                      CLASS (Namespace=nameDot)? Id=identifier? TypeParameters=typeparameters?		// TypeParameters indicate Generic Class
                       (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* eos						// Optional typeparameterconstraints for Generic Class
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos						// Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
                       END CLASS allowedgarbage? eos
 					  ;
@@ -237,9 +237,9 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  C
 // End of Extensions for Generic Classes
 
 structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
-                      STRUCTURE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
+                      STRUCTURE (Namespace=nameDot)? Id=identifier? TypeParameters=typeparameters?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* eos
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
                       END STRUCTURE allowedgarbage? eos
 					  ;
@@ -249,9 +249,9 @@ structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 
 
 delegate_			: (Attributes=attributes)? (Modifiers=delegateModifiers)?
-                      DELEGATE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
+                      DELEGATE (Namespace=nameDot)? Id=identifier? TypeParameters=typeparameters?
                       ParamList=parameterList? (AS Type=datatype)?
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* eos
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                     ;
 
 delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE) )+
@@ -259,7 +259,7 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 
 
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
-                      ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? eos
+                      ENUM (Namespace=nameDot)? Id=identifier? (AS Type=datatype)? e=eos
                       (Members+=enummember)+
                       END ENUM? allowedgarbage? eos
                     ;
@@ -271,10 +271,10 @@ enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=ex
                     ;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-                       EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
+                       EVENT (ExplicitIface=nameDot)? Id=identifier? (AS Type=datatype)?
                        ( end=eos
                         | (LineAccessors += eventLineAccessor)+ end=eos
-                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? allowedgarbage? eos
+                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? allowedgarbage? end=eos
                        )
                     ;
 

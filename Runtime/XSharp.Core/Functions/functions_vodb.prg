@@ -600,17 +600,16 @@ FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,ptr
 //	ENDIF                            
 	RETURN FALSE
 
+
 /// <summary>
 /// </summary>
 /// <param name="ost"></param>
 /// <returns>
 /// </returns>
-//FUNCTION VODBOrderStatus(ost AS OrderStatus) AS LOGIC
-//	LOCAL oWA := RDDHelpers.CWA("VODBOrderStatus") AS IRDD
-//	IF oWA != NULL                  
-//		oSt:
-//	ENDIF
-/// <summary>
+
+FUNCTION VODBOrderStatus(ost AS OrderStatus) AS LOGIC
+	THROW  NotImplementedException{}
+	/// <summary>
 /// Open an index file and add specified orders to the order list in a work area.
 /// </summary>
 /// <param name="cBagName"></param>
@@ -634,7 +633,8 @@ FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
 /// <param name="oOrder"></param>
 /// <returns>
 /// </returns>
-//FUNCTION VODBOrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
+FUNCTION VODBOrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
+	THROW  NotImplementedException{}
 //	LOCAL oWA := RDDHelpers.CWA("VODBOrdListClear") AS IRDD
 //	IF oWA != NULL                  
 //		VAR info := DbOrderInfo{}
@@ -973,9 +973,9 @@ FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS OBJECT,uCobW
 /// <param name="wst"></param>
 /// <returns>
 /// </returns>
-//FUNCTION VODBStatus(wst AS DbWORKAREASTATUS) AS LOGIC
-//	THROW  NotImplementedException{}
-//	RETURN FALSE   
+FUNCTION VODBStatus(wst AS DbWORKAREASTATUS) AS LOGIC
+	THROW  NotImplementedException{}
+	
 
 
 /// <summary>
@@ -1030,12 +1030,14 @@ FUNCTION VODBUnlockAll() AS LOGIC
 /// <param name="lReadOnly"></param>
 /// <returns>
 /// </returns>
+
 FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS RDDLIST,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
+	THROW  NotImplementedException{}
 //	LOCAL oWA := RDDHelpers.CWA("VODBUseArea") AS IRDD
 //	IF oWA != NULL
 //		
 //	ENDIF                            
-	RETURN FALSE
+
 /// <summary>
 /// Remove all records from open files.
 /// </summary>

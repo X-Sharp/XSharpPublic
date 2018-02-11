@@ -271,7 +271,7 @@ using XSharp
 	/// <returns>
 	/// The __Symbol representing the given string or __Psz.
 	/// </returns>
-	FUNCTION As__Symbol(u AS __Usual) AS __Symbol
+	FUNCTION AsSymbol(u AS __Usual) AS __Symbol
 	RETURN __Symbol{(string)u}   
 
 	/// <summary>
@@ -402,7 +402,7 @@ using XSharp
 	/// <returns>
 	/// </returns>
 	FUNCTION ClassName(o AS OBJECT) AS __Symbol
-	RETURN As__Symbol(o:GetType():Name)
+	RETURN AsSymbol(o:GetType():Name)
 
 	/// <summary>
 	/// Get the class hierarchy of an object.
@@ -1063,7 +1063,7 @@ using XSharp
 	/// <param name="uVal"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Is__Array(uVal AS __Usual) AS LOGIC
+	FUNCTION IsArray(uVal AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -1104,7 +1104,7 @@ using XSharp
 	/// <param name="uVal"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Is__VOFloat(uVal AS __Usual) AS LOGIC
+	FUNCTION IsFloat(uVal AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -1229,7 +1229,7 @@ using XSharp
 	/// <param name="uVal"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Is__Symbol(uVal AS __Usual) AS LOGIC
+	FUNCTION IsSymbol(uVal AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -1584,7 +1584,7 @@ using XSharp
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION MyDal__VOFloat() AS VOID
+	FUNCTION MyDalFloat() AS VOID
 		/// THROW NotImplementedException{}
 	RETURN
 
@@ -1592,7 +1592,7 @@ using XSharp
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION MyDal__VOFloatFSTP() AS VOID
+	FUNCTION MyDalFloatFSTP() AS VOID
 		/// THROW NotImplementedException{}
 	RETURN
 

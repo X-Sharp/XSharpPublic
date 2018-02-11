@@ -311,7 +311,7 @@ using XSharp
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Str__VOFloat(flSource AS __VOFloat,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
+	FUNCTION StrFloat(flSource AS __VOFloat,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
 	RETURN __PSZ._NULL_PSZ 
 

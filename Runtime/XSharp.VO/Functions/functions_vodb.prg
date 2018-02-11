@@ -109,23 +109,6 @@ FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS __Usual) AS LOGIC
 RETURN FALSE   
 
 
-/// <summary>
-/// Return the work area number.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION VODBGetSelect() AS INT
-	THROW  NotImplementedException{}
-RETURN 0   
-
-/// <summary>
-/// Move to the last logical record.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION VODBGoBottom() AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
 
 /// <summary>
 /// Move to a record specified by record number.
@@ -138,22 +121,13 @@ FUNCTION VODBGoto(uRecId AS __Usual) AS LOGIC
 RETURN FALSE   
 
 /// <summary>
-/// Move to the first logical record.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION VODBGoTop() AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
-
-/// <summary>
 /// Retrieve information about a work area.
 /// </summary>
 /// <param name="nOrdinal"></param>
 /// <param name="ptrRet"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
+FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF __Usual) AS LOGIC
 	THROW  NotImplementedException{}
 RETURN FALSE   
 
@@ -213,14 +187,6 @@ FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS __Usual,pt
 	THROW  NotImplementedException{}
 RETURN FALSE   
 
-/// <summary>
-/// </summary>
-/// <param name="ost"></param>
-/// <returns>
-/// </returns>
-FUNCTION VODBOrderStatus(ost AS ORDERSTATUS) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
 
 /// <summary>
 /// Open an index file and add specified orders to the order list in a work area.
@@ -384,14 +350,6 @@ FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS __Usual,uCob
 	THROW  NotImplementedException{}
 RETURN FALSE   
 
-/// <summary>
-/// </summary>
-/// <param name="wst"></param>
-/// <returns>
-/// </returns>
-FUNCTION VODBStatus(wst AS DbWORKAREASTATUS) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
 
 /// <summary>
 /// Select a new work area by specifying its alias as a symbol and return the number of the current work area.

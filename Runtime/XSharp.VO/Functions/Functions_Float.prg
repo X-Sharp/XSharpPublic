@@ -71,7 +71,7 @@ FUNCTION FClone(o AS __VOFloat) AS __VOFloat
 /// <param name="nDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION __VOFloatFormat(f AS __VOFloat,nLen AS INT,nDec AS INT) AS __VOFloat
+FUNCTION FloatFormat(f AS __VOFloat,nLen AS INT,nDec AS INT) AS __VOFloat
 	/// THROW NotImplementedException{}
 	RETURN __VoFloat{f:Value, nLen, nDec}  
 
@@ -80,7 +80,7 @@ FUNCTION __VOFloatFormat(f AS __VOFloat,nLen AS INT,nDec AS INT) AS __VOFloat
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION __VOFloatNext(f AS __VOFloat) AS __VOFloat
+FUNCTION FloatNext(f AS __VOFloat) AS __VOFloat
 	/// THROW NotImplementedException{}
 RETURN 0   
 

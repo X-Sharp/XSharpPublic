@@ -628,7 +628,7 @@ CLASS VOProjectDescriptor
 				RETURN
 			END IF
 			
-			oTemplate := StreamReader{"templates\template_XIDE.xiproj" , System.Text.Encoding.Default , TRUE} 
+			oTemplate := StreamReader{Application.StartupPath + "\templates\template_XIDE.xiproj" , System.Text.Encoding.Default , TRUE} 
 			TRY
 				oOutput := StreamWriter{cFileName , FALSE , System.Text.Encoding.Default}
 			CATCH
@@ -645,7 +645,7 @@ CLASS VOProjectDescriptor
 				RETURN
 			END IF
 
-			oTemplate := StreamReader{"templates\template_VS.sln" , TRUE} 
+			oTemplate := StreamReader{Application.StartupPath + "\templates\template_VS.sln" , TRUE} 
 			oOutput := StreamWriter{cFileName , FALSE , System.Text.Encoding.UTF8}
 		END IF
 		
@@ -1169,10 +1169,10 @@ CLASS ApplicationDescriptor
 		ENDIF
 
 		IF lXide
-			oTemplate := StreamReader{"templates\template_XIDE.xiapp" , System.Text.Encoding.Default , TRUE} 
+			oTemplate := StreamReader{Application.StartupPath + "\templates\template_XIDE.xiapp" , System.Text.Encoding.Default , TRUE} 
 			oOutput := StreamWriter{SELF:AppFile_XIDE , FALSE , System.Text.Encoding.Default}
 		ELSE
-			oTemplate := StreamReader{"templates\template_VS.xsproj" , TRUE} 
+			oTemplate := StreamReader{Application.StartupPath + "\templates\template_VS.xsproj" , TRUE} 
 			oOutput := StreamWriter{SELF:AppFile_VS , FALSE , System.Text.Encoding.UTF8}
 		END IF
 		
@@ -1836,9 +1836,17 @@ CLASS EntityDescriptor
 				IF xPorter.Options:ExportOnlyDefines .and. cLine:ToUpper():Contains("_WINNMDATETIMESTRING")
 					EXIT
 				END IF
-				IF SELF:_cName == "FormatMessage"
+				DO CASE
+				CASE SELF:_cName == "FormatMessage"
 					cLine := cLine:Replace("lpBuffer AS PSZ" , "lpBuffer AS PTR")
-				END IF
+				CASE cLine:Contains("_DLL FUNC LoadLibrary(")
+					LOCAL cTemp AS STRING
+					cTemp := cLine
+					cTemp := cTemp:Replace("LoadLibrary(" , "LoadLibraryW(")
+					cTemp := cTemp:Replace("PSZ" , "STRING")
+					cTemp := cTemp:Replace(".LoadLibraryA" , ".LoadLibraryW")
+					oCode:AddLine(cTemp)
+				END CASE
 			CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.RddClasses
 				IF cLine:Contains("MemFree( RDDLIST )") .or. cLine:Contains("MemFree( pJoinList )")
 //					oCode:AddLine("#ifndef __VULCAN__")
@@ -1889,6 +1897,27 @@ CLASS EntityDescriptor
 					IF cLine:Contains("_RegisterExit")
 						cLine := "AppDomain.CurrentDomain:ProcessExit += EventHandler{WinSockExit_Handler}"
 					END IF
+				END CASE
+			CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.GuiClasses
+				DO CASE
+				CASE SELF:Name == "Font" .and. SELF:_cClass == "TextControl" .and. (SELF:Type == EntityType._Access .or. SELF:Type == EntityType._Assign)
+					cLine := "// " + cLine
+				CASE cLine:Contains("@DefWindowProc()")
+					cLine := "// " + cLine
+					oCode:AddLine(e"LOCAL hDll := LoadLibraryW( \"user32.dll\" ) AS PTR")
+					oCode:AddLine(e"wc:lpfnWndProc := GetProcAddress( hDll, String2Psz( \"DefWindowProcA\" ) )")
+					oCode:AddLine(e"FreeLibrary( hDll )")
+				CASE cLine:Contains("OBJECT(_CAST, dwCookie)")
+					cLine := "// " + cLine
+					oCode:AddLine(e"LOCAL gch := System.Runtime.InteropServices.GCHandle.FromIntPtr( (IntPtr) dwCookie ) AS System.Runtime.InteropServices.GCHandle")
+					oCode:AddLine(e"oRTFEdit := (RichEdit) gch:Target")
+				CASE cLine:Contains("oEdit := OleObject")
+					LOCAL nAt := cLine:IndexOf("OleObject") AS INT
+					cLine := cLine:Substring(0 , nAt) + "NULL_OBJECT // " + cLine:Substring(nAt)
+				CASE cLine:Contains("_VOOLERegisterAutomationObject") .or. cLine:Contains("_VOOLEUnRegisterAutomationObject")
+					cLine := "// " + cLine
+				CASE cLine:Contains("Memory(kMemoryType)")
+					cLine := "// " + cLine
 				END CASE
 			END CASE
 
@@ -2105,6 +2134,11 @@ CLASS EntityDescriptor
 			CASE cLineUpper:Contains("_DLL") .and. cLineUpper:Contains("VO28RUN")
 				cLine := "// " + cLine
 				RETURN cLine
+			END CASE
+		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.GuiClasses
+			DO CASE
+			CASE cLine:Contains("_VOOLETranslateMsg(@msg)")
+				cLine := cLine:Replace("_VOOLETranslateMsg(@msg)" , "FALSE // _VOOLETranslateMsg(@msg)")
 			END CASE
 		END CASE
 

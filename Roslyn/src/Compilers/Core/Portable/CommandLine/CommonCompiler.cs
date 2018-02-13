@@ -429,6 +429,11 @@ namespace Microsoft.CodeAnalysis
 
         protected virtual void PrintError(Diagnostic diagnostic, TextWriter consoleOutput)
         {
+#if XSHARP
+            // suppress error messages for generated code
+            if (String.IsNullOrEmpty(diagnostic.Location.GetLineSpan().Path))
+                return;
+#endif
             consoleOutput.WriteLine(DiagnosticFormatter.Format(diagnostic, Culture));
         }
 

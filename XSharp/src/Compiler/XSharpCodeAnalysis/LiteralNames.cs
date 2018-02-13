@@ -77,6 +77,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string StaticLocalInitFieldNameSuffix = "$init";
         internal const string StaticLocalLockFieldNameSuffix = "$lock";
         internal const string EventFieldNamePrefix = "Xs$Event$";
+        internal const string AccessSuffix = "$Access";
+        internal const string AssignSuffix = "$Assign";
 
         internal const string DelegateNameSpace = "Xs$Delegates";
         internal const string PCallPrefix = "$PCall";

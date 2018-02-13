@@ -1515,35 +1515,84 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return string.Compare(id1, id2, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        internal BasePropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop, XSharpParserRuleContext parent)
+        internal MemberDeclarationSyntax GeneratePartialProperyMethod(XP.MethodContext context,  bool Access)
+        {
+            string suffix;
+            TypeSyntax returntype;
+            if (Access)
+            {
+                suffix = XSharpSpecialNames.AccessSuffix;
+                returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+            }
+            else
+            {
+                suffix = XSharpSpecialNames.AssignSuffix;
+                returntype = _voidType;
+            }
+            var name = SyntaxFactory.Identifier(context.Id.GetText() + suffix );
+            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            var mods = TokenList(SyntaxKind.PrivateKeyword);
+            
+            var body = context.StmtBlk.Get<BlockSyntax>();
+            MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
+                 attributeLists: null,
+                 modifiers: mods,
+                 returnType: returntype,
+                 explicitInterfaceSpecifier: null ,
+                 identifier: name,
+                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                 parameterList: parameters,
+                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                 body: body,
+                 expressionBody: null, // TODO: (grammar) expressionBody methods
+                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                 );
+
+            context.Put(m);
+            return m;
+        }
+
+
+        internal MemberDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop,  XSharpParserRuleContext context )
         {
             var getMods = _pool.Allocate();
             var setMods = _pool.Allocate();
+            bool mergePartialDeclarations = (context == null);
             var outerMods = _pool.Allocate();
             int getVisLvl;
             int setVisLvl;
             var AccMet = vop.DupAccess != null ? vop.DupAccess : vop.AccessMethodCtx;
             var AssMet = vop.DupAssign != null ? vop.DupAssign : vop.AssignMethodCtx;
 
-            if (AccMet == null || AssMet == null)
+            if ((AccMet == null || AssMet == null ) && !mergePartialDeclarations)
             {
-                var ent = parent as XP.IEntityContext;
+                // When one of the two is missing and we are in a partial class\
+                // then we generate a normal method. Later from the LanguageParser
+                // we will generate a property and in its body we will call the generated method
+                var ent = context as XP.IEntityContext;
                 if (ent != null && ent.Data.Partial)
                 {
+                    MemberDeclarationSyntax result;
                     ent.Data.PartialProps = true;
                     if (ent is XP.IPartialPropertyContext)
                     {
                         var cls = ent as XP.IPartialPropertyContext;
                         if (cls.PartialProperties == null)
                             cls.PartialProperties = new List<XSharpParser.MethodContext>();
+                                                
                         var met = AccMet != null ? AccMet : AssMet;
                         cls.PartialProperties.Add(met);
                         if (met.CsNode == null)
                             met.CsNode = ((XP.ClsmethodContext)met.Parent).CsNode;
                         ((XP.ClsmethodContext)met.Parent).CsNode = null;
+
                     }
+                    if (AccMet != null)
+                        result = GeneratePartialProperyMethod(AccMet, true);
+                    else
+                        result = GeneratePartialProperyMethod(AssMet, false);
                     GlobalEntities.NeedsProcessing = true;
-                    return null;
+                    return result;
                 }
             }
 
@@ -1734,6 +1783,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
 
                 }
+                if (mergePartialDeclarations)
+                {
+                    // change the body to call the generated access
+                    ExpressionSyntax methodCall;
+                    var name = AccMet.Id.GetText() + XSharpSpecialNames.AccessSuffix;
+                    if (accParamCount == 0)
+                    {
+                        methodCall = GenerateMethodCall(name);
+                    }
+                    else
+                    {
+                        var a = new List<ArgumentSyntax>();
+                        foreach (var p in AccMet.ParamList._Params) 
+                        {
+                            a.Add(MakeArgument(GenerateSimpleName(p.Id.GetText())));
+                        }
+                        methodCall = GenerateMethodCall(name, MakeArgumentList(a.ToArray()));
+                    }
+                    block = MakeBlock(GenerateReturn(methodCall));
+                }
+
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
                         EmptyList<AttributeListSyntax>(), getMods.ToList<SyntaxToken>(),
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
@@ -1780,31 +1850,51 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 BlockSyntax block = null;
                 if (!isInInterfaceOrAbstract)
                 {
-                    var paramName = "value";
-                    if  (assParamCount > 0)
+                    if (mergePartialDeclarations)
                     {
-                        paramName = AssMet.ParamList._Params[0].Id.GetText();
-                    }
-                    else
-                    {
-                        missingParam = true;
-                    }
-                    // when the name of the original parameter is value, then there is no need to change things
-                    if (String.Compare(paramName, "value", StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        block = m.Body;
-                    }
-                    else
-                    {
-                        // else create a local with the original parameter name and an assignment from the new value parameter
-                        var stmts = new List<StatementSyntax>();
-                        var locdecl = GenerateLocalDecl(paramName, _impliedType, GenerateSimpleName("value"));
-                        stmts.Add(locdecl);
-                        foreach (var stmt in m.Body.Statements)
+                        var a = new List<ArgumentSyntax>();
+                        a.Add(MakeArgument(GenerateSimpleName("value")));
+                        if (assParamCount > 1)
                         {
-                            stmts.Add(stmt);
+                            for (int i = 1; i < assParamCount; i++)
+                            {
+                                var paramName = AssMet.ParamList._Params[i].Id.GetText();
+                                a.Add(MakeArgument(GenerateSimpleName(paramName)));
+                            }
                         }
-                        block = MakeBlock(stmts);
+                        string mName = AssMet.Id.GetText()+ XSharpSpecialNames.AssignSuffix   ;
+                        var stmt = GenerateExpressionStatement(GenerateMethodCall(mName, MakeArgumentList(a.ToArray())));
+                        block = MakeBlock(stmt);
+                    }
+                    else
+                    {
+                        var paramName = "value";
+                        if (assParamCount > 0)
+                        {
+                            paramName = AssMet.ParamList._Params[0].Id.GetText();
+
+                        }
+                        else
+                        {
+                            missingParam = true;
+                        }
+                        // when the name of the original parameter is value, then there is no need to change things
+                        if (String.Compare(paramName, "value", StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            block = m.Body;
+                        }
+                        else
+                        {
+                            // else create a local with the original parameter name and an assignment from the new value parameter
+                            var stmts = new List<StatementSyntax>();
+                            var locdecl = GenerateLocalDecl(paramName, _impliedType, GenerateSimpleName("value"));
+                            stmts.Add(locdecl);
+                            foreach (var stmt in m.Body.Statements)
+                            {
+                                stmts.Add(stmt);
+                            }
+                            block = MakeBlock(stmts);
+                        }
                     }
                 }
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,

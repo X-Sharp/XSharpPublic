@@ -19,7 +19,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
-
+using MCT= Microsoft.CodeAnalysis.Text;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public class XSharpParserRuleContext :
@@ -63,7 +63,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (sb.Length > 0)
                 {
                     string text = sb.ToString();
-                    var source = Microsoft.CodeAnalysis.Text.SourceText.From(text);
+                    var source = MCT.SourceText.From(text);
                     var lexer = new Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.Lexer(source, CSharpParseOptions.Default);
                     list = lexer.LexSyntaxLeadingTrivia();
                     lexer.Dispose();
@@ -97,6 +97,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return (ErrorData != null) && ErrorData.Count > 0;
         }
 
+        public Microsoft.CodeAnalysis.Location GetLocation()
+        {
+            var ts = new MCT.TextSpan(this.Start.StartIndex, this.FullWidth);
+            var lp1 = new MCT.LinePosition(this.Start.Line - 1, this.Start.Column );
+            var lp2 = new MCT.LinePosition(this.Stop.Line - 1, this.Stop.Column +this.FullWidth-1);
+            var ls = new MCT.LinePositionSpan(lp1, lp2);
+            return Microsoft.CodeAnalysis.Location.Create(this.SourceFileName, ts, ls);
+        }
         internal void AddError(ParseErrorData e)
         {
             if (ErrorData == null)

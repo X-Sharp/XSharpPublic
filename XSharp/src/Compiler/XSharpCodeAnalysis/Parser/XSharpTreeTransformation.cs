@@ -1515,7 +1515,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return string.Compare(id1, id2, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        internal MemberDeclarationSyntax GeneratePartialProperyMethod(XP.MethodContext context,  bool Access)
+        internal MemberDeclarationSyntax GeneratePartialProperyMethod(XP.MethodContext context,  bool Access, bool Static)
         {
             string suffix;
             TypeSyntax returntype;
@@ -1531,8 +1531,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var name = SyntaxFactory.Identifier(context.Id.GetText() + suffix );
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            var mods = TokenList(SyntaxKind.PrivateKeyword);
-            
+            SyntaxList<SyntaxToken> mods ;
+            if (Static)
+                mods = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
+            else
+                mods = TokenList(SyntaxKind.PrivateKeyword);
+
+
             var body = context.StmtBlk.Get<BlockSyntax>();
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                  attributeLists: null,
@@ -1588,9 +1593,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     }
                     if (AccMet != null)
-                        result = GeneratePartialProperyMethod(AccMet, true);
+                        result = GeneratePartialProperyMethod(AccMet, true, AccMet.Modifiers?.STATIC() != null);
                     else
-                        result = GeneratePartialProperyMethod(AssMet, false);
+                        result = GeneratePartialProperyMethod(AssMet, false, AssMet.Modifiers?.STATIC() != null);
                     GlobalEntities.NeedsProcessing = true;
                     return result;
                 }

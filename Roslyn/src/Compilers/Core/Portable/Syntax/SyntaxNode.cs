@@ -562,6 +562,13 @@ namespace Microsoft.CodeAnalysis
 
                 var tree = this.SyntaxTree;
                 Debug.Assert(tree != null);
+#if XSHARP
+                var csTree = tree as Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree;
+                if (csTree.Generated)
+                {
+                   return this.XNode.GetLocation();
+                }
+#endif
                 return !tree.SupportsLocations ? NoLocation.Singleton : new SourceLocation(this);
             }
         }

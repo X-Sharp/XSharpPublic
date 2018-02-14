@@ -24,7 +24,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis;
-
+using MCT = Microsoft.CodeAnalysis.Text;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser 
@@ -553,6 +553,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         string MappedFileName { get; }
         int MappedLine { get; }
         IToken SourceSymbol { get; }
+        Microsoft.CodeAnalysis.Location GetLocation();
     }
     [Serializable]
     public class XTerminalNodeImpl : Antlr4.Runtime.Tree.TerminalNodeImpl,
@@ -590,6 +591,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
         public override string ToString() { return this.GetText(); }
+
+        public Microsoft.CodeAnalysis.Location GetLocation()
+        {
+            var token = this.Symbol;
+            var ts = new MCT.TextSpan(token.StartIndex, this.FullWidth);
+            var lp1 = new MCT.LinePosition(token.Line - 1, token.Column);
+            var lp2 = new MCT.LinePosition(token.Line - 1, token.Column + this.FullWidth - 1);
+            var ls = new MCT.LinePositionSpan(lp1, lp2);
+            return Microsoft.CodeAnalysis.Location.Create(this.SourceFileName, ts, ls);
+
+        }
     }
 
 

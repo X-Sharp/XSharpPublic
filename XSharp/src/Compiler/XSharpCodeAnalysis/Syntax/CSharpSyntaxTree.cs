@@ -33,6 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     public abstract partial class CSharpSyntaxTree : SyntaxTree
     {
+        internal bool Generated { get; set; }
         private CSharpSyntaxNode GetNode(CSharpSyntaxNode root, int position)
         {
             if (root.XNode != null && position != 0)

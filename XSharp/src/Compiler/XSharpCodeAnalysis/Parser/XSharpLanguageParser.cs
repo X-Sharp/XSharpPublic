@@ -783,8 +783,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     members,
                                     eof);
                 result.XGenerated = true;
-                var tree = CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed(), parseoptions);
-                
+                var tree = (CSharpSyntaxTree) CSharpSyntaxTree.Create((Syntax.CompilationUnitSyntax) result.CreateRed(), parseoptions);
+                tree.Generated = true;
                 _pool.Free(members);
                 _pool.Free(usingslist);
                 _pool.Free(clsmembers);

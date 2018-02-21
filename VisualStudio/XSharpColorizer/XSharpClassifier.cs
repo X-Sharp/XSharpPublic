@@ -57,7 +57,6 @@ namespace XSharpColorizer
         private bool _hasParserErrors = false;
         private bool _first = true;
         private XSharpParser.SourceContext _tree = null;
-        private ITokenStream _tokens = null;
         #endregion
 
         public ITextSnapshot Snapshot => _sourceWalker.Snapshot;
@@ -110,11 +109,12 @@ namespace XSharpColorizer
             // Run a synchronous scan to set the initial buffer colors
             var snapshot = buffer.CurrentSnapshot;
             _sourceWalker = new SourceWalker(file, snapshot);
-            ClassifyBuffer(snapshot);
-            BuildColorClassifications(_tokens, snapshot);
+            ITokenStream tokens = ClassifyBuffer(snapshot); 
+            BuildColorClassifications(tokens, snapshot);
             _first = false;
             // start the model builder to do build a code model and the regions asynchronously
             _bwBuildModel.RunWorkerAsync(snapshot);
+
         }
         #region Lexer Methods
 
@@ -127,23 +127,25 @@ namespace XSharpColorizer
             }
         }
 
-        private void ClassifyBuffer(ITextSnapshot snapshot)
+        private ITokenStream ClassifyBuffer(ITextSnapshot snapshot)
         {
             _sourceWalker.Snapshot = snapshot;
             Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            ITokenStream tokens;
             if (_first)
             {
-                _tokens = _sourceWalker.Lex();
+                tokens = _sourceWalker.Lex();
                 _tree = null;
             }
             else
             {
                 _tree = _sourceWalker.Parse();
-                _tokens = _sourceWalker.TokenStream;
+                tokens = _sourceWalker.TokenStream;
             }
             _hasParserErrors = _sourceWalker.HasParseErrors;
-            BuildColorClassifications(_tokens, snapshot);
+            BuildColorClassifications(tokens, snapshot);
             Debug("Ending classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+            return tokens;
         }
 
         private void DoClassify(object sender, DoWorkEventArgs e)
@@ -218,21 +220,22 @@ namespace XSharpColorizer
                 // do we need to create a new tree 
                 // this happens the first time in the buffer only
                 var snapshot = e.Argument as ITextSnapshot;
+                ITokenStream tokens = null;
                 if (_tree == null || _sourceWalker.Snapshot.Version != snapshot.Version)
                 {
                     Debug("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                     _sourceWalker.Snapshot = snapshot;
                     _tree = _sourceWalker.Parse();
                     Debug("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                    _tokens = _sourceWalker.TokenStream;
                     _hasParserErrors = _sourceWalker.HasParseErrors;
                 }
-                if (_tree != null)
+                tokens = _sourceWalker.TokenStream;
+                if (_tree != null && tokens != null)
                 {
                     Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                     _sourceWalker.BuildModel(_tree, true);
                     var regionTags = BuildRegionTags(_tree, snapshot, xsharpRegionStart, xsharpRegionStop);
-                    BuildColorClassifications(_tokens, snapshot, regionTags);
+                    BuildColorClassifications(tokens, snapshot, regionTags);
                     DoRepaintRegions();
                     Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 }

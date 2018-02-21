@@ -191,19 +191,21 @@ namespace XSharpModel
             DateTime dt = System.IO.File.GetLastWriteTime(file.FullPath);
             if (dt > file.LastWritten)
             {
-                SourceWalker sw = new SourceWalker(file);
-                //
-                try
+                using (SourceWalker sw = new SourceWalker(file))
                 {
-                    var xTree = sw.Parse();
-                    sw.BuildModel(xTree, false);
-                    file.LastWritten= dt;
                     //
-                }
-                catch (Exception)
-                {
-                    // Push Exception away...
-                    ;
+                    try
+                    {
+                        var xTree = sw.Parse();
+                        sw.BuildModel(xTree, false);
+                        file.LastWritten = dt;
+                        //
+                    }
+                    catch (Exception)
+                    {
+                        // Push Exception away...
+                        ;
+                    }
                 }
             }
         }

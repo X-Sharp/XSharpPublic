@@ -49,9 +49,11 @@ namespace XSharpModel
 
         public void GetLocals(string currentBuffer)
         {
-            var xsWalker = new SourceWalker(this, currentBuffer);
-            var xTree = xsWalker.Parse();
-            xsWalker.BuildModel(xTree, true);
+            using (var xsWalker = new SourceWalker(this, currentBuffer))
+            {
+                var xTree = xsWalker.Parse();
+                xsWalker.BuildModel(xTree, true);
+            }
         }
 
 
@@ -195,6 +197,7 @@ namespace XSharpModel
                 _usings.AddRange(staticusings);
             }
             System.Diagnostics.Trace.WriteLine("<<-- XFile.SetTypes()");
+            return;
         }
 
         public IImmutableDictionary<string, XType> TypeList
@@ -257,16 +260,18 @@ namespace XSharpModel
                 if ( !Parsed )
                 {
                     //
-                    SourceWalker sw = new SourceWalker(this);
-                    try
+                    using (SourceWalker sw = new SourceWalker(this))
                     {
-                        var xTree = sw.Parse();
-                        sw.BuildModel(xTree, false);
-                        //
-                    }
-                    catch (Exception e)
-                    {
-                        Support.Debug("XFile.WaitParsing"+e.Message);
+                        try
+                        {
+                            var xTree = sw.Parse();
+                            sw.BuildModel(xTree, false);
+                            //
+                        }
+                        catch (Exception e)
+                        {
+                            Support.Debug("XFile.WaitParsing" + e.Message);
+                        }
                     }
                 }
             }

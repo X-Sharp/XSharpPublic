@@ -131,6 +131,10 @@ namespace XSharpModel
 
         public void ClearAssemblyReferences()
         {
+            foreach (var asm in _AssemblyReferences)
+            {
+                asm.RemoveProject(this);
+            }
             _AssemblyReferences.Clear();
         }
 
@@ -138,18 +142,31 @@ namespace XSharpModel
         {
             var assemblyInfo = SystemTypeController.LoadAssembly(reference);
             _AssemblyReferences.Add(assemblyInfo);
+            assemblyInfo.AddProject(this);
         }
         public void AddAssemblyReference(string path)
         {
             var assemblyInfo = SystemTypeController.LoadAssembly(path);
             _AssemblyReferences.Add(assemblyInfo);
+            assemblyInfo.AddProject(this);
         }
         public void UpdateAssemblyReference(string fileName)
         {
             var assemblyInfo = SystemTypeController.LoadAssembly(fileName);
-            assemblyInfo.UpdateAssembly();
+            //assemblyInfo.UpdateAssembly();
+            assemblyInfo.AddProject(this);
         }
 
+
+        public void UnLoad()
+        {
+            Loaded = false;
+            foreach (var asm in _AssemblyReferences)
+            {
+                asm.RemoveProject(this);
+            }
+            _AssemblyReferences.Clear();
+        }
 
         public void RemoveAssemblyReference(string fileName)
         {

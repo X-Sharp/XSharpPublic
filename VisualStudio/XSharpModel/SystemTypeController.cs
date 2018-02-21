@@ -86,10 +86,10 @@ namespace XSharpModel
             {
                 mscorlib = assembly.Assembly;
             }
-            if (lastWriteTime != assembly.Modified)
-            {
-                assembly.UpdateAssembly(true);
-            }
+            //if (lastWriteTime != assembly.Modified)
+            //{
+            //    assembly.UpdateAssembly(true);
+            //}
             if (Path.GetFileName(cFileName).ToLower() == "system.dll")
             {
                 var mscorlib = Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll");
@@ -245,5 +245,28 @@ namespace XSharpModel
             assemblies.Clear();
         }
 
+        public static void UnloadUnusedAssemblies()
+        {
+            var unused = new List<string>();
+            // collect list of assemblies which are no longer in use
+            foreach (var asm in assemblies)
+            {
+                if (!asm.Value.HasProjects)
+                {
+                    unused.Add(asm.Key);
+                }
+            }
+            foreach (var key in unused)
+            {
+                AssemblyInfo info;
+                assemblies.TryRemove(key, out info);
+            }
+            // when no assemblies left, then unload mscorlib
+            if (assemblies.Count == 0)
+            {
+                mscorlib = null;
+            }
+            GC.Collect();
+        }
     }
 }

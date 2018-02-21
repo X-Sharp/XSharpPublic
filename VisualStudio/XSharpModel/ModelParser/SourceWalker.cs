@@ -19,7 +19,7 @@ using LanguageService.CodeAnalysis;
 
 namespace XSharpModel
 {
-    public class SourceWalker
+    public class SourceWalker : IDisposable
     {
         private string _source;
         private ITextSnapshot _snapshot;
@@ -220,5 +220,26 @@ namespace XSharpModel
                 }
 			}
 		}
+
+        #region IDisposable Support
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _errors = null;
+                _file = null;
+                _prjNode = null;
+                _tree = null;
+                _tokenStream = null;
+                _snapshot = null;
+            }
+
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

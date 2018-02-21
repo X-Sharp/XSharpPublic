@@ -1210,7 +1210,8 @@ namespace XSharp.Project
 
         public override void RemoveURL(String url)
         {
-            //
+            if (_closing)
+                return;
             //
             // We should remove the external projects entries
             if (IsProjectFile(url))
@@ -1753,16 +1754,20 @@ namespace XSharp.Project
                 return xoptions.ParseOptions;
             }
         }
+        bool _closing = false;
         public override int Close()
         {
             XSharpModel.XSolution.Remove(projectModel);
+            _closing = true;
             var res = base.Close();
+
             if (logger != null)
             {
                 logger.Clear();
             }
             ErrorListManager.RemoveProject(this);
             _errorListManager = null;
+            URLNodes.Clear();
             return res;
         }
 

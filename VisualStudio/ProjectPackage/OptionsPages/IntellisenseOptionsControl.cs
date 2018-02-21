@@ -21,6 +21,7 @@ namespace XSharp.Project.OptionsPages
         internal void Initialize()
         {
             chkCompletionListtabs.Checked = optionsPage.CompletionListTabs;
+            chkDotAsUniversalSelector.Checked = optionsPage.UseDotAsUniversalSelector;
             grpCase.Enabled = true;
             switch (optionsPage.KeywordCase)
             {
@@ -82,6 +83,11 @@ namespace XSharp.Project.OptionsPages
         private void chkAlignMethod_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.AlignMethod = chkAlignMethod.Checked;
+        }
+
+        private void chkDotAsUniversalSelector_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.UseDotAsUniversalSelector = chkDotAsUniversalSelector.Checked;
         }
     }
 }

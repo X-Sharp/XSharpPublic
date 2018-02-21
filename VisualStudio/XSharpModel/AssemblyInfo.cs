@@ -16,6 +16,7 @@ namespace XSharpModel
         /// </summary>
         private IDictionary<string, Type> _aTypes;
         private IList<MethodInfo> _aExtensions;
+        private IList<XProject> _projects;
 
         private string _FileName;
         private DateTime _Modified;
@@ -96,7 +97,6 @@ namespace XSharpModel
 
         public AssemblyInfo()
         {
-            // A
             this._aTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             this._aExtensions = new List<MethodInfo>();
             this._NameSpaces = new Hashtable(StringComparer.OrdinalIgnoreCase);
@@ -104,7 +104,7 @@ namespace XSharpModel
             this._ImplicitNamespaces = new List<string>();
             this._ZeroNamespace = new NameSpaceContainer("_");
             this._Assembly = null;
-
+            this._projects = new List<XProject>();
         }
         public AssemblyInfo (VSLangProj.Reference reference) : this()
         {
@@ -115,7 +115,7 @@ namespace XSharpModel
             this.FileName = _cFileName;
             this.Modified = _dModified;
 
-            this.UpdateAssembly();
+            //this.UpdateAssembly();
         }
 
 
@@ -159,7 +159,6 @@ namespace XSharpModel
             {
             }
             return null;
-
         }
 
         internal void LoadAssembly()
@@ -484,5 +483,20 @@ namespace XSharpModel
                 this.Types = new SortedList<string, TypeTypes>();
             }
         }
+        public void AddProject(XProject project)
+        {
+            if (! _projects.Contains(project))
+                _projects.Add(project);
+        }
+
+        public void RemoveProject(XProject project)
+        {
+            if (_projects.Contains(project))
+            {
+                _projects.Remove(project);
+            }
+        }
+        public bool HasProjects => _projects.Count > 0;
+
     }
 }

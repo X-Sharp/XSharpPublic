@@ -183,12 +183,19 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return tokens;
         }
+        public bool HasPragmas { get; private set; }
 
-        public bool HasPreprocessorTokens => _hasPPTokens;
+        public bool HasPreprocessorTokens { get; private set; }
+        public bool HasPPDefines { get; private set; }
+        public bool HasPPIfdefs { get; private set; }
+        public bool HasPPIncludes { get; private set; }
+        public bool HasPPRegions { get; private set; }
+        public bool HasPPMessages { get; private set; }
+        public bool HasPPUDCs { get; private set; }
+        public bool MustBeProcessed => HasPPMessages || HasPPUDCs || HasPPIncludes;
         bool _inDottedIdentifier = false;     
         bool _inPp = false;
         bool _hasEos = true;
-        bool _hasPPTokens = false;
         private bool _isValidIdentifier(IToken t)
         {
             switch (t.Channel)
@@ -873,7 +880,39 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     t.Type = symtype;
                     _inPp = true;
-                    _hasPPTokens = true;
+                    HasPreprocessorTokens = true;
+                    switch (symtype)
+                    {
+                        case PP_COMMAND:
+                        case PP_TRANSLATE:
+                            HasPPUDCs= true;
+                            break;
+                        case PP_IFDEF:
+                        case PP_IFNDEF:
+                        case PP_ELSE:
+                        case PP_ENDIF:
+                            HasPPIfdefs = true;
+                            break;
+                        case PP_REGION:
+                        case PP_ENDREGION:
+                            HasPPRegions = true;
+                            break;
+                        case PP_ERROR:
+                        case PP_WARNING:
+                            HasPPMessages = true;
+                            break;
+                        case PP_INCLUDE:
+                            HasPPIncludes = true;
+                            break;
+                        case PP_DEFINE:
+                        case PP_UNDEF:
+                            HasPPDefines = true;
+                            break;
+                        case PP_LINE:
+                        default:
+                            break;
+
+                    }
                 }
                 else if (_isScript)
                 {
@@ -1526,3 +1565,4 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
     }
 }
+

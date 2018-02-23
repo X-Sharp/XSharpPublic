@@ -80,14 +80,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 return file;
             }
-            static internal PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, ref bool newFile)
+            static internal PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
             {
                 PPIncludeFile file;
                 cache.TryGetValue(fileName, out file);
                 if (file == null)
                 {
                     newFile = true;
-                    file = new PPIncludeFile(fileName, tokens, text);
+                    file = new PPIncludeFile(fileName, tokens, text, mustBeProcessed);
                     if (!cache.TryAdd(fileName, file))
                     {
                         PPIncludeFile oldFile;
@@ -109,19 +109,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal ImmutableArray<IToken> Tokens { get; private set; }
             internal SourceText Text { get; private set; }
             internal DateTime LastUsed { get; set; }
+            internal bool MustBeProcessed { get; set; }
 
-            internal PPIncludeFile(string name, IList<IToken> tokens, SourceText text)
+            internal PPIncludeFile(string name, IList<IToken> tokens, SourceText text, bool mustBeProcessed)
             {
                 this.FileName = name;
                 this.Text = text;
                 this.LastUsed = DateTime.Now;
                 this.LastWritten = FileUtilities.GetFileTimeStamp(this.FileName);
                 this.Tokens = tokens.ToImmutableArray();
+                this.MustBeProcessed = mustBeProcessed;
 
             }
             internal PPIncludeFile Clone()
             {
-                return new PPIncludeFile(FileName, Tokens, Text); ;
+                return new PPIncludeFile(FileName, Tokens, Text, MustBeProcessed); ;
             }
 
         }
@@ -282,7 +284,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // and automatically include it.
                 // read XsharpDefs.xh
                 StdDefs = "xSharpDefs.xh";
-                ProcessIncludeFile(null, StdDefs, true);
+                ProcessIncludeFile(StdDefs, null);
             }
         }
 
@@ -431,7 +433,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal void DebugOutput(string format, params object[] objects)
         {
-            _options.ConsoleOutput.WriteLine("PP: " + format, objects);
+            if (_options.ConsoleOutput != null)
+            {
+                _options.ConsoleOutput.WriteLine("PP: " + format, objects);
+            }
         }
 
 
@@ -856,12 +861,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return ex;
         }
 
-        private bool ProcessIncludeFile(XSharpToken ln, string fn, bool StdDefine = false)
+        private bool ProcessIncludeFile(string includeFileName, XSharpToken fileNameToken)
         {
             string nfp = null;
             SourceText text = null;
             Exception fileReadException = null;
-            PPIncludeFile cachedFile = null;
+            PPIncludeFile includeFile = null;
             List<String> dirs = new List<String>();
             dirs.Add(PathUtilities.GetDirectoryName(_fileName));
             foreach (var p in includeDirs)
@@ -870,19 +875,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (_options.Verbose)
             {
-                DebugOutput("Process include file: {0}", fn);
+                DebugOutput("Process include file: {0}", includeFileName);
             }
             foreach (var p in dirs)
             {
-                bool rooted = Path.IsPathRooted(fn);
+                bool rooted = Path.IsPathRooted(includeFileName);
                 string fp;
                 try
                 {
-                    fp = rooted || p == null ? fn : Path.Combine(p, fn);
+                    fp = rooted || p == null ? includeFileName : Path.Combine(p, includeFileName);
                 }
                 catch (Exception e)
                 {
-                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + fn + " " + e.Message));
+                    _parseErrors.Add(new ParseErrorData(fileNameToken, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + includeFileName + " " + e.Message));
                     continue;
                 }
                 if (File.Exists(fp))
@@ -891,11 +896,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         DebugOutput("Found include file on disk: {0}", fp);
                     }
-                    cachedFile = PPIncludeFile.Get(fp);
-                    if (cachedFile != null)
+                    includeFile = PPIncludeFile.Get(fp);
+                    if (includeFile != null)
                     {
                         nfp = fp;
-                        text = cachedFile.Text;
+                        text = includeFile.Text;
                         if (_options.Verbose)
                         {
                             DebugOutput("Include file retrieved from cache: {0}", fp);
@@ -919,11 +924,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (fileReadException != null)
                 {
-                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error Reading include file '" + fn + "': " + fileReadException.Message));
+                    _parseErrors.Add(new ParseErrorData(fileNameToken, ErrorCode.ERR_PreProcessorError, "Error Reading include file '" + includeFileName + "': " + fileReadException.Message));
                 }
                 else
                 {
-                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + fn + "'"));
+                    _parseErrors.Add(new ParseErrorData(fileNameToken, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + includeFileName + "'"));
                 }
 
                 return false;
@@ -938,18 +943,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.ShowIncludes )
             {
                 var fname = PathUtilities.GetFileName(this.SourceName);
-                if (ln != null)
+                if (fileNameToken != null)
                 {
-                    fname = PathUtilities.GetFileName(ln.InputStream.SourceName);
-                    DebugOutput("{0} line {1} Include {2}", fname, ln.Line, nfp);
+                    fname = PathUtilities.GetFileName(fileNameToken.InputStream.SourceName);
+                    DebugOutput("{0} line {1} Include {2}", fname, fileNameToken.Line, nfp);
                 }
                 else
                 {
+                    // Most likely the Standard Header file. Report for Line 0
                     DebugOutput("{0} line {1} Include {2}", fname, 0, nfp);
                 }
             }
             
-            if (cachedFile == null)
+            if (includeFile == null)
             {
                 // we have nfp and text with the file contents
                 // now parse the stuff and insert in the cache
@@ -969,7 +975,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     DebugOutput("Lexed include file {0} milliseconds", (endTime - startTime).Milliseconds);
                 }
                 bool newFile = false;
-                cachedFile = PPIncludeFile.Add(nfp, ct.GetTokens(), text, ref newFile);
+                includeFile = PPIncludeFile.Add(nfp, ct.GetTokens(), text, lexer.MustBeProcessed, ref newFile);
                 if (_options.Verbose)
                 {
                     if (newFile)
@@ -983,16 +989,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
             }
+            nfp = includeFile.FileName;
+            if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed )
+            {
+                var clone = includeFile.Tokens.CloneArray();
+                var tokenSource = new ListTokenSource(clone, nfp);
+                var tokenStream = new BufferedTokenStream(tokenSource);
+                tokenStream.Fill();
+                InsertStream(nfp, tokenStream);
+            }
             else
             {
-                nfp = cachedFile.FileName;
-                text = cachedFile.Text;
+                if (_options.Verbose)
+                {
+                    DebugOutput("Skipping Include File in Parse Mode {0} line {1}:", nfp, fileNameToken.Line);
+                }
             }
-            var clone = cachedFile.Tokens.CloneArray();
-            var tokenSource = new ListTokenSource(clone, nfp);
-            var tokenStream = new BufferedTokenStream(tokenSource);
-            tokenStream.Fill();
-            InsertStream(nfp, tokenStream);
             return true;
 
         }
@@ -1249,16 +1261,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    var ln = line[1];
-                    if (ln.Type == XSharpLexer.STRING_CONST)
+                    var token = line[1];
+                    if (token.Type == XSharpLexer.STRING_CONST)
                     {
-                        string fn = ln.Text.Substring(1, ln.Text.Length - 2);
-                        ProcessIncludeFile(ln, fn);
+                        string fileName = token.Text.Substring(1, token.Text.Length - 2);
+                        ProcessIncludeFile(fileName, token);
 
                     }
                     else
                     {
-                        _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
+                        _parseErrors.Add(new ParseErrorData(token, ErrorCode.ERR_PreProcessorError, "String literal expected"));
                     }
                 }
             }

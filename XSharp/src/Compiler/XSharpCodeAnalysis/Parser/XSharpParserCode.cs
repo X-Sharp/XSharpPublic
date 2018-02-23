@@ -47,12 +47,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             get { return _namedArgs; }
             set { _namedArgs = value; }
         }
-        bool _allowGarbage;
-        public bool AllowGarbageAfterEnd
-        {
-            get { return _allowGarbage; }
-            set { _allowGarbage = value; }
-        }
+
         bool _isScript;
         public bool IsScript
         {

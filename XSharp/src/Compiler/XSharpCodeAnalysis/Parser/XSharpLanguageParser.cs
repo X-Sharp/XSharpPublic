@@ -150,28 +150,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parseErrors = ParseErrorData.NewBag();
             // Check for #pragma in the lexerTokenStream
             _lexerTokenStream.Fill();
-            var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size-1, XSharpLexer.PRAGMACHANNEL);
-            if (pragmaTokens?.Count > 0)
+            if (lexer.HasPragmas)
             {
+                var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
                 foreach (var pragmaToken in pragmaTokens)
                 {
                     parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
                 }
             }
-            pragmaTokens = null;
             XSharpPreprocessor pp = null;
             BufferedTokenStream ppStream = null;
             if (! _options.MacroScript)
             {
                 pp = new XSharpPreprocessor(lexer,_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             }
-            // Macros do not need the preprocessor
-            bool mustPreprocess = !_options.MacroScript;
-            if (!lexer.HasPreprocessorTokens && _options.NoStdDef)
+            
+            #region Determine if we really need the preprocessor
+            bool mustPreprocess = true; 
+            if (_options.MacroScript)
             {
-                // also no preprocessor when the lexer has no preprocessor tokens and NoStdDef is enabled
                 mustPreprocess = false;
             }
+             else
+            {
+                if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
+                {
+                    if (_options.ParseLevel == ParseLevel.Complete)
+                    {
+                        mustPreprocess = true;
+                    }
+                    else
+                    {
+                        // no need to pre process in partial compilation 
+                        // if lexer does not contain UDCs, Messages or Includes
+                        mustPreprocess = lexer.MustBeProcessed;
+                    }
+                }
+                else
+                {
+                    mustPreprocess = false;
+
+                }
+            }
+            #endregion
             if (mustPreprocess)
             {
                 var ppTokens = pp.PreProcess();
@@ -206,7 +227,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //parser.Interpreter.enable_global_context_dfa = false;    // default = false
             //parser.Interpreter.tail_call_preserves_sll = true;     // default = true
             parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
-            parser.AllowGarbageAfterEnd = _options.Dialect.AllowGarbage();
             parser.AllowNamedArgs = _options.Dialect.AllowNamedArgs();
             parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
 

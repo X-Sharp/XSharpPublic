@@ -13,7 +13,7 @@ FUNCTION Test(l AS LOGIC) AS LOGIC
 		RETURN l
 	CATCH e AS Exception
 		RETURN FALSE
-	END IF
+	END TRY
 //RETURN FALSE // this allow it to compile, but give a (correct) unreachable code warning
 
 

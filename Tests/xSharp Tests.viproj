@@ -51,8 +51,8 @@ ApplicationGroup = C400-C449,C8A205F1-7289-4E5A-A714-71E5A29AFFCE,715D7617-320E-
 ApplicationGroup = C450-C499,6E592304-313A-42E3-8A1D-C66384522531,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C300-C349,DBAFC850-8A63-413C-9C9F-0450290A3721,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C500-C549,A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C550-C599,EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB,A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C550-C599,EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 
@@ -38619,7 +38619,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = External , %AppPath%\Prg\C386.rc
@@ -43500,7 +43500,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = Core
 Folder = %ProjectPath%\Applications\C432\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -46037,7 +46037,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -49766,7 +49766,7 @@ ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C493 - VO compatibility isssues with VOSTRUCTs Resources]
 [C493 - VO compatibility isssues with VOSTRUCTs Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C493.rc
@@ -54685,7 +54685,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
@@ -60242,6 +60242,106 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C593 - Error messages without file/line info with PARTIAL classes and ACCESS/ASSIGNs
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION R594 *************
+Application = R594
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\R594\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R594
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = D974705F-451A-42AF-9C94-5FB034B621F2
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R594 FileGroups]
+[R594 Files]
+File = %AppPath%\Prg\Start.prg
+FileGUID = 27B8E080-8363-4C41-8566-C726A6B21CAB
+FileType = Code
+[R594 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[R594 Resources]
+[R594 Native Resources]
+[R594 License files]
+[R594 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=1
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R594 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = R594
 [EndApplications]
 
 [Configurations]

@@ -39,7 +39,7 @@ TRY
 CATCH 
     Console.WriteLine("oTestClassObjectFromArray:cb1 is NULL")
     THROW Exception{"oTestClassObjectFromArray:cb1 is NULL"}
-END CATCH
+END TRY
 
 
 //Console.WriteLine("Press any key to continue...")

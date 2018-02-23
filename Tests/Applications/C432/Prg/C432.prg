@@ -10,12 +10,19 @@ END WHILE
 DO CASE
 CASE TRUE
 ? "do print me"
-END DO
+END //DO
 
 LOCAL n AS INT
-FOR n := 1 UPTO 10
+FOR n := 1 UPTO 11
 	? n
-NEXT n
+	IF n > 10
+		? "> 10"
+	ENDIF //n > 10
+	
+NEXT //n  
+FOREACH IMPLIED x IN <INT>{1,2}
+	? x 
+NEXT //x
 
 RETURN
 

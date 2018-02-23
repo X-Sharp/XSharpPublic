@@ -113,6 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 namespace Microsoft.CodeAnalysis
 {
+    
     public abstract partial class SyntaxNode
     {
         internal IXParseTree XNode { get { return ((CSharp.CSharpSyntaxNode)this).CsGreen.XNode ?? ((CSharp.CSharpSyntaxNode)this).Parent?.XNode; } }

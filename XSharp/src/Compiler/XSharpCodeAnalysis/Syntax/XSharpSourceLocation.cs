@@ -88,11 +88,5 @@ namespace Microsoft.CodeAnalysis
         {
             return Hash.Combine(_lineSpan.GetHashCode(), _sourceSpan.GetHashCode());
         }
-
-        protected override string GetDebuggerDisplay()
-        {
-            return base.GetDebuggerDisplay() + "\"" + _context.ToString()+"\"";
-        }
-
     }
 }

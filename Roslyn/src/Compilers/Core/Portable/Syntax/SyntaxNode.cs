@@ -564,7 +564,7 @@ namespace Microsoft.CodeAnalysis
                 Debug.Assert(tree != null);
 #if XSHARP
                 var csTree = tree as Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree;
-                if (csTree.Generated)
+                if (csTree.Generated && this.XNode != null)
                 {
                    return this.XNode.GetLocation();
                 }

@@ -228,6 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
             attributes.Add(_syntaxFactory.Attribute(
                 name: GenerateQualifiedName(_compilerVersionType),argumentList: MakeAttributeArgumentList(arguments)));
+
             var target = _syntaxFactory.AttributeTargetSpecifier(SyntaxFactory.Identifier("assembly"), SyntaxFactory.MakeToken(SyntaxKind.ColonToken));
             var attrlist = MakeAttributeList(
                 target,
@@ -362,7 +363,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
-            appExit.XNode = CurrentEntity;
+            //appExit.XNode = CurrentEntity;
+            appExit.XGenerated = true;
             return appExit;
         }
 
@@ -404,7 +406,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax rhs = MakeTypeOf(GenerateQualifiedName(GlobalClassName));
 
             rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
-            stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
+            stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs),true));
             // rest of the statements is generated in the LocalRewriter with a check for the existence of the fields in VulcanRT.
             // in Vulcan.Runtime.State
             var body = MakeBlock(stmts);
@@ -430,10 +432,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var tryStmt = _syntaxFactory.TryStatement(
                     SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                     body, catchClause, null);
-
+            tryStmt.XGenerated = true;
             stmts.Clear();
             stmts.Add(tryStmt);
             body = MakeBlock(stmts);
+            body.XGenerated = true;
             // Body is ready now. Now create the method as a private method
             var modifiers = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
 
@@ -442,7 +445,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
-            appInit.XNode = CurrentEntity;
+            appInit.XGenerated = true;
+            //appInit.XNode = CurrentEntity;
             return appInit;
 
         }
@@ -478,7 +482,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit)));
+                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit),true));
             }
             if (context.Type != null && context.Type.GetText().ToLower() != "void")
             {
@@ -503,7 +507,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         needsReturnValue = true;
                         var assignStmt = MakeSimpleAssignment(GenerateSimpleName(XSharpSpecialNames.ReturnName), retExpr);
-                        newbody.Add(GenerateExpressionStatement(assignStmt));
+                        newbody.Add(GenerateExpressionStatement(assignStmt, true));
                     }
                 }
                 else
@@ -568,7 +572,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 else
                                     clearExpr = MakeDefault(type);
                                 var expr = MakeSimpleAssignment(GenerateSimpleName(name), clearExpr);
-                                endbody.Add(GenerateExpressionStatement(expr));
+                                endbody.Add(GenerateExpressionStatement(expr, true));
                             }
                         }
                     }
@@ -578,14 +582,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (trystmt != null)
             {
                 trystmt = trystmt.Update(trystmt.TryKeyword, MakeBlock(newbody), trystmt.Catches, trystmt.Finally);
+                trystmt.XGenerated = true;
                 newbody.Clear();
                 newbody.Add(pszdecl);
-                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit)));
+                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit), true));
                 newbody.Add(trystmt);
             }
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit)));
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect)));
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait)));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit), true));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect), true));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait), true));
             if (needsExtraReturn)
             {
                 if (needsReturnValue)
@@ -1763,14 +1768,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr?.Get<ExpressionSyntax>();
             // when / vo9 is enabled then add missing Expression
             var ent = CurrentEntity;
+            ErrorCode errcode = (ErrorCode)0;
+            
             if (ent != null)
             {
+                // INIT and AXIT methods can not return values
+                // Allow RETURN VOID
                 if (context.Void != null && !ent.Data.MustBeVoid)
                 {
                     expr = GenerateLiteral(0);
+                    errcode = ErrorCode.WRN_MissingReturnValue;
                 }
                 if (expr == null && _options.VOAllowMissingReturns && !ent.Data.MustBeVoid)
                 {
+                    errcode = ErrorCode.WRN_MissingReturnValue;
                     if (ent is XP.MethodContext || ent is XP.FunctionContext || ent is XP.PropertyAccessorContext)
                     {
                         TypeSyntax dataType;
@@ -1793,11 +1804,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             // calculate a new return value with a warning
                             expr = GetReturnExpression(dataType);
-                            if (expr != null)
-                            {
-                                expr = expr.WithAdditionalDiagnostics(
-                                                    new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
-                            }
                         }
                     }
                 }
@@ -1814,14 +1820,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         ((XP.PrimaryExpressionContext)context.Expr).Expr is XP.SelfExpressionContext)
                     {
                         // allow return SELF and ignore SELF
-                        expr = null;
                         context.Put(GenerateReturn(null));
                     }
                     else
                     {
-                        expr = expr.WithAdditionalDiagnostics(
-                                            new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
-                        if (context.Expr.GetLiteralToken() == null) // nor  literal so we must evaluate the expression
+                        errcode = ErrorCode.WRN_NoReturnValueAllowed;
+                        if (context.Expr.GetLiteralToken() == null) // no  literal so we must evaluate the expression
                         {
                             var declstmt = GenerateLocalDecl(XSharpSpecialNames.ReturnName, _impliedType, expr);
                             var retstmt = GenerateReturn(null);
@@ -1831,16 +1835,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                         {
                             var stmt = GenerateReturn(null);
-                            stmt = stmt.WithAdditionalDiagnostics(
-                                           new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
                             context.Put(stmt);
                         }
                     }
                 }
                 else
                 {
-                    context.Put(GenerateReturn(expr));
+                    var stmt = GenerateReturn(expr);
+                    context.Put(stmt);
                 }
+                if ((int)errcode != 0)
+                {
+                    var stmt = context.CsNode as StatementSyntax;
+                    stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(errcode));
+                    context.Put(stmt);
+                }
+
             }
 
         }
@@ -2802,6 +2812,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterMethod([NotNull] XP.MethodContext context)
         {
             base.EnterMethod(context);
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type);
             if (context.T.Token.Type != XP.METHOD)
             {
                 context.Data.HasClipperCallingConvention = false;
@@ -2809,7 +2820,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type);
                 if (_options.VoInitAxitMethods && !context.isInInterface())
                 {
                     var idName = context.Id.GetText();

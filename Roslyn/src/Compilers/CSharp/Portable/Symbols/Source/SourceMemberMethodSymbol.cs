@@ -1129,7 +1129,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             return base.CallsAreOmitted(syntaxTree);
         }
-
-        internal override bool GenerateDebugInfo => !IsAsync && !IsIterator;
+#if XSHARP
+        internal override bool GenerateDebugInfo
+        {
+            get
+            {
+                if (IsAsync || IsIterator)
+                {
+                    return false;
+                }
+                switch (this.Name)
+                {
+                    case XSharpSpecialNames.AppExit:
+                    case XSharpSpecialNames.AppInit:
+                    case XSharpSpecialNames.InitProc1:
+                    case XSharpSpecialNames.InitProc2:
+                    case XSharpSpecialNames.InitProc3:
+                    case XSharpSpecialNames.ExitProc:
+                        return false;
+                }
+                return true;
+            }
+        }
+#else
+          internal override bool GenerateDebugInfo => !IsAsync && !IsIterator;
+#endif
     }
 }

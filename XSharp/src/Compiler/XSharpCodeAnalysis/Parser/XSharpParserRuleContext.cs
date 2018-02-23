@@ -85,7 +85,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return t;
         }
 
-
+  
         public object CsNode { get; set; }
         public string SourceFileName { get { return (Start as XSharpToken).SourceName; } }
         public string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }
@@ -97,13 +97,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return (ErrorData != null) && ErrorData.Count > 0;
         }
 
-        public Microsoft.CodeAnalysis.Location GetLocation()
+        public Location GetLocation()
         {
-            var ts = new MCT.TextSpan(this.Start.StartIndex, this.FullWidth);
-            var lp1 = new MCT.LinePosition(this.Start.Line - 1, this.Start.Column );
-            var lp2 = new MCT.LinePosition(this.Stop.Line - 1, this.Stop.Column +this.FullWidth-1);
-            var ls = new MCT.LinePositionSpan(lp1, lp2);
-            return Microsoft.CodeAnalysis.Location.Create(this.SourceFileName, ts, ls);
+            return new XSharpSourceLocation(this);
         }
         internal void AddError(ParseErrorData e)
         {

@@ -147,8 +147,8 @@ using_              : USING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? N
 
                     // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
                     // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
-voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList allowedgarbage? end=eos 
-                    | (Attributes=attributes)? STATIC (Const=CONST)? Vars=classVarList allowedgarbage? end=eos 
+voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList end=eos 
+                    | (Attributes=attributes)? STATIC (Const=CONST)? Vars=classVarList end=eos 
                     ;
 
 
@@ -168,11 +168,11 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
                     ;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
-vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=typeName)? allowedgarbage? eos
+vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=typeName)? eos
                     ;
 
 vostruct			: (Modifiers=votypeModifiers)?
-                      VOSTRUCT (Namespace=nameDot)? Id=identifier? (ALIGN Alignment=INT_CONST)? e=eos
+                      VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? e=eos
                       (Members+=vostructmember)+
                     ;
 
@@ -182,7 +182,7 @@ vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As
 
 
 vounion				: (Modifiers=votypeModifiers)?
-                      UNION (Namespace=nameDot)? Id=identifier? e=eos
+                      UNION (Namespace=nameDot)? Id=identifier e=eos
                       (Members+=vostructmember)+
                     ;
 
@@ -190,29 +190,29 @@ votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
                     ;
 
 
-namespace_			: BEGIN NAMESPACE Name=name? e=eos
+namespace_			: BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
-                      END NAMESPACE allowedgarbage? eos
+                      END NAMESPACE Ignored=name?  eos
                     ;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
-                      INTERFACE (Namespace=nameDot)? Id=identifier? TypeParameters=typeparameters?
+                      INTERFACE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos         // Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      END INTERFACE allowedgarbage? eos
+                      END INTERFACE Ignored=identifier?   eos
 					  ;
 
 interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
                     ;
 
 class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
-                      CLASS (Namespace=nameDot)? Id=identifier? TypeParameters=typeparameters?		// TypeParameters indicate Generic Class
+                      CLASS (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?		// TypeParameters indicate Generic Class
                       (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos						// Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      END CLASS allowedgarbage? eos
+                      END CLASS Ignored=identifier?   eos
 					  ;
 
 classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -237,11 +237,11 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  C
 // End of Extensions for Generic Classes
 
 structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
-                      STRUCTURE (Namespace=nameDot)? Id=identifier? TypeParameters=typeparameters?
+                      STRUCTURE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
-                      END STRUCTURE allowedgarbage? eos
+                      END STRUCTURE Ignored=identifier?  eos
 					  ;
 
 structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -249,7 +249,7 @@ structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 
 
 delegate_			: (Attributes=attributes)? (Modifiers=delegateModifiers)?
-                      DELEGATE (Namespace=nameDot)? Id=identifier? TypeParameters=typeparameters?
+                      DELEGATE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
                       ParamList=parameterList? (AS Type=datatype)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                     ;
@@ -259,9 +259,9 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 
 
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
-                      ENUM (Namespace=nameDot)? Id=identifier? (AS Type=datatype)? e=eos
+                      ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? e=eos
                       (Members+=enummember)+
-                      END ENUM? allowedgarbage? eos
+                      END ENUM? Ignored=identifier? eos
                     ;
 
 enumModifiers		: ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
@@ -271,10 +271,10 @@ enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=ex
                     ;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-                       EVENT (ExplicitIface=nameDot)? Id=identifier? (AS Type=datatype)?
+                       EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=eos
                         | (LineAccessors += eventLineAccessor)+ end=eos
-                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? allowedgarbage? end=eos
+                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? Ignored=identifier? end=eos
                        )
                     ;
 
@@ -290,7 +290,7 @@ eventLineAccessor   : Attributes=attributes? Modifiers=eventModifiers?
 eventAccessor       : Attributes=attributes? Modifiers=eventModifiers?
                       ( Key=ADD     end=eos StmtBlk=statementBlock END ADD?
                       | Key=REMOVE  end=eos StmtBlk=statementBlock END REMOVE? )
-                      allowedgarbage? end=eos
+                      end=eos
                     ;
 
 
@@ -316,7 +316,7 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
                       PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=eos	// Auto
                       | (LineAccessors+=propertyLineAccessor)+ end=eos													// Single Line
-                      | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? allowedgarbage? eos						// Multi Line
+                      | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  eos				// Multi Line
                       )
                     ;
 
@@ -340,7 +340,7 @@ expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
 propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
                       ( Key=GET end=eos StmtBlk=statementBlock END GET?
                       | Key=SET end=eos StmtBlk=statementBlock END SET? )
-                      allowedgarbage? end=eos
+                      end=eos
                     ;
 
 classmember			: Member=method										#clsmethod
@@ -449,9 +449,8 @@ statement           : Decl=localdecl                                            
                     | Decl=fielddecl											#fieldStmt
                     | DO? WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
-					  ((e=END DO? | e=ENDDO) allowedgarbage? eos)?				#whileStmt
+					  ((e=END (DO|WHILE)? | e=ENDDO) Ignored=expression?  eos)?	#whileStmt
                     | NOP (LPAREN RPAREN )? end=eos								#nopStmt
-                    | NOP (LPAREN RPAREN )? g=unwantedgarbage end=eos {eosExpected($g.start);}	#nopStmt
                     | FOR
                         ( AssignExpr=expression
                         | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=(ASSIGN_OP|EQ) Expr=expression
@@ -459,50 +458,44 @@ statement           : Decl=localdecl                                            
                         )
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
-                      StmtBlk=statementBlock (e=NEXT allowedgarbage? eos)?			#forStmt
+                      StmtBlk=statementBlock (e=NEXT Ignored=identifier? eos)?	#forStmt
                     | IF IfStmt=ifElseBlock
-                      ((e=END IF? | e=ENDIF)  allowedgarbage? eos)?					#ifStmt
+                      ((e=END IF? | e=ENDIF)   Ignored=expression? eos)?			#ifStmt
                     | DO CASE end=eos
 					  CaseStmt=caseBlock?
-                      ((e=END CASE? | e=ENDCASE) allowedgarbage? eos)?				#caseStmt
+                      ((e=END CASE? | e=ENDCASE)   eos)?		                    #caseStmt
                     | Key=EXIT end=eos												#jumpStmt
-                    | Key=EXIT g=unwantedgarbage end=eos {eosExpected($g.start);}	#jumpStmt
                     | Key=LOOP end=eos												#jumpStmt
-                    | Key=LOOP g=unwantedgarbage end=eos {eosExpected($g.start);}	#jumpStmt
                     | Key=BREAK Expr=expression? end=eos							#jumpStmt
-                    | Key=BREAK Expr=expression? g=unwantedgarbage end=eos	{eosExpected($g.start);} #jumpStmt
-                    | RETURN (Void=VOID|Expr=expression)? end=eos										#returnStmt
-                    | RETURN (Void=VOID|Expr=expression)? g=unwantedgarbage end=eos	{eosExpected($g.start);}	#returnStmt
+                    | RETURN (Void=VOID|Expr=expression)? end=eos					#returnStmt
                     | Q=(QMARK | QQMARK)
-                       (Exprs+=expression (COMMA Exprs+=expression)*)? end=eos	#qoutStmt
-                    | Q=(QMARK | QQMARK)
-                       (Exprs+=expression (COMMA Exprs+=expression)*)? g=unwantedgarbage end=eos {eosExpected($g.start);} #qoutStmt
+                       (Exprs+=expression (COMMA Exprs+=expression)*)? end=eos	    #qoutStmt
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
                       (FINALLY eos FinBlock=statementBlock)?
-                      (e=END (SEQUENCE)? allowedgarbage? eos)?					#seqStmt
+                      (e=END (SEQUENCE)? eos)?				#seqStmt
                     //
                     // New in Vulcan
                     //
                     | REPEAT end=eos
                       StmtBlk=statementBlock
-                      UNTIL Expr=expression eos									#repeatStmt
+                      UNTIL Expr=expression eos									    #repeatStmt
                     | FOREACH
                       (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
                       IN Container=expression end=eos
-                      StmtBlk=statementBlock (e=NEXT allowedgarbage? eos)?		#foreachStmt
-                    | Key=THROW Expr=expression? end=eos						#jumpStmt
+                      StmtBlk=statementBlock (e=NEXT Ignored=identifier? eos)?	#foreachStmt
+                    | Key=THROW Expr=expression? end=eos						    #jumpStmt
                     | TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
                       (FINALLY eos FinBlock=statementBlock)?
-                      (e=END TRY? allowedgarbage? eos)?								#tryStmt
+                      (e=END TRY? eos)?								#tryStmt
                     | BEGIN Key=LOCK Expr=expression end=eos
                       StmtBlk=statementBlock
-                      (e=END LOCK? allowedgarbage? end=eos)?						#blockStmt
+                      (e=END LOCK? end=eos)?						#blockStmt
                     | BEGIN Key=SCOPE end=eos
                       StmtBlk=statementBlock
-                      (e=END SCOPE? allowedgarbage? end=eos)?						#blockStmt
+                      (e=END SCOPE? end=eos)?						#blockStmt
                     //
                     // New XSharp Statements
                     //
@@ -510,22 +503,22 @@ statement           : Decl=localdecl                                            
                     | YIELD Break=(BREAK|EXIT) end=eos							#yieldStmt
                     | (BEGIN|DO)? SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
-                      (e=END SWITCH? allowedgarbage? eos)?					#switchStmt
+                      (e=END SWITCH? eos)?					#switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
                         StmtBlk=statementBlock
-                      (e=END USING? allowedgarbage? eos)?						#blockStmt
+                      (e=END USING? eos)?						#blockStmt
                     | BEGIN Key=UNSAFE end=eos
                       StmtBlk=statementBlock
-                      (e=END UNSAFE? allowedgarbage? eos)?							#blockStmt
+                      (e=END UNSAFE? eos)?							#blockStmt
                     | BEGIN Key=CHECKED end=eos
                       StmtBlk=statementBlock
-                      (e=END CHECKED? allowedgarbage? eos)?						#blockStmt
+                      (e=END CHECKED? eos)?						#blockStmt
                     | BEGIN Key=UNCHECKED end=eos
                       StmtBlk=statementBlock
-                      (e=END UNCHECKED? allowedgarbage? eos)?					#blockStmt
+                      (e=END UNCHECKED? eos)?					#blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos
                       StmtBlk=statementBlock
-                      (e=END FIXED? allowedgarbage? eos)?						#blockStmt
+                      (e=END FIXED? eos)?						#blockStmt
 
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
 					// The first ExpressonStmt rule matches a single expression
@@ -539,11 +532,6 @@ statement           : Decl=localdecl                                            
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			#expressionStmt
 	                ;
 
-allowedgarbage		: {_allowGarbage}? (~EOS)+
-					;
-
-unwantedgarbage		: (~EOS)+
-					;
 
 ifElseBlock			: Cond=expression end=eos StmtBlk=statementBlock
                       ( ELSEIF ElseIfBlock=ifElseBlock 

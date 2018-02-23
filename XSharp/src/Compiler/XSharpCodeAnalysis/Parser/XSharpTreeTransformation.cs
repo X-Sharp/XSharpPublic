@@ -951,6 +951,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Code Generation Helpers
+
+        StatementSyntax CheckForGarbage(StatementSyntax stmt, XSharpParserRuleContext ignored, string message)
+        {
+            if (ignored != null && !_options.Dialect.AllowGarbage())
+            {
+                stmt = (StatementSyntax)NotInDialect(stmt, message);
+            }
+            return stmt;
+        }
+        MemberDeclarationSyntax CheckForGarbage(MemberDeclarationSyntax member, XSharpParserRuleContext ignored, string message)
+        {
+            if (ignored != null && !_options.Dialect.AllowGarbage())
+            {
+                member = (MemberDeclarationSyntax)NotInDialect(member, message);
+            }
+            return member;
+        }
+
         protected ArrayRankSpecifierSyntax MakeArrayRankSpecifier(int ranks)
         {
             var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
@@ -1286,10 +1304,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        protected ExpressionStatementSyntax GenerateExpressionStatement(ExpressionSyntax expr)
+        protected ExpressionStatementSyntax GenerateExpressionStatement(ExpressionSyntax expr, bool markAsGenerated = false)
         {
-            return _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            stmt.XGenerated = markAsGenerated;
+            return stmt;
         }
+
         protected ArgumentSyntax MakeArgument(ExpressionSyntax expr, bool byref = false)
         {
             SyntaxToken byrefToken = null;
@@ -2343,7 +2364,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (s is ExternAliasDirectiveSyntax)
                     externs.Add(s as ExternAliasDirectiveSyntax);
             }
-            var ns = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+            MemberDeclarationSyntax ns = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                 name: context.Name.Get<NameSyntax>(),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 externs: externs,
@@ -2354,6 +2375,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(externs);
             _pool.Free(usings);
             _pool.Free(members);
+            ns = CheckForGarbage(ns, context.Ignored, "Name after END NAMESPACE");
             context.Put(ns);
             // Now add our namespace to the usings list so functions etc can find members 
             string ourname = context.Name.GetText();
@@ -2492,6 +2514,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = (MemberDeclarationSyntax)CheckTypeName(context, "INTERFACE", m);
             }
+            m = CheckForGarbage(m, context.Ignored, "Name after END INTERFACE");
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2578,6 +2601,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = (MemberDeclarationSyntax) CheckTypeName(context, "CLASS", m);
             }
+            m = CheckForGarbage(m, context.Ignored, "Name after END CLASS");
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2647,7 +2671,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = (MemberDeclarationSyntax)CheckTypeName(context, "STRUCTURE", m);
             }
-
+            m = CheckForGarbage(m, context.Ignored, "Name after END STRUCTURE");
             context.Put(m);
             if (context.Data.Partial)
             {
@@ -2705,6 +2729,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
+            m = CheckForGarbage(m, context.Ignored, "Name after END ENUM");
             context.Put(m);
             _pool.Free(baseTypes);
         }
@@ -2766,14 +2791,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                     MakeList<AccessorDeclarationSyntax>(context._LineAccessors),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-                context.Put(_syntaxFactory.EventDeclaration(
+                MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                     attributeLists: attrLists,
                     modifiers: mods,
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     type: type_,
                     explicitInterfaceSpecifier: explif,
                     identifier: context.Id.Get<SyntaxToken>(),
-                    accessorList: acclist));
+                    accessorList: acclist);
+                decl = CheckForGarbage(decl, context.Ignored, "Name after END EVENT");
+                context.Put(decl);
             }
             else if (multiLine)        // Multi line Syntax
             {
@@ -2781,14 +2808,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                     MakeList<AccessorDeclarationSyntax>(context._Accessors),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-                context.Put(_syntaxFactory.EventDeclaration(
+                MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                     attributeLists: attrLists,
                     modifiers: mods,
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     type: type_,
                     explicitInterfaceSpecifier: explif,
                     identifier: context.Id.Get<SyntaxToken>(),
-                    accessorList: acclist));
+                    accessorList: acclist);
+                decl = CheckForGarbage(decl, context.Ignored, "Name after END EVENT");
+                context.Put(decl);
             }
             else // Old Syntax, auto generate accessors
             {
@@ -2834,14 +2863,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         MakeList<AccessorDeclarationSyntax>(add_, remove_),
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-                    context.Put(_syntaxFactory.EventDeclaration(
+                    MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                         attributeLists: attrLists,
                         modifiers: mods,
                         eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                         type: type_,
                         explicitInterfaceSpecifier: explif,
                         identifier: context.Id.Get<SyntaxToken>(),
-                        accessorList: acclist));
+                        accessorList: acclist);
+                    decl = CheckForGarbage(decl, context.Ignored, "Name after END EVENT");
+                    context.Put(decl);
                 }
                 else
                 {
@@ -3129,8 +3160,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (context.ParamList == null || context.ParamList._Params.Count == 0)
             {
-
-                var propertydecl = _syntaxFactory.PropertyDeclaration(
+                MemberDeclarationSyntax propertydecl = _syntaxFactory.PropertyDeclaration(
                      attributeLists: atts,
                      modifiers: mods,
                      type: type,
@@ -3141,14 +3171,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                      initializer: context.Initializer != null ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                          context.Initializer.Get<ExpressionSyntax>()) : null,
                      semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                propertydecl = CheckForGarbage(propertydecl, context.Ignored, "Name after END PROPERTY");
                 context.Put(propertydecl);
             }
             else
             {
                 if (context.Auto != null)
                     context.AddError(new ParseErrorData(context.Auto, ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
-                var indexer = 
-                _syntaxFactory.IndexerDeclaration(
+                MemberDeclarationSyntax indexer = _syntaxFactory.IndexerDeclaration(
                     attributeLists: atts,
                     modifiers: mods,
                     type: type,
@@ -3158,6 +3188,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessorList: accessorList,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                indexer = CheckForGarbage(indexer, context.Ignored, "Name after END PROPERTY");
                 context.Put(indexer);
             }
         }
@@ -5270,6 +5301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
+            whileStmt = CheckForGarbage(whileStmt, context.Ignored, "Expression after END [DO]");
             context.Put(whileStmt);
         }
 
@@ -5423,6 +5455,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.StmtBlk.Get<BlockSyntax>());
             _pool.Free(init);
             _pool.Free(incr);
+            forStmt = CheckForGarbage(forStmt, context.Ignored, "Identifier after NEXT");
             context.Put(forStmt);
         }
 
@@ -5439,7 +5472,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Container.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
-
+            forStmt = CheckForGarbage(forStmt, context.Ignored, "Identifier after NEXT");
             context.Put(forStmt);
 
         }
@@ -5451,6 +5484,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
             context.SetSequencePoint(context.IfStmt.Cond);
+            ifStmt = CheckForGarbage(ifStmt, context.Ignored, "Expression after END IF");
             context.Put(ifStmt);
         }
 
@@ -5920,7 +5954,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var block = MakeBlock(statements);
                 context.Put(block);
             }
-            
+
             _pool.Free(statements);
         }
 
@@ -5961,7 +5995,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 token, arg,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
- 
+
         public override void ExitQoutStmt([NotNull] XP.QoutStmtContext context)
         {
             ArgumentSyntax arg;

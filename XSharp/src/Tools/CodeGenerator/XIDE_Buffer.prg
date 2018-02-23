@@ -163,11 +163,9 @@ PARTIAL CLASS EditorBuffer
 
 	PROPERTY FileType AS FileType GET SELF:eFileType
 	
-	VIRTUAL ACCESS ParsingOptions AS ParsingOptions
-	RETURN SELF:oParsingOptions
+	PROPERTY ParsingOptions AS ParsingOptions GET SELF:oParsingOptions
 
-	VIRTUAL ACCESS Count AS INT
-	RETURN SELF:aLines:Count
+	PROPERTY Count AS INT GET SELF:aLines:Count
 	
 	VIRTUAL METHOD GetLine(nLine AS INT) AS LineObject
 		IF nLine <= 0 .or. nLine > SELF:aLines:Count

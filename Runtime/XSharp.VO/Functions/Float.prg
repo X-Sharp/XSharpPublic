@@ -10,7 +10,7 @@ using XSharp
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION Abs__VOFloat(f AS __VOFloat) AS __VOFloat
+FUNCTION AbsFloat(f AS __VOFloat) AS __VOFloat
 RETURN __VOFloat{Math.Abs(f:Value)}
 
 

@@ -115,6 +115,7 @@
     <Compile Include="Advantage\AXSqlRDD.prg" />
     <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\Functions.prg" />
+    <Compile Include="Defines.prg" />
     <Compile Include="Functions\RddHelpers.prg" />
     <Compile Include="RddError.prg" />
     <Compile Include="SubCodes.prg" />
@@ -132,7 +133,6 @@
     <Compile Include="Types\DbfNtx.prg" />
     <Compile Include="Types\DbfSmt.prg" />
     <Compile Include="Types\DbMemo.prg" />
-    <Compile Include="Types\Defines.prg" />
     <Compile Include="Types\DELIM.prg" />
     <Compile Include="Types\Enums.prg" />
     <Compile Include="Types\FileStream.prg" />

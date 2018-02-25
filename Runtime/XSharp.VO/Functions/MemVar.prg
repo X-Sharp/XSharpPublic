@@ -12,9 +12,9 @@ using XSharp
 /// <param name="xValue"></param>
 /// <returns>
 /// </returns>
-FUNCTION MAssign(cExp AS STRING,xValue AS __Usual) AS __Usual
-	THROW NotImplementedException{}
-RETURN __Usual._NIL   
+function MAssign(cExp as string,xValue as __Usual) as __Usual
+	throw NotImplementedException{}
+return	 __Usual._NIL   
 
 
 
@@ -24,9 +24,9 @@ RETURN __Usual._NIL
 /// <param name="cVar"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
-	THROW NotImplementedException{}
-RETURN NULL_OBJECT   
+function MemVarBlock(cVar as string) as object
+	throw NotImplementedException{}
+return	 null_object   
 
 /// <summary>
 /// Return the contents of a memory variable.
@@ -34,9 +34,9 @@ RETURN NULL_OBJECT
 /// <param name="cVar"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemVarGet(cVar AS STRING) AS __Usual
-	THROW NotImplementedException{}
-RETURN __Usual._NIL   
+function MemVarGet(cVar as string) as __Usual
+	throw NotImplementedException{}
+return	 __Usual._NIL   
 
 /// <summary>
 /// Assign a value to a memory variable of a given name.
@@ -45,9 +45,9 @@ RETURN __Usual._NIL
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemVarPut(cVar AS STRING,u AS __Usual) AS __Usual
-	THROW NotImplementedException{}
-RETURN __Usual._NIL   
+function MemVarPut(cVar as string,u as __Usual) as __Usual
+	throw NotImplementedException{}
+return	 __Usual._NIL   
 
 
 
@@ -59,9 +59,9 @@ RETURN __Usual._NIL
 /// <param name="cVar"></param>
 /// <returns>
 /// </returns>
-FUNCTION VarGet(cVar AS STRING) AS __Usual
-	THROW NotImplementedException{}
-RETURN __Usual._NIL   
+function VarGet(cVar as string) as __Usual
+	throw NotImplementedException{}
+return	 __Usual._NIL   
 
 /// <summary>
 /// Assign a value to a field or a memory variable of a given name.
@@ -70,8 +70,29 @@ RETURN __Usual._NIL
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-FUNCTION VarPut(cVar AS STRING,u AS __Usual) AS __Usual
-	THROW NotImplementedException{}
-RETURN __Usual._NIL   
+function VarPut(cVar as string,u as __Usual) as __Usual
+	throw NotImplementedException{}
+return	 __Usual._NIL   
 
 
+
+
+
+/// <summary>
+/// </summary>
+/// <param name="symVar"></param>
+/// <returns>
+/// </returns>
+function VarGetSym(symVar as __Symbol) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
+
+/// <summary>
+/// </summary>
+/// <param name="symVar"></param>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
+function VarPutSym(symVar as __Symbol,u as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL  

@@ -3,45 +3,45 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp
+
 /// <summary>
+/// Call the garbage collector if a watermark is reached.
 /// </summary>
-/// <param name="dwVS"></param>
-/// <param name="dwStep"></param>
 /// <returns>
 /// </returns>
-FUNCTION CreateAtomTable(dwVS AS DWORD,dwStep AS DWORD) AS DWORD
+function Collect() as void
 	/// THROW NotImplementedException{}
-RETURN 0   
-
+	return  
 
 
 /// <summary>
+/// Count the number of garbage collections performed by the system.
 /// </summary>
-/// <param name="hf"></param>
 /// <returns>
 /// </returns>
-FUNCTION ReadAtomTable(hf AS DWORD) AS DWORD
+function CollectCount() as dword
 	/// THROW NotImplementedException{}
-RETURN 0   
-
-
-/// <summary>
-/// Convert a string to a __Symbol.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION String2Atom(c AS STRING) AS __Symbol
-	/// THROW NotImplementedException{}
-RETURN NULL_SYMBOL  
+	return 0   
 
 /// <summary>
-/// Convert a string to an uppercase __Symbol.
+/// Call the garbage collector.
 /// </summary>
-/// <param name="c"></param>
 /// <returns>
 /// </returns>
-FUNCTION String2Symbol(c AS STRING) AS __Symbol
+function CollectForced() as void
 	/// THROW NotImplementedException{}
-RETURN NULL_SYMBOL   
+	return  
+
+
+[Obsolete( "'AxitCalled()' is not supported and always returns FALSE" )] ;
+	function AxitCalled(o as object) as logic
+return false  
+
+/// <summary>
+/// Check whether the application is in a garbage collection phase.
+/// </summary>
+/// <returns>
+/// </returns>
+function InCollect() as logic
+	/// THROW NotImplementedException{}
+	return false   

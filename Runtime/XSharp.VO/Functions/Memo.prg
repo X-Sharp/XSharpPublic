@@ -88,3 +88,18 @@ using XSharp
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
+
+
+
+	/// <summary>
+	/// </summary>
+	/// <param name="ptrLine"></param>
+	/// <param name="nLen"></param>
+	/// <param name="nLimit"></param>
+	/// <param name="nTabSize"></param>
+	/// <param name="lWrap"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION LineLen(ptrLine AS BYTE[],nLen AS DWORD,nLimit AS DWORD,nTabSize AS DWORD,lWrap AS LOGIC) AS DWORD
+		/// THROW NotImplementedException{}
+	RETURN 0  

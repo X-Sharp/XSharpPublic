@@ -6,41 +6,44 @@
 using System.Collections.Generic
 using System.Runtime.InteropServices
 
-STATIC CLASS XSharp.Internal.CompilerServices
-
-	STATIC METHOD __StringSubtract (lhs AS STRING, rhs AS STRING) AS STRING
-		IF lhs != NULL .and. rhs != NULL
-			VAR len := lhs:Length + rhs:Length
-			RETURN (lhs:TrimEnd() + rhs:TrimEnd()):PadRight(len)
-		ELSEIF lhs != NULL
-			RETURN lhs
-		ELSEIF rhs != NULL
-			RETURN rhs
-		ENDIF
-		RETURN String.Empty
-
-
-	STATIC METHOD String2Psz(s AS STRING, pszList AS List<IntPtr>) AS IntPtr
-		LOCAL pResult AS IntPtr
-		IF s == null || s:Length == 0
+static class XSharp.Internal.CompilerServices
+	
+	static method __StringSubtract (lhs as string, rhs as string) as string
+		if lhs != null .and. rhs != null
+			var len := lhs:Length + rhs:Length
+			return (lhs:TrimEnd() + rhs:TrimEnd()):PadRight(len)
+		elseif lhs != null
+			return lhs
+		elseif rhs != null
+			return rhs
+		endif
+		return String.Empty
+	
+	
+	static method String2Psz(s as string, pszList as List<IntPtr>) as IntPtr
+		local pResult as IntPtr
+		if s == null || s:Length == 0
 			pResult := Marshal.AllocHGlobal(1)
-		ELSE
-			VAR encoding := System.Text.Encoding.Default
-			VAR bytes    := encoding:GetBytes(s)
-			VAR len      := bytes.Length
+		else
+			var encoding := System.Text.Encoding.Default
+			var bytes    := encoding:GetBytes(s)
+			var len      := bytes.Length
 			pResult := Marshal.AllocHGlobal(len)
 			Marshal.Copy(bytes, 0, pResult, len)
-		ENDIF
+		endif
 		pszList:Add(pResult)
-		RETURN pResult
-
-	STATIC METHOD String2PszRelease(pszList AS List<IntPtr>) AS VOID
-		FOREACH VAR p in pszList
-			TRY
+		return pResult
+	
+	static method String2PszRelease(pszList as List<IntPtr>) as void
+		foreach var p in pszList
+			try
 				Marshal.FreeHGlobal(p)
-			END TRY
-		NEXT
-		RETURN 
-	//	STATIC METHOD EnterBeginSequence
-	//	STATIC METHOD ExitBeginSequence
-END CLASS
+			end try
+		next
+		return 
+	static method EnterBeginSequence as void
+		throw NotImplementedException{}
+	static method ExitBeginSequence	 as void
+		throw NotImplementedException{}
+	
+end class

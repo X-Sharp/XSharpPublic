@@ -3,51 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 using XSharp
-	/// <summary>
-	/// Get the class hierarchy of a class.
-	/// </summary>
-	/// <param name="symClassName"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION ClassTreeClass(symClassName AS __Symbol) AS __Array
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
 
-	/// <summary>
-	/// Concatenate two __Symbols.
-	/// </summary>
-	/// <param name="s1"></param>
-	/// <param name="s2"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION ConcatAtom(s1 AS __Symbol,s2 AS __Symbol) AS __Symbol
-		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
 
-	/// <summary>
-	/// Concatenate three __Symbols.
-	/// </summary>
-	/// <param name="s1"></param>
-	/// <param name="s2"></param>
-	/// <param name="s3"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION ConcatAtom3(s1 AS __Symbol,s2 AS __Symbol,s3 AS __Symbol) AS __Symbol
-		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="s1"></param>
-	/// <param name="s2"></param>
-	/// <param name="s3"></param>
-	/// <param name="s4"></param>
-	/// <param name="s5"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION ConcatAtom5(s1 AS __Symbol,s2 AS __Symbol,s3 AS __Symbol,s4 AS __Symbol,s5 AS __Symbol) AS __Symbol
-		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
 
 	/// <summary>
 	/// </summary>
@@ -257,15 +214,6 @@ using XSharp
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
-	/// <summary>
-	/// Return a multidimensional __Array of all object-oriented programming __Symbols that constitute the class of an object.
-	/// </summary>
-	/// <param name="s"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION OOPTreeClass(s AS __Symbol) AS __Array
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
 
 	/// <summary>
 	/// Convert a __Symbol to a string.
@@ -295,22 +243,22 @@ using XSharp
 	FUNCTION UnDeclareClass(symClass AS __Symbol) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
+ 
+
+
 
 	/// <summary>
 	/// </summary>
-	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VarGetSym(symVar AS __Symbol) AS __Usual
+	FUNCTION FunctionCount() AS DWORD
 		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+	RETURN 0   
 
 	/// <summary>
 	/// </summary>
-	/// <param name="symVar"></param>
-	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VarPutSym(symVar AS __Symbol,u AS __Usual) AS __Usual
+	FUNCTION FunctionList() AS __Array
 		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+	RETURN NULL_ARRAY   

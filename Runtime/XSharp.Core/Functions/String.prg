@@ -288,6 +288,18 @@ FUNCTION CharPos(c AS STRING,nStart AS DWORD) AS STRING
 	RETURN searchedChar
 
 /// <summary>
+/// Convert an ASCII code to a character value.
+/// </summary>
+/// <param name="dwChar"></param>
+/// <returns>
+/// </returns>
+FUNCTION CHR(dwChar AS DWORD) AS STRING
+	LOCAL buf := BYTE[]{1} AS BYTE[]
+	buf[0+__ARRAYBASE__] := (BYTE) dwChar
+	RETURN System.Text.Encoding:ASCII:GetString(buf)
+
+
+/// <summary>
 /// Encrypt or decrypt a string.
 /// </summary>
 /// <param name="cSource"></param>
@@ -367,27 +379,10 @@ FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
 	END TRY
 	RETURN isInString   
 
-/// <summary>
-/// Determine if the first character of a string is a kanji character.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION ISKANJI(c AS STRING) AS LOGIC
-	/// THROW NotImplementedException{}
-	RETURN FALSE   
 
 
 
-/// <summary>
-/// Determine if the given string is a valid VO string.
-/// </summary>
-/// <param name="cString"></param>
-/// <returns>
-/// </returns>
-FUNCTION IsVOString(cString AS STRING) AS LOGIC
-	/// THROW NotImplementedException{}
-	RETURN FALSE   
+
 
 /// <summary>
 /// Extract a substring beginning with the first character in a string.
@@ -519,14 +514,7 @@ FUNCTION Oem2AnsiA(cSource AS STRING) AS STRING
 	/// THROW NotImplementedException{}
 	RETURN String.Empty   
 
-/// <summary>
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION OldSpaceFreeString(c AS STRING) AS VOID
-	/// THROW NotImplementedException{}
-	RETURN
+
 
 /// <summary>
 /// Change the first character of each word to uppercase

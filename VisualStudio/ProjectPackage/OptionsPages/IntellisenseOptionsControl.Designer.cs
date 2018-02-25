@@ -30,6 +30,7 @@
         {
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
+            this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
             this.grpCase = new System.Windows.Forms.GroupBox();
             this.chkAlignMethod = new System.Windows.Forms.CheckBox();
             this.chkAlignDoCase = new System.Windows.Forms.CheckBox();
@@ -58,13 +59,25 @@
             // 
             // grpCompletionListTabs
             // 
+            this.grpCompletionListTabs.Controls.Add(this.chkDotAsUniversalSelector);
             this.grpCompletionListTabs.Controls.Add(this.chkCompletionListtabs);
             this.grpCompletionListTabs.Location = new System.Drawing.Point(12, 12);
             this.grpCompletionListTabs.Name = "grpCompletionListTabs";
-            this.grpCompletionListTabs.Size = new System.Drawing.Size(461, 46);
+            this.grpCompletionListTabs.Size = new System.Drawing.Size(461, 67);
             this.grpCompletionListTabs.TabIndex = 0;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
+            // 
+            // chkDotAsUniversalSelector
+            // 
+            this.chkDotAsUniversalSelector.AutoSize = true;
+            this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 43);
+            this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
+            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(218, 17);
+            this.chkDotAsUniversalSelector.TabIndex = 1;
+            this.chkDotAsUniversalSelector.Text = "Use dot (.) as Universal element Selector";
+            this.chkDotAsUniversalSelector.UseVisualStyleBackColor = true;
+            this.chkDotAsUniversalSelector.CheckedChanged += new System.EventHandler(this.chkDotAsUniversalSelector_CheckedChanged);
             // 
             // grpCase
             // 
@@ -73,7 +86,7 @@
             this.grpCase.Controls.Add(this.grpKeywordCase);
             this.grpCase.Controls.Add(this.chkIdentifierCase);
             this.grpCase.Controls.Add(this.lblKeywordCase);
-            this.grpCase.Location = new System.Drawing.Point(12, 64);
+            this.grpCase.Location = new System.Drawing.Point(12, 86);
             this.grpCase.Name = "grpCase";
             this.grpCase.Size = new System.Drawing.Size(461, 128);
             this.grpCase.TabIndex = 1;
@@ -190,7 +203,7 @@
             this.Controls.Add(this.grpCase);
             this.Controls.Add(this.grpCompletionListTabs);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(486, 205);
+            this.Size = new System.Drawing.Size(486, 227);
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);
@@ -214,5 +227,6 @@
         private System.Windows.Forms.RadioButton rbTitle;
         private System.Windows.Forms.CheckBox chkAlignMethod;
         private System.Windows.Forms.CheckBox chkAlignDoCase;
+        private System.Windows.Forms.CheckBox chkDotAsUniversalSelector;
     }
 }

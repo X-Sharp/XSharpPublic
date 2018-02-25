@@ -45,8 +45,11 @@ namespace XSharpModel
         // List of output DLLs for referenced (X# and other) projects
         private Dictionary<string, string> _projectOutputDLLs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-
         XSharpParseOptions _parseOptions = null;
+
+        // Used in ModelWalker/FileWalk in order to Callback to LibraryManager
+        public delegate void OnFileWalkComplete( XFile xFile );
+        public OnFileWalkComplete FileWalkComplete;
 
         public XProject(IXSharpProject project)
         {

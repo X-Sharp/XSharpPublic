@@ -86,14 +86,14 @@ namespace XSharp.Project
                         handled = StartCompletionSession(nCmdID, '\0');
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
-                        handled = CompleteCompletionSession(false);
+                        handled = CompleteCompletionSession();
                         break;
                     case VSConstants.VSStd2KCmdID.UP:
                     case VSConstants.VSStd2KCmdID.DOWN:
                         //FormatLine(false);
                         break;
                     case VSConstants.VSStd2KCmdID.TAB:
-                        handled = CompleteCompletionSession(true);
+                        handled = CompleteCompletionSession();
                         break;
                     case VSConstants.VSStd2KCmdID.CANCEL:
                         handled = CancelCompletionSession();
@@ -164,7 +164,7 @@ namespace XSharp.Project
                                     StartCompletionSession(nCmdID, ch);
                                 }
                                 if (Char.IsLetterOrDigit(ch) || ch == '_')
-                                    Filter();
+                                    FilterCompletionSession(ch);
                                 else
                                     CancelCompletionSession();
                                 //
@@ -199,7 +199,7 @@ namespace XSharp.Project
                             }
                             break;
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
-                            Filter();
+                            FilterCompletionSession('\0');
                             break;
 #if SMARTINDENT
                         case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
@@ -245,7 +245,7 @@ namespace XSharp.Project
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file);
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false);
                 // Check if we can get the member where we are
                 XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
@@ -289,24 +289,64 @@ namespace XSharp.Project
         }
 
         #region Completion Session
-        private void Filter()
+        private void FilterCompletionSession(char ch)
         {
+
+            //if ((ch == '\0') && (_completionSession == null))
+            //{
+            //    StartCompletionSession((int)VSConstants.VSStd2KCmdID.COMPLETEWORD, '\0');
+            //    return;
+            //}
+
             if (_completionSession == null)
                 return;
-            //
+
+
+            Trace.WriteLine(" --> in Filter");
             if (_completionSession.SelectedCompletionSet != null)
             {
+                Trace.WriteLine(" --> Filtering ?");
                 _completionSession.SelectedCompletionSet.Filter();
                 if (_completionSession.SelectedCompletionSet.Completions.Count == 0)
                     CancelCompletionSession();
                 else
+                //if (_completionSession.SelectedCompletionSet.Completions.Count > 0)
                 {
+                    Trace.WriteLine(" --> Selecting ");
                     _completionSession.SelectedCompletionSet.SelectBestMatch();
                     _completionSession.SelectedCompletionSet.Recalculate();
                 }
             }
-            //_completionSession.Filter();
+
+            //_completionSession.SelectedCompletionSet.Filter();
+            //_completionSession.SelectedCompletionSet.SelectBestMatch();
+            //_completionSession.SelectedCompletionSet.Recalculate();
+
+            //if (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected &&
+            //    _completionSession.SelectedCompletionSet.SelectionStatus.IsUnique)
+            //{
+            //    string insertedText = _completionSession.SelectedCompletionSet.ApplicableTo.GetText(TextView.TextSnapshot);
+            //    string selectedText = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
+            //    if (insertedText.TrimEnd().Equals(selectedText.TrimEnd(), StringComparison.CurrentCulture))
+            //    {
+            //        _completionSession.Dismiss();
+            //        return;
+            //    }
+            //    if (insertedText.TrimEnd().Equals(selectedText.TrimEnd(), StringComparison.CurrentCultureIgnoreCase))
+            //    {
+            //        _completionSession.Commit();
+            //        return;
+            //    }
+            //}
+
+            //if (!_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected)
+            //{
+            //    _completionSession.Dismiss();
+            //    StartCompletionSession((int)VSConstants.VSStd2KCmdID.COMPLETEWORD, '\0');
+            //}
+
         }
+
 
         bool CancelCompletionSession()
         {
@@ -318,19 +358,22 @@ namespace XSharp.Project
             return true;
         }
 
-        bool CompleteCompletionSession(bool force)
+        bool CompleteCompletionSession()
         {
             if (_completionSession == null)
                 return false;
+            Trace.WriteLine(" --> in Complete");
             if (_completionSession.SelectedCompletionSet != null)
             {
-                if (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected || force)
+                if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
+                    Trace.WriteLine(" --> Commit");
                     //
                     _completionSession.Commit();
                     return true;
                 }
             }
+            Trace.WriteLine(" --> Dismiss");
             _completionSession.Dismiss();
             return false;
         }
@@ -371,6 +414,7 @@ namespace XSharp.Project
             }
             return true;
         }
+
 
         private void OnCompletionSessionCommitted(object sender, EventArgs e)
         {
@@ -450,7 +494,7 @@ namespace XSharp.Project
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file);
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false);
                 // Check if we can get the member where we are
                 XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);

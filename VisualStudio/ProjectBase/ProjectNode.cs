@@ -3197,7 +3197,8 @@ namespace Microsoft.VisualStudio.Project
             }
 	         catch (Exception ex)
 	         {
-	             Debug.WriteLine( ex.ToString());
+                if (System.Diagnostics.Debugger.IsAttached)
+                    Debug.WriteLine( ex.ToString());
 	         }
             finally
             {
@@ -5998,7 +5999,8 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 return false;
             }
             finally

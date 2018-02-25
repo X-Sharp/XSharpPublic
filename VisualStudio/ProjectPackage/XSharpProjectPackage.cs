@@ -465,7 +465,8 @@ namespace XSharp.Project
         public static void Debug(string msg, params object[] o)
         {
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(String.Format("XProject: " + msg, o));
+            if (System.Diagnostics.Debugger.IsAttached)
+                System.Diagnostics.Debug.WriteLine(String.Format("XProject: " + msg, o));
 #endif
         }
     }

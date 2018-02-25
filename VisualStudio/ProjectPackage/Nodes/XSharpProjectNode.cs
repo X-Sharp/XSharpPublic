@@ -1692,7 +1692,8 @@ namespace XSharp.Project
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine("Error fetching IsVsBuilding: " + e.Message);
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        System.Diagnostics.Debug.WriteLine("Error fetching IsVsBuilding: " + e.Message);
                 }
                 return false;
             }
@@ -1911,7 +1912,8 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Error updating documentationfle: " + e.Message);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    System.Diagnostics.Debug.WriteLine("Error updating documentationfle: " + e.Message);
             }
             return false;
         }

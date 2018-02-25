@@ -178,7 +178,7 @@ namespace XSharpModel
         {
             if (!IsSource)
                 return;
-            System.Diagnostics.Trace.WriteLine("-->> XFile.SetTypes()");
+                System.Diagnostics.Trace.WriteLine("-->> XFile.SetTypes()");
             lock (this)
             {
                 _typeList.Clear();

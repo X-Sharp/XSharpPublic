@@ -25,6 +25,8 @@ namespace XSharpModel
         private TextInterval _interval;
         private XElement _parent;
 
+        protected bool _isStatic;
+
 
         public XElement(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange range, TextInterval interval)
         {
@@ -34,6 +36,7 @@ namespace XSharpModel
             _Visibility = visibility;
             _range = range;
             _interval = interval;
+            _isStatic = false;
         }
 
 
@@ -71,6 +74,19 @@ namespace XSharpModel
                 return this._Name;
             }
 
+        }
+
+        public bool IsStatic
+        {
+            get
+            {
+                return _isStatic;
+            }
+
+            set
+            {
+                _isStatic = value;
+            }
         }
 
         public void ForceComplete()
@@ -433,7 +449,10 @@ namespace XSharpModel
                     case Modifiers.ProtectedInternal:
                         imgI = StandardGlyphItem.GlyphItemProtected;
                         break;
-
+                }
+                if ( this.IsStatic )
+                {
+                    imgI = StandardGlyphItem.GlyphItemShortcut;
                 }
                 //
                 return imgI;

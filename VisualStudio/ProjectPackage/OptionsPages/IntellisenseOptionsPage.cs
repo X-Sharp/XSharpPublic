@@ -20,6 +20,13 @@ namespace XSharp.Project.OptionsPages
             set { completionListTabs = value; }
         }
 
+        private bool useDotAsUniversalSelector = false;
+        public bool UseDotAsUniversalSelector
+        {
+            get { return useDotAsUniversalSelector; }
+            set { useDotAsUniversalSelector = value; }
+        }
+
         // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
         private int keywordCase = 1;
         public int KeywordCase

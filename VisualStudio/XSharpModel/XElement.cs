@@ -82,6 +82,11 @@ namespace XSharpModel
             {
                 return _isStatic;
             }
+
+            set
+            {
+                _isStatic = value;
+            }
         }
 
         public void ForceComplete()

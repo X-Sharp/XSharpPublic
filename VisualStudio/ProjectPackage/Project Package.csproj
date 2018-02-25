@@ -275,6 +275,15 @@
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
+    <Compile Include="Library\HierarchyListener.cs" />
+    <Compile Include="Library\Library.cs" />
+    <Compile Include="Library\LibraryNode.cs" />
+    <Compile Include="Library\MultiValueDictionary.cs" />
+    <Compile Include="Library\TextLineEventListener.cs" />
+    <Compile Include="Library\XSharpLibraryManager.cs" />
+    <Compile Include="Library\XSharpLibraryNode.cs" />
+    <Compile Include="Library\XSharpLibraryProject.cs" />
+    <Compile Include="Library\XSharpModuleId.cs" />
     <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
       <SubType>UserControl</SubType>

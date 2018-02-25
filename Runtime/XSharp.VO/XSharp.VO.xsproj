@@ -101,31 +101,37 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\DiskIO.prg" />
+    <Compile Include="Functions\Error.prg" />
     <Compile Include="Functions\File.prg" />
-    <Compile Include="Functions\functions_array.prg" />
-    <Compile Include="Functions\Functions_Codeblock.prg" />
-    <Compile Include="Functions\functions_date.prg" />
-    <Compile Include="Functions\Functions_Float.prg" />
-    <Compile Include="Functions\functions_internal.prg" />
-    <Compile Include="Functions\Functions_Macro.prg" />
-    <Compile Include="Functions\Functions_Memo.prg" />
-    <Compile Include="Functions\Functions_Memory.prg" />
-    <Compile Include="Functions\Functions_MemVar.prg" />
-    <Compile Include="Functions\Functions_Meta.prg" />
-    <Compile Include="Functions\functions_misc.prg" />
-    <Compile Include="Functions\functions_multibyte.prg" />
-    <Compile Include="Functions\functions_Obsolete.prg" />
-    <Compile Include="Functions\functions_psz.prg" />
-    <Compile Include="Functions\Functions_Registry.prg" />
-    <Compile Include="Functions\Functions_Symbol.prg" />
-    <Compile Include="Functions\Functions_Usual.prg" />
-    <Compile Include="Functions\functions_vodb.prg" />
+    <Compile Include="Functions\Array.prg" />
+    <Compile Include="Functions\Codeblock.prg" />
+    <Compile Include="Functions\Date.prg" />
+    <Compile Include="Functions\Psz.prg" />
+    <Compile Include="Functions\RDD.prg" />
+    <Compile Include="Functions\Float.prg" />
+    <Compile Include="Functions\GC.prg" />
+    <Compile Include="Functions\Internal.prg" />
+    <Compile Include="Functions\International.prg" />
+    <Compile Include="Functions\Macro.prg" />
+    <Compile Include="Functions\Memo.prg" />
+    <Compile Include="Functions\Memory.prg" />
+    <Compile Include="Functions\MemVar.prg" />
+    <Compile Include="Functions\Meta.prg" />
+    <Compile Include="Functions\Misc.prg" />
+    <Compile Include="Functions\Obsolete.prg" />
+    <Compile Include="Functions\OOP.prg" />
+    <Compile Include="Functions\Registry.prg" />
+    <Compile Include="Functions\Symbol.prg" />
+    <Compile Include="Functions\Usual.prg" />
+    <Compile Include="Functions\Vodb.prg" />
     <Compile Include="Functions\ItemAPI.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Types\Array.prg" />
     <Compile Include="Types\CodeBlock.prg" />
+    <Compile Include="Types\ArrayBase.prg" />
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
@@ -133,7 +139,6 @@
     <Compile Include="Types\FixedMemory.prg" />
     <Compile Include="Types\Symbol.prg" />
     <Compile Include="Types\Usual.prg" />
-    <Compile Include="Types\Various.prg" />
     <Compile Include="Types\WinBool.prg" />
   </ItemGroup>
   <ItemGroup>

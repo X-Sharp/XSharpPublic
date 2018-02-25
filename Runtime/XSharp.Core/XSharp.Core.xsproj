@@ -113,19 +113,17 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-    <Compile Include="Functions\Functions_Convert.prg" />
-    <Compile Include="Functions\Functions_MultiByte.prg" />
-    <Compile Include="Functions\functions_byte.prg" />
-    <Compile Include="Functions\Functions_DT.prg" />
-    <Compile Include="Functions\functions_file.prg" />
-    <Compile Include="Functions\functions_get.prg" />
-    <Compile Include="Functions\functions_mb.prg" />
-    <Compile Include="Functions\functions_memo.prg" />
-    <Compile Include="Functions\functions_numeric.prg" />
-    <Compile Include="Functions\functions_set.prg" />
-    <Compile Include="Functions\functions_string.prg" />
-    <Compile Include="Functions\functions_unsafe.prg" />
-    <Compile Include="Functions\functions_vodb.prg" />
+    <Compile Include="Functions\Convert.prg" />
+    <Compile Include="Functions\DT.prg" />
+    <Compile Include="Functions\File.prg" />
+    <Compile Include="Functions\Get.prg" />
+    <Compile Include="Functions\International.prg" />
+    <Compile Include="Functions\Memo.prg" />
+    <Compile Include="Functions\Numeric.prg" />
+    <Compile Include="Functions\Set.prg" />
+    <Compile Include="Functions\String.prg" />
+    <Compile Include="Functions\unsafe.prg" />
+    <Compile Include="Functions\vodb.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
   </ItemGroup>
   <ItemGroup>

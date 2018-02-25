@@ -6,17 +6,17 @@
 using XSharp
 
 
-	#region functions
+#region functions
 	/// <summary>
 	/// Remove spaces from a file name specified as a __Psz, changing the contents of the original file name as well as the returned file name.
 	/// </summary>
 	/// <param name="pszFileName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AdjustFNamePSZ(pszFileName AS __Psz) AS __Psz
+	function AdjustFNamePSZ(pszFileName as __Psz) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return (__Psz) IntPtr.Zero
+	
 	/// <summary>
 	/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
 	/// </summary>
@@ -25,89 +25,89 @@ using XSharp
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Ansi2OemBuff(pszDest AS __Psz,pszSource AS __Psz,dwCount AS DWORD) AS __Psz
+	function Ansi2OemBuff(pszDest as __Psz,pszSource as __Psz,dwCount as dword) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return (__Psz) IntPtr.Zero
+	
 	/// <summary>
 	/// Convert a value to a static __Psz.
 	/// </summary>
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AsPsz(u AS __Usual) AS __Psz
+	function AsPsz(u as __Usual) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return (__Psz) IntPtr.Zero
+	
 	/// <summary>
 	/// Convert a string containing an 8-bit logical into a logical value.
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Bin2Logic(pszC AS __Psz) AS LOGIC
+	function Bin2Logic(pszC as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// Check a strongly typed string for String.Empty and return a valid (non-zero) __Psz.
 	/// </summary>
 	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Cast2Psz(cSource AS STRING) AS __Psz
+	function Cast2Psz(cSource as string) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return (__Psz) IntPtr.Zero
+	
 	/// <summary>
 	/// Change the current Windows directory.
 	/// </summary>
 	/// <param name="pszDir"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DirChange(pszDir AS __Psz) AS INT
+	function DirChange(pszDir as __Psz) as int
 		/// THROW NotImplementedException{}
-	RETURN 0   
-
+		return 0   
+	
 	/// <summary>
 	/// Create a directory.
 	/// </summary>
 	/// <param name="pszDir"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DirMake(pszDir AS __Psz) AS INT
+	function DirMake(pszDir as __Psz) as int
 		/// THROW NotImplementedException{}
-	RETURN 0   
-
+		return 0   
+	
 	/// <summary>
 	/// Remove a directory.
 	/// </summary>
 	/// <param name="pszDir"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DirRemove(pszDir AS __Psz) AS INT
+	function DirRemove(pszDir as __Psz) as int
 		/// THROW NotImplementedException{}
-	RETURN 0   
-
+		return 0   
+	
 	/// <summary>
 	/// Change the current disk drive.
 	/// </summary>
 	/// <param name="pszDisk"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DiskChange(pszDisk AS __Psz) AS LOGIC
+	function DiskChange(pszDisk as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// </summary>
 	/// <param name="PSZValue"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION EmptyPSZ(PSZValue AS __Psz) AS LOGIC
+	function EmptyPSZ(PSZValue as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// </summary>
 	/// <param name="pszText"></param>
@@ -117,109 +117,109 @@ using XSharp
 	/// <param name="dwB3"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ErrorMessageBox(pszText AS __Psz,pszCapt AS __Psz,dwB1 AS DWORD,dwB2 AS DWORD,dwB3 AS DWORD) AS DWORD
+	function ErrorMessageBox(pszText as __Psz,pszCapt as __Psz,dwB1 as dword,dwB2 as dword,dwB3 as dword) as dword
 		/// THROW NotImplementedException{}
-	RETURN 0     
-
+		return 0     
+	
 	/// <summary>
 	/// Determine if the leftmost character in a string is alphanumeric.
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsAlNum(pszC AS __Psz) AS LOGIC
+	function IsAlNum(pszC as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// Determine if the leftmost character in a string is alphabetic.
 	/// </summary>
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsAlpha(pszSource AS __Psz) AS LOGIC
+	function IsAlpha(pszSource as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// </summary>
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsAlphaNum(pszSource AS __Psz) AS LOGIC
+	function IsAlphaNum(pszSource as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// Determine if the leftmost character in a string is a binary digit (0 or 1).
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsBDigit(pszC AS __Psz) AS LOGIC
+	function IsBDigit(pszC as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsDigit(pszC AS __Psz) AS LOGIC
+	function IsDigit(pszC as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// Determine if the leftmost character in a string is a lowercase letter.
 	/// </summary>
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsLower(pszSource AS __Psz) AS LOGIC
+	function IsLower(pszSource as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsSpace(pszC AS __Psz) AS LOGIC
+	function IsSpace(pszC as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// Determine if the leftmost character in a string is uppercase.
 	/// </summary>
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsUpper(pszSource AS __Psz) AS LOGIC
+	function IsUpper(pszSource as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
+		return false   
+	
 	/// <summary>
 	/// Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsXDigit(pszC AS __Psz) AS LOGIC
+	function IsXDigit(pszC as __Psz) as logic
 		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-
+		return false   
+	
+	
 	/// <summary>
 	/// </summary>
 	/// <param name="pObj"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ObjAsPsz(pObj AS IntPtr) AS __Psz
+	function ObjAsPsz(pObj as IntPtr) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return (__Psz) IntPtr.Zero
+	
 	/// <summary>
 	/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
 	/// </summary>
@@ -228,67 +228,67 @@ using XSharp
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Oem2AnsiBuff(pszDest AS __Psz,pszSource AS __Psz,dwCount AS DWORD) AS __Psz
+	function Oem2AnsiBuff(pszDest as __Psz,pszSource as __Psz,dwCount as dword) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Return the name of an activated entity.
 	/// </summary>
 	/// <param name="dwActivation"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ProcName(dwActivation AS __Usual) AS __Psz
+	function ProcName(dwActivation as __Usual) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Convert a null-terminated string to a strongly typed string.
 	/// </summary>
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Psz2String(pszSource AS __Psz) AS STRING
+	function Psz2String(pszSource as __Psz) as string
 		/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
+		return String.Empty   
+	
 	/// <summary>
 	/// Copy a buffer pointed to by a __Psz to a newly allocated block of memory and return a new pointer to that memory.
 	/// </summary>
 	/// <param name="ptrSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PszAlloc(ptrSource AS IntPtr) AS __Psz
+	function PszAlloc(ptrSource as IntPtr) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Return the length of a __Psz.
 	/// </summary>
 	/// <param name="pszX"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PszLen(pszX AS __Psz) AS DWORD
+	function PszLen(pszX as __Psz) as dword
 		/// THROW NotImplementedException{}
-	RETURN 0   
-
+		return 0   
+	
 	/// <summary>
 	/// </summary>
 	/// <param name="pszUnicode"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PszLenW(pszUnicode AS __Psz) AS DWORD
+	function PszLenW(pszUnicode as __Psz) as dword
 		/// THROW NotImplementedException{}
-	RETURN 0   
-
+		return 0   
+	
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION ReleaseString() AS __Psz
+	function ReleaseString() as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Break a path name into its components.
 	/// </summary>
@@ -299,10 +299,10 @@ using XSharp
 	/// <param name="pszExt"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SplitPath(pzsPath AS __Psz,pszDrive AS __Psz,pszDir AS __Psz,pszName AS __Psz,pszExt AS __Psz) AS VOID
+	function SplitPath(pzsPath as __Psz,pszDrive as __Psz,pszDir as __Psz,pszName as __Psz,pszExt as __Psz) as void
 		/// THROW NotImplementedException{}
-	RETURN
-
+		return
+	
 	/// <summary>
 	/// Convert a __VOFloat expression to a __Psz.
 	/// </summary>
@@ -311,30 +311,30 @@ using XSharp
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrFloat(flSource AS __VOFloat,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
+	function StrFloat(flSource as __VOFloat,dwLen as dword,dwDec as dword) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Convert a strongly typed string to a null-terminated string.
 	/// </summary>
 	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION String2Psz(cSource AS STRING) AS __Psz
+	function String2Psz(cSource as string) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Copy a string to a newly allocated block of memory and return a __Psz to the memory.
 	/// </summary>
 	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StringAlloc(cSource AS STRING) AS __Psz
+	function StringAlloc(cSource as string) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Convert an integer expression to a __Psz.
 	/// </summary>
@@ -343,10 +343,10 @@ using XSharp
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
+	function StrInt(l as long,dwLen as dword,dwDec as dword) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Convert a long integer expression to a __Psz.
 	/// </summary>
@@ -355,73 +355,84 @@ using XSharp
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
+	function StrLong(l as long,dwLen as dword,dwDec as dword) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// Convert a null-terminated string to a __Symbol and add it to the atom table.
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysAddAtom(p AS __Psz) AS __Symbol
+	function SysAddAtom(p as __Psz) as __Symbol
 		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
-
+		return null_symbol   
+	
 	/// <summary>
 	/// Convert a null-terminated string to an uppercase __Symbol and add it to the atom table.
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysAddAtomUpperA(p AS __Psz) AS __Symbol
+	function SysAddAtomUpperA(p as __Psz) as __Symbol
 		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
-
+		return null_symbol   
+	
 	/// <summary>
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysAddAtomUpperBuff(p AS __Psz) AS __Symbol
+	function SysAddAtomUpperBuff(p as __Psz) as __Symbol
 		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
-
+		return null_symbol   
+	
 	/// <summary>
 	/// Determine whether a __Symbol is in the atom table.
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysFindAtom(p AS __Psz) AS __Symbol
+	function SysFindAtom(p as __Psz) as __Symbol
 		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
-
+		return null_symbol   
+	
 	/// <summary>
 	/// Convert a __Symbol to a null-terminated string.
 	/// </summary>
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysGetAtomName(s AS __Symbol) AS __Psz
+	function SysGetAtomName(s as __Symbol) as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION TimePsz() AS __Psz
+	function TimePsz() as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
-
+		return __PSZ._NULL_PSZ 
+	
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION TimePsz24() AS __Psz
+	function TimePsz24() as __Psz
 		/// THROW NotImplementedException{}
-	RETURN __PSZ._NULL_PSZ 
+		return __PSZ._NULL_PSZ 
+	
+#endregion
 
-	#endregion
+
+
+/// <summary>
+/// </summary>
+/// <param name="pszSource"></param>
+/// <returns>
+/// </returns>
+function __UpperPsz(pszSource as __Psz) as __Psz
+	/// THROW NotImplementedException{}
+	return	 (__Psz) IntPtr.Zero  

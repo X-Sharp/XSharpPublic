@@ -12,7 +12,7 @@ using XSharp
 /// <returns>
 /// An uninitialized of the given length.
 /// </returns>
-FUNCTION __ArrayCreate(dwDim AS DWORD) AS __Array 
+FUNCTION ArrayCreate(dwDim AS DWORD) AS __Array 
 	RETURN __Array{(int)dwDim}
 
 /// <summary>
@@ -22,13 +22,13 @@ FUNCTION __ArrayCreate(dwDim AS DWORD) AS __Array
 /// <param name="ptrBuff"></param>
 /// <returns>
 /// </returns>
-unsafe FUNCTION __ArrayInit(dwDim AS DWORD,ptrBuff AS PTR) AS __Array
+unsafe FUNCTION ArrayInit(dwDim AS DWORD,ptrBuff AS PTR) AS __Array 
 	/// THROW NotImplementedException{}
 RETURN NULL
 
 
 	/// <summary>
-	/// Add a new element to the end of an __Array.
+	/// Add a new element to the end of an Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="x"></param>
@@ -48,7 +48,7 @@ RETURN NULL
 		RETURN (__Array) a:Clone()
 
 	/// <summary>
-	/// Duplicate an __Array without its sub__Arrays.
+	/// Duplicate an Array without its sub__Arrays.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
@@ -57,7 +57,7 @@ RETURN NULL
 		RETURN (__Array) a:CloneShallow()
 
 	/// <summary>
-	/// Delete an __Array element.
+	/// Delete an Array element.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
@@ -86,7 +86,7 @@ RETURN NULL
 	RETURN String.Empty
 
 	/// <summary>
-	/// Insert an element into an __Array and assign it a NIL value.
+	/// Insert an element into an Array and assign it a NIL value.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
@@ -97,7 +97,7 @@ RETURN NULL
 	RETURN a
 
 	/// <summary>
-	/// Return the number of elements in an __Array.
+	/// Return the number of elements in an Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
@@ -129,19 +129,19 @@ RETURN NULL
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __ArrayDeProtect(a AS __Array) AS LOGIC
+	FUNCTION ArrayDeProtect(a AS __Array) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Read an __Array element.
+	/// Read an Array element.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
     
-	FUNCTION __ArrayGet(a AS __Array,dwEl AS DWORD) AS __USUAL
+	FUNCTION ArrayGet(a AS __Array,dwEl AS DWORD) AS __USUAL
 	return a:__GetElement( (int) dwEl-1)
     
 	/// <summary>
@@ -150,53 +150,53 @@ RETURN NULL
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	UNSAFE FUNCTION __ArrayGetPtr(a AS __Array,dwEl AS DWORD) AS PTR
+	UNSAFE FUNCTION ArrayGetPtr(a AS __Array,dwEl AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN NULL   
 
 	/// <summary>
-	/// Protect an __Array from change in all functions except the one in which it was declared.
+	/// Protect an Array from change in all functions except the one in which it was declared.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __ArrayProtect(a AS __Array) AS LOGIC
+	FUNCTION ArrayProtect(a AS __Array) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Write a value to an __Array element.
+	/// Write a value to an Array element.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __ArrayPut(a AS __Array,dwEl AS DWORD,u AS __USUAL) AS __USUAL
+	FUNCTION ArrayPut(a AS __Array,dwEl AS DWORD,u AS __USUAL) AS __USUAL
 		a:__SetElement(u, (int)dwEl -1)
 	RETURN u
 
 	/// <summary>
-	/// Store an __Array to a buffer.
+	/// Store an Array to a buffer.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="Buff"></param>
 	/// <param name="dwLen"></param>
 	/// <returns>
 	/// </returns>
-	UNSAFE FUNCTION __ArrayStore(a AS __Array,Buff AS PTR,dwLen AS DWORD) AS DWORD
+	UNSAFE FUNCTION ArrayStore(a AS __Array,Buff AS PTR,dwLen AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Replace an __Array element with a new value and return the old value.
+	/// Replace an Array element with a new value and return the old value.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __ArraySwap(a AS __Array,dwEl AS DWORD,u AS __USUAL) AS __USUAL
+	FUNCTION ArraySwap(a AS __Array,dwEl AS DWORD,u AS __USUAL) AS __USUAL
 	RETURN a:Swap(dwEl, u)
 
 	/// <summary>
@@ -222,7 +222,7 @@ RETURN NULL
 	RETURN 0   
 
 	/// <summary>
-	/// Grow or shrink an __Array.
+	/// Grow or shrink an Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwDim"></param>
@@ -238,7 +238,7 @@ RETURN NULL
 
 
 	/// <summary>
-	/// Return the highest numbered element of an __Array.
+	/// Return the highest numbered element of an Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
@@ -247,7 +247,7 @@ RETURN NULL
 		RETURN a:Tail()
 
 	/// <summary>
-	/// Return the highest numbered element of an __Array.
+	/// Return the highest numbered element of an Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
@@ -256,3 +256,115 @@ RETURN NULL
 		RETURN a:Tail()
 
 
+
+
+	/// <summary>
+	/// Copy elements from one __Array to another.
+	/// </summary>
+	/// <param name="a"></param>
+	/// <param name="aDest"></param>
+	/// <param name="nStart"></param>
+	/// <param name="nCount"></param>
+	/// <param name="nStartDest"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION ACopy(a AS __Usual,aDest AS __Usual,nStart AS __Usual,nCount AS __Usual,nStartDest AS __Usual) AS __Array
+		/// THROW NotImplementedException{}
+	RETURN NULL_ARRAY   
+
+
+	/// <summary>
+	/// Fill __Array elements with a specified value.
+	/// </summary>
+	/// <param name="a"></param>
+	/// <param name="x"></param>
+	/// <param name="iStart"></param>
+	/// <param name="iCount"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION AFill(a AS __Usual,x AS __Usual,iStart AS __Usual,iCount AS __Usual) AS __Array
+		/// THROW NotImplementedException{}
+	RETURN NULL_ARRAY   
+
+
+	/// <summary>
+	/// Create an empty __Array.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+	FUNCTION ArrayBuild() AS __Array
+	RETURN __Array{}
+
+		/// <summary>
+	/// Create an uninitialized __Array with the specified number of elements and dimensions.
+	/// </summary>
+	/// <param name="nDim"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION ArrayNew(nDim AS __Usual) AS __Array
+		/// THROW NotImplementedException{}
+	RETURN NULL_ARRAY   
+
+
+	/// <summary>
+	/// To create an Array and fill its elements with a default value.
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="nCount"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION AReplicate<T>(x AS __Usual,nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+		var a:=__ArrayBase<T>{(int)nCount} 
+		//Todo
+		//__Array.ArrayFill(a,x)
+	RETURN a
+
+
+
+
+	/// <summary>
+	/// Sort an Array.
+	/// </summary>
+	/// <param name="a"></param>
+	/// <param name="iStart"></param>
+	/// <param name="iCount"></param>
+	/// <param name="cb"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION ASort(a AS __Usual,iStart AS __Usual,iCount AS __Usual,cb AS __Usual) AS __Array
+		/// THROW NotImplementedException{}
+	return null_array  
+
+/// <summary>
+/// </summary>
+/// <param name="a"></param>
+/// <param name="n1"></param>
+/// <returns>
+/// </returns>
+function _ArrayGetPoly(a as __Usual,n1 as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+return	 __Usual._NIL   
+
+
+/// <summary>
+/// </summary>
+/// <param name="a"></param>
+/// <param name="x"></param>
+/// <param name="n1"></param>
+/// <returns>
+/// </returns>
+function _ArrayPutCollection(a as __Usual,x as __Usual,n1 as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+return	 __Usual._NIL   
+
+
+/// <summary>
+/// </summary>
+/// <param name="a"></param>
+/// <param name="x"></param>
+/// <param name="n1"></param>
+/// <returns>
+/// </returns>
+function _ArrayPutPoly(a as __Usual,x as __Usual,n1 as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+return	 __Usual._NIL  

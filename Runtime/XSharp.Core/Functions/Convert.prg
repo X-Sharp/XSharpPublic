@@ -150,15 +150,6 @@ FUNCTION LoWord(dw AS DWORD) AS WORD
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION Multi2Wide(c AS STRING) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
 
 
 /// <summary>
@@ -182,12 +173,14 @@ FUNCTION Real82Bin(n AS REAL8) AS STRING
 	RETURN System.Text.Encoding.ASCII:GetString(byteArray)   
 
 
-/// <summary>
+
+
+	/// <summary>
+/// Convert a word to a string containing a 16-bit unsigned integer.
 /// </summary>
-/// <param name="cBstr"></param>
+/// <param name="n"></param>
 /// <returns>
 /// </returns>
-FUNCTION Wide2Multi(cBstr AS STRING) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
+FUNCTION W2Bin(n AS WORD) AS STRING
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)    

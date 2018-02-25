@@ -392,7 +392,8 @@ namespace XSharpModel
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    Debug.WriteLine(e.Message);
             }
             return outputFile;
         }

@@ -83,7 +83,8 @@ namespace XSharp.CodeDom
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             //
             return ccu;

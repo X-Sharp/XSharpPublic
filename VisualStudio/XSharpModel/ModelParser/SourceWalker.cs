@@ -113,7 +113,8 @@ namespace XSharpModel
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 
             }
             System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.Lex()");

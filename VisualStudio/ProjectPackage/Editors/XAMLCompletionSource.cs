@@ -68,7 +68,7 @@ namespace XSharpLanguage
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            Trace.WriteLine("-->> XAML AugmentCompetionSessions");
+            Trace.WriteLine("-->> XAML AugmentCompletionSessions");
             try
             {
                 // Where does the StartSession has been triggered ?
@@ -91,28 +91,22 @@ namespace XSharpLanguage
                 CompletionList compList = new CompletionList();
                 ///
                 /// 
-                compList.Add(new XSCompletion("XSDummy", "XSDummy", "XSDummy Description", null, null, Kind.Class));
+                //compList.Add(new XSCompletion("XSDummy", "XSDummy", "XSDummy Description", null, null, Kind.Class));
                 ///
                 // Sort in alphabetical order
                 // and put in the SelectionList
                 var values = compList.Values;
-                //if ( completionSets.Count > 0 )
-                //{
-                //    var set = completionSets[0];
-                //    foreach( var value in values )
-                //        set.Completions.Add(value);
-                //}
-                //else
+                if (values.Count > 0 )
                     completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("XAML AugmentCompetionSessions: " + ex.Message);
+                Trace.WriteLine("XAML AugmentCompletionSessions: " + ex.Message);
             }
             finally
             {
             }
-            Trace.WriteLine("<<-- XAML AugmentCompetionSessions");
+            Trace.WriteLine("<<-- XAML AugmentCompletionSessions");
         }
 
         public void Dispose()

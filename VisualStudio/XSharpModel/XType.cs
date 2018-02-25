@@ -24,7 +24,6 @@ namespace XSharpModel
         private List<XTypeMember> _members;
         private string _nameSpace;
         private bool _isPartial;
-        private bool _isStatic;
         private string _parentName;
 
         public XType(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position)
@@ -146,19 +145,6 @@ namespace XSharpModel
                     default:
                         return false;
                 }
-            }
-        }
-
-        public bool IsStatic
-        {
-            get
-            {
-                return _isStatic;
-            }
-
-            set
-            {
-                _isStatic = value;
             }
         }
 

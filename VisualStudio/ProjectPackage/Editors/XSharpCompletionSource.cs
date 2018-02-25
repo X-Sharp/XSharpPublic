@@ -78,7 +78,7 @@ namespace XSharpLanguage
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            Trace.WriteLine("-->> AugmentCompetionSessions");
+            Trace.WriteLine("-->> AugmentCompletionSessions");
             try
             {
                 XSharpModel.ModelWalker.Suspend();
@@ -440,13 +440,13 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("AugmentCompetionSessions: " + ex.Message);
+                Trace.WriteLine("AugmentCompletionSessions: " + ex.Message);
             }
             finally
             {
                 XSharpModel.ModelWalker.Resume();
             }
-            Trace.WriteLine("<<-- AugmentCompetionSessions");
+            Trace.WriteLine("<<-- AugmentCompletionSessions");
         }
 
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)

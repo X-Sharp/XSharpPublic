@@ -118,7 +118,9 @@ namespace XSharp.Project
                       this.InvokeGeneratorEx(node, document, runEvenIfNotDirty);
                    }
                    catch (Exception e)
-                   { Debug.WriteLine(e.Message);
+                   {
+                        if (System.Diagnostics.Debugger.IsAttached)
+                            Debug.WriteLine(e.Message);
                    }
                 }
             }
@@ -400,7 +402,8 @@ namespace XSharp.Project
                             }
                             catch (Exception e)
                             {
-                                Debug.WriteLine(e);
+                                if (System.Diagnostics.Debugger.IsAttached)
+                                    Debug.WriteLine(e);
                             }
                             if (!String.IsNullOrEmpty(extension))
                                 dependentNodeName = Path.GetFileNameWithoutExtension(fileNode.FileName) + extension;

@@ -1462,8 +1462,8 @@ namespace XSharpLanguage
             // return "OUR" copy of the assembly. Most likely we have it
             var name = args.Name;
             var request = args.RequestingAssembly;
-            var asm = SystemTypeController.FindAssemblyByName(name);
-            return asm;
+            var asmLoc = SystemTypeController.FindAssemblyByName(name);
+            return AssemblyInfo.LoadAssemblyFromFile(asmLoc);
         }
 
         private void addParameters(MemberInfo member, ParameterInfo[] parameters)

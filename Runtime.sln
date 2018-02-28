@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Runtime.Tests", "Runtime\XSharp.Runtime.Tests\XSharp.Runtime.Tests.xsproj", "{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}"
 EndProject
@@ -12,13 +12,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-7
 		Runtime\Docs\RuntimeSpecsV2.docx = Runtime\Docs\RuntimeSpecsV2.docx
 	EndProjectSection
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Base", "Runtime\XSharp.Base\XSharp.Base.xsproj", "{214B74AC-5FC9-4256-9E10-6BDFE5B12CE0}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD", "Runtime\XSharp.Rdd\XSharp.RDD.xsproj", "{E83C6C8C-773F-4B01-A597-3D38398A9362}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core", "Runtime\XSharp.Core\XSharp.Core.xsproj", "{535DFF14-EFB7-43F5-A4E1-71C1C4280040}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO", "Runtime\XSharp.VO\XSharp.VO.xsproj", "{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E600EC1-23D2-48D5-8301-0F4BF1C1D250}"
+	ProjectSection(SolutionItems) = preProject
+		Common\BuildNumber.h = Common\BuildNumber.h
+		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
+		Common\commonAssemblyInfo.prg = Common\commonAssemblyInfo.prg
+		Common\Constants.cs = Common\Constants.cs
+		Common\constants.prg = Common\constants.prg
+		Common\README.md = Common\README.md
+		Common\version.xh = Common\version.xh
+		Common\XSharpDefs.xh = Common\XSharpDefs.xh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,10 +40,6 @@ Global
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{214B74AC-5FC9-4256-9E10-6BDFE5B12CE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{214B74AC-5FC9-4256-9E10-6BDFE5B12CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{214B74AC-5FC9-4256-9E10-6BDFE5B12CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{214B74AC-5FC9-4256-9E10-6BDFE5B12CE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Release|Any CPU.ActiveCfg = Release|Any CPU

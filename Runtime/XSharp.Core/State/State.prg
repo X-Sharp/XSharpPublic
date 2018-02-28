@@ -312,16 +312,17 @@ CLASS XSharp.Runtime.State
 				SetValue(Set.DATECOUNTRY, 0)	
 		END SWITCH
 
+	private _workareas as WorkAreas
+	public property Workareas as WorkAreas
+	get
+		if _workareas == null_object
+			_workareas := WorkAreas{}
+		endif
+		return _workareas
+	end get
+	end property
 END CLASS
 
 
-ENUM AutoShareMode
-	MEMBER NoChange		 := 0
-	MEMBER Auto	  		 := 1
-	MEMBER ForeExclusive := 2
-END ENUM
 
-ENUM CollationMode
-	MEMBER WINDOWS
-	MEMBER CLIPPER
-END ENUM
+

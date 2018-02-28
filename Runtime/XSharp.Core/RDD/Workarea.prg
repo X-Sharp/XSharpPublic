@@ -5,44 +5,44 @@
 //
 #using System.IO
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp
 
 CLASS Workarea IMPLEMENTS IRdd  
 	// This class does NOT implement file based (DBF stuff). 
 	// That is handled in the DBF class which inherits from RddBase
 	#region Fields
-	INTERNAL _Area			AS LONG		// Workarea Number (1 based)
-	INTERNAL _Alias			AS STRING	// Unique Alias
-	INTERNAL _FileName		AS STRING
-	INTERNAL _Fields		AS RddFieldInfo[]	// List of Fields
-	INTERNAL _Bof			AS LOGIC	// Is BOF ?
-	INTERNAL _Bottom		AS LOGIC	// Is at Bottom ?
-	INTERNAL _Eof			AS LOGIC	// Is EOF
-	INTERNAL _Found			AS LOGIC	// Is Found ?
-	INTERNAL _Top			AS LOGIC	// Is at Top
-	INTERNAL _Result		AS OBJECT                
-	INTERNAL _ScopeInfo		AS DbScopeInfo
-	INTERNAL _FilterInfo	AS DbFilterInfo  
-	INTERNAL _OrderCondInfo	AS DbOrderCondInfo
-	INTERNAL _RelInfo		AS DbRelInfo
-	INTERNAL _Parents		AS LONG		// # of parents   
-	INTERNAL _MaxFieldNameLength AS LONG	// 
+	PUBLIC _Area			AS LONG		// Workarea Number (1 based)
+	PUBLIC _Alias			AS STRING	// Unique Alias
+	PUBLIC _FileName		AS STRING
+	PUBLIC _Fields		AS RddFieldInfo[]	// List of Fields
+	PUBLIC _Bof			AS LOGIC	// Is BOF ?
+	PUBLIC _Bottom		AS LOGIC	// Is at Bottom ?
+	PUBLIC _Eof			AS LOGIC	// Is EOF
+	PUBLIC _Found			AS LOGIC	// Is Found ?
+	PUBLIC _Top			AS LOGIC	// Is at Top
+	PUBLIC _Result		AS OBJECT                
+	PUBLIC _ScopeInfo		AS DbScopeInfo
+	PUBLIC _FilterInfo	AS DbFilterInfo  
+	PUBLIC _OrderCondInfo	AS DbOrderCondInfo
+	PUBLIC _RelInfo		AS DbRelInfo
+	PUBLIC _Parents		AS LONG		// # of parents   
+	PUBLIC _MaxFieldNameLength AS LONG	// 
 
 	// Some flags that are stored here but managed in subclasses
-	INTERNAL _TransRec		AS LOGIC
-	INTERNAL _RecordLength	AS WORD   	// Size of record
-	INTERNAL _RecordBuffer	AS BYTE[]	// Current Record
-	INTERNAL _BufferSize		AS LONG
-	INTERNAL _Delimiter		AS STRING	// Field Delimiter
-	INTERNAL _Separator	    AS STRING	// Field Separator
-	INTERNAL _ReadOnly		AS LOGIC	// ReadOnly ?  
-	INTERNAL _Shared		AS LOGIC	// Shared ?  
-	INTERNAL _Stream		AS FileStream // File. 
-	INTERNAL _Flush			AS LOGIC		// Must flush ? 
+	PUBLIC _TransRec		AS LOGIC
+	PUBLIC _RecordLength	AS WORD   	// Size of record
+	PUBLIC _RecordBuffer	AS BYTE[]	// Current Record
+	PUBLIC _BufferSize		AS LONG
+	PUBLIC _Delimiter		AS STRING	// Field Delimiter
+	PUBLIC _Separator	    AS STRING	// Field Separator
+	PUBLIC _ReadOnly		AS LOGIC	// ReadOnly ?  
+	PUBLIC _Shared		AS LOGIC	// Shared ?  
+	PUBLIC _Stream		AS FileStream // File. 
+	PUBLIC _Flush			AS LOGIC		// Must flush ? 
 
 	// Memo and Order Implementation
-	INTERNAL _Memo			AS IMemo
-	INTERNAL _Order			AS IOrder
+	PUBLIC _Memo			AS IMemo
+	PUBLIC _Order			AS IOrder
 
 	#endregion
 
@@ -64,7 +64,7 @@ CLASS Workarea IMPLEMENTS IRdd
 		SELF:_Alias		 := String.Empty
 		SELF:_RecordBuffer := NULL
 			
-VIRTUAL METHOD DbEval(info AS XSharp.RDD.DbEvalInfo) AS LOGIC
+VIRTUAL METHOD DbEval(info AS XSharp.DbEvalInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 
@@ -224,10 +224,10 @@ VIRTUAL METHOD Close( ) AS LOGIC
 	// close all parent relations
 	RETURN TRUE
 
-VIRTUAL METHOD Create(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+VIRTUAL METHOD Create(info AS XSharp.DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+VIRTUAL METHOD Open(info AS XSharp.DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD ClearFilter( ) AS LOGIC
@@ -248,7 +248,7 @@ VIRTUAL METHOD ClearScope( ) AS LOGIC
 VIRTUAL METHOD Continue( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD GetScope( ) AS XSharp.RDD.DbScopeInfo
+VIRTUAL METHOD GetScope( ) AS XSharp.DbScopeInfo
 	IF SELF:_ScopeInfo != NULL_OBJECT
 		RETURN SELF:_ScopeInfo:Clone()
 	ENDIF
@@ -257,7 +257,7 @@ VIRTUAL METHOD GetScope( ) AS XSharp.RDD.DbScopeInfo
 VIRTUAL METHOD ScopeInfo(nOrdinal AS INT) AS OBJECT
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD SetFilter(info AS XSharp.RDD.DbFilterInfo) AS LOGIC
+VIRTUAL METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
 	SELF:ClearFilter()
 	IF (info != NULL_OBJECT)
 		SELF:_FilterInfo := info:Clone()
@@ -265,7 +265,7 @@ VIRTUAL METHOD SetFilter(info AS XSharp.RDD.DbFilterInfo) AS LOGIC
 	ENDIF
 	RETURN TRUE
 
-VIRTUAL METHOD SetScope(info AS XSharp.RDD.DbScopeInfo) AS LOGIC
+VIRTUAL METHOD SetScope(info AS XSharp.DbScopeInfo) AS LOGIC
 	SELF:ClearScope()
 	IF (info != NULL_OBJECT)
 		SELF:_ScopeInfo := info:Clone()
@@ -333,13 +333,13 @@ VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	RETURN _Memo:PutValueFile(nFldPos, fileName )
 
-VIRTUAL METHOD AppendLock(uiMode AS XSharp.RDD.DbLockMode) AS LOGIC
+VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD HeaderLock(uiMode AS XSharp.RDD.DbLockMode) AS LOGIC
+VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD Lock(uiMode AS XSharp.RDD.DbLockMode) AS LOGIC
+VIRTUAL METHOD Lock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD UnLock(oRecId AS OBJECT) AS LOGIC
@@ -348,7 +348,7 @@ VIRTUAL METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 	RETURN SELF:_Memo:CloseMemFile()
 
-VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 	RETURN SELF:_Memo:CreateMemFile(info)
 
 VIRTUAL METHOD OpenMemFile( ) AS LOGIC
@@ -356,13 +356,13 @@ VIRTUAL METHOD OpenMemFile( ) AS LOGIC
 
 #region Orders Not implemented
 
-VIRTUAL METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
+VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 	RETURN SELF:_Order:OrderCondition(info)
 
-VIRTUAL METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
+VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 	RETURN SELF:_Order:OrderCreate(info)
 
-VIRTUAL METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderDestroy(info)
 
 VIRTUAL METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
@@ -371,32 +371,32 @@ VIRTUAL METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
     */
    	RETURN SELF:_Order:OrderInfo(nOrdinal)
 
-VIRTUAL METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderListAdd(info)
 
-VIRTUAL METHOD OrderListDelete(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+VIRTUAL METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderListDelete(info)
 
-VIRTUAL METHOD OrderListFocus(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+VIRTUAL METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderListFocus(info)
 
 VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
 	RETURN SELF:_Order:OrderListRebuild()
 
-VIRTUAL METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC
+VIRTUAL METHOD Seek(info AS DbSeekInfo) AS LOGIC
 	RETURN SELF:_Order:Seek(info)
 #endregion
 
 
 #region Relations
             
-VIRTUAL METHOD ChildEnd(info AS XSharp.RDD.DbRelInfo) AS LOGIC
+VIRTUAL METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD ChildStart(info AS XSharp.RDD.DbRelInfo) AS LOGIC
+VIRTUAL METHOD ChildStart(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD ChildSync(info AS XSharp.RDD.DbRelInfo) AS LOGIC
+VIRTUAL METHOD ChildSync(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD ClearRel( ) AS LOGIC
@@ -408,13 +408,13 @@ VIRTUAL METHOD ForceRel( ) AS LOGIC
 VIRTUAL METHOD RelArea(nRelNum AS INT) AS INT
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD RelEval(info AS XSharp.RDD.DbRelInfo) AS LOGIC
+VIRTUAL METHOD RelEval(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD RelText(nRelNum AS INT) AS STRING
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD SetRel(info AS XSharp.RDD.DbRelInfo) AS LOGIC
+VIRTUAL METHOD SetRel(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD SyncChildren( ) AS LOGIC
@@ -424,10 +424,10 @@ VIRTUAL METHOD SyncChildren( ) AS LOGIC
 
 #region Trans not implemented
 
-VIRTUAL METHOD Trans(info AS XSharp.RDD.DbTransInfo) AS LOGIC
+VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD TransRec(info AS XSharp.RDD.DbTransInfo) AS LOGIC
+VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 #endregion
@@ -510,7 +510,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 		END SWITCH
 		RETURN oResult
 
-	VIRTUAL METHOD Sort(info AS XSharp.RDD.DbSortInfo) AS LOGIC
+	VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
 
 	VIRTUAL PROPERTY Alias AS STRING GET _Alias

@@ -153,11 +153,6 @@
     <Folder Include="Types\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">
-      <Name>XSharp.Base</Name>
-      <Project>{214b74ac-5fc9-4256-9e10-6bdfe5b12ce0}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>

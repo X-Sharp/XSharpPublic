@@ -7,7 +7,7 @@
 USING System
 USING System.Runtime.InteropServices
 
-BEGIN NAMESPACE AdvantageClientEngine
+BEGIN NAMESPACE XSharp.Ads
 STATIC Class ACE
 
     #region Constants

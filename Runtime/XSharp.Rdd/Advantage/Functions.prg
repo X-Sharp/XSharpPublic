@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-using AdvantageClientEngine
+using XSharp.Ads
 
 
 // Return the AXS locking status

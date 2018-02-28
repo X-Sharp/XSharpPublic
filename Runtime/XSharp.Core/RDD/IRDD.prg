@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-INTERFACE XSharp.RDD.IRDD
+INTERFACE XSharp.IRDD
 	// Navigation         
 	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
 	METHOD GoTop() AS LOGIC

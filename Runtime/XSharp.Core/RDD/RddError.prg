@@ -3,7 +3,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp
 
 	CLASS RddError INHERIT Error
     CONSTRUCTOR()

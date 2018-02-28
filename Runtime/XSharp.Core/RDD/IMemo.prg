@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-INTERFACE XSharp.RDD.IMemo
+INTERFACE XSharp.IMemo
 	
 	// Read & Write		
 	METHOD GetValue(nFldPos AS INT) AS OBJECT

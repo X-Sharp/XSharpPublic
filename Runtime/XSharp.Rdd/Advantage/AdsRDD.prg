@@ -10,12 +10,11 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp
 USING XSharp.RDD
-using AdvantageClientEngine
 
 /// <summary>
-/// The Ads class.
+/// The AdsRDD class.
 /// </summary>
-CLASS XSharp.RDD.AdsRDD Inherit Workarea
+CLASS XSharp.Ads.AdsRDD Inherit Workarea
 #region Fields
     //PRIVATE m_CallbackFn AS CallbackFn
     //PRIVATE m_CalltraceFile AS System.IO.StreamWriter

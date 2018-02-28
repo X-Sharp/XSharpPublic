@@ -1,4 +1,8 @@
 // error XS9002: Parser: unexpected input 'FORLOCALn:=1ASINTUPTO100CRLFAAdd({},{1,AsType'
+
+// updated to:
+// error XS9002: Parser: unexpected input 'FORLOCALn:=1ASINTUPTO100CRLFAAdd({},{1,REF'
+
 // problem in code is that the kwywords ASTYPE and REPEAT are used as identifiers
 // the parser error messages need to be improved, because right now they do not help
 // finding what exactly the offending code is. Real code having that problem was a 3000 lines source file..
@@ -11,7 +15,8 @@ CLASS TestClass
 		IF TRUE .and. FALSE .or. TRUE
 			? "test"
 			FOR LOCAL n := 1 AS INT UPTO 100
-				AAdd({} , {1,AsType(123)})
+//				AAdd({} , {1,AsType(123)})
+				AAdd({} , {1,REF(123)})
 			NEXT
 		ELSE
 			? "test"

@@ -1,4 +1,4 @@
-
+// Already reported as C417, vulcan also does not support this
 FUNCTION Start( ) AS VOID
 	LOCAL oName AS IName
 	LOCAL uName AS USUAL

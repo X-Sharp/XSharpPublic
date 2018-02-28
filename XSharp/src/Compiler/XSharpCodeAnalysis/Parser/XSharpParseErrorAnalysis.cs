@@ -27,17 +27,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private IList<ParseErrorData> _parseErrors;
 
 
-        private void checkMissingIdentifier(object identifier, IToken before)
-        {
-            if (identifier == null)
-            {
-                var err = ErrorCode.ERR_SyntaxError;
-                IToken anchor = before;
-                var errdata = new ParseErrorData(anchor, err, "Identifier");
-                _parseErrors.Add(errdata);
-            }
-            return;
-        }
         private void checkMissingKeyword(object endToken, ParserRuleContext context, string msg)
         {
             if (endToken == null)
@@ -121,50 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //}
         }
 
-
-        public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
-        {
-            checkMissingIdentifier(context.Name, context.e.Start); 
-        }
-
-        public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
-        {
-            checkMissingIdentifier(context.Id, context.e.Start);
-        }
-        public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
-        {
-            checkMissingIdentifier(context.Id, context.e.Start);
-        }
-
-        public override void ExitEvent_([NotNull] XSharpParser.Event_Context context)
-        {
-            checkMissingIdentifier(context.Id, context.end.Start);
-        }
-        public override void ExitDelegate_([NotNull] XSharpParser.Delegate_Context context)
-        {
-            checkMissingIdentifier(context.Id, context.e.Start);
-        }
-        public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
-        {
-            checkMissingIdentifier(context.Id, context.e.Start);
-        }
-
-        public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
-        {
-            checkMissingIdentifier(context.Id, context.e.Start);
-        }
-
-        public override void ExitVostruct([NotNull] XSharpParser.VostructContext context)
-        {
-            checkMissingIdentifier(context.Id, context.e.Start);
-        }
-
-        public override void ExitVounion([NotNull] XSharpParser.VounionContext context)
-        {
-            checkMissingIdentifier(context.Id, context.e.Start);
-        }
         // Check for missing end keywords for statement blocks
-
 
         public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)
         {

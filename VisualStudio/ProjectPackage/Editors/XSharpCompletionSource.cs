@@ -24,6 +24,7 @@ using System.Collections.Immutable;
 using XSharpColorizer;
 using XSharp.Project.OptionsPages;
 using System.Runtime.CompilerServices;
+using Microsoft.VisualStudio.Text.Tagging;
 
 namespace XSharpLanguage
 {
@@ -38,10 +39,13 @@ namespace XSharpLanguage
         [Import]
         internal IGlyphService GlyphService = null;
 
+        [Import]
+        IBufferTagAggregatorFactoryService aggregator = null;
+
         public ICompletionSource TryCreateCompletionSource(ITextBuffer textBuffer)
         {
 
-            return new XSharpCompletionSource(this, textBuffer);
+            return new XSharpCompletionSource(this, textBuffer, aggregator);
         }
     }
 
@@ -57,6 +61,7 @@ namespace XSharpLanguage
         private XFile _file;
         private bool showTabs;
         private bool dotUniversal;
+        private IBufferTagAggregatorFactoryService aggregator;
 
         internal static bool StringEquals(string lhs, string rhs)
         {
@@ -65,7 +70,7 @@ namespace XSharpLanguage
             return false;
         }
 
-        public XSharpCompletionSource(XSharpCompletionSourceProvider provider, ITextBuffer buffer)
+        public XSharpCompletionSource(XSharpCompletionSourceProvider provider, ITextBuffer buffer, IBufferTagAggregatorFactoryService aggregator)
         {
             _provider = provider;
             _buffer = buffer;
@@ -74,6 +79,7 @@ namespace XSharpLanguage
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             _settingIgnoreCase = true;
             _stopToken = null;
+            this.aggregator = aggregator;
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -105,6 +111,35 @@ namespace XSharpLanguage
                 this._stopToken = null;
                 // What is the character were it starts ?
                 var line = triggerPoint.GetContainingLine();
+                ////////////////////////////////////////////
+                //
+                SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
+                SnapshotPoint caret = triggerPoint;
+                var tagAggregator = aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
+                var tags = tagAggregator.GetTags(lineSpan);
+                //List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
+                IMappingTagSpan<IClassificationTag> lastTag = null;
+                foreach (var tag in tags)
+                {
+                    //tagList.Add(tag);
+                    SnapshotPoint ptStart = tag.Span.Start.GetPoint(_buffer, PositionAffinity.Successor).Value;
+                    SnapshotPoint ptEnd = tag.Span.End.GetPoint(_buffer, PositionAffinity.Successor).Value;
+                    //tagList.Add(tag);
+                    if ((ptStart != null) && (ptEnd != null))
+                        if ((caret.Position >= ptStart.Position) && (caret.Position <= ptEnd.Position))
+                        {
+                            lastTag = tag;
+                            break;
+                        }
+                }
+                if (lastTag != null)
+                {
+                    var name = lastTag.Tag.ClassificationType.Classification.ToLower();
+                    // No Intellisense in Comment
+                    if (name == "comment")
+                        return;
+                }
+                ////////////////////////////////////////////
                 SnapshotPoint start = triggerPoint;
                 //while (start > line.Start && !char.IsWhiteSpace((start - 1).GetChar()))
                 //{

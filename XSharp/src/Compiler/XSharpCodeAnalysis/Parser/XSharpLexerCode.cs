@@ -147,6 +147,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         kwtype = fixPositionalKeyword(kwtype, lastToken);
                         token.Type = kwtype;
+                        if (kwtype == MACRO)
+                        {
+                            HasPPMacros = true;
+                            HasPreprocessorTokens = true;
+                        }
                         return true;
                     }
                 }
@@ -192,7 +197,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool HasPPRegions { get; private set; }
         public bool HasPPMessages { get; private set; }
         public bool HasPPUDCs { get; private set; }
-        public bool MustBeProcessed => HasPPMessages || HasPPUDCs || HasPPIncludes;
+        public bool HasPPMacros { get; private set; }
+        public bool MustBeProcessed => HasPPMessages || HasPPUDCs || HasPPIncludes || HasPPMacros;
         bool _inDottedIdentifier = false;     
         bool _inPp = false;
         bool _hasEos = true;
@@ -876,7 +882,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else if (type == SYMBOL_CONST && (LastToken == NL || LastToken == UDCSEP))
             {
                 int symtype;
-                if (SymIds.TryGetValue(t.Text, out symtype))
+                if (SymPPIds.TryGetValue(t.Text, out symtype))
                 {
                     t.Type = symtype;
                     _inPp = true;
@@ -1492,7 +1498,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        static IDictionary<string, int> _symIds;
+        static IDictionary<string, int> _symPPIds;
 
         private IDictionary<string, int> _getppIds()
         {
@@ -1523,19 +1529,19 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return symIds.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
         }
 
-        public IDictionary<string, int> SymIds
+        public IDictionary<string, int> SymPPIds
         {
             get
             {
-                if (_symIds == null)
+                if (_symPPIds == null)
                 {
 
                     lock (kwlock)
                     {
-                        _symIds = _getppIds();
+                        _symPPIds = _getppIds();
                     }
                 }
-                return _symIds;
+                return _symPPIds;
             }
         }
 

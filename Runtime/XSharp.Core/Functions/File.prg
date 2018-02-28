@@ -13,6 +13,7 @@ USING Microsoft.Win32.SafeHandles
 USING System.Runtime
 USING System.Runtime.ConstrainedExecution
 
+
 BEGIN NAMESPACE XSharp.IO
 	
 	STATIC CLASS FileHelper
@@ -20,7 +21,8 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC enumerator   := NULL AS IEnumerator 
 		STATIC currentItem	:= NULL AS OBJECT
 		STATIC isAtEnd		:= TRUE AS LOGIC
-		STATIC errorCode:= 0 AS DWORD
+		static errorCode	:= 0 as dword
+		const timeFormat := "HH:MM:ss" as String
 		
 		PUBLIC STATIC METHOD FFCount( fileSpec AS STRING , attributes AS DWORD ) AS DWORD
 			FFirst(fileSpec,attributes)
@@ -29,22 +31,22 @@ BEGIN NAMESPACE XSharp.IO
 		PUBLIC STATIC METHOD FFirst( fileSpec AS STRING , attributes AS DWORD ) AS LOGIC
 			foundEntries:Clear()
 			LOCAL fileSpecification := fileSpec AS STRING
-			IF attributes == 0x00000008
+			IF attributes == FA_VOLUME
 				LOCAL allDrives := DriveInfo.GetDrives() AS DriveInfo[]
 				FOREACH  Drive AS DriveInfo IN allDrives
 					foundEntries:Add(drive)
 				NEXT
 			ELSE
-				IF ((FileAttributes)attributes & FileAttributes.Directory) == FileAttributes.Directory
+				IF (attributes & FA_DIRECTORY) == FA_DIRECTORY
 					LOCAL directories := DirectoryInfo{fileSpecification}.GetDirectories() AS DirectoryInfo[]
-					attributes -= (INT) FileAttributes.Directory
-					attributes += (INT) FileAttributes.Normal
+					attributes -= (INT) FA_DIRECTORY
+					attributes += (INT) FA_NORMAL
 					VAR selectedDirs := FROM DirectoryInfo IN directories WHERE (DirectoryInfo:Attributes & (FileAttributes) attributes ) != 0 SELECT DirectoryInfo
 					FOREACH directory AS DirectoryInfo IN selectedDirs
 						foundEntries:Add(directory)
 					NEXT 
 				ELSE
-					attributes += (INT) FileAttributes.Normal
+					attributes += (INT) FA_NORMAL
 					LOCAL files := DirectoryInfo{fileSpecification}.GetFiles() AS FileInfo[]
 					VAR selectedFiles := FROM FileInfo IN files WHERE ( FileInfo:Attributes & (FileAttributes) attributes) != 0 SELECT FileInfo
 					FOREACH file AS FileInfo IN files
@@ -98,9 +100,9 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL time := "00:00:00" AS STRING
 			IF !isAtEnd
 				IF (currentItem IS FileInfo)
-					time := ((FileInfo)currentItem):LastWriteTime.ToString("HH:MM:ss")
+					time := ((FileInfo)currentItem):LastWriteTime.ToString(timeFormat)
 				ELSEIF currentItem IS DirectoryInfo
-					time := ((DirectoryInfo) currentItem):LastWriteTime.ToString("HH:MM:ss")
+					time := ((DirectoryInfo) currentItem):LastWriteTime.ToString(timeFormat)
 				ENDIF						
 			ENDIF
 			RETURN  time
@@ -303,15 +305,15 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL num := 0x70 AS INT
 			SWITCH (mode & num)
 				CASE 0x40
-			ShareCode := 3
+					ShareCode := 3
 				CASE 0x20
-			ShareCode := 1
+					ShareCode := 1
 				CASE 0x30
-			ShareCode := 2
+					ShareCode := 2
 				CASE 0x10
-			ShareCode := 0
+					ShareCode := 0
 				CASE 0
-			ShareCode := 0
+					ShareCode := 0
 			END SWITCH
 			RETURN
 		

@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+#include "buildnumber.h"
 using System.Reflection
 using System.Runtime.CompilerServices
 using XSharp.Internal
@@ -14,4 +15,4 @@ using XSharp.Internal
 [assembly: AssemblyTitle("XSharp.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: ClassLibrary("Functions","XSharp")]
-[assembly: CompilerVersionAttribute("X# "+__VERSION__+" - dialect:Core" )]
+[assembly: CompilerVersionAttribute("X# "+VERSION_NUMBER_STR +" - dialect:Core" )]

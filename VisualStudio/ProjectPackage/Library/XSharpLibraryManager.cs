@@ -109,15 +109,15 @@ namespace XSharp.Project
         private ManualResetEvent shutDownStarted;
         private Queue<LibraryTask> requests;
 
-        private String _defaultNameSpace;
+        //private String _defaultNameSpace;
 
-        public String DefaultNameSpace
-        {
-            get
-            {
-                return this._defaultNameSpace;
-            }
-        }
+        //public String DefaultNameSpace
+        //{
+        //    get
+        //    {
+        //        return this._defaultNameSpace;
+        //    }
+        //}
 
         public XSharpLibraryManager(IServiceProvider provider)
         {
@@ -210,7 +210,7 @@ namespace XSharp.Project
             }
 
             // Unregister this object from the RDT events.
-            UnregisterRDTEvents();
+            //UnregisterRDTEvents();
 
             // Dispose the events used to syncronize the threads.
             if (null != requestPresent)
@@ -253,7 +253,7 @@ namespace XSharp.Project
             XSharpLibraryProject prjNode = new XSharpLibraryProject(Prj, hierarchy);
             library.AddNode(prjNode);
 
-            this._defaultNameSpace = prjNode.DefaultNameSpace;
+            //this._defaultNameSpace = prjNode.DefaultNameSpace;
             //Define Callback
             ProjectNode.ProjectModel.FileWalkComplete = new XProject.OnFileWalkComplete(OnFileWalkComplete);
 
@@ -487,7 +487,7 @@ namespace XSharp.Project
                 if ((xType.Kind == Kind.Class) || (xType.Kind == Kind.Structure) ||
                       (xType.Kind == Kind.Union) || (xType.Kind == Kind.VOStruct))
                 {
-                    string nSpace = this.DefaultNameSpace;
+                    string nSpace = prjNode.DefaultNameSpace;
                     int lastdot = xType.Name.LastIndexOf('.');
                     // 
                     if (lastdot > -1)
@@ -591,13 +591,7 @@ namespace XSharp.Project
             Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
             if (node != null)
             {
-                LibraryTask task = new LibraryTask(xfile.FullPath, null);
-                task.ModuleID = new XSharpModuleId(prjNode.InteropSafeHierarchy, node.ID);
-                lock (requests)
-                {
-                    requests.Enqueue(task);
-                }
-                requestPresent.Set();
+                CreateParseRequest(xfile.FullPath, new XSharpModuleId(prjNode.InteropSafeHierarchy, node.ID));
             }
         }
 

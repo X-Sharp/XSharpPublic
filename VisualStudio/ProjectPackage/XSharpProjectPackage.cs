@@ -313,6 +313,23 @@ namespace XSharp.Project
         }
 
 
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (null != _libraryManager)
+                {
+                    _libraryManager.Dispose();
+                    _libraryManager = null;
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
+
         private bool CheckKey(string editor, string extension)
         {
             var root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration);

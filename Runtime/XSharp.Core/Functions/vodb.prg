@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 USING XSharp
-USING XSharp.Rdd
 
 
 /// <summary>

@@ -21,23 +21,23 @@ CONSTRUCTOR(oRDD AS DBF)
 	SUPER(oRDD)   
 	_oRDD := oRDD
 		
-METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
+METHOD OrderCondition(info AS XSharp.DbOrderCondInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
+METHOD OrderCreate(info AS XSharp.DbOrderCreateInfo) AS LOGIC
     THROW NotImplementedException{}
-METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+METHOD OrderDestroy(info AS XSharp.DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
 	THROW NotImplementedException{}
-METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+METHOD OrderListAdd(info AS XSharp.DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderListDelete(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+METHOD OrderListDelete(info AS XSharp.DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderListFocus(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+METHOD OrderListFocus(info AS XSharp.DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 METHOD OrderListRebuild( ) AS LOGIC
 	THROW NotImplementedException{}
-METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC		
+METHOD Seek(info AS XSharp.DbSeekInfo) AS LOGIC		
     THROW NotImplementedException{}
 VIRTUAL PROPERTY Found as LOGIC	
 GET

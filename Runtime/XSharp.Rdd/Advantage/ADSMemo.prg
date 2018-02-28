@@ -10,9 +10,9 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp
 USING XSharp.RDD
-using AdvantageClientEngine
 
-CLASS XSharp.RDD.ADSMemo INHERIT BaseMemo
+
+CLASS XSharp.Ads.ADSMemo INHERIT BaseMemo
     PRIVATE oRDD as ADSRDD
 
 	CONSTRUCTOR(oArea as WorkArea)
@@ -53,7 +53,7 @@ CLASS XSharp.RDD.ADSMemo INHERIT BaseMemo
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CloseMemFile")
 
-    VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+    VIRTUAL METHOD CreateMemFile(info AS XSharp.DbOpenInfo) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CreateMemFile")
 

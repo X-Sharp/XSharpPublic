@@ -26,7 +26,7 @@ VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 	THROW NotImplementedException{}
 
-VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+VIRTUAL METHOD CreateMemFile(info AS XSharp.DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{}
 
 VIRTUAL METHOD OpenMemFile( ) AS LOGIC

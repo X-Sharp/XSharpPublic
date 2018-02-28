@@ -3,10 +3,9 @@
 	// Licensed under the Apache License, Version 2.0.  
 	// See License.txt in the project root for license information.
 //
-#USING XSharp.RDD
 #USING XSharp
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp
 	STATIC CLASS RDDHelpers
 
 		STATIC METHOD WAS AS WorkAreas

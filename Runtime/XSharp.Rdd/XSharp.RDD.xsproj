@@ -116,13 +116,8 @@
     <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\Functions.prg" />
     <Compile Include="Defines.prg" />
-    <Compile Include="Functions\RddHelpers.prg" />
-    <Compile Include="RddError.prg" />
     <Compile Include="SubCodes.prg" />
     <Compile Include="_Dummy.prg" />
-    <Compile Include="RddState.prg" />
-    <Compile Include="Types\BaseIndex.prg" />
-    <Compile Include="Types\BaseMemo.prg" />
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />
     <Compile Include="Types\DbfCdx.prg" />
@@ -134,15 +129,7 @@
     <Compile Include="Types\DbfSmt.prg" />
     <Compile Include="Types\DbMemo.prg" />
     <Compile Include="Types\DELIM.prg" />
-    <Compile Include="Types\Enums.prg" />
-    <Compile Include="Types\FileStream.prg" />
     <Compile Include="Types\SDF.prg" />
-    <Compile Include="Types\Support.prg" />
-    <Compile Include="Types\Workarea.prg" />
-    <Compile Include="Types\Workareas.prg" />
-    <Compile Include="Interfaces\IOrder.prg" />
-    <Compile Include="Interfaces\IMemo.prg" />
-    <Compile Include="Interfaces\IRDD.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -151,7 +138,6 @@
     <Folder Include="Advantage\" />
     <Folder Include="ACE" />
     <Folder Include="Types" />
-    <Folder Include="Interfaces" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -161,13 +147,12 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-    <Folder Include="Functions" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">
-      <Name>XSharp.Base</Name>
-      <Project>{214b74ac-5fc9-4256-9e10-6bdfe5b12ce0}</Project>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

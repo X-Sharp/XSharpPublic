@@ -6,10 +6,10 @@
 
 USING System
 USING XSharp.RDD
-USING AdvantageClientEngine
 
 
-CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
+
+CLASS XSharp.Ads.AXSQLRDD INHERIT ADSRDD
      PUBLIC m_hStatement AS System.IntPtr
 
     CONSTRUCTOR()

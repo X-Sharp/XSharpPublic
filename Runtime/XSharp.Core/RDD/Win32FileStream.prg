@@ -5,8 +5,8 @@
 //
 
 USING System.Runtime.InteropServices
-BEGIN NAMESPACE XSharp.RDD
-CLASS WFileStream INHERIT System.IO.FileStream
+BEGIN NAMESPACE XSharp
+CLASS Win32FileStream INHERIT System.IO.FileStream
     // Fields
     PRIVATE hFile 		AS System.IntPtr
     PRIVATE onebytebuf 	AS BYTE[] 
@@ -40,11 +40,11 @@ CLASS WFileStream INHERIT System.IO.FileStream
     VIRTUAL METHOD Flush(flushToDisk AS LOGIC) AS VOID
         IF (flushToDisk)
             //
-            WFileStream.FlushFileBuffers(SELF:hFile)
+            Win32FileStream.FlushFileBuffers(SELF:hFile)
         ENDIF
 
     VIRTUAL METHOD Lock(position AS INT64, length AS INT64) AS VOID
-        IF (! WFileStream.LockFile(SELF:hFile, (LONG)position , (LONG)(position >> 32) , (LONG)length , (LONG)(length >> 32) ))
+        IF (! Win32FileStream.LockFile(SELF:hFile, (LONG)position , (LONG)(position >> 32) , (LONG)length , (LONG)(length >> 32) ))
             //
             THROW System.IO.IOException{"Lock: File lock failed"}
         ENDIF
@@ -56,7 +56,7 @@ CLASS WFileStream INHERIT System.IO.FileStream
         //
         fOk 	:= FALSE
         buffer 	:= _AllocBuffer(count)
-        fOk 	:= WFileStream.ReadFile(SELF:hFile, (buffer + offset), count, OUT numBytesRead, System.IntPtr.Zero)
+        fOk 	:= Win32FileStream.ReadFile(SELF:hFile, (buffer + offset), count, OUT numBytesRead, System.IntPtr.Zero)
         IF (! fOk)
             RETURN -1
         ENDIF
@@ -67,15 +67,15 @@ CLASS WFileStream INHERIT System.IO.FileStream
         LOCAL hi AS LONG
         LOCAL num2 AS LONG
         hi 		:= (LONG)(offset >> 32) 
-        num2 	:= WFileStream.SetFilePointerWin32(SELF:hFile, (LONG)offset , @hi, origin)
+        num2 	:= Win32FileStream.SetFilePointerWin32(SELF:hFile, (LONG)offset , @hi, origin)
         RETURN ((hi << 32) + num2)
 
     VIRTUAL METHOD SetLength(value AS INT64) AS VOID
         SELF:Seek(value, System.IO.SeekOrigin.Begin)
-        WFileStream.SetEndOfFile(SELF:hFile)
+        Win32FileStream.SetEndOfFile(SELF:hFile)
 
     VIRTUAL METHOD Unlock(position AS INT64, length AS INT64) AS VOID
-        WFileStream.UnlockFile(SELF:hFile, (LONG)position , (LONG)(position >> 32) , (LONG)length , (LONG)(length >> 32) )
+        Win32FileStream.UnlockFile(SELF:hFile, (LONG)position , (LONG)(position >> 32) , (LONG)length , (LONG)(length >> 32) )
 
     VIRTUAL METHOD Write(bytes AS BYTE[], offset AS LONG, count AS LONG) AS VOID
         LOCAL fOk AS LOGIC
@@ -85,7 +85,7 @@ CLASS WFileStream INHERIT System.IO.FileStream
         fOk := FALSE
         buffer := _AllocBuffer(count)
         Marshal.Copy(bytes, 0, buffer, count)
-        fOk := WFileStream.WriteFile(SELF:hFile, (buffer + offset), count, OUT lpNumberOfBytesWritten, 0)
+        fOk := Win32FileStream.WriteFile(SELF:hFile, (buffer + offset), count, OUT lpNumberOfBytesWritten, 0)
         IF (! fOk)
             //
             THROW System.IO.IOException{"Write: File write failed"}
@@ -106,7 +106,7 @@ CLASS WFileStream INHERIT System.IO.FileStream
             //
             LOCAL highSize AS Int32
             LOCAL fileSize AS Int32
-            fileSize := WFileStream.GetFileSize(SELF:hFile, OUT highSize)
+            fileSize := Win32FileStream.GetFileSize(SELF:hFile, OUT highSize)
             IF (fileSize == -1)
                 //
                 THROW System.IO.IOException{"Could not retrieve file length"}

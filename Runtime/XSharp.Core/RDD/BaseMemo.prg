@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-CLASS XSharp.RDD.BaseMemo Implements IMemo
+CLASS XSharp.BaseMemo Implements IMemo
 	PRIVATE _oArea AS WorkArea
 
 	CONSTRUCTOR(oArea as WorkArea)
@@ -33,7 +33,7 @@ CLASS XSharp.RDD.BaseMemo Implements IMemo
 	VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 		THROW NotImplementedException{}
 
-	VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+	VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 		THROW NotImplementedException{}
 
 	VIRTUAL METHOD OpenMemFile( ) AS LOGIC

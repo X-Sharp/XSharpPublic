@@ -5,7 +5,7 @@
 //
 
 using AdvantageClientEngine
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.Ads
 Enum AceError AS WORD
 	member SUCCESS := ACE.AE_SUCCESS
 	member ALLOCATION_FAILED := ACE.AE_ALLOCATION_FAILED

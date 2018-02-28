@@ -355,7 +355,7 @@ STRUCTURE DbfHeader
 	// Matches the DBF layout  
 	// Read/Write to/from the Stream with the Buffer 
 	// and access individual values using the other fields
-	[FieldOffSet(00)] PUBLIC Buffer[32] AS BYTE	  
+	[FieldOffSet(00)] PUBLIC Buffer     AS BYTE	 []
 	[FieldOffSet(00)] PUBLIC Version  	AS BYTE	  
 	[FieldOffSet(01)] PUBLIC Year		AS BYTE	  
 	[FieldOffSet(02)] PUBLIC Month		AS BYTE	  
@@ -426,9 +426,9 @@ STRUCTURE DbfField
 	// Matches the DBF layout
 	// Read/Write to/from the Stream with the Buffer 
 	// and access individual values using the other fields
-	[FieldOffSet(00)] PUBLIC Buffer[32]  AS BYTE	  
-	[FieldOffSet(00)] PUBLIC Name[11]	 AS BYTE
-	[FieldOffSet(11)] PUBLIC Type		 AS BYTE
+	[FieldOffSet(00)] PUBLIC Buffer		 AS BYTE[]	  
+	[FieldOffSet(00)] PUBLIC Name		 AS BYTE[]
+	[FieldOffSet(11)] PUBLIC Type		 AS DBFieldType
 	[FieldOffSet(12)] PUBLIC Offset 	 AS LONG // Offset from record begin in FP
 	[FieldOffSet(16)] PUBLIC Len		 AS BYTE
 	[FieldOffSet(17)] PUBLIC Dec		 AS BYTE
@@ -445,8 +445,8 @@ STRUCTURE Dbf7Field
 	// Matches the DBF layout
 	// Read/Write to/from the Stream with the Buffer 
 	// and access individual values using the other fields
-	[FieldOffSet(00)] PUBLIC Buffer[48]  AS BYTE	
-	[FieldOffSet(00)] PUBLIC Name[32]	 AS BYTE    // Field name in ASCII (zero-filled).	  
+	[FieldOffSet(00)] PUBLIC Buffer		 AS BYTE[]	
+	[FieldOffSet(00)] PUBLIC Name		 AS BYTE[]    // Field name in ASCII (zero-filled).	  
 	[FieldOffSet(32)] PUBLIC Type		 AS BYTE 	// Field type in ASCII (B, C, D, N, L, M, @, I, +, F, 0 or G).
 	[FieldOffSet(33)] PUBLIC Len		 AS BYTE 	// Field length in binary.
 	[FieldOffSet(34)] PUBLIC Dec		 AS BYTE

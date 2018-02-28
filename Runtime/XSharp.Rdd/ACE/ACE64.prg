@@ -7,7 +7,7 @@
 USING System
 USING System.Runtime.InteropServices
 
-BEGIN NAMESPACE AdvantageClientEngine
+BEGIN NAMESPACE XSharp.Ads
 INTERNAL STATIC CLASS ACE64
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
 	internal static extern METHOD AdsAddCustomKey(hIndex as IntPtr ) as DWORD 

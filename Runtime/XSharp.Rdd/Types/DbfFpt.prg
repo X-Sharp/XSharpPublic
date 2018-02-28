@@ -38,7 +38,7 @@ VIRTUAL PROPERTY SysName AS STRING GET typeof(DBFFPT):ToString()
     VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 	    THROW NotImplementedException{}
 
-    VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+    VIRTUAL METHOD CreateMemFile(info AS XSharp.DbOpenInfo) AS LOGIC
 	    THROW NotImplementedException{}
 
     VIRTUAL METHOD OpenMemFile( ) AS LOGIC

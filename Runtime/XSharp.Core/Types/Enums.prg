@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-BEGIN NAMESPACE XSharp.RDD 
+BEGIN NAMESPACE XSharp
 ENUM DbLockMode
 	MEMBER @@Lock
 	MEMBER UnLock
@@ -107,38 +107,38 @@ END ENUM
 
 END NAMESPACE
 
-ENUM DbFieldType
+ENUM DbFieldType AS BYTE
+	MEMBER @@Unknown	:= 0	//                                  
 	MEMBER @@Character 	:= 67 	// 'C', uses len and dec
 	MEMBER @@Date	 	:= 68 	// 'D', 8 bytes
 	MEMBER @@Logic   	:= 76  	// 'L', 1 byte
 	MEMBER @@Memo    	:= 77  	// 'M', 4 or 10 bytes see Length
 	MEMBER @@Number    	:= 78  	// 'N', uses len and dec
 	MEMBER @@VOObject	:= 79  	// 'O'
-	MEMBER @@Unknown	:= 0	//                                  
-	
-//	MEMBER @@Double     := 66  	// 'B'	FOX Type, also '8'
-//	MEMBER @@Currency	:= 89  	// 'Y'	8 byte FOX Type
-//	MEMBER @@DateTime	:= 84  	// 'T'	FOX Type can be 4 or 8 bytes
-//	MEMBER @@Float		:= 70  	// 'F'	FOX Type, uses len and dec
-//	MEMBER @@Integer	:= 73  	// 'I'	FOX Type , autoInc
-//	MEMBER @@Picture	:= 80  	// 'P'	FOX Type, 4 or 10 bytes
-//	MEMBER @@CurrencyDouble	:= 90  	// 'Z'	8 byte Currency
-//	MEMBER @@Integer2	:= 50  	// '2'	2 byte int, autoInc
-//	MEMBER @@Integer4	:= 52  	// '4'	4 byte int, autoInc
-//	MEMBER @@Double8	:= 56	// '8' Same as 'B'
-	// '@' = Timestamp 8 bytes
-	// '=' = ModTime, 8 bytes
-	// '^' = RowVer, 8 bytes  
-	// '+' = AutoInc, 4 bytes
-	// 'Q' = VarLenghth , between 1 and 255 
-	// 'V' = VarLength
-	// 'W' = Blob 4 or 10 bytes
-	// 'G' = Ole 4 or 10 bytes
+	// Extended Non Clipper Types
+	MEMBER @@Double			:= 66  	// 'B'	FOX Type, also '8'
+	MEMBER @@Currency		:= 89  	// 'Y'	8 byte FOX Type
+	MEMBER @@DateTime		:= 84  	// 'T'	FOX Type can be 4 or 8 bytes
+	MEMBER @@Float			:= 70  	// 'F'	FOX Type, uses len and dec
+	MEMBER @@Integer		:= 73  	// 'I'	FOX Type , autoInc
+	MEMBER @@Picture		:= 80  	// 'P'	FOX Type, 4 or 10 bytes
+	MEMBER @@Currency2		:= 90  	// 'Z'	8 byte Currency
+	MEMBER @@Integer2		:= 50  	// '2'	2 byte int, autoInc
+	MEMBER @@Integer4		:= 52  	// '4'	4 byte int, autoInc
+	member @@Double8		:= 56	// '8'  Same as 'B'
+	member @@TimeSpamp		:= 64   // '@' = Timestamp 8 bytes
+	member @@ModTime		:= 61	// '=' = ModTime, 8 bytes 
+	member @@RowVer			:= 94	// '^' = RowVer, 8 bytes  
+	member @@AutoIncrement	:= 43	// '+' = AutoInc, 4 bytes
+	member @@VarLength1		:= 86	// 'V' = VarLength
+	member @@VarLength2		:= 81	// 'Q' = VarLenghth , between 1 and 255 
+	member @@Blob			:= 87	// 'W' = Blob 4 or 10 bytes
+	MEMBER @@Ole			:= 71	// 'G' = Ole 4 or 10 bytes
 END ENUM
 
 
 
-USING System
+
 INTERNAL ENUM DbfHeaderCodepage AS BYTE
     MEMBER CP_DBF_DOS_OLD:=0
     MEMBER CP_DBF_DOS_US:=1

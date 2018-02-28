@@ -31,6 +31,8 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using Antlr4.Runtime.Dfa;
+    using Antlr4.Runtime.Sharpen;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
     internal partial class XSharpLanguageParser : SyntaxParser
@@ -47,7 +49,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private BufferedTokenStream _lexerTokenStream;
         private BufferedTokenStream _preprocessorTokenStream;
 
-        //#if DEBUG
+
+        internal class XSharpBailErrorStrategy : BailErrorStrategy
+        {
+            String _fileName;
+            IList<ParseErrorData> _parseErrors;
+            internal XSharpBailErrorStrategy(String FileName, IList<ParseErrorData> parseErrors) : base()
+            {
+                _fileName = FileName;
+                _parseErrors = parseErrors;
+            }
+            public override void ReportError(Parser recognizer, RecognitionException e)
+            {
+                if (e?.OffendingToken != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(e.OffendingToken, ErrorCode.ERR_ParserError, e.Message));
+                }
+                else
+                {
+                    _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_ParserError, e.Message));
+                }
+                System.Diagnostics.Debug.WriteLine("Parsing aborted for : " + _fileName);
+                System.Diagnostics.Debug.WriteLine("     error detected : " + e.Message);
+            }
+        }
+
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
 
@@ -58,6 +84,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _fileName = FileName;
                 _parseErrors = parseErrors;
             }
+
             public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
             {
                 if (e?.OffendingToken != null)
@@ -124,6 +151,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 tree = parser.source();
             return tree;
 
+        }
+
+        private string _GetInnerMessage(Exception e)
+        {
+            string msg = e.Message;
+            while (e.InnerException != null)
+            {
+                e = e.InnerException;
+                msg = e.Message;
+            }
+            return msg;
         }
         internal CompilationUnitSyntax ParseCompilationUnitCore()
         {
@@ -220,12 +258,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
             // for info about optimization flags such as the next line
 
-#if VSPARSER
+            if (_options.ParseLevel < ParseLevel.Complete)
+            {
                 parser.Interpreter.enable_global_context_dfa = true;    // default = false
                 parser.Interpreter.tail_call_preserves_sll = false;     // default = true
-#endif
-            //parser.Interpreter.enable_global_context_dfa = false;    // default = false
-            //parser.Interpreter.tail_call_preserves_sll = true;     // default = true
+            //    parser.Interpreter.always_try_local_context = true;     // default = true
+            //    parser.Interpreter.force_global_context = true;         // default = false
+            //    parser.Interpreter.optimize_unique_closure = true; // default = true
+            //    parser.Interpreter.treat_sllk1_conflict_as_ambiguity = true; // default = false
+                parser.Interpreter.reportAmbiguities = true;
+                
+            }
             parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
             parser.AllowNamedArgs = _options.Dialect.AllowNamedArgs();
             parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
@@ -250,29 +293,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parser.RemoveErrorListeners();
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
                 parser.ErrorHandler = new BailErrorStrategy();
+                //var diaErrorListener = new XSharpDiagnosticErrorListener(_fileName, parseErrors);
+                //parser.AddErrorListener(diaErrorListener);
                 try
                 {
                     tree = buildTree(parser);
                 }
                 catch (ParseCanceledException e)
                 {
-                    var errorListener = new XSharpErrorListener(_fileName, parseErrors);
-                    parser.AddErrorListener(errorListener);
-                    parser.ErrorHandler = new XSharpErrorStrategy();
-                    parser.Interpreter.PredictionMode = PredictionMode.Ll;
                     if (_options.Verbose)
                     {
-                        Exception ex;
-                        string msg = e.Message;
-                        ex = e;
-                        while (ex.InnerException != null)
-                        {
-                            ex = ex.InnerException;
-                            msg = ex.Message;
-                        }
+                        string msg = _GetInnerMessage(e);
                         _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: " + msg + ". Trying again in LL mode.");
                     }
-
+                    if (_options.ParseLevel < ParseLevel.Complete)
+                    {
+                        parser.ErrorHandler = new XSharpBailErrorStrategy(_fileName, parseErrors);
+                    }
+                    else
+                    {
+                        var errorListener = new XSharpErrorListener(_fileName, parseErrors);
+                        parser.AddErrorListener(errorListener);
+                        parser.ErrorHandler = new XSharpErrorStrategy();
+                    }
+                    parser.Interpreter.PredictionMode = PredictionMode.Ll;
                     ppStream.Reset();
                     if (_options.Verbose && pp != null)
                     {
@@ -283,7 +327,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         pp.Close();
                     }
                     parser.Reset();
-                    tree = buildTree(parser);
+                    try
+                    {
+                        tree = buildTree(parser);
+                    }
+                    catch (Exception e1)
+                    {
+                        // Cannot parse again. Must be a syntax error.
+                        if (_options.Verbose)
+                        {
+                            string msg = _GetInnerMessage(e1);
+                            _options.ConsoleOutput.WriteLine("Antlr: LL parsing also failed with failure: " + msg );
+                        }
+                    }
+
                 }
 #if DEBUG && DUMP_TIMES
             {
@@ -327,7 +384,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
-                eof.XNode = new XTerminalNodeImpl(tree.Stop);
+                if (tree != null)
+                {
+                    eof.XNode = new XTerminalNodeImpl(tree.Stop);
+                }
+                else
+                {
+                    eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
+                }
                 var result = _syntaxFactory.CompilationUnit(
                     treeTransform.GlobalEntities.Externs,
                     treeTransform.GlobalEntities.Usings,

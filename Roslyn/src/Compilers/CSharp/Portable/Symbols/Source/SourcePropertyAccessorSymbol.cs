@@ -535,6 +535,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
+#if XSHARP
+                var node = this.GetNonNullSyntaxNode();
+                if (node.XGenerated)
+                    return false;
+#endif
                 return true;
             }
         }

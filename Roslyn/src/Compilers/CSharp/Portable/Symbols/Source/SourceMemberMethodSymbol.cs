@@ -1138,6 +1138,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     return false;
                 }
+                var node = this.GetNonNullSyntaxNode();
+                if (node.XGenerated)
+                    return false;
                 switch (this.Name)
                 {
                     case XSharpSpecialNames.AppExit:
@@ -1148,7 +1151,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     case XSharpSpecialNames.ExitProc:
                         return false;
                 }
-                return true;
+                 return true;
             }
         }
 #else

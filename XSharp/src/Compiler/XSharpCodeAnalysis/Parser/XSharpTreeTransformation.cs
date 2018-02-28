@@ -1614,9 +1614,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     }
                     if (AccMet != null)
-                        result = GeneratePartialProperyMethod(AccMet, true, AccMet.Modifiers?.STATIC() != null);
+                    {
+                        bool bStatic = false;
+                        if (AccMet.Modifiers?._Tokens != null)
+                        {
+                            bStatic = AccMet.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.STATIC);
+                        }
+                        result = GeneratePartialProperyMethod(AccMet, true, bStatic);
+                    }
                     else
-                        result = GeneratePartialProperyMethod(AssMet, false, AssMet.Modifiers?.STATIC() != null);
+                    {
+                        bool bStatic = false;
+                        if (AssMet.Modifiers?._Tokens != null)
+                        {
+                            bStatic = AssMet.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.STATIC);
+                        }
+                        result = GeneratePartialProperyMethod(AssMet, false, bStatic);
+                    }
                     GlobalEntities.NeedsProcessing = true;
                     return result;
                 }
@@ -1828,6 +1842,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         methodCall = GenerateMethodCall(name, MakeArgumentList(a.ToArray()));
                     }
                     block = MakeBlock(GenerateReturn(methodCall));
+                    block.XGenerated = true;
                 }
 
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
@@ -1836,6 +1851,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         isInInterfaceOrAbstract ? null : block,
                         null,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
+                accessor.XGenerated = mergePartialDeclarations;
                 if (vop.DupAccess != null)
                 {
                     accessor = accessor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DuplicateAccessor));
@@ -1891,6 +1907,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         string mName = AssMet.Id.GetText()+ XSharpSpecialNames.AssignSuffix   ;
                         var stmt = GenerateExpressionStatement(GenerateMethodCall(mName, MakeArgumentList(a.ToArray())));
                         block = MakeBlock(stmt);
+                        block.XGenerated = true;
                     }
                     else
                     {
@@ -1929,6 +1946,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         isInInterfaceOrAbstract ? null : block,
                         null,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
+                accessor.XGenerated = mergePartialDeclarations;
                 if (vop.DupAssign != null)
                 {
                     accessor = accessor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DuplicateAccessor));

@@ -41,6 +41,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     body = LocalRewriter.RewriteRunInitProc(method,body,diagnostics);
                     break;
             }
+            switch (method.MethodKind)
+            {
+                case MethodKind.PropertyGet:
+                case MethodKind.PropertySet:
+                    var node = method.GetNonNullSyntaxNode();
+                    if (node.XGenerated)
+                    {
+                        var oldbody = body as BoundBlock;
+                        if (oldbody != null)
+                        {
+                            var newbody = new BoundBlock(oldbody.Syntax, oldbody.Locals,oldbody.Statements,oldbody.HasErrors) { WasCompilerGenerated = true };
+                            body = newbody;
+                        }
+                    }
+                    break;
+            }
             return body;
         }
     }

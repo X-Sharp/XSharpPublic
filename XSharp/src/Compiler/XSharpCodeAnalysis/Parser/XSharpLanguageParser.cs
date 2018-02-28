@@ -153,7 +153,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        private string _GetInnerMessage(Exception e)
+        private string _GetInnerExceptionMessage(Exception e)
         {
             string msg = e.Message;
             while (e.InnerException != null)
@@ -293,8 +293,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parser.RemoveErrorListeners();
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
                 parser.ErrorHandler = new BailErrorStrategy();
-                //var diaErrorListener = new XSharpDiagnosticErrorListener(_fileName, parseErrors);
-                //parser.AddErrorListener(diaErrorListener);
                 try
                 {
                     tree = buildTree(parser);
@@ -303,7 +301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (_options.Verbose)
                     {
-                        string msg = _GetInnerMessage(e);
+                        string msg = _GetInnerExceptionMessage(e);
                         _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: " + msg + ". Trying again in LL mode.");
                     }
                     if (_options.ParseLevel < ParseLevel.Complete)
@@ -336,7 +334,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // Cannot parse again. Must be a syntax error.
                         if (_options.Verbose)
                         {
-                            string msg = _GetInnerMessage(e1);
+                            string msg = _GetInnerExceptionMessage(e1);
                             _options.ConsoleOutput.WriteLine("Antlr: LL parsing also failed with failure: " + msg );
                         }
                     }

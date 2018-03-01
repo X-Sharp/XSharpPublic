@@ -435,8 +435,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             _textSb.Append((char)c);
                             InputStream.Consume();
                             c = InputStream.La(1);
-                            while (c != TokenConstants.Eof && c != '*' && InputStream.La(2) != '/')
+                            while (c != TokenConstants.Eof )
                             {
+                                if (c == '*' && InputStream.La(2) == '/')
+                                    break;
                                 _textSb.Append((char)c);
                                 InputStream.Consume();
                                 c = InputStream.La(1);
@@ -1046,7 +1048,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             _textSb.Append((char)c);
                             InputStream.Consume();
                             c = InputStream.La(1);
-                            if (c == 'x')
+                            if (c == 'x' || c == 'X')
                             {
                                 _type = HEX_CONST;
                                 _textSb.Append((char)c);
@@ -1124,7 +1126,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 int z0 = s.IndexOf('.');
                                 if (z0 > 0 && s.Length - z0 > 1 && s.Length - z0 <= 3 && s.Length <= 7)
                                 {
+                                    // append dot
+                                    _textSb.Append((char)c);
+                                    InputStream.Consume();
+                                    c = InputStream.La(1);
                                     _type = DATE_CONST;
+                                    // append day number
                                     if (c >= '0' && c <= '9')
                                     {
                                         _textSb.Append((char)c);

@@ -729,6 +729,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             InputStream.Consume();
                             c = InputStream.La(1);
                         }
+                        if (_type == SEMI && _textSb.Length > 1)
+                        {
+                            _textSb.Remove(1, _textSb.Length - 1);
+                            InputStream.Seek(_startCharIndex + 1);
+                        }
                         break;
                     case '.':
                         if (InputStream.La(2) >= '0' && InputStream.La(2) <= '9')
@@ -1208,10 +1213,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             _textSb.Append((char)c);
                             InputStream.Consume();
                             c = InputStream.La(1);
+                            bool allow_esc = _type == CHAR_CONST ? 
+                                InputStream.La(1) == '\\' && InputStream.La(3) == q : _type != STRING_CONST;
                             bool esc = false;
                             while (c != TokenConstants.Eof && (c != q || esc))
                             {
-                                esc = !esc && c == '\\';
+                                esc = allow_esc && !esc && c == '\\';
                                 _textSb.Append((char)c);
                                 InputStream.Consume();
                                 c = InputStream.La(1);

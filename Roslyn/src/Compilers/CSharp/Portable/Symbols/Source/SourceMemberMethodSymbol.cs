@@ -1141,17 +1141,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var node = this.GetNonNullSyntaxNode();
                 if (node.XGenerated)
                     return false;
-                switch (this.Name)
-                {
-                    case XSharpSpecialNames.AppExit:
-                    case XSharpSpecialNames.AppInit:
-                    case XSharpSpecialNames.InitProc1:
-                    case XSharpSpecialNames.InitProc2:
-                    case XSharpSpecialNames.InitProc3:
-                    case XSharpSpecialNames.ExitProc:
-                        return false;
-                }
-                 return true;
+                return true;
             }
         }
 #else

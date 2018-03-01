@@ -299,6 +299,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
 
             _pool.Free(stmts);
+            m.XGenerated = true;
             return m;
         }
 
@@ -363,7 +364,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
-            //appExit.XNode = CurrentEntity;
             appExit.XGenerated = true;
             return appExit;
         }
@@ -379,6 +379,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
+            initProcs.XGenerated = true;
             return initProcs;
 
         }
@@ -446,7 +447,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
             appInit.XGenerated = true;
-            //appInit.XNode = CurrentEntity;
             return appInit;
 
         }

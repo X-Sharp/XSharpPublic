@@ -15,4 +15,4 @@ using XSharp.Internal
 [assembly: AssemblyTitle("XSharp.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: ClassLibrary("Functions","XSharp")]
-[assembly: CompilerVersionAttribute("X# "+VERSION_NUMBER_STR +" - dialect:Core" )]
+[assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:Core" )] 

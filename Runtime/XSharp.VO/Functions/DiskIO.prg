@@ -5,6 +5,54 @@
 //
 
 
+
+/// <summary>
+/// Fill a series of __Arrays with directory information.
+/// </summary>
+/// <param name="cPath"></param>
+/// <param name="aFNAME"></param>
+/// <param name="aFSIZE"></param>
+/// <param name="aFDATE"></param>
+/// <param name="aFTIME"></param>
+/// <param name="aFATTR"></param>
+/// <returns>
+/// </returns>
+function ADir(cPath as __Usual,aFNAME as __Usual,aFSIZE as __Usual,aFDATE as __Usual,aFTIME as __Usual,aFATTR as __Usual) as dword
+	/// THROW NotImplementedException{}
+	return 0   
+
+
+/// <summary>
+/// Return the current Windows directory.
+/// </summary>
+/// <param name="cDisk"></param>
+/// <returns>
+/// </returns>
+function CurDir(cDisk as __Usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+function DefaultDirInit() as void
+	/// THROW NotImplementedException{}
+	return  
+
+/// <summary>
+/// Create an __Array of directory and file information.
+/// </summary>
+/// <param name="cPath"></param>
+/// <param name="xAttr"></param>
+/// <returns>
+/// </returns>
+function Directory(cPath as __Usual,xAttr as __Usual) as __Array
+	/// THROW NotImplementedException{}
+	return null_array   
+
+
+
 /// <summary>
 /// Return the space available on the current disk drive.
 /// </summary>
@@ -44,22 +92,15 @@ function DiskSpace() as __Usual
 
 
 
-	/// <summary>
-	/// Return the capacity of the specified disk.
-	/// </summary>
-	/// <param name="nDisk"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION DiskSpace(nDisk AS __Usual) AS __Usual
-	RETURN System.IO.DriveInfo{nDisk}:TotalSize
+/// <summary>
+/// Return the capacity of the specified disk.
+/// </summary>
+/// <param name="nDisk"></param>
+/// <returns>
+/// </returns>
+function DiskSpace(nDisk as __Usual) as __Usual
+	return System.IO.DriveInfo{nDisk}:TotalSize
 
-	/// <summary>
-	/// Return the last DOS error code associated with an activation of the runtime error block.
-	/// </summary>
-	/// <param name="nSet"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION DosError(nSet AS __Usual) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+
+
 

@@ -327,42 +327,7 @@ BEGIN NAMESPACE XSharp.IO
 	
 	
 	#region functions
-		/// <summary>
-		/// Return the number of files that match a given file specification and attribute.
-		/// </summary>
-		/// <param name="pszFile"></param>
-		/// <param name="nAttr"></param>
-		/// <returns>
-		/// </returns>
-		FUNCTION FFCount(pszFile AS STRING,nAttr AS DWORD) AS DWORD
-			RETURN XSharp.IO.FileHelper.FFCount(pszFile,nAttr) 
 		
-		/// <summary>
-		/// Find the first file that matches a given file specification or attribute.
-		/// </summary>
-		/// <param name="pszFile"></param>
-		/// <param name="nAttr"></param>
-		/// <returns>
-		/// </returns>
-		FUNCTION FFirst(pszFile AS STRING,nAttr AS DWORD) AS LOGIC
-			RETURN XSharp.IO.FileHelper.FFirst(pszFile,nAttr)
-		
-		/// <summary>
-		/// Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
-		/// </summary>
-		/// <returns>
-		/// </returns>
-		FUNCTION FAttrib() AS DWORD
-			RETURN XSharp.IO.FileHelper.FAttrib() 
-		
-		
-		/// <summary>
-		/// Return the __VODate stamp of the file found by FFCount(), FFirst(), or FNext().
-		/// </summary>
-		/// <returns>
-		/// </returns>
-		FUNCTION FDate() AS DateTime
-			RETURN XSharp.IO.FileHelper.FDate()
 		
 		/// <summary>
 		/// Get or set the error code for a file operation.

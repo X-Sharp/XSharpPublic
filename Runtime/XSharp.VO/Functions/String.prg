@@ -1,0 +1,76 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+/// <summary>
+/// Execute a code block for each of the individual characters in a string.
+/// </summary>
+/// <param name="c"></param>
+/// <param name="cod"></param>
+/// <param name="nStart"></param>
+/// <param name="nCount"></param>
+/// <returns>
+/// </returns>
+function SEval(c as __Usual,cod as __Usual,nStart as __Usual,nCount as __Usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+/// <summary>
+/// Execute a code block for each of the individual characters in a string, changing the contents of the argument as well as the return value.
+/// </summary>
+/// <param name="c"></param>
+/// <param name="cod"></param>
+/// <param name="nStart"></param>
+/// <param name="nCount"></param>
+/// <returns>
+/// </returns>
+function SEvalA(c as __Usual,cod as __Usual,nStart as __Usual,nCount as __Usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+
+
+
+/// <summary>
+/// Search and replace characters within a string.
+/// </summary>
+/// <param name="c"></param>
+/// <param name="cSearch"></param>
+/// <param name="cReplace"></param>
+/// <param name="iStart"></param>
+/// <param name="nCount"></param>
+/// <returns>
+/// </returns>
+function StrTran(c as __Usual,cSearch as __Usual,cReplace as __Usual,iStart as __Usual,nCount as __Usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+
+/// <summary>
+/// </summary>
+/// <param name="c"></param>
+/// <param name="iStart"></param>
+/// <param name="wLen"></param>
+/// <returns>
+/// </returns>
+function SubS(c as __Usual,iStart as __Usual,wLen as __Usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+
+/// <summary>
+/// Extract a substring from a string.
+/// </summary>
+/// <param name="c"></param>
+/// <param name="iStart"></param>
+/// <param name="wLen"></param>
+/// <returns>
+/// </returns>
+function SubStr(c as __Usual,iStart as __Usual,wLen as __Usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+
+

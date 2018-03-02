@@ -33,6 +33,7 @@
     <Prefer32Bit>False</Prefer32Bit>
     <VO15>false</VO15>
     <VO16>false</VO16>
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.Default.props" />
   <PropertyGroup>

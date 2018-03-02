@@ -4,6 +4,16 @@
 // See License.txt in the project root for license information.
 //
 
+
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+function AllowCollectThread() as void
+	/// THROW NotImplementedException{}
+	return  
+
+
 /// <summary>
 /// Call the garbage collector if a watermark is reached.
 /// </summary>
@@ -43,5 +53,28 @@ return false
 /// <returns>
 /// </returns>
 function InCollect() as logic
+	/// THROW NotImplementedException{}
+	return false   
+
+
+
+/// <summary>
+/// Register an object so that it receives an Axit message before being destroyed by the garbage collector.
+/// </summary>
+/// <param name="oSource"></param>
+/// <returns>
+/// </returns>
+function RegisterAxit(oSource as object) as void
+	/// THROW NotImplementedException{}
+	return 
+
+
+/// <summary>
+/// Terminate the registration of an object that has been registered with RegisterAxit().
+/// </summary>
+/// <param name="oSource"></param>
+/// <returns>
+/// </returns>
+function UnRegisterAxit(oSource as object) as logic
 	/// THROW NotImplementedException{}
 	return false   

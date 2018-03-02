@@ -118,8 +118,10 @@
     </Compile>
     <Compile Include="Defines.prg" />
     <Compile Include="Functions\Convert.prg" />
+    <Compile Include="Functions\FileSearch.prg" />
     <Compile Include="Functions\DT.prg" />
     <Compile Include="Functions\File.prg" />
+    <Compile Include="Functions\FileIO.prg" />
     <Compile Include="Functions\Get.prg" />
     <Compile Include="Functions\International.prg" />
     <Compile Include="Functions\Memo.prg" />

@@ -162,27 +162,27 @@ function IsInstanceOfUsual(oX as __Usual,symClassName as __Symbol) as logic
 
 
 
-	/// <summary>
-	/// Return the contents of an exported instance variable.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <param name="symIvar"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IVarGet(o AS OBJECT,symIvar AS __Symbol) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+/// <summary>
+/// Return the contents of an exported instance variable.
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symIvar"></param>
+/// <returns>
+/// </returns>
+function IVarGet(o as object,symIvar as __Symbol) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
 
-	/// <summary>
-	/// Get information about how a particular instance variable (or access method) was declared.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <param name="symIVar"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IVarGetInfo(o AS OBJECT,symIVar AS __Symbol) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+/// <summary>
+/// Get information about how a particular instance variable (or access method) was declared.
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symIVar"></param>
+/// <returns>
+/// </returns>
+function IVarGetInfo(o as object,symIVar as __Symbol) as dword
+	/// THROW NotImplementedException{}
+	return 0   
 
 
 /// <summary>
@@ -210,116 +210,195 @@ function IsMethodUsual(oX as __Usual,symMethodName as __Symbol) as logic
 	return false  
 
 
-	/// <summary>
-	/// Return the contents of an instance variable.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <param name="symIvar"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IVarGetSelf(o AS OBJECT,symIvar AS __Symbol) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+/// <summary>
+/// Determine if the given object is a valid VO Object.
+/// </summary>
+/// <param name="oObject"></param>
+/// <returns>
+/// </returns>
+function IsVOObject(oObject as object) as logic
+	/// THROW NotImplementedException{}
+	return false   
 
-	/// <summary>
-	/// </summary>
-	/// <param name="o"></param>
-	/// <param name="symIvar"></param>
-	/// <param name="symClassName"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IVarGetSuper(o AS OBJECT,symIvar AS __Symbol,symClassName AS __Symbol) AS __Usual
-		/// THROW NotImplementedException{}
+
+/// <summary>
+/// Return the contents of an instance variable.
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symIvar"></param>
+/// <returns>
+/// </returns>
+function IVarGetSelf(o as object,symIvar as __Symbol) as __Usual
+	/// THROW NotImplementedException{}
 	return __Usual._NIL   
 
-	/// <summary>
-	/// Store all instance variables of an object into an __Array.
-	/// </summary>
-	/// <param name="pObject"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IvarList(pObject AS OBJECT) AS __Array
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
-
-	/// <summary>
-	/// Assign a value to an exported instance variable.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <param name="symIvar"></param>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IVarPut(o AS OBJECT,symIvar AS __Symbol,u AS __Usual) AS __Usual
-		/// THROW NotImplementedException{}
+/// <summary>
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symIvar"></param>
+/// <param name="symClassName"></param>
+/// <returns>
+/// </returns>
+function IVarGetSuper(o as object,symIvar as __Symbol,symClassName as __Symbol) as __Usual
+	/// THROW NotImplementedException{}
 	return __Usual._NIL   
 
-	/// <summary>
-	/// Get information about how a particular instance variable (or assign method) was declared.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <param name="symIVar"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IVarPutInfo(o AS OBJECT,symIVar AS __Symbol) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+/// <summary>
+/// Store all instance variables of an object into an __Array.
+/// </summary>
+/// <param name="pObject"></param>
+/// <returns>
+/// </returns>
+function IvarList(pObject as object) as __Array
+	/// THROW NotImplementedException{}
+	return null_array   
 
-	/// <summary>
-	/// Assign a value to an instance variable.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <param name="symIvar"></param>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IVarPutSelf(o AS OBJECT,symIvar AS __Symbol,u AS __Usual) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+/// <summary>
+/// Assign a value to an exported instance variable.
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symIvar"></param>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
+function IVarPut(o as object,symIvar as __Symbol,u as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
 
-	/// <summary>
-	/// </summary>
-	/// <param name="o"></param>
-	/// <param name="symIvar"></param>
-	/// <param name="u"></param>
-	/// <param name="symClassName"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IVarPutSuper(o AS OBJECT,symIvar AS __Symbol,u AS __Usual,symClassName AS __Symbol) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+/// <summary>
+/// Get information about how a particular instance variable (or assign method) was declared.
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symIVar"></param>
+/// <returns>
+/// </returns>
+function IVarPutInfo(o as object,symIVar as __Symbol) as dword
+	/// THROW NotImplementedException{}
+	return 0   
 
+/// <summary>
+/// Assign a value to an instance variable.
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symIvar"></param>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
+function IVarPutSelf(o as object,symIvar as __Symbol,u as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
 
-
-
-
-	/// <summary>
-	/// Create a class list in the form of an __Array for the specified object.
-	/// </summary>
-	/// <param name="o"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION MethodList(o AS OBJECT) AS __Array
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
-
-
-	/// <summary>
-	/// Identify an invalid method call.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION NoMethod() AS __Symbol
-		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
+/// <summary>
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symIvar"></param>
+/// <param name="u"></param>
+/// <param name="symClassName"></param>
+/// <returns>
+/// </returns>
+function IVarPutSuper(o as object,symIvar as __Symbol,u as __Usual,symClassName as __Symbol) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
 
 
-	/// <summary>
-	/// Return a multidimensional __Array of all object-oriented programming __Symbols that constitute the class of an object.
-	/// </summary>
-	/// <param name="s"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION OOPTreeClass(s AS __Symbol) AS __Array
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+
+
+
+/// <summary>
+/// Create a class list in the form of an __Array for the specified object.
+/// </summary>
+/// <param name="o"></param>
+/// <returns>
+/// </returns>
+function MethodList(o as object) as __Array
+	/// THROW NotImplementedException{}
+	return null_array   
+
+
+/// <summary>
+/// Identify an invalid method call.
+/// </summary>
+/// <returns>
+/// </returns>
+function NoMethod() as __Symbol
+	/// THROW NotImplementedException{}
+	return null_symbol   
+
+
+
+/// <summary>
+/// Convert the values of an object's instance variables to an __Array.
+/// </summary>
+/// <param name="o"></param>
+/// <returns>
+/// </returns>
+function Object2Array(o as object) as __Array
+	/// THROW NotImplementedException{}
+	return null_array   
+
+
+/// <summary>
+/// </summary>
+/// <param name="o"></param>
+/// <returns>
+/// </returns>
+function OClone(o as object) as object
+	/// THROW NotImplementedException{}
+	return null_object   
+
+
+/// <summary>
+/// </summary>
+/// <param name="o"></param>
+/// <returns>
+/// </returns>
+function OMemSize(o as object) as dword
+	/// THROW NotImplementedException{}
+	return 0  
+
+/// <summary>
+/// Return a multidimensional __Array of all object-oriented programming __Symbols that constitute the class.
+/// </summary>
+/// <param name="o"></param>
+/// <returns>
+/// </returns>
+function OOPTree(o as object) as __Array
+	/// THROW NotImplementedException{}
+	return null_array   
+
+/// <summary>
+/// Return a multidimensional __Array of all object-oriented programming __Symbols that constitute the class of an object.
+/// </summary>
+/// <param name="s"></param>
+/// <returns>
+/// </returns>
+function OOPTreeClass(s as __Symbol) as __Array
+	/// THROW NotImplementedException{}
+	return null_array   
+
+
+
+
+/// <summary>
+/// Invoke a method.
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symMethod"></param>
+/// <returns>
+/// </returns>
+function Send(o as __Usual,symMethod as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
+
+/// <summary>
+/// Invoke a method with a specified class.
+/// </summary>
+/// <param name="o"></param>
+/// <param name="symMethod"></param>
+/// <param name="symClassName"></param>
+/// <returns>
+/// </returns>
+function SendClass(o as __Usual,symMethod as __Usual,symClassName as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
+

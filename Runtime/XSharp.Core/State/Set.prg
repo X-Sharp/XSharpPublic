@@ -8,12 +8,12 @@ BEGIN NAMESPACE XSharp
 	/// <Summary>Values that match the Visual Objects SET_* defines </Summary>
 	ENUM Set                                
 		MEMBER EXACT       := 1			// LOGIC
-		MEMBER FIXED	   := 2			// LOGIC
+		MEMBER @@FIXED	   := 2			// LOGIC
 		MEMBER DECIMALS    := 3			// INT
 		MEMBER DATEFORMAT  := 4			// STRING
 		MEMBER EPOCH       := 5			// INT
 		MEMBER PATH        := 6			// STRING
-		MEMBER DEFAULT	   := 7			// STRING
+		MEMBER @@DEFAULT   := 7			// STRING
 		MEMBER EXCLUSIVE   := 8			// LOGIC
 		MEMBER SOFTSEEK    := 9			// LOGIC
 		MEMBER UNIQUE      := 10		// LOGIC

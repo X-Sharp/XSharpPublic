@@ -368,3 +368,45 @@ return	 __Usual._NIL
 function _ArrayPutPoly(a as __Usual,x as __Usual,n1 as __Usual) as __Usual
 	/// THROW NotImplementedException{}
 return	 __Usual._NIL  
+
+
+	/// <summary>
+	/// Execute a code block for each element in an __Array.
+	/// </summary>
+	/// <param name="a"></param>
+	/// <param name="cb"></param>
+	/// <param name="iStart"></param>
+	/// <param name="iCount"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION AEval(a AS __Usual,cb AS __Usual,iStart AS __Usual,iCount AS __Usual) AS __Usual
+		/// THROW NotImplementedException{}
+	RETURN __Usual._NIL   
+
+	/// <summary>
+	/// Execute a code block for each element in an __Array and assign the return value to each element in the __Array.
+	/// </summary>
+	/// <param name="a"></param>
+	/// <param name="cb"></param>
+	/// <param name="iStart"></param>
+	/// <param name="iCount"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION AEvalA(a AS __Usual,cb AS __Usual,iStart AS __Usual,iCount AS __Usual) AS __Usual
+		/// THROW NotImplementedException{}
+	RETURN __Usual._NIL   
+
+	/// <summary>
+	/// Execute a code block for each element in an __Array.
+	/// </summary>
+	/// <param name="c"></param>
+	/// <param name="cod"></param>
+	/// <param name="nStart"></param>
+	/// <param name="nCount"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION AEvalOld(c AS __Usual,cod AS __Usual,nStart AS __Usual,nCount AS __Usual) AS __Usual
+		/// THROW NotImplementedException{}
+	RETURN __Usual._NIL   
+
+

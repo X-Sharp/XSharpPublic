@@ -295,7 +295,7 @@ FUNCTION CharPos(c AS STRING,nStart AS DWORD) AS STRING
 /// </returns>
 FUNCTION CHR(dwChar AS DWORD) AS STRING
 	VAR buffer := BYTE[]{1} 
-	buffer[1] := (BYTE) dwChar
+	buffer[ __ARRAYBASE__] := (BYTE) dwChar
 	RETURN System.Text.Encoding:ASCII:GetString(buffer)
 
 

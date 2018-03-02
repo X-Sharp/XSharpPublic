@@ -14,9 +14,9 @@
 /// <param name="lWrap"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemoLine(cMemo AS STRING,wWidth AS LONG,wLineNum AS LONG,wTabSize AS LONG,lWrap AS LOGIC) AS STRING
+function MemoLine(cMemo as string,wWidth as long,wLineNum as long,wTabSize as long,lWrap as logic) as string
 	/// THROW NotImplementedException{}
-	RETURN String.Empty   
+	return String.Empty   
 
 /// <summary>
 /// Return the contents of a text file as a string.
@@ -24,9 +24,9 @@ FUNCTION MemoLine(cMemo AS STRING,wWidth AS LONG,wLineNum AS LONG,wTabSize AS LO
 /// <param name="cFile"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemoRead(cFile AS STRING) AS STRING
+function MemoRead(cFile as string) as string
 	/// THROW NotImplementedException{}
-	RETURN String.Empty   
+	return String.Empty   
 
 /// <summary>
 /// Report the status of memory. 
@@ -34,9 +34,9 @@ FUNCTION MemoRead(cFile AS STRING) AS STRING
 /// <param name="iFunc"></param>
 /// <returns>
 /// </returns>
-FUNCTION Memory(iFunc AS INT) AS DWORD
+function Memory(iFunc as int) as dword
 	/// THROW NotImplementedException{}
-	RETURN 0   
+	return 0   
 
 /// <summary>
 /// Write a string to a disk file.
@@ -45,9 +45,9 @@ FUNCTION Memory(iFunc AS INT) AS DWORD
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
+function MemoWrit(cFile as string,c as string) as logic
 	/// THROW NotImplementedException{}
-	RETURN FALSE   
+	return false   
 
 
 /// <summary>
@@ -56,9 +56,9 @@ FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-FUNCTION MlCount1(c AS STRING) AS DWORD
+function MlCount1(c as string) as dword
 	/// THROW NotImplementedException{}
-	RETURN 0   
+	return 0   
 
 /// <summary>
 /// Determine the position of a line in a string.
@@ -67,7 +67,10 @@ FUNCTION MlCount1(c AS STRING) AS DWORD
 /// <param name="nLine"></param>
 /// <returns>
 /// </returns>
-FUNCTION MLPos2(c AS STRING,nLine AS DWORD) AS DWORD
+function MLPos2(c as string,nLine as dword) as dword
 	/// THROW NotImplementedException{}
-	RETURN 0   
+	return 0   
+
+
+
 

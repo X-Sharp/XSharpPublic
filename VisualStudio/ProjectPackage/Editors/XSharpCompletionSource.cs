@@ -1343,7 +1343,7 @@ namespace XSharpLanguage
                     this._typeName = declType.GetXSharpTypeName();
                     break;
                 case MemberTypes.Field:
-                    this._kind = Kind.ClassVar;
+                    this._kind = Kind.Field;
                     if (member.DeclaringType.IsEnum)
                         this._kind = Kind.EnumMember;
                     FieldInfo field = member as FieldInfo;
@@ -1547,7 +1547,7 @@ namespace XSharpLanguage
                     this._typeName = declType.AsFullName;
                     break;
                 case EnvDTE.vsCMElement.vsCMElementVariable:
-                    this._kind = Kind.ClassVar;
+                    this._kind = Kind.Field;
                     EnvDTE.CodeVariable field = member as EnvDTE.CodeVariable;
                     //
                     this._isStatic = field.IsShared;
@@ -1657,7 +1657,7 @@ namespace XSharpLanguage
                 //
                 String desc = modVis;
                 //
-                if ((this.Kind != Kind.ClassVar) && (this.Kind != Kind.Constructor))
+                if ((this.Kind != Kind.Field) && (this.Kind != Kind.Constructor))
                 {
                     if (this.Kind == Kind.VODefine)
                     {
@@ -1741,7 +1741,7 @@ namespace XSharpLanguage
                         imgG = StandardGlyphGroup.GlyphGroupEnumMember;
                         break;
                     case Kind.VOGlobal:
-                    case Kind.ClassVar:
+                    case Kind.Field:
                         imgG = StandardGlyphGroup.GlyphGroupField;
                         break;
                     case Kind.Delegate:
@@ -2019,7 +2019,7 @@ namespace XSharpLanguage
                 //
                 String desc = modVis;
                 //
-                if (this.Kind != Kind.ClassVar)
+                if (this.Kind != Kind.Field)
                     desc += this.Kind.ToString() + " ";
                 desc += this.Prototype;
                 //

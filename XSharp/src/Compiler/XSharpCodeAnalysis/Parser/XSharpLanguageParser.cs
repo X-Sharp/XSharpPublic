@@ -72,6 +72,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 System.Diagnostics.Debug.WriteLine("Parsing aborted for : " + _fileName);
                 System.Diagnostics.Debug.WriteLine("     error detected : " + e.Message);
             }
+            public override void Recover(Parser recognizer, RecognitionException e)
+            {
+                ReportError(recognizer, e);
+                base.Recover(recognizer, e);
+            }
+            public override IToken RecoverInline(Parser recognizer)
+            {
+                InputMismatchException e = new InputMismatchException(recognizer);
+                ReportError(recognizer, e);
+                return base.RecoverInline(recognizer);
+            }
         }
 
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
@@ -104,7 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-//#endif
+        //#endif
 
         internal XSharpLanguageParser(
             String FileName,
@@ -171,9 +182,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
             var sourceText = _text.ToString();
-            var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
-            lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
-            _lexerTokenStream = lexer.GetTokenStream();
+                var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
+                lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
+                _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
@@ -188,71 +199,71 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parseErrors = ParseErrorData.NewBag();
             // Check for #pragma in the lexerTokenStream
             _lexerTokenStream.Fill();
-            if (lexer.HasPragmas)
-            {
-                var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
-                foreach (var pragmaToken in pragmaTokens)
+                if (lexer.HasPragmas)
                 {
-                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
+                    var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
+                    foreach (var pragmaToken in pragmaTokens)
+                    {
+                        parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
+                    }
                 }
-            }
             XSharpPreprocessor pp = null;
             BufferedTokenStream ppStream = null;
-            if (! _options.MacroScript)
+            if (!_options.MacroScript)
             {
-                pp = new XSharpPreprocessor(lexer,_lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+                pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             }
-            
+
             #region Determine if we really need the preprocessor
-            bool mustPreprocess = true; 
-            if (_options.MacroScript)
-            {
-                mustPreprocess = false;
-            }
-             else
-            {
-                if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
+            bool mustPreprocess = true;
+                if (_options.MacroScript)
                 {
-                    if (_options.ParseLevel == ParseLevel.Complete)
-                    {
-                        mustPreprocess = true;
-                    }
-                    else
-                    {
-                        // no need to pre process in partial compilation 
-                        // if lexer does not contain UDCs, Messages or Includes
-                        mustPreprocess = lexer.MustBeProcessed;
-                    }
+                    mustPreprocess = false;
                 }
                 else
                 {
-                    mustPreprocess = false;
+                    if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
+                    {
+                        if (_options.ParseLevel == ParseLevel.Complete)
+                        {
+                            mustPreprocess = true;
+                        }
+                        else
+                        {
+                            // no need to pre process in partial compilation 
+                            // if lexer does not contain UDCs, Messages or Includes
+                            mustPreprocess = lexer.MustBeProcessed;
+                        }
+                    }
+                    else
+                    {
+                        mustPreprocess = false;
 
+                    }
                 }
-            }
-            #endregion
-            if (mustPreprocess)
-            {
-                var ppTokens = pp.PreProcess();
-	            ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
-            }
-            else
-            {
-				// No Standard Defs and no preprocessor tokens in the lexer
-				// so we bypass the preprocessor and use the lexer tokenstream
-                // but if a .ppo is required we must use the preprocessor to
-                // write the source text to the .ppo file
-                if (_options.PreprocessorOutput && pp != null)
+                #endregion
+                if (mustPreprocess)
                 {
-                    pp.writeToPPO(sourceText,false,false);
+                    var ppTokens = pp.PreProcess();
+                    ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
                 }
-                BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
-                var tokens = ts.GetTokens();
-                // commontokenstream filters on tokens on the default channel. All other tokens are ignored
-                ppStream = new CommonTokenStream(new ListTokenSource(tokens));
-            }
-            ppStream.Fill();
-            _preprocessorTokenStream = ppStream;
+                else
+                {
+                    // No Standard Defs and no preprocessor tokens in the lexer
+                    // so we bypass the preprocessor and use the lexer tokenstream
+                    // but if a .ppo is required we must use the preprocessor to
+                    // write the source text to the .ppo file
+                    if (_options.PreprocessorOutput && pp != null)
+                    {
+                        pp.writeToPPO(sourceText, false, false);
+                    }
+                    BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
+                    var tokens = ts.GetTokens();
+                    // commontokenstream filters on tokens on the default channel. All other tokens are ignored
+                    ppStream = new CommonTokenStream(new ListTokenSource(tokens));
+                }
+                ppStream.Fill();
+                _preprocessorTokenStream = ppStream;
             var parser = new XSharpParser(ppStream);
             parser.IsScript = _options.Kind == SourceCodeKind.Script;
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
@@ -260,8 +271,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (_options.ParseLevel < ParseLevel.Complete)
             {
-                parser.Interpreter.enable_global_context_dfa = true;    // default = false
-                parser.Interpreter.tail_call_preserves_sll = false;     // default = true
+                //parser.Interpreter.enable_global_context_dfa = true;    // default = false
+                parser.Interpreter.tail_call_preserves_sll = false;     // default = true   Setting to FALSE will reduce memory used by parser
             //    parser.Interpreter.always_try_local_context = true;     // default = true
             //    parser.Interpreter.force_global_context = true;         // default = false
             //    parser.Interpreter.optimize_unique_closure = true; // default = true

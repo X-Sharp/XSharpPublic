@@ -4,6 +4,18 @@
 // Created for   : 
 // WorkStation   : ZEUS
 
+
+/// <summary>
+/// Evaluate a code block or an object's Eval() method.
+/// </summary>
+/// <param name="cob"></param>
+/// <returns>
+/// </returns>
+function Eval(cob as __Usual) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
+
+
 /// <summary>
 /// Return a set-get code block for a field that is identified by its name.
 /// </summary>

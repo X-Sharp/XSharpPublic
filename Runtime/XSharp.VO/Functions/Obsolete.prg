@@ -47,6 +47,12 @@ return 0
 function	 DynSize() as dword
 return 0
 
+
+[Obsolete( "DynStack2Array() is not supported and returns an empty array")] ; 
+function DynStack2Array() as __Array
+return null_array   
+
+
 [Obsolete( "DynToOldSpace() is not supported and returns the original usual")] ; 
 function	 DynToOldSpace( u as __Usual ) as __Usual
 return u
@@ -85,6 +91,18 @@ return false
 [Obsolete( "'OldSpaceFreeFloat()' is not supported and has no effect")] ;
 function	 OldSpaceFreeFloat(f as __VOFloat) as void
 return
+
+
+
+[Obsolete( "'ReDal()' is not supported and has no effect" )] ;
+function ReDal() as void
+return
+
+
+
+[Obsolete( "'RTExit()' is not supported and always returns 0" )] ;
+function RTExit() as dword
+return 0   
 
 [Obsolete( "'RegisterKid()' is not supported and has no effect" )] ;
 function	 RegisterKid(ptrKid as IntPtr,dwCount as dword,lItem as logic) as void
@@ -380,5 +398,14 @@ return String.Empty
 
 
 [Obsolete( "'IsKanji()' is not supported", true )] ;
-FUNCTION IsKanji(c AS STRING) AS LOGIC
-	RETURN FALSE   
+function	 IsKanji(c as string) as logic
+return false   
+
+[Obsolete( "'WagnerInit()' is not supported and always returns 0" )] ;
+FUNCTION WagnerInit() AS DWORD
+RETURN 0   
+
+
+[Obsolete( "'WagnerExit()' is not supported and always returns 0" )] ;
+FUNCTION WagnerExit() AS DWORD
+RETURN 0   

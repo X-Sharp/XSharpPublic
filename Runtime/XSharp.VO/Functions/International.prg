@@ -5,6 +5,19 @@
 //
 
 
+/// <summary>
+/// Look up an identifier in a string table and returns its corresponding string.
+/// </summary>
+/// <param name="cDef"></param>
+/// <param name="id"></param>
+/// <param name="xModule"></param>
+/// <returns>
+/// </returns>
+function LoadResString(cDef as __Usual,id as __Usual,xModule as __Usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+
 	/// <summary>
 	/// </summary>
 	/// <returns>

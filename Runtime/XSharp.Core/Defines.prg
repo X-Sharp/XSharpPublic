@@ -490,7 +490,7 @@ DEFINE EDB_ASSERTION       := EDB + 53
 
 
 
-DEFINE   F_ERROR := PTR(_CAST,0xFFFFFFFF) // Error value (all functions)
+DEFINE F_ERROR := PTR(_CAST,0xFFFFFFFF) // Error value (all functions)
 
 // FERROR() returns, which are not reflected as DOSERROR()
 DEFINE   FERROR_FULL    := 256   // disk full

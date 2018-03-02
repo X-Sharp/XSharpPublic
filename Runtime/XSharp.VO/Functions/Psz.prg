@@ -232,15 +232,7 @@ using XSharp
 		/// THROW NotImplementedException{}
 		return __PSZ._NULL_PSZ 
 	
-	/// <summary>
-	/// Return the name of an activated entity.
-	/// </summary>
-	/// <param name="dwActivation"></param>
-	/// <returns>
-	/// </returns>
-	function ProcName(dwActivation as __Usual) as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
+
 	
 	/// <summary>
 	/// Convert a null-terminated string to a strongly typed string.

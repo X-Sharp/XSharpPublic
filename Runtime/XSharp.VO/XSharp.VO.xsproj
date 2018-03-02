@@ -63,7 +63,7 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
@@ -101,12 +101,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\Db.prg" />
+    <Compile Include="Functions\Debugging.prg" />
     <Compile Include="Functions\DiskIO.prg" />
     <Compile Include="Functions\Error.prg" />
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\Array.prg" />
     <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\Date.prg" />
+    <Compile Include="Functions\Latebinding.prg" />
+    <Compile Include="Functions\Math.prg" />
+    <Compile Include="Functions\OS.prg" />
     <Compile Include="Functions\Psz.prg" />
     <Compile Include="Functions\RDD.prg" />
     <Compile Include="Functions\Float.prg" />
@@ -122,6 +127,7 @@
     <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Functions\OOP.prg" />
     <Compile Include="Functions\Registry.prg" />
+    <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\Symbol.prg" />
     <Compile Include="Functions\Usual.prg" />
     <Compile Include="Functions\Vodb.prg" />

@@ -3,213 +3,265 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+
 using XSharp
 /// <summary>
-/// Convert a string containing a 32-bit binary __VODate to a __VODate data type.
+/// Convert a string containing a 32-bit binary Date to a Date data type.
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-FUNCTION Bin2Date(c AS STRING) AS __VODate
+function Bin2Date(c as string) as __VODate
 	/// THROW NotImplementedException{}
-RETURN (__VODate)0   
-
+	return	 (__VODate)0   
 
 
 
 /// <summary>
-/// Extract the name of the day of the week from a __VODate.
+/// Extract the name of the day of the week from a Date.
 /// </summary>
-/// <param name="d">The __VODate to calculate the day of week from.</param>
+/// <param name="d">The Date to calculate the day of week from.</param>
 /// <returns>
 /// A string for the calculated day of the week.
 /// </returns>
-FUNCTION CDoW(d AS __VODate) AS STRING		
+function CDoW(d as __VODate) as string		
 	local result := String.Empty as string
 	if d != null
 		local dt := d as Datetime
 		result := dt:ToString("dddd")
 	endif
-RETURN result
+	return	 result
 
 /// <summary>
-/// Extract the name of the month from a __VODate.
+/// Extract the name of the month from a Date.
 /// </summary>
-/// <param name="d">The __VODate to calculate the month from.</param>
+/// <param name="d">The Date to calculate the month from.</param>
 /// <returns>
 /// A string with the name of the month.
 /// </returns>
-FUNCTION CMonth(d AS __VODate) AS STRING
+function CMonth(d as __VODate) as string
 	local result := String.Empty as string
 	if d != null
 		local dt := d as Datetime
 		result := dt:ToString("MMMM")
 	endif
-RETURN result 
+	return	 result 
 
 /// <summary>
-/// Format a set of numbers representing a year, month, and day as a __VODate.
+/// Format a set of numbers representing a year, month, and day as a Date.
 /// </summary>
 /// <param name="dwY"></param>
 /// <param name="dwM"></param>
 /// <param name="dwDay"></param>
 /// <returns>
 /// </returns>
-FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS __VODate
-RETURN __VODate{dwY,dwM,dwDay}   
+function ConDate(dwY as dword,dwM as dword,dwDay as dword) as __VODate
+	return	 __VODate{dwY,dwM,dwDay}   
 
 /// <summary>
-/// Convert a __VODate string to __VODate format.
+/// Convert a Date string to __VODate format.
 /// </summary>
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-FUNCTION CToD(cDate AS STRING) AS __VODate
+function CToD(cDate as string) as __VODate
 	local parsedDate as DateTime
 	if !DateTime.TryParse(cDate,out parsedDate)
 		parsedDate := DateTime.MinValue
 	endif
-RETURN __VODate{parsedDate}   
+	return	 __VODate{parsedDate}   
 
 /// <summary>
-/// Convert an ANSI __VODate string to __VODate format.
+/// Convert an ANSI Date string to Date format.
 /// </summary>
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-FUNCTION CToDAnsi(cDate AS STRING) AS __VODate
+function CToDAnsi(cDate as string) as __VODate
 	/// THROW NotImplementedException{}
-RETURN (__VODate)0   
+	return	 (__VODate)0   
 
 
 /// <summary>
-/// Convert a __VODate to a 32-bit binary __VODate string.
+/// Convert a Date to a 32-bit binary Date string.
 /// </summary>
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-FUNCTION Date2Bin(d AS __VODate) AS STRING
+function Date2Bin(d as __VODate) as string
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	return	 String.Empty   
 
 /// <summary>
-/// Extract the number of the day of the month from a __VODate.
+/// Extract the number of the day of the month from a Date.
 /// </summary>
-/// <param name="d">The __VODate to extract the day from.</param>
+/// <param name="d">The Date to extract the day from.</param>
 /// <returns>
 /// The day part of the given __VODate.
 /// </returns>
-FUNCTION Day(d AS __VODate) AS DWORD
+function Day(d as __VODate) as dword
 	local day := 0  as dword
 	if ! d:IsEmpty
 		day :=  d:DDay
 	endif
-return day
+	return day
 
 /// <summary>
-/// Extract the number of the day of the week from a __VODate.
+/// Extract the number of the day of the week from a Date.
 /// </summary>
-/// <param name="d">The __VODate to extract the day of the week from.</param>
+/// <param name="d">The Date to extract the day of the week from.</param>
 /// <returns>
 /// The day of the week of the given __VODate.
 /// </returns>
-FUNCTION DoW(d AS __VODate) AS DWORD
+function DoW(d as __VODate) as dword
 	local day := 0  as dword
 	if ! d:IsEmpty
-        local dt := d as Datetime
+		local dt := d as Datetime
 		day := (dword) dt:DayOfWeek	   
 	endif
-return day
-  
+	return day
+
 
 /// <summary>
-/// Convert a __VODate to a string.
+/// Convert a Date to a string.
 /// </summary>
-/// <param name="d">The __VODate to be converted.</param>
+/// <param name="d">The Date to be converted.</param>
 /// <returns>
-/// A string representation of the given __VODate, formatted in the current __VODate format.
+/// A string representation of the given Date, formatted in the current Date format.
 /// </returns>
-FUNCTION DToC(d AS __VODate) AS STRING
+function DToC(d as __VODate) as string
 	local result:="" as string		
-
+	
 	if ! d:IsEmpty
-        local dt := d as Datetime
+		local dt := d as Datetime
 		result := d:ToString()
 	else
 		result := default(DateTime):ToString()
 	endif
-return result 
+	return result 
 
 /// <summary>
-/// Convert a __VODate value to a string formatted as string in ANSI format
+/// Convert a Date value to a string formatted as string in ANSI format
 /// </summary>
-/// <param name="d">The __VODate to be converted</param>
+/// <param name="d">The Date to be converted</param>
 /// <returns>
-/// The given __VODate as string in ANSI format
+/// The given Date as string in ANSI format
 /// </returns>
-FUNCTION DToS(d AS __VODate) AS STRING
+function DToS(d as __VODate) as string
 	local result:="        " as string		
 	if ! d:IsEmpty
-        local dt := d as Datetime
+		local dt := d as Datetime
 		result := d:ToString("yyyyMMdd")
 	endif
-return result 
+	return result 
 
 /// <summary>
 /// </summary>
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-FUNCTION JCDOW(d AS __VODate) AS STRING
+function JCDOW(d as __VODate) as string
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	return	 String.Empty   
 
 /// <summary>
 /// </summary>
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-FUNCTION JCMONTH(d AS __VODate) AS STRING
+function JCMONTH(d as __VODate) as string
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	return	 String.Empty   
 
 /// <summary>
 /// </summary>
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-FUNCTION JCYEAR(d AS __VODate) AS STRING
+function JCYEAR(d as __VODate) as string
 	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	return	 String.Empty   
 
 /// <summary>
 /// Extract the number of the month from a __VODate.
 /// </summary>
-/// <param name="d">The __VODate to extract the month from.</param>
+/// <param name="d">The Date to extract the month from.</param>
 /// <returns>
-/// The month of the given __VODate.
+/// The month of the given Date.
 /// </returns>
-FUNCTION Month(d AS __VODate) AS DWORD
+function Month(d as __VODate) as dword
 	local month := 0  as dword
 	if !d:IsEmpty
 		month :=  d:DMonth
 	endif
-return month
+	return month
+
+	/// <summary>
+	/// Return the number of seconds that have elapsed since midnight.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+	FUNCTION Seconds() AS __VOFloat
+		/// THROW NotImplementedException{}
+	RETURN 0   
+
+
+
 
 /// <summary>
-/// Convert an ANSI __VODate string to __VODate format.
+/// Convert an ANSI Date string to Date format.
 /// </summary>
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-FUNCTION SToD(cDate AS STRING) AS __VODate
+function SToD(cDate as string) as __VODate
 	local convertedDate := __VODate{} as __VODate
 	try
 		convertedDate := (__VODate)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
-	//catch ex as exeption
-	//   nop
+		//catch ex as exeption
+		//   nop
 	end try
-RETURN convertedDate
+	return	 convertedDate
+
+
+/// <summary>
+/// Return the system Date as a Date value.
+/// </summary>
+/// <returns>
+/// </returns>
+function Today() as __VODate
+	return (__VODate) DateTime.Now
+
+
+/// <summary>
+/// Return the system time in a format determined by various international settings.
+/// </summary>
+/// <returns>
+/// </returns>
+function Time() as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+/// <summary>
+/// Return the system time in 24-hour format.
+/// </summary>
+/// <returns>
+/// </returns>
+function Time24() as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+
+
+
+/// <summary>
+/// Convert a specified number of seconds to a time string.
+/// </summary>
+/// <param name="uSeconds"></param>
+/// <returns>
+/// </returns>
+function TString(uSeconds as __Usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
 
 
 /// <summary>
@@ -219,9 +271,12 @@ RETURN convertedDate
 /// <returns>
 /// The year from the give __VODate.
 /// </returns>
-FUNCTION Year(d AS __VODate) AS DWORD
+function Year(d as __VODate) as dword
 	local year := 0  as dword
 	if ! d:IsEmpty
 		year := d:DYear
 	endif
-return year
+	return year
+
+
+

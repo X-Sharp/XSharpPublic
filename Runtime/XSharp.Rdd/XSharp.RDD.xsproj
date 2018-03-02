@@ -115,7 +115,6 @@
     <Compile Include="Advantage\AXSqlRDD.prg" />
     <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\Functions.prg" />
-    <Compile Include="Defines.prg" />
     <Compile Include="SubCodes.prg" />
     <Compile Include="_Dummy.prg" />
     <Compile Include="Types\DBF.prg" />

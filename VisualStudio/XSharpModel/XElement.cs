@@ -310,7 +310,6 @@ namespace XSharpModel
                         break;
                     case Kind.VOGlobal:
                     case Kind.Field:
-                    case Kind.ClassVar:
                         imgK = ImageListKind.Field;
                         break;
                     case Kind.Parameter:
@@ -401,7 +400,6 @@ namespace XSharpModel
                         break;
                     case Kind.Field:
                     case Kind.VOGlobal:
-                    case Kind.ClassVar:
                         imgG = StandardGlyphGroup.GlyphGroupField;
                         break;
                     case Kind.Union:
@@ -506,7 +504,6 @@ namespace XSharpModel
         Access,
         Assign,
         Property,
-        ClassVar,
         Function,
         Procedure,
         Field,
@@ -606,7 +603,6 @@ namespace XSharpModel
             switch (elementKind)
             {
                 case Kind.Field:
-                case Kind.ClassVar:
                 case Kind.VOGlobal:
                 case Kind.VODefine:
                     return true;
@@ -620,7 +616,6 @@ namespace XSharpModel
             {
                 case Kind.Method:
                 case Kind.Access:
-                case Kind.ClassVar:
                 case Kind.Property:
                 case Kind.Function:
                 case Kind.Delegate:

@@ -73,25 +73,6 @@ return	 __Usual._NIL
 
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function _D2T() as __VOFloat
-	/// THROW NotImplementedException{}
-return	 0   
-
-
-/// <summary>
-/// </summary>
-/// <param name="a"></param>
-/// <param name="n1"></param>
-/// <returns>
-/// </returns>
-function ___ArrayGetCollection(a as __Usual,n1 as __Usual) as __Usual
-	/// THROW NotImplementedException{}
-return	 __Usual._NIL   
-
 
 
 

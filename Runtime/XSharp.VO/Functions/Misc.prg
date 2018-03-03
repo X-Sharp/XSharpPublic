@@ -8,25 +8,6 @@ using XSharp
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="x"></param>
-/// <param name="nType"></param>
-/// <returns>
-/// </returns>
-function Any2Usual(x as __Usual,nType as dword) as __Usual
-	/// THROW NotImplementedException{}
-	return __Usual._NIL   
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function ArgCount() as dword
-	/// THROW NotImplementedException{}
-	return 0   
-
 
 
 
@@ -46,14 +27,6 @@ function Between(x as __Usual,y as __Usual,z as __Usual) as logic
 	return ((x>=y) && (x<=z))
 
 
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function CompString() as int
-	/// THROW NotImplementedException{}
-	return 0   
 
 
 

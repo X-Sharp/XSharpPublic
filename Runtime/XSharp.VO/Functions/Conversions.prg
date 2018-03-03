@@ -2,6 +2,19 @@
 
 
 /// <summary>
+/// </summary>
+/// <param name="x"></param>
+/// <param name="nType"></param>
+/// <returns>
+/// </returns>
+function Any2Usual(x as __Usual,nType as dword) as __Usual
+	/// THROW NotImplementedException{}
+	return __Usual._NIL   
+
+
+
+
+/// <summary>
 /// Convert a value to a right-padded string.
 /// </summary>
 /// <param name="u"></param>

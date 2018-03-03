@@ -91,3 +91,24 @@ return null_symbol
 	FUNCTION MaxAtom() AS DWORD
 		/// THROW NotImplementedException{}
 	return 0   
+
+
+	/// <summary>
+	/// Convert a __Symbol to a string.
+	/// </summary>
+	/// <param name="sym"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION __Symbol2String(sym AS __Symbol) AS STRING
+		/// THROW NotImplementedException{}
+	RETURN String.Empty   
+
+	/// <summary>
+	/// </summary>
+	/// <param name="s1"></param>
+	/// <param name="s2"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION SysCompAtom(s1 AS __Symbol,s2 AS __Symbol) AS INT
+		/// THROW NotImplementedException{}
+	RETURN 0   

@@ -11,9 +11,9 @@ using XSharp
 using System.Diagnostics
 begin namespace XSharp	
 	[DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
-		[DebuggerTypeProxy(typeof(DateDebugView))];
-		[StructLayout(LayoutKind.Explicit)];
-		public structure __VODate implements System.IComparable, ;
+	[DebuggerTypeProxy(typeof(DateDebugView))];
+	[StructLayout(LayoutKind.Explicit)];
+	public structure __VODate implements System.IComparable, ;
 		System.IFormattable, ;
 		System.IConvertible, ;
 		IDate, ;

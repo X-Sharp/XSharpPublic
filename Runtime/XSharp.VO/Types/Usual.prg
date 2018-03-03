@@ -1327,6 +1327,7 @@ begin namespace XSharp
 			static operator implicit(u as __Usual) as byte
 				try
 					begin checked
+						// todo use CompilerOptionVO11 for types with decimal
 						switch u:UsualType
 							case __UsualType.Long		; return (byte) u:_intValue
 							case __UsualType.Int64		; return (byte) u:_i64Value
@@ -1345,7 +1346,8 @@ begin namespace XSharp
 			static operator implicit(u as __Usual) as short
 				try
 					begin checked
-						switch u:UsualType
+							// todo use CompilerOptionVO11 for types with decimal
+							switch u:UsualType
 							case __UsualType.Long	; return (short) u:_intValue
 							case __UsualType.Int64	; return (short) u:_i64Value
 							case __UsualType.Float	; return (short) u:_r8Value
@@ -1363,6 +1365,7 @@ begin namespace XSharp
 			static operator implicit(u as __Usual) as long
 				try
 					begin checked
+							// todo use CompilerOptionVO11 for types with decimal
 						switch u:UsualType
 							case __UsualType.Long	; return u:_intValue
 							case __UsualType.Int64	; return (long) u:_i64Value
@@ -1381,6 +1384,7 @@ begin namespace XSharp
 			static operator implicit(u as __Usual) as int64
 				try
 					begin checked
+							// todo use CompilerOptionVO11 for types with decimal
 						switch u:UsualType
 							case __UsualType.Long	; return u:_intValue
 							case __UsualType.Int64	; return (int64) u:_i64Value

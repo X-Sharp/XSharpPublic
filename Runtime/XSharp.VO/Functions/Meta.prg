@@ -5,6 +5,14 @@
 using XSharp
 
 
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+function ArgCount() as dword
+	/// THROW NotImplementedException{}
+	return 0   
+
 
 	/// <summary>
 	/// </summary>
@@ -15,84 +23,9 @@ using XSharp
 	/// <param name="nArgs"></param>
 	/// <returns>
 	/// </returns>
-	unsafe FUNCTION DeclareMethod(symClass AS __Symbol,symMeth AS __Symbol,nType AS DWORD,pFunc AS PTR,nArgs AS DWORD) AS INT
+ 	unsafe FUNCTION DeclareMethod(symClass AS __Symbol,symMeth AS __Symbol,nType AS DWORD,pFunc AS PTR,nArgs AS DWORD) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
-
-	/// <summary>
-	/// Return a set-get code block for a field that is identified by a __Symbol.
-	/// </summary>
-	/// <param name="symVar"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FieldBlockSym(symVar AS __Symbol) AS OBJECT
-		/// THROW NotImplementedException{}
-	RETURN NULL_OBJECT   
-
-	/// <summary>
-	/// Get the contents of a field that is identified by a work area alias and the field name.
-	/// </summary>
-	/// <param name="symAlias"></param>
-	/// <param name="symField"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FieldGetAlias(symAlias AS __Symbol,symField AS __Symbol) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
-
-	/// <summary>
-	/// Retrieve the contents of a field that is identified by its __Symbolic name.
-	/// </summary>
-	/// <param name="symVar"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FieldGetSym(symVar AS __Symbol) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
-
-	/// <summary>
-	/// Return the position of a field that is identified by a __Symbol.
-	/// </summary>
-	/// <param name="sField"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FieldPosSym(sField AS __Symbol) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Set the value of a field identified by its work area alias and field name.
-	/// </summary>
-	/// <param name="symAlias"></param>
-	/// <param name="symField"></param>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FieldPutAlias(symAlias AS __Symbol,symField AS __Symbol,u AS __Usual) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
-
-	/// <summary>
-	/// Set the value of a field that is identified by its __Symbolic name.
-	/// </summary>
-	/// <param name="symVar"></param>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FieldPutSym(symVar AS __Symbol,u AS __Usual) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
-
-	/// <summary>
-	/// Return a set-get code block for a field, specified as a __Symbol, in a specified work area.
-	/// </summary>
-	/// <param name="symVar"></param>
-	/// <param name="nArea"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FieldWBlockSym(symVar AS __Symbol,nArea AS DWORD) AS OBJECT
-		/// THROW NotImplementedException{}
-	RETURN NULL_OBJECT   
 
 	/// <summary>
 	/// Return the number of local arguments that a function with the CLIPPER calling convention is expecting.
@@ -112,15 +45,6 @@ using XSharp
 	unsafe FUNCTION FunctionSym2Ptr(symFunc AS __Symbol) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
-
-	/// <summary>
-	/// </summary>
-	/// <param name="symVar"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION GSG9(symVar AS __Symbol) AS __Usual
-		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Determine if a class exists.
@@ -215,25 +139,6 @@ using XSharp
 	RETURN 0   
 
 
-	/// <summary>
-	/// Convert a __Symbol to a string.
-	/// </summary>
-	/// <param name="sym"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION __Symbol2String(sym AS __Symbol) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="s1"></param>
-	/// <param name="s2"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION SysCompAtom(s1 AS __Symbol,s2 AS __Symbol) AS INT
-		/// THROW NotImplementedException{}
-	RETURN 0   
 
 	/// <summary>
 	/// </summary>

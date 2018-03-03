@@ -10,7 +10,7 @@ begin namespace XSharp
 	// use explicit layout so we can compact the size into 12 bytes
 	// Type is Immutable, so no settable properties
 	[StructLayout(LayoutKind.Explicit)];
-		public structure __VOFloat implements IFLoat, ;
+	public structure __VOFloat implements IFLoat, ;
 		IConvertible,; 
 		IFormattable, ;
 		IComparable<__VoFloat>, ;
@@ -147,18 +147,22 @@ begin namespace XSharp
 		#endregion
 		#region Explicit Converters
 			static operator explicit(value as __VoFloat) as byte
+				// todo use CompilerOptionVO11 
 				return (byte) value:_value
 			static operator explicit(value as __VoFloat) as SByte
 				return (SByte) value:_value
 			static operator explicit(value as __VoFloat) as short
+				// todo use CompilerOptionVO11 
 				return (short) value:_value
 			static operator explicit(value as __VoFloat) as word
 				return (word) value:_value
 			static operator explicit(value as __VoFloat) as long
+				// todo use CompilerOptionVO11 
 				return (long) value:_value
 			static operator explicit(value as __VoFloat) as dword
 				return (dword) value:_value
 			static operator explicit(value as __VoFloat) as int64
+				// todo use CompilerOptionVO11 
 				return (int64) value:_value
 			static operator explicit(value as __VoFloat) as uint64
 				return (uint64) value:_value

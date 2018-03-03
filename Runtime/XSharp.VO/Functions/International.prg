@@ -6,6 +6,16 @@
 
 
 /// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+function CompString() as int
+	/// THROW NotImplementedException{}
+	return 0   
+
+
+
+/// <summary>
 /// Look up an identifier in a string table and returns its corresponding string.
 /// </summary>
 /// <param name="cDef"></param>

@@ -38619,7 +38619,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = External , %AppPath%\Prg\C386.rc
@@ -46037,7 +46037,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -49766,7 +49766,7 @@ ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C493 - VO compatibility isssues with VOSTRUCTs Resources]
 [C493 - VO compatibility isssues with VOSTRUCTs Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C493.rc
@@ -54685,7 +54685,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
@@ -60441,7 +60441,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C595 - Problem with field members in VIRTUAL ACCESS in PARTIAL class / Core dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C596 - VO allows also LOCAL STATIC *************
 Application = C596 - VO allows also LOCAL STATIC
 IDEVersion = 1.06

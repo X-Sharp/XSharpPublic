@@ -6735,7 +6735,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
             expr = MakeCastTo(context.Type.Get<TypeSyntax>(), expr);
-            if (_options.IsDialectVO )
+            // If the expression is part of a CHECKED or UNCHECKED
+            // Syntax then there is no need to explicitely add the Checked
+            // for example C578: 
+            // DEFINE d2 := unchecked ((WORD) -1)
+            if (_options.IsDialectVO  && !(context.Parent is XP.CheckedExpressionContext))
             {
                 expr = MakeChecked(expr, _options.Overflow);
             }

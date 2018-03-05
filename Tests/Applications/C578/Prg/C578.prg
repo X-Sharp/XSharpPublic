@@ -1,9 +1,9 @@
 // 578. error XS0221: Constant value '-1' cannot be converted to a 'word' (use 'unchecked' syntax to override)
 // /ovf /fovf
 
-// correct error XS0221: Constant value '-1' cannot be converted to a 'dword' 
+// correct error XS0221: Constant value '-1' cannot be converted to a 'word' 
 // (use 'unchecked' syntax to override)
-DEFINE d1 := (WORD) -1
+//DEFINE d1 := (WORD) -1
 
 // Still same error, despite using UNCKECKED, as suggested in the error message.
 // Note that the compiler reports an error on this only in vulcan dialect.

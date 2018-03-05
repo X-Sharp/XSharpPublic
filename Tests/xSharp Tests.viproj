@@ -54686,8 +54686,9 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C541.rc
@@ -58650,7 +58651,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C577 - Failed to emit module error with DEFINEs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C578 - Inconsistent compile time overflow checking *************
 Application = C578 - Inconsistent compile time overflow checking
 IDEVersion = 1.06
@@ -58750,7 +58751,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C578 - Inconsistent compile time overflow checking
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C579 - String class fields get reset to "" with /vo2, even if they have non-null values *************
 Application = C579 - String class fields get reset to "" with /vo2, even if they have non-null values
 IDEVersion = 1.06
@@ -59448,7 +59449,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C585 - FOR Next with negative step
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C586 - Incorrect overload chosen for array argument in VO/Vulcan dialect *************
 Application = C586 - Incorrect overload chosen for array argument in VO/Vulcan dialect
 IDEVersion = 1.06
@@ -60243,7 +60244,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C593 - Error messages without file/line info with PARTIAL classes and ACCESS/ASSIGNs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION R594 *************
 Application = R594
 IDEVersion = 1.06

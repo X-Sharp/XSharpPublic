@@ -1800,11 +1800,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                                 dataType = _getMissingType();
                         }
-                        if (dataType != _voidType)
-                        {
-                            // calculate a new return value with a warning
-                            expr = GetReturnExpression(dataType);
-                        }
+                        // calculate a new return value with a warning
+                        expr = GetReturnExpression(dataType);
                     }
                 }
                 if (ent.Data.MustBeVoid && expr != null)
@@ -2471,6 +2468,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Data.HasMissingReturnType = (returnType == null);
             context.Data.HasTypedParameter = false;
+            if (context is XP.ProcedureContext)
+            {
+                context.Data.MustBeVoid = true;
+            }
+            else if (!context.Data.HasMissingReturnType)
+            {
+                string rtype = returnType.GetText().ToLower();
+                if (rtype == "void" || rtype == "system.void")
+                {
+                    context.Data.MustBeVoid = true;
+                }
+
+            }
             if (Convention != null)
             {
                 context.Data.HasClipperCallingConvention = (Convention.Type == XP.CLIPPER);

@@ -76,6 +76,47 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var len = parsLeft.Length;
                     if (arguments.Count < len)
                         len = arguments.Count;
+
+                    // check if all left types are equal
+                    bool equal = true;
+                    if (parsLeft.Length == arguments.Count)
+                    {
+                        for (int i = 0; i < len; i++)
+                        {
+                            var parLeft = parsLeft[i];
+                            var arg = arguments[i];
+                            if (parLeft.Type != arg.Type)
+                            {
+                                equal = false;
+                                break;
+                            }
+                        }
+                        if (equal)
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                    }
+                    // check if all right types are equal
+                    if (parsRight.Length == arguments.Count)
+                    {
+                        equal = true;
+                        for (int i = 0; i < len; i++)
+                        {
+                            var parRight = parsRight[i];
+                            var arg = arguments[i];
+                            if (parRight.Type != arg.Type)
+                            {
+                                equal = false;
+                                break;
+                            }
+                        }
+                        if (equal)
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+                    }
                     for (int i = 0; i < len; i++)
                     {
                         var parLeft = parsLeft[i];

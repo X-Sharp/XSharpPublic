@@ -573,7 +573,7 @@ variableDeclarator	: Id=identifier ASSIGN_OP Expr=expression
 // When the type is missing and the following element has a type
 // then the type of the following element propagates forward until for all elements without type
 
-localdecl          : LOCAL						  LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
+localdecl          : LOCAL (Static=STATIC)?		  LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
 				   | Static=STATIC LOCAL		  LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
 				   | {!XSharpLexer.IsKeyword(InputStream.La(2))}?   // STATIC Identifier , but not STATIC <Keyword>
 				     Static=STATIC				  LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	

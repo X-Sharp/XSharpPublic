@@ -86,7 +86,33 @@ namespace Microsoft.CodeAnalysis.CSharp
             var syntax = fieldInit.Syntax;
             var boundReceiver = fieldInit.Field.IsStatic ? null :
                                         new BoundThisReference(syntax, fieldInit.Field.ContainingType);
+#if XSHARP
+            var initValue = fieldInit.InitialValue;
+            if (initValue.WasCompilerGenerated && fieldInit.Field.Type.IsStringType())
+            {
+                initValue = new BoundNullCoalescingOperator(syntax,
+                                                new BoundFieldAccess(syntax,
+                                                    boundReceiver,
+                                                    fieldInit.Field,
+                                                    constantValueOpt: null),
+                                                    initValue,
+                                                    Conversion.Identity,
+                                                    fieldInit.Field.Type)
+                { WasCompilerGenerated = true };
+            }
+            BoundStatement boundStatement =
+                new BoundExpressionStatement(syntax,
+                    new BoundAssignmentOperator(syntax,
+                        new BoundFieldAccess(syntax,
+                            boundReceiver,
+                            fieldInit.Field,
+                            constantValueOpt: null),
+                        initValue,
+                        fieldInit.Field.Type)
+                    { WasCompilerGenerated = true })
+                { WasCompilerGenerated = fieldInit.WasCompilerGenerated };
 
+#else
             BoundStatement boundStatement =
                 new BoundExpressionStatement(syntax,
                     new BoundAssignmentOperator(syntax,
@@ -98,7 +124,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         fieldInit.Field.Type)
                     { WasCompilerGenerated = true })
                 { WasCompilerGenerated = fieldInit.WasCompilerGenerated };
-
+#endif
             Debug.Assert(LocalRewriter.IsFieldOrPropertyInitializer(boundStatement)); 
             return boundStatement;
         }

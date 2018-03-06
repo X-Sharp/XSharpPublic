@@ -695,7 +695,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         Options.MainTypeName = XSharpSpecialNames.CoreFunctionsClass;
                     }
-                    def = InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree(trees, isApp);
+                    def = InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree(trees, isApp, Options.TargetDLL);
                 }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 Options.HasDefaultTree = true;

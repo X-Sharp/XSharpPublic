@@ -185,6 +185,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
+        public string GetGlobalClassName(XSharpTargetDLL targetDLL)
+        {
+            switch (targetDLL)
+            {
+                case XSharpTargetDLL.Core:
+                    GlobalClassName = XSharpSpecialNames.XSharpCoreFunctionsClass;
+                    break;
+                case XSharpTargetDLL.RDD:
+                    GlobalClassName = XSharpSpecialNames.XSharpRDDFunctionsClass;
+                    break;
+                case XSharpTargetDLL.VO:
+                    GlobalClassName = XSharpSpecialNames.XSharpVOFunctionsClass;
+                    break;
+                default:
+                    GlobalClassName = XSharpSpecialNames.CoreFunctionsClass;
+                    break;
+            }
+        }
+
         #region Construction and destruction
         public XSharpTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
             ContextAwareSyntax syntaxFactory, string fileName)
@@ -194,6 +213,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _parser = parser;
             _options = options;
             _isScript = options.Kind == SourceCodeKind.Script;
+            GlobalClassName = GetGlobalClassName(_options.TargetDLL);
             GlobalEntities = CreateEntities();
             _ptrType = GenerateQualifiedName(SystemQualifiedNames.IntPtr);
             _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
@@ -203,7 +223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public static SyntaxTree DefaultXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
+        public static SyntaxTree DefaultXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp, XSharpTargetDLL targetDLL)
         {
             // trees is NOT used here, but it IS used in the VOTreeTransForm
             if (_defTree == null)
@@ -212,9 +232,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (_defTree == null)
                     {
-                        var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+                        var t = new XSharpTreeTransformation(null,CSharpParseOptions.Default , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                        t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpSpecialNames.CoreFunctionsClass, false, true));
+                        string globalClassName = XSharpTreeTransformation.GetGlobalClassName(targetDLL);
+
+                        t.GlobalEntities.Members.Add(t.GenerateGlobalClass(globalClassName, false, true));
                         var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                         var tree = CSharpSyntaxTree.Create(
                             (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
@@ -2114,7 +2136,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             generated.Free();
 
             // Add: using static Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, XSharpSpecialNames.CoreFunctionsClass, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
@@ -2242,7 +2264,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             generated.Free();
 
             // Add: using static Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, XSharpSpecialNames.CoreFunctionsClass, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
@@ -2310,7 +2332,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             _pool.Free(globalTypes);
             // Add: using static Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, XSharpSpecialNames.CoreFunctionsClass, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
@@ -2382,14 +2404,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (s is ExternAliasDirectiveSyntax)
                     externs.Add(s as ExternAliasDirectiveSyntax);
             }
+
+            string name = context.Name.GetText();
             MemberDeclarationSyntax ns = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
-                name: context.Name.Get<NameSyntax>(),
+                name: GenerateQualifiedName(context.Name.GetText()),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 externs: externs,
                 usings: usings,
                 members: members,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+
             _pool.Free(externs);
             _pool.Free(usings);
             _pool.Free(members);

@@ -47,11 +47,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ImplicitNameSpace { get; private set; }
         public bool LateBinding { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
-        public bool CreatingRuntime { get; private set; }
 
         public bool IsDialectVO { get { return this.Dialect.IsDialectVO(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
 
+        public XSharpTargetDLL TargetDLL { get; private set; }
         //public bool vo1 => VoInitAxitMethods;
         public bool vo2 => VONullStrings;
         public bool vo3 => VirtualInstanceMethods;
@@ -72,7 +72,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public RuntimeAssemblies RuntimeAssemblies ;
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
-            RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpBase) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }
@@ -102,9 +101,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
-                CreatingRuntime = opt.CreatingRuntime;
-                ConsoleOutput = opt.ConsoleOutput;
+                
                 ParseLevel = opt.ParseLevel;
+                TargetDLL = opt.TargetDLL;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
             }
         }
@@ -124,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Dialect = opt.Dialect;
             ImplicitNameSpace = opt.ImplicitNameSpace;
             LateBinding = opt.LateBinding;
-            CreatingRuntime = opt.CreatingRuntime;
+            TargetDLL = opt.TargetDLL;
             RuntimeAssemblies = opt.RuntimeAssemblies;
             //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
             VONullStrings = opt.VONullStrings; // vo2

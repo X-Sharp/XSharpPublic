@@ -61,9 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.CompactFramework = positive;
                     OptionNotImplemented(diagnostics, oldname, "Compiling for Compact Framework");
                     break;
-                case "creatingruntime":
-                    options.CreatingRuntime = true;
-                    break;
                 case "dialect":
                     XSharpDialect dialect = XSharpDialect.Core;
                     if (string.IsNullOrEmpty(value))
@@ -143,6 +140,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "parseonly":
                     options.ParseLevel = ParseLevel.Parse;
                     break;
+                case "out":
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        string fn = System.IO.Path.GetFileName(value).ToLower();
+                        switch (fn)
+                        {
+                            case "xsharp.core.dll":
+                                options.TargetDLL = XSharpTargetDLL.Core;
+                                break;
+                            case "xsharp.vo.dll":
+                                options.TargetDLL = XSharpTargetDLL.VO;
+                                break;
+                            case "xsharp.rdd.dll":
+                                options.TargetDLL = XSharpTargetDLL.RDD;
+                                break;
+                            default:
+                                options.TargetDLL = XSharpTargetDLL.None;
+                                break;
+                        }
+                    }
+                    handled = false;
+                    break; 
                 case "ppo":
                     options.PreProcessorOutput = positive;
                     break;
@@ -269,9 +288,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case OurAssemblyNames.VulcanRT:
                     options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
                     break;
-                case OurAssemblyNames.XSharpBase:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpBase;
-                    break;
                 case OurAssemblyNames.XSharpCore:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
                     break;
@@ -362,7 +378,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Ok;
                     isVo = true;
                 }
-                else if(options.CreatingRuntime) {
+                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD) {
                     // Ok
                     isVo = true;
                 }

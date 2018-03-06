@@ -115,26 +115,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
             _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
             // calculate the global class name;
-            string name = options.CommandLineArguments?.CompilationOptions.ModuleName;
-            string firstSource = options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
-            if (String.IsNullOrEmpty(name))
+            switch (_options.TargetDLL)
             {
-                name = firstSource;
-            }
+                case XSharpTargetDLL.VO:
+                    GlobalClassName = XSharpSpecialNames.XSharpVOFunctionsClass;
+                    break;
+                case XSharpTargetDLL.VO:
+                    GlobalClassName = XSharpSpecialNames.XSharpVOFunctionsClass;
+                    break;
+                default:
+                    string name = options.CommandLineArguments?.CompilationOptions.ModuleName;
+                    string firstSource = options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
+                    if (String.IsNullOrEmpty(name))
+                    {
+                        name = firstSource;
+                    }
 
-            if (!String.IsNullOrEmpty(name))
-            {
-                string filename = PathUtilities.GetFileName(name);
-                filename = PathUtilities.RemoveExtension(filename);
-                filename = filename.Replace('.', '_');
-                if (options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
-                    GlobalClassName = filename + XSharpSpecialNames.VOExeFunctionsClass;
-                else
-                    GlobalClassName = filename + XSharpSpecialNames.VODllFunctionsClass;
-            }
-            else
-            {
-                GlobalClassName = XSharpSpecialNames.CoreFunctionsClass;
+                    if (!String.IsNullOrEmpty(name))
+                    {
+                        string filename = PathUtilities.GetFileName(name);
+                        filename = PathUtilities.RemoveExtension(filename);
+                        filename = filename.Replace('.', '_');
+                        if (options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
+                            GlobalClassName = filename + XSharpSpecialNames.VOExeFunctionsClass;
+                        else
+                            GlobalClassName = filename + XSharpSpecialNames.VODllFunctionsClass;
+                    }
+                    else
+                    {
+                        GlobalClassName = XSharpSpecialNames.CoreFunctionsClass;
+                    }
+                    break;
             }
             // calculate the default vo class attributes
             GetVOClassAttributes();

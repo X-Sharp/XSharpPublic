@@ -26,9 +26,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         None = 0,
         VulcanRT = 1,
         VulcanRTFuncs = 2,
-        XSharpBase = 8,
-        XSharpCore = 16,
-        XSharpVO = 32
+        XSharpCore = 8,
+        XSharpVO = 16
     }
 
     [Flags]
@@ -38,6 +37,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         Parse = 2,
         SyntaxCheck = 3,
         Complete = 4
+    }
+
+    public enum XSharpTargetDLL : Byte
+    {
+        None =0,
+        Core = 1,
+        RDD = 2,
+        VO = 3
     }
 
     public sealed partial class CSharpParseOptions
@@ -51,6 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public int ClrVersion { get; private set; }
         public bool MacroScript { get; private set; }
 
+        public XSharpTargetDLL TargetDLL { get; private set; }
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
         public string DefaultIncludeDir { get; private set; }
@@ -85,7 +93,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
-            RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpBase) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool VOUntypedAllowed { get; private set; } = true;
         public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
@@ -115,6 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 ArrayZero = opt.ArrayZero;
                 ClrVersion = opt.ClrVersion;
+                TargetDLL = opt.TargetDLL;
                 Dialect = opt.Dialect;
                 DefaultNamespace = opt.NameSpace;
                 DefaultIncludeDir = opt.DefaultIncludeDir;
@@ -164,6 +172,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             ArrayZero = opt.ArrayZero;
             ClrVersion = opt.ClrVersion;
+            TargetDLL = opt.TargetDLL;
             MacroScript = opt.MacroScript;
             DebugEnabled = opt.DebugEnabled;
             DefaultIncludeDir = opt.DefaultIncludeDir;

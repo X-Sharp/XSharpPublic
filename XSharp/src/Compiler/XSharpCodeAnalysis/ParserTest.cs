@@ -11,25 +11,53 @@ namespace ParserTest
 {
     class ParserTest
     {
-        public static void Main()
+        public static void Main(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                Parse(@"c:\XSharp\Dev\XSharp\src\Compiler\XSharpCodeAnalysis\Parser\test.prg");
+            }
+            else
+            {
+                foreach (string arg in args)
+                {
+                    Console.WriteLine(arg);
+                    var dir = System.IO.Path.GetDirectoryName(arg);
+                    var mask = System.IO.Path.GetFileName(arg);
+                    foreach (var file in System.IO.Directory.GetFiles(dir, mask))
+                    {
+                        Console.WriteLine("Parsing " + file);
+                        var dt = DateTime.Now;
+                        Parse(file);
+                        TimeSpan took =DateTime.Now - dt;
+                        Console.WriteLine("Parsing took : {0:s'.'fff}", took);
+                    }
+                }
+            }
+
+        }
+        private static void Parse(string fileName)
         {
             ITokenStream stream;
-            var _fileName = @"c:\XSharp\Dev\XSharp\src\Compiler\XSharpCodeAnalysis\Parser\test.prg";
             IList<ParseErrorData> parseErrors = ParseErrorData.NewBag();
-            var filestream = new AntlrFileStream(_fileName);
+            var filestream = new AntlrFileStream(fileName);
             var lexer = new XSharpLexer(filestream);
             lexer.TokenFactory = XSharpTokenFactory.Default;
             stream = new CommonTokenStream(lexer, Lexer.DefaultTokenChannel);
             var parser = new XSharpParser(stream);
             parser.IsScript = false;
             parser.AllowFunctionInsideClass = false;
-            parser.AllowGarbageAfterEnd = true;
             parser.AllowNamedArgs = false;
             parser.AllowXBaseVariables = false;
             parser.RemoveErrorListeners();
 
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
-            parser.ErrorHandler = new BailErrorStrategy();
+            parser.Interpreter.reportAmbiguities = false;
+            parser.Interpreter.enable_global_context_dfa = true; // default false
+            parser.Interpreter.userWantsCtxSensitive = false; // default true
+
+            parser.ErrorHandler = new XSharpErrorStrategy();
+            parser.AddErrorListener(new XSharpErrorListener(fileName, parseErrors, true));
             XSharpParserRuleContext tree;
             try
             {
@@ -37,12 +65,22 @@ namespace ParserTest
             }
             catch (ParseCanceledException)
             {
-                var errorListener = new XSharpErrorListener(_fileName, parseErrors);
-                parser.AddErrorListener(errorListener);
+                Console.WriteLine("Parse error, Try LL mode");
+                showErrors(parseErrors);
                 parser.ErrorHandler = new XSharpErrorStrategy();
+                parser.AddErrorListener(new XSharpErrorListener(fileName, parseErrors, true));
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
+                parser.Interpreter.reportAmbiguities = true;
                 parser.Reset();
-                tree = parser.source();
+                try
+                {
+                    tree = parser.source();
+                }
+                catch (Exception e)
+                {
+                    tree = null;
+                    Console.WriteLine(e.Message);
+                }
             }
             // find parser errors (missing tokens etc)
 
@@ -52,47 +90,79 @@ namespace ParserTest
             }
             var walker = new ParseTreeWalker();
             var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors);
-            walker.Walk(errchecker, tree);
+            if (tree != null)
+            {
+                walker.Walk(errchecker, tree);
+            }
+            showErrors(parseErrors);
 
+        }
+
+        static void showErrors(IList<ParseErrorData> parseErrors)
+        {
             foreach (var error in parseErrors)
             {
-
-                System.Console.Write("{0} {1} ",error.Node.Position, error.Code);
+                var node = error.Node;
+                XSharpToken token;
+                if (node is XSharpToken)
+                {
+                    token = (XSharpToken)node;
+                    System.Console.Write("Line {0} Column {1}", token.Line, token.Column);
+                }
+                else if (node is XSharpParserRuleContext)
+                {
+                    token = (XSharpToken)((XSharpParserRuleContext)node).Start;
+                    System.Console.Write("Line {0} Column {1}", token.Line, token.Column);
+                }
+                else if (node is XTerminalNodeImpl)
+                {
+                    token = ((XTerminalNodeImpl)node).Symbol as XSharpToken;
+                    System.Console.Write("Line {0} Column {1}", token.Line, token.Column);
+                }
+                else
+                {
+                    System.Console.Write(node.GetType());
+                    System.Console.Write("Position {0} ", error.Node.Position);
+                }
                 foreach (var arg in error.Args)
                 {
                     System.Console.Write(arg.ToString());
                 }
                 System.Console.WriteLine("");
             }
-            //System.Console.WriteLine(tree.ToStringTree(parser));
         }
     }
+
     internal class XSharpErrorListener : IAntlrErrorListener<IToken>
     {
 
         string _fileName;
         IList<ParseErrorData> _parseErrors;
-        internal XSharpErrorListener(string FileName, IList<ParseErrorData> parseErrors) : base()
+        bool _cancelOnError = false;
+        internal XSharpErrorListener(string FileName, IList<ParseErrorData> parseErrors, bool cancelOnError) : base()
         {
             _fileName = FileName;
             _parseErrors = parseErrors;
+            _cancelOnError = true;
         }
         public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
             if (e?.OffendingToken != null)
             {
-                //Debug.WriteLine(_fileName+"(" + e.OffendingToken.Line + "," + e.OffendingToken.Column + "): error: " + msg);
                 _parseErrors.Add(new ParseErrorData(e.OffendingToken, ErrorCode.ERR_ParserError, msg));
+                
             }
             else if (offendingSymbol != null)
             {
-                //Debug.WriteLine(_fileName + "(" + offendingSymbol.Line + "," + offendingSymbol.Column + "): error: " + msg);
                 _parseErrors.Add(new ParseErrorData(offendingSymbol, ErrorCode.ERR_ParserError, msg));
             }
             else
             {
-                //Debug.WriteLine(_fileName + "(" + line + 1 + "," + charPositionInLine + 1 + "): error: " + msg);
                 _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_ParserError, msg));
+            }
+            if (_cancelOnError)
+            {
+                throw new ParseCanceledException(e);
             }
         }
     }

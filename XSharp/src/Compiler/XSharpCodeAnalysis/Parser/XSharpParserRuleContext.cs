@@ -19,7 +19,9 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
+#if ! TEST
 using MCT= Microsoft.CodeAnalysis.Text;
+#endif
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public class XSharpParserRuleContext :
@@ -96,11 +98,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return (ErrorData != null) && ErrorData.Count > 0;
         }
-
+#if !TEST
         public Location GetLocation()
         {
             return new XSharpSourceLocation(this);
         }
+#endif
         internal void AddError(ParseErrorData e)
         {
             if (ErrorData == null)

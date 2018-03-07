@@ -143,6 +143,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "out":
                     if (!string.IsNullOrEmpty(value))
                     {
+                        value = value.Trim();
+                        if (value.StartsWith("\"") && value.EndsWith("\""))
+                            value = value.Substring(1, value.Length - 2);
                         string fn = System.IO.Path.GetFileName(value).ToLower();
                         switch (fn)
                         {

@@ -114,7 +114,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
             _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
+            // calculate the global class name;
             GlobalClassName = GetGlobalClassName(_options.TargetDLL);
+
             // calculate the default vo class attributes
             GetVOClassAttributes();
         }

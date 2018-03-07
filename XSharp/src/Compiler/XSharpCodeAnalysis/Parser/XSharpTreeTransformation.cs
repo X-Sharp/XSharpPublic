@@ -185,23 +185,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
-        public string GetGlobalClassName(XSharpTargetDLL targetDLL)
+        public virtual string GetGlobalClassName(XSharpTargetDLL targetDLL)
         {
+            string className;
             switch (targetDLL)
             {
                 case XSharpTargetDLL.Core:
-                    GlobalClassName = XSharpSpecialNames.XSharpCoreFunctionsClass;
+                    className = XSharpSpecialNames.XSharpCoreFunctionsClass;
                     break;
                 case XSharpTargetDLL.RDD:
-                    GlobalClassName = XSharpSpecialNames.XSharpRDDFunctionsClass;
+                    className = XSharpSpecialNames.XSharpRDDFunctionsClass;
                     break;
                 case XSharpTargetDLL.VO:
-                    GlobalClassName = XSharpSpecialNames.XSharpVOFunctionsClass;
+                    className = XSharpSpecialNames.XSharpVOFunctionsClass;
                     break;
                 default:
-                    GlobalClassName = XSharpSpecialNames.CoreFunctionsClass;
+                    className = XSharpSpecialNames.CoreFunctionsClass;
                     break;
             }
+            return className;
         }
 
         #region Construction and destruction
@@ -234,7 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var t = new XSharpTreeTransformation(null,CSharpParseOptions.Default , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                        string globalClassName = XSharpTreeTransformation.GetGlobalClassName(targetDLL);
+                        string globalClassName = t.GetGlobalClassName(targetDLL);
 
                         t.GlobalEntities.Members.Add(t.GenerateGlobalClass(globalClassName, false, true));
                         var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);

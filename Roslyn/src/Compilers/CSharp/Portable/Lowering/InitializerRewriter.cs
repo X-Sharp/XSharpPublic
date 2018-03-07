@@ -88,13 +88,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         new BoundThisReference(syntax, fieldInit.Field.ContainingType);
 #if XSHARP
             var initValue = fieldInit.InitialValue;
-            if (initValue.WasCompilerGenerated && fieldInit.Field.Type.IsStringType())
+            // a generated initial value for VO NULL_STRING initialization
+            // should not overwrite a value set in a child class
+            // not that we recommend that <g>
+            if (initValue.WasCompilerGenerated && fieldInit.Field.Type.IsStringType() 
+                && fieldInit.Field.DeclaringCompilation.Options.VONullStrings)
             {
-                initValue = new BoundNullCoalescingOperator(syntax,
-                                                new BoundFieldAccess(syntax,
+                var fldaccess = new BoundFieldAccess(syntax,
                                                     boundReceiver,
                                                     fieldInit.Field,
-                                                    constantValueOpt: null),
+                                                    constantValueOpt: null)
+                { WasCompilerGenerated = true };
+                initValue = new BoundNullCoalescingOperator(syntax,
+                                                    fldaccess,
                                                     initValue,
                                                     Conversion.Identity,
                                                     fieldInit.Field.Type)

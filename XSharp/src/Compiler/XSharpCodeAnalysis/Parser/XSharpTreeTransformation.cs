@@ -185,23 +185,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
-        public string GetGlobalClassName(XSharpTargetDLL targetDLL)
+        public virtual string GetGlobalClassName(XSharpTargetDLL targetDLL)
         {
+            string className;
             switch (targetDLL)
             {
                 case XSharpTargetDLL.Core:
-                    GlobalClassName = XSharpSpecialNames.XSharpCoreFunctionsClass;
+                    className = XSharpSpecialNames.XSharpCoreFunctionsClass;
                     break;
                 case XSharpTargetDLL.RDD:
-                    GlobalClassName = XSharpSpecialNames.XSharpRDDFunctionsClass;
+                    className = XSharpSpecialNames.XSharpRDDFunctionsClass;
                     break;
                 case XSharpTargetDLL.VO:
-                    GlobalClassName = XSharpSpecialNames.XSharpVOFunctionsClass;
+                    className = XSharpSpecialNames.XSharpVOFunctionsClass;
                     break;
                 default:
-                    GlobalClassName = XSharpSpecialNames.CoreFunctionsClass;
+                    className = XSharpSpecialNames.CoreFunctionsClass;
                     break;
             }
+            return className;
         }
 
         #region Construction and destruction
@@ -234,7 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var t = new XSharpTreeTransformation(null,CSharpParseOptions.Default , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                        string globalClassName = XSharpTreeTransformation.GetGlobalClassName(targetDLL);
+                        string globalClassName = t.GetGlobalClassName(targetDLL);
 
                         t.GlobalEntities.Members.Add(t.GenerateGlobalClass(globalClassName, false, true));
                         var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
@@ -2354,20 +2356,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public void FinalizeGlobalEntities()
         {
-            string className = GlobalClassName;
             if (GlobalEntities.GlobalClassMembers.Count > 0)
             {
-                AddUsingWhenMissing(GlobalEntities.Usings, className, true);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.GlobalClassMembers));
+                AddUsingWhenMissing(GlobalEntities.Usings, GlobalClassName, true);
+                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, false, GlobalEntities.GlobalClassMembers));
                 GlobalEntities.GlobalClassMembers.Clear();
 
             }
             if (GlobalEntities.StaticGlobalClassMembers.Count > 0)
             {
                 string filename = PathUtilities.GetFileName(_fileName);
+                string className = GlobalClassName + "$" + filename + "$";
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = RemoveUnwantedCharacters(filename);
-                className = className + "$" + filename + "$";
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
                 GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.StaticGlobalClassMembers));
                 GlobalEntities.StaticGlobalClassMembers.Clear();

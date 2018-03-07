@@ -114,39 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
             _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
-            // calculate the global class name;
-            switch (_options.TargetDLL)
-            {
-                case XSharpTargetDLL.VO:
-                    GlobalClassName = XSharpSpecialNames.XSharpVOFunctionsClass;
-                    break;
-                case XSharpTargetDLL.VO:
-                    GlobalClassName = XSharpSpecialNames.XSharpVOFunctionsClass;
-                    break;
-                default:
-                    string name = options.CommandLineArguments?.CompilationOptions.ModuleName;
-                    string firstSource = options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
-                    if (String.IsNullOrEmpty(name))
-                    {
-                        name = firstSource;
-                    }
-
-                    if (!String.IsNullOrEmpty(name))
-                    {
-                        string filename = PathUtilities.GetFileName(name);
-                        filename = PathUtilities.RemoveExtension(filename);
-                        filename = filename.Replace('.', '_');
-                        if (options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
-                            GlobalClassName = filename + XSharpSpecialNames.VOExeFunctionsClass;
-                        else
-                            GlobalClassName = filename + XSharpSpecialNames.VODllFunctionsClass;
-                    }
-                    else
-                    {
-                        GlobalClassName = XSharpSpecialNames.CoreFunctionsClass;
-                    }
-                    break;
-            }
+            GlobalClassName = GetGlobalClassName(_options.TargetDLL);
             // calculate the default vo class attributes
             GetVOClassAttributes();
         }
@@ -205,7 +173,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region SyntaxTree
-        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall)
+
+        public override string GetGlobalClassName(XSharpTargetDLL targetDLL)
+        {
+            switch (targetDLL)
+            {
+                case XSharpTargetDLL.Core:
+                case XSharpTargetDLL.RDD:
+                case XSharpTargetDLL.VO:
+                    return base.GetGlobalClassName(targetDLL);
+            }
+            // calculate the global class name;
+            string name = _options.CommandLineArguments?.CompilationOptions.ModuleName;
+            string firstSource = _options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
+            if (String.IsNullOrEmpty(name))
+            {
+                name = firstSource;
+            }
+
+            if (!String.IsNullOrEmpty(name))
+            {
+                string filename = PathUtilities.GetFileName(name);
+                filename = PathUtilities.RemoveExtension(filename);
+                filename = filename.Replace('.', '_');
+                if (_options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
+                    name = filename + XSharpSpecialNames.VOExeFunctionsClass;
+                else
+                    name = filename + XSharpSpecialNames.VODllFunctionsClass;
+            }
+            else
+            {
+                name = XSharpSpecialNames.CoreFunctionsClass;
+            }
+            return name;
+        }
+
+            private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall)
         {
 
             // Create Global Functions class with the Members to call the Init procedures

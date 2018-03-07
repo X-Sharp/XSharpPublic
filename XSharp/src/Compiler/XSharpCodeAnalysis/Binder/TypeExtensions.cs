@@ -140,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp_Runtime_Functions);
+                return compilation.GetWellKnownType(WellKnownType.XSharp_Functions);
             }
             else
             {

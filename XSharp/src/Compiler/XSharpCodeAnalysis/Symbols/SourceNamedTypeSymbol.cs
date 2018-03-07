@@ -30,6 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     // That is, for a generic type C<T> this is the instance type C<T>.  
     internal sealed partial class SourceNamedTypeSymbol : SourceMemberContainerTypeSymbol, IAttributeTargetSymbol
     {
+
         private bool _isVoStructOrUnion = false;
 
         internal bool IsSourceVoStructOrUnion { get { return _isVoStructOrUnion; } }
@@ -103,7 +104,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 }
                             }
 
-                            if (voStructElementSize < elsz )
+                            if (voStructElementSize < elsz)
                                 voStructElementSize = elsz;
                         }
                     }

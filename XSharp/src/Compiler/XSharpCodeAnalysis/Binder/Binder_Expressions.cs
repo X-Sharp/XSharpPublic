@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
                     cf = arrayType;
                 }
-                if (cf == arrayType)
+                if (cf == arrayType && Compilation.Options.TargetDLL != XSharpTargetDLL.VO)
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();

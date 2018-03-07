@@ -34,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here
             // nvk: usingDirective.Name.ToString() ONLY has spaces if it is nested. This is not supposed to be nested, as it is "Functions" even for the non-core dialects !!!
-            if (string.Compare(usingDirective.Name.ToString()/*.Replace(" ","")*/, XSharpSpecialNames.CoreFunctionsClass, System.StringComparison.OrdinalIgnoreCase) == 0)
+            if (usingDirective.Name.ToString().EndsWith(XSharpSpecialNames.CoreFunctionsClass))
             {
                 var result = LookupResult.GetInstance();
                 LookupOptions options = LookupOptions.AllNamedTypesOnArityZero;

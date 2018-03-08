@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
                     cf = arrayType;
                 }
-                if (cf == arrayType && Compilation.Options.TargetDLL != XSharpTargetDLL.VO)
+                if (cf == arrayType)
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -187,52 +187,61 @@ namespace Microsoft.CodeAnalysis.CSharp
                         argsBuilder.Add(newarg);
                     }
                     args = argsBuilder.ToImmutableAndFree();
-                    if (args.Length > 1)
+                    if (Compilation.Options.XSharpRuntime)
                     {
-                        // create a an array of ints and use that as the index for the array
-                        // this will make sure that the proper GetIndex calls is chosen
-                        var exprs = SeparatedSyntaxListBuilder<ExpressionSyntax>.Create();
-                        argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
-                        foreach (var arg in args)
-                        {
-                            if (exprs.Count > 0)
-                                exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
-                            exprs.Add(arg.Syntax as ExpressionSyntax);
-                            argsBuilder.Add(BindCastCore(arg.Syntax as ExpressionSyntax, arg, Compilation.GetSpecialType(SpecialType.System_Int32), wasCompilerGenerated: true, diagnostics: diagnostics));
-                            args = argsBuilder.ToImmutable();
-                        }
-                        var initSyntax = SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, exprs);
-                        argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
-                        argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
-                            creationSyntax: null,
-                            initSyntax: initSyntax,
-                            type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, Compilation.GetSpecialType(SpecialType.System_Int32), ImmutableArray<CustomModifier>.Empty),
-                            sizes: ImmutableArray<BoundExpression>.Empty,
-                            boundInitExprOpt: args));
-                        args = argsBuilder.ToImmutableAndFree();
-                    }
-                    PropertySymbol indexer;
-                    // Select Array Indexer with the correct # of parameters
-                    if (analyzedArguments.Arguments.Count == 1)
-                    {
-                        indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne;
+                        analyzedArguments = AnalyzedArguments.GetInstance();
+                        analyzedArguments.Arguments.AddRange(args);
+                        return BindIndexerAccess(node, expr, analyzedArguments, diagnostics);
                     }
                     else
                     {
-                        indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany;
+                        if (args.Length > 1)
+                        {
+                            // create a an array of ints and use that as the index for the array
+                            // this will make sure that the proper GetIndex calls is chosen
+                            var exprs = SeparatedSyntaxListBuilder<ExpressionSyntax>.Create();
+                            argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                            foreach (var arg in args)
+                            {
+                                if (exprs.Count > 0)
+                                    exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
+                                exprs.Add(arg.Syntax as ExpressionSyntax);
+                                argsBuilder.Add(BindCastCore(arg.Syntax as ExpressionSyntax, arg, Compilation.GetSpecialType(SpecialType.System_Int32), wasCompilerGenerated: true, diagnostics: diagnostics));
+                                args = argsBuilder.ToImmutable();
+                            }
+                            var initSyntax = SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, exprs);
+                            argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                            argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
+                                creationSyntax: null,
+                                initSyntax: initSyntax,
+                                type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, Compilation.GetSpecialType(SpecialType.System_Int32), ImmutableArray<CustomModifier>.Empty),
+                                sizes: ImmutableArray<BoundExpression>.Empty,
+                                boundInitExprOpt: args));
+                            args = argsBuilder.ToImmutableAndFree();
+                        }
+                        PropertySymbol indexer;
+                        // Select Array Indexer with the correct # of parameters
+                        if (analyzedArguments.Arguments.Count == 1)
+                        {
+                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne;
+                        }
+                        else
+                        {
+                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany;
+                        }
+                        return new BoundIndexerAccess(
+                            syntax: node,
+                            receiverOpt: expr,
+                            indexer: indexer,
+                            arguments: args,
+                            argumentNamesOpt: default(ImmutableArray<string>),
+                            argumentRefKindsOpt: default(ImmutableArray<RefKind>),
+                            expanded: false,
+                            argsToParamsOpt: default(ImmutableArray<int>),
+                            type: usualType,
+                            hasErrors: false)
+                        { WasCompilerGenerated = true };
                     }
-                    return new BoundIndexerAccess(
-                        syntax: node,
-                        receiverOpt: expr,
-                        indexer: indexer,
-                        arguments: args,
-                        argumentNamesOpt: default(ImmutableArray<string>),
-                        argumentRefKindsOpt: default(ImmutableArray<RefKind>),
-                        expanded: false,
-                        argsToParamsOpt: default(ImmutableArray<int>),
-                        type: usualType,
-                        hasErrors: false)
-                    { WasCompilerGenerated = true };
                 }
             }
 

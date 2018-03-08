@@ -136,11 +136,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        static internal NamedTypeSymbol FunctionsType(this CSharpCompilation compilation)
+        static internal NamedTypeSymbol RuntimeFunctionsType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp_Functions);
+                return compilation.GetWellKnownType(WellKnownType.XSharp_VO_Functions);
             }
             else
             {

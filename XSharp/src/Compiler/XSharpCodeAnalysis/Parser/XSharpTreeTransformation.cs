@@ -4324,12 +4324,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.ReadOnlyKeyword, SyntaxKind.StaticKeyword);
                 }
             }
-            context.Put(_syntaxFactory.FieldDeclaration(
+            var field = _syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
                 modifiers,
                 _syntaxFactory.VariableDeclaration(type, variables),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            context.Put(field);
             _pool.Free(variables);
+            GlobalEntities.Globals.Add(field);
         }
 
 
@@ -6765,7 +6767,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Syntax then there is no need to explicitely add the Checked
             // for example C578: 
             // DEFINE d2 := unchecked ((WORD) -1)
-            if (_options.IsDialectVO  && !(context.Parent is XP.CheckedExpressionContext))
+            if (_options.IsDialectVO  && _options.TargetDLL  == XSharpTargetDLL.Other && !(context.Parent is XP.CheckedExpressionContext))
             {
                 expr = MakeChecked(expr, _options.Overflow);
             }

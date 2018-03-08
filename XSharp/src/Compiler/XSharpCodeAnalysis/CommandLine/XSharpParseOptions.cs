@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public enum XSharpTargetDLL : Byte
     {
-        None =0,
+        Other =0,
         Core = 1,
         RDD = 2,
         VO = 3

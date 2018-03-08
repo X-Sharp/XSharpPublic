@@ -39,6 +39,8 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 
 		SELF:InitializeForm()
 		
+		SELF:Text := "VO-xPorter version "+VERSION_NUMBER_STR
+		
 		LOCAL oType AS Type
 		oType := TypeOf(xPorterOptions)
 		LOCAL aFields AS FieldInfo[]
@@ -49,6 +51,15 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		
 		SELF:oTextOutput:Text := DefaultOutputFolder
 		SELF:oTextSource:Text := DefaultSourceFolder
+		IF .not. String.IsNullOrEmpty(DefaultSourceFolder)
+			TRY
+				IF SafeFileExists(DefaultSourceFolder)
+					SELF:oRadioFromAef:Checked := TRUE
+				ELSEIF SafeFolderExists(DefaultSourceFolder)
+					SELF:oRadioFromAefsInFolder:Checked := TRUE
+				END IF
+			END TRY
+		END IF
 
 	RETURN
 	PROTECTED METHOD InitializeForm() AS VOID

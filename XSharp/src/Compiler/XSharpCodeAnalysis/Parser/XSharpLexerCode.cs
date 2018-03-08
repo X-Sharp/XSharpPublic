@@ -956,7 +956,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 }
                                 break;
                             }
-                            else if (c == 'b')
+                            else if (c == 'b' || c == 'B')
                             {
                                 _type = BIN_CONST;
                                 _textSb.Append((char)c);

@@ -504,7 +504,7 @@ namespace XSharpModel
         public override void EnterVostructmember([NotNull] XSharpParser.VostructmemberContext context)
         {
             XTypeMember newMember = new XTypeMember(context.Id.GetText(),
-                    Kind.ClassVar,
+                    Kind.Field,
                     Modifiers.Public,
                     Modifiers.Public,
                     new TextRange(context), new TextInterval(context), false);
@@ -732,7 +732,7 @@ namespace XSharpModel
                 var interval = new TextInterval(start.StartIndex, stop.StopIndex);
                 string typeName = current.DataType != null ? current.DataType.GetText() : "USUAL";
                 XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
-                    Kind.ClassVar, mods, this._currentVarVisibility,
+                    Kind.Field, mods, this._currentVarVisibility,
                     new TextRange(start.Line, start.Column, stop.Line, stop.Column + stop.Text.Length),
                     interval, typeName, _currentVarStatic);
                 newClassVar.File = this._file;

@@ -41,9 +41,13 @@
             this.rbLower = new System.Windows.Forms.RadioButton();
             this.chkIdentifierCase = new System.Windows.Forms.CheckBox();
             this.lblKeywordCase = new System.Windows.Forms.Label();
+            this.grpNavigationBars = new System.Windows.Forms.GroupBox();
+            this.chkSortNavBar = new System.Windows.Forms.CheckBox();
+            this.chkIncludeFields = new System.Windows.Forms.CheckBox();
             this.grpCompletionListTabs.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.grpKeywordCase.SuspendLayout();
+            this.grpNavigationBars.SuspendLayout();
             this.SuspendLayout();
             // 
             // chkCompletionListtabs
@@ -196,20 +200,56 @@
             this.lblKeywordCase.TabIndex = 0;
             this.lblKeywordCase.Text = "&Keyword Case Synchronization";
             // 
+            // grpNavigationBars
+            // 
+            this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
+            this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
+            this.grpNavigationBars.Location = new System.Drawing.Point(12, 220);
+            this.grpNavigationBars.Name = "grpNavigationBars";
+            this.grpNavigationBars.Size = new System.Drawing.Size(461, 74);
+            this.grpNavigationBars.TabIndex = 2;
+            this.grpNavigationBars.TabStop = false;
+            this.grpNavigationBars.Text = "Navigation Bars";
+            // 
+            // chkSortNavBar
+            // 
+            this.chkSortNavBar.AutoSize = true;
+            this.chkSortNavBar.Location = new System.Drawing.Point(13, 44);
+            this.chkSortNavBar.Name = "chkSortNavBar";
+            this.chkSortNavBar.Size = new System.Drawing.Size(116, 17);
+            this.chkSortNavBar.TabIndex = 1;
+            this.chkSortNavBar.Text = "Sort Items by name";
+            this.chkSortNavBar.UseVisualStyleBackColor = true;
+            this.chkSortNavBar.CheckedChanged += new System.EventHandler(this.chkSortNavBar_CheckedChanged);
+            // 
+            // chkIncludeFields
+            // 
+            this.chkIncludeFields.AutoSize = true;
+            this.chkIncludeFields.Location = new System.Drawing.Point(13, 20);
+            this.chkIncludeFields.Name = "chkIncludeFields";
+            this.chkIncludeFields.Size = new System.Drawing.Size(182, 17);
+            this.chkIncludeFields.TabIndex = 0;
+            this.chkIncludeFields.Text = "Include fields (instance variables)";
+            this.chkIncludeFields.UseVisualStyleBackColor = true;
+            this.chkIncludeFields.CheckedChanged += new System.EventHandler(this.chkIncludeFields_CheckedChanged);
+            // 
             // IntellisenseOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.grpNavigationBars);
             this.Controls.Add(this.grpCase);
             this.Controls.Add(this.grpCompletionListTabs);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(486, 227);
+            this.Size = new System.Drawing.Size(486, 307);
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);
             this.grpCase.PerformLayout();
             this.grpKeywordCase.ResumeLayout(false);
             this.grpKeywordCase.PerformLayout();
+            this.grpNavigationBars.ResumeLayout(false);
+            this.grpNavigationBars.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -228,5 +268,8 @@
         private System.Windows.Forms.CheckBox chkAlignMethod;
         private System.Windows.Forms.CheckBox chkAlignDoCase;
         private System.Windows.Forms.CheckBox chkDotAsUniversalSelector;
+        private System.Windows.Forms.GroupBox grpNavigationBars;
+        private System.Windows.Forms.CheckBox chkSortNavBar;
+        private System.Windows.Forms.CheckBox chkIncludeFields;
     }
 }

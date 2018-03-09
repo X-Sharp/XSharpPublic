@@ -39,15 +39,18 @@ namespace XSharp.Project.Editors.BraceMatching
         ITextView View { get; set; }
         ITextBuffer SourceBuffer { get; set; }
         SnapshotPoint? CurrentChar { get; set; }
-        private Dictionary<char, char> m_braceList;
+        static private Dictionary<char, char> m_braceList;
 
         internal BraceMatchingTagger(ITextView view, ITextBuffer sourceBuffer)
         {
             //here the keys are the open braces, and the values are the close braces
-            m_braceList = new Dictionary<char, char>();
-            m_braceList.Add('{', '}');
-            m_braceList.Add('[', ']');
-            m_braceList.Add('(', ')');
+            if (m_braceList == null)
+            {
+                m_braceList = new Dictionary<char, char>();
+                m_braceList.Add('{', '}');
+                m_braceList.Add('[', ']');
+                m_braceList.Add('(', ')');
+            }
             this.View = view;
             this.SourceBuffer = sourceBuffer;
             this.CurrentChar = null;

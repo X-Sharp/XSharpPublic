@@ -42,6 +42,8 @@ namespace XSharp.Project.OptionsPages
             chkIdentifierCase.Checked = optionsPage.IdentifierCase;
             chkAlignDoCase.Checked = optionsPage.AlignDoCase;
             chkAlignMethod.Checked = optionsPage.AlignMethod;
+            chkIncludeFields.Checked = optionsPage.IncludeFieldsInNavigationBars;
+            chkSortNavBar.Checked = optionsPage.SortNavigationBars;
         }
 
 
@@ -88,6 +90,16 @@ namespace XSharp.Project.OptionsPages
         private void chkDotAsUniversalSelector_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.UseDotAsUniversalSelector = chkDotAsUniversalSelector.Checked;
+        }
+
+        private void chkIncludeFields_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.IncludeFieldsInNavigationBars = chkIncludeFields.Checked;
+        }
+
+        private void chkSortNavBar_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.SortNavigationBars = chkSortNavBar.Checked;
         }
     }
 }

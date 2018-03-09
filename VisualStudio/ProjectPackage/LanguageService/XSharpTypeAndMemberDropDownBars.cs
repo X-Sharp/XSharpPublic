@@ -21,7 +21,6 @@ namespace XSharp.LanguageService
     {
         XSharpLanguageService langservice = null;
 
-
         internal class sortXElement : IComparer
         {
             // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
@@ -55,46 +54,47 @@ namespace XSharp.LanguageService
             ref int selectedMember)
         {
             //
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            var sortItems = optionsPage.SortNavigationBars;
+            var includeFields = optionsPage.IncludeFieldsInNavigationBars;
             bool bModification = false;
             Source src = languageService.GetSource(textView);
             String srcFile = src.GetFilePath();
             //
             XFile file = XSharpModel.XSolution.FindFullPath(srcFile);
-            if (file == null )
+            if (file == null || file.TypeList == null)
             {
-                // Uhh !??, Something went wrong
                 return false;
             }
-            // TODO: We SHOULD use the source text instead of the File
-            // we may have to wait for the file to be parsed at least once...
-            // is it really necessary to parse ????
-            //file.Parse(src.GetText() );
+
             XType typeAtPos = null;
             //
             dropDownTypes.Clear();
-            //dropDownTypes.Capacity = file.TypeList.Count;
-            //
+            dropDownMembers.Clear();
             int nSelType = -1;
             int nSelMbr = -1;
             bool bInSel;
-            int nTemp;
             int distance = int.MaxValue;
             //int distanceM = int.MaxValue;
             DROPDOWNFONTATTR ft;
             //
-            if (file.TypeList == null)
-                return false;
             //
             if (file.TypeList.Count > 0)
+            {
                 nSelType = 0;
+            }
 
             List<XType> xList = file.TypeList.Values.ToList<XType>();
-            xList.Sort(delegate (XType elt1, XType elt2)
+            if (sortItems)
             {
-                return elt1.Name.CompareTo(elt2.Name);
-            });
+                xList.Sort(delegate (XType elt1, XType elt2)
+                {
+                    return elt1.Name.CompareTo(elt2.Name);
+                });
+            }
             XType typeGlobal = null;
-
+            int nSelect  = 0;
             foreach (XType eltType in xList)
             {
                 if (eltType.Kind == Kind.Namespace)
@@ -129,23 +129,29 @@ namespace XSharp.LanguageService
                 if (string.IsNullOrEmpty(name))
                     name = "?";
                 DropDownMember elt = new DropDownMember(name, sp, eltType.Glyph, ft);
-                nTemp = dropDownTypes.Add(elt);
+                nSelect = dropDownTypes.Add(elt);
+
                 if (bInSel )
                 {
-                    nSelType = nTemp;
+                    nSelType = nSelect;
                     typeAtPos = eltType;
                 }
             }
             //
-            dropDownMembers.Clear();
+            
             if (typeAtPos == null)
                 typeAtPos = typeGlobal;
             int lastBefore = -1;
             int lastLineBefore = -1;
+            nSelect = 0;
             if (typeAtPos != null)
             {
                 nSelMbr = -1;
-                var members = typeAtPos.Members.OrderBy(x => x.Name);
+                IEnumerable<XTypeMember> members = typeAtPos.Members;
+                if (sortItems)
+                {
+                    members = members.OrderBy(x => x.Name);
+                }
                 foreach (XTypeMember member in members)
                 {
                     TextSpan spM = this.TextRangeToTextSpan(member.Range);
@@ -161,17 +167,20 @@ namespace XSharp.LanguageService
                         bInSel = false;
                     }
                     //
-                    DropDownMember eltM = new DropDownMember(member.Prototype, spM, member.Glyph, ft);
-                    nTemp = dropDownMembers.Add(eltM);
-                    //
-                    if( bInSel )
+                    if (includeFields || member.Kind != Kind.Field )
                     {
-                        nSelMbr = nTemp;
-                    }
-                    else if (nSelMbr == -1 && spM.iEndLine <= line && spM.iEndLine > lastLineBefore)
-                    {
-                        lastBefore = nTemp;
-                        lastLineBefore = spM.iEndLine;
+                        DropDownMember eltM = new DropDownMember(member.Prototype, spM, member.Glyph, ft);
+                        nSelect = dropDownMembers.Add(eltM);
+                        //
+                        if (bInSel)
+                        {
+                            nSelMbr = nSelect;
+                        }
+                        else if (nSelMbr == -1 && spM.iEndLine <= line && spM.iEndLine > lastLineBefore)
+                        {
+                            lastBefore = nSelect;
+                            lastLineBefore = spM.iEndLine;
+                        }
                     }
                 }
             }

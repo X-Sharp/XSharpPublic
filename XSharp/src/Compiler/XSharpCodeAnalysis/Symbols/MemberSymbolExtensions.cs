@@ -34,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             if (ctor.ParameterCount != 0)
             {
-                var baseCtor = ctor.BaseConstructor() as SourceConstructorSymbol;
+                var baseCtor = ctor.BaseConstructor() as MethodSymbol;
                 if (baseCtor != null)
                 {
                     foreach (var att in baseCtor.GetAttributes())

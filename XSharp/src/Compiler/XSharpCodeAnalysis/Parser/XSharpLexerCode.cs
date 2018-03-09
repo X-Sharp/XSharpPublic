@@ -905,6 +905,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             {
                                 _type = PRAGMA;
                                 _channel = PRAGMACHANNEL;
+                                HasPragmas = true;
                                 while (c != TokenConstants.Eof && c != '\r' && c != '\n')
                                 {
                                     _textSb.Append((char)c);

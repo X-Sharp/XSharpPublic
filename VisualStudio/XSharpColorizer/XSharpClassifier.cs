@@ -42,6 +42,8 @@ namespace XSharpColorizer
         static private IClassificationType xsharpRegionStop;
         static private IClassificationType xsharpInactiveType;
         static private IClassificationType xsharpLiteralType;
+        static private IClassificationType xsharpKwOpenType;
+        static private IClassificationType xsharpKwCloseType;
         #endregion
 
         #region Private Fields
@@ -105,11 +107,13 @@ namespace XSharpColorizer
                 xsharpLiteralType = registry.GetClassificationType("literal");
                 xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
                 xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
+                xsharpKwOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
+                xsharpKwCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
             }
             // Run a synchronous scan to set the initial buffer colors
             var snapshot = buffer.CurrentSnapshot;
             _sourceWalker = new SourceWalker(file, snapshot);
-            ITokenStream tokens = ClassifyBuffer(snapshot); 
+            ITokenStream tokens = ClassifyBuffer(snapshot);
             BuildColorClassifications(tokens, snapshot);
             _first = false;
             // start the model builder to do build a code model and the regions asynchronously
@@ -181,7 +185,7 @@ namespace XSharpColorizer
                 {
                     return;
                 }
-                if (e.Error == null )
+                if (e.Error == null)
                 {
                     var snapshot = e.Result as ITextSnapshot;
                     if (snapshot != null)
@@ -409,6 +413,46 @@ namespace XSharpColorizer
             }
             return result;
         }
+
+
+        private ClassificationSpan ClassifyKeyword(IToken token, ITextSnapshot snapshot)
+        {
+            var tokenType = token.Type;
+            ClassificationSpan result = null;
+            IClassificationType type = null;
+            //
+            switch (tokenType)
+            {
+                case XSharpLexer.FOR:
+                case XSharpLexer.FOREACH:
+                case XSharpLexer.REPEAT:
+                case XSharpLexer.DO:
+                case XSharpLexer.IF:
+                case XSharpLexer.TRY:
+                case XSharpLexer.BEGIN:
+                case XSharpLexer.SWITCH:
+                    type = xsharpKwOpenType;
+                    break;
+
+                case XSharpLexer.NEXT:
+                case XSharpLexer.UNTIL:
+                case XSharpLexer.END:
+                case XSharpLexer.ENDDO:
+                case XSharpLexer.ENDIF:
+                case XSharpLexer.ENDCASE:
+                    type = xsharpKwCloseType;
+                    break;
+            }
+            //
+            if (type != null)
+            {
+                result = Token2ClassificationSpan(token, snapshot, type);
+            }
+            return result;
+        }
+
+
+
         private void scanForRegion(IToken token, int iToken, ITokenStream TokenStream,
             ref int iLast, ITextSnapshot snapshot, IList<ClassificationSpan> regionTags)
         {
@@ -452,6 +496,15 @@ namespace XSharpColorizer
                     if (span != null)
                     {
                         newtags.Add(span);
+                        // We can have some Open/Close keyword ( FOR..NEXT; WHILE...ENDDO; IF...ENDIF)
+                        if (span.ClassificationType == xsharpKeywordType)
+                        {
+                            span = ClassifyKeyword(token, snapshot);
+                            if (span != null)
+                            {
+                                newtags.Add(span);
+                            }
+                        }
                         // now look for Regions of similar code lines
                         switch (token.Type)
                         {
@@ -556,6 +609,18 @@ namespace XSharpColorizer
             return ret;
         }
 
+        public IImmutableList<ClassificationSpan> GetTags()
+        {
+            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetTags()");
+            IImmutableList<ClassificationSpan> ret;
+            lock (gate)
+            {
+                ret = _tags.Tags;
+            }
+            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
+            return ret;
+        }
+
         #region IClassifier
 
 #pragma warning disable 67
@@ -599,7 +664,7 @@ namespace XSharpColorizer
                 var tagsForLine = tags.GetItemsForLine(i);
                 // Use the Span.Span property to avoid the check for the same Snapshot
                 if (tagsForLine != null)
-                { 
+                {
                     result.AddRange(tagsForLine);
                 }
             }
@@ -640,7 +705,7 @@ namespace XSharpColorizer
             _tags.Add(span);
             int start = span.Span.Start.GetContainingLine().LineNumber;
             int end = span.Span.End.GetContainingLine().LineNumber;
-            if (end > start +1)
+            if (end > start + 1)
                 _multilineTokens.Add(span);
             else
             {
@@ -653,7 +718,7 @@ namespace XSharpColorizer
         }
         internal List<ClassificationSpan> GetItemsForLine(int line)
         {
-            List< ClassificationSpan > result;
+            List<ClassificationSpan> result;
             {
                 if (_hash.ContainsKey(line))
                 {

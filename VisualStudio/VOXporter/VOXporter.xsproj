@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>165</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -190,7 +190,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Designer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <CustomToolNamespace> </CustomToolNamespace>
+      <CustomToolNamespace>
+      </CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->

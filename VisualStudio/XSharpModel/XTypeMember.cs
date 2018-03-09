@@ -93,7 +93,7 @@ namespace XSharpModel
                 //
                 string desc = modVis;
                 //
-                if ( this.Kind != Kind.ClassVar )
+                if ( this.Kind != Kind.Field)
                 {
                     if (this.Kind == Kind.VODefine)
                     {

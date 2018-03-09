@@ -163,15 +163,12 @@ namespace XSharpColorizer
         private void triggerRepaint(ITextSnapshot snapshot)
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
-            lock (gate)
+            if (snapshot != null)
             {
-                if (snapshot != null)
+                if (_buffer.CurrentSnapshot.Version == snapshot.Version && !_first)
                 {
-                    if (_buffer.CurrentSnapshot.Version == snapshot.Version && !_first)
-                    {
-                        ClassificationChanged(this, new ClassificationChangedEventArgs(
-                               new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
-                    }
+                    ClassificationChanged(this, new ClassificationChangedEventArgs(
+                            new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
                 }
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
@@ -179,30 +176,27 @@ namespace XSharpColorizer
         private void ClassifyCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
-            lock (gate)
+            if (e.Cancelled)
             {
-                if (e.Cancelled)
+                return;
+            }
+            if (e.Error == null )
+            {
+                var snapshot = e.Result as ITextSnapshot;
+                if (snapshot != null)
                 {
-                    return;
-                }
-                if (e.Error == null)
-                {
-                    var snapshot = e.Result as ITextSnapshot;
-                    if (snapshot != null)
+                    var newSnapshot = _buffer.CurrentSnapshot;
+                    if (newSnapshot.Version != snapshot.Version)
                     {
-                        var newSnapshot = _buffer.CurrentSnapshot;
-                        if (newSnapshot.Version != snapshot.Version)
+                        // buffer was changed, so restart
+                        _bwClassify.RunWorkerAsync(newSnapshot);
+                    }
+                    else
+                    {
+                        triggerRepaint(snapshot);
+                        if (!_bwBuildModel.IsBusy)
                         {
-                            // buffer was changed, so restart
-                            _bwClassify.RunWorkerAsync(newSnapshot);
-                        }
-                        else
-                        {
-                            triggerRepaint(snapshot);
-                            if (!_bwBuildModel.IsBusy)
-                            {
-                                _bwBuildModel.RunWorkerAsync(snapshot);
-                            }
+                            _bwBuildModel.RunWorkerAsync(snapshot);
                         }
                     }
                 }
@@ -219,30 +213,31 @@ namespace XSharpColorizer
             // Note this runs in the background
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
-            lock (gate)
+            // do we need to create a new tree 
+            // this happens the first time in the buffer only
+            var snapshot = e.Argument as ITextSnapshot;
+            ITokenStream tokens = null;
+            if (_tree == null || _sourceWalker.Snapshot.Version != snapshot.Version)
             {
-                // do we need to create a new tree 
-                // this happens the first time in the buffer only
-                var snapshot = e.Argument as ITextSnapshot;
-                ITokenStream tokens = null;
-                if (_tree == null || _sourceWalker.Snapshot.Version != snapshot.Version)
+                Debug("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+                _sourceWalker.Snapshot = snapshot;
+                var tree = _sourceWalker.Parse();
+                lock (gate)
                 {
-                    Debug("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                    _sourceWalker.Snapshot = snapshot;
-                    _tree = _sourceWalker.Parse();
-                    Debug("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                    _hasParserErrors = _sourceWalker.HasParseErrors;
+                    _tree = tree;
                 }
-                tokens = _sourceWalker.TokenStream;
-                if (_tree != null && tokens != null)
-                {
-                    Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                    _sourceWalker.BuildModel(_tree, true);
-                    var regionTags = BuildRegionTags(_tree, snapshot, xsharpRegionStart, xsharpRegionStop);
-                    BuildColorClassifications(tokens, snapshot, regionTags);
-                    DoRepaintRegions();
-                    Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                }
+                Debug("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+                _hasParserErrors = _sourceWalker.HasParseErrors;
+            }
+            tokens = _sourceWalker.TokenStream;
+            if (_tree != null && tokens != null)
+            {
+                Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+                _sourceWalker.BuildModel(_tree, true);
+                var regionTags = BuildRegionTags(_tree, snapshot, xsharpRegionStart, xsharpRegionStop);
+                BuildColorClassifications(tokens, snapshot, regionTags);
+                DoRepaintRegions();
+                Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
         }
@@ -264,26 +259,23 @@ namespace XSharpColorizer
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildRegionTags()");
             IImmutableList<ClassificationSpan> regions = null;
-            lock (gate)
+            if (xTree != null && snapshot != null && !_hasParserErrors)
             {
-                if (xTree != null && snapshot != null && !_hasParserErrors)
+                var rdiscover = new XSharpRegionDiscover(snapshot);
+                //
+                try
                 {
-                    var rdiscover = new XSharpRegionDiscover(snapshot);
+                    var treeWalker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
                     //
-                    try
-                    {
-                        var treeWalker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
-                        //
-                        rdiscover.xsharpRegionStartType = start;
-                        rdiscover.xsharpRegionStopType = stop;
-                        // Walk the tree. The XSharpRegionDiscover class will collect the tags.
-                        treeWalker.Walk(rdiscover, xTree);
-                        regions = rdiscover.GetRegionTags();
-                    }
-                    catch (Exception e)
-                    {
-                        Debug("BuildRegionTags failed: " + e.Message);
-                    }
+                    rdiscover.xsharpRegionStartType = start;
+                    rdiscover.xsharpRegionStopType = stop;
+                    // Walk the tree. The XSharpRegionDiscover class will collect the tags.
+                    treeWalker.Walk(rdiscover, xTree);
+                    regions = rdiscover.GetRegionTags();
+                }
+                catch (Exception e)
+                {
+                    Debug("BuildRegionTags failed: " + e.Message);
                 }
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
@@ -517,12 +509,6 @@ namespace XSharpColorizer
                             case XSharpLexer.DEFINE:
                                 scanForRegion(token, iToken, tokenStream, ref iLastDefine, snapshot, regionTags);
                                 break;
-                            //case XSharpLexer.GLOBAL:
-                            //    scanForRegion(token, iToken, tokenStream, ref iLastGlobal, snapshot, regionBuilder);
-                            //    break;
-                            //case XSharpLexer.LOCAL:
-                            //    scanForRegion(token, iToken, tokenStream, ref iLastLocal, snapshot, regionBuilder);
-                            //    break;
                             case XSharpLexer.SL_COMMENT:
                                 scanForRegion(token, iToken, tokenStream, ref iLastSLComment, snapshot, regionTags);
                                 break;
@@ -543,16 +529,20 @@ namespace XSharpColorizer
                 newtags = _tags;
             }
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
+            if (parserRegionTags != null)
+            {
+                regionTags.AddRange(parserRegionTags);
+            }
             lock (gate)
             {
-                if (parserRegionTags != null)
-                {
-                    regionTags.AddRange(parserRegionTags);
-                }
                 _tags = newtags;
-                if (!_hasParserErrors && parserRegionTags != null)
+            }
+            if (!_hasParserErrors && parserRegionTags != null)
+            {
+                var list = regionTags.ToImmutableList();
+                lock (gate)
                 {
-                    _tagsRegion = regionTags.ToImmutableList();
+                    _tagsRegion = list ;
                 }
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");

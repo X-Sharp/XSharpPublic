@@ -56,6 +56,21 @@ namespace XSharp.Project.OptionsPages
             set { alignMethod = value; }
         }
 
+        private bool includeFieldsInNavigationBars;
+        public bool IncludeFieldsInNavigationBars
+        {
+            get { return includeFieldsInNavigationBars; }
+            set { includeFieldsInNavigationBars = value; }
+
+        }
+        private bool sortNavigationBars;
+        public bool SortNavigationBars
+        {
+            get { return sortNavigationBars; }
+            set { sortNavigationBars = value; }
+
+        }
+
 
         protected override IWin32Window Window
         {

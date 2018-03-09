@@ -949,7 +949,6 @@ namespace XSharp.CodeDom
                         switch (m.Kind)
                         {
                             case Kind.Field:
-                            case Kind.ClassVar:
                                 expr = new XCodeFieldReferenceExpression(target, name);
                                 memberType = findTypeXType(m.TypeName);
                                 break;

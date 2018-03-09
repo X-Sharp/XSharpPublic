@@ -15,5 +15,8 @@ namespace XSharpColorizer
     {
         public const String XSharpRegionStartFormat = "xsharp.region.start";
         public const String XSharpRegionStopFormat = "xsharp.region.end";
+
+        public const String XSharpBraceOpenFormat = "xsharp.brace.start";
+        public const String XSharpBraceCloseFormat = "xsharp.brace.end";
     }
 }

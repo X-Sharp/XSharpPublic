@@ -208,7 +208,7 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-/XSharp/src/Runtime
+#/XSharp/src/Runtime
 XSharp/src/Tools/Inno/Preprocessed.iss
 XSharp/docs/Help/
 

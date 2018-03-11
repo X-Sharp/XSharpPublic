@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xsc", "src\Compiler\xsc\xsc.csproj", "{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}"
 EndProject
@@ -100,11 +100,9 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSVulcanMacroCompiler", "sr
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestMacroCompiler", "src\Compiler\TestMacroCompiler\TestMacroCompiler.xsproj", "{DE0191E1-E0C1-4651-B999-0F28167EB96B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runtime", "Runtime", "{4F1517E6-4A9D-498A-B20C-5DE7052B25BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroCompiler", "src\Scripting\MacroCompiler\MacroCompiler.csproj", "{EB3F3142-07F7-48CA-B38D-F611C45A9511}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroCompiler", "src\Runtime\MacroCompiler\MacroCompiler.csproj", "{EB3F3142-07F7-48CA-B38D-F611C45A9511}"
-EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.Example", "src\Runtime\MacroCompiler.Example\MacroCompiler.Example.xsproj", "{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.Example", "src\Scripting\MacroCompiler.Example\MacroCompiler.Example.xsproj", "{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -406,9 +404,8 @@ Global
 		{909B656F-6095-4AC2-A5AB-C3F032315C45} = {DFB67BA4-B8A2-4968-B745-D201B4F4EF11}
 		{5DC40ADC-F250-4611-AD89-B67B150BBC8E} = {CC5C64CB-F448-4C25-88EB-E22B4A5C9504}
 		{DE0191E1-E0C1-4651-B999-0F28167EB96B} = {CC5C64CB-F448-4C25-88EB-E22B4A5C9504}
-		{4F1517E6-4A9D-498A-B20C-5DE7052B25BA} = {1C104221-6CDB-4227-A304-DA1377A2AA1D}
-		{EB3F3142-07F7-48CA-B38D-F611C45A9511} = {4F1517E6-4A9D-498A-B20C-5DE7052B25BA}
-		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02} = {4F1517E6-4A9D-498A-B20C-5DE7052B25BA}
+		{EB3F3142-07F7-48CA-B38D-F611C45A9511} = {CC5C64CB-F448-4C25-88EB-E22B4A5C9504}
+		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02} = {CC5C64CB-F448-4C25-88EB-E22B4A5C9504}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D6C5EA9B-5C56-4A01-9A3B-E59B1566BE3A}

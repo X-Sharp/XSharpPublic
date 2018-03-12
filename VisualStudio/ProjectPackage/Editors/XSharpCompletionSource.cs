@@ -263,6 +263,7 @@ namespace XSharpLanguage
                 {
                     currentNS = currentNamespace.Name;
                 }
+                //
                 cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot.GetText());
                 if (!cType.IsEmpty())
                 {
@@ -366,18 +367,18 @@ namespace XSharpLanguage
                     // .........
                     // .........
                     // We were able to determine the Type, so Get the Members
-                    if (cType != null)
-                    {
-                        Modifiers visibleAs = Modifiers.Public;
-                        if (member.ParentName == cType.FullName)
-                        {
-                            visibleAs = Modifiers.Private;
-                        }
-                        // Now, Fill the CompletionList with the available members, from there
-                        BuildCompletionList(compList, cType, visibleAs, false, filterText);
+                    //if (cType != null)
+                    //{
+                    //    Modifiers visibleAs = Modifiers.Public;
+                    //    if (member.ParentName == cType.FullName)
+                    //    {
+                    //        visibleAs = Modifiers.Private;
+                    //    }
+                    //    // Now, Fill the CompletionList with the available members, from there
+                    //    BuildCompletionList(compList, cType, visibleAs, false, filterText);
 
-                    }
-                    else
+                    //}
+                    //else
                     {
                         switch (tokenType)
                         {

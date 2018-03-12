@@ -70,7 +70,7 @@ namespace XSharp.Project
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             bool handled = false;
-            bool completeAndStart = false;
+            //bool completeAndStart = true;
             int hresult = VSConstants.S_OK;
 
             // 1. Pre-process
@@ -159,14 +159,18 @@ namespace XSharp.Project
                             char ch = GetTypeChar(pvaIn);
                             if (_completionSession != null)
                             {
-                                if (completeAndStart)
-                                {
-                                    StartCompletionSession(nCmdID, ch);
-                                }
+                                //if (completeAndStart)
+                                //{
+                                //    StartCompletionSession(nCmdID, ch);
+                                //}
                                 if (Char.IsLetterOrDigit(ch) || ch == '_')
                                     FilterCompletionSession(ch);
                                 else
+                                {
                                     CancelCompletionSession();
+                                    if ((ch == ':') || (ch == '.'))
+                                        StartCompletionSession(nCmdID, ch);
+                                }
                                 //
                             }
                             else
@@ -194,6 +198,11 @@ namespace XSharp.Project
                                         StartSignatureSession(true);
                                         break;
                                     default:
+                                        var package = XSharp.Project.XSharpProjectPackage.Instance;
+                                        var optionsPage = package.GetIntellisenseOptionsPage();
+                                        if ( optionsPage.ShowAfterChar )
+                                            if (Char.IsLetterOrDigit(ch) || ch == '_')
+                                                StartCompletionSession(nCmdID, '\0');
                                         break;
                                 }
                             }

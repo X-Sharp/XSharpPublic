@@ -27,6 +27,13 @@ namespace XSharp.Project.OptionsPages
             set { useDotAsUniversalSelector = value; }
         }
 
+        private bool showAfterChar = false;
+        public bool ShowAfterChar
+        {
+            get { return showAfterChar; }
+            set { showAfterChar = value; }
+        }
+
         // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
         private int keywordCase = 1;
         public int KeywordCase

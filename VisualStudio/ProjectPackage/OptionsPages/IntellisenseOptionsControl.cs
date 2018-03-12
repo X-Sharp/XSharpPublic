@@ -22,6 +22,7 @@ namespace XSharp.Project.OptionsPages
         {
             chkCompletionListtabs.Checked = optionsPage.CompletionListTabs;
             chkDotAsUniversalSelector.Checked = optionsPage.UseDotAsUniversalSelector;
+            chkShowAfterChar.Checked = optionsPage.ShowAfterChar;
             grpCase.Enabled = true;
             switch (optionsPage.KeywordCase)
             {
@@ -100,6 +101,11 @@ namespace XSharp.Project.OptionsPages
         private void chkSortNavBar_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.SortNavigationBars = chkSortNavBar.Checked;
+        }
+
+        private void chkShowAfterChar_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.ShowAfterChar = chkShowAfterChar.Checked;
         }
     }
 }

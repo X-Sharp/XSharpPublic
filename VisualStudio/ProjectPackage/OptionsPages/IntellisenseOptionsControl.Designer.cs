@@ -30,6 +30,7 @@
         {
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
+            this.chkShowAfterChar = new System.Windows.Forms.CheckBox();
             this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
             this.grpCase = new System.Windows.Forms.GroupBox();
             this.chkAlignMethod = new System.Windows.Forms.CheckBox();
@@ -63,23 +64,35 @@
             // 
             // grpCompletionListTabs
             // 
+            this.grpCompletionListTabs.Controls.Add(this.chkShowAfterChar);
             this.grpCompletionListTabs.Controls.Add(this.chkDotAsUniversalSelector);
             this.grpCompletionListTabs.Controls.Add(this.chkCompletionListtabs);
             this.grpCompletionListTabs.Location = new System.Drawing.Point(12, 12);
             this.grpCompletionListTabs.Name = "grpCompletionListTabs";
-            this.grpCompletionListTabs.Size = new System.Drawing.Size(461, 67);
+            this.grpCompletionListTabs.Size = new System.Drawing.Size(461, 64);
             this.grpCompletionListTabs.TabIndex = 0;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
+            // 
+            // chkShowAfterChar
+            // 
+            this.chkShowAfterChar.AutoSize = true;
+            this.chkShowAfterChar.Location = new System.Drawing.Point(212, 43);
+            this.chkShowAfterChar.Name = "chkShowAfterChar";
+            this.chkShowAfterChar.Size = new System.Drawing.Size(243, 17);
+            this.chkShowAfterChar.TabIndex = 2;
+            this.chkShowAfterChar.Text = "Show Completion list after a character is typed";
+            this.chkShowAfterChar.UseVisualStyleBackColor = true;
+            this.chkShowAfterChar.CheckedChanged += new System.EventHandler(this.chkShowAfterChar_CheckedChanged);
             // 
             // chkDotAsUniversalSelector
             // 
             this.chkDotAsUniversalSelector.AutoSize = true;
             this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 43);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
-            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(218, 17);
+            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(154, 17);
             this.chkDotAsUniversalSelector.TabIndex = 1;
-            this.chkDotAsUniversalSelector.Text = "Use dot (.) as Universal element Selector";
+            this.chkDotAsUniversalSelector.Text = "Dot (.) as universal selector";
             this.chkDotAsUniversalSelector.UseVisualStyleBackColor = true;
             this.chkDotAsUniversalSelector.CheckedChanged += new System.EventHandler(this.chkDotAsUniversalSelector_CheckedChanged);
             // 
@@ -90,9 +103,9 @@
             this.grpCase.Controls.Add(this.grpKeywordCase);
             this.grpCase.Controls.Add(this.chkIdentifierCase);
             this.grpCase.Controls.Add(this.lblKeywordCase);
-            this.grpCase.Location = new System.Drawing.Point(12, 86);
+            this.grpCase.Location = new System.Drawing.Point(12, 81);
             this.grpCase.Name = "grpCase";
-            this.grpCase.Size = new System.Drawing.Size(461, 128);
+            this.grpCase.Size = new System.Drawing.Size(461, 121);
             this.grpCase.TabIndex = 1;
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
@@ -204,9 +217,9 @@
             // 
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
-            this.grpNavigationBars.Location = new System.Drawing.Point(12, 220);
+            this.grpNavigationBars.Location = new System.Drawing.Point(12, 207);
             this.grpNavigationBars.Name = "grpNavigationBars";
-            this.grpNavigationBars.Size = new System.Drawing.Size(461, 74);
+            this.grpNavigationBars.Size = new System.Drawing.Size(461, 65);
             this.grpNavigationBars.TabIndex = 2;
             this.grpNavigationBars.TabStop = false;
             this.grpNavigationBars.Text = "Navigation Bars";
@@ -241,7 +254,7 @@
             this.Controls.Add(this.grpCase);
             this.Controls.Add(this.grpCompletionListTabs);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(486, 307);
+            this.Size = new System.Drawing.Size(486, 282);
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);
@@ -271,5 +284,6 @@
         private System.Windows.Forms.GroupBox grpNavigationBars;
         private System.Windows.Forms.CheckBox chkSortNavBar;
         private System.Windows.Forms.CheckBox chkIncludeFields;
+        private System.Windows.Forms.CheckBox chkShowAfterChar;
     }
 }

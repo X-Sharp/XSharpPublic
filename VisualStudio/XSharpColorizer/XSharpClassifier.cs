@@ -59,6 +59,7 @@ namespace XSharpColorizer
         private bool _hasParserErrors = false;
         private bool _first = true;
         private XSharpParser.SourceContext _tree = null;
+        private IToken keywordContext;
         #endregion
 
         public ITextSnapshot Snapshot => _sourceWalker.Snapshot;
@@ -180,7 +181,7 @@ namespace XSharpColorizer
             {
                 return;
             }
-            if (e.Error == null )
+            if (e.Error == null)
             {
                 var snapshot = e.Result as ITextSnapshot;
                 if (snapshot != null)
@@ -282,9 +283,28 @@ namespace XSharpColorizer
             return regions;
         }
 
+        /// <summary>
+        /// Group several Tokens in a special span, specifying it's type
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="stop"></param>
+        /// <param name="snapshot"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private ClassificationSpan Token2ClassificationSpan(IToken start, IToken stop, ITextSnapshot snapshot, IClassificationType type)
+        {
+            TextSpan tokenSpan = new TextSpan(start.StartIndex, stop.StopIndex - start.StartIndex + 1);
+            ClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
+            return span;
+        }
 
-
-
+        /// <summary>
+        /// "Mark" a Token, specifying it's type and the span it covers
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="snapshot"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private ClassificationSpan Token2ClassificationSpan(IToken token, ITextSnapshot snapshot, IClassificationType type)
         {
             TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
@@ -412,33 +432,103 @@ namespace XSharpColorizer
             var tokenType = token.Type;
             ClassificationSpan result = null;
             IClassificationType type = null;
+            IToken startToken = null;
+            if (keywordContext != null )
+            {
+                startToken = keywordContext;
+                if (startToken.Line != token.Line)
+                {
+                    keywordContext = null;
+                    startToken = null;
+                }
+            }
             //
             switch (tokenType)
             {
+                case XSharpLexer.DO:
+                    if (startToken != null)
+                    {
+                        if (startToken.Type == XSharpLexer.END)
+                            type = xsharpKwCloseType;
+                        else
+                            startToken = null;
+                    }
+                    else
+                        keywordContext = token;
+                    break;
+
+                case XSharpLexer.BEGIN:
+                    keywordContext = token;
+                    //type = xsharpKwOpenType;
+                    break;
+
+                case XSharpLexer.SWITCH:
+                    type = xsharpKwOpenType;
+                    if (startToken != null)
+                        if (startToken.Type == XSharpLexer.END)
+                            type = xsharpKwCloseType;
+                        else if ((startToken.Type != XSharpLexer.DO) || (startToken.Type != XSharpLexer.BEGIN))
+                            startToken = null;
+                    break;
+
+                case XSharpLexer.TRY:
+                case XSharpLexer.IF:
+                    type = xsharpKwOpenType;
+                    if (startToken != null)
+                        if (startToken.Type == XSharpLexer.END)
+                            type = xsharpKwCloseType;
+                        else
+                            startToken = null;
+                    break;
+
+                case XSharpLexer.WHILE:
+                    type = xsharpKwOpenType;
+                    if (startToken != null)
+                        if (startToken.Type == XSharpLexer.END)
+                            type = xsharpKwCloseType;
+                        else if (startToken.Type != XSharpLexer.DO)
+                            startToken = null;
+                    break;
+
+
+                case XSharpLexer.CASE:
+                    if (startToken != null)
+                        if (startToken.Type == XSharpLexer.DO)
+                            type = xsharpKwOpenType;
+                        else if (startToken.Type == XSharpLexer.END)
+                            type = xsharpKwCloseType;
+                    break;
+
+
                 case XSharpLexer.FOR:
                 case XSharpLexer.FOREACH:
                 case XSharpLexer.REPEAT:
-                case XSharpLexer.DO:
-                case XSharpLexer.IF:
-                case XSharpLexer.TRY:
-                case XSharpLexer.BEGIN:
-                case XSharpLexer.SWITCH:
+                    startToken = null;
                     type = xsharpKwOpenType;
                     break;
 
                 case XSharpLexer.NEXT:
                 case XSharpLexer.UNTIL:
-                case XSharpLexer.END:
                 case XSharpLexer.ENDDO:
                 case XSharpLexer.ENDIF:
                 case XSharpLexer.ENDCASE:
+                    startToken = null;
                     type = xsharpKwCloseType;
                     break;
+
+                case XSharpLexer.END:
+                    keywordContext = token;
+                    //type = xsharpKwCloseType;
+                    break;
+
             }
             //
             if (type != null)
             {
-                result = Token2ClassificationSpan(token, snapshot, type);
+                if (startToken != null)
+                    result = Token2ClassificationSpan(startToken, token, snapshot, type);
+                else
+                    result = Token2ClassificationSpan(token, snapshot, type);
             }
             return result;
         }
@@ -481,9 +571,16 @@ namespace XSharpColorizer
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
                 newtags = new XClassificationSpans();
+                keywordContext = null;
                 for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
                     var token = tokenStream.Get(iToken);
+                    // Orphan End ?
+                    if ( ( keywordContext != null ) && (keywordContext.Line != token.Line ) && (keywordContext.Type == XSharpLexer.END ) )
+                    {
+                        newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
+                        keywordContext = null;
+                    }
                     var span = ClassifyToken(token, regionTags, snapshot);
                     if (span != null)
                     {
@@ -523,6 +620,12 @@ namespace XSharpColorizer
                         }
                     }
                 }
+                // Orphan End ?
+                if ((keywordContext != null) && (keywordContext.Type == XSharpLexer.END))
+                {
+                    newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
+                    keywordContext = null;
+                }
             }
             else
             {
@@ -542,7 +645,7 @@ namespace XSharpColorizer
                 var list = regionTags.ToImmutableList();
                 lock (gate)
                 {
-                    _tagsRegion = list ;
+                    _tagsRegion = list;
                 }
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");

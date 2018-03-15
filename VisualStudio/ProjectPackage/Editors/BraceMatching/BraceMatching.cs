@@ -115,12 +115,12 @@ namespace XSharp.Project.Editors.BraceMatching
                 currentText = currentChar.GetChar();
                 lastChar = currentChar == 0 ? currentChar : currentChar - 1; //if currentChar is 0 (beginning of buffer), don't move it back
                 lastText = lastChar.GetChar();
-
             }
             catch (Exception)
             {
 
             }
+            // First, try to match Simple chars
             if (m_braceList.ContainsKey(currentText))   //the key is the open brace
             {
                 char closeChar;
@@ -144,7 +144,7 @@ namespace XSharp.Project.Editors.BraceMatching
             }
             else
             {
-                //
+                // Second, try to Match Keywords
                 // Try to retrieve an already parsed list of Tags
                 XSharpClassifier xsClassifier = null;
                 if (SourceBuffer.Properties.ContainsProperty(typeof(XSharpClassifier)))

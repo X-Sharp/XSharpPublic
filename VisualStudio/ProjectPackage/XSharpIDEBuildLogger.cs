@@ -111,7 +111,7 @@ namespace XSharp.Project
                     didCompile = true;
                 }
             }
-            if (messageEvent.SenderName.ToLower() == "nativeresourcecompiler")
+            if (messageEvent.SenderName?.ToLower() == "nativeresourcecompiler")
             {
                 didCompile = true;
             }

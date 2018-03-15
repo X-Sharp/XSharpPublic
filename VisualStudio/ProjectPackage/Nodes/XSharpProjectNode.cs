@@ -1754,14 +1754,6 @@ namespace XSharp.Project
         {
             return this.FindChild(strFileName) != null;
         }
-        public XSharpParseOptions LexOptions
-        {
-            get
-            {
-                var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                return xoptions.LexOptions;
-            }
-        }
         public XSharpParseOptions ParseOptions
         {
             get

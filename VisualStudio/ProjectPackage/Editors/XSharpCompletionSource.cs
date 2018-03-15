@@ -25,6 +25,8 @@ using XSharpColorizer;
 using XSharp.Project.OptionsPages;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.Text.Tagging;
+using static XSharp.Parser.VsParser;
+using LanguageService.CodeAnalysis.Text;
 
 namespace XSharpLanguage
 {
@@ -2344,29 +2346,12 @@ namespace XSharpLanguage
                 parseoptions = XSharpParseOptions.Default;
                 fileName = "MissingFile.prg";
             }
-            //System.Threading.Thread.Sleep(500);
-            /*
-            var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
-            var tokens = lexer.GetTokenStream();
-
-            // locate the last token before the trigger point
-            IToken nextToken;
-            while (true)
-            {
-                nextToken = tokens.Lt(1);
-                if (nextToken.Type == XSharpLexer.Eof) // End Of File
-                    break;
-                // Move after the TriggerPoint
-                if (nextToken.StartIndex >= triggerPointPosition)
-                    break;
-
-                tokens.Consume();
-            }
-            */
             //////////////////////////////////////
             //////////////////////////////////////
-            var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
-            var tokens = lexer.GetTokenStream() as BufferedTokenStream;
+            ITokenStream tokenStream;
+            var reporter = new ErrorReporter();
+            bool ok = XSharp.Parser.VsParser.Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
+            var tokens = tokenStream as BufferedTokenStream;
             // locate the last token before the trigger point
             // Use binary search in stead of linear search
             var list = tokens.GetTokens();
@@ -3943,6 +3928,20 @@ namespace XSharpLanguage
         {
             return _xTypes;
         }
+    }
+    public class ErrorReporter: IErrorListener
+    {
+        #region IErrorListener
+        public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+        }
+
+        public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+        }
+        #endregion        
     }
 }
 

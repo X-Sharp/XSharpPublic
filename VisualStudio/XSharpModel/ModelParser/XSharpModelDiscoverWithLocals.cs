@@ -5,15 +5,10 @@
 //
 
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.CodeAnalysis;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
-using LanguageService.CodeAnalysis.XSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.Text.Classification;
-using System.Collections.Immutable;
 
 namespace XSharpModel
 {
@@ -26,7 +21,7 @@ namespace XSharpModel
     internal class XSharpModelDiscoverWithLocals : XSharpModelDiscover
     {
         private readonly Stack<XSharpParser.LocalvarContext> _localDecls;
-        public XSharpModelDiscoverWithLocals(XFile file, XSharpParser.SourceContext ctx, IEnumerable<Diagnostic> errors) : base(file, ctx, errors)
+        public XSharpModelDiscoverWithLocals(XFile file, XSharpParser.SourceContext ctx, IEnumerable<XError> errors) : base(file, ctx, errors)
         {
             this._localDecls = new Stack<XSharpParser.LocalvarContext>();
 

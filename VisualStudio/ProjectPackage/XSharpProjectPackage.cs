@@ -413,7 +413,7 @@ namespace XSharp.Project
                 _libraryManager.OnIdle();
 
             var walker = XSharpModel.ModelWalker.GetWalker();
-            if (!walker.IsWalkerRunning && walker.HasWork)
+            if (walker != null && !walker.IsWalkerRunning && walker.HasWork)
             {
                 walker.Walk();
             }

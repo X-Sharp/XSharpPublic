@@ -16,10 +16,12 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.CodeAnalysis.XSharp.Syntax;
 using System.Collections.Immutable;
 using LanguageService.CodeAnalysis;
+using static XSharp.Parser.VsParser;
+using LanguageService.CodeAnalysis.Text;
 
 namespace XSharpModel
 {
-    public class SourceWalker : IDisposable
+    public class SourceWalker : IDisposable, IErrorListener
     {
         private string _source;
         private ITextSnapshot _snapshot;
@@ -28,8 +30,7 @@ namespace XSharpModel
         private XSharpParser.SourceContext _tree;
         private ITokenStream _tokenStream;
         private bool _hasParseErrors;
-        private IEnumerable<Diagnostic> _errors;
-
+        
         public SourceWalker(XFile file, ITextSnapshot snapshot)
         {
             _file = file;
@@ -93,55 +94,57 @@ namespace XSharpModel
             }
         }
 
+        IList<XError> _errors;
         public ITokenStream Lex()
         {
             System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Lex()");
-            try
+            ITokenStream tokenStream;
+            bool ok = XSharp.Parser.VsParser.Lex(_source, _file.FullPath, _file.Project.ProjectNode.ParseOptions, 
+                this, out tokenStream);
+            lock (this)
             {
-                SyntaxTree syntaxtree;
-                lock (this)
+                _hasParseErrors = !ok;
+                if (ok)
                 {
-                    syntaxtree = XSharpSyntaxTree.ParseText(_source, _file.Project.ProjectNode.LexOptions, _file.FullPath);
-                    var unit = (CompilationUnitSyntax) syntaxtree.GetRoot();
-                    _tokenStream = unit.XTokens;
-                    _tree = unit.XSource;
-                    _errors = unit.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);
-                    _hasParseErrors = _errors.Count() > 0;
-
+                    _tree = null;
+                    _tokenStream = tokenStream;
                 }
-                return this._tokenStream;
-            }
-            catch (Exception e)
-            {
-                if (System.Diagnostics.Debugger.IsAttached)
-                    System.Diagnostics.Debug.WriteLine(e.Message);
-                
+                else
+                {
+                    _tree = null;
+                    _tokenStream = null ;
+                    _hasParseErrors = false;
+                }
+                _file.HasParseErrors = _hasParseErrors;
             }
             System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.Lex()");
-            return null;
+            return this._tokenStream;
         }
 
         public XSharpParser.SourceContext Parse()
         {
             System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Parse()");
-            lock (this)
+            ITokenStream tokenStream;
+            XSharpParser.SourceContext tree;
+            var options = _file.Project.ProjectNode.ParseOptions;
+            if (options == null)
             {
-                try
+                options = XSharpParseOptions.Default;
+            }
+            bool ok = XSharp.Parser.VsParser.Parse(_source, _file.FullPath, _file.Project.ProjectNode.ParseOptions,
+                this, out tokenStream, out tree); 
+            lock (this)
+            { 
+                _hasParseErrors = !ok;
+                if (ok)
                 {
-
-                    var syntaxTree = XSharpSyntaxTree.ParseText(_source, _file.Project.ParseOptions, _file.FullPath);
-                    var unit = (CompilationUnitSyntax)syntaxTree.GetRoot();
-                    _tokenStream = unit.XTokens;
-                    _tree = unit.XSource;
-                    _errors = unit.GetDiagnostics().Where(d => d.Severity == LanguageService.CodeAnalysis.DiagnosticSeverity.Error);
-                    _hasParseErrors = _errors.Count() > 0;
+                    _tokenStream = tokenStream;
+                    _tree = tree;
                 }
-                catch (Exception e)
+                else
                 {
-                    _tree = null;
                     _tokenStream = null;
-                    Support.Debug("SourceWalker.Parse: " + e.Message);
-                    _hasParseErrors = true;
+                    _tree = null;
                 }
                 _file.HasParseErrors = _hasParseErrors;
             }
@@ -150,7 +153,6 @@ namespace XSharpModel
         }
             
 
-        IEnumerable<LanguageService.CodeAnalysis.Diagnostic> errors = null;
         object _gate = new object();
         void ShowErrorsAsync(LanguageService.CodeAnalysis.SyntaxNode syntaxRoot)
         {
@@ -158,34 +160,28 @@ namespace XSharpModel
             if (_prjNode == null)
                 return;
             System.Diagnostics.Trace.WriteLine("-->> SourceWalker.ShowErrorsAsync()");
-            lock (_gate)
-            {
-                errors = syntaxRoot.GetDiagnostics();
-            }
-            if (errors == null)
-                return;
             //var thread = new System.Threading.Thread(delegate ()
             //{
-                // wait 2 seconds to allow continuous typing. The error may have disappeared in 2 seconds
-                //System.Threading.Thread.Sleep(2000);
-                IEnumerable<LanguageService.CodeAnalysis.Diagnostic> current;
-                lock (_gate)
+            // wait 2 seconds to allow continuous typing. The error may have disappeared in 2 seconds
+            //System.Threading.Thread.Sleep(2000);
+            var current = _errors.ToImmutableList();
+            lock (_gate)
+            {
+                string path = _file.FullPath;
+                _prjNode.ClearIntellisenseErrors(path);
+                if (current != null && _prjNode.IsDocumentOpen(path))
                 {
-                    current = errors;
-                    string path = _file.FullPath;
-                    _prjNode.ClearIntellisenseErrors(path);
-                    if (current != null && _prjNode.IsDocumentOpen(path))
+                    foreach (var diag in current)
                     {
-                        foreach (var diag in current)
-                        {
-                            var span = diag.Location.GetLineSpan();
-                            var loc = span.StartLinePosition;
-                            var length = span.Span.End.Character - span.Span.Start.Character + 1;
-                            _prjNode.AddIntellisenseError(path, loc.Line + 1, loc.Character + 1,length ,diag.Id, diag.GetMessage(), diag.Severity);
-                        }
+                        var span = diag.Span;
+                        var loc = span.Start;
+                        var length = span.End.Character - span.Start.Character + 1;
+
+                        _prjNode.AddIntellisenseError(path, loc.Line + 1, loc.Character + 1, length ,diag.ErrCode, diag.ToString(), diag.Severity);
                     }
-                    _prjNode.ShowIntellisenseErrors();
                 }
+                _prjNode.ShowIntellisenseErrors();
+            }
             //});
             //thread.Start();
             System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.ShowErrorsAsync()");
@@ -241,6 +237,21 @@ namespace XSharpModel
         {
             Dispose(true);
         }
+
+
+        #endregion
+        #region IErrorListener
+        public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            _errors.Add(new XError(fileName, span, errorCode, message, args));
+        }
+
+        public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            _errors.Add(new XWarning(fileName, span, errorCode, message, args));
+        }
         #endregion
     }
+
+
 }

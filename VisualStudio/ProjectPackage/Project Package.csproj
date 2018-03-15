@@ -260,6 +260,11 @@
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Editors\BraceMatching\BraceMatching.cs" />
     <Compile Include="Editors\Formatting\Formatting.cs" />
+    <Compile Include="Editors\HighlightWord\HighlightWord.cs" />
+    <Compile Include="Editors\LightBulb\CreateStubAction.cs" />
+    <Compile Include="Editors\LightBulb\CreateStubProvider.cs" />
+    <Compile Include="Editors\LightBulb\ImplementInterfaceAction.cs" />
+    <Compile Include="Editors\LightBulb\ImplementInterfaceProvider.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSourceProvider.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpResultSource.cs" />

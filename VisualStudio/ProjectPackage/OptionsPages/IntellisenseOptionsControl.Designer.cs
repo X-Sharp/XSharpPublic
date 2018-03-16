@@ -53,7 +53,7 @@
             // chkCompletionListtabs
             // 
             this.chkCompletionListtabs.AutoSize = true;
-            this.chkCompletionListtabs.Location = new System.Drawing.Point(13, 20);
+            this.chkCompletionListtabs.Location = new System.Drawing.Point(13, 18);
             this.chkCompletionListtabs.Name = "chkCompletionListtabs";
             this.chkCompletionListtabs.Size = new System.Drawing.Size(286, 17);
             this.chkCompletionListtabs.TabIndex = 0;
@@ -66,9 +66,9 @@
             this.grpCompletionListTabs.Controls.Add(this.chkShowAfterChar);
             this.grpCompletionListTabs.Controls.Add(this.chkDotAsUniversalSelector);
             this.grpCompletionListTabs.Controls.Add(this.chkCompletionListtabs);
-            this.grpCompletionListTabs.Location = new System.Drawing.Point(12, 12);
+            this.grpCompletionListTabs.Location = new System.Drawing.Point(12, 6);
             this.grpCompletionListTabs.Name = "grpCompletionListTabs";
-            this.grpCompletionListTabs.Size = new System.Drawing.Size(373, 89);
+            this.grpCompletionListTabs.Size = new System.Drawing.Size(373, 87);
             this.grpCompletionListTabs.TabIndex = 0;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
@@ -76,7 +76,7 @@
             // chkShowAfterChar
             // 
             this.chkShowAfterChar.AutoSize = true;
-            this.chkShowAfterChar.Location = new System.Drawing.Point(13, 66);
+            this.chkShowAfterChar.Location = new System.Drawing.Point(13, 59);
             this.chkShowAfterChar.Name = "chkShowAfterChar";
             this.chkShowAfterChar.Size = new System.Drawing.Size(243, 17);
             this.chkShowAfterChar.TabIndex = 2;
@@ -87,7 +87,7 @@
             // chkDotAsUniversalSelector
             // 
             this.chkDotAsUniversalSelector.AutoSize = true;
-            this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 43);
+            this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 38);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
             this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(154, 17);
             this.chkDotAsUniversalSelector.TabIndex = 1;
@@ -101,9 +101,9 @@
             this.grpCase.Controls.Add(this.chkAlignDoCase);
             this.grpCase.Controls.Add(this.grpKeywordCase);
             this.grpCase.Controls.Add(this.chkIdentifierCase);
-            this.grpCase.Location = new System.Drawing.Point(12, 102);
+            this.grpCase.Location = new System.Drawing.Point(12, 94);
             this.grpCase.Name = "grpCase";
-            this.grpCase.Size = new System.Drawing.Size(373, 135);
+            this.grpCase.Size = new System.Drawing.Size(373, 129);
             this.grpCase.TabIndex = 1;
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
@@ -111,7 +111,7 @@
             // chkAlignMethod
             // 
             this.chkAlignMethod.AutoSize = true;
-            this.chkAlignMethod.Location = new System.Drawing.Point(13, 107);
+            this.chkAlignMethod.Location = new System.Drawing.Point(13, 100);
             this.chkAlignMethod.Name = "chkAlignMethod";
             this.chkAlignMethod.Size = new System.Drawing.Size(316, 17);
             this.chkAlignMethod.TabIndex = 4;
@@ -122,7 +122,7 @@
             // chkAlignDoCase
             // 
             this.chkAlignDoCase.AutoSize = true;
-            this.chkAlignDoCase.Location = new System.Drawing.Point(13, 83);
+            this.chkAlignDoCase.Location = new System.Drawing.Point(13, 78);
             this.chkAlignDoCase.Name = "chkAlignDoCase";
             this.chkAlignDoCase.Size = new System.Drawing.Size(241, 17);
             this.chkAlignDoCase.TabIndex = 3;
@@ -138,7 +138,7 @@
             this.grpKeywordCase.Controls.Add(this.rbLower);
             this.grpKeywordCase.Location = new System.Drawing.Point(7, 16);
             this.grpKeywordCase.Name = "grpKeywordCase";
-            this.grpKeywordCase.Size = new System.Drawing.Size(237, 35);
+            this.grpKeywordCase.Size = new System.Drawing.Size(237, 36);
             this.grpKeywordCase.TabIndex = 1;
             this.grpKeywordCase.TabStop = false;
             this.grpKeywordCase.Text = "&Keyword Case Synchronization";
@@ -207,7 +207,7 @@
             // 
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
-            this.grpNavigationBars.Location = new System.Drawing.Point(12, 237);
+            this.grpNavigationBars.Location = new System.Drawing.Point(12, 224);
             this.grpNavigationBars.Name = "grpNavigationBars";
             this.grpNavigationBars.Size = new System.Drawing.Size(373, 64);
             this.grpNavigationBars.TabIndex = 2;
@@ -217,7 +217,7 @@
             // chkSortNavBar
             // 
             this.chkSortNavBar.AutoSize = true;
-            this.chkSortNavBar.Location = new System.Drawing.Point(13, 44);
+            this.chkSortNavBar.Location = new System.Drawing.Point(13, 38);
             this.chkSortNavBar.Name = "chkSortNavBar";
             this.chkSortNavBar.Size = new System.Drawing.Size(116, 17);
             this.chkSortNavBar.TabIndex = 1;
@@ -228,7 +228,7 @@
             // chkIncludeFields
             // 
             this.chkIncludeFields.AutoSize = true;
-            this.chkIncludeFields.Location = new System.Drawing.Point(13, 20);
+            this.chkIncludeFields.Location = new System.Drawing.Point(13, 17);
             this.chkIncludeFields.Name = "chkIncludeFields";
             this.chkIncludeFields.Size = new System.Drawing.Size(182, 17);
             this.chkIncludeFields.TabIndex = 0;
@@ -244,7 +244,7 @@
             this.Controls.Add(this.grpCase);
             this.Controls.Add(this.grpCompletionListTabs);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(399, 309);
+            this.Size = new System.Drawing.Size(399, 301);
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);

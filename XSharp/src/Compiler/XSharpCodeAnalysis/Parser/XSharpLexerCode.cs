@@ -323,6 +323,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 if (c == '*' && InputStream.La(2) == '/')
                                     break;
                                 _textSb.Append((char)c);
+                                if (c == '\n')
+                                    Interpreter.Line += 1;
                                 InputStream.Consume();
                                 c = InputStream.La(1);
                             }
@@ -584,12 +586,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             {
                                 _textSb.Append((char)c);
                                 InputStream.Consume();
-                                c = InputStream.La(1);
+                                c = InputStream.La(1); 
                             }
                         }
                         else if (AllowOldStyleComments && c == '&' && InputStream.La(2) == '&')
                         {
-                            _type = LINE_CONT_OLD;
+                            _type = LINE_CONT;
                             _channel = TokenConstants.HiddenChannel;
                             while (c != TokenConstants.Eof && c != '\r' && c != '\n')
                             {
@@ -613,6 +615,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             _textSb.Append((char)c);
                             InputStream.Consume();
                             c = InputStream.La(1);
+                            Interpreter.Line += 1;
                         }
                         if (_type == SEMI && _textSb.Length > 1)
                         {
@@ -904,6 +907,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             {
                                 _type = PRAGMA;
                                 _channel = PRAGMACHANNEL;
+                                HasPragmas = true;
                                 while (c != TokenConstants.Eof && c != '\r' && c != '\n')
                                 {
                                     _textSb.Append((char)c);
@@ -956,7 +960,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 }
                                 break;
                             }
-                            else if (c == 'b')
+                            else if (c == 'b' || c == 'B')
                             {
                                 _type = BIN_CONST;
                                 _textSb.Append((char)c);
@@ -1598,7 +1602,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"UNION", UNION},
                 {"UPTO", UPTO},
                 {"USING", USING},
-                {"WINCALL", WINCALL},
+                {"_WINCALL", WINCALL},
                 {"WHILE", WHILE},
                 {"_XOR", VO_XOR},
 

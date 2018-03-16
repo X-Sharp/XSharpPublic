@@ -34,6 +34,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     using Antlr4.Runtime.Dfa;
     using Antlr4.Runtime.Sharpen;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+    internal class XSharpBailErrorStrategy : BailErrorStrategy
+    {
+        String _fileName;
+        IList<ParseErrorData> _parseErrors;
+        internal XSharpBailErrorStrategy(String FileName, IList<ParseErrorData> parseErrors) : base()
+        {
+            _fileName = FileName;
+            _parseErrors = parseErrors;
+        }
+        public override void ReportError(Parser recognizer, RecognitionException e)
+        {
+            if (e?.OffendingToken != null)
+            {
+                _parseErrors.Add(new ParseErrorData(e.OffendingToken, ErrorCode.ERR_ParserError, e.Message));
+            }
+            else
+            {
+                _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_ParserError, e.Message));
+            }
+            System.Diagnostics.Debug.WriteLine("Parsing aborted for : " + _fileName);
+            System.Diagnostics.Debug.WriteLine("     error detected : " + e.Message);
+        }
+        public override void Recover(Parser recognizer, RecognitionException e)
+        {
+            ReportError(recognizer, e);
+            base.Recover(recognizer, e);
+        }
+        public override IToken RecoverInline(Parser recognizer)
+        {
+            InputMismatchException e = new InputMismatchException(recognizer);
+            ReportError(recognizer, e);
+            return base.RecoverInline(recognizer);
+        }
+    }
 
     internal partial class XSharpLanguageParser : SyntaxParser
     {
@@ -50,41 +84,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private BufferedTokenStream _preprocessorTokenStream;
 
 
-        internal class XSharpBailErrorStrategy : BailErrorStrategy
-        {
-            String _fileName;
-            IList<ParseErrorData> _parseErrors;
-            internal XSharpBailErrorStrategy(String FileName, IList<ParseErrorData> parseErrors) : base()
-            {
-                _fileName = FileName;
-                _parseErrors = parseErrors;
-            }
-            public override void ReportError(Parser recognizer, RecognitionException e)
-            {
-                if (e?.OffendingToken != null)
-                {
-                    _parseErrors.Add(new ParseErrorData(e.OffendingToken, ErrorCode.ERR_ParserError, e.Message));
-                }
-                else
-                {
-                    _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_ParserError, e.Message));
-                }
-                System.Diagnostics.Debug.WriteLine("Parsing aborted for : " + _fileName);
-                System.Diagnostics.Debug.WriteLine("     error detected : " + e.Message);
-            }
-            public override void Recover(Parser recognizer, RecognitionException e)
-            {
-                ReportError(recognizer, e);
-                base.Recover(recognizer, e);
-            }
-            public override IToken RecoverInline(Parser recognizer)
-            {
-                InputMismatchException e = new InputMismatchException(recognizer);
-                ReportError(recognizer, e);
-                return base.RecoverInline(recognizer);
-            }
-        }
-
+  
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
 
@@ -199,14 +199,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parseErrors = ParseErrorData.NewBag();
             // Check for #pragma in the lexerTokenStream
             _lexerTokenStream.Fill();
-                if (lexer.HasPragmas)
+            if (lexer.HasPragmas)
+            {
+                var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
+                foreach (var pragmaToken in pragmaTokens)
                 {
-                    var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
-                    foreach (var pragmaToken in pragmaTokens)
-                    {
-                        parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
-                    }
+                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
                 }
+            }
             XSharpPreprocessor pp = null;
             BufferedTokenStream ppStream = null;
             if (!_options.MacroScript)

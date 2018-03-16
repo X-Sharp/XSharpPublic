@@ -1,7 +1,7 @@
 [General]
 PROJECT = Pizza
-OutputFolder = C:\XporterOutput\Examples\Bin\
-GUID = 0952CF25-88E5-466E-94A1-1B5AA5766A4D
+OutputFolder = C:\XporterOutput\Bin\
+GUID = 54B887A3-93F9-4C9B-BE17-7AA822896F8A
 PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 0
@@ -21,7 +21,7 @@ Extension =
 ApplicationIcon = 
 OutputFolder = 
 Frameworks = 1
-GUID = 586A9E7D-64DE-4557-831D-4F228E16B010
+GUID = 7023F87A-0EFF-4860-9A26-16F101AA5FFC
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
@@ -32,28 +32,24 @@ KeyFile =
 [Files]
 
 File = %AppPath%\Start.prg
-FileGUID = 6CF4678B-A605-47E2-8218-47F0EA039ABC
+FileGUID = B8E1DEA2-7E15-4CB1-9662-9A3B47EEDB8B
 FileType = Code
 File = %AppPath%\Order Dialog.prg
-FileGUID = 368384F4-135F-495B-B271-134F17DBFE05
+FileGUID = 82743421-AF79-483A-85AF-F61A3CF3FCC1
 FileType = Code
-NativeResourceFile = External , %AppPath%\Order Dialog.rc
-ResourceFileGuid = 53079B43-2075-4763-AB13-12504EA2D99C
 File = %AppPath%\Images.prg
-FileGUID = 4D235E6D-87F3-4263-8648-A44CFEB5AEDA
+FileGUID = 3E1656D3-1111-4C6B-898D-41D4EDB44173
 FileType = Code
 NativeResourceFile = External , %AppPath%\Images.rc
-ResourceFileGuid = B4121ABC-067C-4FD3-B838-62CEBFC81506
+ResourceFileGuid = 05528F9B-C5AC-458C-9698-36CAB9E5B02B
 File = %AppPath%\SubmitDlg.prg
-FileGUID = 0D421EE6-5110-45FB-9C4A-59D2FB11F6E2
+FileGUID = 10A43B30-9B5C-48DB-A9DC-A8E625E0BE21
 FileType = Code
-NativeResourceFile = External , %AppPath%\SubmitDlg.rc
-ResourceFileGuid = B76F6777-D378-42B7-9827-26BC2FB5320E
 File = %AppPath%\TwoBmpButton.prg
-FileGUID = F69D9BCA-940C-4E61-8FED-593A1CE31751
+FileGUID = E9266286-D8F0-4556-B4A6-739E8E885368
 FileType = Code
 File = %AppPath%\Read Me.prg
-FileGUID = DA509B31-5C0C-4003-9C73-434A6CFE106C
+FileGUID = 2D0C3B52-BFC1-47DB-883D-7812874C2CC2
 FileType = Code
 
 [References]
@@ -64,7 +60,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0, 0.0.0.0
-ReferenceBrowse = C:\XporterOutput\Examples\SDK_Defines.dll,1,1
+ReferenceBrowse = C:\XporterOutput\SDK_DEFINES.dll,1,1
 
 [General Options]
 Switches=/nowarn:9032,9043,618,162,649,9025

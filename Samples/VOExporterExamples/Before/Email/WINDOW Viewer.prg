@@ -72,9 +72,6 @@ ASSIGN TextLimit(nBytes)
 END CLASS
 CLASS MessageSourceDialog INHERIT ViewerDlg
 
-// constructor inserted by xPorter, remove superfluous arguments
-CONSTRUCTOR(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9) CLIPPER
-SUPER(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 METHOD PostInit(oParent,uExtra) 
 
 	SUPER:PostInit()
@@ -89,9 +86,6 @@ METHOD PostInit(oParent,uExtra)
 END CLASS
 CLASS MailIDsDialog INHERIT ViewerDlg
 
-// constructor inserted by xPorter, remove superfluous arguments
-CONSTRUCTOR(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9) CLIPPER
-SUPER(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 METHOD PostInit(oParent,uExtra) 
 
 	SUPER:PostInit()

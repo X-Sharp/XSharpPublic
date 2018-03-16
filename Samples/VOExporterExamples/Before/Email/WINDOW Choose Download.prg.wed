@@ -1,0 +1,273 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,ChooseDownloadDialog
+GUID=EDF0C151-413E-4D7A-ACD4-657C821B7FAB
+  Name=ChooseDownloadDialog
+  Class=DIALOGWINDOW
+  Caption=Choose Mail to Download or Delete
+  Order=0
+  Left=36
+  Width=613
+  Top=36
+  Height=359
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160852996
+  Exstyles=257
+  Property=HyperLabel=,"Choose Mail to Download or Delete",,
+  Property=HyperLabel=#ChooseDownloadDialog,,,
+
+SUBCONTROLSSTART
+CONTROL=RADIOBUTTONGROUP
+GUID=62926F08-B2AC-4234-927E-C120D2996348
+  Name=SelectionOptions
+  Class=RADIOBUTTONGROUP
+  Caption=Selection Option:
+  Order=1
+  Left=9
+  Width=188
+  Top=9
+  Height=80
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=,"Selection Option:",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#SelectionOptions,,,
+
+CONTROL=RADIOBUTTON
+GUID=1951B43D-BC2D-4A61-8E6C-9C51C4B878F2
+  Name=DeleteButton
+  Class=RADIOBUTTON
+  Caption=Delete Selections
+  Order=2
+  Left=21
+  Width=140
+  Top=25
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872905
+  Exstyles=0
+  Property=HyperLabel=,"Delete Selections",,
+  Property=Value=DELETE
+  Property=HyperLabel=#DeleteButton,,,
+
+CONTROL=RADIOBUTTON
+GUID=45EF5E60-09E1-4917-B8F3-118D70C8D460
+  Name=DownloadButton
+  Class=RADIOBUTTON
+  Caption=Download Selections
+  Order=3
+  Left=21
+  Width=140
+  Top=45
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741833
+  Exstyles=0
+  Property=HyperLabel=,"Download Selections",,
+  Property=Value=DOWNLOAD
+  Property=HyperLabel=#DownloadButton,,,
+
+CONTROL=PUSHBUTTON
+GUID=A8A43780-A355-4A13-80CA-80135DD89944
+  Name=OKButton
+  Class=PUSHBUTTON
+  Caption=&Process
+  Order=4
+  Left=505
+  Width=97
+  Top=33
+  Height=32
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Process",,
+  Property=HyperLabel=#OKButton,,,
+  Property=NewFont=10:Microsoft Sans Serif:Bold
+  Property=OwnerAlignment=OA_X
+
+CONTROL=PUSHBUTTON
+GUID=A301BB7B-DA63-45CB-86BA-EA4E685CB4B2
+  Name=CloseButton
+  Class=PUSHBUTTON
+  Caption=&Abort
+  Order=5
+  Left=505
+  Width=97
+  Top=65
+  Height=28
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Abort",,
+  Property=HyperLabel=#CloseButton,,,
+  Property=OwnerAlignment=OA_X
+
+CONTROL=CHECKBOX
+GUID=AA3BD905-CCFB-45AD-97AB-8905B0B22AC7
+  Name=DeleteDownloadedMail
+  Class=CHECKBOX
+  Caption=&Delete Downloaded Emails
+  Order=6
+  Left=37
+  Width=152
+  Top=65
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807363
+  Exstyles=0
+  Property=HyperLabel=,"&Delete Downloaded Emails",,
+  Property=HyperLabel=#DeleteDownloadedMail,,,
+
+CONTROL=LISTVIEW
+GUID=9E8BC729-B5DE-485E-85D5-FF155B246C11
+  Name=ListView1
+  Class=LISTVIEW
+  Caption=
+  Order=7
+  Left=1
+  Width=605
+  Top=97
+  Height=229
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082130957
+  Exstyles=0
+  Property=HyperLabel=#ListView1,,,
+  Property=FullRowSelect=True
+  Property=CheckBoxes=False
+  Property=OwnerAlignment=OA_WIDTH_HEIGHT
+
+CONTROL=PUSHBUTTON
+GUID=CBBA11A6-1959-44D1-A792-BFDFB852D9BB
+  Name=ReprocessHeaders
+  Class=PUSHBUTTON
+  Caption=&Get Headers
+  Order=8
+  Left=505
+  Width=97
+  Top=5
+  Height=28
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Get Headers",,
+  Property=HyperLabel=#ReprocessHeaders,,,
+  Property=OwnerAlignment=OA_X
+
+CONTROL=PUSHBUTTON
+GUID=6A15ABA4-5C14-4B2B-8F3D-E5B4A88C2DBF
+  Name=SelectAllButton
+  Class=PUSHBUTTON
+  Caption=&Select All Headers
+  Order=9
+  Left=261
+  Width=136
+  Top=9
+  Height=24
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Select All Headers",,
+  Property=HyperLabel=#SelectAllButton,,,
+
+CONTROL=PUSHBUTTON
+GUID=C11EFF83-A80F-48AA-AD52-EFECA70F9F53
+  Name=UnSelectAllButton
+  Class=PUSHBUTTON
+  Caption=&UnSelect All Headers
+  Order=10
+  Left=261
+  Width=136
+  Top=37
+  Height=24
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&UnSelect All Headers",,
+  Property=HyperLabel=#UnSelectAllButton,,,
+
+CONTROL=PUSHBUTTON
+GUID=36636F82-EC73-408B-AE35-BC08420E41E3
+  Name=InvertSelectionButton
+  Class=PUSHBUTTON
+  Caption=&Invert Headers Selection
+  Order=11
+  Left=261
+  Width=136
+  Top=65
+  Height=24
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Invert Headers Selection",,
+  Property=HyperLabel=#InvertSelectionButton,,,
+
+CONTROL=PUSHBUTTON
+GUID=2EC15AC0-9D72-4D57-B58F-689673CFB928
+  Name=TestMailIDButton
+  Class=PUSHBUTTON
+  Caption=Test Mail IDs
+  Order=12
+  Left=409
+  Width=80
+  Top=29
+  Height=44
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"Test Mail IDs",,
+  Property=HyperLabel=#TestMailIDButton,,,
+
+SUBCONTROLSEND
+DESIGNEREND = ChooseDownloadDialog
+

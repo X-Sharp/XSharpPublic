@@ -164,8 +164,11 @@ namespace XSharpLanguage
                 }
                 // Start of Process
                 String filterText = "";
+                // Check if we can get the member where we are
+                XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._file);
+                XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
-                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, false);
+                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, false, member);
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
                 // Try to Guess what TypedChar could be
@@ -220,12 +223,10 @@ namespace XSharpLanguage
                 // Alternative Token list (dot is a selector)
                 List<String> altTokenList;
                 if (dotSelector && dotUniversal)
-                    altTokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, true);
+                    altTokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, true, member);
                 else
                     altTokenList = tokenList;
-                // Check if we can get the member where we are
-                XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._file);
-                XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
+
                 HashSet<String> Usings = new HashSet<String>(_file.Usings, StringComparer.OrdinalIgnoreCase);
                 if (currentNamespace != null)
                 {
@@ -2321,9 +2322,11 @@ namespace XSharpLanguage
         /// <param name="stopToken">The IToken that stops the move backwards</param>
         /// <param name="fromGotoDefn">Indicate if the call is due to Goto Definition</param>
         /// <param name="file">XFile object to use for the context</param>
+        /// <param name="dotAsSelector">dot is used as 'standard' selector, like colon </param>
+        /// <param name="fromMember">The Member containing the position</param>
         /// <returns></returns>
         public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            string bufferText, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector)
+            string bufferText, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XTypeMember fromMember)
         {
             List<String> tokenList = new List<string>();
             String token;
@@ -2365,6 +2368,15 @@ namespace XSharpLanguage
             */
             //////////////////////////////////////
             //////////////////////////////////////
+            // Try to speedup the process, Tokenize only the Member source if possible (and not the FULL source text)
+            if (fromMember != null)
+            {
+                // So the code of the member is....
+                bufferText = bufferText.Substring(fromMember.Interval.Start, fromMember.Interval.Width);
+                // Adapt the positions.
+                triggerPointPosition = triggerPointPosition - fromMember.Interval.Start;
+                triggerPointLineNumber = triggerPointLineNumber - (fromMember.Range.StartLine - 1);
+            }
             var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
             var tokens = lexer.GetTokenStream() as BufferedTokenStream;
             // locate the last token before the trigger point

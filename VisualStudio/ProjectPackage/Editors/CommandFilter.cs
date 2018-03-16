@@ -251,13 +251,15 @@ namespace XSharp.Project
                 XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
                 if (file == null)
                     return;
-                // Then, the corresponding Type/Element if possible
-                IToken stopToken;
-                //ITokenStream tokenStream;
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false);
                 // Check if we can get the member where we are
                 XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
+
+                // Then, the corresponding Type/Element if possible
+                IToken stopToken;
+                //ITokenStream tokenStream;
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false, member);
+
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 XSharpLanguage.CompletionElement gotoElement;
                 String currentNS = "";
@@ -502,11 +504,10 @@ namespace XSharp.Project
                     return false;
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
-                //ITokenStream tokenStream;
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false);
                 // Check if we can get the member where we are
                 XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 String currentNS = "";
                 if (currentNamespace != null)

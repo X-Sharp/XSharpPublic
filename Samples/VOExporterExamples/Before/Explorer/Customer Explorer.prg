@@ -291,9 +291,6 @@ END CLASS
 class CustomerListView inherit ListView
 
 
-// constructor inserted by xPorter, remove superfluous arguments
-CONSTRUCTOR(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9) CLIPPER
-SUPER(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 method SortByCustNum(oListViewItem1, oListViewItem2) 
 	local uValue1	as usual
 	local uValue2	as usual
@@ -458,7 +455,4 @@ END CLASS
 class CustomerTreeView inherit TreeView
 	
 
-// constructor inserted by xPorter, remove superfluous arguments
-CONSTRUCTOR(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9) CLIPPER
-SUPER(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 END CLASS

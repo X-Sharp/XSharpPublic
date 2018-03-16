@@ -2,8 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <ProjectGuid>586A9E7D-64DE-4557-831D-4F228E16B010</ProjectGuid>
+    <ProjectGuid>7023F87A-0EFF-4860-9A26-16F101AA5FFC</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Pizza</RootNamespace>
@@ -40,8 +39,10 @@
     <VO13>true</VO13>
     <VO14>false</VO14>
     <VO15>true</VO15>
+    <VO16>true</VO16>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -50,34 +51,31 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
+    <PPO>false</PPO>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -102,82 +100,82 @@
       <AssemblyName>SDK_Defines.dll.dll</AssemblyName>
       <SpecificVersion>false</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\\SDK_Defines.dll</HintPath>
+      <HintPath>..\SDK_DEFINES.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-<Compile Include="Start.prg">
-  <SubType>Code</SubType>
-</Compile>
-<Compile Include="Order Dialog.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="Order Dialog.OrderDialog.rc">
-  <DependentUpon>Order Dialog.prg</DependentUpon>
-</NativeResource>
-<VOBinary Include="Order Dialog.ORDERDIALOG.xsfrm">
-  <DependentUpon>Order Dialog.prg</DependentUpon>
-</VOBinary>
-<Compile Include="Images.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="Images.BROCOLI.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.CHEESE.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.CHEF1.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.CHEF2.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.EGGPLANT.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.MARIOICON.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.MUSHROOM.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.NOPIZZA.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.OLIVES.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.ONION.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.PEPPER.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.PIZZA.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.SALAMI.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<NativeResource Include="Images.TOMATO.rc">
-  <DependentUpon>Images.prg</DependentUpon>
-</NativeResource>
-<Compile Include="SubmitDlg.prg">
-  <SubType>Code</SubType>
-</Compile>
-<NativeResource Include="SubmitDlg.SubmitDlg.rc">
-  <DependentUpon>SubmitDlg.prg</DependentUpon>
-</NativeResource>
-<VOBinary Include="SubmitDlg.SUBMITDLG.xsfrm">
-  <DependentUpon>SubmitDlg.prg</DependentUpon>
-</VOBinary>
-<Compile Include="TwoBmpButton.prg">
-  <SubType>Code</SubType>
-</Compile>
-<Compile Include="Read Me.prg">
-  <SubType>Code</SubType>
-</Compile>
+    <Compile Include="Start.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Order Dialog.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="Order Dialog.OrderDialog.rc">
+      <DependentUpon>Order Dialog.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="Order Dialog.ORDERDIALOG.xsfrm">
+      <DependentUpon>Order Dialog.prg</DependentUpon>
+    </VOBinary>
+    <Compile Include="Images.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="Images.BROCOLI.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.CHEESE.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.CHEF1.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.CHEF2.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.EGGPLANT.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.MARIOICON.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.MUSHROOM.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.NOPIZZA.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.OLIVES.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.ONION.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.PEPPER.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.PIZZA.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.SALAMI.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Images.TOMATO.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
+    <Compile Include="SubmitDlg.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="SubmitDlg.SubmitDlg.rc">
+      <DependentUpon>SubmitDlg.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="SubmitDlg.SUBMITDLG.xsfrm">
+      <DependentUpon>SubmitDlg.prg</DependentUpon>
+    </VOBinary>
+    <Compile Include="TwoBmpButton.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Read Me.prg">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

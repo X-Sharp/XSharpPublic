@@ -1,7 +1,7 @@
 [General]
 PROJECT = Explorer
-OutputFolder = C:\XporterOutput\Examples\Bin\
-GUID = 4F9A8705-6579-4746-822D-4DCAAF627452
+OutputFolder = C:\XporterOutput\Bin\
+GUID = 344985AF-0D87-4568-A876-A85F9E2E3E81
 PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 0
@@ -21,7 +21,7 @@ Extension =
 ApplicationIcon = 
 OutputFolder = 
 Frameworks = 1
-GUID = 68B268CA-0F94-486F-A997-011B64E57AD0
+GUID = BF102398-AABB-4141-BE44-2249006869DE
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
@@ -32,32 +32,28 @@ KeyFile =
 [Files]
 
 File = %AppPath%\Start.prg
-FileGUID = 39B2758A-693B-4A65-9A78-8141DB4EDD5B
+FileGUID = 4AAA6B34-E63B-47CD-823D-64D7506EB122
 FileType = Code
 File = %AppPath%\Explorer Shell.prg
-FileGUID = 5A69F8BE-B2AB-47E0-A31A-E467FFBC26C9
+FileGUID = 79A38E99-2675-4979-BBFB-A32B9D99CF57
 FileType = Code
 File = %AppPath%\Menus.prg
-FileGUID = 3D3D1F2D-BBA5-49F1-A500-ABE8A028B09C
+FileGUID = AFE846C5-AE98-4033-B9D9-895A634052E7
 FileType = Code
-NativeResourceFile = External , %AppPath%\Menus.rc
-ResourceFileGuid = BF1A198E-66CC-40EF-9E34-2E81920F6CD2
 File = %AppPath%\Customer Explorer.prg
-FileGUID = 0A2F637A-90A2-41DD-8696-1284A757A5FA
+FileGUID = 9B8E689B-527E-4642-B605-B41C3C7DEAE5
 FileType = Code
 File = %AppPath%\Help About.prg
-FileGUID = 744BF677-5EF4-4FAA-AC21-A9C726142626
+FileGUID = 19EF3655-9353-44A3-80C8-45CDFB0249C2
 FileType = Code
-NativeResourceFile = External , %AppPath%\Help About.rc
-ResourceFileGuid = F9C6777E-5092-43B4-B3C3-11AEDE1275F0
 File = %AppPath%\Data Servers.prg
-FileGUID = 14A9596B-556C-442E-BC94-0B6793C62825
+FileGUID = 34D2CF5E-B07B-453D-ABF5-BA0CD99CCC14
 FileType = Code
 File = %AppPath%\Icons.prg
-FileGUID = E0DA67E2-B01C-4D9A-A583-585FCCC5FF48
+FileGUID = 3075D4CC-6F0E-4388-8AB1-078A7D7047CD
 FileType = Code
 NativeResourceFile = External , %AppPath%\Icons.rc
-ResourceFileGuid = B2ADE0B7-7865-4376-80C1-37AC7D9F689D
+ResourceFileGuid = 8FFE8307-D8E6-44A8-92B8-19E8FD43C74A
 
 [References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
@@ -68,7 +64,7 @@ ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVORDDClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0, 0.0.0.0
-ReferenceBrowse = C:\XporterOutput\Examples\SDK_Defines.dll,1,1
+ReferenceBrowse = C:\XporterOutput\SDK_DEFINES.dll,1,1
 
 [General Options]
 Switches=/nowarn:9032,9043,618,162,649,9025

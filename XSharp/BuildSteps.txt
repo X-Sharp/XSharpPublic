@@ -23,7 +23,7 @@ Steps to create a new XSharp build
 - Adjust the Readme and VersionHistory files for the installer
 - Check in the Help Source files 
 - Open the ISS file in Inno Setup
-- Adjust version number and output exe name
+- Adjust version number, dates and times and output exe name in the installer script
 - Build for Fox
 - When needed also build for Public
 - Inno calls 2 command line tools. 1 to add the Help files to a CAB file so they can be signed The other tool 

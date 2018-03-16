@@ -323,6 +323,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 if (c == '*' && InputStream.La(2) == '/')
                                     break;
                                 _textSb.Append((char)c);
+                                if (c == '\n')
+                                    Interpreter.Line += 1;
                                 InputStream.Consume();
                                 c = InputStream.La(1);
                             }

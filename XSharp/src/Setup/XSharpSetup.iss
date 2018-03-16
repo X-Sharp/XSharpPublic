@@ -14,22 +14,30 @@
 
 #define FOX
 #ifdef FOX
-#define SetupExeName        "XSharpSetup112Fox"
-#define BinFolder          "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
+#define SetupExeName        "XSharpSetup120Fox"
+#define BinFolder           "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
+#define BinPFolder          "C:\Xsharp\DevPublic\Binaries\Release\"
+#define BinRtFolder         "C:\Xsharp\DevPublic\Binaries\Release\"
+#define DebuggerObjFolder   "c:\XSharp\DevPublic\Binaries\Obj\Release\XSharpDebugger\"
+#define ProjectObjFolder    "c:\XSharp\DevPublic\Binaries\Obj\Release\XSharpProject\"
 #else   
-#define SetupExeName        "XSharpSetup112Public"
+#define SetupExeName        "XSharpSetup120Public"
 #define BinFolder          "C:\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
+#define BinPFolder          "C:\Xsharp\DevPublic\Binaries\Debug\"
+#define BinRtFolder         "C:\Xsharp\DevPublic\Binaries\Debug\"
+#define DebuggerObjFolder   "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpDebugger\"
+#define ProjectObjFolder    "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpProject\"
 #endif
 
 ; version info and similar stuff.
   
-#define Version             "1.1.2.0"
-#define VIVersion           "1.1.2.0"
-#define TouchDate           "2018-02-06"
-#define TouchTime           "01:12:00"
+#define Version             "1.2"
+#define VIVersion           "1.2.0.0"
+#define TouchDate           "2018-03-16"
+#define TouchTime           "01:20:00"
 
 #define Product             "XSharp"
-#define ProdBuild           "XSharp General Release"
+#define ProdBuild           "XSharp version "+ Version
 #define Company             "XSharp BV"
 #define RegCompany          "XSharpBV"
 #define XSharpURL           "http://www.xsharp.info"
@@ -47,10 +55,6 @@
 
 ;Source Folders and other related stuff
 
-#define BinPFolder          "C:\Xsharp\DevPublic\Binaries\Debug\"
-#define BinRtFolder         "C:\Xsharp\DevPublic\Binaries\Release\"
-#define DebuggerObjFolder   "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpDebugger\"
-#define ProjectObjFolder    "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpProject\"
 #define CommonFolder        "C:\Xsharp\Dev\XSharp\src\Common\"
 #define ToolsFolder         "C:\Xsharp\Dev\XSharp\src\Tools\"
 #define VOXporterFolder     "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\"
@@ -275,8 +279,7 @@ Source: "{#BinPFolder}xporter.pdb";                       DestDir: "{app}\bin"; 
 ;
 Source: "{#VOXPorterBinFolder}VOXporter.exe";             DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} signonce; 
 Source: "{#VOXPorterBinFolder}Fab_VO_Entities.dll";       DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
-Source: "{#VOXPorterBinFolder}XICOMMON.dll";              DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
-Source: "{#VOXPorterBinFolder}XIRES.dll";                 DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterBinFolder}XI*.dll";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterBinFolder}SDK_DEFINES.dll";           DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterFolder}VOXporter.ini";                DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterFolder}ReadMe.rtf";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
@@ -465,6 +468,8 @@ Source: "{#ExamplesFolder}*.vi*";              DestDir: "{commondocs}\XSharp\Exa
 Source: "{#ExamplesFolder}*.ico";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 Source: "{#ExamplesFolder}*.bmp";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 Source: "{#ExamplesFolder}*.cur";              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Source: "{#ExamplesFolder}ca?o*.dll";          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
+Source: "{#ExamplesFolder}msvc*.dll";          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags} skipifsourcedoesntexist;
 
 ; Scripting
 Source: "{#ScriptFolder}*.*";                  DestDir: "{commondocs}\XSharp\Scripting";    Flags: recursesubdirs {#StdFlags};
@@ -697,7 +702,7 @@ Components: vs2017; Type: filesandordirs; Name: "{#Vs15LocalDir}{code:GetVs2017I
 
 [Messages]
 WelcomeLabel1=Welcome to {# Product} (X#) 
-WelcomeLabel2=This installer will install {#ProdBuild} {# Version} on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+WelcomeLabel2=This installer will install {#ProdBuild} on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
 ;WizardInfoBefore=Warning
 ;InfoBeforeLabel=You are about to install Beta software
 ;InfoBeforeClickLabel=Only continue the installation if you are aware of the following:

@@ -1,0 +1,408 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,EmailPropertiesDialog
+GUID=3617C66F-487E-4D11-985D-6605A0AC49B1
+  Name=EmailPropertiesDialog
+  Class=DIALOGWINDOW
+  Caption=Email Properties
+  Order=0
+  Left=34
+  Width=425
+  Top=34
+  Height=401
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160590980
+  Exstyles=257
+  Property=HyperLabel=,"Email Properties",,
+  Property=HyperLabel=#EmailPropertiesDialog,,,
+
+SUBCONTROLSSTART
+CONTROL=PUSHBUTTON
+GUID=FBAF0B7A-75F9-418C-983E-152EF5FBFF7C
+  Name=CloseButton
+  Class=PUSHBUTTON
+  Caption=&Close
+  Order=1
+  Left=329
+  Width=80
+  Top=345
+  Height=24
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Close",,
+  Property=HyperLabel=#CloseButton,,,
+
+CONTROL=PUSHBUTTON
+GUID=ABE400E7-FA79-43BA-A117-3BC52ACD2B7B
+  Name=SourceButton
+  Class=PUSHBUTTON
+  Caption=&Message Header
+  Order=2
+  Left=13
+  Width=296
+  Top=345
+  Height=24
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Message Header",,
+  Property=HyperLabel=#SourceButton,,,
+
+CONTROL=FIXEDTEXT
+GUID=8BD8F1F6-F928-4735-BAB8-0294A8AC2D0E
+  Name=ToText
+  Class=FIXEDTEXT
+  Caption=Type:
+  Order=4
+  Left=13
+  Width=40
+  Top=93
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Type:",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#ToText,,,
+
+CONTROL=FIXEDTEXT
+GUID=B25BBF14-90E1-496D-9A21-EFD3FE9F6A77
+  Name=FromInfoText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=5
+  Left=65
+  Width=308
+  Top=41
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#FromInfoText,,,
+
+CONTROL=FIXEDTEXT
+GUID=585121E0-9129-42A6-8444-7B95F4D7B820
+  Name=TitleInfoText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=6
+  Left=65
+  Width=308
+  Top=17
+  Height=12
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#TitleInfoText,,,
+
+CONTROL=FIXEDTEXT
+GUID=BF66E2F1-FC03-48BF-B998-A07DE1A9883C
+  Name=TitleText
+  Class=FIXEDTEXT
+  Caption=Location:
+  Order=7
+  Left=13
+  Width=60
+  Top=121
+  Height=12
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Location:",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#TitleText,,,
+
+CONTROL=FIXEDICON
+GUID=3BB67C82-0C7A-42E4-9B64-3CC237551EA7
+  Name=letter_icon
+  Class=FIXEDICON
+  Caption=
+  Order=9
+  Left=13
+  Width=44
+  Top=13
+  Height=44
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=Yes
+  Deleted=2
+  Styles=1073741827
+  Exstyles=0
+  Property=HyperLabel=,"letter_ico",,
+  Property=HyperLabel=#letter_icon,,,
+
+CONTROL=GROUPBOX
+GUID=2E86CDB5-529D-48FD-B6A4-6096EE08B122
+  Name=GroupBox1
+  Class=GROUPBOX
+  Caption=
+  Order=10
+  Left=13
+  Width=392
+  Top=69
+  Height=8
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=#GroupBox1,,,
+
+CONTROL=FIXEDTEXT
+GUID=B0DCB474-B23C-4845-BF2E-5C429F4B612D
+  Name=TitleText1
+  Class=FIXEDTEXT
+  Caption=Sent:
+  Order=11
+  Left=13
+  Width=36
+  Top=229
+  Height=12
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Sent:",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#TitleText1,,,
+
+CONTROL=FIXEDTEXT
+GUID=770653ED-C86B-40D3-942E-0209D92B0A9D
+  Name=TitleText2
+  Class=FIXEDTEXT
+  Caption=Received:
+  Order=12
+  Left=13
+  Width=64
+  Top=257
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Received:",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#TitleText2,,,
+
+CONTROL=FIXEDTEXT
+GUID=03DF0906-9F26-45E8-A606-65F296CBA5DD
+  Name=TitleText3
+  Class=FIXEDTEXT
+  Caption=Size:
+  Order=13
+  Left=13
+  Width=60
+  Top=149
+  Height=12
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Size:",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#TitleText3,,,
+
+CONTROL=GROUPBOX
+GUID=EBB14AD8-50CF-4D35-ABFE-7D7509E5F1A0
+  Name=GroupBox2
+  Class=GROUPBOX
+  Caption=
+  Order=14
+  Left=13
+  Width=392
+  Top=173
+  Height=8
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=#GroupBox2,,,
+
+CONTROL=FIXEDTEXT
+GUID=B13F7368-8D79-4139-9AC8-5160BCA44F31
+  Name=FromInfoText1
+  Class=FIXEDTEXT
+  Caption=Mail Message
+  Order=15
+  Left=93
+  Width=79
+  Top=93
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Mail Message",,
+  Property=HyperLabel=#FromInfoText1,,,
+
+CONTROL=FIXEDTEXT
+GUID=6F8CE8D6-7C1E-4BCE-A5B6-2BF7E7DBE75D
+  Name=LocationText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=16
+  Left=93
+  Width=156
+  Top=121
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#LocationText,,,
+
+CONTROL=FIXEDTEXT
+GUID=14F3CDE2-5897-4203-ABF5-B81A7E9954AA
+  Name=SizeText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=17
+  Left=93
+  Width=116
+  Top=149
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#SizeText,,,
+
+CONTROL=FIXEDTEXT
+GUID=3AF95A6A-C086-4DFE-B478-C577454DF0A4
+  Name=TitleText4
+  Class=FIXEDTEXT
+  Caption=Priority:
+  Order=18
+  Left=13
+  Width=48
+  Top=197
+  Height=12
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Priority:",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#TitleText4,,,
+
+CONTROL=FIXEDTEXT
+GUID=41F6E040-13F2-4BDD-810C-F09B1C2EBEAB
+  Name=PriorityText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=19
+  Left=93
+  Width=184
+  Top=197
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#PriorityText,,,
+
+CONTROL=FIXEDTEXT
+GUID=A45F65CD-C120-4721-A312-1AB2C45B1179
+  Name=Senttext
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=20
+  Left=93
+  Width=184
+  Top=229
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#Senttext,,,
+
+CONTROL=FIXEDTEXT
+GUID=3924BFF4-2B30-47C1-9FED-6B6BE5207657
+  Name=ReceivedText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=21
+  Left=93
+  Width=184
+  Top=257
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#ReceivedText,,,
+
+SUBCONTROLSEND
+DESIGNEREND = EmailPropertiesDialog
+

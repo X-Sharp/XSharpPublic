@@ -295,6 +295,7 @@ namespace XSharp.Project
                     int indentSize = 0;
                     foreach (var snapLine in lines)
                     {
+                        //
                         indentSize = getDesiredIndentationInDocument(snapLine, regions, indentSize);
                         //
                         CommandFilterHelper.FormatLine(this._aggregator, this.TextView, editSession, snapLine, indentSize);
@@ -352,17 +353,19 @@ namespace XSharp.Project
                 // Get the opening keyword, at the beginning of the currently processed region
                 openKeyword = getFirstKeywordInLine(snapLine.Snapshot, region.Item1.Start, length);
                 //
-                // We are on the line opening a Region
                 if ((snapLine.Start.Position <= region.Item1.Start) && (snapLine.End.Position >= region.Item1.Start))
                 {
+                    // We are on the line opening a Region
                     // What kind of region ? 
                     // Skip comment and using regions
                     switch (openKeyword)
                     {
                         case "//":
                         case "USING":
+                        case "#USING":
                         case "DEFINE":
                         case "#DEFINE":
+                        case "#INCLUDE":
                             continue;
                         default:
                             break;
@@ -405,19 +408,34 @@ namespace XSharp.Project
                 }
                 else if ((snapLine.Start.Position > region.Item1.Start) && (snapLine.End.Position < region.Item2.Start))
                 {
-                    // We are inside a Comment or Using region
+                    // We are inside a Region
+                    // Comment or Using region ?
                     switch (openKeyword)
                     {
                         case "//":
                         case "USING":
+                        case "#USING":
                         case "DEFINE":
                         case "#DEFINE":
+                        case "#INCLUDE":
                             continue;
                         default:
                             break;
                     }
                     // We are between the opening Keyword and the closing Keyword
-                    indentValue++;
+                    if (!_alignMethod)
+                    {
+                        indentValue++;
+                    }
+                    else
+                    {
+                        // no closing keyword
+                        if (! _codeBlockKeywords.Contains<String>(openKeyword))
+                        {
+                            indentValue++;
+                        }
+                    }
+                    
                     // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
                     string startToken = searchMiddleKeyword(openKeyword);
                     if (startToken != null)
@@ -427,6 +445,7 @@ namespace XSharp.Project
                 }
                 else //if ((region.Item2.Start >= snapLine.Start.Position) && (region.Item2.End <= snapLine.End.Position))
                 {
+                    // We are on the closing Keyword
                     if (!_alignMethod)
                     {
                         // no closing keyword
@@ -443,7 +462,7 @@ namespace XSharp.Project
                         string startToken = searchSpecialMiddleKeyword(openKeyword);
                         if (startToken != null)
                         {
-                            indentValue--;
+                            indentValue++;
                         }
                     }
                 }
@@ -544,7 +563,8 @@ namespace XSharp.Project
                     IClassificationTag currentTag = tagList[tagIndex].Tag;
                     IMappingSpan currentSpan = tagList[tagIndex].Span;
                     //
-                    if (currentTag.ClassificationType.IsOfType("keyword"))
+                    if (currentTag.ClassificationType.IsOfType("keyword") ||
+                        currentTag.ClassificationType.IsOfType("preprocessor keyword"))
                     {
                         var spans = currentSpan.GetSpans(_buffer);
                         if (spans.Count > 0)

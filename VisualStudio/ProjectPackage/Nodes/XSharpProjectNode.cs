@@ -200,6 +200,20 @@ namespace XSharp.Project
             }
         }
 
+        internal IVsHierarchy InteropSafeHierarchy
+        {
+            get
+            {
+                IntPtr unknownPtr = Utilities.QueryInterfaceIUnknown(this);
+                if (IntPtr.Zero == unknownPtr)
+                {
+                    return null;
+                }
+                IVsHierarchy hier = Marshal.GetObjectForIUnknown(unknownPtr) as IVsHierarchy;
+                return hier;
+            }
+        }
+
         // Gets the output file name depending on current OutputType.
         // View GeneralProperyPage
         string _outputFile;
@@ -303,18 +317,17 @@ namespace XSharp.Project
         public __VSPROJOUTPUTTYPE GetOutPutType()
         {
             string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
-            OutputType outputType = (OutputType)Enum.Parse(typeof(OutputType), outputTypeAsString);
-            switch (outputType)
+            switch (outputTypeAsString.ToLower())
             {
-                case OutputType.WinExe:
+                case "winexe":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_WINEXE;
-                case OutputType.Library:
+                case "library":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_LIBRARY;
-                case OutputType.Exe:
+                case "exe":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_EXE;
-                case OutputType.WinMDObj:
+                case "winmdobj":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_WINMDOBJ;
-                case OutputType.AppContainerExe:
+                case "appcontainerexe":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_APPCONTAINEREXE;
             }
             return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_NONE;
@@ -508,14 +521,14 @@ namespace XSharp.Project
         public override int GetFile(int fileId, uint flags, out uint itemid, out string fileName)
         {
             bool fCreateInPropertiesFolder = false;
-            HierarchyNode propsFolder= null;
+            HierarchyNode propsFolder = null;
             string props = "Properties";
             fileName = _GetFilenameForSpecialFiles(fileId, out fCreateInPropertiesFolder);
             string fullPath = Path.Combine(ProjectFolder, fileName);
 
             if (fCreateInPropertiesFolder)
             {
-                propsFolder = this.FindURL(Path.Combine(ProjectFolder ,props));
+                propsFolder = this.FindURL(Path.Combine(ProjectFolder, props));
                 if (propsFolder == null)
                 {
                     propsFolder = CreateFolderNode(props);
@@ -817,7 +830,7 @@ namespace XSharp.Project
         public override bool IsCodeFile(string strFileName)
         {
             // Don't check errors here
-            var type  = XFileTypeHelpers.GetFileType(strFileName);
+            var type = XFileTypeHelpers.GetFileType(strFileName);
             return type == XFileType.SourceCode;
         }
 
@@ -903,11 +916,12 @@ namespace XSharp.Project
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
             this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
-            //IPythonLibraryManager libraryManager = Site.GetService(typeof(IPythonLibraryManager)) as IPythonLibraryManager;
-            //if (null != libraryManager)
-            //{
-            //    libraryManager.RegisterHierarchy(this.InteropSafeHierarchy);
-            //}
+            // This will call the Calback in PojectPackage
+            IXSharpLibraryManager libraryManager = Site.GetService(typeof(IXSharpLibraryManager)) as IXSharpLibraryManager;
+            if (null != libraryManager)
+            {
+                libraryManager.RegisterHierarchy(this.InteropSafeHierarchy, this.ProjectModel, this);
+            }
 
             //If this is a WPFFlavor-ed project, then add a project-level DesignerContext service to provide
             //event handler generation (EventBindingProvider) for the XAML designer.
@@ -1098,7 +1112,7 @@ namespace XSharp.Project
                 else
                 {
                     // OAAssemblyReference or OACOMReference
-                     ProjectModel.AddAssemblyReference(reference);
+                    ProjectModel.AddAssemblyReference(reference);
                 }
             }
         }
@@ -1199,7 +1213,7 @@ namespace XSharp.Project
         public EnvDTE.Project FindProject(String sProject)
         {
             foreach (var p in GetSolutionProjects())
-            { 
+            {
                 if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return p;
@@ -1210,7 +1224,8 @@ namespace XSharp.Project
 
         public override void RemoveURL(String url)
         {
-            //
+            if (_closing)
+                return;
             //
             // We should remove the external projects entries
             if (IsProjectFile(url))
@@ -1226,12 +1241,12 @@ namespace XSharp.Project
                 var node = this.FindChild(url) as XSharpFileNode;
                 if (node != null && !node.IsNonMemberItem)
                 {
-                    if (filechangemanager != null )
+                    if (filechangemanager != null)
                     {
                         if (IsXamlFile(url) ||
                             node.IsDependent)
 
-                        filechangemanager.StopObservingItem(url);
+                            filechangemanager.StopObservingItem(url);
                     }
 
                     this.ProjectModel.RemoveFile(url);
@@ -1280,7 +1295,7 @@ namespace XSharp.Project
                 statusBar.SetText(msg);
             }
         }
-        public void SetStatusBarAnimation(bool onoff, short idAnimation )
+        public void SetStatusBarAnimation(bool onoff, short idAnimation)
         {
             try
             {
@@ -1354,7 +1369,7 @@ namespace XSharp.Project
                     lock (this)
                     {
                         if (_prefix == null)
-                            _prefix = GetProjectProperty("NS") ;
+                            _prefix = GetProjectProperty("NS");
                         if (_prefix == null)
                             _prefix = "false";
                     }
@@ -1478,7 +1493,7 @@ namespace XSharp.Project
         {
             var model = this.ProjectModel;
             //
-            XType result = model.LookupFullName(name,true);
+            XType result = model.LookupFullName(name, true);
             if (result != null)
                 return result;
             // try to find with explicit usings
@@ -1684,14 +1699,15 @@ namespace XSharp.Project
             {
                 try
                 {
-                    if (this.Site !=  null )
+                    if (this.Site != null)
                     {
                         return VsShellUtilities.IsSolutionBuilding(this.Site);
                     }
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine("Error fetching IsVsBuilding: " + e.Message);
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        System.Diagnostics.Debug.WriteLine("Error fetching IsVsBuilding: " + e.Message);
                 }
                 return false;
             }
@@ -1737,14 +1753,6 @@ namespace XSharp.Project
         {
             return this.FindChild(strFileName) != null;
         }
-        public XSharpParseOptions LexOptions
-        {
-            get
-            {
-                var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                return xoptions.LexOptions;
-            }
-        }
         public XSharpParseOptions ParseOptions
         {
             get
@@ -1753,16 +1761,32 @@ namespace XSharp.Project
                 return xoptions.ParseOptions;
             }
         }
+        bool _closing = false;
         public override int Close()
         {
+            // First remove the Navigation Data
+            //
+            if (this.Site != null)
+            {
+
+                IXSharpLibraryManager libraryManager = (IXSharpLibraryManager)Site.GetService(typeof(IXSharpLibraryManager));
+                if (libraryManager != null)
+                {
+                    libraryManager.UnregisterHierarchy(this.InteropSafeHierarchy);
+                }
+            }
+            // CleanUp the CodeModel
             XSharpModel.XSolution.Remove(projectModel);
+            _closing = true;
             var res = base.Close();
+
             if (logger != null)
             {
                 logger.Clear();
             }
             ErrorListManager.RemoveProject(this);
             _errorListManager = null;
+            URLNodes.Clear();
             return res;
         }
 
@@ -1838,7 +1862,7 @@ namespace XSharp.Project
                 ok = false;
             }
             if (ok && str.IndexOf(import1DefaultProps1, StringComparison.OrdinalIgnoreCase) == -1 &&
-                str.IndexOf(importDefaultProps2, StringComparison.OrdinalIgnoreCase) == -1 )
+                str.IndexOf(importDefaultProps2, StringComparison.OrdinalIgnoreCase) == -1)
             {
                 ok = false;
             }
@@ -1885,10 +1909,10 @@ namespace XSharp.Project
         {
             try
             {
-                if (string.Equals(prop.Name,"documentationfile",StringComparison.OrdinalIgnoreCase) )
+                if (string.Equals(prop.Name, "documentationfile", StringComparison.OrdinalIgnoreCase))
                 {
                     string sValue = prop.Value;
-                    if (string.Equals(sValue, "true",StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(sValue, "true", StringComparison.OrdinalIgnoreCase))
                     {
                         var prop2 = this.BuildProject.Properties.Where(p => p.Name.ToLower() == "assemblyname").FirstOrDefault();
                         if (!String.IsNullOrEmpty(prop2?.UnevaluatedValue))
@@ -1906,7 +1930,8 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Error updating documentationfle: " + e.Message);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    System.Diagnostics.Debug.WriteLine("Error updating documentationfle: " + e.Message);
             }
             return false;
         }
@@ -1916,8 +1941,8 @@ namespace XSharp.Project
             var xml = BuildProject.Xml;
             var groups = xml.PropertyGroups.ToList();
             var groupDict = new Dictionary<string, MBC.ProjectPropertyGroupElement>();
-            
-            foreach (var group in groups.Where( grp => grp.Condition.Trim().Length > 0))
+
+            foreach (var group in groups.Where(grp => grp.Condition.Trim().Length > 0))
             {
                 string condition = group.Condition;
                 if (condition.IndexOf(config, StringComparison.OrdinalIgnoreCase) > -1 &&
@@ -1941,7 +1966,7 @@ namespace XSharp.Project
                 {
                     groupDict.Add(condition, group);
                 }
-                    
+
             }
             // remove the first of each condition combination from the list
             foreach (var group in groupDict.Values)
@@ -1953,7 +1978,7 @@ namespace XSharp.Project
             // with the exception of the build events
             foreach (var group in groups.Where(g => g.Condition.Trim().Length > 0))
             {
-                var firstGroup = groupDict[group.Condition.Trim()];             
+                var firstGroup = groupDict[group.Condition.Trim()];
                 var propsToMove = new List<MBC.ProjectPropertyElement>();
                 var propsToDelete = new List<MBC.ProjectPropertyElement>();
                 foreach (var prop in group.Properties)
@@ -2047,12 +2072,12 @@ namespace XSharp.Project
                     hasImportDefaultProps = true;
                 if (String.Equals(prj, importDefaultProps2, StringComparison.OrdinalIgnoreCase))
                     hasImportDefaultProps = true;
-                if (prj.IndexOf(importProps, StringComparison.OrdinalIgnoreCase)>= 0)
+                if (prj.IndexOf(importProps, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportProps = true;
                     iProps = import;
                 }
-                if (prj.IndexOf( importTargets, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (prj.IndexOf(importTargets, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportTargets = true;
                     iTargets = import;
@@ -2078,7 +2103,7 @@ namespace XSharp.Project
             }
             return changed;
         }
-        private bool moveBuildEvents(MBC.ProjectImportElement iTargets )
+        private bool moveBuildEvents(MBC.ProjectImportElement iTargets)
         {
             // Check for Prebuild and Postbuild
             // must be after iTargets
@@ -2252,7 +2277,7 @@ namespace XSharp.Project
             XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
             if (node != null)
             {
-                return node.DocumentSetText( text);
+                return node.DocumentSetText(text);
             }
             return false;
         }

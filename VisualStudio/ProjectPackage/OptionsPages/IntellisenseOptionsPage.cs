@@ -20,6 +20,20 @@ namespace XSharp.Project.OptionsPages
             set { completionListTabs = value; }
         }
 
+        private bool useDotAsUniversalSelector = false;
+        public bool UseDotAsUniversalSelector
+        {
+            get { return useDotAsUniversalSelector; }
+            set { useDotAsUniversalSelector = value; }
+        }
+
+        private bool showAfterChar = false;
+        public bool ShowAfterChar
+        {
+            get { return showAfterChar; }
+            set { showAfterChar = value; }
+        }
+
         // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
         private int keywordCase = 1;
         public int KeywordCase
@@ -47,6 +61,21 @@ namespace XSharp.Project.OptionsPages
         {
             get { return alignMethod; }
             set { alignMethod = value; }
+        }
+
+        private bool includeFieldsInNavigationBars;
+        public bool IncludeFieldsInNavigationBars
+        {
+            get { return includeFieldsInNavigationBars; }
+            set { includeFieldsInNavigationBars = value; }
+
+        }
+        private bool sortNavigationBars;
+        public bool SortNavigationBars
+        {
+            get { return sortNavigationBars; }
+            set { sortNavigationBars = value; }
+
         }
 
 

@@ -260,6 +260,11 @@
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Editors\BraceMatching\BraceMatching.cs" />
     <Compile Include="Editors\Formatting\Formatting.cs" />
+    <Compile Include="Editors\HighlightWord\HighlightWord.cs" />
+    <Compile Include="Editors\LightBulb\CreateStubAction.cs" />
+    <Compile Include="Editors\LightBulb\CreateStubProvider.cs" />
+    <Compile Include="Editors\LightBulb\ImplementInterfaceAction.cs" />
+    <Compile Include="Editors\LightBulb\ImplementInterfaceProvider.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSourceProvider.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpResultSource.cs" />
@@ -268,12 +273,22 @@
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemProvider.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndent.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndentProvider.cs" />
+    <Compile Include="Editors\XAMLCompletionSource.cs" />
     <Compile Include="Editors\XSharpCompletionSource_Partial.cs" />
     <Compile Include="Editors\XSharpErrorColorizer.cs" />
     <Compile Include="Editors\XSharpQuickInfo.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
+    <Compile Include="Library\HierarchyListener.cs" />
+    <Compile Include="Library\Library.cs" />
+    <Compile Include="Library\LibraryNode.cs" />
+    <Compile Include="Library\MultiValueDictionary.cs" />
+    <Compile Include="Library\TextLineEventListener.cs" />
+    <Compile Include="Library\XSharpLibraryManager.cs" />
+    <Compile Include="Library\XSharpLibraryNode.cs" />
+    <Compile Include="Library\XSharpLibraryProject.cs" />
+    <Compile Include="Library\XSharpModuleId.cs" />
     <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
       <SubType>UserControl</SubType>

@@ -40,8 +40,10 @@ namespace XSharpModel
                 var project = xProjects[projectName];
                 // Flag as unloaded to make sure that a running file walker
                 // for the project gets aborted
-                project.Loaded = false;
-                return xProjects.TryRemove(projectName, out project);
+                project.UnLoad();
+                var result = xProjects.TryRemove(projectName, out project);
+                SystemTypeController.UnloadUnusedAssemblies();
+                return result;
             }
             return false;
         }

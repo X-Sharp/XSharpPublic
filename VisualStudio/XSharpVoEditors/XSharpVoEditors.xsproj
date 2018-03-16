@@ -46,7 +46,7 @@
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>
     </DisabledWarnings>
     <WarningLevel>4</WarningLevel>

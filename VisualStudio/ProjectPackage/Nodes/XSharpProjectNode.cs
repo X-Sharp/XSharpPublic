@@ -317,18 +317,17 @@ namespace XSharp.Project
         public __VSPROJOUTPUTTYPE GetOutPutType()
         {
             string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
-            OutputType outputType = (OutputType)Enum.Parse(typeof(OutputType), outputTypeAsString);
-            switch (outputType)
+            switch (outputTypeAsString.ToLower())
             {
-                case OutputType.WinExe:
+                case "winexe":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_WINEXE;
-                case OutputType.Library:
+                case "library":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_LIBRARY;
-                case OutputType.Exe:
+                case "exe":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_EXE;
-                case OutputType.WinMDObj:
+                case "winmdobj":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_WINMDOBJ;
-                case OutputType.AppContainerExe:
+                case "appcontainerexe":
                     return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_APPCONTAINEREXE;
             }
             return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_NONE;

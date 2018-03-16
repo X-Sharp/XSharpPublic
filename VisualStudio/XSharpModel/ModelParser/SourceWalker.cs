@@ -99,6 +99,7 @@ namespace XSharpModel
         {
             System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Lex()");
             ITokenStream tokenStream;
+            _errors = new List<XError>();
             bool ok = XSharp.Parser.VsParser.Lex(_source, _file.FullPath, _file.Project.ProjectNode.ParseOptions, 
                 this, out tokenStream);
             lock (this)
@@ -131,6 +132,7 @@ namespace XSharpModel
             {
                 options = XSharpParseOptions.Default;
             }
+            _errors = new List<XError>();
             bool ok = XSharp.Parser.VsParser.Parse(_source, _file.FullPath, _file.Project.ProjectNode.ParseOptions,
                 this, out tokenStream, out tree); 
             lock (this)

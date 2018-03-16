@@ -4028,6 +4028,9 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (currentConfigName == configCanonicalName) return;
                 }
+                if (string.IsNullOrEmpty(configCanonicalName.Platform)
+                    || string.IsNullOrEmpty(configCanonicalName.PlatformTarget))
+                    return;
                 throw new InvalidOperationException();
             }
 

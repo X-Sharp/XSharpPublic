@@ -1,0 +1,525 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,OrderDialog
+GUID=62D96DDF-143B-4353-8BBE-8D8BFC17D7BE
+  Name=OrderDialog
+  Class=DIALOGWINDOW
+  Caption=Marios Pizza Blitz
+  Order=0
+  Left=6
+  Width=480
+  Top=6
+  Height=480
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160724100
+  Exstyles=257
+  Property=HyperLabel=,"Marios Pizza Blitz",,
+  Property=HyperLabel=#OrderDialog,,,
+  Property=Icon=MARIOICON
+
+SUBCONTROLSSTART
+CONTROL=RADIOBUTTONGROUP
+GUID=6D95EEAE-FB89-4C61-8819-B34EE9F9877D
+  Name=SizeGroup1
+  Class=RADIOBUTTONGROUP
+  Caption=Select Pizza Size
+  Order=1
+  Left=9
+  Width=454
+  Top=1
+  Height=58
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=,"Select Pizza Size",,
+  Property=HyperLabel=#SizeGroup1,,,
+
+CONTROL=RADIOBUTTON
+GUID=34427494-475B-4744-A0F7-69AC718756EB
+  Name=SmallRB
+  Class=RADIOBUTTON
+  Caption=Small
+  Order=2
+  Left=26
+  Width=71
+  Top=19
+  Height=29
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073811465
+  Exstyles=0
+  Property=HyperLabel=,"Small",,
+  Property=HyperLabel=#SmallRB,,,
+
+CONTROL=RADIOBUTTON
+GUID=C16AD0C0-B242-4CE8-BB62-1873A13AC0D3
+  Name=MediumRB
+  Class=RADIOBUTTON
+  Caption=Medium
+  Order=3
+  Left=141
+  Width=71
+  Top=19
+  Height=29
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073811465
+  Exstyles=0
+  Property=HyperLabel=,"Medium",,
+  Property=HyperLabel=#MediumRB,,,
+
+CONTROL=RADIOBUTTON
+GUID=51DE4FDF-79FE-4AB2-A2C8-0151AE6865A3
+  Name=LargeRB
+  Class=RADIOBUTTON
+  Caption=Large
+  Order=4
+  Left=255
+  Width=71
+  Top=19
+  Height=29
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073811465
+  Exstyles=0
+  Property=HyperLabel=,"Large",,
+  Property=HyperLabel=#LargeRB,,,
+
+CONTROL=RADIOBUTTON
+GUID=3CC05193-A2DA-4C2C-8A44-9248E935D9AC
+  Name=XLargeRB
+  Class=RADIOBUTTON
+  Caption=X-Large
+  Order=5
+  Left=369
+  Width=71
+  Top=19
+  Height=29
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073811465
+  Exstyles=0
+  Property=HyperLabel=,"X-Large",,
+  Property=HyperLabel=#XLargeRB,,,
+
+CONTROL=RADIOBUTTONGROUP
+GUID=38D2B086-5F39-4AFA-89A9-AAA9B1097BE1
+  Name=ToppingGroup
+  Class=RADIOBUTTONGROUP
+  Caption=Select Toppings
+  Order=6
+  Left=9
+  Width=454
+  Top=60
+  Height=173
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=,"Select Toppings",,
+  Property=HyperLabel=#ToppingGroup,,,
+
+CONTROL=CHECKBOX
+GUID=2C93A4BB-D8DA-4D59-A5A4-75DF1E763798
+  Name=TomatoCB1
+  Class=CHECKBOX
+  Caption=
+  Order=7
+  Left=16
+  Width=100
+  Top=72
+  Height=76
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807491
+  Exstyles=0
+  Property=HyperLabel=#TomatoCB1,,,
+  Property=Image=TOMATO
+  Property=TooltipText="Tomato"
+
+CONTROL=CHECKBOX
+GUID=5B687F96-349C-4150-A66B-39E6E90726F8
+  Name=OnionCB1
+  Class=CHECKBOX
+  Caption=
+  Order=8
+  Left=129
+  Width=100
+  Top=72
+  Height=76
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807491
+  Exstyles=0
+  Property=HyperLabel=#OnionCB1,,,
+  Property=Image=ONION
+  Property=TooltipText="Onion"
+
+CONTROL=CHECKBOX
+GUID=07A11597-4FA9-4873-BBC7-0E7697AC51FC
+  Name=PepperCB1
+  Class=CHECKBOX
+  Caption=
+  Order=9
+  Left=239
+  Width=100
+  Top=72
+  Height=76
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807491
+  Exstyles=0
+  Property=HyperLabel=#PepperCB1,,,
+  Property=Image=PEPPER
+  Property=TooltipText="Pepper"
+
+CONTROL=CHECKBOX
+GUID=CFB856F4-F92D-44B5-9981-980A56AFD6A8
+  Name=SalamiCB1
+  Class=CHECKBOX
+  Caption=
+  Order=10
+  Left=348
+  Width=100
+  Top=72
+  Height=76
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807491
+  Exstyles=0
+  Property=HyperLabel=#SalamiCB1,,,
+  Property=Image=SALAMI
+  Property=TooltipText="Salami"
+
+CONTROL=CHECKBOX
+GUID=F7796F7A-1DD5-427F-BF78-F2173AC48BF3
+  Name=MushroomCB
+  Class=CHECKBOX
+  Caption=
+  Order=11
+  Left=16
+  Width=100
+  Top=150
+  Height=76
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807491
+  Exstyles=0
+  Property=HyperLabel=,"",,
+  Property=HyperLabel=#MushroomCB,,,
+  Property=Image=MUSHROOM
+  Property=TooltipText="Mushroom"
+
+CONTROL=CHECKBOX
+GUID=8FEB52DB-8819-4732-B0EC-42D7A3C8E9E3
+  Name=EggplantCB
+  Class=CHECKBOX
+  Caption=
+  Order=12
+  Left=129
+  Width=100
+  Top=150
+  Height=76
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807491
+  Exstyles=0
+  Property=HyperLabel=#EggplantCB,,,
+  Property=Image=EGGPLANT
+  Property=TooltipText="Eggplant"
+
+CONTROL=CHECKBOX
+GUID=5E5722D1-2D19-4502-8DED-BF89C396819D
+  Name=CheeseCB
+  Class=CHECKBOX
+  Caption=
+  Order=13
+  Left=238
+  Width=100
+  Top=150
+  Height=76
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807491
+  Exstyles=0
+  Property=HyperLabel=,"",,
+  Property=HyperLabel=#CheeseCB,,,
+  Property=Image=CHEESE
+  Property=TooltipText="Cheese"
+
+CONTROL=CHECKBOX
+GUID=A829DA93-40E6-485B-816A-F4569A9CFF20
+  Name=BroccoliCB
+  Class=CHECKBOX
+  Caption=
+  Order=14
+  Left=347
+  Width=100
+  Top=149
+  Height=76
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807491
+  Exstyles=0
+  Property=HyperLabel=#BroccoliCB,,,
+  Property=Image=BROCOLI
+  Property=TooltipText="Broccoli"
+
+CONTROL=FIXEDTEXT
+GUID=1930D2C1-FAD9-4133-AC81-34453ADA53F0
+  Name=CrustStatic
+  Class=FIXEDTEXT
+  Caption=Crust &Size
+  Order=15
+  Left=9
+  Width=80
+  Top=249
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=Yes
+  Deleted=2
+  Styles=1073741824
+  Exstyles=131072
+  Property=HyperLabel=,"Crust &Size",,
+  Property=HyperLabel=#CrustStatic,,,
+
+CONTROL=SINGLELINEEDIT
+GUID=F0BC0614-A595-4B8B-9267-12AA0DA9D0DE
+  Name=CrustEdit
+  Class=SINGLELINEEDIT
+  Caption=0
+  Order=16
+  Left=100
+  Width=32
+  Top=249
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082204224
+  Exstyles=0
+  Property=HyperLabel=,"",,
+  Property=HyperLabel=#CrustEdit,,,
+
+CONTROL=VERTICALSPINNER
+GUID=2F7F764C-EED7-45CB-881A-F6E16B88E105
+  Name=CrustSpinner
+  Class=VERTICALSPINNER
+  Caption=
+  Order=17
+  Left=134
+  Width=13
+  Top=247
+  Height=22
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741840
+  Exstyles=0
+  Property=Range=0,
+  Property=Range=,10
+  Property=HyperLabel=#CrustSpinner,,,
+
+CONTROL=FIXEDTEXT
+GUID=718F8F45-F0A8-4B61-BD55-0DB7BA707D06
+  Name=PhoneStatic
+  Class=FIXEDTEXT
+  Caption=&Your Phone
+  Order=18
+  Left=9
+  Width=83
+  Top=296
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=Yes
+  Deleted=2
+  Styles=1073741824
+  Exstyles=131072
+  Property=HyperLabel=,"&Your Phone",,
+  Property=HyperLabel=#PhoneStatic,,,
+
+CONTROL=SINGLELINEEDIT
+GUID=896F8C5F-31E4-4BC4-85B1-01FD288B6C3F
+  Name=SingleLineEdit1
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=19
+  Left=100
+  Width=32
+  Top=296
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082204224
+  Exstyles=0
+  Property=HyperLabel=,"",,
+  Property=HyperLabel=#SingleLineEdit1,,,
+  Property=TextLimit=3
+
+CONTROL=SINGLELINEEDIT
+GUID=D6080164-FC33-4485-9EB5-787E07A5F04B
+  Name=SingleLineEdit2
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=20
+  Left=142
+  Width=52
+  Top=296
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082204224
+  Exstyles=0
+  Property=HyperLabel=#SingleLineEdit2,,,
+  Property=TextLimit=4
+  Property=HyperLabel=,"",,
+
+CONTROL=GROUPBOX
+GUID=F9E5D5BB-D967-4973-9AB5-0156620A3DBF
+  Name=GroupBox1
+  Class=GROUPBOX
+  Caption=Your Selection
+  Order=21
+  Left=9
+  Width=187
+  Top=346
+  Height=94
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=,"Your Selection",,
+  Property=HyperLabel=#GroupBox1,,,
+  Property=Image=NOPIZZA
+
+CONTROL=PUSHBUTTON
+GUID=8B39F333-8859-4798-B8E7-71994A25609E
+  Name=OrderButton
+  Class=PUSHBUTTON
+  Caption=
+  Order=22
+  Left=23
+  Width=65
+  Top=365
+  Height=65
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807489
+  Exstyles=0
+  Property=HyperLabel=,"",,
+  Property=Image=PIZZA
+  Property=HyperLabel=#OrderButton,,,
+  Property=TooltipText="Press to get a fresh made pizza delivered to your house."
+
+CONTROL=PUSHBUTTON
+GUID=20E6D5D8-F101-4784-9CDD-0CC444A5ECA8
+  Name=CancelButton
+  Class=PUSHBUTTON
+  Caption=Push
+  Order=23
+  Left=110
+  Width=65
+  Top=365
+  Height=65
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807488
+  Exstyles=0
+  Property=HyperLabel=,"Push",,
+  Property=Image=NOPIZZA
+  Property=HyperLabel=#CancelButton,,,
+  Property=TooltipText="Press in case you already had enough pizzas."
+
+CONTROL=PUSHBUTTON
+GUID=7D9947A1-2E3A-479A-A6D6-70EEE2105295
+  Name=MarioButton
+  Class=PUSHBUTTON
+  Caption=
+  Order=24
+  Left=263
+  Width=200
+  Top=240
+  Height=200
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073840256
+  Exstyles=0
+  Property=HyperLabel=,"",,
+  Property=HyperLabel=#MarioButton,,,
+  Property=InheritClassName=TWOBMPBUTTON
+  Property=TooltipText="Press to see Mario smile ..."
+
+SUBCONTROLSEND
+DESIGNEREND = OrderDialog
+

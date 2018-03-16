@@ -49,12 +49,12 @@ namespace XSharp.Project.Editors.HighlightWord
     internal class HighlightWordTag : TextMarkerTag
     {
 
-        public HighlightWordTag() : base("MarkerFormatDefinition/HighlightWordFormatDefinition") { }
+        public HighlightWordTag() : base("MarkerFormatDefinition/XSharpHighlightWordFormatDefinition") { }
 
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [Name("MarkerFormatDefinition/HighlightWordFormatDefinition")]
+    [Name("MarkerFormatDefinition/XSharpHighlightWordFormatDefinition")]
     [UserVisible(true)]
     internal class HighlightWordFormatDefinition : MarkerFormatDefinition
     {

@@ -23,9 +23,6 @@ CLASS EMailDialog INHERIT DATAWINDOW
 	PROTECT oBody          AS Control
 	PROTECT dwAttachXPos   AS DWORD
 
-// constructor inserted by xPorter, remove superfluous arguments
-CONSTRUCTOR(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9) CLIPPER
-SUPER(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 METHOD ListViewKeyDown(oListViewKeyEvent) 
 
 	SELF:EventReturnValue := 1L	// don't call SUPER

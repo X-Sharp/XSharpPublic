@@ -179,9 +179,6 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 END CLASS
 CLASS LookUpDataBrowser INHERIT DataBrowser
 
-// constructor inserted by xPorter, remove superfluous arguments
-CONSTRUCTOR(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9) CLIPPER
-SUPER(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 METHOD CellDoubleClick() 
 	
 	SELF:Owner:Owner:PBMove()

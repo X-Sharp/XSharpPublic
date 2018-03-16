@@ -1,0 +1,85 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,HelpAbout
+GUID=3FBEF5D3-97F7-4498-AB65-AAE324617D5B
+  Name=HelpAbout
+  Class=DIALOGWINDOW
+  Caption=About Standard Application
+  Order=0
+  Left=117
+  Width=453
+  Top=76
+  Height=194
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160590976
+  Exstyles=257
+  Property=HyperLabel=,"About Standard Application",,
+  Property=HyperLabel=#HelpAbout,,,
+
+SUBCONTROLSSTART
+CONTROL=FIXEDTEXT
+GUID=2A7DABD7-DF16-403B-A3C4-82C8B67867DE
+  Name=AboutText
+  Class=FIXEDTEXT
+  Caption=VOPad
+  Order=2
+  Left=195
+  Width=245
+  Top=10
+  Height=93
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741952
+  Exstyles=131072
+  Property=HyperLabel=,"VOPad",,
+  Property=HyperLabel=#AboutText,,,
+
+CONTROL=PUSHBUTTON
+GUID=6D2BFE06-7D51-434C-A767-8B444A9E5226
+  Name=PushButton1
+  Class=PUSHBUTTON
+  Caption=OK
+  Order=5
+  Left=361
+  Width=70
+  Top=121
+  Height=37
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807361
+  Exstyles=0
+  Property=HyperLabel=,"OK",,
+  Property=HyperLabel=#PushButton1,,,
+  Property=Image=IMAGE
+
+CONTROL=FIXEDBITMAP
+GUID=0069788A-6747-4C64-9928-51C63B2C60BB
+  Name=FixedBitmap1
+  Class=FIXEDBITMAP
+  Caption=
+  Order=6
+  Left=12
+  Width=180
+  Top=10
+  Height=90
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741838
+  Exstyles=131104
+  Property=HyperLabel=#FixedBitmap1,,,
+  Property=HyperLabel=,"POWVOBMP",,
+
+SUBCONTROLSEND
+DESIGNEREND = HelpAbout
+

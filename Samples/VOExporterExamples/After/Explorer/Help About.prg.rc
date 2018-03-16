@@ -1,0 +1,11 @@
+ HelpAboutDialog DIALOGEX  6, 17, 202, 69
+STYLE	4|128|2147483648|12582912
+CAPTION	"About Explorer Sample..."
+FONT	8, "MS Sans Serif"
+BEGIN
+	CONTROL	"CA-Visual Objects 2.5a", 100, "Static", 1|1073741824, 6, 6, 187, 12
+	CONTROL	"Explorer Sample", 101, "Static", 1|1073741824, 6, 24, 187, 12
+	CONTROL	"OK", 102, "Button", 1|65536|1073741824, 73, 49, 53, 13
+END
+
+

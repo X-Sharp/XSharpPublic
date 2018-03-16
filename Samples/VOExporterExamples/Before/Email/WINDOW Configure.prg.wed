@@ -1,0 +1,653 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,EmailConfig
+GUID=05B66026-58F5-427B-929C-0640B69BB963
+  Name=EmailConfig
+  Class=DIALOGWINDOW
+  Caption=Email Sample Configuration
+  Order=0
+  Left=150
+  Width=335
+  Top=56
+  Height=571
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160593028
+  Exstyles=257
+  Property=HyperLabel=,"Email Sample Configuration",,
+  Property=HyperLabel=#EmailConfig,,,
+
+SUBCONTROLSSTART
+CONTROL=FIXEDTEXT
+GUID=12071E73-636B-4A90-BCB2-0E55446297CE
+  Name=FixedText4
+  Class=FIXEDTEXT
+  Caption=&Full name
+  Order=1
+  Left=12
+  Width=83
+  Top=84
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"&Full name",,
+  Property=HyperLabel=#FixedText4,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=SINGLELINEEDIT
+GUID=C3D758E1-0760-423B-95F7-7A2D50D60CA3
+  Name=SLEFullname
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=2
+  Left=100
+  Width=215
+  Top=80
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#SLEFullname,,,
+
+CONTROL=FIXEDTEXT
+GUID=56C8DD76-C23B-4504-9F62-F2F4386ECBDE
+  Name=FixedText5
+  Class=FIXEDTEXT
+  Caption=&Email address
+  Order=3
+  Left=12
+  Width=83
+  Top=104
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"&Email address",,
+  Property=HyperLabel=#FixedText5,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=SINGLELINEEDIT
+GUID=2EE2CF16-36CD-44D2-BD71-39FD02FE06F0
+  Name=SLEEmail
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=4
+  Left=100
+  Width=215
+  Top=100
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#SLEEmail,,,
+
+CONTROL=FIXEDTEXT
+GUID=C1457E58-2A4F-4934-8D91-5A1DEB609191
+  Name=FixedText3
+  Class=FIXEDTEXT
+  Caption=&Server Name
+  Order=5
+  Left=13
+  Width=83
+  Top=171
+  Height=18
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"&Server Name",,
+  Property=HyperLabel=#FixedText3,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=SINGLELINEEDIT
+GUID=DED0A24F-C086-46E7-89AA-435B25200874
+  Name=SLEPopServer
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=6
+  Left=101
+  Width=216
+  Top=169
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#SLEPopServer,,,
+
+CONTROL=FIXEDTEXT
+GUID=BE312DEB-7005-443A-B449-F2ACFCA80F4A
+  Name=FixedText1
+  Class=FIXEDTEXT
+  Caption=&Account name
+  Order=7
+  Left=13
+  Width=83
+  Top=197
+  Height=19
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"&Account name",,
+  Property=HyperLabel=#FixedText1,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=SINGLELINEEDIT
+GUID=D32ACB10-AFD5-4C31-AF5C-576FF17D39EB
+  Name=SLEAccount
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=8
+  Left=101
+  Width=160
+  Top=193
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#SLEAccount,,,
+
+CONTROL=FIXEDTEXT
+GUID=AE5AB1DA-F26F-4EF3-BDC0-C3FCA510B210
+  Name=FixedText2
+  Class=FIXEDTEXT
+  Caption=&Password
+  Order=9
+  Left=13
+  Width=83
+  Top=217
+  Height=15
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"&Password",,
+  Property=HyperLabel=#FixedText2,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=SINGLELINEEDIT
+GUID=8E180220-61A8-4908-80E9-6E4B89294B35
+  Name=SLEPassword
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=10
+  Left=101
+  Width=160
+  Top=213
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196128
+  Exstyles=512
+  Property=HyperLabel=#SLEPassword,,,
+
+CONTROL=CHECKBOX
+GUID=F94EA80F-F77A-4A30-BE96-65904EE2F90F
+  Name=InspectHeaders
+  Class=CHECKBOX
+  Caption=&Inspect Headers before Download
+  Order=11
+  Left=13
+  Width=216
+  Top=237
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807363
+  Exstyles=0
+  Property=HyperLabel=,"&Inspect Headers before Download",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#InspectHeaders,,,
+
+CONTROL=FIXEDTEXT
+GUID=2FC594D8-9DBB-4A3F-AA56-8F01A8916125
+  Name=FixedText7
+  Class=FIXEDTEXT
+  Caption=Server name
+  Order=12
+  Left=13
+  Width=83
+  Top=349
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"Server name",,
+  Property=HyperLabel=#FixedText7,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=SINGLELINEEDIT
+GUID=1317A99C-579E-426F-9310-159ECFF2A357
+  Name=SLESmtpServer
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=13
+  Left=101
+  Width=215
+  Top=345
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#SLESmtpServer,,,
+
+CONTROL=CHECKBOX
+GUID=60BA8BDE-45E9-41DC-AB30-7AD7D0BF920A
+  Name=Authentication
+  Class=CHECKBOX
+  Caption=Smtp Server Requires &Authentication
+  Order=14
+  Left=21
+  Width=232
+  Top=373
+  Height=19
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807363
+  Exstyles=0
+  Property=HyperLabel=,"Smtp Server Requires &Authentication",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#Authentication,,,
+
+CONTROL=FIXEDTEXT
+GUID=C7920F93-43B7-4F00-8DB0-826D0D4E9BF5
+  Name=SmtpUserNameFT
+  Class=FIXEDTEXT
+  Caption=&User name
+  Order=15
+  Left=13
+  Width=83
+  Top=400
+  Height=18
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"&User name",,
+  Property=HyperLabel=#SmtpUserNameFT,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=SINGLELINEEDIT
+GUID=703CBE04-9806-4A1F-905F-EB2E30970434
+  Name=SLESmtpUserName
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=16
+  Left=101
+  Width=160
+  Top=397
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#SLESmtpUserName,,,
+
+CONTROL=FIXEDTEXT
+GUID=6F6AEB34-2BE2-433B-8A9E-A928CE5A8673
+  Name=SmtpPasswordFT
+  Class=FIXEDTEXT
+  Caption=&Password
+  Order=17
+  Left=13
+  Width=83
+  Top=420
+  Height=18
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"&Password",,
+  Property=HyperLabel=#SmtpPasswordFT,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=SINGLELINEEDIT
+GUID=B116D26E-E549-44BD-BF4A-CB9393A4032A
+  Name=SLESmtpPassword
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=18
+  Left=101
+  Width=160
+  Top=417
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196128
+  Exstyles=512
+  Property=HyperLabel=#SLESmtpPassword,,,
+
+CONTROL=SINGLELINEEDIT
+GUID=BB47DA82-D862-4DBB-8FFD-03C6101EC3B4
+  Name=SLEDirectory
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=19
+  Left=9
+  Width=312
+  Top=473
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#SLEDirectory,,,
+
+CONTROL=PUSHBUTTON
+GUID=A5421C1C-652F-4016-B182-2AC50B744FCA
+  Name=PBOK
+  Class=PUSHBUTTON
+  Caption=&OK
+  Order=20
+  Left=157
+  Width=80
+  Top=505
+  Height=24
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&OK",,
+  Property=HyperLabel=#PBOK,,,
+
+CONTROL=PUSHBUTTON
+GUID=1CA4FC52-2E5F-4B4C-862D-1EF7B6EF9EFC
+  Name=PBCancel
+  Class=PUSHBUTTON
+  Caption=&Cancel
+  Order=21
+  Left=241
+  Width=80
+  Top=505
+  Height=24
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Cancel",,
+  Property=HyperLabel=#PBCancel,,,
+
+CONTROL=FIXEDTEXT
+GUID=2E7E4AFC-130B-4353-A212-C63AAB3DEF96
+  Name=FixedText6
+  Class=FIXEDTEXT
+  Caption=Internet Mail
+  Order=22
+  Left=109
+  Width=212
+  Top=9
+  Height=37
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"Internet Mail",,
+  Property=HyperLabel=#FixedText6,,,
+  Property=NewFont=24:MS Sans Serif:Bold
+
+CONTROL=GROUPBOX
+GUID=D490A1BF-AE1B-4462-AF3A-73FE5D0662A3
+  Name=GroupBox1
+  Class=GROUPBOX
+  Caption=Incoming Mail Server (POP3):
+  Order=23
+  Left=5
+  Width=319
+  Top=145
+  Height=164
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=,"Incoming Mail Server POP3:",,
+  Property=HyperLabel=#GroupBox1,,,
+  Property=NewFont=10:MS Sans Serif:Bold
+
+CONTROL=GROUPBOX
+GUID=F53523A7-FC7E-48E5-9948-1B42DB776F39
+  Name=GroupBox2
+  Class=GROUPBOX
+  Caption=Personal Information:
+  Order=24
+  Left=5
+  Width=319
+  Top=57
+  Height=75
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=,"Personal Information:",,
+  Property=HyperLabel=#GroupBox2,,,
+  Property=NewFont=10:MS Sans Serif:Bold
+
+CONTROL=FIXEDTEXT
+GUID=A031B81D-8195-4245-BDB3-564E4AE0ABED
+  Name=FixedText8
+  Class=FIXEDTEXT
+  Caption=Attachments &Directory:
+  Order=25
+  Left=17
+  Width=296
+  Top=453
+  Height=15
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741825
+  Exstyles=0
+  Property=HyperLabel=,"Attachments &Directory:",,
+  Property=NewFont=8:MS Sans Serif:Bold
+  Property=HyperLabel=#FixedText8,,,
+
+CONTROL=GROUPBOX
+GUID=F255A147-6173-4F20-B642-C09A6493AB41
+  Name=GroupBox3
+  Class=GROUPBOX
+  Caption=Outgoing Mail Server (SMTP):
+  Order=26
+  Left=5
+  Width=319
+  Top=321
+  Height=124
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073872903
+  Exstyles=0
+  Property=HyperLabel=,"Outgoing Mail Server SMTP:",,
+  Property=HyperLabel=#GroupBox3,,,
+  Property=NewFont=10:MS Sans Serif:Bold
+
+CONTROL=CHECKBOX
+GUID=159D53C3-8180-4CC6-933D-1CBD4EA92D82
+  Name=DeleteDownloads
+  Class=CHECKBOX
+  Caption=&Delete downloaded mail from Server
+  Order=27
+  Left=13
+  Width=240
+  Top=257
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807363
+  Exstyles=0
+  Property=HyperLabel=,"&Delete downloaded mail from Server",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#DeleteDownloads,,,
+
+CONTROL=SINGLELINEEDIT
+GUID=873878DA-A583-41BE-A71F-51DD599F68E1
+  Name=Period
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=28
+  Left=173
+  Width=44
+  Top=281
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082204288
+  Exstyles=512
+  Property=HyperLabel=#Period,,,
+
+CONTROL=FIXEDTEXT
+GUID=BF473248-B1C2-417B-8337-781C606555C6
+  Name=FixedText9
+  Class=FIXEDTEXT
+  Caption=&Check for new Mail every
+  Order=29
+  Left=13
+  Width=148
+  Top=285
+  Height=15
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=,"&Check for new Mail every",,
+  Property=HyperLabel=#FixedText9,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=FIXEDTEXT
+GUID=178FFA85-C1E2-445A-AE98-209C21256B08
+  Name=FixedText10
+  Class=FIXEDTEXT
+  Caption=minutes
+  Order=30
+  Left=225
+  Width=56
+  Top=285
+  Height=15
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"minutes",,
+  Property=HyperLabel=#FixedText10,,,
+  Property=NewFont=8:MS Sans Serif:Bold
+
+CONTROL=CHECKBOX
+GUID=7B3B55B6-D461-4B48-8689-7DDF3F3A2243
+  Name=InboxStartup
+  Class=CHECKBOX
+  Caption=Startup at my Inbox
+  Order=31
+  Left=9
+  Width=136
+  Top=505
+  Height=19
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807363
+  Exstyles=0
+  Property=HyperLabel=,"Startup at my Inbox",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=HyperLabel=#InboxStartup,,,
+
+SUBCONTROLSEND
+DESIGNEREND = EmailConfig
+

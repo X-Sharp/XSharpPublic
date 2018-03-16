@@ -1,0 +1,277 @@
+DESIGNERSTART = VOWindowEditor,DATADIALOG,AddressFrombook
+GUID=9932C289-6399-4FDC-A48F-5D3011746A9D
+  Name=AddressFrombook
+  Class=DATADIALOG
+  Caption=VO 2.7 Email Client Address Book Look-Up
+  Order=0
+  Left=40
+  Width=543
+  Top=40
+  Height=562
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"VO 2.7 Email Client Address Book Look-Up",,
+  Property=HyperLabel=#AddressFrombook,,,
+  Property=NoAcc=Yes
+  Property=ExpCtls=Yes
+  Property=AllowServerClose=True
+
+SUBCONTROLSSTART
+CONTROL=SUBDATAWINDOW
+GUID=3B7835A7-0999-477C-9D6E-F5DB258EEF3F
+  Name=LookUp
+  Class=SUBDATAWINDOW
+  Caption=LookUp
+  Order=1
+  Left=9
+  Width=408
+  Top=65
+  Height=327
+  Browseindex=-1
+  Browsesize=0
+  Subform=Yes
+  Nosave=No
+  Deleted=2
+  Styles=1082130432
+  Exstyles=0
+  Property=HyperLabel=#LookUp,,,
+  Property=Order="CONTACT"
+
+CONTROL=SINGLELINEEDIT
+GUID=172AEE7C-C22C-427B-84CF-7D4931A36854
+  Name=SleLookUp
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=2
+  Left=9
+  Width=222
+  Top=32
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=0
+  Property=HyperLabel=#SleLookUp,,,
+
+CONTROL=MULTILINEEDIT
+GUID=4F0721AD-C25D-4486-86C1-8CF82CCB4A07
+  Name=MultiLineEdit1
+  Class=MULTILINEEDIT
+  Caption=
+  Order=3
+  Left=9
+  Width=524
+  Top=401
+  Height=152
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082200068
+  Exstyles=0
+  Property=HyperLabel=#MultiLineEdit1,,,
+
+CONTROL=PUSHBUTTON
+GUID=10EA9DA0-C2A8-419C-B28D-8E2A1DC8E7E6
+  Name=PBOk
+  Class=PUSHBUTTON
+  Caption=OK
+  Order=4
+  Left=437
+  Width=92
+  Top=309
+  Height=28
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"OK",,
+  Property=HyperLabel=#PBOk,,,
+
+CONTROL=PUSHBUTTON
+GUID=31B072E9-59DE-4936-BB13-525E623B3AF0
+  Name=PBNew
+  Class=PUSHBUTTON
+  Caption=New
+  Order=5
+  Left=437
+  Width=92
+  Top=137
+  Height=28
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"New",,
+  Property=HyperLabel=#PBNew,,,
+
+CONTROL=PUSHBUTTON
+GUID=D689C71D-E4CE-4598-8972-0337C320FF65
+  Name=PBEdit
+  Class=PUSHBUTTON
+  Caption=Edit
+  Order=6
+  Left=437
+  Width=92
+  Top=181
+  Height=28
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"Edit",,
+  Property=HyperLabel=#PBEdit,,,
+
+CONTROL=PUSHBUTTON
+GUID=BD0D9D5A-3CF7-4AF3-BFF4-0F5BA37BD0B6
+  Name=PBExit
+  Class=PUSHBUTTON
+  Caption=Exit
+  Order=7
+  Left=437
+  Width=92
+  Top=361
+  Height=28
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"Exit",,
+  Property=HyperLabel=#PBExit,,,
+
+CONTROL=FIXEDTEXT
+GUID=4F7E2633-6730-45A3-99BF-D1BC45B5D01D
+  Name=FixedText1
+  Class=FIXEDTEXT
+  Caption=Look Up
+  Order=8
+  Left=9
+  Width=222
+  Top=9
+  Height=23
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741825
+  Exstyles=512
+  Property=HyperLabel=,"Look Up",,
+  Property=HyperLabel=#FixedText1,,,
+  Property=NewFont=12:MS Sans Serif:Bold
+
+CONTROL=PUSHBUTTON
+GUID=94688BDE-E2FF-40BD-8FB6-33D6F79ED9AE
+  Name=PBMove
+  Class=PUSHBUTTON
+  Caption=ADD TO LIST
+  Order=9
+  Left=437
+  Width=96
+  Top=65
+  Height=48
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"ADD TO LIST",,
+  Property=HyperLabel=#PBMove,,,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+
+SUBCONTROLSEND
+DESIGNEREND = AddressFrombook
+
+DESIGNERSTART = VOWindowEditor,DATAWINDOW,Lookup
+GUID=72F82548-0816-434E-BF9B-43CC6C541F9E
+  Name=Lookup
+  Class=DATAWINDOW
+  Caption=DataWindow Caption
+  Order=0
+  Left=22
+  Width=408
+  Top=22
+  Height=93
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"DataWindow Caption",,
+  Property=HyperLabel=#Lookup,,,
+  Property=ViewAs=#BrowseView
+  Property=Use=<Share Owner's>
+  Property=DBInhFrom=LookUpDataBrowser
+  Property=NoAcc=Yes
+
+SUBCONTROLSSTART
+CONTROL=SINGLELINEEDIT
+GUID=5D523804-84DB-490C-AA4F-81AD7D5A95B6
+  Name=CONTACT
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=3
+  Left=82
+  Width=292
+  Top=26
+  Height=20
+  Browseindex=0
+  Browsesize=33
+  Subform=No
+  Nosave=No
+  Deleted=1
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#CONTACT,,,
+  Property=HyperLabel=,"Contact:",,
+  Property=HyperLabel=,,,"Contacts_CONTACT"
+
+CONTROL=SINGLELINEEDIT
+GUID=6C4DD612-D72F-43CD-825F-1EA62F26530F
+  Name=EMAIL
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=4
+  Left=82
+  Width=292
+  Top=50
+  Height=20
+  Browseindex=1
+  Browsesize=35
+  Subform=No
+  Nosave=No
+  Deleted=1
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#EMAIL,,,
+  Property=HyperLabel=,"Email:",,
+  Property=HyperLabel=,,,"Contacts_EMAIL"
+
+SUBCONTROLSEND
+DESIGNEREND = Lookup
+

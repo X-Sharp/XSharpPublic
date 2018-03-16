@@ -2360,8 +2360,8 @@ namespace XSharpLanguage
                 triggerPointPosition = triggerPointPosition - fromMember.Interval.Start;
                 triggerPointLineNumber = triggerPointLineNumber - (fromMember.Range.StartLine - 1);
             }
-            var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
-            var tokens = lexer.GetTokenStream() as BufferedTokenStream;
+            //var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
+            //var tokens = lexer.GetTokenStream() as BufferedTokenStream;
             ITokenStream tokenStream;
             var reporter = new ErrorReporter();
             bool ok = XSharp.Parser.VsParser.Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);

@@ -25,6 +25,8 @@ namespace XSharpModel
         private TextInterval _interval;
         private XElement _parent;
 
+        protected bool _isStatic;
+
 
         public XElement(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange range, TextInterval interval)
         {
@@ -34,6 +36,7 @@ namespace XSharpModel
             _Visibility = visibility;
             _range = range;
             _interval = interval;
+            _isStatic = false;
         }
 
 
@@ -71,6 +74,19 @@ namespace XSharpModel
                 return this._Name;
             }
 
+        }
+
+        public bool IsStatic
+        {
+            get
+            {
+                return _isStatic;
+            }
+
+            set
+            {
+                _isStatic = value;
+            }
         }
 
         public void ForceComplete()
@@ -294,7 +310,6 @@ namespace XSharpModel
                         break;
                     case Kind.VOGlobal:
                     case Kind.Field:
-                    case Kind.ClassVar:
                         imgK = ImageListKind.Field;
                         break;
                     case Kind.Parameter:
@@ -385,7 +400,6 @@ namespace XSharpModel
                         break;
                     case Kind.Field:
                     case Kind.VOGlobal:
-                    case Kind.ClassVar:
                         imgG = StandardGlyphGroup.GlyphGroupField;
                         break;
                     case Kind.Union:
@@ -433,7 +447,10 @@ namespace XSharpModel
                     case Modifiers.ProtectedInternal:
                         imgI = StandardGlyphItem.GlyphItemProtected;
                         break;
-
+                }
+                if ( this.IsStatic )
+                {
+                    imgI = StandardGlyphItem.GlyphItemShortcut;
                 }
                 //
                 return imgI;
@@ -487,7 +504,6 @@ namespace XSharpModel
         Access,
         Assign,
         Property,
-        ClassVar,
         Function,
         Procedure,
         Field,
@@ -587,7 +603,6 @@ namespace XSharpModel
             switch (elementKind)
             {
                 case Kind.Field:
-                case Kind.ClassVar:
                 case Kind.VOGlobal:
                 case Kind.VODefine:
                     return true;
@@ -601,7 +616,6 @@ namespace XSharpModel
             {
                 case Kind.Method:
                 case Kind.Access:
-                case Kind.ClassVar:
                 case Kind.Property:
                 case Kind.Function:
                 case Kind.Delegate:

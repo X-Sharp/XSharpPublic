@@ -23,7 +23,7 @@ namespace XSharpModel
         static ModelWalker _walker;
         static int suspendLevel;
         static ModelWalker()
-        { 
+        {
             suspendLevel = 0;
         }
         public static bool IsSuspended => suspendLevel > 0;
@@ -68,7 +68,7 @@ namespace XSharpModel
                 {
                     _projects.Enqueue(xProject);
                 }
-                if (!IsWalkerRunning && ! xProject.ProjectNode.IsVsBuilding)
+                if (!IsWalkerRunning && !xProject.ProjectNode.IsVsBuilding)
                 {
                     Walk();
                 }
@@ -129,11 +129,11 @@ namespace XSharpModel
                 return;
             do
             {
-                if (suspendLevel != 0 )
+                if (suspendLevel != 0)
                 {
                     // Abort and put project back in the list
                     if (project != null)
-                    { 
+                    {
                         _projects.Enqueue(project);
                     }
                     break;
@@ -147,7 +147,7 @@ namespace XSharpModel
                     {
                         break;
                     }
-                    if (! _projects.TryDequeue( out project))
+                    if (!_projects.TryDequeue(out project))
                     {
                         break;
                     }
@@ -157,11 +157,11 @@ namespace XSharpModel
                 System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.Walker()");
                 var aFiles = project.SourceFiles.ToArray();
                 int iProcessed = 0;
-                var options = new ParallelOptions ();
-				if (System.Environment.ProcessorCount > 1)
-				{
-					options.MaxDegreeOfParallelism = (System.Environment.ProcessorCount * 3)/ 4;
-				}
+                var options = new ParallelOptions();
+                if (System.Environment.ProcessorCount > 1)
+                {
+                    options.MaxDegreeOfParallelism = (System.Environment.ProcessorCount * 3) / 4;
+                }
                 project.ProjectNode.SetStatusBarAnimation(true, 0);
                 Parallel.ForEach(aFiles, options, file =>
                 {
@@ -186,25 +186,30 @@ namespace XSharpModel
             } while (true);
         }
 
-        internal void FileWalk( XFile file )
+        internal void FileWalk(XFile file)
         {
             DateTime dt = System.IO.File.GetLastWriteTime(file.FullPath);
             if (dt > file.LastWritten)
             {
-                SourceWalker sw = new SourceWalker(file);
-                //
-                try
+                using (SourceWalker sw = new SourceWalker(file))
                 {
-                    var xTree = sw.Parse();
-                    sw.BuildModel(xTree, false);
-                    file.LastWritten= dt;
                     //
+                    try
+                    {
+                        var xTree = sw.Parse();
+                        sw.BuildModel(xTree, false);
+                        file.LastWritten = dt;
+                        //
+                    }
+                    catch (Exception)
+                    {
+                        // Push Exception away...
+                        ;
+                    }
                 }
-                catch (Exception)
-                {
-                    // Push Exception away...
-                    ;
-                }
+                // Callback
+                file.Project.FileWalkComplete?.Invoke(file);
+                //
             }
         }
 

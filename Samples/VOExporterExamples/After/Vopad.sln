@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Vopad", "Vopad\Vopad.xsproj", "{6E8B68BF-9192-423A-88BC-24EE6587509B}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Vopad", "Vopad\Vopad.xsproj", "{6C4320D7-9D00-4306-A6DE-5046CE2E9E0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6E8B68BF-9192-423A-88BC-24EE6587509B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E8B68BF-9192-423A-88BC-24EE6587509B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E8B68BF-9192-423A-88BC-24EE6587509B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E8B68BF-9192-423A-88BC-24EE6587509B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C4320D7-9D00-4306-A6DE-5046CE2E9E0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C4320D7-9D00-4306-A6DE-5046CE2E9E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C4320D7-9D00-4306-A6DE-5046CE2E9E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C4320D7-9D00-4306-A6DE-5046CE2E9E0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7620BB53-D055-43AB-AC2F-10D17E74F559}
 	EndGlobalSection
 EndGlobal

@@ -16,7 +16,6 @@ namespace XSharpModel
         private string _typeName;
         private List<XVariable> _parameters;
         private List<XVariable> _locals;
-        private bool _isStatic;
 
         public XTypeMember(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position, bool isStatic ) 
             : base(name, kind, modifiers, visibility, span, position)
@@ -40,14 +39,6 @@ namespace XSharpModel
             get
             {
                 return _typeName;
-            }
-        }
-
-        public bool IsStatic
-        {
-            get
-            {
-                return _isStatic;
             }
         }
 
@@ -102,7 +93,7 @@ namespace XSharpModel
                 //
                 string desc = modVis;
                 //
-                if ( this.Kind != Kind.ClassVar )
+                if ( this.Kind != Kind.Field)
                 {
                     if (this.Kind == Kind.VODefine)
                     {

@@ -85,35 +85,53 @@ namespace XSharp.Project
 
         protected override void QueueTaskEvent(BuildEventArgs errorEvent)
         {
-            if (mustLog)
+            try
             {
-                if (errorEvent is BuildErrorEventArgs)
+                if (mustLog)
                 {
-                    ReportError((BuildErrorEventArgs)errorEvent);
-                    errors += 1;
+                    if (errorEvent is BuildErrorEventArgs)
+                    {
+                        ReportError((BuildErrorEventArgs)errorEvent);
+                        errors += 1;
+                    }
+                    else
+                    {
+                        ReportWarning((BuildWarningEventArgs)errorEvent);
+                        warnings += 1;
+                    }
                 }
-                else
-                {
-                    ReportWarning((BuildWarningEventArgs)errorEvent);
-                    warnings += 1;
-                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
 
         }
         protected override void MessageHandler(object sender, BuildMessageEventArgs messageEvent)
         {
             base.MessageHandler(sender, messageEvent);
-            if (messageEvent is TaskCommandLineEventArgs)
+            try
             {
-                var taskEvent = messageEvent as TaskCommandLineEventArgs;
-                if (taskEvent.CommandLine.ToLower().Contains("xsc.exe"))
+                if (messageEvent is TaskCommandLineEventArgs)
                 {
-                    didCompile = true;
+                    var taskEvent = messageEvent as TaskCommandLineEventArgs;
+                    if (taskEvent.CommandLine.ToLower().Contains("xsc.exe"))
+                    {
+                        didCompile = true;
+                    }
+                }
+                else if (messageEvent is BuildMessageEventArgs)
+                {
+                    var bme = messageEvent as BuildMessageEventArgs;
+                    if (bme.SenderName?.ToLower() == "nativeresourcecompiler")
+                    {
+                        didCompile = true;
+                    }
                 }
             }
-            if (messageEvent.SenderName?.ToLower() == "nativeresourcecompiler")
+            catch (Exception e)
             {
-                didCompile = true;
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
         }
         protected void ReportError(BuildErrorEventArgs args)

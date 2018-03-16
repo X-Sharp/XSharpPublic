@@ -7,12 +7,14 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using static XSharp.Project.XSharpConstants;
+using XSharpColorizer;
+using Microsoft.VisualStudio.Text.Classification;
 
 namespace XSharp.Project.Editors.BraceMatching
 {
 
     [Export(typeof(IViewTaggerProvider))]
-    [ContentType( LanguageName)]
+    [ContentType(LanguageName)]
     [TagType(typeof(TextMarkerTag))]
     internal class BraceMatchingTaggerProvider : IViewTaggerProvider
     {
@@ -37,15 +39,18 @@ namespace XSharp.Project.Editors.BraceMatching
         ITextView View { get; set; }
         ITextBuffer SourceBuffer { get; set; }
         SnapshotPoint? CurrentChar { get; set; }
-        private Dictionary<char, char> m_braceList;
+        static private Dictionary<char, char> m_braceList;
 
         internal BraceMatchingTagger(ITextView view, ITextBuffer sourceBuffer)
         {
             //here the keys are the open braces, and the values are the close braces
-            m_braceList = new Dictionary<char, char>();
-            m_braceList.Add('{', '}');
-            m_braceList.Add('[', ']');
-            m_braceList.Add('(', ')');
+            if (m_braceList == null)
+            {
+                m_braceList = new Dictionary<char, char>();
+                m_braceList.Add('{', '}');
+                m_braceList.Add('[', ']');
+                m_braceList.Add('(', ')');
+            }
             this.View = view;
             this.SourceBuffer = sourceBuffer;
             this.CurrentChar = null;
@@ -90,6 +95,7 @@ namespace XSharp.Project.Editors.BraceMatching
             if (!CurrentChar.HasValue || CurrentChar.Value.Position >= CurrentChar.Value.Snapshot.Length)
                 yield break;
 
+
             //hold on to a snapshot of the current character
             SnapshotPoint currentChar = CurrentChar.Value;
 
@@ -109,12 +115,12 @@ namespace XSharp.Project.Editors.BraceMatching
                 currentText = currentChar.GetChar();
                 lastChar = currentChar == 0 ? currentChar : currentChar - 1; //if currentChar is 0 (beginning of buffer), don't move it back
                 lastText = lastChar.GetChar();
-
             }
             catch (Exception)
             {
 
             }
+            // First, try to match Simple chars
             if (m_braceList.ContainsKey(currentText))   //the key is the open brace
             {
                 char closeChar;
@@ -136,7 +142,117 @@ namespace XSharp.Project.Editors.BraceMatching
                     yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("blue"));
                 }
             }
+            else
+            {
+                // Second, try to Match Keywords
+                // Try to retrieve an already parsed list of Tags
+                XSharpClassifier xsClassifier = null;
+                if (SourceBuffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+                {
+                    xsClassifier = SourceBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
+                }
+
+                if (xsClassifier != null)
+                {
+                    //
+                    ITextSnapshot snapshot = xsClassifier.Snapshot;
+                    SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
+                    System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetTags();
+                    // We cannot use SortedList, because we may have several Classification that start at the same position
+                    List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                    foreach (var tag in classifications)
+                    {
+                        // Only keep the Brace matching Tags
+                        if ((tag.ClassificationType.IsOfType(ColorizerConstants.XSharpBraceOpenFormat)) ||
+                             (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpBraceCloseFormat)))
+                            sortedTags.Add(tag);
+                    }
+                    sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
+                    //
+                    int indexTag = sortedTags.FindIndex(x => currentChar.Position >= x.Span.Start.Position && currentChar.Position <= x.Span.End.Position);
+                    if ( indexTag != -1)
+                    {
+                        var currentTag = sortedTags[indexTag];
+                        if (currentTag.ClassificationType.IsOfType(ColorizerConstants.XSharpBraceOpenFormat))
+                        {
+                            if (FindMatchingCloseTag( sortedTags, indexTag, snapshot, out pairSpan))
+                            {
+                                yield return new TagSpan<TextMarkerTag>(currentTag.Span, new TextMarkerTag("bracehighlight"));
+                                yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("bracehighlight"));
+                            }
+                        }
+                        else
+                        {
+                            if (FindMatchingOpenTag(sortedTags, indexTag, snapshot, out pairSpan))
+                            {
+                                yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("bracehighlight"));
+                                yield return new TagSpan<TextMarkerTag>(currentTag.Span, new TextMarkerTag("bracehighlight"));
+                            }
+                        }
+                    }
+                }
+            }
+            //
+            //
         }
+
+        private bool FindMatchingCloseTag(List<ClassificationSpan> sortedTags, int indexTag, ITextSnapshot snapshot, out SnapshotSpan pairSpan)
+        {
+            pairSpan = new SnapshotSpan( snapshot, 1, 1);
+            ClassificationSpan currentTag = sortedTags[indexTag];
+            ITextSnapshotLine line = currentTag.Span.Start.GetContainingLine();
+            int lineNumber = line.LineNumber;
+            int nested = 0;
+            for( int i = indexTag+1; i < sortedTags.Count; i++)
+            {
+                var closeTag = sortedTags[i];
+                if ( closeTag.ClassificationType.IsOfType(ColorizerConstants.XSharpBraceCloseFormat))
+                {
+                    nested--;
+                    if ( nested < 0 )
+                    {
+                        pairSpan = new SnapshotSpan( snapshot, closeTag.Span);
+                        return true;
+                    }
+                }
+                else
+                {
+                    nested++;
+                }
+            }
+            //
+            return false;
+        }
+
+
+        private bool FindMatchingOpenTag(List<ClassificationSpan> sortedTags, int indexTag, ITextSnapshot snapshot, out SnapshotSpan pairSpan)
+        {
+            pairSpan = new SnapshotSpan(snapshot, 1, 1);
+            ClassificationSpan currentTag = sortedTags[indexTag];
+            ITextSnapshotLine line = currentTag.Span.Start.GetContainingLine();
+            int lineNumber = line.LineNumber;
+            int nested = 0;
+            for (int i = indexTag -1; i >= 0; i--)
+            {
+                var openTag = sortedTags[i];
+                if (openTag.ClassificationType.IsOfType(ColorizerConstants.XSharpBraceOpenFormat))
+                {
+                    nested--;
+                    if (nested < 0)
+                    {
+                        pairSpan = new SnapshotSpan(snapshot, openTag.Span);
+                        return true;
+                    }
+                }
+                else
+                {
+                    nested++;
+                }
+            }
+            //
+            return false;
+        }
+
 
         private static bool FindMatchingCloseChar(SnapshotPoint startPoint, char open, char close, int maxLines, out SnapshotSpan pairSpan)
         {

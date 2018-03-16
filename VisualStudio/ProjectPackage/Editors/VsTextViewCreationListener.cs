@@ -84,6 +84,8 @@ namespace XSharp.Project
         internal static bool IsOurFile(string fileName)
         {
             var serviceProvider = XSharpEditorFactory.GetServiceProvider();
+            if (serviceProvider == null)
+                return false;
             // Find the document in the Running Document Table and Get Its hierarchy object
             // so we can ask for a property that we can use to see if this is 'Ours' 
             IVsRunningDocumentTable rdt = serviceProvider.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;

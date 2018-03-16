@@ -45,8 +45,11 @@ namespace XSharpModel
         // List of output DLLs for referenced (X# and other) projects
         private Dictionary<string, string> _projectOutputDLLs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-
         XSharpParseOptions _parseOptions = null;
+
+        // Used in ModelWalker/FileWalk in order to Callback to LibraryManager
+        public delegate void OnFileWalkComplete( XFile xFile );
+        public OnFileWalkComplete FileWalkComplete;
 
         public XProject(IXSharpProject project)
         {
@@ -131,6 +134,10 @@ namespace XSharpModel
 
         public void ClearAssemblyReferences()
         {
+            foreach (var asm in _AssemblyReferences)
+            {
+                asm.RemoveProject(this);
+            }
             _AssemblyReferences.Clear();
         }
 
@@ -138,18 +145,31 @@ namespace XSharpModel
         {
             var assemblyInfo = SystemTypeController.LoadAssembly(reference);
             _AssemblyReferences.Add(assemblyInfo);
+            assemblyInfo.AddProject(this);
         }
         public void AddAssemblyReference(string path)
         {
             var assemblyInfo = SystemTypeController.LoadAssembly(path);
             _AssemblyReferences.Add(assemblyInfo);
+            assemblyInfo.AddProject(this);
         }
         public void UpdateAssemblyReference(string fileName)
         {
             var assemblyInfo = SystemTypeController.LoadAssembly(fileName);
-            assemblyInfo.UpdateAssembly();
+            //assemblyInfo.UpdateAssembly();
+            assemblyInfo.AddProject(this);
         }
 
+
+        public void UnLoad()
+        {
+            Loaded = false;
+            foreach (var asm in _AssemblyReferences)
+            {
+                asm.RemoveProject(this);
+            }
+            _AssemblyReferences.Clear();
+        }
 
         public void RemoveAssemblyReference(string fileName)
         {
@@ -375,7 +395,8 @@ namespace XSharpModel
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    Debug.WriteLine(e.Message);
             }
             return outputFile;
         }
@@ -762,7 +783,6 @@ namespace XSharpModel
         public string IntermediateOutputPath => "";
         public bool PrefixClassesWithDefaultNamespace => false;
         public XSharpParseOptions ParseOptions => XSharpParseOptions.Default;
-        public XSharpParseOptions LexOptions => XSharpParseOptions.Default;
         public string RootNameSpace => "";
         public string OutputFile => "";
         public string Url => "";

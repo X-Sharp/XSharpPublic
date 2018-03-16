@@ -101,13 +101,11 @@
     </ProjectCapabilities>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \Xsharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PreBuildEvent>
-    <PostBuildEvent />
+    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \XSharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \Xsharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PreBuildEvent>
-    <PostBuildEvent />
+    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \XSharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

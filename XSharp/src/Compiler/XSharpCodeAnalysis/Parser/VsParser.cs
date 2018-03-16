@@ -46,15 +46,16 @@ namespace XSharp.Parser
             foreach (var error in parseErrors)
             {
                 var loc = error.Node.GetLocation();
+                var file = error.Node.SourceFileName;
                 var ls = loc.GetLineSpan().Span;
                 var msg = ErrorFacts.GetMessage(error.Code, CultureInfo.CurrentCulture);
                 if (ErrorFacts.IsWarning(error.Code))
                 {
-                    listener.ReportWarning(ls.Start.Line, ls.Start.Character, msg, error.Args);
+                    listener.ReportWarning(file, ls, error.Code.ToString(), msg, error.Args);
                 }
                 else
                 {
-                    listener.ReportError(ls.Start.Line, ls.Start.Character, msg, error.Args);
+                    listener.ReportError(file, ls, error.Code.ToString(), msg, error.Args);
                 }
             }
 
@@ -93,7 +94,7 @@ namespace XSharp.Parser
                 #endregion
                 XSharpPreprocessor pp = null;
                 BufferedTokenStream ppStream = null;
-                pp = new XSharpPreprocessor(lexer, tokenStream, options, fileName, Encoding.Default, SourceHashAlgorithm.None, parseErrors);
+                pp = new XSharpPreprocessor(lexer, tokenStream, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
 
                 if (mustPreprocess)
                 {
@@ -169,8 +170,8 @@ namespace XSharp.Parser
 
         public interface IErrorListener
         {
-            void ReportError(int Line, int Column, string message, object[] args);
-            void ReportWarning(int Line, int Column, string message, object[] args);
+            void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args);
+            void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args);
         }
 
     }

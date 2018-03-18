@@ -2672,20 +2672,23 @@ namespace XSharpLanguage
             XType gbl = file.GlobalType;
             XTypeMember lastGlobalElement = null;
             //
-            foreach (XTypeMember elt in gbl.Members)
+            if (gbl != null)
             {
-                if (elt.Interval.ContainsInclusive(position))
+                foreach (XTypeMember elt in gbl.Members)
                 {
-                    return elt;
-                }
-                if (lastGlobalElement == null && elt.Interval.Start < position)
-                {
-                    lastGlobalElement = elt;
-                }
-                else if (lastGlobalElement != null && elt.Interval.Stop > lastGlobalElement.Interval.Stop
-                    && elt.Interval.Start < position)
-                {
-                    lastGlobalElement = elt;
+                    if (elt.Interval.ContainsInclusive(position))
+                    {
+                        return elt;
+                    }
+                    if (lastGlobalElement == null && elt.Interval.Start < position)
+                    {
+                        lastGlobalElement = elt;
+                    }
+                    else if (lastGlobalElement != null && elt.Interval.Stop > lastGlobalElement.Interval.Stop
+                        && elt.Interval.Start < position)
+                    {
+                        lastGlobalElement = elt;
+                    }
                 }
             }
             // If we are here, we found nothing
@@ -2768,10 +2771,13 @@ namespace XSharpLanguage
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 #endif
-            //
-            if (!file.HasLocals)
+            // HACK: Disable looking up locals in large buffers ( > 100 Kb)
+            if (currentBuffer.Length < (100 * 1024))
             {
-                file.GetLocals(currentBuffer);
+                if (!file.HasLocals)
+                {
+                    file.GetLocals(currentBuffer);
+                }
             }
             foundElement = null;
             if (currentMember == null)

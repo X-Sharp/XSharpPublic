@@ -488,12 +488,8 @@ namespace XSharp.Project
                       (xType.Kind == Kind.Union) || (xType.Kind == Kind.VOStruct))
                 {
                     string nSpace = prjNode.DefaultNameSpace;
-                    int lastdot = xType.Name.LastIndexOf('.');
-                    // 
-                    if (lastdot > -1)
-                    {
-                        nSpace = xType.Name.Substring(0, lastdot);
-                    }
+                    if ( !String.IsNullOrEmpty( xType.NameSpace ) )
+                        nSpace = xType.NameSpace;
                     // Search for the corresponding NameSpace
                     LibraryNode nsNode = prjNode.SearchNameSpace(nSpace);
                     if (nsNode is XSharpLibraryNode)

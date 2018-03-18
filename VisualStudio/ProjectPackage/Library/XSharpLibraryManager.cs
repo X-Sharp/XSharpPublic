@@ -264,7 +264,7 @@ namespace XSharp.Project
             listener.StartListening();
             hierarchies.Add(hierarchy, listener);
             // and ask for any change in the files that are opened in Source editor.
-            //RegisterForRDTEvents();
+            RegisterForRDTEvents();
         }
 
         public void UnregisterHierarchy(IVsHierarchy hierarchy)

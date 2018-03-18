@@ -624,10 +624,28 @@ namespace XSharpModel
                 case Kind.Local:
                 case Kind.VOGlobal:
                 case Kind.VODefine:
+                case Kind.Field:
                     return true;
             }
             return false;
         }
+        public static bool IsClassMember(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Method:
+                case Kind.Assign:
+                case Kind.Access:
+                case Kind.Property:
+                case Kind.Event:
+                case Kind.Constructor:
+                case Kind.Destructor:
+                case Kind.Operator:
+                    return true;
+            }
+            return false;
+        }
+
 
         public static bool HasParameters(this Kind elementKind)
         {

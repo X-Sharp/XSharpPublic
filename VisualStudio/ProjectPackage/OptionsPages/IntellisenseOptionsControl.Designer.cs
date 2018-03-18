@@ -89,9 +89,9 @@
             this.chkDotAsUniversalSelector.AutoSize = true;
             this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 38);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
-            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(154, 17);
+            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(241, 17);
             this.chkDotAsUniversalSelector.TabIndex = 1;
-            this.chkDotAsUniversalSelector.Text = "Dot (.) as universal selector";
+            this.chkDotAsUniversalSelector.Text = "Dot (.) as universal selector (Core dialect only)";
             this.chkDotAsUniversalSelector.UseVisualStyleBackColor = true;
             this.chkDotAsUniversalSelector.CheckedChanged += new System.EventHandler(this.chkDotAsUniversalSelector_CheckedChanged);
             // 

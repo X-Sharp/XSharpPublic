@@ -61,8 +61,9 @@ namespace XSharpLanguage
         private IToken _stopToken;
 
         private XFile _file;
-        private bool showTabs;
-        private bool dotUniversal;
+        private bool _coreDialect;
+        private bool _showTabs;
+        private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
 
         internal static bool StringEquals(string lhs, string rhs)
@@ -79,6 +80,9 @@ namespace XSharpLanguage
             _file = buffer.GetFile();
             // Currently, set as default, but should be VS Settings Based
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
+            var prj = _file.Project.ProjectNode;
+            var parseoptions = prj.ParseOptions;
+            _coreDialect = parseoptions.Dialect == XSharpDialect.Core;
             _settingIgnoreCase = true;
             _stopToken = null;
             this.aggregator = aggregator;
@@ -94,8 +98,15 @@ namespace XSharpLanguage
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 var package = XSharp.Project.XSharpProjectPackage.Instance;
                 var optionsPage = package.GetIntellisenseOptionsPage();
-                showTabs = optionsPage.CompletionListTabs;
-                dotUniversal = optionsPage.UseDotAsUniversalSelector;
+                _showTabs = optionsPage.CompletionListTabs;
+                if (_coreDialect)
+                {
+                    _dotUniversal = optionsPage.UseDotAsUniversalSelector;
+                }
+                else
+                {
+                    _dotUniversal = false;
+                }
                 // Where does the StartSession has been triggered ?
                 ITextSnapshot snapshot = _buffer.CurrentSnapshot;
                 var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(snapshot);
@@ -216,15 +227,15 @@ namespace XSharpLanguage
                 }
                 // Special Phil
                 bool dotSelector = (typedChar == '.');
-                bool colonSelector = (typedChar == ':');
+                bool showInstanceMembers = (typedChar == ':');
                 //
-                if (dotSelector && dotUniversal)
+                if (dotSelector && _dotUniversal)
                 {
-                    colonSelector = true;
+                    showInstanceMembers = true;
                 }
                 // Alternative Token list (dot is a selector)
                 List<String> altTokenList;
-                if (dotSelector && dotUniversal)
+                if (dotSelector && _dotUniversal )
                     altTokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, true, member);
                 else
                     altTokenList = tokenList;
@@ -274,7 +285,7 @@ namespace XSharpLanguage
                 }
                 else
                 {
-                    if (dotSelector && dotUniversal)
+                    if (dotSelector && _dotUniversal)
                     {
                         cType = XSharpTokenTools.RetrieveType(_file, altTokenList, member, currentNS, null, out foundElement, snapshot.GetText());
                         if (!cType.IsEmpty())
@@ -336,7 +347,7 @@ namespace XSharpLanguage
                     }
                 }
                 //
-                if (colonSelector)
+                if (showInstanceMembers)
                 {
                     // Member call
                     if (cType != null)
@@ -363,7 +374,7 @@ namespace XSharpLanguage
                     }
                 }
                 //
-                if (!dotSelector && !colonSelector)
+                if (!dotSelector && !showInstanceMembers)
                 {
                     // Empty line ?
                     // If we have only one Token, it can be the start of a Parameter/Local/Property/Method/Type/...
@@ -434,7 +445,7 @@ namespace XSharpLanguage
                 // and put in the SelectionList
                 var values = compList.Values;
                 completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
-                if (showTabs)
+                if (_showTabs)
                 {
                     if (compList.HasEnumMembers)
                     {
@@ -869,8 +880,18 @@ namespace XSharpLanguage
                     break;
             }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
-            //BuildCompletionList(compList, currentMember.Parent, Modifiers.Private);
             //
+
+            if (currentMember.Kind.IsClassMember())
+            {
+                var classElement = currentMember.Parent;
+                foreach (var member in classElement.Members.Where(m =>  m.Kind == Kind.Field && nameStartsWith(m.Name, startWith)))
+                {
+                    ImageSource icon = _provider.GlyphService.GetGlyph(member.GlyphGroup, member.GlyphItem);
+                    if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Description, icon, null, Kind.Field)))
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -1482,12 +1503,13 @@ namespace XSharpLanguage
                     {
                         foreach (var custattr in atts)
                         {
-                            if (custattr.ToString() == "Vulcan.Internal.ClipperCallingConventionAttribute")
+                            if (custattr.ToString().EndsWith("ClipperCallingConventionAttribute"))
                             {
                                 string[] names = (string[])custattr.GetType().GetProperty("ParameterNames").GetValue(custattr, null);
                                 if (names.Length == 0)
                                 {
-                                    this._parameters.Add(new ParamInfo("[params", "USUAL]", "AS"));
+                                    ; // no parameters defined
+                                    //this._parameters.Add(new ParamInfo("[params", "USUAL]", "AS"));
                                 }
                                 else
                                 {
@@ -2168,7 +2190,9 @@ namespace XSharpLanguage
             {
                 // only methods have overloads 
                 // we do not want to the overloads message for partial classes that appear in more than 1 file
-                if (item.Kind == Kind.Method)
+                // and if a method in a subclass has the same params we also do not want to show that there are overloads
+                var found = this[item.DisplayText];
+                if (item.Kind == Kind.Method && ! string.Equals(found.Description, item.Description,StringComparison.OrdinalIgnoreCase))
                 {
                     int overloads = 0;
                     // Already exists in the List !!

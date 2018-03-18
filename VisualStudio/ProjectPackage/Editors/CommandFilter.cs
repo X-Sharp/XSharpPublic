@@ -188,11 +188,7 @@ namespace XSharp.Project
                                         break;
                                     case ')':
                                     case '}':
-                                        if (_signatureSession != null)
-                                        {
-                                            _signatureSession.Dismiss();
-                                            _signatureSession = null;
-                                        }
+                                        CancelSignatureSession();
                                         break;
                                     case ',':
                                         StartSignatureSession(true);
@@ -216,6 +212,7 @@ namespace XSharp.Project
                             break;
 #endif
                         case VSConstants.VSStd2KCmdID.RETURN:
+                            CancelSignatureSession();
                             FormatLine(true);
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:

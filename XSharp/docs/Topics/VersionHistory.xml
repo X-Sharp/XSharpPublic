@@ -10,7 +10,7 @@
     <para styleclass="Heading2">Changes in 1.2.0</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">You can now pass NULL for parameters declared by reference for compatibility with VO &amp; Vulcan. <br/>We STRONGLY advise not to do this, unless you make sure that the function expects this and does not assign to the reference parameter without checking for a NULL reference first. This will only work when the /vo7 compiler option.</li>
+      <li styleclass="List">You can now pass NULL for parameters declared by reference for compatibility with VO &amp; Vulcan. <br/>We STRONGLY advise not to do this, unless you make sure that the function expects this and does not assign to the reference parameter without checking for a NULL reference first. This will only work when the /vo7 compiler option is enabled.</li>
       <li styleclass="List">We have made some optimizations in the Lexer. The compiler should be a little faster because of that</li>
       <li styleclass="List">We fixed a problem with the automatic constructor generation (/vo16) for classes that inherit from classes defined in an external DLL </li>
       <li styleclass="List">When compiling with /vo2 any string fields assigned in a child class before the super constructor was called would be overwritten with an empty string. The generated code will now only assign an empty string when the string is NULL. <br/>Note: we do not recommend to assign parent fields in the child constructor before calling the super constructor. Manually coded default values for parent fields will still overwrite values assigned in the child constructor before the SUPER call</li>
@@ -26,12 +26,13 @@
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#000000;">Visual Studio Integration</text></para>
     <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">More performance improvements in the editor. Especially large source files with incorrect code could slow down the editor. </li>
-      <li styleclass="List">The editor parser no longer tried to parse include files repeatedly when these files contain #defines only (like the Vulcan header files)</li>
+      <li styleclass="List">The editor parser no longer tries</li>
+      <li styleclass="List" style="page-break-before:always;"> to parse include files repeatedly when these files contain #defines only (like the Vulcan header files)</li>
       <li styleclass="List">The source code editor tried to show intellisense for words in a comment region. That has been fixed.</li>
       <li styleclass="List">We have started work on Object Browser and Class Browser.</li>
       <li styleclass="List">Opening and closing of projects should be slightly faster</li>
       <li styleclass="List">The internal codemodel used by the editors now disposes its loaded information when projects are closed and no projects need this information anymore. This should reduce the memory usage of the X# project system</li>
-      <li styleclass="List">Matching keywords, such as IF .. ENDIF and FOR .. NEXT should not be highlighted in the editor</li>
+      <li styleclass="List">Matching keywords, such as IF .. ENDIF and FOR .. NEXT should now be highlighted in the editor</li>
       <li styleclass="List">If you select an identifier in the editor then that identifier will be highlighted in the current method/function on all places where it is used</li>
       <li styleclass="List">We have added several features that you need to enable/disable on the <text style="font-weight:bold;">Tools/Options/Text Editor/XSharp/Intellisens</text>e dialog:</li>
       <list id="48" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">

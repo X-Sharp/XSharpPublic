@@ -418,9 +418,17 @@ namespace XSharpLanguage
                                 // TODO: add Interfaces only
                                 break;
                             default:
-                                if (member != null) // Fill with the context ( Parameters and Locals )
+                                if (member != null) 
                                 {
+                                    // Fill with the context ( Parameters and Locals )
                                     BuildCompletionList(compList, member, filterText);
+                                    // Context Type....
+                                    cType = new CompletionType(member.Parent.Clone);
+                                    if (!cType.IsEmpty())
+                                    {
+                                        // Get the members also
+                                        BuildCompletionList(compList, cType, Modifiers.Private, false, filterText);
+                                    }
                                 }
                                 // Now Add Functions and Procedures
                                 BuildCompletionList(compList, _file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);

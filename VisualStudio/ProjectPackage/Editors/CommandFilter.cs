@@ -191,7 +191,7 @@ namespace XSharp.Project
                                         CancelSignatureSession();
                                         break;
                                     case ',':
-                                        StartSignatureSession(true);
+                                        //StartSignatureSession(true);
                                         break;
                                     default:
                                         var package = XSharp.Project.XSharpProjectPackage.Instance;

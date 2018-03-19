@@ -521,8 +521,7 @@ namespace XSharpModel
         VOStruct,
         Union,
         EnumMember,
-        Keyword,
-        Var
+        Keyword
     }
 
     /// <summary>
@@ -629,6 +628,7 @@ namespace XSharpModel
             }
             return false;
         }
+
         public static bool IsClassMember(this Kind elementKind)
         {
             switch (elementKind)

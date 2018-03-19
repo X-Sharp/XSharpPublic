@@ -156,7 +156,7 @@ namespace XSharpModel
                         {
                             XVariable xVar = findLocal(name);
                             //
-                            local = new XVariable(this._currentMethod, localName, Kind.Var, Modifiers.Public,
+                            local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
                                 new TextRange(context), xVar.Interval,
                                 XVariable.VarType);
                         }
@@ -208,7 +208,7 @@ namespace XSharpModel
                     String localName;
                     localName = context.Id.GetText();
                     //
-                    local = new XVariable(this._currentMethod, localName, Kind.Var, Modifiers.Public,
+                    local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
                         new TextRange(context), new TextInterval(exprCtx),
                         XVariable.VarType);
                     local.File = this._file;

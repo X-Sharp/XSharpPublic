@@ -2443,7 +2443,7 @@ namespace XSharpLanguage
             IToken nextToken = list[current];
             // TODO: 
             // Sometimes the quickinfo does not show.
-            if (nextToken.StartIndex < triggerPointPosition && top - bottom == 1)
+            if ( (nextToken.StartIndex < triggerPointPosition) && (top - bottom == 1) && ( top < list.Count) )
                 nextToken = list[top];
             //////////////////////////////////////
             //////////////////////////////////////

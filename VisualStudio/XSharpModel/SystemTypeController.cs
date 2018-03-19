@@ -19,7 +19,7 @@ namespace XSharpModel
     public class SystemTypeController
     {
         static ConcurrentDictionary<String, AssemblyInfo> assemblies;
-        static Assembly mscorlib;
+        static AssemblyInfo  mscorlib;
 
         static SystemTypeController()
         {
@@ -84,7 +84,7 @@ namespace XSharpModel
             }
             if (cFileName.EndsWith("mscorlib.dll", StringComparison.OrdinalIgnoreCase))
             {
-                mscorlib = AssemblyInfo.LoadAssemblyFromFile(cFileName);
+                mscorlib = new AssemblyInfo(cFileName, DateTime.MinValue);
             }
             //if (lastWriteTime != assembly.Modified)
             //{
@@ -100,6 +100,8 @@ namespace XSharpModel
             }
             return assembly;
         }
+
+        public static AssemblyInfo MsCorLib => mscorlib;
 
         public static void RemoveAssembly(string cFileName)
         {

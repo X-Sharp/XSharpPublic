@@ -543,11 +543,27 @@ namespace XSharpLanguage
             //
             var sprjs = project.StrangerProjects;
             var prjs = project.ReferencedProjects;
-            foreach (AssemblyInfo assemblyInfo in project.AssemblyReferences)
+
+            // Check of MsCorlib is included
+            var references = project.AssemblyReferences.ToList();
+            bool hasCorLib = false; ;
+            foreach (var reference in references)
+            {
+                if (reference.FileName.EndsWith("mscorlib.dll", StringComparison.OrdinalIgnoreCase))
+                    {
+                    hasCorLib = true;
+                    break;
+                }
+            }
+            if ( ! hasCorLib)
+            {
+                references.Add(SystemTypeController.MsCorLib);
+            }
+            foreach (AssemblyInfo assemblyInfo in references)
             {
                 foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
                 {
-                    if (XSharpTokenTools.isGenerated(typeInfo.Value))
+                        if (XSharpTokenTools.isGenerated(typeInfo.Value))
                         continue;
                     TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
                     String realTypeName = typeAnalysis.Name;

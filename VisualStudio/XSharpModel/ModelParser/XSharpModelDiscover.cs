@@ -147,8 +147,9 @@ namespace XSharpModel
                    Kind.Class,
                    decodeModifiers(tokens), decodeVisibility(tokens),
                    new TextRange(context), new TextInterval(context));
-                //
-                newClass.NameSpace = this.currentNamespace;
+
+                newClass.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
+               
                 // and push into the current Namespace
                 //CurrentNamespace.Types.Add(newClass);
                 // Static Class ?
@@ -208,7 +209,9 @@ namespace XSharpModel
                    decodeVisibility(tokens),
                    new TextRange(context), new TextInterval(context));
             //
-            newStruct.NameSpace = this.currentNamespace;
+
+            newStruct.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
+
             // and push into the current Namespace
             //CurrentNamespace.Types.Add(newClass);
             // Static Class ?
@@ -243,7 +246,9 @@ namespace XSharpModel
                 decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context));
             //
-            newIf.NameSpace = this.currentNamespace;
+
+            newIf.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
+
             // and push into the current Namespace
             //CurrentNamespace.Types.Add(newClass);
             // Static Class ?
@@ -290,6 +295,8 @@ namespace XSharpModel
                     new TextRange(context), new TextInterval(context));
             //
             // Todo additional properties ?
+
+            newStruct.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
             newStruct.IsStatic = isStatic(tokens);
             newStruct = addType(newStruct);
             pushType(newStruct);
@@ -309,6 +316,8 @@ namespace XSharpModel
                     new TextRange(context), new TextInterval(context));
             //
             // Todo additional properties ?
+
+            newStruct.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
             newStruct = addType(newStruct);
             pushType(newStruct);
         }
@@ -823,6 +832,18 @@ namespace XSharpModel
 
 
         #region Helpers
+        private string decodeNamespace(XSharpParser.NameDotContext nameDot, string currentNamespace)
+        {
+            // When the class definition is in the form Namespace.ID 
+            // then return that namespace. Otherwise the current Namespace
+            string ns = currentNamespace;
+            if (nameDot != null)
+            {
+                ns = nameDot.GetText();
+                ns = ns.Substring(0, ns.Length - 1);
+            }
+            return ns;
+        }
 
         private Modifiers decodeModifiers(IList<IToken> tokens)
         {

@@ -271,7 +271,7 @@ function TString(uSeconds as __Usual) as string
 /// <returns>
 /// The year from the give DATE.
 /// </returns>
-function Year(d as DATE) as dword
+function Year(d as Date) as dword
 	local year := 0  as dword
 	if ! d:IsEmpty
 		year := d:DYear

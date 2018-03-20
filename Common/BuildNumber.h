@@ -25,3 +25,7 @@
 #endif
 #define BUILDNUMBER_H
 #endif
+
+#define XSHARP_CORE_FUNCTIONS "Functions"
+#define XSHARP_VO_FUNCTIONS "XSharp_VO.Functions"
+#define XSHARP_RDD_FUNCTIONS "XSharp_RDD.Functions"

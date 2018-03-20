@@ -14,7 +14,7 @@ begin namespace XSharp
 	[DebuggerDisplay( "{DebuggerString(),nq}", Type := "PSZ" ), DefaultMember( "Item" ) ] ;
 	unsafe structure __Psz
 		private _value as byte ptr
-		static property _NULL_PSZ as __Psz Get (__Psz) IntPtr.zero
+		static property _NULL_PSZ as __Psz get (__Psz) IntPtr.zero
 		
 		
 		constructor (s as string)
@@ -28,15 +28,15 @@ begin namespace XSharp
 			_value := p
 		
 		override method ToString() as string
-			return Mem2String( _value, Length ) 
+		return Mem2String( _value, Length ) 
 		
 		method DebuggerString() as string
 			return iif( _value == null_ptr, "NULL_PSZ", e"\""+ tostring() +  e"\"" )
 		
-
+		
 		method equals( p as __Psz ) as logic
 			
-			local ret := FALSE as logic
+			local ret := false as logic
 			if _value == p:_value
 				ret := true
 			elseif _value != null && p:_value != null
@@ -46,7 +46,7 @@ begin namespace XSharp
 		
 		method LessThan( p as __Psz ) as logic
 			// todo: should this follow nation rules ?
-			local ret := FALSE as logic
+			local ret := false as logic
 			if _value == p:_value
 				ret := false
 			elseif _value != null && p:_value != null
@@ -55,7 +55,7 @@ begin namespace XSharp
 			return ret       
 		
 		method GreaterThan( p as __Psz ) as logic
-			local ret := FALSE as logic
+			local ret := false as logic
 			// todo: should this follow nation rules ?
 			if _value == p:_value
 				ret := false
@@ -66,16 +66,16 @@ begin namespace XSharp
 		
 		
 		override method Equals( o as object ) as logic
-			local ret := FALSE as logic
+			local ret := false as logic
 			
 			if o is __Psz
-				ret := SELF:Equals( (__Psz) o )
+				ret := self:Equals( (__Psz) o )
 			endif
 			
-			return ret
+		return ret
 		
 		override method GetHashCode() as int
-			return (int) _value
+		return (int) _value
 		
 		method Free() as void
 			if _value != null_ptr
@@ -110,9 +110,9 @@ begin namespace XSharp
 							case 13
 							case 10
 							case 9
-						nop
+								nop
 							otherwise
-						empty := false
+								empty := false
 						end switch
 						x += 1
 						b := _value[x]
@@ -258,7 +258,7 @@ function String2Mem(s as string) as IntPtr
 		var encoding := System.Text.Encoding.Default
 		var bytes    := encoding:GetBytes(s)
 		var len      := bytes:Length
-		result	     := MemAlloc((DWORD) (len+1))
+		result	     := MemAlloc((dword) (len+1))
 		Marshal.Copy(bytes,0,result, len)	
 	endif
 	return result 
@@ -271,6 +271,6 @@ unsafe function Mem2String(pString as IntPtr, nLen as dword) as string
 	var numchars := encoding:GetCharCount( (byte ptr) pString, (int) nLen) 
 	var buffer   := (char ptr) MemAlloc( (dword) (numchars * sizeof(char)) )
 	numchars     := encoding:GetChars((byte ptr) pString, (int) nLen, buffer, numchars)
-	var result   := String {buffer, 0, numchars}
+	var result   := string {buffer, 0, numchars}
 	MemFree(buffer)
-	return result
+return result

@@ -118,7 +118,7 @@ begin namespace XSharp
 		#region Operators
 			static operator ++(lhs as __VODate) as __VODate
 				return lhs:Add(1)
-			static operator +(lhs as __VODate, days as Usual) as __VODate
+			static operator +(lhs as __VODate, days as usual) as __VODate
 				return lhs:Add(days)
 			
 			static operator +(lhs as __VODate, days as real8) as __VODate
@@ -145,7 +145,7 @@ begin namespace XSharp
 			static operator -(lhs as __VODate, rhs as __VODate) as long
 				return lhs:Subtract(rhs)
 			
-			static operator -(lhs as __VODate, days as Usual) as __VODate
+			static operator -(lhs as __VODate, days as usual) as __VODate
 				return lhs:Subtract(days)
 			
 			static operator -(lhs as __VODate, days as real8) as __VODate
@@ -173,9 +173,9 @@ begin namespace XSharp
 			
 			override method Equals(o as object) as logic
 				if o:getType() == typeof(__VODate)
-					return SELF:Equals(  (__VoDate) o)
+					return self:Equals(  (__VoDate) o)
 				elseif o:getType() == typeof(System.DateTime)
-					return SELF:Equals( __VoDate{ (System.DateTime) o})
+					return self:Equals( __VoDate{ (System.DateTime) o})
 				endif
 			return false
 			
@@ -283,7 +283,7 @@ begin namespace XSharp
 		#endregion
 		
 		#region Add and Subtract Methods
-			method Add(days as Usual) as __VODate
+			method Add(days as usual) as __VODate
 				return self:Add((long) days)
 			
 			method Add(days as real8) as __VODate
@@ -315,7 +315,7 @@ begin namespace XSharp
 				span := (System.TimeSpan)(self:Value - lhs:Value) 
 				return span:Days
 			
-			method Subtract(days as Usual) as __VODate
+			method Subtract(days as usual) as __VODate
 				return self:Add(- (long) days)		
 			
 			method Subtract(days as real8) as __VODate

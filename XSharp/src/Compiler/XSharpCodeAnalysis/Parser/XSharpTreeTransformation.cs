@@ -234,7 +234,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (_defTree == null)
                     {
-                        var t = new XSharpTreeTransformation(null,CSharpParseOptions.Default , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+                        var opt = CSharpParseOptions.Default;
+                        XSharpSpecificCompilationOptions xopt = new XSharpSpecificCompilationOptions();
+                        xopt.TargetDLL = targetDLL;
+                        opt = opt.WithXSharpSpecificOptions(xopt);
+                        var t = new XSharpTreeTransformation(null,opt , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
                         string globalClassName = t.GetGlobalClassName(targetDLL);
 

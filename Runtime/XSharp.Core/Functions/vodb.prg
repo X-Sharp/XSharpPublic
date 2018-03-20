@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING XSharp
-
+USING XSharp.RDD
 
 /// <summary>
 /// Return the full path of the file
@@ -121,7 +121,7 @@ FUNCTION VODBBof() AS LOGIC
 FUNCTION VODBBuffRefresh() AS LOGIC
 	LOCAL oWA := RDDHelpers.CWA("VODBBuffRefresh") AS IRDD
 	IF (oWA != NULL)
-		oWA:RecInfo(0, DbRecordInfo.Updated,NULL)
+		oWA:RecInfo(0, DbRecordInfo.DBRI_Updated,NULL)
 		RETURN TRUE
 	ENDIF
 	RETURN FALSE   
@@ -572,7 +572,7 @@ FUNCTION VODBOrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCode
 FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
 	LOCAL oWA := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
 	IF oWA != NULL                  
-		VAR info := DbOrderInfo{}
+		VAR info := XSharp.RDD.DbOrderInfo{}
 		info:BagName := cBagName
 		info:Order   := oOrder
 		RETURN oWA:OrderDestroy(info)
@@ -618,7 +618,7 @@ FUNCTION VODBOrderStatus(ost AS OrderStatus) AS LOGIC
 FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
 	LOCAL oWA := RDDHelpers.CWA("VODBOrdListAdd") AS IRDD
 	IF oWA != NULL                  
-		VAR info := DbOrderInfo{}
+		VAR info := XSharp.RDD.DbOrderInfo{}
 		info:BagName := cBagName
 		info:Order   := oOrder
 		RETURN oWA:OrderListAdd(info)
@@ -665,7 +665,7 @@ FUNCTION VODBOrdListRebuild() AS LOGIC
 FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
 	LOCAL oWA := RDDHelpers.CWA("VODBOrdSetFocus") AS IRDD
 	IF oWA != NULL                     
-		VAR info := DbOrderInfo{}
+		VAR info := XSharp.RDD.DbOrderInfo{}
 		info:BagName := cBagName
 		info:Order   := oOrder
 		RETURN oWA:OrderListFocus(info)

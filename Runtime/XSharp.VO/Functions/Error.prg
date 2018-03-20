@@ -11,9 +11,9 @@
 /// <param name="cobError"></param>
 /// <returns>
 /// </returns>
-function ErrorBlock(cobError as __Usual) as __Usual
+function ErrorBlock(cobError as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 
 /// <summary>
@@ -23,9 +23,9 @@ function ErrorBlock(cobError as __Usual) as __Usual
 /// <returns>
 /// </returns>
 [Obsolete];
-	function ErrorBuild(ptrERRINFO as IntPtr) as ERROR
+	function ErrorBuild(ptrERRINFO as IntPtr) as XSharp.ERROR
 	/// THROW NotImplementedException{}
-return  Error{}
+return  XSharp.Error{}
 
 /// <summary>
 /// Return the number of errors that have occurred during program execution.
@@ -33,7 +33,7 @@ return  Error{}
 /// <param name="dw"></param>
 /// <returns>
 /// </returns>
-function ErrorCount(dw as __Usual) as dword
+function ErrorCount(dw as Usual) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -46,9 +46,9 @@ function ErrorCount(dw as __Usual) as dword
 /// <returns>
 /// </returns>
 [Obsolete];
-	function ErrorExec(ptrERRINFO as IntPtr) as __Usual
+	function ErrorExec(ptrERRINFO as IntPtr) as Usual
 	/// THROW NotImplementedException{}
-return __Usual._NIL   
+return NIL   
 
 /// <summary>
 /// Install an error function.
@@ -56,9 +56,9 @@ return __Usual._NIL
 /// <param name="ptrFunc"></param>
 /// <returns>
 /// </returns>
-function ErrorFunc(ptrFunc as __Usual) as __Usual
+function ErrorFunc(ptrFunc as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 
 
@@ -68,6 +68,6 @@ function ErrorFunc(ptrFunc as __Usual) as __Usual
 /// <param name="dw"></param>
 /// <returns>
 /// </returns>
-function ErrorLevel(dw as __Usual) as dword
+function ErrorLevel(dw as Usual) as dword
 	/// THROW NotImplementedException{}
 	return 0   

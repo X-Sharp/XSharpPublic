@@ -10,19 +10,20 @@
 /// <param name="symMethod"></param>
 /// <returns>
 /// </returns>
-function ASend(a as __Usual,symMethod as __Usual) as __Array
+using XSharp
+function ASend(a as Usual,symMethod as Usual) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
 /// <summary>
-/// Invoke a method of a specific class for every element in an __Array of objects.
+/// Invoke a method of a specific class for every element in an Array of objects.
 /// </summary>
 /// <param name="a"></param>
 /// <param name="symMethod"></param>
 /// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
-function ASendClass(a as __Usual,symMethod as __Usual,symClassName as __Usual) as __Array
+function ASendClass(a as Usual,symMethod as Usual,symClassName as Usual) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
@@ -35,7 +36,7 @@ function ASendClass(a as __Usual,symMethod as __Usual,symClassName as __Usual) a
 /// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
-function CheckInstanceOf(o as object,symClassName as __Symbol) as logic
+function CheckInstanceOf(o as object,symClassName as Symbol) as logic
 	return o:GetType():Name == symClassName
 
 /// <summary>
@@ -48,13 +49,13 @@ function ClassCount() as dword
 	return ClassList():Length
 
 /// <summary>
-/// Return an __Array of __Symbols corresponding to the classes available to your application.
+/// Return an Array of Symbols corresponding to the classes available to your application.
 /// </summary>
 /// <returns>
-/// Returns an __Array with the name of all available classes
+/// Returns an Array with the name of all available classes
 /// </returns>
-function ClassList() as __Array
-	local classes    := __Array{} as __Array
+function ClassList() as Array
+	local classes    := Array{} as Array
 	local assemblies := System.AppDomain.CurrentDomain:GetAssemblies() as System.Reflection.Assembly[]
 	foreach assembly as System.Reflection.Assembly in assemblies
 		local types := assembly:GetTypes() as System.Type[]
@@ -70,7 +71,7 @@ function ClassList() as __Array
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
-function ClassName(o as object) as __Symbol
+function ClassName(o as object) as Symbol
 	return AsSymbol(o:GetType():Name)
 
 
@@ -81,13 +82,13 @@ function ClassName(o as object) as __Symbol
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
-function ClassTree(o as object) as __Array
+function ClassTree(o as object) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
 
 
-function CreateInstance(symClassName as __Usual) as object
+function CreateInstance(symClassName as Usual) as object
 	return null_object   
 
 
@@ -97,9 +98,9 @@ function CreateInstance(symClassName as __Usual) as object
 /// <param name="symMethod"></param>
 /// <returns>
 /// </returns>
-function CSend(o as __Usual,symMethod as __Usual) as __Usual
+function CSend(o as Usual,symMethod as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 /// <summary>
 /// Get the class hierarchy of a class.
@@ -107,7 +108,7 @@ function CSend(o as __Usual,symMethod as __Usual) as __Usual
 /// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
-function ClassTreeClass(symClassName as __Symbol) as __Array
+function ClassTreeClass(symClassName as Symbol) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
@@ -120,7 +121,7 @@ function ClassTreeClass(symClassName as __Symbol) as __Array
 /// <param name="symAccessName"></param>
 /// <returns>
 /// </returns>
-function IsAccess(o as object,symAccessName as __Symbol) as logic
+function IsAccess(o as object,symAccessName as Symbol) as logic
 	/// THROW NotImplementedException{}
 	return false   
 
@@ -131,7 +132,7 @@ function IsAccess(o as object,symAccessName as __Symbol) as logic
 /// <param name="symAssignName"></param>
 /// <returns>
 /// </returns>
-function IsAssign(o as object,symAssignName as __Symbol) as logic
+function IsAssign(o as object,symAssignName as Symbol) as logic
 	/// THROW NotImplementedException{}
 	return false   
 
@@ -144,18 +145,18 @@ function IsAssign(o as object,symAssignName as __Symbol) as logic
 /// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
-function IsInstanceOf(o as object,symClassName as __Symbol) as logic
+function IsInstanceOf(o as object,symClassName as Symbol) as logic
 	/// THROW NotImplementedException{}
 	return false   
 
 /// <summary>
-/// Determine if an object inside a __Usual is an instance of a class.
+/// Determine if an object inside a Usual is an instance of a class.
 /// </summary>
 /// <param name="oX"></param>
 /// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
-function IsInstanceOfUsual(oX as __Usual,symClassName as __Symbol) as logic
+function IsInstanceOfUsual(oX as Usual,symClassName as Symbol) as logic
 	/// THROW NotImplementedException{}
 	return false   
 
@@ -169,9 +170,9 @@ function IsInstanceOfUsual(oX as __Usual,symClassName as __Symbol) as logic
 /// <param name="symIvar"></param>
 /// <returns>
 /// </returns>
-function IVarGet(o as object,symIvar as __Symbol) as __Usual
+function IVarGet(o as object,symIvar as Symbol) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 /// <summary>
 /// Get information about how a particular instance variable (or access method) was declared.
@@ -180,7 +181,7 @@ function IVarGet(o as object,symIvar as __Symbol) as __Usual
 /// <param name="symIVar"></param>
 /// <returns>
 /// </returns>
-function IVarGetInfo(o as object,symIVar as __Symbol) as dword
+function IVarGetInfo(o as object,symIVar as Symbol) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -192,20 +193,20 @@ function IVarGetInfo(o as object,symIVar as __Symbol) as dword
 /// <param name="symMethodName"></param>
 /// <returns>
 /// </returns>
-function IsMethod(o as object,symMethodName as __Symbol) as logic
+function IsMethod(o as object,symMethodName as Symbol) as logic
 	/// THROW NotImplementedException{}
 	return false   
 
 
 
 /// <summary>
-/// Check whether a particular method can be sent to an object inside a __Usual.
+/// Check whether a particular method can be sent to an object inside a Usual.
 /// </summary>
 /// <param name="oX"></param>
 /// <param name="symMethodName"></param>
 /// <returns>
 /// </returns>
-function IsMethodUsual(oX as __Usual,symMethodName as __Symbol) as logic
+function IsMethodUsual(oX as Usual,symMethodName as Symbol) as logic
 	/// THROW NotImplementedException{}
 	return false  
 
@@ -228,9 +229,9 @@ function IsVOObject(oObject as object) as logic
 /// <param name="symIvar"></param>
 /// <returns>
 /// </returns>
-function IVarGetSelf(o as object,symIvar as __Symbol) as __Usual
+function IVarGetSelf(o as object,symIvar as Symbol) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 /// <summary>
 /// </summary>
@@ -239,17 +240,17 @@ function IVarGetSelf(o as object,symIvar as __Symbol) as __Usual
 /// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
-function IVarGetSuper(o as object,symIvar as __Symbol,symClassName as __Symbol) as __Usual
+function IVarGetSuper(o as object,symIvar as Symbol,symClassName as Symbol) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 /// <summary>
-/// Store all instance variables of an object into an __Array.
+/// Store all instance variables of an object into an Array.
 /// </summary>
 /// <param name="pObject"></param>
 /// <returns>
 /// </returns>
-function IvarList(pObject as object) as __Array
+function IvarList(pObject as object) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
@@ -261,9 +262,9 @@ function IvarList(pObject as object) as __Array
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function IVarPut(o as object,symIvar as __Symbol,u as __Usual) as __Usual
+function IVarPut(o as object,symIvar as Symbol,u as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 /// <summary>
 /// Get information about how a particular instance variable (or assign method) was declared.
@@ -272,7 +273,7 @@ function IVarPut(o as object,symIvar as __Symbol,u as __Usual) as __Usual
 /// <param name="symIVar"></param>
 /// <returns>
 /// </returns>
-function IVarPutInfo(o as object,symIVar as __Symbol) as dword
+function IVarPutInfo(o as object,symIVar as Symbol) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -284,9 +285,9 @@ function IVarPutInfo(o as object,symIVar as __Symbol) as dword
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function IVarPutSelf(o as object,symIvar as __Symbol,u as __Usual) as __Usual
+function IVarPutSelf(o as object,symIvar as Symbol,u as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 /// <summary>
 /// </summary>
@@ -296,21 +297,21 @@ function IVarPutSelf(o as object,symIvar as __Symbol,u as __Usual) as __Usual
 /// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
-function IVarPutSuper(o as object,symIvar as __Symbol,u as __Usual,symClassName as __Symbol) as __Usual
+function IVarPutSuper(o as object,symIvar as Symbol,u as Usual,symClassName as Symbol) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 
 
 
 
 /// <summary>
-/// Create a class list in the form of an __Array for the specified object.
+/// Create a class list in the form of an Array for the specified object.
 /// </summary>
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
-function MethodList(o as object) as __Array
+function MethodList(o as object) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
@@ -320,19 +321,19 @@ function MethodList(o as object) as __Array
 /// </summary>
 /// <returns>
 /// </returns>
-function NoMethod() as __Symbol
+function NoMethod() as Symbol
 	/// THROW NotImplementedException{}
 	return null_symbol   
 
 
 
 /// <summary>
-/// Convert the values of an object's instance variables to an __Array.
+/// Convert the values of an object's instance variables to an Array.
 /// </summary>
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
-function Object2Array(o as object) as __Array
+function Object2Array(o as object) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
@@ -357,22 +358,22 @@ function OMemSize(o as object) as dword
 	return 0  
 
 /// <summary>
-/// Return a multidimensional __Array of all object-oriented programming __Symbols that constitute the class.
+/// Return a multidimensional Array of all object-oriented programming Symbols that constitute the class.
 /// </summary>
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
-function OOPTree(o as object) as __Array
+function OOPTree(o as object) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
 /// <summary>
-/// Return a multidimensional __Array of all object-oriented programming __Symbols that constitute the class of an object.
+/// Return a multidimensional Array of all object-oriented programming Symbols that constitute the class of an object.
 /// </summary>
 /// <param name="s"></param>
 /// <returns>
 /// </returns>
-function OOPTreeClass(s as __Symbol) as __Array
+function OOPTreeClass(s as Symbol) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
@@ -386,9 +387,9 @@ function OOPTreeClass(s as __Symbol) as __Array
 /// <param name="symMethod"></param>
 /// <returns>
 /// </returns>
-function Send(o as __Usual,symMethod as __Usual) as __Usual
+function Send(o as Usual,symMethod as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 /// <summary>
 /// Invoke a method with a specified class.
@@ -398,7 +399,7 @@ function Send(o as __Usual,symMethod as __Usual) as __Usual
 /// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
-function SendClass(o as __Usual,symMethod as __Usual,symClassName as __Usual) as __Usual
+function SendClass(o as Usual,symMethod as Usual,symClassName as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 

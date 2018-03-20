@@ -5,7 +5,7 @@
 //
 
 // DbBulk.prg: Bulk operations on Workareas
-
+#ifdef COMPILEIT
 
 /// <summary>
 /// </summary>
@@ -13,6 +13,7 @@
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
+/*
 function __allocNames    (aStru as array)                as _FIELDNAMES  pascal
 	
 	local n,i       as dword
@@ -40,7 +41,7 @@ function __allocNames    (aStru as array)                as _FIELDNAMES  pascal
 	next
 	
 	return fldNames
-
+*/
 //
 // __DBAvg()
 //
@@ -752,6 +753,7 @@ function DbJoin(cAlias, cFile, aFields, uCobFor) as logic clipper
 /// </summary>
 /// <returns>
 /// </returns>
+/*
 function DbJoinAppend(nSelect    as dword,    ;
 	struList   as _JOINLIST)   as logic        pascal
 	
@@ -764,7 +766,7 @@ function DbJoinAppend(nSelect    as dword,    ;
 	endif
 	
 	return lRetCode
-
+*/
 
 
 
@@ -1268,12 +1270,8 @@ function __TargetFields  (cAlias as string, aNames as array, ppJoinList as ptr) 
 
 
 
-*----------------------------------------------------------------------------
-	//
-	// Some unducumented stuff
-//
-
-function _allocFieldNames(aStru as __ARRAY)           as _FIELDNAMES  pascal
+/*
+function _allocFieldNames(aStru as Array)           as XSharp.RDD._FIELDNAMES  pascal
 	
 	local n,i       as dword
 	local fldNames  as _FIELDNAMES
@@ -1305,7 +1303,7 @@ function _allocFieldNames(aStru as __ARRAY)           as _FIELDNAMES  pascal
 
 
 
-function _freeFieldNames(fldNames  as _FIELDNAMES) as void pascal
+function _freeFieldNames(fldNames  as XSharp.RDD._FIELDNAMES) as void pascal
 	//
 	//  UH 11/12/1997
 	//
@@ -1323,7 +1321,7 @@ function _freeFieldNames(fldNames  as _FIELDNAMES) as void pascal
 	
 	return
 
-
+*/
 
 /// <summary>
 /// </summary>
@@ -1338,3 +1336,5 @@ static function WithoutAlias(cName)                         as string pascal
 	
 	return cName
 
+
+#endif

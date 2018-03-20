@@ -2,10 +2,9 @@
 USING System.Collections.Generic
 USING System.Text
 using XUnit
-using XSharp.Runtime
 
 
-BEGIN NAMESPACE XSharp.Runtime.Tests
+BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS MemoryTests
 		[Fact, Trait("Memory", "Allocation")]; 

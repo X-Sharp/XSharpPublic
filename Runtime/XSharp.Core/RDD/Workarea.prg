@@ -3,9 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-#using System.IO
-
-BEGIN NAMESPACE XSharp
+using System.IO
+using XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD
 
 CLASS Workarea IMPLEMENTS IRdd  
 	// This class does NOT implement file based (DBF stuff). 
@@ -64,7 +64,7 @@ CLASS Workarea IMPLEMENTS IRdd
 		SELF:_Alias		 := String.Empty
 		SELF:_RecordBuffer := NULL
 			
-VIRTUAL METHOD DbEval(info AS XSharp.DbEvalInfo) AS LOGIC
+VIRTUAL METHOD DbEval(info AS XSharp.RDD.DbEvalInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 
@@ -224,10 +224,10 @@ VIRTUAL METHOD Close( ) AS LOGIC
 	// close all parent relations
 	RETURN TRUE
 
-VIRTUAL METHOD Create(info AS XSharp.DbOpenInfo) AS LOGIC
+VIRTUAL METHOD Create(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD Open(info AS XSharp.DbOpenInfo) AS LOGIC
+VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD ClearFilter( ) AS LOGIC
@@ -248,7 +248,7 @@ VIRTUAL METHOD ClearScope( ) AS LOGIC
 VIRTUAL METHOD Continue( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-VIRTUAL METHOD GetScope( ) AS XSharp.DbScopeInfo
+VIRTUAL METHOD GetScope( ) AS XSharp.RDD.DbScopeInfo
 	IF SELF:_ScopeInfo != NULL_OBJECT
 		RETURN SELF:_ScopeInfo:Clone()
 	ENDIF
@@ -265,7 +265,7 @@ VIRTUAL METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
 	ENDIF
 	RETURN TRUE
 
-VIRTUAL METHOD SetScope(info AS XSharp.DbScopeInfo) AS LOGIC
+VIRTUAL METHOD SetScope(info AS XSharp.RDD.DbScopeInfo) AS LOGIC
 	SELF:ClearScope()
 	IF (info != NULL_OBJECT)
 		SELF:_ScopeInfo := info:Clone()

@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+#ifdef COMPILEIT
 /// <summary>
 /// </summary>
 /// <returns>
@@ -672,3 +672,4 @@ FUNCTION ORDSETFOCUS    (uOrder, cOrdBag)
 	RETURN Psz2String(pszOrder)
 	
 	
+#endif

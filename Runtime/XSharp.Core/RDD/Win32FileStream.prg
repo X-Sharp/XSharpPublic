@@ -5,7 +5,7 @@
 //
 
 USING System.Runtime.InteropServices
-BEGIN NAMESPACE XSharp
+BEGIN NAMESPACE XSharp.RDD
 CLASS Win32FileStream INHERIT System.IO.FileStream
     // Fields
     PRIVATE hFile 		AS System.IntPtr

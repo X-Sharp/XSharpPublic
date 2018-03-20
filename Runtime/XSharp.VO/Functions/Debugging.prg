@@ -6,7 +6,7 @@
 /// <returns>
 /// </returns>
 /// <Remarks>This function is inlined by the compiler </remarks>
-function AltD(nMode as __Usual) as void
+function AltD(nMode as Usual) as void
 	if System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
 	endif
@@ -29,7 +29,7 @@ function CanBreak() as logic
 /// <param name="dwActivation"></param>
 /// <returns>
 /// </returns>
-function ProcFile(dwActivation as __Usual) as string
+function ProcFile(dwActivation as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -39,7 +39,7 @@ function ProcFile(dwActivation as __Usual) as string
 /// <param name="dwActivation"></param>
 /// <returns>
 /// </returns>
-function ProcLine(dwActivation as __Usual) as dword
+function ProcLine(dwActivation as Usual) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -50,7 +50,7 @@ function ProcLine(dwActivation as __Usual) as dword
 /// <param name="dwActivation"></param>
 /// <returns>
 /// </returns>
-function ProcName(dwActivation as __Usual) as String
+function ProcName(dwActivation as Usual) as String
 	/// THROW NotImplementedException{}
 	return String.Empty
 

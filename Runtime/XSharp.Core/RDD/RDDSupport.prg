@@ -7,7 +7,7 @@
 
 // The classes below are simple. No properties, but all public fields.
 
-BEGIN NAMESPACE XSharp
+BEGIN NAMESPACE XSharp.RDD
 
 CLASS DbEvalInfo  
 	PUBLIC ScopeInfo AS DbScopeInfo
@@ -238,17 +238,6 @@ END CLASS
 CLASS DbWORKAREASTATUS
 END CLASS
 
-ENUM AutoShareMode
-	MEMBER NoChange		 := 0
-	MEMBER Auto	  		 := 1
-	MEMBER ForeExclusive := 2
-end enum
-
-
-ENUM CollationMode
-	MEMBER WINDOWS
-	MEMBER CLIPPER
-end enum
 
 
 

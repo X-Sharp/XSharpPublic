@@ -15,6 +15,7 @@ using XSharp
 FUNCTION ArrayCreate(dwDim AS DWORD) AS __Array 
 	RETURN __Array{(int)dwDim}
 
+
 /// <summary>
 /// Create an initialized __Array.
 /// </summary>
@@ -292,18 +293,18 @@ RETURN NULL
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayBuild() AS __Array
-	RETURN __Array{}
+	FUNCTION ArrayBuild() AS Array
+		RETURN __Array{}
 
-		/// <summary>
+	/// <summary>
 	/// Create an uninitialized __Array with the specified number of elements and dimensions.
 	/// </summary>
 	/// <param name="nDim"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayNew(nDim AS __Usual) AS __Array
+	FUNCTION ArrayNew(nDim PARAMS int[]) AS Array
 		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+	RETURN __Array.ArrayCreate(nDim)
 
 
 	/// <summary>
@@ -331,7 +332,7 @@ RETURN NULL
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ASort(a AS __Usual,iStart AS __Usual,iCount AS __Usual,cb AS __Usual) AS __Array
+	FUNCTION ASort(a ,iStart ,iCount ,cb ) AS Array
 		/// THROW NotImplementedException{}
 	return null_array  
 

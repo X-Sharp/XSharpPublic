@@ -69,7 +69,7 @@ begin namespace XSharp
 			local ret := FALSE as logic
 			
 			if o is __Psz
-				ret := Equals( (__Psz) o )
+				ret := SELF:Equals( (__Psz) o )
 			endif
 			
 			return ret
@@ -255,7 +255,7 @@ end namespace
 function String2Mem(s as string) as IntPtr
 	local result := 0 as IntPtr
 	if s != null
-		var encoding := Encoding.Default
+		var encoding := System.Text.Encoding.Default
 		var bytes    := encoding:GetBytes(s)
 		var len      := bytes:Length
 		result	     := MemAlloc((DWORD) (len+1))
@@ -267,7 +267,7 @@ unsafe function Mem2String(pString as IntPtr, nLen as dword) as string
 	if pString == IntPtr.Zero .or. nLen == 0
 		return String.Empty
 	endif
-	var encoding := Encoding.Default
+	var encoding := System.Text.Encoding.Default
 	var numchars := encoding:GetCharCount( (byte ptr) pString, (int) nLen) 
 	var buffer   := (char ptr) MemAlloc( (dword) (numchars * sizeof(char)) )
 	numchars     := encoding:GetChars((byte ptr) pString, (int) nLen, buffer, numchars)

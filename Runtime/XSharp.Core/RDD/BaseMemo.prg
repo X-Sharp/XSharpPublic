@@ -4,7 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
-CLASS XSharp.BaseMemo Implements IMemo
+/// <Summary>Bases Memo class. Does not implement anything. </Summary>
+CLASS XSharp.RDD.BaseMemo Implements IMemo
 	PRIVATE _oArea AS WorkArea
 
 	CONSTRUCTOR(oArea as WorkArea)

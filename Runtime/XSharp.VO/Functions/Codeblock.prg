@@ -11,9 +11,9 @@
 /// <param name="cob"></param>
 /// <returns>
 /// </returns>
-function Eval(cob as __Usual) as __Usual
+function Eval(cob as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 
 /// <summary>

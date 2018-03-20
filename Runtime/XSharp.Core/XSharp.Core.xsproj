@@ -59,11 +59,12 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>168;1591</DisabledWarnings>
+    <DisabledWarnings>168;1591;9001</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>/creatingruntime</CommandLineOption>
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
@@ -122,17 +123,19 @@
     <Compile Include="Functions\DT.prg" />
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\FileIO.prg" />
-    <Compile Include="Functions\Get.prg" />
     <Compile Include="Functions\International.prg" />
+    <Compile Include="Functions\Is.prg" />
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Numeric.prg" />
-    <Compile Include="Functions\Set.prg" />
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Functions\vodb.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="RDD\BaseIndex.prg" />
     <Compile Include="RDD\BaseMemo.prg" />
+    <Compile Include="RDD\DbFloat.prg" />
+    <Compile Include="RDD\RDDDefines.prg" />
+    <Compile Include="RDD\RddEnums.prg" />
     <Compile Include="RDD\Win32FileStream.prg" />
     <Compile Include="RDD\IMemo.prg" />
     <Compile Include="RDD\IOrder.prg" />
@@ -142,19 +145,19 @@
     <Compile Include="RDD\RDDSupport.prg" />
     <Compile Include="RDD\Workarea.prg" />
     <Compile Include="RDD\Workareas.prg" />
+    <Compile Include="State\Get.prg" />
+    <Compile Include="State\EnumSet.prg" />
     <Compile Include="State\Set.prg" />
     <Compile Include="State\State.prg" />
     <Compile Include="Types\Attributes.prg" />
-    <Compile Include="Types\Enums.prg" />
     <Compile Include="Types\Error.prg" />
-    <Compile Include="Types\Gencode.prg" />
+    <Compile Include="Types\ErrorEnums.prg" />
     <Compile Include="Types\Interfaces.prg" />
-    <Compile Include="Types\Severity.prg" />
     <Compile Include="Types\WrappedException.prg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Functions\GetSet.xh" />
     <None Include="README.md" />
+    <None Include="State\GetSet.xh" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

@@ -3,10 +3,10 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 using XUnit
-using XSharp.Runtime
+
 
 // WinBool test
-BEGIN NAMESPACE XSharp.Runtime.Tests
+BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS WinBoolTests
 	 

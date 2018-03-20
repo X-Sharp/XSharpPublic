@@ -4,14 +4,14 @@
 // See License.txt in the project root for license information.
 //
 
-
+#ifdef COMPILEIT
 /// <summary>
-/// Return a set-get code block for a field that is identified by a __Symbol.
+/// Return a set-get code block for a field that is identified by a Symbol.
 /// </summary>
 /// <param name="symVar"></param>
 /// <returns>
 /// </returns>
-function FieldBlockSym(symVar as __Symbol) as object
+function FieldBlockSym(symVar as Symbol) as object
 	/// THROW NotImplementedException{}
 	return null_object   
 
@@ -22,9 +22,9 @@ function FieldBlockSym(symVar as __Symbol) as object
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function FieldGetAlias(symAlias as __Symbol,symField as __Symbol) as __Usual
+function FieldGetAlias(symAlias as Symbol,symField as Symbol) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return Usual._NIL   
 
 
 
@@ -34,28 +34,28 @@ function FieldGetAlias(symAlias as __Symbol,symField as __Symbol) as __Usual
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function FieldGetSelect(uSelect as __Usual,symField as __Symbol) as __Usual
+function FieldGetSelect(uSelect as Usual,symField as Symbol) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return Usual._NIL   
 
 
 /// <summary>
-/// Retrieve the contents of a field that is identified by its __Symbolic name.
+/// Retrieve the contents of a field that is identified by its Symbolic name.
 /// </summary>
 /// <param name="symVar"></param>
 /// <returns>
 /// </returns>
-function FieldGetSym(symVar as __Symbol) as __Usual
+function FieldGetSym(symVar as Symbol) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return Usual._NIL   
 
 /// <summary>
-/// Return the position of a field that is identified by a __Symbol.
+/// Return the position of a field that is identified by a Symbol.
 /// </summary>
 /// <param name="sField"></param>
 /// <returns>
 /// </returns>
-function FieldPosSym(sField as __Symbol) as dword
+function FieldPosSym(sField as Symbol) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -69,20 +69,20 @@ function FieldPosSym(sField as __Symbol) as dword
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function FieldPutAlias(symAlias as __Symbol,symField as __Symbol,u as __Usual) as __Usual
+function FieldPutAlias(symAlias as Symbol,symField as Symbol,u as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return Usual._NIL   
 
 /// <summary>
-/// Set the value of a field that is identified by its __Symbolic name.
+/// Set the value of a field that is identified by its Symbolic name.
 /// </summary>
 /// <param name="symVar"></param>
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function FieldPutSym(symVar as __Symbol,u as __Usual) as __Usual
+function FieldPutSym(symVar as Symbol,u as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return Usual._NIL   
 
 /// <summary>
 /// </summary>
@@ -91,20 +91,20 @@ function FieldPutSym(symVar as __Symbol,u as __Usual) as __Usual
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function FieldPutSelect(uSelect as __Usual,symField as __Symbol,u as __Usual) as __Usual
+function FieldPutSelect(uSelect as Usual,symField as Symbol,u as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return Usual._NIL   
 
 
 
 /// <summary>
-/// Return a set-get code block for a field, specified as a __Symbol, in a specified work area.
+/// Return a set-get code block for a field, specified as a Symbol, in a specified work area.
 /// </summary>
 /// <param name="symVar"></param>
 /// <param name="nArea"></param>
 /// <returns>
 /// </returns>
-function FieldWBlockSym(symVar as __Symbol,nArea as dword) as object
+function FieldWBlockSym(symVar as Symbol,nArea as dword) as object
 	/// THROW NotImplementedException{}
 	return null_object   
 
@@ -1434,7 +1434,7 @@ function DoError        (nSymFunc, nTries)
 //  Transfers a VO-Array into a DIM Array structure
 //
 
-
+/*
 function __AllocRddList (aRdds as array)    as _RDDLIST     pascal
 	local n,i           as dword
 	local rddList       as _RDDLIST
@@ -1448,7 +1448,7 @@ function __AllocRddList (aRdds as array)    as _RDDLIST     pascal
 	next
 	return rddList
 //
-
+*/
 function __RddList      (xDriver, aHidden)
 	
 	local   nType   as dword
@@ -1860,7 +1860,7 @@ static function DBCMDError  ()                              as usual pascal
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-function IndexHPLock(lSet as __Usual) as logic
+function IndexHPLock(lSet as Usual) as logic
 	/// THROW NotImplementedException{}
 	return false   
 
@@ -1870,7 +1870,7 @@ function IndexHPLock(lSet as __Usual) as logic
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-function NewIndexLock(lSet as __Usual) as logic
+function NewIndexLock(lSet as Usual) as logic
 	/// THROW NotImplementedException{}
 	return false   
 
@@ -1884,3 +1884,4 @@ function NewIndexLock(lSet as __Usual) as logic
 function NewLocks() as logic
 	/// THROW NotImplementedException{}
 	return false   
+#endif

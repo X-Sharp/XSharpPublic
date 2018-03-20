@@ -24,7 +24,7 @@ using XSharp
 /// True if x is >= y and <= z otherwise false.
 /// </returns>
 function Between(x as __Usual,y as __Usual,z as __Usual) as logic
-	return ((x>=y) && (x<=z))
+	return ((x >=y) .and.  (x<=z))
 
 
 

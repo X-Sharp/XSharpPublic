@@ -3,242 +3,445 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-#using XSharp
-BEGIN NAMESPACE XSharp
-	/// <Summary>Values that match the Visual Objects SET_* defines </Summary>
-	ENUM Set                                
-		MEMBER EXACT       := 1			// LOGIC
-		MEMBER @@FIXED	   := 2			// LOGIC
-		MEMBER DECIMALS    := 3			// INT
-		MEMBER DATEFORMAT  := 4			// STRING
-		MEMBER EPOCH       := 5			// INT
-		MEMBER PATH        := 6			// STRING
-		MEMBER @@DEFAULT   := 7			// STRING
-		MEMBER EXCLUSIVE   := 8			// LOGIC
-		MEMBER SOFTSEEK    := 9			// LOGIC
-		MEMBER UNIQUE      := 10		// LOGIC
-		MEMBER DELETED     := 11		// LOGIC
-		MEMBER CANCEL      := 12		// LOGIC
-		MEMBER @@DEBUG     := 13	
-		MEMBER TYPEAHEAD   := 14		// INT
-		MEMBER COLOR       := 15		// STRING
-		MEMBER CURSOR      := 16		// INT
-		MEMBER CONSOLE     := 17		// LOGIC
-		MEMBER ALTERNATE   := 18		// LOGIC
-		MEMBER ALTFILE     := 19		// STRING
-		MEMBER DEVICE      := 20		// STRING
-		MEMBER EXTRA       := 21		// LOGIC
-		MEMBER EXTRAFILE   := 22		// STRING
-		MEMBER PRINTER     := 23		// LOGIC
-		MEMBER PRINTFILE   := 24		// STRING
-		MEMBER MARGIN      := 25		// INT
-		MEMBER BELL        := 26		// LOGIC
-		MEMBER CONFIRM     := 27		// LOGIC
-		MEMBER ESCAPE      := 28		// LOGIC
-		MEMBER INSERT      := 29		// LOGIC
-		MEMBER @@EXIT      := 30		// LOGIC
-		MEMBER INTENSITY   := 31		// LOGIC
-		MEMBER SCOREBOARD  := 32		// LOGIC
-		MEMBER DELIMITERS  := 33		// STRING
-		MEMBER DELIMCHARS  := 34		// STRING
-		MEMBER WRAP        := 35		// LOGIC
-		MEMBER MESSAGE     := 36		// INT
-		MEMBER MCENTER     := 37		// LOGIC
-		MEMBER SCROLLBREAK := 38		// LOGIC
+// Most of these settings will Get and Set properties of the Runtime.State class
+#include "GetSet.xh"
 
-		// 48 and 49 unused
-		MEMBER DIGITS      	:= 50	// INT   Vulcan had 39
-		MEMBER NETERR      	:= 51	// LOGIC Vulcan had 40
-		MEMBER @@ANSI      	:= 53	// LOGIC Vulcan had 44
-		MEMBER @@YIELD     	:= 54	// LOGIC Vulcan had 45
-		MEMBER LOCKTRIES   	:= 55	// INT   Vulcan had 46
-		MEMBER AMEXT		:= 56	// STRING
-		MEMBER AMPM		    := 57	// STRING
-		MEMBER PMEXT	    := 58	// STRING
-		MEMBER CENTURY	    := 59
-		MEMBER DIGITFIXED  	:= 60	// LOGIC
-		MEMBER DECIMALSEP  	:= 60	// INT
-		MEMBER THOUSANDSEP 	:= 61	// INT
-		MEMBER TIMESEP     	:= 62	// INT
-		MEMBER FIELDSTORE  	:= 63
-		MEMBER SCIENCE     	:= 64	// LOGIC
-		MEMBER CPU			:= 65	// INT
-		MEMBER FLOATDELTA	:= 66	// System.Double
-		MEMBER MATH			:= 67	// INT
-		MEMBER INTERNATIONAL:= 68	// STRING
-		MEMBER DATECOUNTRY  := 69	// INT
-		// 65 - 97 unused
-		MEMBER DICT        := 98	// LOGIC
-		MEMBER INTL        := 99	// LOGIC
+USING XSharp
 
-		// Vulcan RDDInfo Settings
-		MEMBER RDDINFO		:= 100
-		MEMBER MEMOBLOCKSIZE:= 101		// INT
-		MEMBER DEFAULTRDD	:= 102		// STRING
-		MEMBER MEMOEXT	    := 103		// STRING
-		MEMBER AUTOOPEN     := 104		// LOGIC
-		MEMBER AUTOORDER    := 105		// LOGIC
-		MEMBER HPLOCKING    := 106      // LOGIC 
-		MEMBER NEWINDEXLOCK := 107      // LOGIC 
-		MEMBER AUTOSHARE    := 108		// LOGIC
-		MEMBER STRICTREAD   := 109		// LOGIC
-		MEMBER BLOBCIRCREF	:= 110			
-		MEMBER OPTIMIZE     := 111		// LOGIC
-		MEMBER FOXLOCK      := 112		// LOGIC
-		MEMBER WINCODEPAGE	:= 113
-		MEMBER DOSCODEPAGE	:= 114
-		MEMBER COLLATIONMODE:= 115		// COLLATIONMODE (STRING)
-		
-		// Advantage extensions
-		MEMBER AXSLOCKING           := 150
-		MEMBER RIGHTSCHECKING       := 151
-		MEMBER CONNECTION_HANDLE    := 152
-		MEMBER EXACTKEYPOS          := 153
-		MEMBER SQL_QUERY            := 154
-		MEMBER SQL_TABLE_PASSWORDS  := 155
-		MEMBER COLLATION_NAME       := 156
+/// <summary>
+/// Returns a string representing the morning extension for time strings in 12-hour format.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION GetAMExt() AS STRING
+	GETSTATE STRING Set.AmExt 
 
-		// 100 - 117 Harbour extensions
-		MEMBER LANGUAGE       :=  180  
-		MEMBER IDLEREPEAT     :=  181 
-		MEMBER FILECASE       :=  182			
-		MEMBER DIRCASE        :=  183 
-		MEMBER DIRSEPARATOR   :=  184 
-		MEMBER EOF            :=  185 
-		MEMBER HARDCOMMIT     :=  186 
-		MEMBER FORCEOPT       :=  187 
-		MEMBER DBFLOCKSCHEME  :=  188 
-		MEMBER DEFEXTENSIONS  :=  189 
-		MEMBER EOL            :=  190 
-		MEMBER TRIMFILENAME   :=  191	
-		MEMBER HBOUTLOG       :=  192 
-		MEMBER HBOUTLOGINFO   :=  193 
-		MEMBER CODEPAGE       :=  194				// Map to Vulcan setting ?
-		MEMBER OSCODEPAGE     :=  195				// Map to Vulcan setting ?
-		MEMBER TIMEFORMAT     :=  196			
-		MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
-		
-		// Start of user values
-		MEMBER User           := 200
-		
-	END ENUM
-END NAMESPACE
-#region Defines
-DEFINE _SET_EXACT       := Set.Exact		
-DEFINE _SET_FIXED       := Set.Fixed 		
-DEFINE _SET_DECIMALS    := Set.Decimals		
-DEFINE _SET_DATEFORMAT  := Set.DATEFORMAT  	
-DEFINE _SET_EPOCH       := Set.EPOCH       	
-DEFINE _SET_PATH        := Set.PATH        	
-DEFINE _SET_DEFAULT     := Set.DEFAULT     	
-	
-DEFINE _SET_EXCLUSIVE   := Set.EXCLUSIVE   	
-DEFINE _SET_SOFTSEEK    := Set.SOFTSEEK    	
-DEFINE _SET_UNIQUE      := Set.UNIQUE      	
-DEFINE _SET_DELETED     := Set.DELETED     	
-	
-DEFINE _SET_CANCEL      := Set.CANCEL
-DEFINE _SET_DEBUG       := Set.DEBUG       	
-DEFINE _SET_TYPEAHEAD   := Set.TYPEAHEAD   	
-	
-DEFINE _SET_COLOR       := Set.COLOR       	
-DEFINE _SET_CURSOR      := Set.CURSOR      	
-DEFINE _SET_CONSOLE     := Set.CONSOLE     	
-DEFINE _SET_ALTERNATE   := Set.ALTERNATE   	
-DEFINE _SET_ALTFILE     := Set.ALTFILE     	
-DEFINE _SET_DEVICE      := Set.DEVICE      	
-DEFINE _SET_EXTRA       := Set.EXTRA       	
-DEFINE _SET_EXTRAFILE   := Set.EXTRAFILE   	
-DEFINE _SET_PRINTER     := Set.PRINTER     	
-DEFINE _SET_PRINTFILE   := Set.PRINTFILE   	
-DEFINE _SET_MARGIN      := Set.MARGIN      	
-	
-DEFINE _SET_BELL        := Set.BELL        	
-DEFINE _SET_CONFIRM     := Set.CONFIRM     	
-DEFINE _SET_ESCAPE      := Set.ESCAPE      	
-DEFINE _SET_INSERT      := Set.INSERT      	
-DEFINE _SET_EXIT        := Set.EXIT        	
-DEFINE _SET_INTENSITY   := Set.INTENSITY   	
-DEFINE _SET_SCOREBOARD  := Set.SCOREBOARD  	
-DEFINE _SET_DELIMITERS  := Set.DELIMITERS  	
-DEFINE _SET_DELIMCHARS  := Set.DELIMCHARS  	
-	
-DEFINE _SET_WRAP        := Set.WRAP        	
-DEFINE _SET_MESSAGE     := Set.MESSAGE     	
-DEFINE _SET_MCENTER     := Set.MCENTER     	
-DEFINE _SET_SCROLLBREAK := Set.SCROLLBREAK 	
+/// <summary>
+/// Returns a string representing the morning extension for time strings in 12-hour format.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION SetAMExt() AS STRING
+	RETURN GetAmExt()
 
-// 48 and 49 unused
-DEFINE _SET_DIGITS      	:= Set.DIGITS      
-DEFINE _SET_NETERR      	:= Set.NETERR      
-DEFINE _SET_ANSI      		:= Set.ANSI      
-DEFINE _SET_YIELD     		:= Set.YIELD     
-DEFINE _SET_LOCKTRIES   	:= Set.LOCKTRIES   
-DEFINE _SET_AMEXT			:= Set.AMEXT		
-DEFINE _SET_AMPM			:= Set.AMPM		   
-DEFINE _SET_PMEXT	    	:= Set.PMEXT	   
-DEFINE _SET_CENTURY	    	:= Set.CENTURY	   
-DEFINE _SET_DIGITFIXED  	:= Set.DIGITFIXED  
-DEFINE _SET_DECIMALSEP  	:= Set.DECIMALSEP  
-DEFINE _SET_THOUSANDSEP 	:= Set.THOUSANDSEP 
-DEFINE _SET_TIMESEP     	:= Set.TIMESEP     
-DEFINE _SET_FIELDSTORE  	:= Set.FIELDSTORE  
-DEFINE _SET_SCIENCE     	:= Set.SCIENCE     
-DEFINE _SET_CPU				:= Set.CPU			
-DEFINE _SET_FLOATDELTA		:= Set.FLOATDELTA	
-DEFINE _SET_MATH			:= Set.MATH			
-DEFINE _SET_INTERNATIONAL	:= Set.INTERNATIONAL
-DEFINE _SET_DATECOUNTRY		:= Set.DATECOUNTRY
-DEFINE _SET_DICT			:= Set.Dict			
-DEFINE _SET_INTL			:= Set.Intl		
-	
-DEFINE _SET_COLLATIONMODE	:= Set.COLLATIONMODE	
+/// <summary>
+/// Set the morning extension for time strings in 12-hour format.
+/// </summary>
+/// <param name="cExt"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetAMExt(cExt AS STRING) AS STRING
+	SETSTATE STRING Set.AmExt cExt
 
-// Vulcan RDDInfo Settings
-DEFINE _SET_RDDINFO				:= Set.RDDINFO		
-DEFINE _SET_MEMOBLOCKSIZE		:= Set.MEMOBLOCKSIZE
-DEFINE _SET_DEFAULTRDD			:= Set.DEFAULTRDD	
-DEFINE _SET_MEMOEXT	    		:= Set.MEMOEXT	    
-DEFINE _SET_AUTOOPEN    		:= Set.AUTOOPEN     
-DEFINE _SET_AUTOORDER   		:= Set.AUTOORDER    
-DEFINE _SET_HPLOCKING   		:= Set.HPLOCKING    
-DEFINE _SET_NEWINDEXLOCK		:= Set.NEWINDEXLOCK 
-DEFINE _SET_AUTOSHARE   		:= Set.AUTOSHARE    
-DEFINE _SET_STRICTREAD  		:= Set.STRICTREAD   
-DEFINE _SET_BLOBCIRCREF			:= Set.BLOBCIRCREF	
-DEFINE _SET_OPTIMIZE    		:= Set.OPTIMIZE     
-DEFINE _SET_FOXLOCK     		:= Set.FOXLOCK      
-DEFINE _SET_WINCODEPAGE			:= Set.WINCODEPAGE	
-DEFINE _SET_DOSCODEPAGE			:= Set.DOSCODEPAGE	
 
-// Harbour extensions
-DEFINE _SET_LANGUAGE       :=  Set.LANGUAGE      	
-DEFINE _SET_IDLEREPEAT     :=  Set.IDLEREPEAT    	
-DEFINE _SET_FILECASE       :=  Set.FILECASE      	
-DEFINE _SET_DIRCASE        :=  Set.DIRCASE       	
-DEFINE _SET_DIRSEPARATOR   :=  Set.DIRSEPARATOR  	
-DEFINE _SET_EOF            :=  Set.EOF           	
-DEFINE _SET_HARDCOMMIT     :=  Set.HARDCOMMIT    	
-DEFINE _SET_FORCEOPT       :=  Set.FORCEOPT      	
-DEFINE _SET_DBFLOCKSCHEME  :=  Set.DBFLOCKSCHEME 	
-DEFINE _SET_DEFEXTENSIONS  :=  Set.DEFEXTENSIONS 	
-DEFINE _SET_EOL            :=  Set.EOL           	
-DEFINE _SET_TRIMFILENAME   :=  Set.TRIMFILENAME  	
-DEFINE _SET_HBOUTLOG       :=  Set.HBOUTLOG      	
-DEFINE _SET_HBOUTLOGINFO   :=  Set.HBOUTLOGINFO  	
-DEFINE _SET_CODEPAGE       :=  Set.CODEPAGE      	
-DEFINE _SET_OSCODEPAGE     :=  Set.OSCODEPAGE    	
-DEFINE _SET_TIMEFORMAT     :=  Set.TIMEFORMAT    	
-DEFINE _SET_DBCODEPAGE     :=  Set.DBCODEPAGE    	
-	
-// Advantage additions
-DEFINE _SET_AXSLOCKING           := Set.AXSLOCKING         
-DEFINE _SET_RIGHTSCHECKING       := Set.RIGHTSCHECKING     
-DEFINE _SET_CONNECTION_HANDLE    := Set.CONNECTION_HANDLE  
-DEFINE _SET_EXACTKEYPOS          := Set.EXACTKEYPOS        
-DEFINE _SET_SQL_QUERY            := Set.SQL_QUERY          
-DEFINE _SET_SQL_TABLE_PASSWORDS  := Set.SQL_TABLE_PASSWORDS
-DEFINE _SET_COLLATION_NAME       := Set.COLLATION_NAME     
-	
-#endregion
+/// <summary>
+/// Returns the setting that determines whether time strings are in 12-hour or 24-hour format.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION GetAmPm() AS LOGIC
+	GETSTATE LOGIC Set.AmPm
+
+/// <summary>
+/// Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.AmPm lSet
+/// <summary>
+/// Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetAnsi(lSet AS OBJECT) AS LOGIC
+	/// THROW NotImplementedException{}
+	RETURN FALSE   
+
+/// <summary>
+/// Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
+/// </summary>
+/// <param name="dwLocaleId"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
+	/// THROW NotImplementedException{}
+	RETURN 0   
+
+/// <summary>
+/// Return and optionally change the setting that determines whether a beep is sounded by the error system when an error occurs.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetBeep(lSet AS OBJECT) AS LOGIC
+	/// THROW NotImplementedException{}
+	RETURN FALSE   
+
+/// <summary>
+/// Return and optionally change the setting that determines whether to include or omit century digits in the date format.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetCentury(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Century lSet
+
+/// <summary>
+/// </summary>
+/// <param name="pFunc"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
+	/// THROW NotImplementedException{}
+	RETURN IntPtr.Zero
+
+/// <summary>
+/// Return and optionally change the setting that determines the type of central processor you have.
+/// </summary>
+/// <param name="nCpu"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetCpu(nCpu AS OBJECT) AS DWORD
+	/// THROW NotImplementedException{}
+	RETURN 0   
+
+/// <summary>
+/// Return and optionally change the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
+/// </summary>
+/// <param name="dwCountry"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetDateCountry(dwCountry AS OBJECT) AS DWORD
+	/// THROW NotImplementedException{}
+	RETURN 0   
+
+
+/// <summary>
+/// Return the current __VODate format.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION GetDateFormat() AS STRING
+	GETSTATE STRING Set.DateFormat
+
+/// <summary>
+/// Change the setting that determines the <%APP%> date format.
+/// </summary>
+/// <param name="cDateFormat"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetDateFormat(cDateFormat AS STRING) AS STRING
+	SETSTATE STRING Set.DateFormat cDateFormat
+/// <summary>
+/// Return and optionally change the setting that determines the number of decimal places used to display numbers.
+/// </summary>
+/// <param name="nDec"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetDecimal(nDec AS DWORD) AS DWORD
+	SETSTATE DWORD Set.Decimals nDec
+
+/// <summary>
+/// Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
+/// </summary>
+/// <param name="wSep"></param>
+/// <returns>
+/// </returns>
+
+FUNCTION SetDecimalSep() AS WORD
+	GETSTATE WORD Set.DecimalSep 
+
+FUNCTION SetDecimalSep(wSep AS WORD) AS WORD
+	SETSTATE WORD Set.DecimalSep wSep
+
+/// <summary>
+/// Change the setting that determines the <%APP%> default drive and directory.
+/// </summary>
+/// <param name="cDefault"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetDefault() AS STRING
+	GETSTATE STRING Set.Default 
+
+FUNCTION SetDefault(cDefault AS STRING) AS STRING
+	SETSTATE STRING Set.Default cDefault
+
+/// <summary>
+/// Change the setting that determines whether to ignore or include records that are marked for deletion.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetDeleted() AS LOGIC
+	GETSTATE LOGIC Set.Deleted 
+FUNCTION SetDeleted(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Deleted lSet
+
+/// <summary>
+/// Return and optionally change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
+/// </summary>
+/// <param name="nDig"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetDigit() AS DWORD
+	GETSTATE DWORD Set.DIGITS 
+
+FUNCTION SetDigit(nDig AS DWORD) AS DWORD
+	SETSTATE DWORD Set.DIGITS nDIg
+
+/// <summary>
+/// Return and optionally change the setting that fixes the number of digits used to display numeric output.
+/// </summary>
+/// <param name="f"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetDigitFixed() AS LOGIC
+	GETSTATE LOGIC Set.DigitFixed 
+
+FUNCTION SetDigitFixed(f AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.DigitFixed f
+
+/// <summary>
+/// Update or replace the contents of a DOS environment variable.
+/// </summary>
+/// <param name="cVar"></param>
+/// <param name="cValue"></param>
+/// <param name="lAppend"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
+	/// THROW NotImplementedException{}
+	RETURN FALSE   
+
+/// <summary>
+/// Return and optionally change the setting that determines how dates without century digits are interpreted.
+/// </summary>
+/// <param name="wYear"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetEpoch() AS DWORD
+	GETSTATE DWORD Set.Epoch 
+
+FUNCTION SetEpoch(wYear AS DWORD) AS DWORD
+	SETSTATE DWORD Set.Epoch wYear
+
+/// <summary>
+/// Return and optionally change the setting that determines whether error information is written to the error log file by the default runtime error handler.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetErrorLog(lSet AS OBJECT) AS LOGIC
+	/// THROW NotImplementedException{}
+	RETURN FALSE   
+
+/// <summary>
+/// Toggles an exact match for character string comparisons.
+/// </summary>
+/// <param name="fExact"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetExact() AS LOGIC
+	GETSTATE LOGIC Set.Exact 
+
+FUNCTION SetExact(fExact AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Exact fExact
+
+/// <summary>
+/// Return and optionally change the setting that determines whether to open database files in exclusive or shared mode.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetExclusive() AS LOGIC
+	GETSTATE LOGIC Set.Exclusive 
+
+FUNCTION SetExclusive(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Exclusive lSet
+
+/// <summary>
+/// Return and optionally change the setting that determines whether assignments are made to fields or to memory variables.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetFieldStore() AS LOGIC
+	GETSTATE LOGIC Set.FieldStore
+FUNCTION SetFieldStore(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.FieldStore lSet
+
+/// <summary>
+/// Return and optionally change the setting that fixes the number of decimal digits used to display numbers.
+/// </summary>
+/// <param name="fFixed"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetFixed() AS LOGIC
+	GETSTATE LOGIC Set.Fixed 
+
+FUNCTION SetFixed(fFixed AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Fixed fFixed
+
+/// <summary>
+/// Return and optionally change the setting that determines the internal operational characteristics of the underlying floating-point system.
+/// </summary>
+/// <param name="nFPU"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetMath() AS DWORD
+	RETURN 0
+FUNCTION SetMath(nFPU AS DWORD) AS DWORD
+	RETURN 0   
+
+
+
+/// <summary>
+/// Change the setting that determines the <%APP%> search path for opening files.
+/// </summary>
+/// <param name="cPath"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetPath(cPath AS STRING) AS STRING
+	SETSTATE STRING Set.Path cPath
+
+
+/// <summary>
+/// Returns a string representing the evening extension for time strings in 12-hour format.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION GetPMExt() AS STRING
+	GETSTATE STRING Set.PmExt
+
+/// <summary>
+/// Returns a string representing the evening extension for time strings in 12-hour format.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION SetPMExt() AS STRING
+	RETURN GetPmExt()
+
+/// <summary>
+/// Set the evening extension for time strings in 12-hour format.
+/// </summary>
+/// <param name="cExt"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetPMExt(cExt AS STRING) AS STRING
+	SETSTATE STRING Set.PmExt cExt
+
+/// <summary>
+/// Save a numeric value to the Registry.
+/// </summary>
+/// <param name="cSubKey"></param>
+/// <param name="cKeyName"></param>
+/// <param name="nKeyVal"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetRTRegInt(cSubKey AS STRING,cKeyName AS STRING,nKeyVal AS DWORD) AS LOGIC
+	/// THROW NotImplementedException{}
+	RETURN FALSE   
+
+/// <summary>
+/// Save a string value to the Registry.
+/// </summary>
+/// <param name="cSubKey"></param>
+/// <param name="cKeyName"></param>
+/// <param name="cKeyVal"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetRTRegString(cSubKey AS STRING,cKeyName AS STRING,cKeyVal AS STRING) AS LOGIC
+	/// THROW NotImplementedException{}
+	RETURN FALSE   
+
+/// <summary>
+/// Return and optionally change the setting that displays numbers in scientific notation.
+/// </summary>
+/// <param name="f"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetScience() AS LOGIC
+	GETSTATE LOGIC Set.Science 
+
+FUNCTION SetScience(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Science lSet
+
+/// <summary>
+/// Return and optionally change the setting that determines whether a seek operation will find a close match when no exact match is found.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetSoftSeek() AS LOGIC
+	GETSTATE LOGIC Set.SoftSeek 
+
+FUNCTION SetSoftSeek(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.SoftSeek lSet
+
+/// <summary>
+/// Return and optionally change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
+/// </summary>
+/// <param name="wSep"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetThousandSep() AS WORD
+	GETSTATE WORD Set.ThousandSep 
+
+FUNCTION SetThousandSep(wSep AS WORD) AS WORD
+	SETSTATE WORD Set.ThousandSep wSep
+
+/// <summary>
+/// Change the setting that determines the separation character to be used in time strings.
+/// </summary>
+/// <param name="dwChar"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetTimeSep(dwChar AS DWORD) AS DWORD
+	SETSTATE DWORD Set.TimeSep dwChar
+
+/// <summary>
+/// Return and optionally change the setting that determines whether to include unique record keys in an order.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+
+FUNCTION SetUnique() AS LOGIC
+	GETSTATE LOGIC Set.Unique 
+
+FUNCTION SetUnique(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Unique lSet
+
+/// <summary>
+/// </summary>
+/// <param name="n"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
+	/// THROW NotImplementedException{}
+	RETURN 0   
+
+/// <summary>
+/// </summary>
+/// <param name="pFunc"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetWinCompFunc(pFunc AS OBJECT) AS IntPtr
+	/// THROW NotImplementedException{}
+	RETURN IntPtr.Zero
+
+
+/// <summary>
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+FUNCTION GetYield() AS LOGIC
+	GETSTATE LOGIC Set.Yield 
+
+FUNCTION SetYield(lSet AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Yield lSet
 

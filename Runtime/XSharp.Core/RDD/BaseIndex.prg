@@ -5,7 +5,8 @@
 //
 
 
-CLASS XSharp.BaseIndex IMPLEMENTS IOrder
+/// <Summary>Base Index class. Does not implement anything. </Summary>
+CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 	PRIVATE _oArea AS WorkArea
 
 	CONSTRUCTOR(oArea AS WorkArea)
@@ -13,6 +14,7 @@ CLASS XSharp.BaseIndex IMPLEMENTS IOrder
 
 VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 		THROW NotImplementedException{}
+
 VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 		THROW NotImplementedException{}
 

@@ -4,8 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
-using XSharp.Ads
-
+using XSharp.ADS
+using static XSharp.Functions
 
 // Return the AXS locking status
 FUNCTION AX_AXSLocking( ) AS LOGIC 

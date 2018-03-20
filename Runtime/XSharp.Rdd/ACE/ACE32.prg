@@ -7,8 +7,8 @@
 USING System
 USING System.Runtime.InteropServices
 
-BEGIN NAMESPACE XSharp.Ads
-INTERNAL STATIC CLASS ACE32
+BEGIN NAMESPACE XSharp.ADS
+INTERNAL STATIC CLASS ACE32 
 	[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 	internal static extern METHOD AdsAddCustomKey(hIndex as IntPtr ) as DWORD 
 

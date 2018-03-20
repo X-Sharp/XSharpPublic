@@ -1,8 +1,8 @@
 ﻿using System
 using System.Runtime.InteropServices
 
-BEGIN namespace XSharp.Ads
-
+BEGIN namespace XSharp.ADS
+ 
 	INTERNAL CLASS ACEUNPUB64
 		
         [DllImport("ace64dll", CharSet := CharSet.Ansi)];

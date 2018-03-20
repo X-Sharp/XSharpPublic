@@ -450,7 +450,7 @@ UNSAFE FUNCTION MemLower( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 	pChr	:= (BYTE PTR) pMemory
 	FOR VAR x := 1 TO dwCount
 		IF pChr[x] >= 'A' && pChr[x] <= 'Z'
-			pChr[x] += 'a' - 'A' 
+			pChr[x] += c'a' - c'A' 
 		ENDIF
 	NEXT
 	RETURN pMemory
@@ -536,8 +536,8 @@ UNSAFE FUNCTION MemUpper( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 
 	pChr	:= (BYTE PTR) pMemory
 	FOR VAR x := 1 TO dwCount
-		IF pChr[x] >= 'a' && pChr[x] <= 'z'
-			pChr[x] -= 'a' - 'A' 
+		IF pChr[x] >= c'a' && pChr[x] <= 'z'
+			pChr[x] -= c'a' - c'A' 
 		ENDIF
 	NEXT
 	RETURN pMemory

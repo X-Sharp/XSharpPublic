@@ -244,41 +244,41 @@ METHOD CloseMemFile() 	AS LOGIC
 	VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 		LOCAL oResult AS OBJECT
 		SWITCH nOrdinal
-		CASE DBI_ISDBF
-		CASE DBI_CANPUTREC
+		CASE DbInfo.DBI_ISDBF
+		CASE DbInfo.DBI_CANPUTREC
 			oResult := TRUE		
-		CASE DBI_LASTUPDATE
+		CASE DbInfo.DBI_LASTUPDATE
 			oResult := SELF:_LastUpdate
-		CASE DBI_GETHEADERSIZE
+		CASE DbInfo.DBI_GETHEADERSIZE
 			oResult := SELF:_HeaderLength     
-		// DBI_GETLOCKARRAY
-		// DBI_TABLEEXT
-		// DBI_FULLPATH
-		// DBI_MEMOTYPE 
-		// DBI_TABLETYPE
-		// DBI_FILEHANDLE
-		// DBI_MEMOHANDLE
-		// DBI_TRANSREC
-		// DBI_SHARED
-		// DBI_ISFLOCK
-		// DBI_VALIDBUFFER 
-		// DBI_POSITIONED 
-		// DBI_ISENCRYPTED
-		// DBI_DECRYPT
-		// DBI_ENCRYPT
-		// DBI_LOCKCOUNT 
-		// DBI_LOCKOFFSET
-		// DBI_LOCKTEST
-		// DBI_LOCKSCHEME
-		// DBI_ROLLBACK
-		// DBI_PASSWORD
-		// DBI_TRIGGER
-		// DBI_OPENINFO
-		// DBI_DIRTYREAD
-		// DBI_DB_VERSION
-		// DBI_RDD_VERSION
-		// DBI_CODEPAGE
-		// DBI_DOS_CODEPAGE
+		// DbInfo.GETLOCKARRAY
+		// DbInfo.TABLEEXT
+		// DbInfo.FULLPATH
+		// DbInfo.MEMOTYPE 
+		// DbInfo.TABLETYPE
+		// DbInfo.FILEHANDLE
+		// DbInfo.MEMOHANDLE
+		// DbInfo.TRANSREC
+		// DbInfo.SHARED
+		// DbInfo.ISFLOCK
+		// DbInfo.VALIDBUFFER 
+		// DbInfo.POSITIONED 
+		// DbInfo.ISENCRYPTED
+		// DbInfo.DECRYPT
+		// DbInfo.ENCRYPT
+		// DbInfo.LOCKCOUNT 
+		// DbInfo.LOCKOFFSET
+		// DbInfo.LOCKTEST
+		// DbInfo.LOCKSCHEME
+		// DbInfo.ROLLBACK
+		// DbInfo.PASSWORD
+		// DbInfo.TRIGGER
+		// DbInfo.OPENINFO
+		// DbInfo.DIRTYREAD
+		// DbInfo.DB_VERSION
+		// DbInfo.RDD_VERSION
+		// DbInfo.CODEPAGE
+		// DbInfo.DOS_CODEPAGE
 		
 		OTHERWISE
 			oResult := SUPER:Info(nOrdinal, oNewValue)
@@ -435,7 +435,13 @@ STRUCTURE DbfField
 	[FieldOffSet(18)] PUBLIC Flags		 AS BYTE
 	[FieldOffSet(19)] PUBLIC Counter	 AS LONG
 	[FieldOffSet(23)] PUBLIC IncStep	 AS BYTE
-	[FieldOffSet(24)] PUBLIC Reserved2[7] AS BYTE
+	[FieldOffSet(24)] public Reserved1   as byte
+	[FieldOffSet(25)] public Reserved2   as byte
+	[FieldOffSet(26)] public Reserved3   as byte
+	[FieldOffSet(27)] public Reserved4  as byte
+	[FieldOffSet(28)] public Reserved5   as byte
+	[FieldOffSet(29)] public Reserved6   as byte
+	[FieldOffSet(20)] PUBLIC Reserved7   AS BYTE
 	[FieldOffSet(31)] PUBLIC HasTag		 AS BYTE
 END STRUCTURE
  [StructLayout(LayoutKind.Explicit)];

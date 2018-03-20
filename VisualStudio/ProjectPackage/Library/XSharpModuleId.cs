@@ -46,6 +46,9 @@ namespace XSharp.Project
         {
             get { return itemId; }
         }
+
+        public uint ContentHashCode { get; set; }
+
         public override int GetHashCode()
         {
             int hash = 0;

@@ -302,5 +302,32 @@ namespace XSharpModel
         public bool HasLocals => _hasLocals;
 
         public XFileType XFileType => _type;
+
+        /// <summary>
+        /// Create a HashCode based on Prototype of all Members of All Types in the file
+        /// </summary>
+        public uint ContentHashCode
+        {
+            get
+            {
+                if (!IsSource)
+                    return 0;
+                if (TypeList == null)
+                    return 0;
+                lock (_lock)
+                {
+                    uint hash = 0;
+                    foreach (var type in TypeList.Values)
+                    {
+                        foreach (var member in type.Members)
+                        {
+                            hash = hash + (uint)member.Prototype.GetHashCode();
+                        }
+                    }
+                    return hash;
+                }
+            }
+        }
+
     }
 }

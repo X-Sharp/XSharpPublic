@@ -61,8 +61,9 @@ namespace XSharpLanguage
         private IToken _stopToken;
 
         private XFile _file;
-        private bool showTabs;
-        private bool dotUniversal;
+        private bool _coreDialect;
+        private bool _showTabs;
+        private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
 
         internal static bool StringEquals(string lhs, string rhs)
@@ -79,6 +80,9 @@ namespace XSharpLanguage
             _file = buffer.GetFile();
             // Currently, set as default, but should be VS Settings Based
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
+            var prj = _file.Project.ProjectNode;
+            var parseoptions = prj.ParseOptions;
+            _coreDialect = parseoptions.Dialect == XSharpDialect.Core;
             _settingIgnoreCase = true;
             _stopToken = null;
             this.aggregator = aggregator;
@@ -94,8 +98,15 @@ namespace XSharpLanguage
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 var package = XSharp.Project.XSharpProjectPackage.Instance;
                 var optionsPage = package.GetIntellisenseOptionsPage();
-                showTabs = optionsPage.CompletionListTabs;
-                dotUniversal = optionsPage.UseDotAsUniversalSelector;
+                _showTabs = optionsPage.CompletionListTabs;
+                if (_coreDialect)
+                {
+                    _dotUniversal = optionsPage.UseDotAsUniversalSelector;
+                }
+                else
+                {
+                    _dotUniversal = false;
+                }
                 // Where does the StartSession has been triggered ?
                 ITextSnapshot snapshot = _buffer.CurrentSnapshot;
                 var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(snapshot);
@@ -166,8 +177,11 @@ namespace XSharpLanguage
                 }
                 // Start of Process
                 String filterText = "";
+                // Check if we can get the member where we are
+                XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._file);
+                XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
-                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, false);
+                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, false, member);
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
                 // Try to Guess what TypedChar could be
@@ -213,21 +227,19 @@ namespace XSharpLanguage
                 }
                 // Special Phil
                 bool dotSelector = (typedChar == '.');
-                bool colonSelector = (typedChar == ':');
+                bool showInstanceMembers = (typedChar == ':');
                 //
-                if (dotSelector && dotUniversal)
+                if (dotSelector && _dotUniversal)
                 {
-                    colonSelector = true;
+                    showInstanceMembers = true;
                 }
                 // Alternative Token list (dot is a selector)
                 List<String> altTokenList;
-                if (dotSelector && dotUniversal)
-                    altTokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, true);
+                if (dotSelector && _dotUniversal )
+                    altTokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, true, member);
                 else
                     altTokenList = tokenList;
-                // Check if we can get the member where we are
-                XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._file);
-                XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
+
                 HashSet<String> Usings = new HashSet<String>(_file.Usings, StringComparer.OrdinalIgnoreCase);
                 if (currentNamespace != null)
                 {
@@ -273,7 +285,7 @@ namespace XSharpLanguage
                 }
                 else
                 {
-                    if (dotSelector && dotUniversal)
+                    if (dotSelector && _dotUniversal)
                     {
                         cType = XSharpTokenTools.RetrieveType(_file, altTokenList, member, currentNS, null, out foundElement, snapshot.GetText());
                         if (!cType.IsEmpty())
@@ -335,7 +347,7 @@ namespace XSharpLanguage
                     }
                 }
                 //
-                if (colonSelector)
+                if (showInstanceMembers)
                 {
                     // Member call
                     if (cType != null)
@@ -362,7 +374,7 @@ namespace XSharpLanguage
                     }
                 }
                 //
-                if (!dotSelector && !colonSelector)
+                if (!dotSelector && !showInstanceMembers)
                 {
                     // Empty line ?
                     // If we have only one Token, it can be the start of a Parameter/Local/Property/Method/Type/...
@@ -406,9 +418,17 @@ namespace XSharpLanguage
                                 // TODO: add Interfaces only
                                 break;
                             default:
-                                if (member != null) // Fill with the context ( Parameters and Locals )
+                                if (member != null) 
                                 {
+                                    // Fill with the context ( Parameters and Locals )
                                     BuildCompletionList(compList, member, filterText);
+                                    // Context Type....
+                                    cType = new CompletionType(member.Parent.Clone);
+                                    if (!cType.IsEmpty())
+                                    {
+                                        // Get the members also
+                                        BuildCompletionList(compList, cType, Modifiers.Private, false, filterText);
+                                    }
                                 }
                                 // Now Add Functions and Procedures
                                 BuildCompletionList(compList, _file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);
@@ -433,7 +453,7 @@ namespace XSharpLanguage
                 // and put in the SelectionList
                 var values = compList.Values;
                 completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
-                if (showTabs)
+                if (_showTabs)
                 {
                     if (compList.HasEnumMembers)
                     {
@@ -531,11 +551,27 @@ namespace XSharpLanguage
             //
             var sprjs = project.StrangerProjects;
             var prjs = project.ReferencedProjects;
-            foreach (AssemblyInfo assemblyInfo in project.AssemblyReferences)
+
+            // Check of MsCorlib is included
+            var references = project.AssemblyReferences.ToList();
+            bool hasCorLib = false; ;
+            foreach (var reference in references)
+            {
+                if (reference.FileName.EndsWith("mscorlib.dll", StringComparison.OrdinalIgnoreCase))
+                    {
+                    hasCorLib = true;
+                    break;
+                }
+            }
+            if ( ! hasCorLib)
+            {
+                references.Add(SystemTypeController.MsCorLib);
+            }
+            foreach (AssemblyInfo assemblyInfo in references)
             {
                 foreach (KeyValuePair<string, System.Type> typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
                 {
-                    if (XSharpTokenTools.isGenerated(typeInfo.Value))
+                        if (XSharpTokenTools.isGenerated(typeInfo.Value))
                         continue;
                     TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
                     String realTypeName = typeAnalysis.Name;
@@ -868,8 +904,18 @@ namespace XSharpLanguage
                     break;
             }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
-            //BuildCompletionList(compList, currentMember.Parent, Modifiers.Private);
             //
+
+            if (currentMember.Kind.IsClassMember())
+            {
+                var classElement = currentMember.Parent;
+                foreach (var member in classElement.Members.Where(m =>  m.Kind == Kind.Field && nameStartsWith(m.Name, startWith)))
+                {
+                    ImageSource icon = _provider.GlyphService.GetGlyph(member.GlyphGroup, member.GlyphItem);
+                    if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Description, icon, null, Kind.Field)))
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -1481,12 +1527,13 @@ namespace XSharpLanguage
                     {
                         foreach (var custattr in atts)
                         {
-                            if (custattr.ToString() == "Vulcan.Internal.ClipperCallingConventionAttribute")
+                            if (custattr.ToString().EndsWith("ClipperCallingConventionAttribute"))
                             {
                                 string[] names = (string[])custattr.GetType().GetProperty("ParameterNames").GetValue(custattr, null);
                                 if (names.Length == 0)
                                 {
-                                    this._parameters.Add(new ParamInfo("[params", "USUAL]", "AS"));
+                                    ; // no parameters defined
+                                    //this._parameters.Add(new ParamInfo("[params", "USUAL]", "AS"));
                                 }
                                 else
                                 {
@@ -2167,7 +2214,9 @@ namespace XSharpLanguage
             {
                 // only methods have overloads 
                 // we do not want to the overloads message for partial classes that appear in more than 1 file
-                if (item.Kind == Kind.Method)
+                // and if a method in a subclass has the same params we also do not want to show that there are overloads
+                var found = this[item.DisplayText];
+                if (item.Kind == Kind.Method && ! string.Equals(found.Description, item.Description,StringComparison.OrdinalIgnoreCase))
                 {
                     int overloads = 0;
                     // Already exists in the List !!
@@ -2323,9 +2372,11 @@ namespace XSharpLanguage
         /// <param name="stopToken">The IToken that stops the move backwards</param>
         /// <param name="fromGotoDefn">Indicate if the call is due to Goto Definition</param>
         /// <param name="file">XFile object to use for the context</param>
+        /// <param name="dotAsSelector">dot is used as 'standard' selector, like colon </param>
+        /// <param name="fromMember">The Member containing the position</param>
         /// <returns></returns>
         public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            string bufferText, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector)
+            string bufferText, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XTypeMember fromMember)
         {
             List<String> tokenList = new List<string>();
             String token;
@@ -2348,6 +2399,17 @@ namespace XSharpLanguage
             }
             //////////////////////////////////////
             //////////////////////////////////////
+            // Try to speedup the process, Tokenize only the Member source if possible (and not the FULL source text)
+            if (fromMember != null)
+            {
+                // So the code of the member is....
+                bufferText = bufferText.Substring(fromMember.Interval.Start, fromMember.Interval.Width);
+                // Adapt the positions.
+                triggerPointPosition = triggerPointPosition - fromMember.Interval.Start;
+                triggerPointLineNumber = triggerPointLineNumber - (fromMember.Range.StartLine - 1);
+            }
+            //var lexer = XSharpLexer.Create(bufferText, fileName, parseoptions);
+            //var tokens = lexer.GetTokenStream() as BufferedTokenStream;
             ITokenStream tokenStream;
             var reporter = new ErrorReporter();
             bool ok = XSharp.Parser.VsParser.Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
@@ -2381,7 +2443,7 @@ namespace XSharpLanguage
             IToken nextToken = list[current];
             // TODO: 
             // Sometimes the quickinfo does not show.
-            if (nextToken.StartIndex < triggerPointPosition && top - bottom == 1)
+            if ( (nextToken.StartIndex < triggerPointPosition) && (top - bottom == 1) && ( top < list.Count) )
                 nextToken = list[top];
             //////////////////////////////////////
             //////////////////////////////////////
@@ -2634,20 +2696,23 @@ namespace XSharpLanguage
             XType gbl = file.GlobalType;
             XTypeMember lastGlobalElement = null;
             //
-            foreach (XTypeMember elt in gbl.Members)
+            if (gbl != null)
             {
-                if (elt.Interval.ContainsInclusive(position))
+                foreach (XTypeMember elt in gbl.Members)
                 {
-                    return elt;
-                }
-                if (lastGlobalElement == null && elt.Interval.Start < position)
-                {
-                    lastGlobalElement = elt;
-                }
-                else if (lastGlobalElement != null && elt.Interval.Stop > lastGlobalElement.Interval.Stop
-                    && elt.Interval.Start < position)
-                {
-                    lastGlobalElement = elt;
+                    if (elt.Interval.ContainsInclusive(position))
+                    {
+                        return elt;
+                    }
+                    if (lastGlobalElement == null && elt.Interval.Start < position)
+                    {
+                        lastGlobalElement = elt;
+                    }
+                    else if (lastGlobalElement != null && elt.Interval.Stop > lastGlobalElement.Interval.Stop
+                        && elt.Interval.Start < position)
+                    {
+                        lastGlobalElement = elt;
+                    }
                 }
             }
             // If we are here, we found nothing
@@ -2730,10 +2795,13 @@ namespace XSharpLanguage
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 #endif
-            //
-            if (!file.HasLocals)
+            // HACK: Disable looking up locals in large buffers ( > 100 Kb)
+            if (currentBuffer.Length < (100 * 1024))
             {
-                file.GetLocals(currentBuffer);
+                if (!file.HasLocals)
+                {
+                    file.GetLocals(currentBuffer);
+                }
             }
             foundElement = null;
             if (currentMember == null)

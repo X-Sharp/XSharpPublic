@@ -95,23 +95,32 @@ namespace XSharpModel
                 //
                 if ( this.Kind != Kind.Field)
                 {
+                    desc += this.Kind.DisplayName() + " ";
                     if (this.Kind == Kind.VODefine)
                     {
-                        desc += "DEFINE" + " "+this.Name+this.Suffix;
+                        desc += this.Name+this.Suffix;
                         return desc;
-                    }
-                    else if (this.Kind == Kind.VOGlobal)
-                    {
-                        desc += "GLOBAL" + " ";
-                    }
-                    else
-                    {
-                        desc += this.Kind.ToString() + " ";
                     }
                 }
                 desc += this.Prototype;
                 //
                 return desc;
+            }
+        }
+
+        public bool HasParameters => this.Kind.HasParameters() && Parameters.Count > 0;
+        public string ParameterList
+        {
+            get
+            { 
+                string parameters = "";
+                foreach (XVariable var in this.Parameters)
+                {
+                    if (parameters.Length > 1)
+                        parameters += ", ";
+                    parameters += var.Name + " as " + var.TypeName;
+                }
+                return parameters;
             }
         }
 
@@ -122,14 +131,7 @@ namespace XSharpModel
                 string vars = "";
                 if ( this.Kind.HasParameters())
                 {
-                    vars = "(";
-                    foreach (XVariable var in this.Parameters)
-                    {
-                        if (vars.Length > 1)
-                            vars += ", ";
-                        vars += var.Name + " as " + var.TypeName;
-                    }
-                    vars += ")";
+                    vars = "(" + this.ParameterList + ")";
                 }
                 //
                 string desc = this.Name;

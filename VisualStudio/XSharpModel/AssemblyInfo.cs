@@ -95,6 +95,12 @@ namespace XSharpModel
         {
             get
             {
+                if (string.IsNullOrEmpty(_fileName))
+                    return false;
+                if (!File.Exists(_fileName))
+                {
+                    return false;
+                }
                 var currentTimestamp = File.GetLastWriteTime(_fileName);
                 return currentTimestamp != Modified;
             }

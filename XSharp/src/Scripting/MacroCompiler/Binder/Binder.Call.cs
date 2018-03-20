@@ -18,53 +18,66 @@ namespace XSharp.MacroCompiler
                 self = ((MemberAccessExpr)expr).Expr;
             }
             else
+            {
                 self = null;
+            }
+
+            OverloadResult ovRes = null;
+
             if (expr.Symbol is MemberSymbol)
             {
-                if ((expr.Symbol as MemberSymbol)?.Member.MemberType == MemberTypes.Method)
+                if (expr.Symbol is MethodSymbol)
                 {
-                    return expr.Symbol as MemberSymbol;
+                    CheckArguments((MethodSymbol)expr.Symbol, args, ref ovRes);
                 }
             }
-            if ((expr.Symbol as SymbolList)?.SymbolTypes.HasFlag(MemberTypes.Method) == true)
+            else if ((expr.Symbol as SymbolList)?.SymbolTypes.HasFlag(MemberTypes.Method) == true)
             {
                 var methods = expr.Symbol as SymbolList;
-                var valids = new System.Collections.BitArray(methods.Symbols.Count);
-                MemberSymbol validMethod = null;
-                int numValid = 0;
                 for (int i = 0; i<methods.Symbols.Count; i++)
                 {
                     var m = methods.Symbols[i];
                     if (m is MethodSymbol)
                     {
-                        var method = (m as MethodSymbol).Method;
-                        var parameters = method.GetParameters();
-                        var returnparam = method.ReturnParameter;
-                        if (parameters.Length == args.Args.Count)
-                        {
-                            bool v = true;
-                            for (int p = 0; p<parameters.Length; p++)
-                            {
-                                if (parameters[p].ParameterType != args.Args[p].Expr.Datatype)
-                                {
-                                    v = false;
-                                    break;
-                                }
-                            }
-                            if (v)
-                            {
-                                valids[i] = true;
-                                numValid += 1;
-                                if (validMethod == null)
-                                    validMethod = (MethodSymbol)m;
-                            }
-                        }
+                        CheckArguments((MethodSymbol)m, args, ref ovRes);
+                        if (ovRes?.Exact == true)
+                            break;
                     }
                 }
-                if (numValid == 1)
-                    return validMethod;
+            }
+
+            if (ovRes?.Unique == true)
+            {
+                ApplyConversions(args, ovRes);
+                return ovRes.Method;
             }
             return null;
+        }
+
+        static void CheckArguments(MethodSymbol m, ArgList args, ref OverloadResult ovRes)
+        {
+            var method = m.Method;
+            var parameters = method.GetParameters();
+            if (parameters.Length == args.Args.Count)
+            {
+                var ovr = OverloadResult.Create(m, args.Args.Count);
+                for (int p = 0; p < args.Args.Count; p++)
+                {
+                    ovr.ArgConversion(p, ArgumentConversion(args.Args[p], parameters[p]));
+                }
+                ovRes = ovr.Better(ovRes);
+            }
+        }
+
+        static void ApplyConversions(ArgList args, OverloadResult ovRes)
+        {
+            var parameters = ovRes.Method.Method.GetParameters();
+            for (int i = 0; i < args.Args.Count; i++)
+            {
+                var conv = ovRes.Conversions[i];
+                if (conv.Kind != ConversionKind.Identity)
+                    Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), conv);
+            }
         }
     }
 }

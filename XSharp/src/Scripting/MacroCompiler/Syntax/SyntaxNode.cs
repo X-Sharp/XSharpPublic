@@ -54,24 +54,24 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class BinaryExpr : Expr
     {
         internal Expr Left;
-        internal TokenType Op;
+        internal TokenType Kind;
         internal Expr Right;
-        internal BinaryExpr(Expr l, TokenType o, Expr r) { Left = l; Op = o; Right = r; }
-        public override string ToString() { return "(" + Left.ToString() + TokenText(Op) + Right.ToString() + ")"; }
+        internal BinaryExpr(Expr l, TokenType o, Expr r) { Left = l; Kind = o; Right = r; }
+        public override string ToString() { return "(" + Left.ToString() + TokenText(Kind) + Right.ToString() + ")"; }
     }
     internal partial class PrefixExpr : Expr
     {
         internal Expr Expr;
-        internal TokenType Op;
-        internal PrefixExpr(Expr e, TokenType o) { Expr = e; Op = o; }
-        public override string ToString() { return "(" + TokenText(Op) + Expr.ToString() + ")"; }
+        internal TokenType Kind;
+        internal PrefixExpr(Expr e, TokenType o) { Expr = e; Kind = o; }
+        public override string ToString() { return "(" + TokenText(Kind) + Expr.ToString() + ")"; }
     }
     internal partial class PostfixExpr : Expr
     {
         internal Expr Expr;
-        internal TokenType Op;
-        internal PostfixExpr(Expr e, TokenType o) { Expr = e; Op = o; }
-        public override string ToString() { return "(" + Expr.ToString() + TokenText(Op) + ")"; }
+        internal TokenType Kind;
+        internal PostfixExpr(Expr e, TokenType o) { Expr = e; Kind = o; }
+        public override string ToString() { return "(" + Expr.ToString() + TokenText(Kind) + ")"; }
     }
     internal partial class LiteralExpr : Expr
     {

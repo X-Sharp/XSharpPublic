@@ -3,31 +3,51 @@ using System.Collections.Generic
 using System.Linq
 using System.Text
 
+function U(u as usual) as usual
+    return u
+
+function Test(u as usual) as void
+    Console.WriteLine("Test: {0}", u)
+    return
+
 begin namespace MacroCompilerTest
     using XSharp.Runtime
     using XSharp.MacroCompiler
 
 	function Start() as void
-        var test_source := "Console.WriteLine(123)";
+	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
+
+        //var test_source := "Console.WriteLine(123)";
+        //var test_source := "Test(12345)";
+        var test_source := "Test(U(12345)+1)";
 
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
+
+        begin scope
+            Console.WriteLine("Executing macro ...")
+            var cb := mc:Compile(test_source)
+            cb:EvalBlock()
+            Console.WriteLine()
+        end scope
+
         TestMacroCompiler(mc, test_source, 15, true, false)
         TestMacroCompiler(mc, test_source, 15, true, true)
         TestMacroCompiler(mc, test_source, 100000, false, false)
         TestMacroCompiler(mc, test_source, 100000, false, true)
+
         ReportMemory("final");
 
         Console.WriteLine("Press any key to continue...")
         Console.ReadKey()
 
-    function CreateMacroCompiler() as MacroCompiler
+    function CreateMacroCompiler() as XSharp.Runtime.MacroCompiler
         Console.WriteLine("Creating macro compiler ...")
 
         var m := GC:GetTotalMemory(true)
         var t := DateTime.Now
 
-        var mc := MacroCompiler{}
+        var mc := XSharp.Runtime.MacroCompiler{}
 
         var dt := DateTime.Now - t
         t += dt
@@ -42,7 +62,7 @@ begin namespace MacroCompilerTest
         Console.WriteLine()
         return
 
-    function TestMacroCompiler(mc as MacroCompiler, source as string, iterations as int, check_mem as logic, compile as logic) as void
+    function TestMacroCompiler(mc as XSharp.Runtime.MacroCompiler, source as string, iterations as int, check_mem as logic, compile as logic) as void
         Console.WriteLine("Start {0} {1} ({2} iterations) ...", iif(compile,"compiler","parser"), iif(check_mem,"memory test","benchmark"), iterations);
 
         var m := GC:GetTotalMemory(true)
@@ -55,7 +75,8 @@ begin namespace MacroCompilerTest
             end
 
             if (compile)
-                var o := mc:Compile(source)
+                var o := MCompile(source)
+                //var o := mc:Compile(source)
                 //o:Eval()
             else
                 var ast := mc:compiler:Parse(source)
@@ -79,7 +100,24 @@ begin namespace MacroCompilerTest
 
 end namespace
 
+begin namespace XSharp.Runtime
+    using XSharp.MacroCompiler
+    using Vulcan.Runtime
 
+    public class MacroCompiler implements Vulcan.Runtime.IMacroCompiler
+        internal compiler := Compilation.Create<object,RuntimeCodeblockDelegate>() as Compilation<object,RuntimeCodeblockDelegate>
+
+	    public method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as Vulcan.Runtime.ICodeBlock
+		    lIsBlock := cMacro:StartsWith("{|")
+    	    return RuntimeCodeblock{compiler:Compile(cMacro),0}
+
+	    public method Compile (cMacro as string) as Vulcan.Runtime.ICodeBlock
+    	    return RuntimeCodeblock{compiler:Compile(cMacro),0}
+    end class
+
+end namespace
+
+/*
 begin namespace XSharp.Runtime
     using XSharp.MacroCompiler
 
@@ -108,7 +146,6 @@ begin namespace XSharp.Runtime
 
 end namespace
 
-
 begin namespace Vulcan.Runtime
     interface ICodeBlock
         public method Eval(args params dynamic[]) as dynamic
@@ -118,3 +155,4 @@ begin namespace Vulcan.Runtime
 	    method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as ICodeBlock
     end interface
 end namespace
+*/

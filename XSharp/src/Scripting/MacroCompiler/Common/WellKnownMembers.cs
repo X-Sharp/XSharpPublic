@@ -41,10 +41,7 @@ namespace XSharp.MacroCompiler
 
         internal static MemberSymbol GetMember(WellKnownMembers kind)
         {
-            if (WellKnownMemberSymbols == null)
-            {
-                InitializeWellKnownMembers();
-            }
+            Debug.Assert(WellKnownMemberSymbols != null);
             return WellKnownMemberSymbols[(int)kind];
         }
     }

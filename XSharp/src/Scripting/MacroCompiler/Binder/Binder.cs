@@ -116,9 +116,12 @@ namespace XSharp.MacroCompiler
             global = System.Threading.Interlocked.CompareExchange(ref Global, global, null);
             usings = System.Threading.Interlocked.CompareExchange(ref Usings, usings, null);
             typeCache = System.Threading.Interlocked.CompareExchange(ref TypeCache, typeCache, null);
+
+            Compilation.InitializeNativeTypes();
+            Compilation.InitializeWellKnownMembers();
         }
 
-        internal TypeSymbol FindType(Type t)
+        internal static TypeSymbol FindType(Type t)
         {
             if (t == null)
                 return null;

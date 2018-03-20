@@ -259,7 +259,7 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 
 
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
-                      ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? e=eos
+                      ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
                       (Members+=enummember)+
                       END ENUM? Ignored=identifier? eos
                     ;

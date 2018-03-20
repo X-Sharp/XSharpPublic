@@ -199,6 +199,11 @@ namespace XSharpModel
                         var xTree = sw.Parse();
                         sw.BuildModel(xTree, false);
                         file.LastWritten = dt;
+                        if ( file.Project != null)
+                        {
+                            file.Project.FileWalkComplete?.Invoke(file);
+                        }
+
                         //
                     }
                     catch (Exception)

@@ -321,7 +321,7 @@ namespace XSharpModel
                     {
                         foreach (var member in type.Members)
                         {
-                            hash = hash + (uint)member.Prototype.GetHashCode();
+                            hash = unchecked( hash + (uint)member.Prototype.GetHashCode());
                         }
                     }
                     return hash;

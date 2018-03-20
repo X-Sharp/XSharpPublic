@@ -213,8 +213,9 @@ namespace XSharpModel
                     // Walk the tree. The XSharpModelDiscover class will build the model.
                     walker.Walk(mdiscover, xTree);
                     // Callback for LibraryManager
-                    if ( _file.Project != null)
-                        _file.Project.FileWalkComplete?.Invoke(_file);
+                    // Disabled for Now RvdH
+                    //if ( _file.Project != null)
+                    //    _file.Project.FileWalkComplete?.Invoke(_file);
                     //
                 }
                 catch (Exception e)

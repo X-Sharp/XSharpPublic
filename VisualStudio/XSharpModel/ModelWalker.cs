@@ -207,9 +207,7 @@ namespace XSharpModel
                         ;
                     }
                 }
-                // Callback
-                file.Project.FileWalkComplete?.Invoke(file);
-                //
+                
             }
         }
 

@@ -28,7 +28,7 @@ using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 using XSharpModel;
 using System.Collections.Generic;
-
+using System.Diagnostics;
 namespace XSharp.Project
 {
 
@@ -111,6 +111,7 @@ namespace XSharp.Project
         _Warning = 217,
     };
 
+    [DebuggerDisplay("{Name}")]
     internal class XSharpLibraryNode : LibraryNode
     {
         internal IVsHierarchy ownerHierarchy;
@@ -135,25 +136,17 @@ namespace XSharp.Project
         internal XSharpLibraryNode(XElement scope, string namePrefix, IVsHierarchy hierarchy, uint itemId)
             : base(scope.Name)
         {
-            if ((scope.Kind == Kind.Constructor) || (scope.Kind == Kind.Destructor) ||
-                (scope.Kind == Kind.Method) || (scope.Kind == Kind.Property) ||
-                (scope.Kind == Kind.Event) || (scope.Kind == Kind.Field) ||
-                (scope.Kind == Kind.Access) || (scope.Kind == Kind.Assign) ||
-                (scope.Kind == Kind.Function) || (scope.Kind == Kind.Procedure)
-                )
-            {
-                this.NodeType = LibraryNodeType.Members;
-            }
-            else if (scope.Kind == Kind.Namespace)
+            if (scope.Kind == Kind.Namespace)
             {
                 this.NodeType = LibraryNodeType.Namespaces;
             }
-            else if ((scope.Kind == Kind.Class) || (scope.Kind == Kind.Structure) ||
-                      (scope.Kind == Kind.Union) ||
-                      (scope.Kind == Kind.VOStruct)
-                    )
+            else if (scope.Kind.IsType())
             {
                 this.NodeType = LibraryNodeType.Classes;
+            }
+            else
+            {
+                this.NodeType = LibraryNodeType.Members;
             }
             //
             this.filesId = new List<uint>();
@@ -179,6 +172,14 @@ namespace XSharp.Project
                 case Kind.Class:
                     iImage = (int)IconImageIndex._Class;
                     break;
+                case Kind.Structure:
+                case Kind.VOStruct:
+                case Kind.Union:
+                    iImage = (int)IconImageIndex._Struct;
+                    break;
+                case Kind.Delegate:
+                    iImage = (int)IconImageIndex._Delegate;
+                    break;
                 case Kind.Namespace:
                     iImage = (int)IconImageIndex._Namespace;
                     break;
@@ -187,6 +188,7 @@ namespace XSharp.Project
                 case Kind.Method:
                 case Kind.Function:
                 case Kind.Procedure:
+                case Kind.VODLL:
                     iImage = (int)IconImageIndex._Method;
                     break;
                 case Kind.Property:
@@ -201,6 +203,31 @@ namespace XSharp.Project
                 case Kind.Interface:
                     iImage = (int)IconImageIndex._Interface;
                     break;
+                case Kind.Event:
+                    iImage = (int)IconImageIndex._Event;
+                    break;
+                case Kind.Operator:
+                    iImage = (int)IconImageIndex._Operator;
+                    break;
+                case Kind.Enum:
+                    iImage = (int)IconImageIndex._Enumeration;
+                    break;
+                case Kind.VODefine:
+                    iImage = (int)IconImageIndex._Constant;
+                    break;
+                case Kind.EnumMember:
+                    iImage = (int)IconImageIndex._EnumMember;
+                    break;
+                case Kind.Local:
+                case Kind.Parameter:
+                    iImage = (int)IconImageIndex._VVariable;
+                    break;
+                case Kind.Using:
+                    iImage = (int)IconImageIndex._Reference;
+                    break;
+                default:
+                    break;
+
             }
             //
             switch (accessType)
@@ -347,30 +374,24 @@ namespace XSharp.Project
                         break;
 
                     default:
-                        if ((member.Kind == Kind.Constructor) || (member.Kind == Kind.Method) ||
-                            (member.Kind == Kind.Function) || (member.Kind == Kind.Procedure)
-                            )
+                        descText = member.Name;
+                        if (member is XTypeMember)
                         {
-                            //
-                            descText = member.Name;
-
-                            if (member.Kind == Kind.Constructor)
-                                descText = "Constructor";
-                            //
-                            descText += "( ";
-                            //
-                            int paramNum = 1;
-                            foreach (XVariable param in ((XTypeMember)member).Parameters)
+                            var tm = member as XTypeMember;
+                            if (tm.Kind == Kind.Constructor)
                             {
-                                descText += param.TypeName;
-                                // Add comma ??
-                                if (paramNum < ((XTypeMember)member).Parameters.Count)
-                                {
-                                    paramNum++;
-                                    descText += ",";
-                                }
+                                descText = "Constructor";
                             }
-                            descText += ")";
+                            else
+                            {
+                                descText = member.Name;
+                            }
+                            if (tm.HasParameters)
+                            {
+
+                                //
+                                descText += "( " + tm.ParameterList +")";
+                            }
                         }
                         // No description for Project
                         if ((tto == VSTREETEXTOPTIONS.TTO_SEARCHTEXT) && (this.NodeType == LibraryNodeType.Package))
@@ -425,7 +446,7 @@ namespace XSharp.Project
                     description.AddDescriptionText3(access, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                 }
                 // 
-                descText = member.Kind.ToString().ToUpper() + " ";
+                descText = member.Kind.DisplayName().ToUpper() + " ";
                 description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                 descText = member.Name;
                 description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME, null);
@@ -444,7 +465,7 @@ namespace XSharp.Project
                             description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM, null);
                             descText = param.TypeName;
                             //
-                            IVsNavInfo navInfo = buildNavInfo( member.File, param.TypeName );
+                            IVsNavInfo navInfo = buildNavInfo(member.File, param.TypeName);
                             //
                             description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, navInfo);
                             // Need a comma ?
@@ -459,20 +480,14 @@ namespace XSharp.Project
                         description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                     }
                 }
-                // return ?
-                switch (member.Kind)
+                if (member.Kind.HasReturnType())
                 {
-                    case Kind.Function:
-                    case Kind.Method:
-                    case Kind.Access:
-                    case Kind.Field:
-                    case Kind.Property:
-                        descText = " AS ";
-                        description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
-                        descText = ((XTypeMember)member).TypeName;
-                        description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, null);
-                        break;
+                    descText = " AS ";
+                    description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                    descText = ((XTypeMember)member).TypeName;
+                    description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, null);
                 }
+
                 //
                 if ((member.Parent is XType) && (member.Parent.Kind == Kind.Class))
                 {
@@ -542,7 +557,12 @@ namespace XSharp.Project
                 if (string.IsNullOrEmpty(fileMoniker))
                 {
                     if ((this.filesId.Count > 0) && (this.filesId[0] != VSConstants.VSITEMID_NIL))
-                        ErrorHandler.ThrowOnFailure(ownerHierarchy.GetCanonicalName(this.filesId[0], out fileMoniker));
+                    {
+                        if (ownerHierarchy != null)
+                        {
+                            ErrorHandler.ThrowOnFailure(ownerHierarchy.GetCanonicalName(this.filesId[0], out fileMoniker));
+                        }
+                    }
                 }
                 string result = "";
                 if (fileMoniker != null)

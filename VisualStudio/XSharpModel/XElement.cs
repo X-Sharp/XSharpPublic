@@ -521,8 +521,7 @@ namespace XSharpModel
         VOStruct,
         Union,
         EnumMember,
-        Keyword,
-        Var
+        Keyword
     }
 
     /// <summary>
@@ -610,7 +609,7 @@ namespace XSharpModel
             return false;
         }
 
-        public static bool HasReturnType( this Kind elementKind)
+        public static bool HasReturnType(this Kind elementKind)
         {
             switch (elementKind)
             {
@@ -624,10 +623,29 @@ namespace XSharpModel
                 case Kind.Local:
                 case Kind.VOGlobal:
                 case Kind.VODefine:
+                case Kind.Field:
                     return true;
             }
             return false;
         }
+
+        public static bool IsClassMember(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Method:
+                case Kind.Assign:
+                case Kind.Access:
+                case Kind.Property:
+                case Kind.Event:
+                case Kind.Constructor:
+                case Kind.Destructor:
+                case Kind.Operator:
+                    return true;
+            }
+            return false;
+        }
+
 
         public static bool HasParameters(this Kind elementKind)
         {
@@ -647,5 +665,20 @@ namespace XSharpModel
             return false;
         }
 
+        public static string DisplayName(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.VODefine:
+                    return "DEFINE";
+                case Kind.VOGlobal:
+                    return "GLOBAL";
+                case Kind.EnumMember:
+                    return "MEMBER";
+                default:
+                    return elementKind.ToString().ToUpper();
+            }
+
+        }
     }
 }

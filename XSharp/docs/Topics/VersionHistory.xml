@@ -26,20 +26,23 @@
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#000000;">Visual Studio Integration</text></para>
     <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">More performance improvements in the editor. Especially large source files with incorrect code could slow down the editor. </li>
-      <li styleclass="List">The editor parser no longer tries</li>
-      <li styleclass="List" style="page-break-before:always;"> to parse include files repeatedly when these files contain #defines only (like the Vulcan header files)</li>
+      <li styleclass="List">The editor parser no longer tries to parse include files repeatedly when these files contain #defines only (like the Vulcan header files)</li>
       <li styleclass="List">The source code editor tried to show intellisense for words in a comment region. That has been fixed.</li>
       <li styleclass="List">We have started work on Object Browser and Class Browser.</li>
       <li styleclass="List">Opening and closing of projects should be slightly faster</li>
-      <li styleclass="List">The internal codemodel used by the editors now disposes its loaded information when projects are closed and no projects need this information anymore. This should reduce the memory usage of the X# project system</li>
+      <li styleclass="List">The internal code model used by the editors now disposes its loaded information when projects are closed and no projects need this information anymore. This should reduce the memory usage of the X# project system</li>
       <li styleclass="List">Matching keywords, such as IF .. ENDIF and FOR .. NEXT should now be highlighted in the editor</li>
       <li styleclass="List">If you select an identifier in the editor then that identifier will be highlighted in the current method/function on all places where it is used</li>
       <li styleclass="List">We have added several features that you need to enable/disable on the <text style="font-weight:bold;">Tools/Options/Text Editor/XSharp/Intellisens</text>e dialog:</li>
       <list id="48" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="List">The code completion in the editor also supports instance member completion when a dot is pressed.<br/>Please note that the compiler ONLY accepts this in the Core language, not in the VO &amp; Vulcan dialect. </li>
+        <li styleclass="List">The code completion in the editor also supports instance member completion when a dot is pressed.<br/>Please note that the compiler ONLY accepts this in the Core language, not in the VO &amp; Vulcan dialect. So the option has no effect inside projects with other dialects.</li>
         <li styleclass="List">We have added some options to control the sorting of the DropDown comboboxes in the editor, as well as if fields/instance variables should be included in these comboboxes. When you do not sort, then the entries in the dropdown box will be shown in the order in which they are found in the source file.</li>
-        <li styleclass="List">We have added the option to autocomplete identifiers when typing. </li>
+        <li styleclass="List">We have added the option to autocomplete identifiers when typing. This includes locals, parameters, class fields, namespaces, types etc.</li>
       </list>
+    </list>
+    <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Overridden methods in subclasses with the same signature as the parent methods they override are no longer counted as overloads in completionlists</li>
+      <li styleclass="List">A missing reference DLL could &quot;kill&quot; the intellisense engine. This no longer happens. Of course the type info from a missing referenced DLL is not included. </li>
     </list>
     <para styleclass="List"></para>
     <para styleclass="List"><text style="font-weight:bold;">VOXPorter</text></para>

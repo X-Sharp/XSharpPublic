@@ -609,7 +609,7 @@ namespace XSharpModel
             return false;
         }
 
-        public static bool HasReturnType( this Kind elementKind)
+        public static bool HasReturnType(this Kind elementKind)
         {
             switch (elementKind)
             {
@@ -665,5 +665,20 @@ namespace XSharpModel
             return false;
         }
 
+        public static string DisplayName(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.VODefine:
+                    return "DEFINE";
+                case Kind.VOGlobal:
+                    return "GLOBAL";
+                case Kind.EnumMember:
+                    return "MEMBER";
+                default:
+                    return elementKind.ToString().ToUpper();
+            }
+
+        }
     }
 }

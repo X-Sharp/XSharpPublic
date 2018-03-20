@@ -95,7 +95,7 @@ namespace XSharp.Project
             {
                 eh(this, pTextLineChange, fLast);
             }
-
+            // As soon as we have a modification on a buffer... Maybe a little bit too much !! :)
             isDirty = true;
         }
         #endregion
@@ -127,7 +127,8 @@ namespace XSharp.Project
             {
                 HierarchyEventArgs args = new HierarchyEventArgs(fileId.ItemID, fileName);
                 args.TextBuffer = buffer;
-                onFileChanged(fileId.Hierarchy, args);
+                // Enqueue a Library Request
+                //onFileChanged(fileId.Hierarchy, args);
             }
 
             isDirty = false;

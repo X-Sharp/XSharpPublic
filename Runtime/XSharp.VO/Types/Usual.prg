@@ -9,9 +9,9 @@ using System.Diagnostics
 using XSharp.Internal
 begin namespace XSharp
     [StructLayout(LayoutKind.Sequential)];
-        [DebuggerDisplay("{Value} ({UsualType})", Type := "USUAL")];
-        [DebuggerTypeProxy(typeof(UsualDebugView))];
-        public structure __Usual implements IConvertible,IComparable
+    [DebuggerDisplay("{Value} ({UsualType})", Type := "USUAL")];
+    [DebuggerTypeProxy(typeof(UsualDebugView))];
+    public structure __Usual implements IConvertible,IComparable
         #region static fields
             public static _NIL as __Usual
         #endregion

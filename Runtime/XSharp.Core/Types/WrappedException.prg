@@ -8,8 +8,8 @@ class XSharp.Internal.WrappedException inherit Exception
 	private initonly _value as object
 	/// <Summary>The property that is passed by the BREAK statement</summary>
 	property value as object get _value
-
+	
 	constructor(value as object)
 		_value := value
-
+	
 end class

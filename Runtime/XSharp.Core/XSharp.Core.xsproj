@@ -124,7 +124,6 @@
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\FileIO.prg" />
     <Compile Include="Functions\International.prg" />
-    <Compile Include="Functions\Is.prg" />
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Numeric.prg" />
     <Compile Include="Functions\String.prg" />

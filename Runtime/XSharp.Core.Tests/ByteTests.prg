@@ -3,10 +3,10 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 using XUnit
-using XSharp.Runtime
 
 
-BEGIN NAMESPACE XSharp.Runtime.Tests
+
+BEGIN NAMESPACE XSharp.Core.Tests
 
 	CLASS ByteTests
 

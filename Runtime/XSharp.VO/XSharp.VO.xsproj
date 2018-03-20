@@ -14,7 +14,7 @@
     <Name>XSharp.VO</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
+    <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.VO</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -41,7 +41,7 @@
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>false</VO14>
-    <VO15>false</VO15>
+    <VO15>true</VO15>
     <VO16>false</VO16>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
@@ -50,7 +50,7 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)\</OutputPath>
+    <OutputPath>$(Solutiondir)$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

@@ -1,83 +1,83 @@
 ﻿
-using System
-using System.Collections.Generic
-using System.Text
+USING System
+USING System.Collections.Generic
+USING System.Text
 
-begin namespace XSharp
-	/// <Summary>XSharp Runtime base Error class</Summary>
-	class Error inherit Exception
-	/// <Summary>A string representing the name of the subsystem generating the error.</Summary>
-	property SubSystem as string auto
-	/// <Summary>An integer numeric value representing a Visual Objects generic error code.</Summary>
-	/// <Seealso cref="T:XSharp.Gencode"/>
-	property Gencode as int auto
-	/// <Summary>An integer numeric value representing a subsystem-specific error code.</Summary>
-	property SubCode as int auto
-	/// <Summary>A string representing the name of the function or method in which the error occurred.</Summary>
-	property FuncSym as string auto
-	/// <Summary>A string representing the name used to open the file associated with the error condition.</Summary>
-	property FileName as string auto
-	/// <Summary>A constant indicating the severity of the error condition.</Summary>
-	/// <Seealso cref="T:XSharp.Severity"/>
-	property Severity as int auto
-	/// <Summary>A string that describes the error condition.</Summary>
-	property Description as string auto
-	property Arg as string auto
-	property ArgType as string auto
-	property ArgTypeReq as System.Type auto
-	property ArgNum as long auto
-
-	private method setDefaultValues() as void
-		self:Gencode := 0
-		self:Subcode := 0
-		self:Subsystem := "BASE"
-		self:Severity    := Severity.Error
-		//TODO 
-		//SELF:FuncSym   := 
-
-	constructor()
-	return
-
-	constructor (ex as Exception)
-		super(ex.Message,ex)
-		self:setDefaultValues()
-		self:Description := ex:Message
-
-	constructor (igencode as int)
-		self:setDefaultValues()
-		self:Gencode := iGenCode
-
-	constructor (igencode as Gencode)
-		self:setDefaultValues()
-		self:Gencode := iGenCode
-
-	constructor (igencode as Gencode, iSubCode as int)
-		self:setDefaultValues()
-		self:Gencode := igencode
-		self:SubCode := iSubcode
-
-	constructor (igencode as int, iSubCode as int)
-		self:setDefaultValues()
-		self:Gencode := igencode
-		self:SubCode := iSubcode
-
-	static method ArgumentError(name as string, description as string) as Error
-		var err := Error{Gencode.ARG}
-		err:Arg  := name
-		err:Description := Description
-		return err
-
-	static method NullArgumentError( cFuncName as string, cArgName as string, iArgNum as int ) as Error
-		local e as Error
-		e := Error{ ArgumentNullException{} }
-		e:Severity    := ES_ERROR
-		e:GenCode     := EG_ARG
-		e:SubSystem   := "BASE"
-		e:FuncSym     := cFuncName
-		e:Arg         := cArgName
-		e:ArgNum      := iArgNum
-		//e:Description := SR.GetString( SR.ArgIsNULL )
-		return e
-
-	end class
-end namespace 
+BEGIN NAMESPACE XSharp
+    /// <Summary>XSharp Runtime base Error class</Summary>
+    CLASS Error INHERIT Exception
+        /// <Summary>A string representing the name of the subsystem generating the error.</Summary>
+        PROPERTY SubSystem AS STRING AUTO
+        /// <Summary>An integer numeric value representing a Visual Objects generic error code.</Summary>
+        /// <Seealso cref="T:XSharp.Gencode"/>
+        PROPERTY Gencode AS DWORD AUTO
+        /// <Summary>An integer numeric value representing a subsystem-specific error code.</Summary>
+        PROPERTY SubCode AS DWORD AUTO
+        /// <Summary>A string representing the name of the function or method in which the error occurred.</Summary>
+        PROPERTY FuncSym AS STRING AUTO
+        /// <Summary>A string representing the name used to open the file associated with the error condition.</Summary>
+        PROPERTY FileName AS STRING AUTO
+        /// <Summary>A constant indicating the severity of the error condition.</Summary>
+        /// <Seealso cref="T:XSharp.Severity"/>
+        PROPERTY Severity AS DWORD AUTO
+        /// <Summary>A string that describes the error condition.</Summary>
+        PROPERTY Description AS STRING AUTO
+        PROPERTY Arg AS STRING AUTO
+        PROPERTY ArgType AS STRING AUTO
+        PROPERTY ArgTypeReq AS System.Type AUTO
+        PROPERTY ArgNum AS LONG AUTO
+        
+        PRIVATE METHOD setDefaultValues() AS VOID
+            SELF:Gencode := 0
+            SELF:Subcode := 0
+            SELF:Subsystem := "BASE"
+            SELF:Severity    := Severity.ES_Error
+        //TODO 
+        //SELF:FuncSym   := 
+        
+        CONSTRUCTOR()
+            RETURN
+        
+        CONSTRUCTOR (ex AS Exception)
+            SUPER(ex.Message,ex)
+            SELF:setDefaultValues()
+            SELF:Description := ex:Message
+        
+        CONSTRUCTOR (dwgencode AS DWORD)
+            SELF:setDefaultValues()
+            SELF:Gencode := dwGenCode
+        
+        CONSTRUCTOR (eGencode AS Gencode)
+            SELF:setDefaultValues()
+            SELF:Gencode := eGenCode
+        
+        CONSTRUCTOR (eGencode AS Gencode, dwSubCode AS DWORD)
+            SELF:setDefaultValues()
+            SELF:Gencode := eGencode
+            SELF:SubCode := dwSubcode
+        
+        CONSTRUCTOR (dwgencode AS DWORD, dwSubCode AS DWORD)
+            SELF:setDefaultValues()
+            SELF:Gencode := dwgencode
+            SELF:SubCode := dwSubcode
+        
+        STATIC METHOD ArgumentError(name AS STRING, description AS STRING) AS Error
+            VAR err := Error{Gencode.EG_ARG}
+            err:Arg  := name
+            err:Description := Description
+            RETURN err
+        
+        STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS INT ) AS Error
+            LOCAL e AS Error
+            e := Error{ ArgumentNullException{} }
+            e:Severity    := ES_ERROR
+            e:GenCode     := EG_ARG
+            e:SubSystem   := "BASE"
+            e:FuncSym     := cFuncName
+            e:Arg         := cArgName
+            e:ArgNum      := iArgNum
+            //e:Description := SR.GetString( SR.ArgIsNULL )
+            RETURN e
+        
+    END CLASS
+END NAMESPACE 

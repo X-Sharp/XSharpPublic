@@ -29,18 +29,21 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
+    <StartupObject />
+    <ApplicationIcon />
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>e83c6c8c-773f-4b01-a597-3d38398a9362</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharp.Rdd</RootNamespace>
+    <RootNamespace>XSharp.RDD</RootNamespace>
     <AssemblyName>XSharp.Rdd</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>XSharp.RDD</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
+    <Dialect>Vulcan</Dialect>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
   </PropertyGroup>

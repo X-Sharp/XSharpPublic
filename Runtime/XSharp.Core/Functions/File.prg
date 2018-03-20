@@ -22,6 +22,7 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC currentItem	:= NULL AS OBJECT
 		STATIC isAtEnd		:= TRUE AS LOGIC
 		static errorCode	:= 0 as dword
+		static lastFound	:= "" as string
 		const timeFormat := "HH:MM:ss" as String
 		
 		PUBLIC STATIC METHOD FFCount( fileSpec AS STRING , attributes AS DWORD ) AS DWORD
@@ -367,7 +368,7 @@ BEGIN NAMESPACE XSharp.IO
 		/// <returns>
 		/// </returns>
 		UNSAFE FUNCTION FClose(pFile AS PTR) AS LOGIC
-		RETURN XSharp.IO.FileHelper.FClose(pFile)   
+			return XSharp.IO.FileHelper.FClose(pFile)   
 		
 		/// <summary>
 		/// Flush file buffers.
@@ -386,7 +387,7 @@ BEGIN NAMESPACE XSharp.IO
 		/// <returns>
 		/// </returns>
 		UNSAFE FUNCTION FEof(pFILE AS PTR) AS LOGIC
-		RETURN XSharp.IO.FileHelper.FEof(pFILE ) 
+			RETURN XSharp.IO.FileHelper.FEof(pFILE ) 
 		
 		/// <summary>
 		/// Lock a portion of an open file.
@@ -443,17 +444,6 @@ BEGIN NAMESPACE XSharp.IO
 		UNSAFE FUNCTION FieldVal(ptrBuff AS PTR,nLen AS INT,nDec AS INT) AS REAL8
 			/// THROW NotImplementedException{}
 		RETURN 0   
-		
-		/// <summary>
-		/// </summary>
-		/// <param name="ptrUsual"></param>
-		/// <param name="dwLen"></param>
-		/// <param name="dwDec"></param>
-		/// <returns>
-		/// </returns>
-		UNSAFE FUNCTION __VOFloat2Str(ptrUsual AS PTR,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-			/// THROW NotImplementedException{}
-		RETURN String.Empty
 		
 		/// <summary>
 		/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
@@ -706,8 +696,15 @@ FUNCTION FErase(cFile AS STRING) AS LOGIC
 /// <returns>
 /// True if the file exists, otherwise false
 /// </returns>
-FUNCTION File(cFile AS STRING) AS LOGIC
-RETURN	 System.IO.File.Exists(cFile)
+function File(cFile as string) as logic
+	local lFound as logic
+	lFOund := System.IO.File.Exists(cFile)
+	if lFound
+		FileHelper.LastFOund := cFile
+	else
+		FileHelper.LastFOund := ""
+	endif
+	return lFound
 
 
 /// <summary>

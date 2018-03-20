@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-INTERFACE XSharp.IOrder
+INTERFACE XSharp.RDD.IOrder
 
 	// Indexes
     METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC

@@ -41,5 +41,4 @@ function CurDrive() as string
 /// <returns>
 /// </returns>
 function WorkDir() as string
-/// THROW NotImplementedException{}
-return String.Empty   
+	return System.Environment.CurrentDirectory

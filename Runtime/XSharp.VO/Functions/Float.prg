@@ -84,6 +84,20 @@ FUNCTION FloatNext(f AS __VOFloat) AS __VOFloat
 	/// THROW NotImplementedException{}
 RETURN 0   
 
+
+/// <summary>
+/// </summary>
+/// <param name="uValue"></param>
+/// <param name="dwLen"></param>
+/// <param name="dwDec"></param>
+/// <returns>
+/// </returns>
+UNSAFE FUNCTION Float2Str(uValue AS __USUAL,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	/// THROW NotImplementedException{}
+RETURN String.Empty
+		
+
+
 /// <summary>
 /// Return the fractional portion of a number.
 /// </summary>

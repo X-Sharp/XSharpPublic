@@ -12,8 +12,8 @@ USING XSharp
 USING XSharp.RDD
 
 
-CLASS XSharp.Ads.ADSMemo INHERIT BaseMemo
-    PRIVATE oRDD as ADSRDD
+CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
+    PRIVATE oRDD as ADSRDD 
 
 	CONSTRUCTOR(oArea as WorkArea)
 		SUPER(oArea)
@@ -53,7 +53,7 @@ CLASS XSharp.Ads.ADSMemo INHERIT BaseMemo
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CloseMemFile")
 
-    VIRTUAL METHOD CreateMemFile(info AS XSharp.DbOpenInfo) AS LOGIC
+    VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CreateMemFile")
 

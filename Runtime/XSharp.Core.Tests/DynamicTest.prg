@@ -3,11 +3,10 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 using XUnit
-using XSharp.Runtime
 using System.Diagnostics
 
 
-BEGIN NAMESPACE XSharp.Runtime.Tests
+BEGIN NAMESPACE XSharp.Core.Tests
 	//[TestClass];
 	//CLASS DynamicTests
 //

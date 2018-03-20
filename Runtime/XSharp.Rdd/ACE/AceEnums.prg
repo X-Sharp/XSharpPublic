@@ -4,8 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-using AdvantageClientEngine
-BEGIN NAMESPACE XSharp.Ads
+BEGIN NAMESPACE XSharp.ADS
 Enum AceError AS WORD
 	member SUCCESS := ACE.AE_SUCCESS
 	member ALLOCATION_FAILED := ACE.AE_ALLOCATION_FAILED
@@ -247,9 +246,6 @@ ENUM AceValidate AS WORD
 	MEMBER APPEND_FAIL := ACE.ADS_VALIDATE_APPEND_FAIL 
 	MEMBER RETURN_ERROR := ACE.ADS_VALIDATE_RETURN_ERROR 
 END ENUM
-end namespace
-
-begin namespace AdvantageClientEngine
 public enum AdsCharTypes AS WORD
 	MEMBER ADS_ANSI := 1
 	MEMBER ADS_OEM

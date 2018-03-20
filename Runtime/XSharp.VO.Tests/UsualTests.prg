@@ -3,19 +3,19 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 using XUnit
-using XSharp.Runtime
 
 
-BEGIN NAMESPACE XSharp.Runtime.Tests
+
+BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS UsualTests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualDateTimeTest() as void
 			local now as DateTime
-			local u   as __Usual
+			local u   as Usual
 		    now := System.DateTime.Now
-			u := (__Usual) now
+			u := now
 			var s := u:ToString()
 			Assert.Equal(now:ToString(),u:ToString())
 			local check as DateTime
@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualDecimalTests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL l as Decimal
 			l := 1
 			u := l
@@ -41,53 +41,53 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal(4,  (Decimal) u)
 			u += 1.0
 			Assert.Equal(5,  (Decimal) u)
-			u := __Usual{Decimal.MaxValue}
+			u := Decimal.MaxValue
 			RETURN
 
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualInt64Tests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL l as Int64
-			u := (__Usual) 1
+			u :=  1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			l := u
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (Int64) u)
-			u := __Usual{UInt64.MaxValue}
+			u := UInt64.MaxValue
 			Assert.Throws(typeof(Error), { => l := (Int64) u})	// Overflow Error
-			u := __Usual{"a text"}
+			u := "a text"
 			Assert.Throws(typeof(Error), { => l := (Int64) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualLongTests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL l as LONG
-			u := (__Usual) 1
+			u := 1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			l := u
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (LONG) u)
-			u := __Usual{UInt32.MaxValue}
+			u := UInt32.MaxValue
 			Assert.Throws(typeof(Error), { => l := (LONG) u})	// Overflow Error
-			u := __Usual{"a text"}
+			u := "a text"
 			Assert.Throws(typeof(Error), { => l := (LONG) u})	// Conversion Error
 			
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualShortTests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL l as LONG
-			u := (__Usual) (Short)1
+			u := (Usual) (Short)1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			l := u
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (SHORT) u)
-			u := __Usual{UInt16.MaxValue}
+			u := UInt16.MaxValue
 			Assert.Throws(typeof(Error), { => l := (SHORT) u})	// Overflow Error
-			u := __Usual{"a text"}
+			u := "a text"
 			Assert.Throws(typeof(Error), { => l := (SHORT) u})	// Conversion Error
 			
 			RETURN
@@ -96,14 +96,14 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		METHOD UsualSByteTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL l as SByte
-			u := (__Usual) (SByte)1
+			u := (SByte)1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			l := u
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (SByte) u)
-			u := __Usual{Byte.MaxValue}
+			u := Byte.MaxValue
 			Assert.Throws(typeof(Error), { => l := (SByte) u})	// Overflow Error
-			u := __Usual{"a text"}
+			u := "a text"
 			Assert.Throws(typeof(Error), { => l := (SByte) u})	// Conversion Error
 			RETURN
 
@@ -111,29 +111,29 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		METHOD UsualUInt64Tests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL d as UInt64
-			u := (__Usual) (Uint64) 1
+			u := (Uint64) 1
 			Assert.Equal(UsualType(u), (DWORD) INT64)
 			d := u
 			Assert.Equal(d,1U)
 			Assert.Equal(d,  (UInt64) u)
-			u := (__Usual) -1
+			u := -1
 			Assert.Throws(typeof(Error), { => d := (UInt64) u})	// Overflow Error
-			u := __Usual{"a text"}
+			u := "a text"
 			Assert.Throws(typeof(Error), { => d := (UInt64) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualDwordTests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL d as DWORD
-			u := (__Usual) (DWORD) 1
+			u := (DWORD) 1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			d := u
 			Assert.Equal(d,1U)
 			Assert.Equal(d,  (DWORD) u)
-			u := (__Usual) -1
+			u := -1
 			Assert.Throws(typeof(Error), { => d := (DWORD) u})	// Overflow Error
-			u := __Usual{"a text"}
+			u := "a text"
 			Assert.Throws(typeof(Error), { => d := (DWORD) u})	// Conversion Error
 			RETURN
 
@@ -141,14 +141,14 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		METHOD UsualwordTests() AS VOID
 			LOCAL u AS __Usual
 			LOCAL w as WORD
-			u := (__Usual) (WORD) 1
+			u :=  (WORD) 1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			w := u
 			Assert.Equal(w,1)
 			Assert.Equal(w,  (WORD) u)
-			u := (__Usual) -1
+			u := -1
 			Assert.Throws(typeof(Error), { => w := (WORD) u})	// Overflow Error
-			u := __Usual{"a text"}
+			u := "a text"
 			Assert.Throws(typeof(Error), { => w := (WORD) u})	// Conversion Error
 			RETURN
 
@@ -157,21 +157,21 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			LOCAL u AS __Usual
 			LOCAL b as Byte
 			b := 1
-			u := (__Usual) b
+			u :=  b
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			b := u
 			Assert.Equal(b,1U)
 			Assert.Equal(b,  (BYTE) u)
-			u := (__Usual) -1
+			u :=  -1
 			Assert.Throws(typeof(Error), { => b := (BYTE) u})	// Overflow Error
-			u := __Usual{"a text"}
+			u := "a text"
 			Assert.Throws(typeof(Error), { => b := (BYTE) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualAddOperatorTests() AS VOID
-			LOCAL u AS __Usual
-			u := (__Usual) 1
+			LOCAL u AS Usual
+			u :=  1
 			u += 1
 			Assert.Equal((Int) u, 2)
 			u += (int64) 1
@@ -182,7 +182,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((Int) u, 5)
 			Assert.Throws(typeof(Error), { => u += "a"})	
 
-			u := __Usual{(INT64) 1}
+			u := (INT64) 1
 			u += (int) 1
 			Assert.Equal((Int64) u, 2)
 			u += (int64) 1
@@ -193,7 +193,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((Int64) u, 5)
 			Assert.Throws(typeof(Error), { => u += "a"})	
 
-			u := (__Usual)  1.0
+			u :=   1.0
 			u += 1
 			Assert.Equal((Real8) u, 2.0)
 			u += (int64) 1
@@ -204,22 +204,21 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((Real8) u, 5.0)
 			Assert.Throws(typeof(Error), { => u += "a"})	
 
-			u := (__Usual)  "abc"
+			u := "abc"
 			u += "def"
 			Assert.Equal((string) u, "abcdef")
 			Assert.Throws(typeof(Error), { => u += 1})	
 
-			var d := (__VoDate) datetime.Now
+			var d := (Date) datetime.Now
 			u := d
 			u += 1
 			d += 1
-			Assert.Equal((__VoDate) u, d)
-			Assert.Equal(u, (__Usual) d)
+			Assert.Equal((Date) u,  d)
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualSubOperatorTests() AS VOID
-			LOCAL u AS __Usual
-			u := (__Usual) 100
+			LOCAL u AS Usual
+			u := 100
 			u -= 1
 			Assert.Equal((Int) u, 99)
 			u -= (int64) 1
@@ -230,7 +229,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((Int) u, 96)
 			Assert.Throws(typeof(Error), { => u -= "a"})	
 
-			u := __Usual{(INT64) 1000}
+			u := (INT64) 1000
 			u -= (int) 1
 			Assert.Equal((Int64) u, 999)
 			u -= (int64) 1
@@ -241,7 +240,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((Int64) u, 996)
 			Assert.Throws(typeof(Error), { => u -= "a"})	
 
-			u := (__Usual)  111.1
+			u := 111.1
 			u -= 1
 			Assert.Equal((Real8) u, 110.1)
 			u -= (int64) 1
@@ -252,7 +251,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			Assert.Equal((Real8) u, 107.1)
 			Assert.Throws(typeof(Error), { => u -= "a"})	
 
-			u := (__Usual)  "abc"
+			u := "abc"
 			u -= "def"
 			Assert.Equal((string) u, "abcdef")
 			Assert.Throws(typeof(Error), { => u -= 1})	

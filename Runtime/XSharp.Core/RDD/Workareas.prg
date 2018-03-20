@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-BEGIN NAMESPACE XSharp
+BEGIN NAMESPACE XSharp.RDD
 CLASS WorkAreas
 	// Not static because every thread can have its own workareas structure
 	#region Constants
@@ -18,7 +18,7 @@ CLASS WorkAreas
 	PUBLIC LastException AS Exception 
 
 	STATIC METHOD GetInstance() as WorkAreas
-		LOCAL oState	:= XSharp.Runtime.State.GetInstance() as XSharp.Runtime.State
+		LOCAL oState	:= XSharp.RuntimeState.GetInstance() as XSharp.RuntimeState
 		LOCAL oInstance := oState:WorkAreas as WorkAreas
 		RETURN oInstance
 

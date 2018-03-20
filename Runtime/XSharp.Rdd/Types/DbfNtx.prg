@@ -1,5 +1,5 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Copyright (c) B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
@@ -19,23 +19,23 @@ CLASS NtxIndex INHERIT BaseIndex
 		SUPER(oRDD)   
 		_oRDD := oRDD
 		
-METHOD OrderCondition(info AS XSharp.DbOrderCondInfo) AS LOGIC
+METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderCreate(info AS XSharp.DbOrderCreateInfo) AS LOGIC
+METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
     THROW NotImplementedException{}
-METHOD OrderDestroy(info AS XSharp.DbOrderInfo) AS LOGIC
+METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
 	THROW NotImplementedException{}
-METHOD OrderListAdd(info AS XSharp.DbOrderInfo) AS LOGIC
+METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderListDelete(info AS XSharp.DbOrderInfo) AS LOGIC
+METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderListFocus(info AS XSharp.DbOrderInfo) AS LOGIC
+METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 METHOD OrderListRebuild( ) AS LOGIC
 	THROW NotImplementedException{}
-METHOD Seek(info AS XSharp.DbSeekInfo) AS LOGIC		
+METHOD Seek(info AS DbSeekInfo) AS LOGIC		
     THROW NotImplementedException{}
 VIRTUAL PROPERTY Found as LOGIC	
 GET

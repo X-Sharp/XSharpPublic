@@ -13,7 +13,7 @@
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function SEval(c as __Usual,cod as __Usual,nStart as __Usual,nCount as __Usual) as string
+function SEval(c as Usual,cod as Usual,nStart as Usual,nCount as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -26,7 +26,7 @@ function SEval(c as __Usual,cod as __Usual,nStart as __Usual,nCount as __Usual) 
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function SEvalA(c as __Usual,cod as __Usual,nStart as __Usual,nCount as __Usual) as string
+function SEvalA(c as Usual,cod as Usual,nStart as Usual,nCount as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -43,7 +43,7 @@ function SEvalA(c as __Usual,cod as __Usual,nStart as __Usual,nCount as __Usual)
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function StrTran(c as __Usual,cSearch as __Usual,cReplace as __Usual,iStart as __Usual,nCount as __Usual) as string
+function StrTran(c as Usual,cSearch as Usual,cReplace as Usual,iStart as Usual,nCount as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -55,7 +55,7 @@ function StrTran(c as __Usual,cSearch as __Usual,cReplace as __Usual,iStart as _
 /// <param name="wLen"></param>
 /// <returns>
 /// </returns>
-function SubS(c as __Usual,iStart as __Usual,wLen as __Usual) as string
+function SubS(c as Usual,iStart as Usual,wLen as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -68,7 +68,7 @@ function SubS(c as __Usual,iStart as __Usual,wLen as __Usual) as string
 /// <param name="wLen"></param>
 /// <returns>
 /// </returns>
-function SubStr(c as __Usual,iStart as __Usual,wLen as __Usual) as string
+function SubStr(c as Usual,iStart as Usual,wLen as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 

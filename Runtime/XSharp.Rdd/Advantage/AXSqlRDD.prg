@@ -6,10 +6,10 @@
 
 USING System
 USING XSharp.RDD
+using static XSharp.Functions
 
 
-
-CLASS XSharp.Ads.AXSQLRDD INHERIT ADSRDD
+CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
      PUBLIC m_hStatement AS System.IntPtr
 
     CONSTRUCTOR()

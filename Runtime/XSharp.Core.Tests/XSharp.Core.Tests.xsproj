@@ -40,10 +40,10 @@
     <ProjectGuid>a2376bbc-9ff4-47eb-bf57-913cbd850dad</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharp.Runtime.Tests</RootNamespace>
-    <AssemblyName>XSharp.Runtime.Tests</AssemblyName>
+    <RootNamespace>XSharp.Core.Tests</RootNamespace>
+    <AssemblyName>XSharp.Core.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>XSharp.Runtime.Tests</Name>
+    <Name>XSharp.Core.Tests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
@@ -59,12 +59,13 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>165</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
@@ -97,7 +98,7 @@
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -136,23 +137,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MemoryTests.prg" />
-    <Compile Include="WinBoolTest.prg" />
     <Compile Include="DynamicTest.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArrayTests.prg" />
     <Compile Include="ByteTests.prg" />
-    <Compile Include="DateTests.prg" />
     <Compile Include="IOTests.prg" />
     <Compile Include="MiscTests.prg" />
     <Compile Include="NumericTest.prg" />
     <Compile Include="StringTests.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UsualTests.prg" />
-    <Compile Include="SymbolTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -161,11 +156,6 @@
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

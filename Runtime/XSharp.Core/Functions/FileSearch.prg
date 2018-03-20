@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+
 using System.Collections.Generic
 using System.IO
 using System.Linq
@@ -186,8 +187,8 @@ function FName() as string
 /// <returns>
 /// </returns>
 FUNCTION FPathName() AS STRING
-	/// THROW NotImplementedException{}
-RETURN String.Empty   
+	
+	return XSharp.IO.FileHelper.LastFound
 
 /// <summary>
 /// Find the next file that matches the file previously found by FFirst().

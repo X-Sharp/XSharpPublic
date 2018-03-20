@@ -15,8 +15,8 @@ using XSharp
 /// <returns>
 /// </returns>
 function MemoTran(cSource as __Usual,nCharHard as __Usual,nCharSoft as __Usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+    /// THROW NotImplementedException{}
+    return String.Empty   
 
 
 /// <summary>
@@ -29,8 +29,8 @@ function MemoTran(cSource as __Usual,nCharHard as __Usual,nCharSoft as __Usual) 
 /// <returns>
 /// </returns>
 function MLCount(c as __Usual,nWidth as __Usual,nTabsize as __Usual,lWrap as __Usual) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+    /// THROW NotImplementedException{}
+    return 0   
 
 /// <summary>
 /// Extract a line of text from a string, specifying an optional offset argument.
@@ -41,8 +41,8 @@ function MLCount(c as __Usual,nWidth as __Usual,nTabsize as __Usual,lWrap as __U
 /// <returns>
 /// </returns>
 function MLine(c as __Usual,nLine as __Usual,nOffset as __Usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+    /// THROW NotImplementedException{}
+    return String.Empty   
 
 
 
@@ -58,8 +58,8 @@ function MLine(c as __Usual,nLine as __Usual,nOffset as __Usual) as string
 /// <returns>
 /// </returns>
 function MLcToPos(cMemo as __Usual,nWidth as __Usual,nLineNum as __Usual,nCol as __Usual,nTabSize as __Usual,lWrap as __Usual) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+    /// THROW NotImplementedException{}
+    return 0   
 
 /// <summary>
 /// Extract a line of text from a string, specifying a required offset argument.
@@ -70,8 +70,8 @@ function MLcToPos(cMemo as __Usual,nWidth as __Usual,nLineNum as __Usual,nCol as
 /// <returns>
 /// </returns>
 function MLine3(c as string,nLine as dword,PtrN as __Usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+    /// THROW NotImplementedException{}
+    return String.Empty   
 
 
 /// <summary>
@@ -85,8 +85,8 @@ function MLine3(c as string,nLine as dword,PtrN as __Usual) as string
 /// <returns>
 /// </returns>
 function MLPos(cMemo as __Usual,nWidth as __Usual,nLineNum as __Usual,nTabSize as __Usual,lWrap as __Usual) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+    /// THROW NotImplementedException{}
+    return 0   
 
 /// <summary>
 /// Return the line and column position of a character in a formatted string.
@@ -99,8 +99,8 @@ function MLPos(cMemo as __Usual,nWidth as __Usual,nLineNum as __Usual,nTabSize a
 /// <returns>
 /// </returns>
 function MPosToLc(cMemo as __Usual,nWidth as __Usual,nPos as __Usual,nTabSize as __Usual,lWrap as __Usual) as __Array
-	/// THROW NotImplementedException{}
-	return null_array   
+    /// THROW NotImplementedException{}
+    return null_array   
 
 
 /// <summary>
@@ -113,5 +113,5 @@ function MPosToLc(cMemo as __Usual,nWidth as __Usual,nPos as __Usual,nTabSize as
 /// <returns>
 /// </returns>
 function LineLen(ptrLine as byte[],nLen as dword,nLimit as dword,nTabSize as dword,lWrap as logic) as dword
-	/// THROW NotImplementedException{}
-	return 0  
+    /// THROW NotImplementedException{}
+    return 0  

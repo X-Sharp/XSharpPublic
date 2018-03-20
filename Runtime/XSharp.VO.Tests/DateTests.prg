@@ -3,19 +3,19 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 using XUnit
-using XSharp.Runtime
 
 
-BEGIN NAMESPACE XSharp.Runtime.Tests
+
+BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS DateTests
 
 		[Fact, Trait("Category", "Date")];
-		METHOD CTODTest() as void
+		METHOD CTODTest() as void 
 			var u := ctod("03/13/2016")
-			Assert.Equal(__VODate{2016,01,01} ,ctod("01/01/2016"))
-			Assert.Equal(__VODate{2016,02,13} ,ctod("13/02/2016"))
-			Assert.Equal(__VODate{0001,01,01} ,ctod("03/13/2016"))	
+			Assert.Equal(2016.01.01 ,ctod("01/01/2016"))
+			Assert.Equal(2016.02.13 ,ctod("13/02/2016"))
+			Assert.Equal(0001.01.01 ,ctod("03/13/2016"))	
 		RETURN
 
  		
@@ -75,30 +75,30 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		METHOD CastTest() as void
 			LOCAL i as LONG
 			LOCAL dw as DWORD
-			VAR d := __VoDate{2017,1,1}
+			VAR d := 2017.1.1
 			i := (LONG) d
 			dw := (DWORD) d
-			Assert.Equal(d, (__VoDate) i)
+			Assert.Equal(d, (Date) i)
 			Assert.Equal(d, (__VoDate) dw)
 
 		RETURN
 		[Fact, Trait("Category", "Date")];
 		METHOD CompareTest() as VOID
-		VAR d1 := __VoDate{2017,09,25}
-		VAR d2 := __VoDate{2017,09,26}	// different day
+		VAR d1 := Date{2017,09,25}
+		VAR d2 := Date{2017,09,26}	// different day
 		Assert.True(d1 < d2)
 		Assert.True(d1 <= d2)
 		Assert.True(d1+1 == d2)
 		Assert.False(d1 > d2)
 		Assert.False(d1 >= d2)
 
-		d2 := __VoDate{2017,10,25}	// different month
+		d2 := Date{2017,10,25}	// different month
 		Assert.True(d1 < d2)
 		Assert.True(d1 <= d2)
 		Assert.False(d1 > d2)
 		Assert.False(d1 >= d2)
 
-		d2 := __VoDate{2018,09,24}	// different year
+		d2 := Date{2018,09,24}	// different year
 		Assert.True(d1 < d2)
 		Assert.True(d1 <= d2)
 		Assert.False(d1 > d2)
@@ -115,6 +115,15 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		Assert.False(d3 < d1)
 		Assert.True(d3 <= d1)
 
+		[Fact, Trait("Category", "Numeric")];
+		METHOD NToCDoWTest() as void
+		//	Assert.Equal("Freitag",NToCDoW(DOW(CTOD("27/05/2016"))))
+		RETURN
+
+		[Fact, Trait("Category", "Numeric")];
+		METHOD NToCMonthTest() as void
+		//	Assert.Equal("Juni",NToCMonth((dword)6))
+		RETURN		 
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

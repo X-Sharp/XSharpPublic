@@ -3,21 +3,20 @@ using System.Collections.Generic
 using System.Linq
 using System.Text
 using XUnit
-using XSharp.Runtime
 
-BEGIN NAMESPACE XSharp.Runtime.Tests
+BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS SymbolTests
 	
 		[Fact, Trait("Category", "Symbol")];
 		METHOD CreateSymbolTest() as void
-			VAR sym := __Symbol{"TestSymbol",true}
+			VAR sym := #TestSymbol
 			Assert.Equal("TESTSYMBOL",sym:ToString())
 		RETURN
 		[Fact, Trait("Category", "Symbol")];
 		METHOD CompareSymbolTest() as void
-			var sym1 := __Symbol{"TestSymbol"}
-			var sym2 := __Symbol{"TestSymbol"}
+			var sym1 :=#TestSymbol
+			var sym2 := #TestSymbol
 			Assert.Equal(true,sym1==sym2)
 			Assert.Equal(true,sym1=="TESTSYMBOL")
 			Assert.Equal(false,sym1==#TestSymbol1)
@@ -25,8 +24,8 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 		[Fact, Trait("Category", "Symbol")];
 		METHOD GreaterSymbolTest() as void
-			var sym1 := __Symbol{"TestSymbol1"}
-			var sym2 := __Symbol{"TestSymbol2"}
+			var sym1 := #TestSymbol1
+			var sym2 := #TestSymbol2
 			Assert.Equal(true,sym1<=sym2)
 			Assert.Equal(true,sym1<sym2)
 			Assert.Equal(false,sym1 > sym2)
@@ -39,8 +38,8 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		[Fact, Trait("Category", "Symbol")];
 		METHOD ImplicitConverter() as void
 			local s as string
-			local sym as __Symbol
-			sym := __Symbol{"test"}
+			local sym as Symbol
+			sym := #Test
 			s := sym
 			Assert.Equal(s, sym:ToString())
 			sym := s
@@ -49,13 +48,13 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		[Fact, Trait("Category", "Symbol")];
 		METHOD ExplicitConverter() as void
 			local d as DWORD
-			local sym1 as __Symbol
-			local sym2 as __Symbol
-			sym1 := __Symbol{"test"}
+			local sym1 as Symbol
+			local sym2 as Symbol
+			sym1 := #test
 			d:= (DWORD) sym1
-			sym2 := (__Symbol) d
+			sym2 := (Symbol) d
 			Assert.Equal(sym1, sym2)
-			sym2 := (__Symbol) 0x42U
+			sym2 := (Symbol) 0x42U
 			Assert.NotEqual(sym1, sym2)
 			
 

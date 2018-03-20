@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+using static XSharp.Functions
 
 /// <summary>
 /// Fill a series of __Arrays with directory information.
@@ -17,7 +17,7 @@
 /// <param name="aFATTR"></param>
 /// <returns>
 /// </returns>
-function ADir(cPath as __Usual,aFNAME as __Usual,aFSIZE as __Usual,aFDATE as __Usual,aFTIME as __Usual,aFATTR as __Usual) as dword
+function ADir(cPath as Usual,aFNAME as Usual,aFSIZE as Usual,aFDATE as Usual,aFTIME as Usual,aFATTR as Usual) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -28,7 +28,7 @@ function ADir(cPath as __Usual,aFNAME as __Usual,aFSIZE as __Usual,aFDATE as __U
 /// <param name="cDisk"></param>
 /// <returns>
 /// </returns>
-function CurDir(cDisk as __Usual) as string
+function CurDir(cDisk as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -47,7 +47,7 @@ function DefaultDirInit() as void
 /// <param name="xAttr"></param>
 /// <returns>
 /// </returns>
-function Directory(cPath as __Usual,xAttr as __Usual) as __Array
+function Directory(cPath as Usual,xAttr as Usual) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
@@ -59,7 +59,7 @@ function Directory(cPath as __Usual,xAttr as __Usual) as __Array
 /// <param name="cDisk"></param>
 /// <returns>
 /// </returns>
-function DiskFree() as __Usual
+function DiskFree() as Usual
 	return DiskFree(CurDrive())
 
 /// <summary>
@@ -69,7 +69,7 @@ function DiskFree() as __Usual
 /// <returns>
 /// The free space on the specified disk drive.
 /// </returns>	   
-function DiskFree(cDisk as __Usual) as __Usual
+function DiskFree(cDisk as Usual) as Usual
 	return System.IO.DriveInfo{cDisk}:TotalFreeSpace
 
 /// <summary>
@@ -87,7 +87,7 @@ function DiskName() as string
 /// <returns>
 /// The capacity of the current disk.
 /// </returns>
-function DiskSpace() as __Usual
+function DiskSpace() as Usual
 	return DiskSpace(CurDrive())
 
 
@@ -98,7 +98,7 @@ function DiskSpace() as __Usual
 /// <param name="nDisk"></param>
 /// <returns>
 /// </returns>
-function DiskSpace(nDisk as __Usual) as __Usual
+function DiskSpace(nDisk as Usual) as Usual
 	return System.IO.DriveInfo{nDisk}:TotalSize
 
 

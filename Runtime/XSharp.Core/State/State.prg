@@ -1,7 +1,7 @@
 USING System.Collections.Generic
 USING System.Threading
-USING XSharp.Runtime
-USING XSharp
+using XSharp
+USING XSharp.RDD
 
 /// <Summary>
 /// Container Class that holds the XSharp Runtime state
@@ -13,16 +13,16 @@ USING XSharp
 /// </Remarks>
 
 
-CLASS XSharp.Runtime.State
+CLASS XSharp.RuntimeState
 	// Static Fields
-	PRIVATE INITONLY STATIC mainState  AS State 
+	PRIVATE INITONLY STATIC mainState  AS RuntimeState 
 	// Static Methods and Constructor
-	PRIVATE STATIC currentState := ThreadLocal<State>{ {=>  mainState:Clone()} }  AS ThreadLocal<State> 
+	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  mainState:Clone()} }  AS ThreadLocal<RuntimeState> 
 	STATIC CONSTRUCTOR
-		mainState	 := State{}
+		mainState	 := RuntimeState{}
 		
 	/// <Summary>Retrieve the runtime state for the current thread</Summary>
-	PUBLIC STATIC METHOD GetInstance() AS State
+	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
 
 	/// <Summary>List of number - value pairs </Summary>
@@ -41,13 +41,13 @@ CLASS XSharp.Runtime.State
 			SetValue(Set.Epoch, 1900)
 			// Initialize the values that are not 'blank'
 			// RDD Settings
-			State.Ansi      	:= TRUE
-			State.AutoOpen      := TRUE
-			State.AutoOrder     := TRUE
-			State.AutoShareMode	:= AutoShareMode.Auto
-			State.Optimize		:= TRUE
-			State.LockRetries	:= 1
-			State.MemoBlockSize	:= 32
+			RuntimeState.Ansi      	:= TRUE
+			RuntimeState.AutoOpen      := TRUE
+			RuntimeState.AutoOrder     := TRUE
+			RuntimeState.AutoShareMode	:= AutoShareMode.Auto
+			RuntimeState.Optimize		:= TRUE
+			RuntimeState.LockRetries	:= 1
+			RuntimeState.MemoBlockSize	:= 32
 			SetValue(Set.DefaultRDD	, "DBFNTX")
 			SetValue(Set.Exclusive, TRUE)
 			// Console Settings
@@ -79,9 +79,9 @@ CLASS XSharp.Runtime.State
 		// What do we need to clean ?
 		oSettings:Clear()
 
-	PRIVATE METHOD Clone() AS State
-		LOCAL oNew AS State
-		oNew := State{FALSE}		
+	PRIVATE METHOD Clone() AS RuntimeState
+		LOCAL oNew AS RuntimeState
+		oNew := RuntimeState{FALSE}		
 		BEGIN LOCK oSettings
 			// Copy all values from Current State to New state
 			FOREACH VAR element IN oSettings     
@@ -242,7 +242,7 @@ CLASS XSharp.Runtime.State
 
 
 	STATIC METHOD SetInternational(mode AS CollationMode, force := FALSE AS LOGIC) AS VOID
-		IF mode != state.International	.or. force
+		IF mode != RuntimeState.International	.or. force
 			IF mode == CollationMode.Clipper
 				SetValue(Set.AMEXT, "")
 				SetValue(Set.PMEXT, "")
@@ -270,16 +270,16 @@ CLASS XSharp.Runtime.State
 				ENDIF
 				SetValue(Set.Century, dateformat:IndexOf("yyyy") != -1)
 				dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
-				State.DateFormat  := dateformat
+				RuntimeState.DateFormat  := dateformat
 				//State.DateCountry := 1
-				State.Decimals	  := 2
+				RuntimeState.Decimals	  := 2
 				VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
 				SetValue(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
 				SetValue(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
 				SetValue(Set.EPOCH, 1910)
 				
 			ENDIF
-			state.International := mode
+			RuntimeState.International := mode
 		ENDIF
 
 	PRIVATE STATIC METHOD _SetDateFormat(format AS STRING) AS VOID

@@ -25,18 +25,21 @@ function MemoLine(cMemo as string,wWidth as long,wLineNum as long,wTabSize as lo
 /// <returns>
 /// </returns>
 function MemoRead(cFile as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	LOCAL cResult as STRING
+	local lOk as logic
+	try
+		if File(cFile)
+			cFile := FPathName()
+			cResult := System.IO.File.ReadAllText(cFile)
+		else
+			cResult := ""
+		endif
+	catch
+		cResult := ""
+	end try
+	return cResult
 
-/// <summary>
-/// Report the status of memory. 
-/// </summary>
-/// <param name="iFunc"></param>
-/// <returns>
-/// </returns>
-function Memory(iFunc as int) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+
 
 /// <summary>
 /// Write a string to a disk file.
@@ -46,19 +49,24 @@ function Memory(iFunc as int) as dword
 /// <returns>
 /// </returns>
 function MemoWrit(cFile as string,c as string) as logic
-	/// THROW NotImplementedException{}
-	return false   
-
+	local lOk as logic
+	try
+		System.IO.File.WriteAllText(cFile, c)
+		lOk := TRUE
+	catch
+		lOk := FALSE
+	end try
+	RETURN lOk
 
 /// <summary>
 /// Count the number of lines in a string.
 /// </summary>
-/// <param name="c"></param>
+/// <param name="cMemo"></param>
 /// <returns>
 /// </returns>
-function MlCount1(c as string) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+function MlCount1(cMemo as string) as dword
+RETURN MemLines(cMemo)
+ 
 
 /// <summary>
 /// Determine the position of a line in a string.
@@ -68,7 +76,6 @@ function MlCount1(c as string) as dword
 /// <returns>
 /// </returns>
 function MLPos2(c as string,nLine as dword) as dword
-	/// THROW NotImplementedException{}
 	return 0   
 
 

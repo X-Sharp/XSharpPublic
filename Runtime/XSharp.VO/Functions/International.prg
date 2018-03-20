@@ -23,7 +23,7 @@ function CompString() as int
 /// <param name="xModule"></param>
 /// <returns>
 /// </returns>
-function LoadResString(cDef as __Usual,id as __Usual,xModule as __Usual) as string
+function LoadResString(cDef as Usual,id as Usual,xModule as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -52,6 +52,6 @@ function LoadResString(cDef as __Usual,id as __Usual,xModule as __Usual) as stri
 	/// <param name="wLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MBSUBSTR(c AS __Usual,iStart AS __Usual,wLen AS __Usual) AS STRING
+	FUNCTION MBSUBSTR(c AS Usual,iStart AS Usual,wLen AS Usual) AS STRING
 		/// THROW NotImplementedException{}
 	RETURN String.Empty   

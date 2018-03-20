@@ -5,7 +5,7 @@
 //
 
 // BLOB.PRG	Weakly typed BLOB functions
-	
+#ifdef COMPILEIT	
 /// <summary>
 /// </summary>
 /// <returns>
@@ -24,7 +24,7 @@ FUNCTION BLOBDirectExport(nPointer, cTargetFile, nMode) AS LOGIC
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBDirectGet(nPointer, nStart, nCount) AS __Usual
+FUNCTION BLOBDirectGet(nPointer, nStart, nCount) AS Usual
 	RETURN DbInfo( BLOB_DIRECT_GET, <OBJECT>{nPointer, nStart, nCount} )
 	
 	
@@ -33,7 +33,7 @@ FUNCTION BLOBDirectGet(nPointer, nStart, nCount) AS __Usual
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS __Usual
+FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS Usual
 	RETURN DbInfo( BLOB_DIRECT_IMPORT, <OBJECT>{nOldPointer, cSourceFile} )
 
 		
@@ -41,7 +41,7 @@ FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS __Usual
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS __Usual
+FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS Usual
 	RETURN DbInfo( BLOB_DIRECT_PUT, <OBJECT>{nOldPointer, uBlob} )
 	
 	
@@ -64,7 +64,7 @@ FUNCTION BLOBExport (nFieldPos, cFileName, nMode)  AS LOGIC
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBGet(nFieldNo, nStart, nLen)  AS __Usual
+FUNCTION BLOBGet(nFieldNo, nStart, nLen)  AS Usual
 	RETURN DbInfo( BLOB_GET, <OBJECT>{nFieldNo, nStart, nLen} )
 	
 	
@@ -86,7 +86,7 @@ FUNCTION BLOBImport (nFieldPos, cFileName)  AS LOGIC
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBRootGet() AS __Usual
+FUNCTION BLOBRootGet() AS Usual
 	RETURN DbInfo( BLOB_ROOT_GET )
 	
 	
@@ -94,14 +94,14 @@ FUNCTION BLOBRootGet() AS __Usual
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBRootLock() AS __Usual
+FUNCTION BLOBRootLock() AS Usual
 	RETURN DbInfo( BLOB_ROOT_LOCK )
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBRootPut(xblob) AS __Usual
+FUNCTION BLOBRootPut(xblob) AS Usual
 	RETURN DbInfo( BLOB_ROOT_PUT, xBlob )
 	
 	
@@ -109,7 +109,7 @@ FUNCTION BLOBRootPut(xblob) AS __Usual
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBRootUnlock()  AS __Usual
+FUNCTION BLOBRootUnlock()  AS Usual
 	
 	RETURN DbInfo( BLOB_ROOT_UNLOCK )
 	
@@ -123,3 +123,4 @@ FUNCTION DBBLOBINFO(nOrdinal, nPos, xNewVal)
 		DoError(#DBBLOBINFO)
 	ENDIF
 	RETURN xNewVal
+#endif

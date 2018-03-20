@@ -11,9 +11,9 @@ using XSharp
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2Date(c as string) as __VODate
+function Bin2Date(c as string) as DATE
 	/// THROW NotImplementedException{}
-	return	 (__VODate)0   
+	return	 (DATE)0   
 
 
 
@@ -24,7 +24,7 @@ function Bin2Date(c as string) as __VODate
 /// <returns>
 /// A string for the calculated day of the week.
 /// </returns>
-function CDoW(d as __VODate) as string		
+function CDoW(d as DATE) as string		
 	local result := String.Empty as string
 	if d != null
 		local dt := d as Datetime
@@ -39,7 +39,7 @@ function CDoW(d as __VODate) as string
 /// <returns>
 /// A string with the name of the month.
 /// </returns>
-function CMonth(d as __VODate) as string
+function CMonth(d as DATE) as string
 	local result := String.Empty as string
 	if d != null
 		local dt := d as Datetime
@@ -55,21 +55,21 @@ function CMonth(d as __VODate) as string
 /// <param name="dwDay"></param>
 /// <returns>
 /// </returns>
-function ConDate(dwY as dword,dwM as dword,dwDay as dword) as __VODate
-	return	 __VODate{dwY,dwM,dwDay}   
+function ConDate(dwY as dword,dwM as dword,dwDay as dword) as DATE
+	return	 DATE{dwY,dwM,dwDay}   
 
 /// <summary>
-/// Convert a Date string to __VODate format.
+/// Convert a Date string to DATE format.
 /// </summary>
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-function CToD(cDate as string) as __VODate
+function CToD(cDate as string) as DATE
 	local parsedDate as DateTime
 	if !DateTime.TryParse(cDate,out parsedDate)
 		parsedDate := DateTime.MinValue
 	endif
-	return	 __VODate{parsedDate}   
+	return	 DATE{parsedDate}   
 
 /// <summary>
 /// Convert an ANSI Date string to Date format.
@@ -77,9 +77,9 @@ function CToD(cDate as string) as __VODate
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-function CToDAnsi(cDate as string) as __VODate
+function CToDAnsi(cDate as string) as DATE
 	/// THROW NotImplementedException{}
-	return	 (__VODate)0   
+	return	 (DATE)0   
 
 
 /// <summary>
@@ -88,7 +88,7 @@ function CToDAnsi(cDate as string) as __VODate
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function Date2Bin(d as __VODate) as string
+function Date2Bin(d as DATE) as string
 	/// THROW NotImplementedException{}
 	return	 String.Empty   
 
@@ -97,9 +97,9 @@ function Date2Bin(d as __VODate) as string
 /// </summary>
 /// <param name="d">The Date to extract the day from.</param>
 /// <returns>
-/// The day part of the given __VODate.
+/// The day part of the given DATE.
 /// </returns>
-function Day(d as __VODate) as dword
+function Day(d as DATE) as dword
 	local day := 0  as dword
 	if ! d:IsEmpty
 		day :=  d:DDay
@@ -111,9 +111,9 @@ function Day(d as __VODate) as dword
 /// </summary>
 /// <param name="d">The Date to extract the day of the week from.</param>
 /// <returns>
-/// The day of the week of the given __VODate.
+/// The day of the week of the given DATE.
 /// </returns>
-function DoW(d as __VODate) as dword
+function DoW(d as DATE) as dword
 	local day := 0  as dword
 	if ! d:IsEmpty
 		local dt := d as Datetime
@@ -129,7 +129,7 @@ function DoW(d as __VODate) as dword
 /// <returns>
 /// A string representation of the given Date, formatted in the current Date format.
 /// </returns>
-function DToC(d as __VODate) as string
+function DToC(d as DATE) as string
 	local result:="" as string		
 	
 	if ! d:IsEmpty
@@ -147,7 +147,7 @@ function DToC(d as __VODate) as string
 /// <returns>
 /// The given Date as string in ANSI format
 /// </returns>
-function DToS(d as __VODate) as string
+function DToS(d as DATE) as string
 	local result:="        " as string		
 	if ! d:IsEmpty
 		local dt := d as Datetime
@@ -160,7 +160,7 @@ function DToS(d as __VODate) as string
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function JCDOW(d as __VODate) as string
+function JCDOW(d as DATE) as string
 	/// THROW NotImplementedException{}
 	return	 String.Empty   
 
@@ -169,7 +169,7 @@ function JCDOW(d as __VODate) as string
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function JCMONTH(d as __VODate) as string
+function JCMONTH(d as DATE) as string
 	/// THROW NotImplementedException{}
 	return	 String.Empty   
 
@@ -178,18 +178,18 @@ function JCMONTH(d as __VODate) as string
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function JCYEAR(d as __VODate) as string
+function JCYEAR(d as DATE) as string
 	/// THROW NotImplementedException{}
 	return	 String.Empty   
 
 /// <summary>
-/// Extract the number of the month from a __VODate.
+/// Extract the number of the month from a DATE.
 /// </summary>
 /// <param name="d">The Date to extract the month from.</param>
 /// <returns>
 /// The month of the given Date.
 /// </returns>
-function Month(d as __VODate) as dword
+function Month(d as DATE) as dword
 	local month := 0  as dword
 	if !d:IsEmpty
 		month :=  d:DMonth
@@ -214,10 +214,10 @@ function Month(d as __VODate) as dword
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-function SToD(cDate as string) as __VODate
-	local convertedDate := __VODate{} as __VODate
+function SToD(cDate as string) as DATE
+	local convertedDate := DATE{} as DATE
 	try
-		convertedDate := (__VODate)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+		convertedDate := (DATE)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
 		//catch ex as exeption
 		//   nop
 	end try
@@ -229,8 +229,8 @@ function SToD(cDate as string) as __VODate
 /// </summary>
 /// <returns>
 /// </returns>
-function Today() as __VODate
-	return (__VODate) DateTime.Now
+function Today() as DATE
+	return (DATE) DateTime.Now
 
 
 /// <summary>
@@ -265,13 +265,13 @@ function TString(uSeconds as __Usual) as string
 
 
 /// <summary>
-/// Extract the number of the year from a __VODate.
+/// Extract the number of the year from a DATE.
 /// </summary>
-/// <param name="d">The __VODate to extract the year from.</param>
+/// <param name="d">The DATE to extract the year from.</param>
 /// <returns>
-/// The year from the give __VODate.
+/// The year from the give DATE.
 /// </returns>
-function Year(d as __VODate) as dword
+function Year(d as DATE) as dword
 	local year := 0  as dword
 	if ! d:IsEmpty
 		year := d:DYear

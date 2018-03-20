@@ -7,9 +7,9 @@
 USING System
 USING System.Runtime.InteropServices
 
-BEGIN NAMESPACE XSharp.Ads
+BEGIN NAMESPACE XSharp.ADS
 STATIC Class ACE
-
+ 
     #region Constants
 	public const ADS_FALSE := 0 as WORD
 	public const ADS_TRUE := 1 as WORD

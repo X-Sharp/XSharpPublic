@@ -16,7 +16,7 @@
 * Based on IronStudio/IronPythonTools/IronPythonTools/Navigation
 *
 ****************************************************************************/
-
+#undef TEXTCHANGELISTENER
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -98,7 +98,9 @@ namespace XSharp.Project
         private IServiceProvider provider;
         private uint objectManagerCookie;
         private uint runningDocTableCookie;
+#if TEXTCHANGELISTENER
         private Dictionary<uint, TextLineEventListener> documents;
+#endif
         private Dictionary<IVsHierarchy, HierarchyListener> hierarchies;
         private MultiValueDictionary<XSharpModuleId, XSharpLibraryNode> files;
         private Library library;
@@ -123,7 +125,9 @@ namespace XSharp.Project
         {
             this.provider = provider;
             //
+#if TEXTCHANGELISTENER            
             documents = new Dictionary<uint, TextLineEventListener>();
+#endif
             hierarchies = new Dictionary<IVsHierarchy, HierarchyListener>();
             library = new Library(new Guid(XSharpConstants.Library));
             library.LibraryCapabilities = (_LIB_FLAGS2)_LIB_FLAGS.LF_PROJECT;
@@ -169,7 +173,7 @@ namespace XSharp.Project
             runningDocTableCookie = 0;
         }
 
-        #region IDisposable Members
+#region IDisposable Members
         public void Dispose()
         {
             // Make sure that the parse thread can exit.
@@ -195,13 +199,13 @@ namespace XSharp.Project
                 listener.Dispose();
             }
             hierarchies.Clear();
-
+#if TEXTCHANGELISTENER
             foreach (TextLineEventListener textListener in documents.Values)
             {
                 textListener.Dispose();
             }
             documents.Clear();
-
+#endif
             // Remove this library from the object manager.
             if (0 != objectManagerCookie)
             {
@@ -228,9 +232,9 @@ namespace XSharp.Project
                 shutDownStarted = null;
             }
         }
-        #endregion
+#endregion
 
-        #region IXSharpLibraryManager
+#region IXSharpLibraryManager
         /// <summary>
         /// Called when a project is loaded
         /// </summary>
@@ -261,7 +265,7 @@ namespace XSharp.Project
             //Define Callback
             ProjectNode.ProjectModel.FileWalkComplete = new XProject.OnFileWalkComplete(OnFileWalkComplete);
 
-            // Attach a listener to the Project/Hierachy,so any change is raising an event
+            // Attach a listener to the Project/Hierarchy,so any change is raising an event
             HierarchyListener listener = new HierarchyListener(hierarchy);
             //listener.OnAddItem += new EventHandler<HierarchyEventArgs>(OnNewFile);
             listener.OnDeleteItem += new EventHandler<HierarchyEventArgs>(OnDeleteFile);
@@ -323,6 +327,7 @@ namespace XSharp.Project
             {
                 library.RemoveNode(prjNode);
             }
+#if TEXTCHANGELISTENER
             // Remove the document listeners.
             uint[] docKeys = new uint[documents.Keys.Count];
             documents.Keys.CopyTo(docKeys, 0);
@@ -335,11 +340,12 @@ namespace XSharp.Project
                     docListener.Dispose();
                 }
             }
+#endif
         }
-
         public void RegisterLineChangeHandler(uint document,
             TextLineChangeEvent lineChanged, Action<IVsTextLines> onIdle)
         {
+#if TEXTCHANGELISTENER
             documents[document].OnFileChangedImmediate += delegate (object sender, TextLineChange[] changes, int fLast)
             {
                 lineChanged(sender, changes, fLast);
@@ -348,8 +354,8 @@ namespace XSharp.Project
             {
                 onIdle(args.TextBuffer);
             };
+#endif
         }
-
         #endregion
 
         #region Watcher Thread
@@ -500,8 +506,7 @@ namespace XSharp.Project
             {
                 XType xType = pair.Value;
                 // Is it a kind of Type ?
-                if ((xType.Kind == Kind.Class) || (xType.Kind == Kind.Structure) ||
-                      (xType.Kind == Kind.Union) || (xType.Kind == Kind.VOStruct))
+                if ((xType.Kind.IsType()))
                 {
                     string nSpace = prjNode.DefaultNameSpace;
                     if (!String.IsNullOrEmpty(xType.NameSpace))
@@ -590,7 +595,7 @@ namespace XSharp.Project
                 }
             }
         }
-        #endregion
+#endregion
 
         // 
         /// <summary>
@@ -618,6 +623,38 @@ namespace XSharp.Project
                 requests.Enqueue(task);
             }
             requestPresent.Set();
+        }
+
+        private string getFileNameFromCookie(uint docCookie)
+        {
+            IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+            string fileName = "";
+            
+            if (rdt != null)
+            {
+                IntPtr docData = IntPtr.Zero;
+                try
+                {
+                    int hr;
+                    IVsHierarchy hier;
+                    uint flags, readLocks, editLocks, itemid;
+                    hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out editLocks, out fileName, out hier, out itemid, out docData);
+                    if (hierarchies.ContainsKey(hier))
+                    {
+                        
+                    }
+                    
+                }
+                finally
+                {
+                    if (IntPtr.Zero != docData)
+                    {
+                        Marshal.Release(docData);
+                    }
+                }
+            }
+            return fileName;
+
         }
 
         #region Hierarchy Events
@@ -687,24 +724,26 @@ namespace XSharp.Project
             }
             //
         }
-        #endregion
+#endregion
 
-        #region IVsRunningDocTableEvents Members
+#region IVsRunningDocTableEvents Members
 
         public int OnAfterAttributeChange(uint docCookie, uint grfAttribs)
         {
+#if TEXTCHANGELISTENER
             if ((grfAttribs & (uint)(__VSRDTATTRIB.RDTA_MkDocument)) == (uint)__VSRDTATTRIB.RDTA_MkDocument)
             {
                 IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
                 if (rdt != null)
                 {
-                    uint flags, readLocks, editLocks, itemid;
-                    IVsHierarchy hier;
+                    
                     IntPtr docData = IntPtr.Zero;
                     string moniker;
-                    int hr;
                     try
                     {
+                        int hr;
+                        uint flags, readLocks, editLocks, itemid;
+                        IVsHierarchy hier;
                         hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out editLocks, out moniker, out hier, out itemid, out docData);
                         TextLineEventListener listner;
                         if (documents.TryGetValue(docCookie, out listner))
@@ -721,6 +760,7 @@ namespace XSharp.Project
                     }
                 }
             }
+#endif
             return VSConstants.S_OK;
         }
 
@@ -736,11 +776,18 @@ namespace XSharp.Project
 
         public int OnAfterSave(uint docCookie)
         {
+            string fileName = getFileNameFromCookie(docCookie);
+            var xFile = XSolution.FindFile(fileName);
+            if (xFile != null)
+            {
+                OnFileWalkComplete(xFile);
+            }
             return VSConstants.S_OK;
         }
 
         public int OnBeforeDocumentWindowShow(uint docCookie, int fFirstShow, IVsWindowFrame pFrame)
         {
+#if TEXTCHANGELISTENER
             // Check if this document is in the list of the documents.
             if (documents.ContainsKey(docCookie))
             {
@@ -766,7 +813,7 @@ namespace XSharp.Project
                     {
                         return VSConstants.S_OK;
                     }
-                    // Check if the herarchy is one of the hierarchies this service is monitoring.
+                    // Check if the hierarchy is one of the hierarchies this service is monitoring.
                     if (!hierarchies.ContainsKey(hierarchy))
                     {
                         // This hierarchy is not monitored, we can exit now.
@@ -788,12 +835,12 @@ namespace XSharp.Project
 
                     // Create the listener.
                     // So we are informed in case of Buffer change
-                    TextLineEventListener listener = new TextLineEventListener(buffer, documentMoniker, docId);
+                    //TextLineEventListener listener = new TextLineEventListener(buffer, documentMoniker, docId);
                     // Set the event handler for the change event. Note that there is no difference
                     // between the AddFile and FileChanged operation, so we can use the same handler.
-                    listener.OnFileChanged += new EventHandler<HierarchyEventArgs>(OnNewFile);
+                    //listener.OnFileChanged += new EventHandler<HierarchyEventArgs>(OnNewFile);
                     // Add the listener to the dictionary, so we will not create it anymore.
-                    documents.Add(docCookie, listener);
+                    //documents.Add(docCookie, listener);
                 }
                 finally
                 {
@@ -804,11 +851,13 @@ namespace XSharp.Project
                 }
             }
             // Always return success.
+#endif
             return VSConstants.S_OK;
         }
 
         public int OnBeforeLastDocumentUnlock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
         {
+#if TEXTCHANGELISTENER
             if ((0 != dwEditLocksRemaining) || (0 != dwReadLocksRemaining))
             {
                 return VSConstants.S_OK;
@@ -827,17 +876,20 @@ namespace XSharp.Project
                 HierarchyEventArgs args = new HierarchyEventArgs(listener.FileID.ItemID, listener.FileName);
                 OnNewFile(listener.FileID.Hierarchy, args);
             }
+#endif
             return VSConstants.S_OK;
         }
 
-        #endregion
+#endregion
 
         public void OnIdle()
         {
+#if TEXTCHANGELISTENER
             foreach (TextLineEventListener listener in documents.Values)
             {
                 listener.OnIdle();
             }
+#endif
         }
     }
 }

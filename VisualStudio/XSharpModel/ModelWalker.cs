@@ -188,9 +188,11 @@ namespace XSharpModel
 
         internal void FileWalk(XFile file)
         {
-            DateTime dt = System.IO.File.GetLastWriteTime(file.FullPath);
+            DateTime dt = System.IO.File.GetLastWriteTime(file.SourcePath);
+            //System.Diagnostics.Trace.WriteLine("FileWalk " + file.FullPath);
             if (dt > file.LastWritten)
             {
+                //System.Diagnostics.Trace.WriteLine("FileWalk dt changes, reading " + file.SourcePath);
                 using (SourceWalker sw = new SourceWalker(file))
                 {
                     //

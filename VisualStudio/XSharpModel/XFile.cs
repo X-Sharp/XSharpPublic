@@ -39,7 +39,7 @@ namespace XSharpModel
             //
             InitTypeList();
             //
-            _parsed = ! IsSource;
+            _parsed = !HasCode;
             _lock = new object();
             _lastWritten = DateTime.MinValue;
             //_hashCode = 0;
@@ -62,7 +62,7 @@ namespace XSharpModel
         /// </summary>
         public void InitTypeList()
         {
-            if (IsSource)
+            if (HasCode)
             {
                 this._typeList = new ConcurrentDictionary<string, XType>(StringComparer.InvariantCultureIgnoreCase);
                 this._globalType = XType.CreateGlobalType(this);
@@ -100,7 +100,16 @@ namespace XSharpModel
         }
 
         public XType GlobalType => _globalType;
-
+        public string XamlCodeBehindFile
+        {
+            get
+            {
+                var _prjNode = Project?.ProjectNode;
+                string path = System.IO.Path.Combine(_prjNode.IntermediateOutputPath, System.IO.Path.GetFileName(this.FullPath));
+                path = System.IO.Path.ChangeExtension(path, ".g.prg");
+                return path;
+            }
+        }
 
         bool _hasParseErrors = false;
         public bool HasParseErrors
@@ -127,11 +136,22 @@ namespace XSharpModel
             }
         }
 
+        public string SourcePath
+        {
+            get
+            {
+                if (IsXaml)
+                    return XamlCodeBehindFile;
+                else
+                    return FullPath;
+            }
+        }
+
         public ImmutableList<string> Usings
         {
             get
             {
-                if (!IsSource)
+                if (!HasCode)
                     return null;
                 System.Diagnostics.Trace.WriteLine("-->> XFile.Usings");
                 ImmutableList<string> ret;
@@ -148,7 +168,7 @@ namespace XSharpModel
         {
             get
             {
-                if (!IsSource)
+                if (!HasCode)
                     return null;
                 System.Diagnostics.Trace.WriteLine("-->> XFile.AllUsingStatics");
                 List<string> statics = new List<string>();
@@ -176,9 +196,9 @@ namespace XSharpModel
 
         public void SetTypes(IDictionary<string, XType> types, IList<string> usings, IList<string> staticusings, bool hasLocals)
         {
-            if (!IsSource)
+            if (!HasCode)
                 return;
-                System.Diagnostics.Trace.WriteLine("-->> XFile.SetTypes()");
+            System.Diagnostics.Trace.WriteLine("-->> XFile.SetTypes() "+System.IO.Path.GetFileName(SourcePath));
             lock (this)
             {
                 _typeList.Clear();
@@ -196,7 +216,7 @@ namespace XSharpModel
                 _usings.AddRange(usings);
                 _usings.AddRange(staticusings);
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XFile.SetTypes()");
+            System.Diagnostics.Trace.WriteLine("<<-- XFile.SetTypes() " + System.IO.Path.GetFileName(SourcePath) + " " +_typeList.Count.ToString());
             return;
         }
 
@@ -204,7 +224,7 @@ namespace XSharpModel
         {
             get
             {
-                if (!IsSource)
+                if (!HasCode)
                     return null;
                 lock (_lock)
                 {
@@ -251,7 +271,7 @@ namespace XSharpModel
         /// </summary>
         public void WaitParsing()
         {
-            if (!IsSource)
+            if (!HasCode)
                 return ;
             //_parsedEvent.WaitOne();
             System.Diagnostics.Trace.WriteLine("-->> XFile.WaitParsing()");
@@ -280,7 +300,7 @@ namespace XSharpModel
 
         public XTypeMember FirstMember()
         {
-            if (!IsSource)
+            if (!HasCode)
                 return null;
             if (TypeList == null)
                 return null;
@@ -299,6 +319,8 @@ namespace XSharpModel
 
         public bool IsXaml => _type == XFileType.XAML;
         public bool IsSource => _type == XFileType.SourceCode;
+
+        public bool HasCode => IsSource || IsXaml;
         public bool HasLocals => _hasLocals;
 
         public XFileType XFileType => _type;
@@ -310,7 +332,7 @@ namespace XSharpModel
         {
             get
             {
-                if (!IsSource)
+                if (!HasCode)
                     return 0;
                 if (TypeList == null)
                     return 0;

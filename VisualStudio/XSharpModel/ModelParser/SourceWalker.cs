@@ -49,14 +49,10 @@ namespace XSharpModel
         {
             _file = file;
             _prjNode = _file?.Project?.ProjectNode;
-            string fullPath = _file.FullPath;
-            if (_file.IsXaml)
-            {
-                fullPath = System.IO.Path.Combine(_prjNode.IntermediateOutputPath, System.IO.Path.GetFileName(fullPath));
-                fullPath = System.IO.Path.ChangeExtension(fullPath, ".g.prg");
-            }
+            string fullPath = _file.SourcePath;
             if (System.IO.File.Exists(fullPath))
             {
+                //System.Diagnostics.Trace.WriteLine("Parsing " + System.IO.Path.GetFileName(fullPath));
                 _source = System.IO.File.ReadAllText(fullPath);
             }
         }
@@ -100,7 +96,7 @@ namespace XSharpModel
             System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Lex()");
             ITokenStream tokenStream;
             _errors = new List<XError>();
-            bool ok = XSharp.Parser.VsParser.Lex(_source, _file.FullPath, _file.Project.ProjectNode.ParseOptions, 
+            bool ok = XSharp.Parser.VsParser.Lex(_source, _file.SourcePath, _file.Project.ProjectNode.ParseOptions, 
                 this, out tokenStream);
             lock (this)
             {
@@ -133,7 +129,7 @@ namespace XSharpModel
                 options = XSharpParseOptions.Default;
             }
             _errors = new List<XError>();
-            bool ok = XSharp.Parser.VsParser.Parse(_source, _file.FullPath, _file.Project.ProjectNode.ParseOptions,
+            bool ok = XSharp.Parser.VsParser.Parse(_source, _file.SourcePath, _file.Project.ProjectNode.ParseOptions,
                 this, out tokenStream, out tree); 
             lock (this)
             { 
@@ -169,7 +165,7 @@ namespace XSharpModel
             var current = _errors.ToImmutableList();
             lock (_gate)
             {
-                string path = _file.FullPath;
+                string path = _file.SourcePath;
                 _prjNode.ClearIntellisenseErrors(path);
                 if (current != null && _prjNode.IsDocumentOpen(path))
                 {

@@ -43,6 +43,7 @@
     <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Overridden methods in subclasses with the same signature as the parent methods they override are no longer counted as overloads in completionlists</li>
       <li styleclass="List">A missing reference DLL could &quot;kill&quot; the intellisense engine. This no longer happens. Of course the type info from a missing referenced DLL is not included. </li>
+      <li styleclass="List">Properties and methods in the generated source files for XAML code (the .g.prg files in the OBJ folder) are now also parsed and included in the completion lists in intellisense and in the Class Browser and Object Browser windows. </li>
     </list>
     <para styleclass="List"></para>
     <para styleclass="List"><text style="font-weight:bold;">VOXPorter</text></para>

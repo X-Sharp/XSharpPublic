@@ -12,7 +12,7 @@
 #define Version             "1.2"
 #define FileNameVersion     "120"
 #define VIVersion           "1.2.0.0"
-#define TouchDate           "2018-03-20"
+#define TouchDate           "2018-03-21"
 #define TouchTime           "01:20:00"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -1309,7 +1309,9 @@ procedure InitializeWizard();
 begin
     
     Log('InitializeWizard start');
+    { Kill running process to help success the installation}
     TaskKill('xscompiler.exe');
+    TaskKill('msbuild.exe');
     PrintButton := TButton.Create(WizardForm);
     PrintButton.Caption := '&Print...';
     PrintButton.Left := WizardForm.InfoAfterPage.Left + 96;

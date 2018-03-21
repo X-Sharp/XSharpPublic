@@ -163,16 +163,19 @@ namespace XSharpColorizer
         }
         private void triggerRepaint(ITextSnapshot snapshot)
         {
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
-            if (snapshot != null)
+            if (ClassificationChanged != null)
             {
-                if (_buffer.CurrentSnapshot.Version == snapshot.Version && !_first)
+                System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
+                if (snapshot != null && _buffer?.CurrentSnapshot != null)
                 {
-                    ClassificationChanged(this, new ClassificationChangedEventArgs(
-                            new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
+                    if (_buffer.CurrentSnapshot.Version == snapshot.Version && !_first)
+                    {
+                        ClassificationChanged(this, new ClassificationChangedEventArgs(
+                                new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
+                    }
                 }
+                System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
         }
         private void ClassifyCompleted(object sender, RunWorkerCompletedEventArgs e)
         {

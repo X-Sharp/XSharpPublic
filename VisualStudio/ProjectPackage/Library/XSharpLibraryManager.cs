@@ -407,7 +407,7 @@ namespace XSharp.Project
                 {
                     //scope = ScopeWalker.GetScopesFromFile(task.FileName);
                     scope = XSharpModel.XSolution.FindFile(task.FileName);
-                    if (scope == null)
+                    if (scope == null || scope.XFileType != XFileType.SourceCode)
                         continue;
                 }
                 // If the file already exist
@@ -462,8 +462,12 @@ namespace XSharp.Project
             {
                 return;
             }
+            if (scope.XFileType != XFileType.SourceCode)
+                return;
             // Retrieve all Types
             var elements = scope.TypeList;
+            if (elements == null)
+                return;
             // 
             // First search for NameSpaces
             foreach (KeyValuePair<string, XType> pair in elements)
@@ -604,6 +608,8 @@ namespace XSharp.Project
         private void OnFileWalkComplete(XFile xfile)
         {
             // Retrieve the corresponding node
+            if (xfile.XFileType != XFileType.SourceCode)
+                return;
             XSharpProjectNode prjNode = (XSharpProjectNode)xfile.Project.ProjectNode;
             Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
             if (node != null)
@@ -778,7 +784,7 @@ namespace XSharp.Project
         {
             string fileName = getFileNameFromCookie(docCookie);
             var xFile = XSolution.FindFile(fileName);
-            if (xFile != null)
+            if (xFile != null && xFile.XFileType == XFileType.SourceCode)
             {
                 OnFileWalkComplete(xFile);
             }

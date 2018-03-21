@@ -45,9 +45,9 @@ namespace XSharp.Project
 
         ITextStructureNavigator m_navigator;
         IBufferTagAggregatorFactoryService _aggregator;
+        OptionsPages.IntellisenseOptionsPage _optionsPage;
 
-
-
+  
 
         public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator)
         {
@@ -60,6 +60,9 @@ namespace XSharp.Project
             _completionBroker = completionBroker;
             _signatureBroker = signatureBroker;
             _aggregator = aggregator;
+            var package = XSharpProjectPackage.Instance;
+            _optionsPage = package.GetIntellisenseOptionsPage();
+
         }
 
         private char GetTypeChar(IntPtr pvaIn)
@@ -194,9 +197,7 @@ namespace XSharp.Project
                                         //StartSignatureSession(true);
                                         break;
                                     default:
-                                        var package = XSharp.Project.XSharpProjectPackage.Instance;
-                                        var optionsPage = package.GetIntellisenseOptionsPage();
-                                        if ( optionsPage.ShowAfterChar )
+                                        if ( _optionsPage.ShowAfterChar )
                                             if (Char.IsLetterOrDigit(ch) || ch == '_')
                                                 StartCompletionSession(nCmdID, '\0');
                                         break;
@@ -685,7 +686,7 @@ namespace XSharp.Project
                                 transform = txtInfo.ToTitleCase(keyword.ToLower());
                                 break;
                         }
-                        // Not none, and the tranfsform is not the same as the original
+                        // Not none, and the transform is not the same as the original
                         if (String.Compare(transform, keyword) != 0)
                             editSession.Replace(kwSpan, transform);
                     }

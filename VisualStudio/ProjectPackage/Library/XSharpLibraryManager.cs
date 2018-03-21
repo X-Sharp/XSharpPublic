@@ -405,9 +405,8 @@ namespace XSharp.Project
                 XFile scope = null;
                 if (System.IO.File.Exists(task.FileName))
                 {
-                    //scope = ScopeWalker.GetScopesFromFile(task.FileName);
                     scope = XSharpModel.XSolution.FindFile(task.FileName);
-                    if (scope == null || scope.XFileType != XFileType.SourceCode)
+                    if (scope == null || (!scope.HasCode))
                         continue;
                 }
                 // If the file already exist
@@ -462,7 +461,7 @@ namespace XSharp.Project
             {
                 return;
             }
-            if (scope.XFileType != XFileType.SourceCode)
+            if (!scope.HasCode)
                 return;
             // Retrieve all Types
             var elements = scope.TypeList;
@@ -608,7 +607,7 @@ namespace XSharp.Project
         private void OnFileWalkComplete(XFile xfile)
         {
             // Retrieve the corresponding node
-            if (xfile.XFileType != XFileType.SourceCode)
+            if (!xfile.HasCode)
                 return;
             XSharpProjectNode prjNode = (XSharpProjectNode)xfile.Project.ProjectNode;
             Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
@@ -616,7 +615,7 @@ namespace XSharp.Project
             {
                 XSharpModuleId module = new XSharpModuleId(prjNode.InteropSafeHierarchy, node.ID);
                 module.ContentHashCode = xfile.ContentHashCode;
-                CreateParseRequest(xfile.FullPath, module);
+                CreateParseRequest(xfile.SourcePath, module);
             }
         }
 
@@ -782,12 +781,12 @@ namespace XSharp.Project
 
         public int OnAfterSave(uint docCookie)
         {
-            string fileName = getFileNameFromCookie(docCookie);
-            var xFile = XSolution.FindFile(fileName);
-            if (xFile != null && xFile.XFileType == XFileType.SourceCode)
-            {
-                OnFileWalkComplete(xFile);
-            }
+            //string fileName = getFileNameFromCookie(docCookie);
+            //var xFile = XSolution.FindFile(fileName);
+            //if (xFile != null && xFile.HasCode)
+            //{
+            //    xFile.Project.WalkFile(xFile);
+            //}
             return VSConstants.S_OK;
         }
 

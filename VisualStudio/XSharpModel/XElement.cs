@@ -203,7 +203,7 @@ namespace XSharpModel
                 if (this._File.Project.ProjectNode != null)
                 {
                     // Note: Antlr Lines start with 1, Columns start with 0
-                    this._File.Project.ProjectNode.OpenElement(this._File.FullPath, this.Range.StartLine, this.Range.StartColumn+1);
+                    this._File.Project.ProjectNode.OpenElement(this._File.SourcePath, this.Range.StartLine, this.Range.StartColumn+1);
                 }
             }
         }

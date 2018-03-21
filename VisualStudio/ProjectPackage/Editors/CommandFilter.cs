@@ -212,8 +212,11 @@ namespace XSharp.Project
                             break;
 #endif
                         case VSConstants.VSStd2KCmdID.RETURN:
-                            CancelSignatureSession();
-                            FormatLine(true);
+                            if (! handled)
+                            {
+                                CancelSignatureSession();
+                                FormatLine(true);
+                            }
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                             break;

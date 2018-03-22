@@ -4,50 +4,6 @@
 // See License.txt in the project root for license information.
 
 
-define F_ERROR := ptr(_cast,0xFFFFFFFF) // Error value (all functions)
-
-// FERROR() returns, which are not reflected as DOSERROR()
-define   FERROR_FULL    := 256   // disk full
-define   FERROR_EOF     := 257   // eof was already reached, when a read was tried
-define   FERROR_PARAM   := 258   // invalid parameter already detected before giving to DOS
-
-// FSEEK(), _llseek() modes
-define   FS_SET         := 0  // Seek from beginning of file
-define   FS_RELATIVE    := 1  // Seek from current file position
-define   FS_END         := 2  // Seek from end of file
-
-// FOPEN() access modes
-define   FO_READ        := 0  // Open for reading (default)
-define   FO_WRITE       := 1  // Open for writing
-define   FO_READWRITE   := 2  // Open for reading or writing
-
-// FOPEN() sharing modes (combine with open mode using +)
-define FO_COMPAT     := 0x00000000  // Compatibility mode (default)
-define FO_EXCLUSIVE  := 0x00000010  // Exclusive
-define FO_DENYWRITE  := 0x00000020  // Prevent other processes from writing
-define FO_DENYREAD   := 0x00000030  // Prevent other processes from reading
-define FO_DENYNONE   := 0x00000040  // (same as FO_SHARED)
-define FO_SHARED     := 0x00000040  // Allow other processes to read or write
-
-// FXOPEN() mode
-define FXO_WILD      := 0x00010000  // Allow wildcards in file name
-// FCREATE() file attribute modes (always opens with OF_READWRITE)
-define FC_NORMAL     := 0x00000000  // normal read/write file (default for create)
-define FC_READONLY   := 0x00000001  // read-only file
-define FC_HIDDEN     := 0x00000002  // hidden file
-define FC_SYSTEM     := 0x00000004  // system file
-define FC_ARCHIVED   := 0x00000020
-
-//
-// additional file attribute for DIRECTORY(), FFIRST() and FFCOUNT()
-//
-define FA_VOLUME     := 0x00000008
-define FA_DIRECTORY  := 0x00000010
-define FA_NORMAL	 := 0x00000080
-define FA_TEMPORARY  := 0x00000100
-define FA_COMPRESSED := 0x00000800
-define FA_OFFLINE    := 0x00001000
-
 
 //
 // subscripts for Directory() array

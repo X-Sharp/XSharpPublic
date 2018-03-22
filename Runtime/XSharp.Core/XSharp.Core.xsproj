@@ -86,7 +86,8 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>/creatingruntime</CommandLineOption>
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
@@ -135,7 +136,6 @@
     <Compile Include="RDD\DbFloat.prg" />
     <Compile Include="RDD\RDDDefines.prg" />
     <Compile Include="RDD\RddEnums.prg" />
-    <Compile Include="RDD\Win32FileStream.prg" />
     <Compile Include="RDD\IMemo.prg" />
     <Compile Include="RDD\IOrder.prg" />
     <Compile Include="RDD\IRDD.prg" />

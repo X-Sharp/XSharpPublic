@@ -5,6 +5,16 @@
 //
 #include "GetSet.xh"
 USING XSharp
+
+
+/// <summary>
+/// Return and the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION GetAnsi() AS LOGIC
+	return RuntimeState.Ansi
+
 /// <summary>
 /// Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
 /// </summary>

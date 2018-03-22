@@ -4,8 +4,9 @@
 // See License.txt in the project root for license information.
 //
 
-USING System.Runtime.InteropServices
-BEGIN NAMESPACE XSharp.RDD
+using System.Runtime.InteropServices
+using System.IO
+BEGIN NAMESPACE XSharp
 CLASS Win32FileStream INHERIT System.IO.FileStream
     // Fields
     PRIVATE hFile 		AS System.IntPtr
@@ -23,8 +24,8 @@ CLASS Win32FileStream INHERIT System.IO.FileStream
 		ENDIF
 		RETURN buffer
 
-    CONSTRUCTOR(path AS STRING, mode AS System.IO.FileMode, fileAccess AS System.IO.FileAccess, share AS System.IO.FileShare, bufferSize AS LONG, options AS System.IO.FileOptions)//Inline call to base() in C#
-    SUPER(path, mode, fileAccess, share, bufferSize, options)
+    CONSTRUCTOR(path AS STRING, mode AS FileMode, fileAccess AS FileAccess, share AS FileShare, bufferSize AS LONG)//Inline call to base() in C#
+		SUPER(path, mode, fileAccess, share, bufferSize)
         SELF:hFile := SELF:SafeFileHandle:DangerousGetHandle()
         SELF:onebytebuf := BYTE[]{1}
 
@@ -32,7 +33,8 @@ CLASS Win32FileStream INHERIT System.IO.FileStream
 		IF buffer != IntPtr.Zero
 			Marshal.FreeHGlobal(buffer)		
 		ENDIF
-		
+
+	PROPERTY HPtr as IntPtr GET hFile		
 
     VIRTUAL METHOD Flush() AS VOID
 		SELF:Flush(TRUE)

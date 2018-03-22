@@ -56,6 +56,11 @@ function Ansi2Oem(cSource as string) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
+function Ansi2Oem(bSource as BYTE[]) as Byte[]
+	/// THROW NotImplementedException{}
+	return bSource
+
+
 /// <summary>
 /// Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
 /// </summary>
@@ -624,6 +629,11 @@ function Occurs3(cSrc as string,c as string,nOffset as dword) as dword
 function Oem2Ansi(cSource as string) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
+
+function Oem2Ansi(bSource as BYTE[]) as Byte[]
+	/// THROW NotImplementedException{}
+	return bSource
+	 
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.

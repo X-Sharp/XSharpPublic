@@ -34,6 +34,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD.Tests", "Runtime
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.Tests", "Runtime\XSharp.VO.Tests\XSharp.VO.Tests.xsproj", "{16D523F2-B871-4BDC-94EF-33B3DB7AE617}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.xsproj", "{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{16D523F2-B871-4BDC-94EF-33B3DB7AE617}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16D523F2-B871-4BDC-94EF-33B3DB7AE617}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16D523F2-B871-4BDC-94EF-33B3DB7AE617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

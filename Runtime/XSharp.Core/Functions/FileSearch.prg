@@ -181,14 +181,7 @@ function FName() as string
 	return XSharp.FileSearch.FName()  
 
 
-/// <summary>
-/// Return the name and path of the file that was used by FXOpen() or File().
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION FPathName() AS STRING
-	
-	return XSharp.IO.FileHelper.LastFound
+
 
 /// <summary>
 /// Find the next file that matches the file previously found by FFirst().

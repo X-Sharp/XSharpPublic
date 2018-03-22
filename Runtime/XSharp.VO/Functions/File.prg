@@ -6,10 +6,21 @@
 /// <param name="uxFileAttr"></param>
 /// <returns>
 /// </returns>
-unsafe function FCreate(cFile as __Usual,uxFileAttr as __Usual) as ptr
+unsafe function FCreate(cFile ,uxFileAttr ) as ptr
 	/// THROW NotImplementedException{}
 return IntPtr.Zero
 
+
+/// <summary>
+/// Read a line from an open file.
+/// </summary>
+/// <param name="pFile"></param>
+/// <param name="nBuffLen"></param>
+/// <returns>
+/// </returns>
+function FGetS(pFile ,nBuffLen ) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
 
 
 
@@ -20,7 +31,7 @@ return IntPtr.Zero
 /// <param name="wMode"></param>
 /// <returns>
 /// </returns>
-unsafe function FOpen(cFile as __Usual,wMode as __Usual) as ptr
+unsafe function FOpen(cFile ,wMode ) as ptr
 	/// THROW NotImplementedException{}
 return IntPtr.Zero
 
@@ -33,10 +44,22 @@ return IntPtr.Zero
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FPutS(pFile as __Usual,c as __Usual,nCount as __Usual) as dword
+function FPutS(pFile ,c ,nCount ) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
+
+/// <summary>
+/// Read characters from a file into a buffer variable that is passed by reference.
+/// </summary>
+/// <param name="pHandle"></param>
+/// <param name="refC"></param>
+/// <param name="dwCount"></param>
+/// <returns>
+/// </returns>
+unsafe function FRead(pHandle as IntPtr,refC as object,dwCount as dword) as dword
+	/// THROW NotImplementedException{}
+return 0   
 
 
 
@@ -61,7 +84,7 @@ function FReadLine(pFile as __Usual,nBuffLen as __Usual) as string
 /// <param name="nOrigin"></param>
 /// <returns>
 /// </returns>
-function FSeek(nFile as __Usual,nOffset as __Usual,nOrigin as __Usual) as long
+function FSeek(nFile ,nOffset ,nOrigin ) as long
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -74,7 +97,7 @@ function FSeek(nFile as __Usual,nOffset as __Usual,nOrigin as __Usual) as long
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWrite(pHandle as __Usual,c as __Usual,nCount as __Usual) as dword
+function FWrite(pHandle ,c ,nCount ) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 

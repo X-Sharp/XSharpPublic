@@ -50,15 +50,26 @@ FUNCTION GetAmPm() AS LOGIC
 /// </returns>
 FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.AmPm lSet
+
+/// <summary>
+/// Return and the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetAnsi() as logic
+	local lOld := RuntimeState.Ansi as LOGIC
+	return lOld
+
 /// <summary>
 /// Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetAnsi(lSet AS OBJECT) AS LOGIC
-	/// THROW NotImplementedException{}
-	RETURN FALSE   
+function SetAnsi(lSet as logic) as logic
+	local lOld := RuntimeState.Ansi as LOGIC
+	RuntimeState.Ansi := lSet
+	return lOld
 
 /// <summary>
 /// Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).

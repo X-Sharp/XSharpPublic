@@ -8,12 +8,12 @@ BEGIN NAMESPACE XSharp
 	/// <Summary>Values that match the Visual Objects SET_* defines </Summary>
 	ENUM Set                                
 		MEMBER EXACT       := 1			// LOGIC
-		MEMBER @@FIXED	   := 2			// LOGIC
+		MEMBER FIXED	   := 2			// LOGIC
 		MEMBER DECIMALS    := 3			// INT
 		MEMBER DATEFORMAT  := 4			// STRING
 		MEMBER EPOCH       := 5			// INT
 		MEMBER PATH        := 6			// STRING
-		MEMBER @@DEFAULT   := 7			// STRING
+		MEMBER DEFAULT	   := 7			// STRING
 		MEMBER EXCLUSIVE   := 8			// LOGIC
 		MEMBER SOFTSEEK    := 9			// LOGIC
 		MEMBER UNIQUE      := 10		// LOGIC
@@ -44,13 +44,14 @@ BEGIN NAMESPACE XSharp
 		MEMBER WRAP        := 35		// LOGIC
 		MEMBER MESSAGE     := 36		// INT
 		MEMBER MCENTER     := 37		// LOGIC
-		MEMBER SCROLLBREAK := 38		// LOGIC
+		member SCROLLBREAK := 38		// LOGIC
+		MEMBER ERRRORLOG   := 39		// LOGIC
 
 		// 48 and 49 unused
 		MEMBER DIGITS      	:= 50	// INT   Vulcan had 39
 		MEMBER NETERR      	:= 51	// LOGIC Vulcan had 40
-		MEMBER @@ANSI      	:= 53	// LOGIC Vulcan had 44
-		MEMBER @@YIELD     	:= 54	// LOGIC Vulcan had 45
+		MEMBER ANSI      	:= 53	// LOGIC Vulcan had 44
+		MEMBER YIELD     	:= 54	// LOGIC Vulcan had 45
 		MEMBER LOCKTRIES   	:= 55	// INT   Vulcan had 46
 		MEMBER AMEXT		:= 56	// STRING
 		MEMBER AMPM		    := 57	// STRING

@@ -23,35 +23,18 @@ function CompString() as int
 /// <param name="xModule"></param>
 /// <returns>
 /// </returns>
-function LoadResString(cDef as Usual,id as Usual,xModule as Usual) as string
+function LoadResString(cDef as usual,id as usual,xModule as usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
 
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION NationExit() AS INT
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-
-	/// <summary>
-	/// Identify a character set by its nation driver.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION NVersion() AS STRING
-		/// THROW NotImplementedException{}
-	return String.Empty 
-	/// Extract a substring from a string — both the substring and the string can contain double-byte characters.
-	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="iStart"></param>
-	/// <param name="wLen"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION MBSUBSTR(c AS Usual,iStart AS Usual,wLen AS Usual) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN String.Empty   
+/// Extract a substring from a string — both the substring and the string can contain double-byte characters.
+/// </summary>
+/// <param name="c"></param>
+/// <param name="iStart"></param>
+/// <param name="wLen"></param>
+/// <returns>
+/// </returns>
+function MBSUBSTR(c as usual,iStart as usual,wLen as usual) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   

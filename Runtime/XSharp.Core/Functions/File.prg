@@ -41,13 +41,12 @@ using System.Text
 	define FO_DENYNONE   := 0x00000040  // (same as FO_SHARED)
 	define FO_SHARED     := 0x00000040  // Allow other processes to read or write
 	
-	
-	define OF_SHARE_COMPAT := 0x00000000
-	define OF_SHARE_EXCLUSIVE := 0x00000010
-	define OF_SHARE_DENY_WRITE := 0x00000020
-	define OF_SHARE_DENY_READ := 0x00000030
-	define OF_SHARE_DENY_NONE := 0x00000040
-	define OF_PARSE := 0x00000100
+	define OF_SHARE_COMPAT		:= 0x00000000
+	define OF_SHARE_EXCLUSIVE	:= 0x00000010
+	define OF_SHARE_DENY_WRITE	:= 0x00000020
+	define OF_SHARE_DENY_READ	:= 0x00000030
+	define OF_SHARE_DENY_NONE	:= 0x00000040
+	define OF_PARSE				:= 0x00000100
 	
 	define CREATE_NEW := 1
 	define CREATE_ALWAYS := 2
@@ -58,12 +57,12 @@ using System.Text
 	define FO_CANCEL := 0x00000800
 	define FO_CREATE := 0x00001000
 	define FO_PROMPT := 0x00002000
-	define FO_EXIST := 0x00004000
+	define FO_EXIST  := 0x00004000
 	define FO_REOPEN := 0x00008000
-	
 	
 	// FXOPEN() mode
 	define FXO_WILD      := 0x00010000  // Allow wildcards in file name
+	
 	// FCREATE() file attribute modes (always opens with OF_READWRITE)
 	define FC_NORMAL     := 0x00000000  // normal read/write file (default for create)
 	define FC_READONLY   := 0x00000001  // read-only file
@@ -81,25 +80,6 @@ using System.Text
 	define FA_COMPRESSED := 0x00000800
 	define FA_OFFLINE    := 0x00001000
 	
-	static define FF_WRITE_THROUGH := 0x80000000
-	static define FF_OVERLAPPED := 0x40000000
-	static define FF_NO_BUFFERING := 0x20000000
-	static define FF_RANDOM_ACCESS := 0x10000000
-	static define FF_SEQUENTIAL_SCAN := 0x08000000
-	static define FF_DELETE_ON_CLOSE := 0x04000000
-	static define FF_BACKUP_SEMANTICS := 0x02000000
-	static define FF_POSIX_SEMANTICS := 0x01000000
-	
-	static define GENERIC_READ := 0x80000000U
-	static define GENERIC_WRITE := 0x40000000L
-	static define GENERIC_EXECUTE := 0x20000000L
-	static define GENERIC_ALL := 0x10000000L
-	
-	static define FILE_SHARE_READ := 0x00000001
-	static define FILE_SHARE_WRITE := 0x00000002
-	
-	
-	//
 	
 #endregion
 
@@ -111,7 +91,7 @@ begin namespace XSharp.IO
 		property lWild			as logic auto
 		property FileMode		as FileMode auto 
 		property FileAccess		as FileAccess auto 
-		property Attributes	    as DWORD auto
+		property Attributes	    as dword auto
 		property FileShare		as FileShare auto
 		
 		constructor(dwMode as dword, dwAttribs as dword)
@@ -172,7 +152,7 @@ begin namespace XSharp.IO
 		private static random as Random
 		
 		static constructor
-			streams := Dictionary<IntPtr, Tuple<FileStream, DWORD> >{}
+			streams := Dictionary<IntPtr, Tuple<FileStream, dword> >{}
 			random := Random{}
 		
 		static internal method findStream(pStream as IntPtr) as FileStream
@@ -184,9 +164,9 @@ begin namespace XSharp.IO
 		static internal method hasStream(pStream as Intptr) as logic
 			return streams:ContainsKey(pStream)
 		
-		static internal method addStream(pStream as Intptr, oStream as FileStream, attributes as DWORD) as logic
+		static internal method addStream(pStream as Intptr, oStream as FileStream, attributes as dword) as logic
 			if ! streams:ContainsKey(pStream)
-				streams:Add(pStream, Tuple<FileStream, DWORD> {oStream, attributes})
+				streams:Add(pStream, Tuple<FileStream, dword> {oStream, attributes})
 				return true
 			endif
 			return false
@@ -198,7 +178,7 @@ begin namespace XSharp.IO
 			endif
 			return false
 		
-
+		
 		
 		static internal method _createManagedFileStream(cFIle as string, oMode as VOFileMode) as FileStream
 			local oStream := null as FileSTream
@@ -209,7 +189,7 @@ begin namespace XSharp.IO
 				FError((dword)Marshal.GetLastWin32Error())
 			end try
 			return oStream
-
+		
 		static internal method _createFile(cFIle as string, oMode as VOFileMode) as IntPtr
 			local hFile := F_ERROR as IntPtr
 			local oStream as FileStream
@@ -217,29 +197,29 @@ begin namespace XSharp.IO
 				var fi := FileInfo{cFile}
 				fi:Attributes := FileAttributes.Normal
 			endif
-		
-				oStream :=_createManagedFileStream(cFile, oMode)
-				if oStream != NULL
+			
+			oStream :=_createManagedFileStream(cFile, oMode)
+			if oStream != null
+				hFile := (IntPtr) random:@@Next(1, Int32.MaxValue)
+				do while streams:ContainsKey(hFile)
 					hFile := (IntPtr) random:@@Next(1, Int32.MaxValue)
-					do while streams:ContainsKey(hFile)
-						hFile := (IntPtr) random:@@Next(1, Int32.MaxValue)
-					enddo
-				else
-					hFile := F_ERROR
-				endif
+				enddo
+			else
+				hFile := F_ERROR
+			endif
 			//endif
 			if hFile != F_ERROR
 				addStream(hFile, oStream, oMode:Attributes)
 			endif
 			return hFile
-
-
+		
+		
 		
 		
 		static internal method _fClose(pStream as IntPtr) as logic
 			if hasStream(pStream)
 				local oStream      := streams[pStream]:Item1 as FileStream
-				LOCAL dwAttributes := streams[pStream]:Item2 as DWORD
+				local dwAttributes := streams[pStream]:Item2 as dword
 				removeStream(pStream)
 				oStream:Flush()
 				oStream:Close()
@@ -462,10 +442,15 @@ function FGetS2(pHandle as IntPtr,nBuffLen as int) as string
 	
 	return cResult
 
-
+/// <summary>
+/// Read a line from an open file, specifying two strongly typed arguments.
+/// </summary>
+/// <param name="pHandle">The handle of the file.</param>
+/// <param name="nBuffLen"></param>
+/// <returns>
+/// </returns>
 function FGetS2(pHandle as IntPtr,nBuffLen as dword) as string
 	return FGetS2(pHandle, (int) nBuffLen)
-
 
 /// <summary>
 /// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
@@ -477,9 +462,6 @@ function FGetS2(pHandle as IntPtr,nBuffLen as dword) as string
 /// </returns>
 function FPutS3(pHandle as IntPtr,c as string,nCount as dword) as dword
 	return FWriteLine(pHandle, c, nCount)
-
-
-
 
 /// <summary>
 /// Read characters from a file into an allocated buffer.
@@ -498,15 +480,19 @@ function FRead3(pHandle as IntPtr,pBuffer as byte[],dwCount as int) as int64
 		catch
 			FError((dword)Marshal.GetLastWin32Error())
 		end try
-		
 	endif
-	
 	return iResult
 
+/// <summary>
+/// Read characters from a file into an allocated buffer.
+/// </summary>
+/// <param name="pHandle">The handle of the file.</param>
+/// <param name="pBuffer"> Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+/// <param name="dwCount"></param>
+/// <returns>
+/// </returns>
 function FRead3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
 	return (dword) Fread3(pHandle, pBuffer, (int) dwCount)
-
-
 
 /// <summary>
 /// Read characters from a file into an allocated buffer.
@@ -522,7 +508,6 @@ function FRead4(pHandle as IntPtr,pBuffer as byte[],dwCount as dword,lAnsi as lo
 	if !lAnsi .and. iResult > 0
 		pBuffer := Oem2Ansi(pBuffer)
 	endif
-	
 	return (dword) iResult
 
 /// <summary>
@@ -545,13 +530,11 @@ function FReadLine2(pFile as IntPtr,nBuffLen as dword) as string
 /// </returns>
 function FReadStr(pHandle as IntPtr,iCount as int) as string
 	local aBuffer as byte[]
-	local cResult as STRING
-	aBuffer := Byte[]{iCount}
+	local cResult as string
+	aBuffer := byte[]{iCount}
 	iCount := (int) Fread3(pHandle, aBuffer, iCount)
 	cResult := Bytes2String(aBuffer, iCount)
 	return cResult
-
-	
 
 /// <summary>
 /// Read characters from a file into a buffer variable that is passed by reference.
@@ -576,7 +559,6 @@ function FReadText(pHandle as IntPtr,refC as object,dwCount as dword) as dword
 function FReadText3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
 	return Fread4(pHandle, pBuffer, dwCount, ! GetAnsi())	
 
-
 /// <summary>
 /// Set the file pointer at the top of an open file.
 /// </summary>
@@ -600,7 +582,7 @@ function FRewind(pHandle as IntPtr) as void
 /// <param name="dwOrigin"></param>
 /// <returns>
 /// </returns>
-function FSeek3(pHandle as IntPtr,lOffset as long,dwOrigin as dword) as int64
+function FSeek3(pHandle as IntPtr,lOffset as int64,dwOrigin as dword) as int64
 	local oStream as FileStream
 	local iResult as int64
 	oStream := XSharp.IO.File.findStream(pHandle)
@@ -623,6 +605,17 @@ function FSeek3(pHandle as IntPtr,lOffset as long,dwOrigin as dword) as int64
 		return iResult 
 	endif
 	return -1
+
+/// <summary>
+/// Set the file pointer to a new position, specifying three strongly-typed arguments.
+/// </summary>
+/// <param name="pHandle">The handle of the file.</param>
+/// <param name="lOffset"></param>
+/// <param name="dwOrigin"></param>
+/// <returns>
+/// </returns>
+function FSeek3(pHandle as IntPtr,lOffset as long, dwOrigin as dword) as long
+	return (long) FSeek3(pHandle, (long) lOffset, dwOrigin)
 
 /// <summary>
 /// Return the current position of the file pointer.
@@ -735,12 +728,23 @@ function FWrite3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
 /// <param name="lAnsi"></param>
 /// <returns>
 /// </returns>
-function FWrite4(pHandle as IntPtr,pBuffer as byte[],dwCount as dword,lAnsi as logic) as dword
+function FWrite4(pHandle as IntPtr,pBuffer as byte[],dwCount as int,lAnsi as logic) as int
 	if lAnsi
 		pBuffer := Ansi2Oem(pBuffer)
 	endif
 	return FWrite3(pHandle, pBuffer, dwCount)
 
+/// <summary>
+/// Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
+/// </summary>
+/// <param name="pHandle">The handle of the file.</param>
+/// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+/// <param name="dwCount"></param>
+/// <param name="lAnsi"></param>
+/// <returns>
+/// </returns>
+function FWrite4(pHandle as IntPtr,pBuffer as byte[],dwCount as dword,lAnsi as logic) as dword
+	return (dword) FWrite4(pHandle,pBuffer , (int) dwCount ,lAnsi )
 
 
 /// <summary>
@@ -776,7 +780,7 @@ function FWriteLine3(pHandle as IntPtr,c as string,nCount as dword) as dword
 	if nCount < c:Length
 		c := Left(c, nCount)
 	endif
-	return FWrite(pHandle, c + e"\r\n",nCount+2)
+	return FWriteLine(pHandle, c ,nCount)
 
 /// <summary>
 /// Write the contents of a buffer to an open file, with SetAnsi() dependency.
@@ -788,9 +792,6 @@ function FWriteLine3(pHandle as IntPtr,c as string,nCount as dword) as dword
 /// </returns>
 function FWriteText3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
 	return FWrite4(pHandle ,pBuffer ,dwCount ,!GetAnsi()) 
-
-
-
 
 /// <summary>
 /// Remove spaces from a file name specified as a string.
@@ -900,9 +901,54 @@ function FxOpen(cFile as string,dwMode as dword,cPath as string) as IntPtr
 /// <returns>
 /// </returns>
 function String2FAttr(cAttr as string) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+	local dwAttributes as dword
+	foreach c as char in cAttr
+		do case
+		case c == 'A'
+			dwAttributes |= FC_ARCHIVED
+		case c == 'D'
+			dwAttributes |= FA_DIRECTORY
+		case c == 'H'
+			dwAttributes |= FC_HIDDEN
+		case c == 'S'
+			dwAttributes |= FC_SYSTEM
+		case c == 'V'
+			dwAttributes |= FA_VOLUME
+		end case
+	next
+	return dwAttributes
 
+
+
+/// <summary>
+/// Display file attributes as a string.
+/// </summary>
+/// <param name="nAttrib"></param>
+/// <returns>
+/// </returns>
+function FAttr2String(dwAttributes as dword) as string
+	local cAttribute as string
+	
+	if (dword)_and(dwAttributes,FA_DIRECTORY) == FA_DIRECTORY
+		cAttribute := cAttribute + "D"
+	endif
+	if (dword)_and(dwAttributes,FA_VOLUME) == FA_VOLUME
+		cAttribute := cAttribute + "V"
+	endif
+	if (dword)_and(dwAttributes,FC_ARCHIVED) == FC_ARCHIVED
+		cAttribute := cAttribute + "A"
+	endif
+	if (dword)_and(dwAttributes,FC_HIDDEN) == FC_HIDDEN
+		cAttribute := cAttribute + "H"
+	endif
+	if (dword)_and(dwAttributes,FC_READONLY) == FC_READONLY
+		cAttribute := cAttribute + "R"
+	endif
+	if (dword)_and(dwAttributes,FC_SYSTEM) == FC_SYSTEM
+		cAttribute := cAttribute + "S"
+	endif
+	
+	return cAttribute
 
 
 

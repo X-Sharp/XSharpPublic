@@ -166,3 +166,14 @@ function Len(u as __Usual) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
+
+
+
+/// <summary>
+/// </summary>
+/// <param name="dwType"></param>
+/// <returns>
+/// </returns>
+FUNCTION TypeString(dwType AS DWORD) AS STRING
+	/// THROW NotImplementedException{}
+	RETURN String.Empty   

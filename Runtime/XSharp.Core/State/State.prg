@@ -152,16 +152,13 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.Century);
         SET SetValue<LOGIC>(Set.Century, VALUE)
 
-
    STATIC PROPERTY CollationMode AS CollationMode ;
         GET GetValue<CollationMode>(Set.CollationMode);
         SET SetValue<CollationMode>(Set.CollationMode, VALUE)
 
-
    STATIC PROPERTY DateCountry AS INT ;
         GET GetValue<INT>(Set.DateCountry);
         SET SetValue<INT>(Set.DateCountry, VALUE)
-
 
 	/// <Summary>The current Date format</Summary>
 	/// <Remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br>
@@ -179,20 +176,17 @@ CLASS XSharp.RuntimeState
         GET GetValue<LONG>(Set.DECIMALS);
         SET SetValue<LONG>(Set.DECIMALS, VALUE)
 
-
 	/// <Summary>The default number of decimals for new FLOAT values that are created without explicit decimals</Summary>
 	/// <Returns>DWORD value</Returns>
-    STATIC PROPERTY DecimalSep AS LONG ;
-        GET GetValue<LONG>(Set.DecimalSep);
-        SET SetValue<LONG>(Set.DecimalSep, VALUE)
-
+    STATIC PROPERTY DecimalSep AS WORD ;
+        GET GetValue<WORD>(Set.DecimalSep);
+        SET SetValue<WORD>(Set.DecimalSep, VALUE)
 
 	/// <Summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</Summary>
 	/// <Returns>Logic value</Returns>
     STATIC PROPERTY Deleted AS LOGIC ;
         GET GetValue<LOGIC>(Set.DELETED);
         SET SetValue<LOGIC>(Set.DELETED, VALUE)
-
 
 	/// <Summary>Date Epoch value that determines how dates without century digits are interpreted.</Summary>
 	/// <Returns>DWORD value</Returns>
@@ -223,7 +217,6 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Optimize AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIMIZE);
         SET SetValue<LOGIC>(Set.OPTIMIZE, VALUE)
-
 
     STATIC PROPERTY SoftSeek AS LOGIC ;
         GET GetValue<LOGIC>(Set.SoftSeek);
@@ -282,7 +275,7 @@ CLASS XSharp.RuntimeState
 			RuntimeState.International := mode
 		ENDIF
 
-	PRIVATE STATIC METHOD _SetDateFormat(format AS STRING) AS VOID
+	INTERNAL STATIC METHOD _SetDateFormat(format AS STRING) AS VOID
 		format := format:ToUpper()
 		SetValue(SET.CENTURY, format:Contains("YYYY"))
 		SetValue(Set.DATEFORMAT, format)

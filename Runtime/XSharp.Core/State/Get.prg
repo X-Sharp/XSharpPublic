@@ -15,14 +15,6 @@ USING XSharp
 FUNCTION GetAnsi() AS LOGIC
 	return RuntimeState.Ansi
 
-/// <summary>
-/// Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetAppLocaleID() AS DWORD
-	/// THROW NotImplementedException{}
-	RETURN 0   
 
 /// <summary>
 /// </summary>
@@ -141,12 +133,13 @@ FUNCTION GetNatDLL() AS STRING
 
 
 /// <summary>
+/// Returns a string representing the evening extension for time strings in 12-hour format.
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION GetPrivPtr() AS IntPtr
-	/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero   
+FUNCTION GetPMExt() AS STRING
+	GETSTATE STRING Set.PmExt
+
 
 /// <summary>
 /// </summary>
@@ -156,15 +149,6 @@ FUNCTION GetRTFullPath() AS STRING
 	/// THROW NotImplementedException{}
 	RETURN String.Empty   
 
-/// <summary>
-/// </summary>
-/// <param name="pStgRoot"></param>
-/// <param name="cSubStorage"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetStgServer(pStgRoot AS IntPtr,cSubStorage AS STRING) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
@@ -189,7 +173,7 @@ FUNCTION GetThreadCount() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION GetTickCountLow() AS DWORD
-	/// THROW NotImplementedException{}
+	
 	RETURN 0   
 
 /// <summary>

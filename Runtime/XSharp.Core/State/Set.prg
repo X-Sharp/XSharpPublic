@@ -6,23 +6,23 @@
 // Most of these settings will Get and Set properties of the Runtime.State class
 #include "GetSet.xh"
 
-USING XSharp
+using XSharp
 
 /// <summary>
 /// Returns a string representing the morning extension for time strings in 12-hour format.
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION GetAMExt() AS STRING
-	GETSTATE STRING Set.AmExt 
+function GetAMExt() as string
+	getstate string Set.AmExt 
 
 /// <summary>
 /// Returns a string representing the morning extension for time strings in 12-hour format.
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION SetAMExt() AS STRING
-	RETURN GetAmExt()
+function SetAMExt() as string
+	getstate string Set.AmExt 
 
 /// <summary>
 /// Set the morning extension for time strings in 12-hour format.
@@ -30,8 +30,8 @@ FUNCTION SetAMExt() AS STRING
 /// <param name="cExt"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetAMExt(cExt AS STRING) AS STRING
-	SETSTATE STRING Set.AmExt cExt
+function SetAMExt(cExt as string) as string
+	setstate string Set.AmExt cExt
 
 
 /// <summary>
@@ -39,17 +39,25 @@ FUNCTION SetAMExt(cExt AS STRING) AS STRING
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION GetAmPm() AS LOGIC
-	GETSTATE LOGIC Set.AmPm
+function GetAmPm() as logic
+	getstate logic Set.AmPm
 
 /// <summary>
-/// Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
+/// Returns the setting that determines whether time strings are in 12-hour or 24-hour format.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetAmPm() as logic
+	getstate logic Set.AmPm
+
+/// <summary>
+/// Change the setting that determines whether time strings are in 12-hour or 24-hour format.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.AmPm lSet
+function SetAmPm(lSet as logic) as logic
+	setstate logic Set.AmPm lSet
 
 /// <summary>
 /// Return and the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
@@ -57,67 +65,87 @@ FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 function SetAnsi() as logic
-	local lOld := RuntimeState.Ansi as LOGIC
-	return lOld
+	return RuntimeState.Ansi
 
 /// <summary>
-/// Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
+/// Change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
 function SetAnsi(lSet as logic) as logic
-	local lOld := RuntimeState.Ansi as LOGIC
+	local lOld := RuntimeState.Ansi as logic
 	RuntimeState.Ansi := lSet
 	return lOld
 
-/// <summary>
-/// Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
-/// </summary>
-/// <param name="dwLocaleId"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
-	/// THROW NotImplementedException{}
-	RETURN 0   
+
 
 /// <summary>
-/// Return and optionally change the setting that determines whether a beep is sounded by the error system when an error occurs.
+/// Return the setting that determines whether a beep is sounded by the error system when an error occurs.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetBeep(lSet AS OBJECT) AS LOGIC
-	/// THROW NotImplementedException{}
-	RETURN FALSE   
+function SetBeep() as logic
+	getstate logic Set.BELL
 
 /// <summary>
-/// Return and optionally change the setting that determines whether to include or omit century digits in the date format.
+/// Change the setting that determines whether a beep is sounded by the error system when an error occurs.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetCentury(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Century lSet
+function SetBeep(lSet as logic) as logic
+	setstate logic Set.BELL lSet
+
 
 /// <summary>
+/// Return the setting that determines whether to include or omit century digits in the date format.
 /// </summary>
-/// <param name="pFunc"></param>
+/// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
-	/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero
+function SetCentury() as logic
+	getstate logic Set.Century 
 
 /// <summary>
-/// Return and optionally change the setting that determines the type of central processor you have.
+/// Change the setting that determines whether to include or omit century digits in the date format.
+/// </summary>
+/// <param name="lSet"></param>
+/// <returns>
+/// </returns>
+function SetCentury(lSet as logic) as logic
+	setstate logic Set.Century lSet
+
+
+/// <summary>
+/// Return the setting that determines the type of central processor you have.
 /// </summary>
 /// <param name="nCpu"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetCpu(nCpu AS OBJECT) AS DWORD
-	/// THROW NotImplementedException{}
-	RETURN 0   
+function SetCpu() as dword
+	getstate dword Set.CPU
+
+
+/// <summary>
+/// Change the setting that determines the type of central processor you have.
+/// </summary>
+/// <param name="nCpu"></param>
+/// <returns>
+/// </returns>
+function SetCpu(nCpu as dword) as dword
+	setstate dword Set.CPU nCPU
+
+
+/// <summary>
+/// Return the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
+/// </summary>
+/// <param name="dwCountry"></param>
+/// <returns>
+/// </returns>
+function SetDateCountry() as long
+	getstate long Set.DATECOUNTRY
 
 /// <summary>
 /// Return and optionally change the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
@@ -125,9 +153,10 @@ FUNCTION SetCpu(nCpu AS OBJECT) AS DWORD
 /// <param name="dwCountry"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetDateCountry(dwCountry AS OBJECT) AS DWORD
+function SetDateCountry(dwCountry as long) as long
 	/// THROW NotImplementedException{}
-	RETURN 0   
+	setstate long Set.DATECOUNTRY dwCountry
+
 
 
 /// <summary>
@@ -135,8 +164,8 @@ FUNCTION SetDateCountry(dwCountry AS OBJECT) AS DWORD
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION GetDateFormat() AS STRING
-	GETSTATE STRING Set.DateFormat
+function GetDateFormat() as string
+	getstate string Set.DateFormat
 
 /// <summary>
 /// Change the setting that determines the <%APP%> date format.
@@ -144,41 +173,73 @@ FUNCTION GetDateFormat() AS STRING
 /// <param name="cDateFormat"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetDateFormat(cDateFormat AS STRING) AS STRING
-	SETSTATE STRING Set.DateFormat cDateFormat
+function SetDateFormat(cDateFormat as string) as string
+	local cOld as string
+	// Changing Dateformat also changes DateCountry and Century
+	cOld := RuntimeState.DateFormat
+	RuntimeState.DateFormat := cDateFormat
+	return cOld
+
 /// <summary>
-/// Return and optionally change the setting that determines the number of decimal places used to display numbers.
+/// Return the setting that determines the number of decimal places used to display numbers.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetDecimal() as dword
+	getstate dword Set.Decimals 
+
+/// <summary>
+/// Return and change the setting that determines the number of decimal places used to display numbers.
 /// </summary>
 /// <param name="nDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetDecimal(nDec AS DWORD) AS DWORD
-	SETSTATE DWORD Set.Decimals nDec
+function SetDecimal(nDec as dword) as dword
+	setstate dword Set.Decimals nDec
 
 /// <summary>
-/// Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
+/// Return the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
+/// </summary>
+/// <returns>
+/// </returns>
+
+function SetDecimalSep() as word
+	getstate word Set.DecimalSep 
+
+/// <summary>
+/// Return and change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
 /// </summary>
 /// <param name="wSep"></param>
 /// <returns>
 /// </returns>
-
-FUNCTION SetDecimalSep() AS WORD
-	GETSTATE WORD Set.DecimalSep 
-
-FUNCTION SetDecimalSep(wSep AS WORD) AS WORD
-	SETSTATE WORD Set.DecimalSep wSep
+function SetDecimalSep(wSep as word) as word
+	setstate word Set.DecimalSep wSep
 
 /// <summary>
-/// Change the setting that determines the <%APP%> default drive and directory.
+/// Return the setting that determines the default drive and directory.
 /// </summary>
 /// <param name="cDefault"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetDefault() AS STRING
-	GETSTATE STRING Set.Default 
+function SetDefault() as string
+	getstate string Set.Default 
 
-FUNCTION SetDefault(cDefault AS STRING) AS STRING
-	SETSTATE STRING Set.Default cDefault
+/// <summary>
+/// Change the setting that determines the default drive and directory.
+/// </summary>
+/// <param name="cDefault"></param>
+/// <returns>
+/// </returns>
+function SetDefault(cDefault as string) as string
+	setstate string Set.Default cDefault
+
+/// <summary>
+/// Return the setting that determines whether to ignore or include records that are marked for deletion.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetDeleted() as logic
+	getstate logic Set.Deleted 
 
 /// <summary>
 /// Change the setting that determines whether to ignore or include records that are marked for deletion.
@@ -186,154 +247,190 @@ FUNCTION SetDefault(cDefault AS STRING) AS STRING
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetDeleted() AS LOGIC
-	GETSTATE LOGIC Set.Deleted 
-FUNCTION SetDeleted(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Deleted lSet
+function SetDeleted(lSet as logic) as logic
+	setstate logic Set.Deleted lSet
 
 /// <summary>
-/// Return and optionally change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
+/// Return the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetDigit() as dword
+	getstate dword Set.DIGITS 
+
+/// <summary>
+/// Change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
 /// </summary>
 /// <param name="nDig"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetDigit() AS DWORD
-	GETSTATE DWORD Set.DIGITS 
-
-FUNCTION SetDigit(nDig AS DWORD) AS DWORD
-	SETSTATE DWORD Set.DIGITS nDIg
+function SetDigit(nDig as dword) as dword
+	setstate dword Set.DIGITS nDIg
 
 /// <summary>
-/// Return and optionally change the setting that fixes the number of digits used to display numeric output.
+/// Return the setting that fixes the number of digits used to display numeric output.
 /// </summary>
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetDigitFixed() AS LOGIC
-	GETSTATE LOGIC Set.DigitFixed 
-
-FUNCTION SetDigitFixed(f AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.DigitFixed f
+function SetDigitFixed() as logic
+	getstate logic Set.DigitFixed 
 
 /// <summary>
-/// Update or replace the contents of a DOS environment variable.
+/// Change the setting that fixes the number of digits used to display numeric output.
 /// </summary>
-/// <param name="cVar"></param>
-/// <param name="cValue"></param>
-/// <param name="lAppend"></param>
+/// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
-	/// THROW NotImplementedException{}
-	RETURN FALSE   
+function SetDigitFixed(f as logic) as logic
+	setstate logic Set.DigitFixed f
+
 
 /// <summary>
-/// Return and optionally change the setting that determines how dates without century digits are interpreted.
+/// Return the setting that determines how dates without century digits are interpreted.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetEpoch() as dword
+	getstate dword Set.Epoch 
+
+/// <summary>
+/// Change the setting that determines how dates without century digits are interpreted.
 /// </summary>
 /// <param name="wYear"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetEpoch() AS DWORD
-	GETSTATE DWORD Set.Epoch 
-
-FUNCTION SetEpoch(wYear AS DWORD) AS DWORD
-	SETSTATE DWORD Set.Epoch wYear
+function SetEpoch(wYear as dword) as dword
+	setstate dword Set.Epoch wYear
 
 /// <summary>
-/// Return and optionally change the setting that determines whether error information is written to the error log file by the default runtime error handler.
+/// Return the setting that determines whether error information is written to the error log file by the default runtime error handler.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetErrorLog() as logic
+	getstate logic Set.ERRRORLOG 
+
+/// <summary>
+/// Change the setting that determines whether error information is written to the error log file by the default runtime error handler.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetErrorLog(lSet AS OBJECT) AS LOGIC
-	/// THROW NotImplementedException{}
-	RETURN FALSE   
+function SetErrorLog(lSet as logic) as logic
+	setstate logic Set.ERRRORLOG lSet
 
 /// <summary>
-/// Toggles an exact match for character string comparisons.
+/// Return the setting for an exact match for character string comparisons.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetExact() as logic
+	getstate logic Set.Exact 
+
+/// <summary>
+/// Change the setting for an exact match for character string comparisons.
 /// </summary>
 /// <param name="fExact"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetExact() AS LOGIC
-	GETSTATE LOGIC Set.Exact 
-
-FUNCTION SetExact(fExact AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Exact fExact
+function SetExact(fExact as logic) as logic
+	setstate logic Set.Exact fExact
 
 /// <summary>
-/// Return and optionally change the setting that determines whether to open database files in exclusive or shared mode.
+/// Return the setting that determines whether to open database files in exclusive or shared mode.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetExclusive() as logic
+	getstate logic Set.Exclusive 
+
+/// <summary>
+/// Change the setting that determines whether to open database files in exclusive or shared mode.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetExclusive() AS LOGIC
-	GETSTATE LOGIC Set.Exclusive 
-
-FUNCTION SetExclusive(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Exclusive lSet
+function SetExclusive(lSet as logic) as logic
+	setstate logic Set.Exclusive lSet
 
 /// <summary>
-/// Return and optionally change the setting that determines whether assignments are made to fields or to memory variables.
+/// Return the setting that determines whether assignments are made to fields or to memory variables.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetFieldStore() as logic
+	getstate logic Set.FieldStore
+
+/// <summary>
+/// Change the setting that determines whether assignments are made to fields or to memory variables.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetFieldStore() AS LOGIC
-	GETSTATE LOGIC Set.FieldStore
-FUNCTION SetFieldStore(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.FieldStore lSet
+function SetFieldStore(lSet as logic) as logic
+	setstate logic Set.FieldStore lSet
 
 /// <summary>
-/// Return and optionally change the setting that fixes the number of decimal digits used to display numbers.
+/// Return the setting that fixes the number of decimal digits used to display numbers.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetFixed() as logic
+	getstate logic Set.Fixed 
+
+/// <summary>
+/// Change the setting that fixes the number of decimal digits used to display numbers.
 /// </summary>
 /// <param name="fFixed"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetFixed() AS LOGIC
-	GETSTATE LOGIC Set.Fixed 
-
-FUNCTION SetFixed(fFixed AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Fixed fFixed
+function SetFixed(fFixed as logic) as logic
+	setstate logic Set.Fixed fFixed
 
 /// <summary>
-/// Return and optionally change the setting that determines the internal operational characteristics of the underlying floating-point system.
+/// Return the setting that determines the internal operational characteristics of the underlying floating-point system.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetMath() as dword
+	getstate dword Set.MATH
+
+/// <summary>
+/// Change the setting that determines the internal operational characteristics of the underlying floating-point system.
 /// </summary>
 /// <param name="nFPU"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetMath() AS DWORD
-	RETURN 0
-FUNCTION SetMath(nFPU AS DWORD) AS DWORD
-	RETURN 0   
-
+function SetMath(nFPU as dword) as dword
+	setstate dword Set.MATH nFPU
 
 
 /// <summary>
-/// Change the setting that determines the <%APP%> search path for opening files.
+/// Return the setting that determines the <%APP%> search path for opening files.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetPath() as string
+	getstate string Set.Path 
+
+
+/// <summary>
+/// Change the setting that determines the search path for opening files.
 /// </summary>
 /// <param name="cPath"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetPath(cPath AS STRING) AS STRING
-	SETSTATE STRING Set.Path cPath
-
-
-/// <summary>
-/// Returns a string representing the evening extension for time strings in 12-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetPMExt() AS STRING
-	GETSTATE STRING Set.PmExt
+function SetPath(cPath as string) as string
+	setstate string Set.Path cPath
 
 /// <summary>
 /// Returns a string representing the evening extension for time strings in 12-hour format.
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION SetPMExt() AS STRING
-	RETURN GetPmExt()
+function SetPMExt() as string
+	getstate string Set.PmExt
 
 /// <summary>
 /// Set the evening extension for time strings in 12-hour format.
@@ -341,68 +438,67 @@ FUNCTION SetPMExt() AS STRING
 /// <param name="cExt"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetPMExt(cExt AS STRING) AS STRING
-	SETSTATE STRING Set.PmExt cExt
+function SetPMExt(cExt as string) as string
+	setstate string Set.PmExt cExt
 
 /// <summary>
-/// Save a numeric value to the Registry.
+/// Return the setting that displays numbers in scientific notation.
 /// </summary>
-/// <param name="cSubKey"></param>
-/// <param name="cKeyName"></param>
-/// <param name="nKeyVal"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetRTRegInt(cSubKey AS STRING,cKeyName AS STRING,nKeyVal AS DWORD) AS LOGIC
-	/// THROW NotImplementedException{}
-	RETURN FALSE   
+function SetScience() as logic
+	getstate logic Set.Science 
 
 /// <summary>
-/// Save a string value to the Registry.
-/// </summary>
-/// <param name="cSubKey"></param>
-/// <param name="cKeyName"></param>
-/// <param name="cKeyVal"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetRTRegString(cSubKey AS STRING,cKeyName AS STRING,cKeyVal AS STRING) AS LOGIC
-	/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-/// <summary>
-/// Return and optionally change the setting that displays numbers in scientific notation.
+/// Change the setting that displays numbers in scientific notation.
 /// </summary>
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetScience() AS LOGIC
-	GETSTATE LOGIC Set.Science 
-
-FUNCTION SetScience(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Science lSet
+function SetScience(lSet as logic) as logic
+	setstate logic Set.Science lSet
 
 /// <summary>
-/// Return and optionally change the setting that determines whether a seek operation will find a close match when no exact match is found.
+/// Return the setting that determines whether a seek operation will find a close match when no exact match is found.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetSoftSeek() as logic
+	getstate logic Set.SoftSeek 
+
+/// <summary>
+/// Change the setting that determines whether a seek operation will find a close match when no exact match is found.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetSoftSeek() AS LOGIC
-	GETSTATE LOGIC Set.SoftSeek 
-
-FUNCTION SetSoftSeek(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.SoftSeek lSet
+function SetSoftSeek(lSet as logic) as logic
+	setstate logic Set.SoftSeek lSet
 
 /// <summary>
-/// Return and optionally change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
+/// Return the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetThousandSep() as word
+	getstate word Set.ThousandSep 
+
+/// <summary>
+/// Change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
 /// </summary>
 /// <param name="wSep"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetThousandSep() AS WORD
-	GETSTATE WORD Set.ThousandSep 
+function SetThousandSep(wSep as word) as word
+	setstate word Set.ThousandSep wSep
 
-FUNCTION SetThousandSep(wSep AS WORD) AS WORD
-	SETSTATE WORD Set.ThousandSep wSep
+/// <summary>
+/// Return the setting that determines the separation character to be used in time strings.
+/// </summary>
+/// <returns>
+/// </returns>
+function SetTimeSep() as dword
+	getstate dword Set.TimeSep 
 
 /// <summary>
 /// Change the setting that determines the separation character to be used in time strings.
@@ -410,49 +506,40 @@ FUNCTION SetThousandSep(wSep AS WORD) AS WORD
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetTimeSep(dwChar AS DWORD) AS DWORD
-	SETSTATE DWORD Set.TimeSep dwChar
+function SetTimeSep(dwChar as dword) as dword
+	setstate dword Set.TimeSep dwChar
 
 /// <summary>
-/// Return and optionally change the setting that determines whether to include unique record keys in an order.
+/// Return the setting that determines whether to include unique record keys in an order.
+/// </summary>
+/// <returns>
+/// </returns>
+
+function SetUnique() as logic
+	getstate logic Set.Unique 
+
+/// <summary>
+/// Change the setting that determines whether to include unique record keys in an order.
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
 
-FUNCTION SetUnique() AS LOGIC
-	GETSTATE LOGIC Set.Unique 
-
-FUNCTION SetUnique(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Unique lSet
+function SetUnique(lSet as logic) as logic
+	setstate logic Set.Unique lSet
 
 /// <summary>
 /// </summary>
-/// <param name="n"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
-	/// THROW NotImplementedException{}
-	RETURN 0   
-
-/// <summary>
-/// </summary>
-/// <param name="pFunc"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetWinCompFunc(pFunc AS OBJECT) AS IntPtr
-	/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero
-
+function SetYield() as logic
+	getstate logic Set.Yield 
 
 /// <summary>
 /// </summary>
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-FUNCTION GetYield() AS LOGIC
-	GETSTATE LOGIC Set.Yield 
-
-FUNCTION SetYield(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Yield lSet
+function SetYield(lSet as logic) as logic
+	setstate logic Set.Yield lSet
 

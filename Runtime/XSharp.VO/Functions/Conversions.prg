@@ -91,26 +91,6 @@ function EnforceType(refu as __Usual,nType as dword) as void
 	return  
 
 
-/// <summary>
-/// Convert a logical value to a string containing an 8-bit logical value.
-/// </summary>
-/// <param name="l"></param>
-/// <returns>
-/// </returns>
-function Logic2Bin(l as logic) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
-
-
-/// <summary>
-/// Convert a logical value to a string.
-/// </summary>
-/// <param name="l"></param>
-/// <returns>
-/// </returns>
-function LTOC(l as logic) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
 
 /// <summary>
 /// Convert a numeric expression to a left-trimmed string.

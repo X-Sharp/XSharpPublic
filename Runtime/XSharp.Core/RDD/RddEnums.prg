@@ -216,7 +216,7 @@ begin namespace XSharp
 		member DBOI_INDEXNAME 	:= 7	// Alias
 		member DBOI_BAGEXT 		:= 8    // String: The extension of the file containing this order
 		member DBOI_INDEXEXT  	:= 8	// Alias
-		member DBOI_ORDERCOUNT  :=  9   // Number: The count of ORDERS contained in an index file or in total
+		member DBOI_ORDERCOUNT  := 9    // Number: The count of ORDERS contained in an index file or in total
 		member DBOI_FILEHANDLE 	:= 10 	// Stream: The stream of the index
 		member DBOI_ISCOND 		:= 11 	// Logic : Does the order have a FOR condition?
 		member DBOI_ISDESC 		:= 12 	// Logic : Is the order DESCENDing? 

@@ -3,17 +3,17 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+using XSharp
 using System.Text
 // Array of chars used for the various trim functions
-static global trimChars := <char>{ ' ' } as char[]
+internal global trimChars := <char>{ ' ' } as char[]
 
 
 /// <summary>
-/// Compare 2 strings
+/// Compare 2 strings. This function is used by the compiler for string comparisons
 /// </summary>
-/// <param name="strA">The first string .</param>
-/// <param name="strB">The second string.</param>
+/// <param name="strLHS">The first string .</param>
+/// <param name="strRHS">The second string.</param>
 /// <returns>
 /// -1 strA precedes strB in the sort order. 
 ///  0 strA occurs in the same position as strB in the sort order. 
@@ -21,15 +21,92 @@ static global trimChars := <char>{ ' ' } as char[]
 /// Note this this function should respect SetCollation() and SetInternational() and SetExact()
 /// </returns>
 
-function __StringCompare(strA as string, strB as string) as int
-	return String.Compare(strA, strB)
+function __StringCompare(strLHS as string, strRHS as string) as int
+	local ret as int
+	
+	if strLHS == null
+		if strRHS == null			// null and null are equal
+			ret := 0
+		else
+			ret := -1				// null precedes a string
+		endif
+	elseif strRHS == null			// a string comes after null
+		ret := 1
+	else							// both not null
+		// With Not Exact comparison we only compare the length of the RHS string
+		if .not. RuntimeState.Exact
+			local lengthRHS as int
+			lengthRHS := strRHS:Length
+			if lengthRHS == 0 
+				return 0
+			elseif lengthRHS<= strLHS:Length 
+				if String.Compare( strLHS, 0, strRHS, 0, lengthRHS , StringComparison.Ordinal ) == 0
+					return 0
+				endif
+			endif
+		endif
+		// either exact or RHS longer than LHS
+		// TODO: Use Clipper Collation based comparison
+		ret := String.Compare( strLHS, 0, strRHS, 0, strRHS:Length, StringComparison.Ordinal )
+	endif
+	return ret
 
-function  __StringEquals(strA as string, strB as string) as logic
-	return String.Compare(strA, strB) == 0
 
+/// <summary>
+/// Compare 2 strings. This function is used by the compiler for string comparisons
+/// </summary>
+/// <param name="strLHS">The first string .</param>
+/// <param name="strRHS">The second string.</param>
+/// <returns>
+/// TRUE when the strings are equal, FALSE when they are not equal
+/// This function respects SetExact()
+/// </returns>
+function  __StringEquals(strLHS as string, strRHS as string) as logic
+	local equals := FALSE as logic
+	local lengthRHS as int
+	
+	if RuntimeState.Exact
+		equals := strLHS == strRHS
+	elseif strLHS != null .and. strRHS != null
+		lengthRHS := strRHS:Length
+		if lengthRHS == 0
+			equals := true        // With SetExact(FALSE) then "aaa" = "" returns TRUE
+		elseif lengthRHS <= strLHS:Length
+			equals := String.Compare( strLHS, 0, strRHS, 0, lengthRHS, StringComparison.Ordinal ) == 0
+		endif
+	elseif strLHS == null .and. strRHS == null
+		equals := true
+	endif
+	return equals
 
-function  __StringNotEquals(strA as string, strB as string) as logic
-	return String.Compare(strA, strB) != 0
+/// <summary>
+/// Compare 2 strings. This function is used by the compiler for string comparisons
+/// </summary>
+/// <param name="strLHS">The first string .</param>
+/// <param name="strRHS">The second string.</param>
+/// <returns>
+/// TRUE when the strings are not equal, FALSE when they are equal
+/// This function respects SetExact()
+/// </returns>
+function  __StringNotEquals(strLHS as string, strRHS as string) as logic
+	local notEquals := FALSE as logic
+	local lengthRHS as int
+	
+	if RuntimeState.Exact
+		notEquals := strLHS != strRHS
+	elseif strLHS != null .and. strRHS != null
+		lengthRHS := strRHS:Length
+		if lengthRHS == 0
+			notEquals := false        // With SetExact(FALSE) then "aaa" = "" returns TRUE
+		elseif lengthRHS <= strLHS:Length
+			notEquals := String.Compare( strLHS, 0, strRHS, 0, lengthRHS, StringComparison.Ordinal ) != 0
+		endif
+	elseif strLHS == null .and. strRHS == null
+		notEquals := false
+	else
+		notEquals := true
+	endif
+	return notEquals
 
 
 /// <summary>
@@ -56,7 +133,7 @@ function Ansi2Oem(cSource as string) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
-function Ansi2Oem(bSource as BYTE[]) as Byte[]
+function Ansi2Oem(bSource as byte[]) as byte[]
 	/// THROW NotImplementedException{}
 	return bSource
 
@@ -71,12 +148,12 @@ function Ansi2OemA(cSource as string) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
-internal function _Asc(c as string, lAnsi as LOGIC) as DWORD
+internal function _Asc(c as string, lAnsi as logic) as dword
 	local ascValue := 0 as dword
 	local chValue as char
 	if ( !String.IsNullOrEmpty(c) ) 
 		chValue := c[0]
-		ascValue := (DWORD) chValue
+		ascValue := (dword) chValue
 		if ascValue > 127
 			// Todo: use DOS codepage here
 			local encoding as Encoding
@@ -85,8 +162,8 @@ internal function _Asc(c as string, lAnsi as LOGIC) as DWORD
 			else
 				encoding := Encoding.GetEncoding(850) 
 			endif
-			local buffer as Byte[]
-			var chars := <Char> {chValue}
+			local buffer as byte[]
+			var chars := <char> {chValue}
 			if encoding:IsSingleByte
 				buffer := byte[]{1}
 				encoding:GetBytes(chars,0,1,buffer,0)
@@ -96,11 +173,11 @@ internal function _Asc(c as string, lAnsi as LOGIC) as DWORD
 				if encoding:GetBytes(chars,0,1,buffer,0) == 1
 					ascValue := buffer[1]
 				else
-	              IF BitConverter.IsLittleEndian
-	                  LOCAL tmp := buffer[1] AS BYTE
-		              buffer[1] := buffer[2]
-			          buffer[2] := tmp
-				   endif
+					if BitConverter.IsLittleEndian
+						local tmp := buffer[1] as byte
+						buffer[1] := buffer[2]
+						buffer[2] := tmp
+					endif
 					ascValue := BitConverter.ToUInt16( buffer, 0 )
 				endif
 			endif
@@ -115,7 +192,7 @@ internal function _Asc(c as string, lAnsi as LOGIC) as DWORD
 /// <returns>
 /// </returns>
 function Asc(c as string) as dword
-	return _Asc(c, FALSE)
+	return _Asc(c, false)
 
 
 /// <summary>
@@ -129,7 +206,7 @@ function AscW(c as string) as dword
 	local chValue as char
 	if ( !String.IsNullOrEmpty(c) ) 
 		chValue := c[0]
-		ascValue := (DWORD) chValue
+		ascValue := (dword) chValue
 	endif
 	return ascValue
 
@@ -242,8 +319,8 @@ function ATCLine2(cSearch as string,c as string) as dword
 /// <returns>
 /// </returns>
 function ATLine(cSearch as string,c as string) as dword
-	LOCAL nPos AS DWORD
-
+	local nPos as dword
+	
 	nPos    := At( cSearch, c )
 	if (nPos > 0)
 		c := Left( c, nPos - 1 )
@@ -283,6 +360,18 @@ function B64EncString(cIn as string) as string
 
 
 /// <summary>
+/// Return an uninitialized string of a specified size.
+/// </summary>
+/// <param name="dwSize"></param>
+/// <returns>
+/// </returns>
+FUNCTION Buffer(dwSize AS DWORD) AS STRING
+	RETURN String{'\0', (int) dwSize}
+
+
+
+
+/// <summary>
 /// Return the even-numbered characters in a string.
 /// </summary>
 /// <param name="c">The string from which the even characters shall be extracted.</param>
@@ -314,29 +403,29 @@ function CharEven(c as string) as string
 /// <returns>
 /// </returns>
 function CharMix(cOdd as string,cEven as string) as string
-  LOCAL n1 := 0 AS INT
-  LOCAL n2 := 0 AS INT
-  LOCAL i1 := 0 AS INT
-  LOCAL i2 := 0  AS INT
-  LOCAL sb AS StringBuilder 
-
-  IF cEven:Length == 0
-     RETURN ""
-  ELSE
-     sb := StringBuilder{ cOdd:Length * 2 }
-     n1 := cOdd:Length - 1
-     n2 := cEven:Length - 1
-
-     FOR i1 := 0 UPTO n1
-        sb:Append( cOdd[i1] )
-        IF i2 > n2
-          i2 := 0
-        ENDIF
-        sb:Append( cEven[i2++] )
-     NEXT
-
-     RETURN sb:ToString()
-   ENDIF
+	local n1 := 0 as int
+	local n2 := 0 as int
+	local i1 := 0 as int
+	local i2 := 0  as int
+	local sb as StringBuilder 
+	
+	if cEven:Length == 0
+		return ""
+	else
+		sb := StringBuilder{ cOdd:Length * 2 }
+		n1 := cOdd:Length - 1
+		n2 := cEven:Length - 1
+		
+		for i1 := 0 upto n1
+			sb:Append( cOdd[i1] )
+			if i2 > n2
+				i2 := 0
+			endif
+			sb:Append( cEven[i2++] )
+		next
+		
+		return sb:ToString()
+	endif
 
 
 /// <summary>
@@ -599,26 +688,26 @@ function Occurs2(cSearch as string,c as string) as dword
 /// <returns>
 /// </returns>
 function Occurs3(cSrc as string,c as string,nOffset as dword) as dword
-   LOCAL pos AS INT
-   LOCAL count AS DWORD
-
-   IF String.IsNullOrEmpty(cSrc) .or. String.IsNullOrEmpty(c)
-      RETURN 0
-   ENDIF
-
-   IF nOffset > 0
-      nOffSet -= 1
-   ENDIF
-
-   count := 0
-   IF nOffSet < (DWORD) c:Length
-      DO WHILE ( pos := c:IndexOf(cSrc, (INT)nOffSet, StringComparison.Ordinal) ) >= 0
-         count++
-         nOffSet := (DWORD)pos + cSrc:Length
-      ENDDO
-   ENDIF
-
-   RETURN count
+	local pos as int
+	local count as dword
+	
+	if String.IsNullOrEmpty(cSrc) .or. String.IsNullOrEmpty(c)
+		return 0
+	endif
+	
+	if nOffset > 0
+		nOffSet -= 1
+	endif
+	
+	count := 0
+	if nOffSet < (dword) c:Length
+		do while ( pos := c:IndexOf(cSrc, (int)nOffSet, StringComparison.Ordinal) ) >= 0
+			count++
+			nOffSet := (dword)pos + cSrc:Length
+		enddo
+	endif
+	
+	return count
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters.
@@ -630,10 +719,10 @@ function Oem2Ansi(cSource as string) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
-function Oem2Ansi(bSource as BYTE[]) as Byte[]
+function Oem2Ansi(bSource as byte[]) as byte[]
 	/// THROW NotImplementedException{}
 	return bSource
-	 
+
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
@@ -654,13 +743,13 @@ function Oem2AnsiA(cSource as string) as string
 /// <returns>
 /// The converted string according to the CurrentCulture
 /// </returns>
-function Proper(c as string) as string
+function Proper(cString as string) as string
 	local sb as StringBuilder
 	local inside as logic
-	if c != null
-		sb := StringBuilder{c:Length}
+	if cString != null
+		sb := StringBuilder{cString:Length}
 		inside := false
-		foreach ch as char in c
+		foreach ch as char in cString
 			var cToAdd := ch
 			if inside
 				if Char.IsLetterOrDigit(ch)
@@ -676,9 +765,9 @@ function Proper(c as string) as string
 			endif
 			sb:append(cToAdd)
 		next
-		c := sb:ToString()
+		cString := sb:ToString()
 	endif
-	return c
+	return cString
 
 /// <summary>
 /// Capitalize a proper name correctly, changing the contents of the argument as well as the return value.
@@ -686,7 +775,7 @@ function Proper(c as string) as string
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function ProperA(c REF string) as string
+function ProperA(c ref string) as string
 	c := Proper(c)
 	return c
 
@@ -756,17 +845,17 @@ function RAt3(cSearch as string,c as string,dwOffSet as dword) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-FUNCTION RAtLine(cSearch AS STRING, c AS STRING) AS DWORD
-  LOCAL nPos AS DWORD
-  if cSearch == null .or. c == null
-	return 0
-  endif
-  nPos := RAt(cSearch,c)
-  c := Left(c,nPos-1)
+function RAtLine(cSearch as string, c as string) as dword
+	local nPos as dword
+	if cSearch == null .or. c == null
+		return 0
+	endif
+	nPos := RAt(cSearch,c)
+	c := Left(c,nPos-1)
+	
+	return MemLines(c)
 
-  RETURN MemLines(c)
 
- 
 
 /// <summary>
 /// Return the line number of the last occurrence of a substring within a multiline string.
@@ -892,60 +981,60 @@ function SLen(c as string) as dword
 /// <returns>
 /// </returns>
 function SoundEx(c as string) as string
-    LOCAL sb		AS StringBuilder
-    LOCAL iLen		AS INT
-    LOCAL ret		AS STRING
-    LOCAL i			AS INT
-    LOCAL cLastChar AS Char
-    LOCAL cSoundExChar AS Char
-
-    IF String.IsNullOrEmpty(c)
-        RETURN "0000"
-    end if
-	cLastChar := (Char) 0
-    c	 := c:ToUpper()
-    iLen := c:Length - 1
-    sb := StringBuilder{}
-    sb:Append( c[0] )
-    FOR i := 1 TO iLen
-        cSoundExChar := _SoundExChar( c[i] )
+	local sb		as StringBuilder
+	local iLen		as int
+	local ret		as string
+	local i			as int
+	local cLastChar as char
+	local cSoundExChar as char
+	
+	if String.IsNullOrEmpty(c)
+		return "0000"
+	end if
+	cLastChar := (char) 0
+	c	 := c:ToUpper()
+	iLen := c:Length - 1
+	sb := StringBuilder{}
+	sb:Append( c[0] )
+	for i := 1 to iLen
+		cSoundExChar := _SoundExChar( c[i] )
 		if cSoundExChar != '0' .and. cSoundExChar != cLastChar
-            sb:Append( cSoundExChar )
-        endif
+			sb:Append( cSoundExChar )
+		endif
 		cLastChar := cSoundExChar
-        IF sb:Length == 4
-            EXIT
-        ENDIF
-    NEXT
-    ret := sb:ToString()
+		if sb:Length == 4
+			exit
+		endif
+	next
+	ret := sb:ToString()
+	
+	return ret:PadRight( 4, '0' ) 
 
-    RETURN ret:PadRight( 4, '0' ) 
-
-INTERNAL FUNCTION _SoundExChar( c AS Char ) AS Char
-    LOCAL ret AS Char
-    ret := (char) 0
-    switch c
-	case c'A' ;	case c'E'; case c'I'; case c'O'; case c'U'; case c'Y'
-		ret := c'0'
-	case c'H' ;	case c'W'
-		ret := c'0'
-	case c'B' ;	case c'F';case c'P' ;case c'V'
-		ret := c'1'
-	case c'C' ;	case c'G';case c'J' ;case c'K';case c'Q';case c'S';case c'X';case c'Z'
-		ret := c'2'
-	case c'D' ;	case c'T'
-		ret := c'3'
-	case c'L' 
-		ret := c'4'
-	case c'M' ;	case c'N'
-		ret := c'5'
-    CASE c'R'
-        ret := '6'
-	otherwise
-		ret := '0'
+internal function _SoundExChar( c as char ) as char
+	local ret as char
+	ret := (char) 0
+	switch c
+		case c'A' ;	case c'E'; case c'I'; case c'O'; case c'U'; case c'Y'
+			ret := c'0'
+		case c'H' ;	case c'W'
+			ret := c'0'
+		case c'B' ;	case c'F';case c'P' ;case c'V'
+			ret := c'1'
+		case c'C' ;	case c'G';case c'J' ;case c'K';case c'Q';case c'S';case c'X';case c'Z'
+			ret := c'2'
+		case c'D' ;	case c'T'
+			ret := c'3'
+		case c'L' 
+			ret := c'4'
+		case c'M' ;	case c'N'
+			ret := c'5'
+		case c'R'
+			ret := '6'
+		otherwise
+			ret := '0'
 	end switch
-
-    RETURN ret
+	
+	return ret
 
 
 
@@ -1084,7 +1173,7 @@ function Upper(cSource as string) as string
 /// <param name="cSorce"></param>
 /// <returns>
 /// </returns>
-function UpperA(cSource REF string) as string
+function UpperA(cSource ref string) as string
 	if cSource != null
 		cSource := cSource:ToUpper()
 	endif
@@ -1124,95 +1213,95 @@ function UUEncLine(c as string) as string
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is alphabetic.</returns>
 function IsAlpha(cSource as string) as logic
-  LOCAL ret := false AS LOGIC
-   IF ! String.IsNullOrEmpty( cSource )
-      ret := Char.IsLetter( cSource, 0 )
-   ENDIF
-   RETURN ret
+	local ret := false as logic
+	if ! String.IsNullOrEmpty( cSource )
+		ret := Char.IsLetter( cSource, 0 )
+	endif
+	return ret
 
 /// <summary>Determine if the leftmost character in a string is alphanumeric.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
 function IsAlNum(cSource as string) as logic
-  LOCAL ret := false AS LOGIC
-   IF ! String.IsNullOrEmpty( cSource )
-      ret := Char.IsLetterOrDigit( cSource, 0 )
-   ENDIF
-   return ret
+	local ret := false as logic
+	if ! String.IsNullOrEmpty( cSource )
+		ret := Char.IsLetterOrDigit( cSource, 0 )
+	endif
+	return ret
 
 /// <summary>Determine if the leftmost character in a string is alphanumeric..</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
 function IsAlphaNum(cSource as string) as logic
-  return IsAlNum(cSource)
+	return IsAlNum(cSource)
 
 
 /// <summary>Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is a number from 0 to 9; otherwise FALSE.</returns>
 function IsDigit(cSource as string) as logic
-  LOCAL ret := false AS LOGIC
-   IF ! String.IsNullOrEmpty( cSource )
-      ret := Char.IsDigit(cSource, 0 )
-   ENDIF
-   return ret
+	local ret := false as logic
+	if ! String.IsNullOrEmpty( cSource )
+		ret := Char.IsDigit(cSource, 0 )
+	endif
+	return ret
 
 /// <summary>Determine if the leftmost character in a string is a binary digit  (0 or 1)).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is 0 or 1 otherwise FALSE.</returns>
 function IsBDigit(cSource as string) as logic
-  LOCAL ret := false AS LOGIC
-   IF ! String.IsNullOrEmpty( cSource )
-      switch cSource[0]
-	  case '0'
-	  case '1'
-		ret := true
-	  end switch
-   ENDIF
-   return ret
+	local ret := false as logic
+	if ! String.IsNullOrEmpty( cSource )
+		switch cSource[0]
+			case '0'
+			case '1'
+				ret := true
+		end switch
+	endif
+	return ret
 
 /// <summary>Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is hex otherwise FALSE.</returns>
 function IsXDigit(cSource as string) as logic
-  LOCAL ret := false AS LOGIC
-   if ! String.IsNullOrEmpty( cSource )
-	  local c as char
-	  c := cSource[0]
-	  if char.IsDigit(c) .or. ;
-		(c >= 'A' .and. c <= 'F') .or. ;
-		(c >= 'a' .and. c <= 'f')
-		ret := true
-	  endif
-   ENDIF
-   return ret
+	local ret := false as logic
+	if ! String.IsNullOrEmpty( cSource )
+		local c as char
+		c := cSource[0]
+		if char.IsDigit(c) .or. ;
+			(c >= 'A' .and. c <= 'F') .or. ;
+			(c >= 'a' .and. c <= 'f')
+			ret := true
+		endif
+	endif
+	return ret
 
 /// <summary>Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string blank otherwise FALSE.</returns>
 function IsSpace(cSource as string) as logic
-  LOCAL ret := false AS LOGIC
-   IF ! String.IsNullOrEmpty( cSource )
- 	  ret := char.IsWhiteSpace(cSource,0)
-   ENDIF
-   return ret
+	local ret := false as logic
+	if ! String.IsNullOrEmpty( cSource )
+		ret := char.IsWhiteSpace(cSource,0)
+	endif
+	return ret
 
 /// <summary>Determine if the leftmost character in a string is uppercase.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is an uppercase letter otherwise, FALSE.</returns>
 function IsUpper(cSource as string) as logic
-  LOCAL ret := false AS LOGIC
-   IF ! String.IsNullOrEmpty( cSource )
-      ret := Char.IsUpper(cSource, 0 )
-   ENDIF
-   return ret
+	local ret := false as logic
+	if ! String.IsNullOrEmpty( cSource )
+		ret := Char.IsUpper(cSource, 0 )
+	endif
+	return ret
 
 /// <summary>Determine if the leftmost character in a string is lower.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is a lowercase letter otherwise, FALSE.</returns>
 function IsLower(cSource as string) as logic
-  LOCAL ret := false AS LOGIC
-   IF ! String.IsNullOrEmpty( cSource )
-      ret := Char.IsLower(cSource, 0 )
-   ENDIF
-   return ret
+	local ret := false as logic
+	if ! String.IsNullOrEmpty( cSource )
+		ret := Char.IsLower(cSource, 0 )
+	endif
+	return ret

@@ -58,6 +58,6 @@ define ASC_9      :=    57
 define ASC_A      :=    65
 define ASC_Z      :=    90
 #ifndef CRLF
-define	 CRLF       := Chr(ASC_CR) +Chr(ASC_LF)
+define	 CRLF       := e"\r\n"
 #endif
 define INI_GROUP_RUNTIME :=   "CA-Visual Objects"

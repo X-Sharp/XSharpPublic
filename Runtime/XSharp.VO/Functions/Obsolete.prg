@@ -423,4 +423,12 @@ function WagnerExit() as dword
 
 [Obsolete( "'Buffer()' is not supported, use MemAlloc() and MemFree() instead", true )] ;
 FUNCTION Buffer( n AS DWORD ) AS STRING
-  RETURN NULL
+  return null
+
+[Obsolete( "'GetPrivPtr()' is not supported and always returns IntPtr.Zero" )] ;
+FUNCTION GetPrivPtr() AS IntPtr
+	RETURN IntPtr.Zero   
+
+[Obsolete( "'GetStgServer()' is not supported and always returns ''" )] ;
+FUNCTION GetStgServer(pStgRoot AS IntPtr,cSubStorage AS STRING) AS STRING
+	RETURN String.Empty   

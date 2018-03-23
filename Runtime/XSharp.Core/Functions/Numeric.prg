@@ -50,7 +50,6 @@ FUNCTION AbsShort(si AS SHORT) AS LONG
 	RETURN Math.Abs(si)
 
 
-
 /// <summary>
 /// Exchange the right and left halves of a byte.
 /// </summary>
@@ -58,8 +57,8 @@ FUNCTION AbsShort(si AS SHORT) AS LONG
 /// <returns>
 /// New value with the nibbles swapped.
 /// </returns>
-FUNCTION SwapByte(b AS BYTE) AS WORD
-	RETURN ((b & 0x0f) << 4) | ((b >> 4) & 0x0f)
+FUNCTION SwapByte(b AS BYTE) AS BYTE
+	RETURN (b << 4) | (b >> 4)
 
 /// <summary>
 /// Exchange the right and left halves of a double word.
@@ -88,6 +87,16 @@ FUNCTION SwapInt(li AS LONG) AS LONG
 FUNCTION SwapLong(li AS LONG) AS LONG
 RETURN	 ((LONG)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))
 
+
+/// <summary>
+/// Exchange the right and left halves of a Int64
+/// </summary>
+/// <param name="i64"></param>
+/// <returns>
+/// </returns>
+FUNCTION SwapInt64( i64 AS INT64 ) AS INT64
+   RETURN (INT64)  ( i64 << 32 ) | ( i64 >> 32 ) 
+
 /// <summary>
 /// Exchange the right and left halves of a short integer.
 /// </summary>
@@ -108,5 +117,7 @@ RETURN ((WORD)((w & 0x00ff) << 8) | ((w >> 8) & 0x00ff))
 
 
 
+FUNCTION SwapQWord( qw AS UINT64 ) AS UINT64
+   RETURN (UINT64)  ( qw << 32 ) | ( qw >> 32 ) 
 
  

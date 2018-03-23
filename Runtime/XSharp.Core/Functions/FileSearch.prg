@@ -211,3 +211,30 @@ function FNext() as logic
 	RETURN String.Empty   
 
 
+
+
+/// <summary>
+/// Determine if any file matches a given file specification.
+/// </summary>
+/// <param name="cFile">The name oif the file</param>
+/// <returns>
+/// True if the file exists, otherwise false
+/// </returns>
+function File(cFile as string) as logic
+	local lFound as logic
+	lFOund := System.IO.File.Exists(cFile)
+	if lFound
+		XSharp.IO.File.LastFOund := cFile
+	else
+		XSharp.IO.File.LastFOund := ""
+	endif
+	return lFound
+
+/// <summary>
+/// Return the name and path of the file that was used by FXOpen() or File().
+/// </summary>
+/// <returns>
+/// </returns>
+function FPathName() as string
+	
+	return XSharp.IO.File.LastFound

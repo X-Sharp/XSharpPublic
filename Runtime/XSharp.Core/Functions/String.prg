@@ -716,13 +716,18 @@ function Occurs3(cSrc as string,c as string,nOffset as dword) as dword
 /// <returns>
 /// </returns>
 function Oem2Ansi(cSource as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	local aBytes as byte[]
+	local iLen	 as int
+	iLen := cSource:Length
+	aBytes := String2Bytes(cSource)
+	aBytes := Oem2Ansi(aBytes, iLen)
+	return Bytes2String(aBytes, iLen)
 
 function Oem2Ansi(bSource as byte[]) as byte[]
-	/// THROW NotImplementedException{}
-	return bSource
+	return Oem2Ansi(bSource, bSource:Length)
 
+function Oem2Ansi(bSource as byte[], iLen as int) as byte[]
+	return bSource
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.

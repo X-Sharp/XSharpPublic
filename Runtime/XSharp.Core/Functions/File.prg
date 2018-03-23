@@ -105,39 +105,39 @@ begin namespace XSharp.IO
 			Attributes := dwAttribs
 			
 			// Access
-			fileAccess	:= FileAccess.Read
+			fileAccess	:= FileAccess.read
 			if (dword)_and(dwMode,FO_READWRITE) == FO_READWRITE
-				fileAccess	:= FileAccess.ReadWrite
+				fileAccess	:= FileAccess.readWrite
 			elseif (dword)_and(dwMode,FO_WRITE) == FO_WRITE
-				fileAccess	:= FileAccess.Write
+				fileAccess	:= FileAccess.write
 			endif
 			// Create
 			fileMode := FileMode.Open
 			if (dword)_and(dwMode,FO_CREATE) == FO_CREATE
 				fileMode	:= FileMode.Create
-				fileAccess	:= FileAccess.ReadWrite
+				fileAccess	:= FileAccess.readWrite
 			endif
 			
-			FileShare  := FileShare.ReadWrite
+			FileShare  := FileShare.readWrite
 			local dwTempMode as dword
 			dwTempMode := (dword)_or(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
 			dwTempMode := (dword)_and(dwMode,dwTempMode)
 			
 			do case
 				case dwTempMode == FO_DENYNONE
-					FileShare  := FileShare.ReadWrite
+					FileShare  := FileShare.readWrite
 				
 				case dwTempMode == FO_DENYWRITE
-					FileShare  := FileShare.Read
+					FileShare  := FileShare.read
 				
 				case dwTempMode == FO_DENYREAD
-					FileShare  := FileShare.Write
+					FileShare  := FileShare.write
 				
 				case dwTempMode == FO_EXCLUSIVE
 					FileShare  := FileShare.None
 				
 				case dwTempMode == FO_COMPAT
-					FileShare  := FileShare.ReadWrite
+					FileShare  := FileShare.readWrite
 				
 			endcase
 			return
@@ -145,52 +145,61 @@ begin namespace XSharp.IO
 		
 	end class
 	
+	internal class FileCacheElement
+		public property Stream	   as FileStream auto
+		public property Attributes as dword auto
+		public property Bytes	   as byte[] auto
+		
+		constructor (oStream as FileStream, dwAttributes as dword)
+			self:Attributes := dwAttributes
+			self:Stream     := oStream
+			return
+	end class
+	
 	static class File
 		public static errorCode	:= 0 as dword
 		public static LastFound as string
-		private static streams as Dictionary<IntPtr, Tuple<FileStream, dword> >
+		private static streams as Dictionary<IntPtr, FileCacheElement >
 		private static random as Random
 		
 		static constructor
-			streams := Dictionary<IntPtr, Tuple<FileStream, dword> >{}
+			streams := Dictionary<IntPtr, FileCacheElement >{}
 			random := Random{}
 		
-		static internal method findStream(pStream as IntPtr) as FileStream
+		static private method findStream(pStream as IntPtr) as FileStream
 			if streams:ContainsKey(pStream)
-				return streams[pStream]:Item1
+				return streams[pStream]:Stream
 			endif
 			return null_object 
 		
-		static internal method hasStream(pStream as Intptr) as logic
+		static private method hasStream(pStream as Intptr) as logic
 			return streams:ContainsKey(pStream)
 		
-		static internal method addStream(pStream as Intptr, oStream as FileStream, attributes as dword) as logic
+		static private method addStream(pStream as Intptr, oStream as FileStream, attributes as dword) as logic
 			if ! streams:ContainsKey(pStream)
-				streams:Add(pStream, Tuple<FileStream, dword> {oStream, attributes})
+				streams:Add(pStream, FileCacheElement {oStream, attributes})
 				return true
 			endif
 			return false
 		
-		static internal method removeStream(pStream as Intptr) as logic
-			if ! streams:ContainsKey(pStream)
+		static private method removeStream(pStream as Intptr) as logic
+			if streams:ContainsKey(pStream)
 				streams:Remove(pStream)
 				return true
 			endif
 			return false
 		
-		
-		
-		static internal method _createManagedFileStream(cFIle as string, oMode as VOFileMode) as FileStream
+		static private method createManagedFileStream(cFIle as string, oMode as VOFileMode) as FileStream
 			local oStream := null as FileSTream
 			try
 				oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 4096}
 			catch e as Exception
-				System.Diagnostics.Trace.WriteLine(e:Message)
+				System.Diagnostics.Trace.writeLine(e:Message)
 				FError((dword)Marshal.GetLastWin32Error())
 			end try
 			return oStream
 		
-		static internal method _createFile(cFIle as string, oMode as VOFileMode) as IntPtr
+		static internal method CreateFile(cFIle as string, oMode as VOFileMode) as IntPtr
 			local hFile := F_ERROR as IntPtr
 			local oStream as FileStream
 			if System.IO.File.Exists(cFile) .and. oMode:FileMode == FileMode.Create
@@ -198,7 +207,7 @@ begin namespace XSharp.IO
 				fi:Attributes := FileAttributes.Normal
 			endif
 			
-			oStream :=_createManagedFileStream(cFile, oMode)
+			oStream := createManagedFileStream(cFile, oMode)
 			if oStream != null
 				hFile := (IntPtr) random:@@Next(1, Int32.MaxValue)
 				do while streams:ContainsKey(hFile)
@@ -213,13 +222,20 @@ begin namespace XSharp.IO
 			endif
 			return hFile
 		
-		
-		
-		
-		static internal method _fClose(pStream as IntPtr) as logic
+		static private method getBuffer(pStream as IntPtr, nSize as int) as byte[]		
 			if hasStream(pStream)
-				local oStream      := streams[pStream]:Item1 as FileStream
-				local dwAttributes := streams[pStream]:Item2 as dword
+				local element := streams[pStream] as FileCacheElement
+				if element:Bytes == null .or. element:Bytes:Length < nSize
+					element:Bytes := byte[]{nSize}
+				endif
+				return element:Bytes
+			endif
+			return byte[]{nSize}
+		
+		static internal method close(pStream as IntPtr) as logic
+			if hasStream(pStream)
+				local oStream      := streams[pStream]:Stream as FileStream
+				local dwAttributes := streams[pStream]:Attributes as dword
 				removeStream(pStream)
 				oStream:Flush()
 				oStream:Close()
@@ -232,14 +248,171 @@ begin namespace XSharp.IO
 			endif
 			return false
 		
+		internal static method read(pHandle as ptr, refC out string, iCount as int, lOem2Ansi as logic) as int
+			local aBuffer := XSharp.IO.File.getBuffer(pHandle, iCount) as byte[]
+			iCount := (int) ReadBuff(pHandle, aBuffer, iCount, lOem2Ansi)
+			refC := Bytes2String(aBuffer, iCount)
+			return iCount
+		
+		internal static method readBuff(pHandle as IntPtr,pBuffer as byte[],dwCount as int, lOem2Ansi as logic) as int64
+			local iResult := 0 as int64
+			var oStream := XSharp.IO.File.findStream(pHandle)
+			if oStream != null_object
+				try
+					iResult := oStream:Read(pBuffer,0,(int) dwCount)
+					if lOem2Ansi
+						pBuffer := Oem2Ansi(pBuffer)
+					endif
+				catch
+					FError((dword)Marshal.GetLastWin32Error())
+				end try
+			endif
+			return iResult
+		
+		internal static method readLine(pFile as IntPtr,iCount as int) as string
+			local cResult := "" as string
+			local nPos	as int64
+			local oStream := XSharp.IO.File.findStream(pFile) as FileStream
+			if iCount <= 0
+				iCount := 254
+			endif
+			if oStream != null_object
+				try
+					local pBuffer := XSharp.IO.File.getBuffer(pFile, iCount) as byte[]
+					nPos    := oStream:Position
+					iCount := oStream:Read(pBuffer,0,(int) iCount)
+					cResult := Bytes2Line(pBuffer, ref iCount)
+					nPos += iCount	// advance CRLF
+					oStream:Position := nPos
+				catch
+					FError((dword)Marshal.GetLastWin32Error())
+				end try
+			endif
+			return cResult
+		
+		internal static method seek(pHandle as IntPtr,lOffset as int64,dwOrigin as dword) as int64
+			local oStream as FileStream
+			local iResult as int64
+			oStream := XSharp.IO.File.findStream(pHandle)
+			if oStream != null_object
+				iResult := -1
+				try
+					switch dwOrigin
+						case FS_END
+							iResult := oStream:Seek(lOffSet, SeekOrigin.End)
+						case FS_RELATIVE
+							iResult := oStream:Seek(lOffSet, SeekOrigin.Current)
+						case FS_SET
+							iResult := oStream:Seek(lOffSet, SeekOrigin.Begin)
+						otherwise
+							iResult := -1					
+					end switch
+				catch
+					FError((dword)Marshal.GetLastWin32Error())
+				end try
+				return iResult 
+			endif
+			return -1
+		
+		internal static method write( pHandle as IntPtr, c as string, nLength as int ) as int
+			local aBytes := String2Bytes(c) as byte[]
+			return writeBuff(pHandle, aBytes, nLength, false)			
+		
+		internal static method writeBuff(pHandle as IntPtr,pBuffer as byte[],iCount as int, lAnsi2Oem as logic) as int
+			local oStream	as FileStream
+			local iWritten := 0 as int
+			oStream := XSharp.IO.File.findStream(pHandle)
+			if oStream != null_object
+				try
+					if lAnsi2Oem
+						pBuffer := Ansi2Oem(pBuffer)
+					endif
+					oStream:Write(pBuffer, 0, iCount)
+					iWritten := iCount
+				catch
+					FError((dword)Marshal.GetLastWin32Error())
+				end try
+				
+			endif
+			
+			return iWritten
+		
+		internal static method writeLine(pHandle as IntPtr,c as string, nLen as int) as int
+			if c:Length > nLen
+				c := c:Substring(0, nLen)
+			endif
+			return Write(pHandle, c + e"\r\n",nLen+2)
 		
 		
+		internal static method lock(phandle as IntPtr,iOffset as int64,iLength as int64, lLock as logic) as logic
+			local oStream := findStream(pHandle) as FileStream
+			local lResult := false as logic
+			if oStream != null_object
+				try
+					if (lLock)
+						oStream:Lock(iOffset, iLength)
+					else
+						oStream:UnLock(iOffset, iLength)
+					endif
+					lResult := true
+				catch 
+					// Catch and save error
+					lResult := false
+					FError((dword)Marshal.GetLastWin32Error())
+				end try
+			endif	
+			return lResult   		
 		
-		public static method FError( code as dword) as dword
-			local lastError := errorCode as dword
-			errorCode := code 
-			return lastError
+		internal static method flush(phandle as IntPtr, lCommit as logic) as logic
+			local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
+			local lOk := false as logic
+			if oStream != null_object
+				try
+					if lCommit
+						oStream:Flush(true)
+					else
+						oStream:Flush()
+					endif
+					lOk := true
+				catch 
+					FError((dword)Marshal.GetLastWin32Error())
+					lOk := false 
+				end try
+			endif	
+			return lOk
+		internal static method ChSize(pHandle as IntPtr,nValue as dword) as logic
+			local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
+			local lOk := false as logic
+			if oStream != null_object
+				try
+					oStream:SetLength(nValue)
+					lOk := true
+				catch 
+					FError((dword)Marshal.GetLastWin32Error())
+					lOk := false
+				end try
+			endif	
+			return lOk
 		
+		internal static method Eof(pHandle as IntPtr) as logic
+			local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
+			local lResult := true as logic
+			if oStream != null_object
+				lResult := oStream:Position == oStream:Length
+			endif	 
+			return lResult
+		
+		internal static method Tell(pHandle as IntPtr) as int64
+			local oStream as FileStream
+			oStream := XSharp.IO.File.findStream(pHandle)
+			if oStream != null_object
+				try
+					return oStream:Position
+				catch
+					FError((dword)Marshal.GetLastWin32Error())
+				end try
+			endif
+			return -1
 	end class
 	
 	
@@ -270,7 +443,6 @@ function FError() as dword
 	return nOldError
 
 
-
 /// <summary>
 /// Change the size of a file opened with a low-level file function.
 /// </summary>
@@ -278,19 +450,8 @@ function FError() as dword
 /// <param name="nOffset"></param>
 /// <returns>
 /// </returns>
-function FChSize(pHandle as IntPtr,nValue as int64) as int64
-	local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
-	if oStream != null_object
-		try
-			oStream:SetLength(nValue)
-		catch 
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-	endif	
-	return -1
-
-function FChSize(pHandle as IntPtr,nValue as dword) as dword
-	return (dword) fChSize(pHandle, (int64) nValue)
+function FChSize(pHandle as IntPtr,nValue as dword) as logic
+	return XSharp.IO.File.Chsize(pHandle, nValue)
 
 /// <summary>
 /// Close an open file and write the buffers to disk.
@@ -299,7 +460,7 @@ function FChSize(pHandle as IntPtr,nValue as dword) as dword
 /// <returns>
 /// </returns>
 function FClose(pFile as IntPtr) as logic
-	return XSharp.IO.File._fClose(pFile)
+	return XSharp.IO.File.Close(pFile)
 
 /// <summary>
 /// Flush file buffers.
@@ -307,16 +468,8 @@ function FClose(pFile as IntPtr) as logic
 /// <param name="pHandle">The handle of the file.</param>
 /// <returns>
 /// </returns>
-function FCommit(pHandle as IntPtr) as void
-	local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
-	if oStream != null_object
-		try
-			oStream:Flush(true)
-		catch 
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-	endif	
-	return 
+function FCommit(pHandle as IntPtr) as logic
+	return XSharp.IO.File.flush(pHandle, true)
 
 /// <summary>
 /// Determine if the file pointer is positioned at the end-of-file.
@@ -325,35 +478,7 @@ function FCommit(pHandle as IntPtr) as void
 /// <returns>
 /// </returns>
 function FEof(pHandle as IntPtr) as logic
-	local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
-	local lResult := true as logic
-	if oStream != null_object
-		lResult := oStream:Position == oStream:Length
-	endif	 
-	return lResult
-
-/// <summary>
-/// Lock a portion of an open file.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="iOffset"></param>
-/// <param name="iLength"></param>
-/// <returns>
-/// </returns>
-function FFLock(pHandle as IntPtr,iOffset as int64,iLength as int64) as logic
-	local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
-	local lResult := false as logic
-	if oStream != null_object
-		try
-			oStream:Lock(iOffset, iLength)
-			lResult := true
-		catch 
-			// Catch and save error
-			lResult := false
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-	endif	
-	return lResult
+	return XSharp.IO.File.eof(pHandle) 
 
 
 /// <summary>
@@ -365,7 +490,8 @@ function FFLock(pHandle as IntPtr,iOffset as int64,iLength as int64) as logic
 /// <returns>
 /// </returns>
 function FFLock(phandle as IntPtr,dwOffset as dword,dwLength as dword) as logic
-	return FFLock(pHandle, (int64) dwOffSet, (int64) dwLength)
+	return XSharp.IO.File.lock(pHandle, (int64) dwOffset, (int64) dwLength, true)
+
 
 /// <summary>
 /// Flush to disk a file opened with a low-level file function.
@@ -373,39 +499,9 @@ function FFLock(phandle as IntPtr,dwOffset as dword,dwLength as dword) as logic
 /// <param name="pHandle">The handle of the file.</param>
 /// <returns>
 /// </returns>
-function FFlush(phandle as IntPtr) as void
-	local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
-	if oStream != null_object
-		try
-			oStream:Flush()
-		catch
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-	endif
-	return 
+function FFlush(phandle as IntPtr) as logic
+	return XSharp.IO.File.flush(pHandle, false)
 
-/// <summary>
-/// Unlock a portion of an opened file.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="iOffset"></param>
-/// <param name="iLength"></param>
-/// <returns>
-/// </returns>
-function FFUnLock(phandle as IntPtr,iOffset as int64,iLength as int64) as logic
-	local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
-	local lResult := false as logic
-	if oStream != null_object
-		try
-			oStream:UnLock(iOffset, iLength)
-			lResult := true
-		catch 
-			// Catch and save error
-			lResult := false
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-	endif	
-	return lResult   
 
 /// <summary>
 /// Unlock a portion of an opened file.
@@ -416,31 +512,18 @@ function FFUnLock(phandle as IntPtr,iOffset as int64,iLength as int64) as logic
 /// <returns>
 /// </returns>
 function FFUnLock(phandle as IntPtr,dwOffset as dword,dwLength as dword) as logic
-	return FFUnLock(pHandle, (int64) dwOffSet, (int64) dwLength)
+	return XSharp.IO.File.lock(pHandle, (int64) dwOffset, (int64) dwLength, false)
+
 
 /// <summary>
 /// Read a line from an open file, specifying two strongly typed arguments.
 /// </summary>
 /// <param name="pHandle">The handle of the file.</param>
-/// <param name="nBuffLen"></param>
 /// <returns>
 /// </returns>
-function FGetS2(pHandle as IntPtr,nBuffLen as int) as string
-	local iResult := 0 as int
-	local cResult as string
-	local oStream := XSharp.IO.File.findStream(pHandle) as FileStream
-	cResult := String.Empty
-	if oStream != null_object
-		try
-			local aBytes := byte[]{nBuffLen} as byte[]
-			iResult := oStream:Read(aBytes, 0, nBuffLen)
-			cResult  := Bytes2String(aBytes, iResult)
-		catch
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-	endif
-	
-	return cResult
+function FGetS(pHandle as IntPtr) as string
+	return XSharp.IO.File.readLine(pHandle,0)
+
 
 /// <summary>
 /// Read a line from an open file, specifying two strongly typed arguments.
@@ -450,7 +533,18 @@ function FGetS2(pHandle as IntPtr,nBuffLen as int) as string
 /// <returns>
 /// </returns>
 function FGetS2(pHandle as IntPtr,nBuffLen as dword) as string
-	return FGetS2(pHandle, (int) nBuffLen)
+	return XSharp.IO.File.readLine(pHandle, (int) nBuffLen)
+
+
+/// <summary>
+/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
+/// </summary>
+/// <param name="pHandle">The handle of the file.</param>
+/// <param name="c"></param>
+/// <returns>
+/// </returns>
+function FPutS(pHandle as IntPtr,c as string) as dword
+	return FWriteLine(pHandle, c, (dword) c:Length)
 
 /// <summary>
 /// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
@@ -460,28 +554,20 @@ function FGetS2(pHandle as IntPtr,nBuffLen as dword) as string
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FPutS3(pHandle as IntPtr,c as string,nCount as dword) as dword
+function FPutS(pHandle as IntPtr,c as string,nCount as dword) as dword
 	return FWriteLine(pHandle, c, nCount)
 
 /// <summary>
-/// Read characters from a file into an allocated buffer.
+/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
 /// </summary>
 /// <param name="pHandle">The handle of the file.</param>
-/// <param name="pBuffer"> Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount"></param>
+/// <param name="c"></param>
+/// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FRead3(pHandle as IntPtr,pBuffer as byte[],dwCount as int) as int64
-	local iResult := 0 as int64
-	var oStream := XSharp.IO.File.findStream(pHandle)
-	if oStream != null_object
-		try
-			iResult := oStream:Read(pBuffer,0,(int) dwCount)
-		catch
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-	endif
-	return iResult
+function FPutS3(pHandle as IntPtr,c as string, nCount as dword) as dword
+	return FWriteLine(pHandle, c, nCount)
+
 
 /// <summary>
 /// Read characters from a file into an allocated buffer.
@@ -492,7 +578,7 @@ function FRead3(pHandle as IntPtr,pBuffer as byte[],dwCount as int) as int64
 /// <returns>
 /// </returns>
 function FRead3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
-	return (dword) Fread3(pHandle, pBuffer, (int) dwCount)
+	return (dword) XSharp.IO.File.readBuff(pHandle, pBuffer, (int) dwCount, false)
 
 /// <summary>
 /// Read characters from a file into an allocated buffer.
@@ -504,11 +590,8 @@ function FRead3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
 /// <returns>
 /// </returns>
 function FRead4(pHandle as IntPtr,pBuffer as byte[],dwCount as dword,lAnsi as logic) as dword
-	local iResult := Fread3(pHandle, pBuffer, dwCount) as int64
-	if !lAnsi .and. iResult > 0
-		pBuffer := Oem2Ansi(pBuffer)
-	endif
-	return (dword) iResult
+	return (dword) XSharp.IO.File.readBuff(pHandle, pBuffer, (int) dwCount, lAnsi)
+
 
 /// <summary>
 /// Read a line from an open file, specifying two strongly-typed arguments.
@@ -517,9 +600,21 @@ function FRead4(pHandle as IntPtr,pBuffer as byte[],dwCount as dword,lAnsi as lo
 /// <param name="nBuffLen"></param>
 /// <returns>
 /// </returns>
-function FReadLine2(pFile as IntPtr,nBuffLen as dword) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+function FReadLine(pFile as IntPtr,nBuffLen as dword) as string
+	return XSharp.IO.File.readLine(pFile, (int) nBuffLen)
+
+
+/// <summary>
+/// Read a line from an open file, specifying two strongly-typed arguments.
+/// </summary>
+/// <param name="pFile"></param>
+/// <param name="nBuffLen"></param>
+/// <returns>
+/// </returns>
+function FReadLine2(pFile as IntPtr,nBuffLen as dword) as string	
+	return XSharp.IO.File.readLine(pFile, (int) nBuffLen)
+
+
 
 /// <summary>
 /// Read characters from a file.
@@ -528,25 +623,22 @@ function FReadLine2(pFile as IntPtr,nBuffLen as dword) as string
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
-function FReadStr(pHandle as IntPtr,iCount as int) as string
-	local aBuffer as byte[]
+function FReadStr(pHandle as IntPtr,iCount as dword) as string
 	local cResult as string
-	aBuffer := byte[]{iCount}
-	iCount := (int) Fread3(pHandle, aBuffer, iCount)
-	cResult := Bytes2String(aBuffer, iCount)
+	XSharp.IO.File.read(pHandle, out cResult, (int) iCount, false)
 	return cResult
+
 
 /// <summary>
 /// Read characters from a file into a buffer variable that is passed by reference.
 /// </summary>
 /// <param name="pHandle">The handle of the file.</param>
-/// <param name="refC"></param>
+/// <param name="strValue"></param>
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
-function FReadText(pHandle as IntPtr,refC as object,dwCount as dword) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+function FReadText(pHandle as IntPtr,strValue ref string,dwCount as dword) as dword
+	return (dword) XSharp.IO.File.read(pHandle, out strValue, (int) dwCount, !XSharp.RuntimeState.Ansi)
 
 /// <summary>
 /// Read characters from a file into an allocated buffer, with possible OEM to ANSI conversion, based on the current SetAnsi() setting.
@@ -557,7 +649,7 @@ function FReadText(pHandle as IntPtr,refC as object,dwCount as dword) as dword
 /// <returns>
 /// </returns>
 function FReadText3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
-	return Fread4(pHandle, pBuffer, dwCount, ! GetAnsi())	
+	return (dword) XSharp.IO.File.readBuff(pHandle, pBuffer, (int) dwCount, ! GetAnsi())	
 
 /// <summary>
 /// Set the file pointer at the top of an open file.
@@ -565,46 +657,9 @@ function FReadText3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dwo
 /// <param name="pFile"></param>
 /// <returns>
 /// </returns>
-function FRewind(pHandle as IntPtr) as void
-	local oStream as FileStream
-	local iResult as int64
-	oStream := XSharp.IO.File.findStream(pHandle)
-	if oStream != null_object
-		oStream:Position := 0
-	endif
-	return   
+function FRewind(pHandle as IntPtr) as logic
+	return XSharp.IO.File.Seek(pHandle, 0, FS_SET) == 0
 
-/// <summary>
-/// Set the file pointer to a new position, specifying three strongly-typed arguments.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="lOffset"></param>
-/// <param name="dwOrigin"></param>
-/// <returns>
-/// </returns>
-function FSeek3(pHandle as IntPtr,lOffset as int64,dwOrigin as dword) as int64
-	local oStream as FileStream
-	local iResult as int64
-	oStream := XSharp.IO.File.findStream(pHandle)
-	if oStream != null_object
-		iResult := -1
-		try
-			switch dwOrigin
-				case FS_END
-					iResult := oStream:Seek(lOffSet, SeekOrigin.End)
-				case FS_RELATIVE
-					iResult := oStream:Seek(lOffSet, SeekOrigin.Current)
-				case FS_SET
-					iResult := oStream:Seek(lOffSet, SeekOrigin.Begin)
-				otherwise
-					iResult := -1					
-			end switch
-		catch
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-		return iResult 
-	endif
-	return -1
 
 /// <summary>
 /// Set the file pointer to a new position, specifying three strongly-typed arguments.
@@ -615,7 +670,7 @@ function FSeek3(pHandle as IntPtr,lOffset as int64,dwOrigin as dword) as int64
 /// <returns>
 /// </returns>
 function FSeek3(pHandle as IntPtr,lOffset as long, dwOrigin as dword) as long
-	return (long) FSeek3(pHandle, (long) lOffset, dwOrigin)
+	return (long) XSharp.IO.File.Seek(pHandle, (int64) lOffset, dwOrigin)
 
 /// <summary>
 /// Return the current position of the file pointer.
@@ -623,18 +678,18 @@ function FSeek3(pHandle as IntPtr,lOffset as long, dwOrigin as dword) as long
 /// <param name="pHandle">The handle of the file.</param>
 /// <returns>
 /// </returns>
-function FTell(pHandle as IntPtr) as int64
-	local oStream as FileStream
-	oStream := XSharp.IO.File.findStream(pHandle)
-	if oStream != null_object
-		try
-			return oStream:Position
-		catch
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-	endif
-	return -1
+function FTell(pHandle as IntPtr) as dword
+	return (DWORD) XSharp.IO.File.Tell(pHandle)
 
+
+/// <summary>
+/// Return the current position of the file pointer.
+/// </summary>
+/// <param name="pHandle">The handle of the file.</param>
+/// <returns>
+/// </returns>
+function FTell64(pHandle as IntPtr) as Int64
+	return XSharp.IO.File.Tell(pHandle)
 
 
 /// <summary>
@@ -645,33 +700,9 @@ function FTell(pHandle as IntPtr) as int64
 /// <returns>
 /// </returns>
 function FWrite( pHandle as IntPtr, c as string ) as dword
-	return (dword) FWrite( pHandle, c,  c:Length )
+	return (dword) XSharp.IO.File.write( pHandle, c,  c:Length )
 
 
-/// <summary>
-/// Write a string to an open file
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-function FWrite( pHandle as IntPtr, c as string, nLength as int ) as int
-	local oStream	as FileStream
-	local iWritten := 0 as int
-	oStream := XSharp.IO.File.findStream(pHandle)
-	if oStream != null_object
-		try
-			local aBytes as byte[]
-			aBytes := String2Bytes(c)
-			oStream:Write(aBytes, 0, nLength)
-			iWritten := nLength
-		catch
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-		
-	endif
-	
-	return iWritten
 
 /// <summary>
 /// Write a string to an open file
@@ -681,31 +712,8 @@ function FWrite( pHandle as IntPtr, c as string, nLength as int ) as int
 /// <returns>
 /// </returns>	   
 function FWrite( pHandle as IntPtr, c as string, nLength as dword ) as dword
-	return (dword) FWrite(pHandle, c, (int) nLength)
+	return (dword) XSharp.IO.File.write(pHandle, c, (int) nLength)
 
-/// <summary>
-/// Write the contents of a buffer to an open file.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="ptrBuffer"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-function FWrite3(pHandle as IntPtr,pBuffer as byte[],iCount as int) as int
-	local oStream	as FileStream
-	local iWritten := 0 as int
-	oStream := XSharp.IO.File.findStream(pHandle)
-	if oStream != null_object
-		try
-			oStream:Write(pBuffer, 0, iCount)
-			iWritten := iCount
-		catch
-			FError((dword)Marshal.GetLastWin32Error())
-		end try
-		
-	endif
-	
-	return iWritten
 
 /// <summary>
 /// Write the contents of a buffer to an open file.
@@ -716,23 +724,8 @@ function FWrite3(pHandle as IntPtr,pBuffer as byte[],iCount as int) as int
 /// <returns>
 /// </returns>
 function FWrite3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
-	return (dword) fWrite3(pHandle, pBuffer, (int) dwCount)
+	return (dword) XSharp.IO.File.writeBuff(pHandle, pBuffer, (int) dwCount, false)
 
-
-/// <summary>
-/// Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount"></param>
-/// <param name="lAnsi"></param>
-/// <returns>
-/// </returns>
-function FWrite4(pHandle as IntPtr,pBuffer as byte[],dwCount as int,lAnsi as logic) as int
-	if lAnsi
-		pBuffer := Ansi2Oem(pBuffer)
-	endif
-	return FWrite3(pHandle, pBuffer, dwCount)
 
 /// <summary>
 /// Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
@@ -744,7 +737,7 @@ function FWrite4(pHandle as IntPtr,pBuffer as byte[],dwCount as int,lAnsi as log
 /// <returns>
 /// </returns>
 function FWrite4(pHandle as IntPtr,pBuffer as byte[],dwCount as dword,lAnsi as logic) as dword
-	return (dword) FWrite4(pHandle,pBuffer , (int) dwCount ,lAnsi )
+	return (dword) XSharp.IO.File.writeBuff(pHandle,pBuffer , (int) dwCount ,lAnsi )
 
 
 /// <summary>
@@ -755,7 +748,7 @@ function FWrite4(pHandle as IntPtr,pBuffer as byte[],dwCount as dword,lAnsi as l
 /// <returns>
 /// </returns>
 function FWriteLine(pHandle as IntPtr,c as string) as dword
-	return (dword) FWrite(pHandle, c + e"\r\n",c:Length+2)
+	return (dword) XSharp.IO.File.write(pHandle, c + e"\r\n",c:Length+2)
 
 /// <summary>
 /// Write a string, a carriage-return character, and a linefeed character to an open file, specifying two strongly-typed arguments.
@@ -766,7 +759,7 @@ function FWriteLine(pHandle as IntPtr,c as string) as dword
 /// <returns>
 /// </returns>
 function FWriteLine(pHandle as IntPtr,c as string,nCount as dword) as dword
-	return FWriteLine3(pHandle, c, nCount)
+	return (dword) XSharp.IO.File.writeLine(pHandle, c, (int) nCount)
 
 /// <summary>
 /// Write a string, a carriage-return character, and a linefeed character to an open file, specifying two strongly-typed arguments.
@@ -777,10 +770,7 @@ function FWriteLine(pHandle as IntPtr,c as string,nCount as dword) as dword
 /// <returns>
 /// </returns>
 function FWriteLine3(pHandle as IntPtr,c as string,nCount as dword) as dword
-	if nCount < c:Length
-		c := Left(c, nCount)
-	endif
-	return FWriteLine(pHandle, c ,nCount)
+	return (dword) XSharp.IO.File.writeLine(pHandle, c, (int) nCount )
 
 /// <summary>
 /// Write the contents of a buffer to an open file, with SetAnsi() dependency.
@@ -791,7 +781,7 @@ function FWriteLine3(pHandle as IntPtr,c as string,nCount as dword) as dword
 /// <returns>
 /// </returns>
 function FWriteText3(pHandle as IntPtr,pBuffer as byte[],dwCount as dword) as dword
-	return FWrite4(pHandle ,pBuffer ,dwCount ,!GetAnsi()) 
+	return (dword) XSharp.IO.File.writeBuff(pHandle ,pBuffer ,(int) dwCount ,!GetAnsi()) 
 
 /// <summary>
 /// Remove spaces from a file name specified as a string.
@@ -834,35 +824,28 @@ function AdjustFNameA(cName as string) as string
 function FCreate2(cFile as string,dwAttr as dword) as IntPtr
 	local oFileMode as VOFileMode
 	oFileMode := VOFileMode{ FO_CREATE, dwAttr }
-	return XSharp.IO.File._createFile(cFile, oFileMode)
+	return XSharp.IO.File.CreateFile(cFile, oFileMode)
 
 
 
 /// <summary>
-/// Determine if any file matches a given file specification.
+/// Open a file, specifying one strongly-typed arguments.
 /// </summary>
-/// <param name="cFile">The name oif the file</param>
+/// <param name="cFile"></param>
 /// <returns>
-/// True if the file exists, otherwise false
 /// </returns>
-function File(cFile as string) as logic
-	local lFound as logic
-	lFOund := System.IO.File.Exists(cFile)
-	if lFound
-		XSharp.IO.File.LastFOund := cFile
-	else
-		XSharp.IO.File.LastFOund := ""
-	endif
-	return lFound
+function FOpen(cFile as string) as IntPtr
+	return FOpen2(cFile, FC_NORMAL)
 
 /// <summary>
-/// Return the name and path of the file that was used by FXOpen() or File().
+/// Open a file, specifying two strongly-typed arguments.
 /// </summary>
+/// <param name="cFile"></param>
+/// <param name="dwMode"></param>
 /// <returns>
 /// </returns>
-function FPathName() as string
-	
-	return XSharp.IO.File.LastFound
+function FOpen(cFile as string,dwMode as dword) as IntPtr
+	return FOpen2(cFile, dwMode)
 
 /// <summary>
 /// Open a file, specifying two strongly-typed arguments.
@@ -874,10 +857,7 @@ function FPathName() as string
 function FOpen2(cFile as string,dwMode as dword) as IntPtr
 	local oFileMode as VOFileMode
 	oFileMode := VOFileMode{dwMode, 0}
-	return XSharp.IO.File._createFile(cFile, oFileMode)
-
-
-
+	return XSharp.IO.File.CreateFile(cFile, oFileMode)
 
 
 
@@ -901,19 +881,19 @@ function FxOpen(cFile as string,dwMode as dword,cPath as string) as IntPtr
 /// <returns>
 /// </returns>
 function String2FAttr(cAttr as string) as dword
-	local dwAttributes as dword
+	local dwAttributes := 0 as dword
 	foreach c as char in cAttr
 		do case
-		case c == 'A'
-			dwAttributes |= FC_ARCHIVED
-		case c == 'D'
-			dwAttributes |= FA_DIRECTORY
-		case c == 'H'
-			dwAttributes |= FC_HIDDEN
-		case c == 'S'
-			dwAttributes |= FC_SYSTEM
-		case c == 'V'
-			dwAttributes |= FA_VOLUME
+			case c == 'A'
+				dwAttributes |= FC_ARCHIVED
+			case c == 'D'
+				dwAttributes |= FA_DIRECTORY
+			case c == 'H'
+				dwAttributes |= FC_HIDDEN
+			case c == 'S'
+				dwAttributes |= FC_SYSTEM
+			case c == 'V'
+				dwAttributes |= FA_VOLUME
 		end case
 	next
 	return dwAttributes
@@ -927,7 +907,7 @@ function String2FAttr(cAttr as string) as dword
 /// <returns>
 /// </returns>
 function FAttr2String(dwAttributes as dword) as string
-	local cAttribute as string
+	local cAttribute := "" as string
 	
 	if (dword)_and(dwAttributes,FA_DIRECTORY) == FA_DIRECTORY
 		cAttribute := cAttribute + "D"
@@ -970,3 +950,37 @@ function String2Bytes(sSource as string) as byte[]
 
 
 
+
+
+function Bytes2Line(aBytes as byte[], nBuffLen ref int) as string
+	// determine end of line
+	// note that VO looks for CR LF. CR alone or LF alone to not count as end of line
+	local nLF as int
+	local lFoundCR := false as logic
+	local lFoundCRLF := false as logic
+	nLF := nBuffLen
+	for var nI := 1 to nBuffLen
+		switch aBytes[nI]
+			case 10
+				if lFoundCR		// immediately LF after CR
+					nLF := nI -2
+					lFoundCRLF := true
+				endif
+			case 13
+				lFoundCR := true
+			otherwise
+				lFoundCR := false
+		end switch
+		if lFoundCRLF
+			exit
+		endif
+	next
+	// when we have found a CRLF then nLF is the length of the string before the CR
+	// otherwise the length of the source string
+	local aChars := char[]{nLF} as char[]
+	local encoding := Encoding.Default as Encoding
+	encoding:GetChars(aBytes, 0, nLF, aChars, 0)
+	if lFoundCRLF
+		nBuffLen := nLF+2
+	endif
+	return string{aChars, 0, nLF}

@@ -17,7 +17,7 @@ BEGIN NAMESPACE ConsoleApplication1
 			sBlock := Replicate("X", 1000)
 			aBytes := String2Bytes(sBlock)
 			for var i := 1 to 1000
-				FWrite3(hFile, aBytes, aBytes:Length)
+				FWrite3(hFile, aBytes, (DWORD) aBytes:Length)
 			next
 			FEof(hFile), FTell(hFIle)
 			FCLose(hFile)

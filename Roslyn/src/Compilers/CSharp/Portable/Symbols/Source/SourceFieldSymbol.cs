@@ -669,11 +669,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // Only persist if there are no dependencies and the calculation
             // completed successfully. (We could probably persist in other
             // scenarios but it's probably not worth the added complexity.)
+#if !XSHARP
+            //RvdH add the error because otherwise for cyclic VODEFINES
+            // where the define that we depend on has a problem then no errors are there
+            // and we get a silly error that no module could be created
             if ((builder.Count == 0) &&
                 (value != null) &&
                 !value.IsBad &&
                 (value != Microsoft.CodeAnalysis.ConstantValue.Unset) &&
                 diagnostics.IsEmptyWithoutResolution)
+#endif
             {
                 this.SetLazyConstantValue(
                     value,
@@ -682,11 +687,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     startsCycle: false);
                 dependencies = ImmutableHashSet<SourceFieldSymbolWithSyntaxReference>.Empty;
             }
+#if !XSHARP
             else
             {
                 dependencies = ImmutableHashSet<SourceFieldSymbolWithSyntaxReference>.Empty.Union(builder);
             }
-
+#endif
             diagnostics.Free();
             builder.Free();
             return dependencies;

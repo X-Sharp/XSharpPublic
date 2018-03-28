@@ -48,8 +48,7 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>
-    </DisabledWarnings>
+    <DisabledWarnings>165,219,1030</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -167,31 +166,35 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.prg" />
     <Compile Include="CompletionType.prg" />
     <Compile Include="ExtensionMethods.prg" />
     <Compile Include="Interfaces.prg" />
-    <Compile Include="Enums.prg" />
-    <Compile Include="OrphanedFilesProject.prg" />
+    <Compile Include="MetaData\AssemblyInfo.prg" />
+    <Compile Include="MetaData\SystemTypeController.prg" />
+    <Compile Include="Model\Enums.prg" />
+    <Compile Include="Model\XElement.prg" />
+    <Compile Include="Model\XType.prg" />
+    <Compile Include="Model\XTypeMember.prg" />
+    <Compile Include="Model\XVariable.prg" />
+    <Compile Include="ProjectSystem\OrphanedFilesProject.prg" />
+    <Compile Include="ProjectSystem\XFile.prg" />
+    <Compile Include="ProjectSystem\XProject.prg" />
+    <Compile Include="ProjectSystem\XSolution.prg" />
     <Compile Include="Properties\AssembyInfo.prg" />
     <Compile Include="Support.prg" />
-    <Compile Include="SystemTypeController.prg" />
     <Compile Include="TextInterval.prg" />
     <Compile Include="TextRange.prg" />
     <Compile Include="TypeExtensions.prg" />
     <Compile Include="Walker\ModelWalker.prg" />
+    <Compile Include="Walker\Parser.prg" />
     <Compile Include="Walker\SourceWalker.prg" />
-    <Compile Include="XElement.prg" />
     <Compile Include="XError.prg" />
-    <Compile Include="XFile.prg" />
     <Compile Include="XFileTypeHelpers.prg" />
-    <Compile Include="XProject.prg" />
-    <Compile Include="XSolution.prg" />
-    <Compile Include="XType.prg" />
-    <Compile Include="XTypeMember.prg" />
-    <Compile Include="XVariable.prg" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Model\" />
+    <Folder Include="MetaData" />
+    <Folder Include="ProjectSystem\" />
     <Folder Include="Walker" />
     <Folder Include="Properties\" />
   </ItemGroup>

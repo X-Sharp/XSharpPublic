@@ -6,35 +6,35 @@
 
 using System
 begin namespace XSharpModel
-	internal enum ImageListKind as long
-		member @@Block:=9
+	internal enum ImageListKind as Int32
 		member @@Class:=0
-		member @@ClassMethod:=0x18
 		member @@Const:=1
 		member @@Delegate:=2
 		member @@Enum:=3
 		member @@EnumValue:=4
 		member @@Event:=5
+		member @@Unknown1:=6
 		member @@Field:=7
 		member @@Interface:=8
-		member @@Local:=0x17
-		member @@Macro:=20
-		member @@Method:=12
-		member @@Namespace:=15
-		member @@Operator:=0x10
-		member @@Property:=0x11
-		member @@StaticMethod:=13
-		member @@Structure:=0x12
-		member @@Unknown1:=6
-		member @@Unknown11:=0x15
-		member @@Unknown12:=0x16
-		member @@Unknown6:=14
-		member @@Unknown9:=0x13
+		member @@Block:=9
 		member @@Variant:=10
 		member @@VariantOption:=11
+		member @@Method:=12
+		member @@StaticMethod:=13
+		member @@Unknown6:=14
+		member @@Namespace:=15
+		member @@Operator:=16
+		member @@Property:=17
+		member @@Structure:=18
+		member @@Unknown9:=19
+		member @@Macro:=20
+		member @@Unknown11:=21
+		member @@Unknown12:=22
+		member @@Local:=23
+		member @@ClassMethod:=24
 	end enum
 	
-	internal enum ImageListOverlay as long
+	internal enum ImageListOverlay as Int32
 		member @@Internal:=1
 		member @@ProtectedInternal:=2
 		member @@Protected:=3
@@ -43,7 +43,7 @@ begin namespace XSharpModel
 		member @@Public:=0
 	end enum
 	
-	enum Kind as long
+	enum Kind as Int32 
 		member @@Namespace
 		member @@Class
 		member @@Structure
@@ -73,20 +73,20 @@ begin namespace XSharpModel
 		member @@VOGlobal
 	end enum
 	enum Modifiers as long
-		member @@Abstract:=0
-		member @@New:=1
-		member @@Partial:=2
-		member @@Sealed:=3
-		member @@Static:=4
-		member @@Unsafe:=5
-		member @@Hidden:=6
-		member @@Private:=6
-		member @@ProtectedInternal:=7
-		member @@Internal:=8
-		member @@Protected:=9
-		member @@Public:=10
-		member @@Export:=10
-		member @@None:=11
+		member @@None:=0
+		member @@Private:=1
+		member @@Hidden:=1
+		member @@ProtectedInternal:=2
+		member @@Internal:=3
+		member @@Protected:=4
+		member @@Public:=5
+		member @@Export:=5
+		member @@Abstract:=10
+		member @@New:=11
+		member @@Partial:=12
+		member @@Sealed:=13
+		member @@Static:=14
+		member @@Unsafe:=15
 	end enum
 	enum XFileType as long
 		member Unknown:=-1

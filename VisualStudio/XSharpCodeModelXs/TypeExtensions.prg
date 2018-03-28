@@ -39,57 +39,55 @@ begin namespace XSharpModel
 			lookupTable:Add("Vulcan.__VODate", "DATE")
 			lookupTable:Add("Vulcan.__VOFloat", "FLOAT")
 			lookupTable:Add("Vulcan.__WinBool", "LOGIC")
+			lookupTable:Add("XSharp._CodeBlock", "CODEBLOCK")
+			lookupTable:Add("XSharp.__Array", "UINT64")
+			lookupTable:Add("XSharp.__Psz", "PSZ")
+			lookupTable:Add("XSharp.__Symbol", "SYMBOL")
+			lookupTable:Add("XSharp.__Usual", "USUAL")
+			lookupTable:Add("XSharp.__VODate", "DATE")
+			lookupTable:Add("XSharp.__VOFloat", "FLOAT")
+			lookupTable:Add("XSharp.__WinBool", "LOGIC")
 			lookupTable := lookupTable:ToImmutableDictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 		
 		static method GetSystemTypeName( self typename as string) as string
 			//
 			switch typename:ToLower()
 				case "array"
-					//
 					return "Vulcan.__Array"
 				case "date"
-					//
 					return "Vulcan.__VODate"
 				case "float"
-					//
 					return "Vulcan.__VOFloat"
 				case "psz"
-					//
 					return "Vulcan.__Psz"
 				case "symbol"
-					//
 					return "Vulcan.__Symbol"
 				case "usual"
-					//
 					return "Vulcan.__Usual"
 			end switch
 			return typename
 		
 		static method GetXSharpTypeName( self type as System.Type) as string
 			local fullName as string
-			local str2 as string
-			//
+			local suffix as string
 			fullName := type:FullName
 			if (fullName == null)
-				//
 				fullName := type:Name
 			endif
-			str2 := ""
-			if (fullName:EndsWith("[]"))
-				//
+			suffix := ""
+			if fullName:EndsWith("[]")
 				fullName := fullName:Substring(0, (fullName:Length - 2))
-				str2 := "[]"
+				suffix := "[]"
 			endif
-			if (fullName:EndsWith("&"))
-				//
+			if fullName:EndsWith("&")
 				fullName := fullName:Substring(0, (fullName:Length - 1))
-				str2 := ""
+				suffix := ""
 			endif
 			if (lookupTable:ContainsKey(fullName))
 				//
 				fullName := lookupTable:Item[fullName]
 			endif
-			return String.Concat(fullName, str2)
+			return fullName+ suffix
 		
 		
 	end class

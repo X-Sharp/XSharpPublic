@@ -173,14 +173,11 @@
     <Compile Include="CompletionTypeExtensions.prg" />
     <Compile Include="DictionaryExtensions.prg" />
     <Compile Include="ElementExtensions.prg" />
-    <Compile Include="ImageListKind.prg" />
-    <Compile Include="ImageListOverlay.prg" />
     <Compile Include="IXErrorPosition.prg" />
     <Compile Include="IXSharpProject.prg" />
-    <Compile Include="Kind.prg" />
+    <Compile Include="Enums.prg" />
     <Compile Include="ListExtensions.prg" />
     <Compile Include="ModelWalker.prg" />
-    <Compile Include="Modifiers.prg" />
     <Compile Include="OrphanedFilesProject.prg" />
     <Compile Include="Properties\AssembyInfo.prg" />
     <Compile Include="SourceWalker.prg" />
@@ -193,14 +190,12 @@
     <Compile Include="XElement.prg" />
     <Compile Include="XError.prg" />
     <Compile Include="XFile.prg" />
-    <Compile Include="XFileType.prg" />
     <Compile Include="XFileTypeHelpers.prg" />
     <Compile Include="XProject.prg" />
     <Compile Include="XSolution.prg" />
     <Compile Include="XType.prg" />
     <Compile Include="XTypeMember.prg" />
     <Compile Include="XVariable.prg" />
-    <Compile Include="XWarning.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

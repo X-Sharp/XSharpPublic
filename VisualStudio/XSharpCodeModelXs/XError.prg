@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 using LanguageService.CodeAnalysis
 using LanguageService.CodeAnalysis.Text
 
@@ -36,5 +41,14 @@ BEGIN NAMESPACE XSharpModel
 
     END CLASS
 
+    CLASS XWarning INHERIT XError
+        // Methods
+         CONSTRUCTOR(path AS string, span AS LinePositionSpan, errCode AS string, message AS string, args AS Object[])
+        SUPER(path, span, errCode, message, args)
+            //
+            SUPER:Severity := DiagnosticSeverity.Warning
+
+
+    END CLASS
 END NAMESPACE 
 

@@ -436,7 +436,7 @@ namespace XSharpColorizer
             ClassificationSpan result = null;
             IClassificationType type = null;
             IToken startToken = null;
-            if (keywordContext != null)
+            if (keywordContext != null )
             {
                 startToken = keywordContext;
                 if (startToken.Line != token.Line)
@@ -579,7 +579,7 @@ namespace XSharpColorizer
                 {
                     var token = tokenStream.Get(iToken);
                     // Orphan End ?
-                    if ((keywordContext != null) && (keywordContext.Line != token.Line) && (keywordContext.Type == XSharpLexer.END))
+                    if ( ( keywordContext != null ) && (keywordContext.Line != token.Line ) && (keywordContext.Type == XSharpLexer.END ) )
                     {
                         newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
                         keywordContext = null;
@@ -787,75 +787,83 @@ namespace XSharpColorizer
 
     internal class XClassificationSpans
     {
-        private readonly object gate = new object();
         private IList<ClassificationSpan> _tags;
+        private readonly object gate = new object();
         private IDictionary<int, List<ClassificationSpan>> _hash;
         private IList<ClassificationSpan> _multilineTokens;
         internal XClassificationSpans()
         {
-            _tags = new List<ClassificationSpan>();
-            _hash = new Dictionary<int, List<ClassificationSpan>>();
-            _multilineTokens = new List<ClassificationSpan>();
+            lock (gate)
+            {
+                _tags = new List<ClassificationSpan>();
+                _hash = new Dictionary<int, List<ClassificationSpan>>();
+                _multilineTokens = new List<ClassificationSpan>();
+            }
         }
         internal void Add(ClassificationSpan span)
         {
             lock (gate)
             {
                 _tags.Add(span);
-            }
-            int start = span.Span.Start.GetContainingLine().LineNumber;
-            int end = span.Span.End.GetContainingLine().LineNumber;
-            if (end > start + 1)
-                _multilineTokens.Add(span);
-            else
-            {
-                if (!_hash.ContainsKey(start))
+                int start = span.Span.Start.GetContainingLine().LineNumber;
+                int end = span.Span.End.GetContainingLine().LineNumber;
+                if (end > start + 1)
                 {
-                    _hash.Add(start, new List<ClassificationSpan>());
+                    _multilineTokens.Add(span);
                 }
-                _hash[start].Add(span);
+                else
+                {
+                    if (!_hash.ContainsKey(start))
+                    {
+                        _hash.Add(start, new List<ClassificationSpan>());
+                    }
+                    _hash[start].Add(span);
+                }
             }
         }
         internal List<ClassificationSpan> GetItemsForLine(int line)
         {
-            List<ClassificationSpan> result;
+            lock (gate)
             {
-                if (_hash.ContainsKey(line))
+                List<ClassificationSpan> result;
                 {
-                    result = _hash[line];
-                }
-                else
-                {
-                    result = new List<ClassificationSpan>();
-                }
-            }
-            if (_multilineTokens.Count > 0)
-            {
-                List<ClassificationSpan> multi = null;
-                foreach (var span in _multilineTokens)
-                {
-
-                    if (span.Span.Start.GetContainingLine().LineNumber <= line && span.Span.End.GetContainingLine().LineNumber >= line)
+                    if (_hash.ContainsKey(line))
                     {
-                        if (multi == null)
-                            multi = new List<ClassificationSpan>();
-                        multi.Add(span);
-                    }
-                }
-                if (multi?.Count > 0)
-                {
-                    if (result.Count == 0)
-                    {
-                        result = multi;
+                        result = _hash[line];
                     }
                     else
                     {
-                        multi.AddRange(result);
-                        result = multi;
+                        result = new List<ClassificationSpan>();
                     }
                 }
+                if (_multilineTokens.Count > 0)
+                {
+                    List<ClassificationSpan> multi = null;
+                    foreach (var span in _multilineTokens)
+                    {
+
+                        if (span.Span.Start.GetContainingLine().LineNumber <= line && span.Span.End.GetContainingLine().LineNumber >= line)
+                        {
+                            if (multi == null)
+                                multi = new List<ClassificationSpan>();
+                            multi.Add(span);
+                        }
+                    }
+                    if (multi?.Count > 0)
+                    {
+                        if (result.Count == 0)
+                        {
+                            result = multi;
+                        }
+                        else
+                        {
+                            multi.AddRange(result);
+                            result = multi;
+                        }
+                    }
+                }
+                return result;
             }
-            return result;
         }
         internal int Count
         {
@@ -867,11 +875,13 @@ namespace XSharpColorizer
                 }
             }
         }
-
         internal void Clear()
         {
-            _tags.Clear();
-            _hash.Clear();
+            lock (gate)
+            {
+                _tags.Clear();
+                _hash.Clear();
+            }
         }
         internal ImmutableList<ClassificationSpan> Tags
         {
@@ -879,10 +889,11 @@ namespace XSharpColorizer
             {
                 lock (gate)
                 {
-                    return _tags.ToImmutableList();
+                    var tags = _tags;
+                    return tags.ToImmutableList();
                 }
             }
-        }
 
+        }
     }
 }

@@ -41,5 +41,11 @@ begin namespace XSharpModel
 		
 	end interface
 	
+	interface IXErrorPosition
+		property Column as long get set
+		property Length as long get set
+		property Line as long get set
+	end interface
+	
 end namespace 
 

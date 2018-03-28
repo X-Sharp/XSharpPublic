@@ -7,6 +7,7 @@
 using System
 using System.Linq
 using System.Collections.Generic
+using System.Collections.Immutable
 using Microsoft.VisualStudio.Text
 using Microsoft.VisualStudio.Text.Classification
 using Microsoft.VisualStudio.Text.Tagging
@@ -121,7 +122,28 @@ begin namespace XSharpModel
 		
 		static method ToTagSpan( self span as TextSpan, snapshot as ITextSnapshot, classificationType as IClassificationType) as ITagSpan<IClassificationTag>
 			return TagSpan<IClassificationTag>{SnapshotSpan{snapshot, span:Start, span:Length}, ClassificationTag{classificationType}}
+	
+	//list exstensions
+			static method AddUnique( self list as List<string>, item as string) as void
+			if !list:Contains(item, System.StringComparer.OrdinalIgnoreCase)
+				list:Add(item)
+			endif
 		
+		static method Expanded( self source as IEnumerable<string>) as IReadOnlyList<string>
+			local list as List<string>
+			local item as string
+			list := List<string>{}
+			list:AddRange(source)
+			foreach str as string in source
+				item := str
+				while (item:Contains("."))
+					item := item:Substring(0, item:LastIndexOf("."))
+					if (! list:Contains(item))
+						list:Add(item)
+					endif
+				enddo
+			next
+			return List:ToImmutableList() 
 		
 	end class
 	

@@ -390,6 +390,26 @@ namespace XSharp.Project
             return false;
         }
 
+        private bool cursorIsAfterSLComment(SnapshotPoint caret)
+        {
+
+            ////////////////////////////////////////////
+            //
+
+            var line = caret.GetContainingLine();
+
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
+            var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(this.TextView.TextBuffer);
+            var tags = tagAggregator.GetTags(lineSpan);
+            var tag = tags.LastOrDefault();
+            if (tag != null  && tag.Tag.ClassificationType.Classification.ToLower() == "comment")
+            { 
+                    return true;
+            }
+            return false;
+        }
+
+
         bool StartCompletionSession(uint nCmdId, char typedChar)
         {
             if (_completionSession != null)
@@ -399,6 +419,9 @@ namespace XSharp.Project
             }
 
             SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
+            if (cursorIsAfterSLComment(caret))
+                return false;
+            
             ITextSnapshot snapshot = caret.Snapshot;
 
             if (!_completionBroker.IsCompletionActive(TextView))

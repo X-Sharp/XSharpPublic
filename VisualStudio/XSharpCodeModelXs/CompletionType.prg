@@ -13,7 +13,7 @@ using System.Threading.Tasks
 using XSharpModel
 begin namespace XSharpModel
 	[DebuggerDisplay("{FullName,nq}")];
-		class CompletionType
+	class CompletionType
 		// Fields
 		private _codeElt as CodeElement
 		private _file as XFile

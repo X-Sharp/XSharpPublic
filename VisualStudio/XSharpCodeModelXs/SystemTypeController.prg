@@ -7,6 +7,7 @@ using System.Collections.Concurrent
 using System.Collections.Generic
 using System.Collections.Immutable
 using System
+using System.IO
 begin namespace XSharpModel
 	class SystemTypeController
 		#region fields
@@ -98,54 +99,37 @@ begin namespace XSharpModel
 				endif
 			endif
 			type := Lookup(typeName, assemblies)
-			if (type != null)
-				//
+			if type != null
 				return type
 			endif
-			if (usings != null)
-				//
-				foreach str4 as string in usings:Expanded()
-					//
-					type := Lookup(String.Concat(str4, ".", typeName), assemblies)
-					if (type != null)
-						//
+			if usings != null
+				foreach strUsing as string in usings:Expanded()
+					type := Lookup(strUsing + "." + typeName, assemblies)
+					if type != null
 						return type
 					endif
 				next
 			endif
-			if (assemblies != null)
-				//
-				foreach info as AssemblyInfo in assemblies
-					//
+			if assemblies != null
+				foreach var info in assemblies
 					if (info:ImplicitNamespaces != null)
-						//
-						foreach str6 as string in info:ImplicitNamespaces
-							//
-							type := Lookup(String.Concat(str6, ".", typeName), assemblies)
-							if (type != null)
-								//
+						foreach strNs as string in info:ImplicitNamespaces
+							type := Lookup(strNs+  "."+  typeName, assemblies)
+							if type != null
 								return type
 							endif
 						next
 					endif
 				next
 			endif
-			type := Lookup(String.Concat("Functions.", typeName), assemblies)
-			if (type != null)
-				//
-				return type
-			endif
-			return null
+			type := Lookup("Functions." + typeName, assemblies)
+			return type
 		
-		method GetNamespaces(assemblies as IList<AssemblyInfo>) as System.Collections.Immutable.ImmutableList<string>
-			local list as List<string>
-			//
-			list := List<string>{}
-			foreach info as AssemblyInfo in assemblies
-				//
+		method GetNamespaces(assemblies as IList<AssemblyInfo>) as ImmutableList<string>
+			var list := List<string>{}
+			foreach var info in assemblies
 				foreach str as string in info:Namespaces
-					//
-					ListExtensions.AddUnique(list, str)
+					list:AddUnique( str)
 				next
 			next
 			return System.Collections.Immutable.ImmutableList.ToImmutableList<string>(list)
@@ -155,7 +139,7 @@ begin namespace XSharpModel
 			local lastWriteTime as System.DateTime
 			local key as string
 			//
-			lastWriteTime := System.IO.File.GetLastWriteTime(cFileName)
+			lastWriteTime := File.GetLastWriteTime(cFileName)
 			if (assemblies:ContainsKey(cFileName))
 				info := assemblies:Item[cFileName]
 			else
@@ -165,9 +149,9 @@ begin namespace XSharpModel
 			if (cFileName:EndsWith("mscorlib.dll", System.StringComparison.OrdinalIgnoreCase))
 				mscorlib := AssemblyInfo{cFileName, System.DateTime.MinValue}
 			endif
-			if (System.IO.Path.GetFileName(cFileName):ToLower() == "system.dll")
-				key := System.IO.Path.Combine(System.IO.Path.GetDirectoryName(cFileName), "mscorlib.dll")
-				if (! assemblies:ContainsKey(key) .AND. System.IO.File.Exists(key))
+			if (Path.GetFileName(cFileName):ToLower() == "system.dll")
+				key := Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll")
+				if (! assemblies:ContainsKey(key) .AND. File.Exists(key))
 					LoadAssembly(key)
 				endif
 			endif
@@ -183,31 +167,23 @@ begin namespace XSharpModel
 		
 		static method Lookup(typeName as string, theirassemblies as IReadOnlyList<AssemblyInfo>) as System.Type
 			local type as System.Type
-			//
 			type := null
-			foreach info as AssemblyInfo in theirassemblies
-				//
+			foreach var info in theirassemblies
 				if (info:Types:Count == 0)
-					//
 					info:UpdateAssembly()
 				endif
 				if (info:Types:TryGetValue(typeName, out type))
-					//
 					exit
 					
 				endif
 				if (info != null)
-					//
 					type := info:GetType(typeName)
 				endif
-				if (type != null)
-					//
+				if type != null
 					exit
-					
 				endif
 			next
-			if ((type == null) .AND. (mscorlib != null))
-				//
+			if type == null .AND. mscorlib != null
 				type := mscorlib:GetType(typeName)
 			endif
 			return type
@@ -231,7 +207,6 @@ begin namespace XSharpModel
 				assemblies:TryRemove(str, out info)
 			next
 			if (assemblies:Count == 0)
-				//
 				mscorlib := null
 			endif
 			System.GC.Collect()

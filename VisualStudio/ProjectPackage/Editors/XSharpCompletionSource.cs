@@ -65,6 +65,7 @@ namespace XSharpLanguage
         private bool _showTabs;
         private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
+        private IntellisenseOptionsPage _optionsPage;
 
         internal static bool StringEquals(string lhs, string rhs)
         {
@@ -86,6 +87,8 @@ namespace XSharpLanguage
             _settingIgnoreCase = true;
             _stopToken = null;
             this.aggregator = aggregator;
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            _optionsPage = package.GetIntellisenseOptionsPage();
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -96,12 +99,10 @@ namespace XSharpLanguage
                 XSharpModel.ModelWalker.Suspend();
                 if (_disposed)
                     throw new ObjectDisposedException("XSharpCompletionSource");
-                var package = XSharp.Project.XSharpProjectPackage.Instance;
-                var optionsPage = package.GetIntellisenseOptionsPage();
-                _showTabs = optionsPage.CompletionListTabs;
+                _showTabs = _optionsPage.CompletionListTabs;
                 if (_coreDialect)
                 {
-                    _dotUniversal = optionsPage.UseDotAsUniversalSelector;
+                    _dotUniversal = _optionsPage.UseDotAsUniversalSelector;
                 }
                 else
                 {
@@ -556,8 +557,8 @@ namespace XSharpLanguage
             var references = project.AssemblyReferences.ToList();
             bool hasCorLib = false; ;
             foreach (var reference in references)
-            {
-                if (reference.FileName.EndsWith("mscorlib.dll", StringComparison.OrdinalIgnoreCase))
+            { 
+                if (reference?.FileName != null && reference.FileName.EndsWith("mscorlib.dll", StringComparison.OrdinalIgnoreCase))
                     {
                     hasCorLib = true;
                     break;

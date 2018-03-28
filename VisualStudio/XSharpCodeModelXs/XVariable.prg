@@ -1,70 +1,65 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 using XSharpModel
 using System.Diagnostics
-BEGIN NAMESPACE XSharpModel
-    [DebuggerDisplay("{Prototype,nq}")];
-    CLASS XVariable INHERIT XElement
-        // Fields
-        PRIVATE _isParameter AS Logic
-        PRIVATE _typeName AS string
-        STATIC INITONLY PUBLIC VarType := "$VAR$" AS string
-
-        // Methods
-         CONSTRUCTOR(parent AS XElement, name AS string, kind AS Kind, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS string,  isParameter := FALSE AS Logic)
-        SUPER(name, kind, Modifiers.None, visibility, span, position)
-            //
-            IF (String.IsNullOrEmpty(typeName))
-                //
-                typeName := "USUAL"
-            ENDIF
-            SELF:_typeName := typeName
-            SELF:_isParameter := isParameter
-            SUPER:Parent := parent
-
-
-        // Properties
-        VIRTUAL PROPERTY Description AS string
-            GET
-                //
+begin namespace XSharpModel
+	[DebuggerDisplay("{Prototype,nq}")];
+		class XVariable inherit XElement
+		// Fields
+		private _isParameter as logic
+		private _typeName as string
+		static initonly public VarType := "$VAR$" as string
+		static initonly public UsualType := "USUAL" as string
+		// Methods
+		constructor(parent as XElement, name as string, kind as Kind, visibility as Modifiers, span as TextRange, position as TextInterval, typeName as string,  isParameter := false as logic)
+			super(name, kind, Modifiers.None, visibility, span, position)
+			if String.IsNullOrEmpty(typeName)
+				typeName := UsualType
+			endif
+			self:_typeName := typeName
+			self:_isParameter := isParameter
+			super:Parent := parent
+		
+		
+		// Properties
+		virtual property Description as string
+			get
+				//
 				local str as string
-                IF (SELF:_isParameter)
-                    //
-                    str := "PARAMETER "
-                ELSE
-                    //
-                    str := "LOCAL "
-                ENDIF
-                var textArray1 := <string>{str, SELF:Prototype, " as ", SELF:TypeName, IIF(SELF:IsArray,"[]","")}
-                RETURN String.Concat(textArray1)
-            END GET
-        END PROPERTY
-
-        PROPERTY IsArray AS Logic AUTO 
-
-        VIRTUAL PROPERTY Prototype AS string
-            GET
-                //
-                RETURN SUPER:Name
-            END GET
-        END PROPERTY
-
-        PROPERTY TypeName AS string
-            GET
-                //
-                RETURN SELF:_typeName
-            END GET
-            SET
-                //
-                IF (String.IsNullOrEmpty(value))
-                    //
-                    value := "USUAL"
-                ENDIF
-                SELF:_typeName := value
-            END SET
-        END PROPERTY
-
-
-    END CLASS
-
-END NAMESPACE 
+				if (self:_isParameter)
+					//
+					str := "PARAMETER "
+				else
+					//
+					str := "LOCAL "
+				endif
+				var textArray1 := <string>{str, self:Prototype, " as ", self:TypeName, iif(self:IsArray,"[]","")}
+				return String.Concat(textArray1)
+			end get
+		end property
+		
+		property IsArray as logic auto 
+		
+		virtual property Prototype as string get super:NAme
+		
+		property TypeName as string
+			get
+				return self:_typeName
+			end get
+			set
+				if (String.IsNullOrEmpty(value))
+					value := UsualType
+				endif
+				self:_typeName := value
+			end set
+		end property
+		
+		
+	end class
+	
+end namespace 
 

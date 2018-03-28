@@ -11,113 +11,113 @@ using System.Threading.Tasks
 using System.Diagnostics
 using System
 using System.Runtime.InteropServices
-USING System
-BEGIN NAMESPACE XSharpModel
-    [StructLayout(LayoutKind.Sequential), DebuggerDisplay("{StartLine}.{StartColumn}-{EndLine}.{EndColumn}")];
-    STRUCTURE TextRange
-        // Fields
-        INITONLY PRIVATE _EndColumn AS Long
-        INITONLY PRIVATE _EndLine AS Long
-        INITONLY PRIVATE _StartColumn AS Long
-        INITONLY PRIVATE _StartLine AS Long
-
-        // Methods
-         //CONSTRUCTOR(context AS ParserRuleContext)
-        //SELF(context:Start:Line, context:Start:Column, context:Stop:Line, context:Stop:Column)
-//
-
-         CONSTRUCTOR(sl AS Long, sc AS Long, el AS Long, ec AS Long)
-            //
-            SELF:_StartLine := sl
-            SELF:_StartColumn := sc
-            SELF:_EndLine := el
-            SELF:_EndColumn := ec
-
-        METHOD ContainsExclusive(line AS Long, col AS Long) AS Logic
-            //
-            IF ((line > SELF:_StartLine) .AND. (line < SELF:_EndLine))
-                //
-                RETURN TRUE
-            ENDIF
-            IF (line == SELF:_StartLine)
-                //
-                IF (col > SELF:_StartColumn)
-                    //
-                    IF (line < SELF:_EndLine)
-                        //
-                        RETURN TRUE
-                    ENDIF
-                    IF (line == SELF:_EndLine)
-                        //
-                        RETURN (col < SELF:_EndColumn)
-                    ENDIF
-                ENDIF
-                RETURN FALSE
-            ENDIF
-            RETURN ((line == SELF:_EndLine) .AND. (col < SELF:_EndColumn))
-
-        METHOD ContainsInclusive(line AS Long, col AS Long) AS Logic
-            //
-            IF ((line > SELF:_StartLine) .AND. (line < SELF:_EndLine))
-                //
-                RETURN TRUE
-            ENDIF
-            IF (line == SELF:_StartLine)
-                //
-                IF (col >= SELF:_StartColumn)
-                    //
-                    IF (line < SELF:_EndLine)
-                        //
-                        RETURN TRUE
-                    ENDIF
-                    IF (line == SELF:_EndLine)
-                        //
-                        RETURN (col <= SELF:_EndColumn)
-                    ENDIF
-                ENDIF
-                RETURN FALSE
-            ENDIF
-            RETURN ((line == SELF:_EndLine) .AND. (col <= SELF:_EndColumn))
-
-
-        // Properties
-        STATIC PROPERTY Empty AS TextRange
-            GET
-                //
-                RETURN TextRange{1, 1, 1, 1}
-            END GET
-        END PROPERTY
-
-        PROPERTY EndColumn AS Long
-            GET
-                //
-                RETURN SELF:_EndColumn
-            END GET
-        END PROPERTY
-
-        PROPERTY EndLine AS Long
-            GET
-                //
-                RETURN SELF:_EndLine
-            END GET
-        END PROPERTY
-
-        PROPERTY StartColumn AS Long
-            GET
-                //
-                RETURN SELF:_StartColumn
-            END GET
-        END PROPERTY
-
-        PROPERTY StartLine AS Long
-            GET
-                //
-                RETURN SELF:_StartLine
-            END GET
-        END PROPERTY
-
-
-    END STRUCTURE
-
-END NAMESPACE 
+using System
+begin namespace XSharpModel
+	[StructLayout(LayoutKind.Sequential), DebuggerDisplay("{StartLine}.{StartColumn}-{EndLine}.{EndColumn}")];
+		structure TextRange
+		// Fields
+		initonly private _EndColumn as long
+		initonly private _EndLine as long
+		initonly private _StartColumn as long
+		initonly private _StartLine as long
+		
+		// Methods
+		//CONSTRUCTOR(context AS ParserRuleContext)
+		//SELF(context:Start:Line, context:Start:Column, context:Stop:Line, context:Stop:Column)
+		//
+		
+		constructor(sl as long, sc as long, el as long, ec as long)
+			//
+			self:_StartLine := sl
+			self:_StartColumn := sc
+			self:_EndLine := el
+			self:_EndColumn := ec
+		
+		method ContainsExclusive(line as long, col as long) as logic
+			//
+			if ((line > self:_StartLine) .AND. (line < self:_EndLine))
+				//
+				return true
+			endif
+			if (line == self:_StartLine)
+				//
+				if (col > self:_StartColumn)
+					//
+					if (line < self:_EndLine)
+						//
+						return true
+					endif
+					if (line == self:_EndLine)
+						//
+						return (col < self:_EndColumn)
+					endif
+				endif
+				return false
+			endif
+			return ((line == self:_EndLine) .AND. (col < self:_EndColumn))
+		
+		method ContainsInclusive(line as long, col as long) as logic
+			//
+			if ((line > self:_StartLine) .AND. (line < self:_EndLine))
+				//
+				return true
+			endif
+			if (line == self:_StartLine)
+				//
+				if (col >= self:_StartColumn)
+					//
+					if (line < self:_EndLine)
+						//
+						return true
+					endif
+					if (line == self:_EndLine)
+						//
+						return (col <= self:_EndColumn)
+					endif
+				endif
+				return false
+			endif
+			return ((line == self:_EndLine) .AND. (col <= self:_EndColumn))
+		
+		
+		// Properties
+		static property Empty as TextRange
+			get
+				//
+				return TextRange{1, 1, 1, 1}
+			end get
+		end property
+		
+		property EndColumn as long
+			get
+				//
+				return self:_EndColumn
+			end get
+		end property
+		
+		property EndLine as long
+			get
+				//
+				return self:_EndLine
+			end get
+		end property
+		
+		property StartColumn as long
+			get
+				//
+				return self:_StartColumn
+			end get
+		end property
+		
+		property StartLine as long
+			get
+				//
+				return self:_StartLine
+			end get
+		end property
+		
+		
+	end structure
+	
+end namespace 
 

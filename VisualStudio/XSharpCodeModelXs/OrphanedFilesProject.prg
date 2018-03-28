@@ -18,92 +18,81 @@ using Microsoft.VisualStudio
 using Microsoft.VisualStudio.Shell.Interop
 using System.Diagnostics
 
-BEGIN NAMESPACE XSharpModel
-    CLASS OrphanedFilesProject IMPLEMENTS IXSharpProject
-
-        // Methods
-        VIRTUAL METHOD AddFileNode(strFileName AS string) AS void
-
-
-        VIRTUAL METHOD AddIntellisenseError(file AS string, line AS Long, column AS Long, Length AS Long, errCode AS string, message AS string, sev AS DiagnosticSeverity) AS void
-
-
-        VIRTUAL METHOD ClearIntellisenseErrors(file AS string) AS void
-
-
-        VIRTUAL METHOD DeleteFileNode(strFileName AS string) AS void
-
-
-        VIRTUAL METHOD DocumentGetText(file AS string, isOpen REF Logic) AS string
-            //
-            isOpen := FALSE
-            RETURN ""
-
-        VIRTUAL METHOD DocumentInsertLine(fileName AS string, line AS Long, text AS string) AS Logic
-            //
-            RETURN FALSE
-
-        VIRTUAL METHOD DocumentSetText(fileName AS string, text AS string) AS Logic
-            //
-            RETURN FALSE
-
-        VIRTUAL METHOD FindProject(sProject AS string) AS Project
-            //
-            RETURN null
-
-        VIRTUAL METHOD GetIntellisenseErrorPos(fileName AS string) AS System.Collections.Generic.List<IXErrorPosition>
-            RETURN List<IXErrorPosition>{}
-
-        VIRTUAL METHOD HasFileNode(strFileName AS string) AS Logic
-            RETURN TRUE
-
-        VIRTUAL METHOD IsDocumentOpen(file AS string) AS Logic
-            RETURN TRUE
-
-        VIRTUAL METHOD OpenElement(file AS string, line AS Long, column AS Long) AS void
-
-
-        VIRTUAL METHOD SetStatusBarAnimation(onoff AS Logic, id AS Short) AS void
-
-
-        VIRTUAL METHOD SetStatusBarText(message AS string) AS void
-
-
-        VIRTUAL METHOD ShowIntellisenseErrors() AS void
-
-
-
-        // Properties
-        VIRTUAL PROPERTY IntermediateOutputPath AS string
-            GET
-                //
-                RETURN ""
-            END GET
-        END PROPERTY
-
-        VIRTUAL PROPERTY IsVsBuilding AS Logic
-            GET
-                //
-                RETURN FALSE
-            END GET
-        END PROPERTY
-
-        VIRTUAL PROPERTY OutputFile AS string
-            GET
-                //
-                RETURN ""
-            END GET
-        END PROPERTY
-		PROPERTY ParseOptions AS XSharpParseOptions GET XSharpParseOptions.Default
-        PROPERTY PrefixClassesWithDefaultNamespace AS Logic GET FALSE
-
-        PROPERTY Project AS XProject AUTO
-
-        PROPERTY RootNameSpace AS string GET "" 
-        PROPERTY Url AS string GET "" 
-
-
-    END CLASS
-
-END NAMESPACE 
+begin namespace XSharpModel
+	class OrphanedFilesProject implements IXSharpProject
+	#region properties
+		property IntermediateOutputPath as string get ""
+		property IsVsBuilding as logic get false
+		property OutputFile as string get ""
+		property ParseOptions as XSharpParseOptions get XSharpParseOptions.Default
+		property PrefixClassesWithDefaultNamespace as logic get false
+		property Project as XProject auto
+		property RootNameSpace as string get "" 
+		property Url as string get "" 
+	#endregion
+		
+		
+		virtual method AddFileNode(strFileName as string) as void
+			return
+		
+		virtual method AddIntellisenseError(file as string, line as long, column as long, Length as long, errCode as string, message as string, sev as DiagnosticSeverity) as void
+			return
+		
+		
+		virtual method ClearIntellisenseErrors(file as string) as void
+			return
+		
+		
+		virtual method DeleteFileNode(strFileName as string) as void
+			return
+		
+		
+		virtual method DocumentGetText(file as string, isOpen ref logic) as string
+			//
+			isOpen := false
+			return ""
+		
+		virtual method DocumentInsertLine(fileName as string, line as long, text as string) as logic
+			//
+			return false
+		
+		virtual method DocumentSetText(fileName as string, text as string) as logic
+			//
+			return false
+		
+		virtual method FindProject(sProject as string) as Project
+			//
+			return null
+		
+		virtual method GetIntellisenseErrorPos(fileName as string) as System.Collections.Generic.List<IXErrorPosition>
+			return List<IXErrorPosition>{}
+		
+		virtual method HasFileNode(strFileName as string) as logic
+			return true
+		
+		virtual method IsDocumentOpen(file as string) as logic
+			return true
+		
+		virtual method OpenElement(file as string, line as long, column as long) as void
+			return
+		
+		
+		virtual method SetStatusBarAnimation(onoff as logic, id as short) as void
+			return
+		
+		
+		virtual method SetStatusBarText(message as string) as void
+			return
+		
+		
+		virtual method ShowIntellisenseErrors() as void
+			return
+		
+		
+		
+		
+		
+	end class
+	
+end namespace 
 

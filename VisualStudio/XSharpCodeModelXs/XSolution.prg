@@ -7,39 +7,38 @@ using System.Collections.Concurrent
 using System.Collections.Generic
 using System
 begin namespace XSharpModel
-	static ;
-		class XSolution
+	static class XSolution
 		// Fields
 		static private _orphanedFilesProject := null as XProject
 		const private OrphanedFiles := "(OrphanedFiles)" as string
-		static initonly private xProjects := ConcurrentDictionary<string, XProject>{System.StringComparer.OrdinalIgnoreCase} as ConcurrentDictionary<string, XProject>
+		static initonly private xProjects := ConcurrentDictionary<string, XProject>{StringComparer.OrdinalIgnoreCase} as ConcurrentDictionary<string, XProject>
 		
 		// Methods
 		static method Add(project as XProject) as logic
-			return XSolution.Add(project:Name, project)
+			return Add(project:Name, project)
 		
 		static method Add(projectName as string, project as XProject) as logic
-			if (XSolution.xProjects:ContainsKey(projectName))
+			if (xProjects:ContainsKey(projectName))
 				return false
 			endif
-			return XSolution.xProjects:TryAdd(projectName, project)
+			return xProjects:TryAdd(projectName, project)
 		
 		static method CloseAll() as void
-			XSolution.xProjects:Clear()
+			xProjects:Clear()
 			SystemTypeController.Clear()
-			if ((XSolution._orphanedFilesProject != null) .AND. XSolution.xProjects:TryAdd("(OrphanedFiles)", XSolution._orphanedFilesProject))
-				foreach var info in XSolution._orphanedFilesProject:AssemblyReferences
+			if ((_orphanedFilesProject != null) .AND. xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject))
+				foreach var info in _orphanedFilesProject:AssemblyReferences
 					SystemTypeController.LoadAssembly(info:FileName)
 				next
 			endif
 		
 		static method FileClose(fileName as string) as void
-			if XSolution.FindFile(fileName):Project == XSolution._orphanedFilesProject
-				XSolution._orphanedFilesProject:RemoveFile(fileName)
+			if FindFile(fileName):Project == _orphanedFilesProject
+				_orphanedFilesProject:RemoveFile(fileName)
 			endif
 		
 		static method FindFile(fileName as string) as XFile
-			foreach var project in XSolution.xProjects
+			foreach var project in xProjects
 				var file := project:Value:FindFullPath(fileName)
 				if file != null
 					return file
@@ -49,7 +48,7 @@ begin namespace XSharpModel
 		
 		static method FindFullPath(fullPath as string) as XFile
 			
-			foreach var project in XSolution.xProjects
+			foreach var project in xProjects
 				var file := project:Value:FindFullPath(fullPath)
 				if file != null
 					return file
@@ -60,7 +59,7 @@ begin namespace XSharpModel
 		static method FindProject(projectFile as string) as XProject
 			local project as XProject
 			projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
-			if XSolution.xProjects:TryGetValue(projectFile, out project)
+			if xProjects:TryGetValue(projectFile, out project)
 				return project
 			endif
 			return null
@@ -68,10 +67,10 @@ begin namespace XSharpModel
 		static method Remove(projectName as string) as logic
 			local project as XProject
 			local flag2 as logic
-			if (XSolution.xProjects:ContainsKey(projectName))
-				project := XSolution.xProjects:Item[projectName]
+			if (xProjects:ContainsKey(projectName))
+				project := xProjects:Item[projectName]
 				project:UnLoad()
-				flag2 := XSolution.xProjects:TryRemove(projectName, out project)
+				flag2 := xProjects:TryRemove(projectName, out project)
 				SystemTypeController.UnloadUnusedAssemblies()
 				return flag2
 			endif
@@ -79,13 +78,13 @@ begin namespace XSharpModel
 		
 		static method Remove(project as XProject) as logic
 			if project != null
-				return XSolution.Remove(project:Name)
+				return Remove(project:Name)
 			endif
 			return false
 		
 		static method WalkFile(fileName as string) as void
 			local file as XFile
-			file := XSolution.FindFile(fileName)
+			file := FindFile(fileName)
 			if (file != null)
 				ModelWalker.GetWalker():FileWalk(file)
 			endif
@@ -94,15 +93,15 @@ begin namespace XSharpModel
 		// Properties
 		static property OrphanedFilesProject as XProject
 			get
-				if (XSolution._orphanedFilesProject == null)
-					XSolution._orphanedFilesProject := XProject{OrphanedFilesProject{}}
-					var projectNode := (OrphanedFilesProject)(XSolution._orphanedFilesProject:ProjectNode)
-					projectNode:Project := XSolution._orphanedFilesProject
-					if (XSolution.xProjects:TryAdd("(OrphanedFiles)", XSolution._orphanedFilesProject))
+				if (_orphanedFilesProject == null)
+					_orphanedFilesProject := XProject{OrphanedFilesProject{}}
+					var projectNode := (OrphanedFilesProject)(_orphanedFilesProject:ProjectNode)
+					projectNode:Project := _orphanedFilesProject
+					if (xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject))
 						projectNode:Project:AddAssemblyReference(typeof(string):Assembly:Location)
 					endif
 				endif
-				return XSolution._orphanedFilesProject
+				return _orphanedFilesProject
 			end get
 		end property
 		

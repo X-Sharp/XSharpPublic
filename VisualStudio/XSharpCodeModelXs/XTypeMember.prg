@@ -5,154 +5,154 @@
 //
 using System.Collections.Generic
 using System.Diagnostics
-USING XSharpModel
-BEGIN NAMESPACE XSharpModel
-    [DebuggerDisplay("{Prototype,nq}")];
-    CLASS XTypeMember INHERIT XElement
-        // Fields
-        PRIVATE _locals AS List<XVariable>
-        PRIVATE _parameters AS List<XVariable>
-        PRIVATE _typeName AS string
-
-        // Methods
-         CONSTRUCTOR(name AS string, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, isStatic AS Logic)
-		 
-			SUPER(name, kind, modifiers, visibility, span, position)
-            //
-            SELF:Parent := null
-            SELF:_parameters := List<XVariable>{}
-            SELF:_locals := List<XVariable>{}
-            SELF:_typeName := ""
-            SUPER:_isStatic := isStatic
-
-         CONSTRUCTOR(name AS string, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS string, isStatic AS Logic)
-        SELF(name, kind, modifiers, visibility, span, position, isStatic)
-            //
-            SELF:_typeName := typeName
-
-        METHOD Namesake() AS List<XTypeMember>
-            VAR list := List<XTypeMember>{}
-            IF (SELF:Parent != null)
-                FOREACH VAR @@member IN ((XType) SELF:Parent):Members
-                    IF String.Compare(@@member:FullName, SELF:FullName, TRUE) == 0 .AND. String.Compare(@@member:Prototype, SELF:Prototype, TRUE) > 0
-                        //// 
-                        list:Add(@@member)
-                    ENDIF
-                NEXT
-            ENDIF
-            RETURN list
-//
-        // Properties
-        VIRTUAL PROPERTY Description AS string
-            GET
-                //
-                var str := ""
-                IF (SUPER:Modifiers != Modifiers.None)
-                    //
-                    str := String.Concat(str, SUPER:Modifiers:ToString(), " ")
-                ENDIF
-                var str2 := String.Concat(str, SUPER:Visibility:ToString(), " ")
-                IF (SUPER:Kind != Kind.Field)
-                    //
-                    str2 := String.Concat(str2, ElementExtensions.DisplayName(SUPER:Kind), " ")
-                    IF (SUPER:Kind == Kind.VODefine)
-                        //
-                        RETURN String.Concat(str2, SUPER:Name, SELF:Suffix)
-                    ENDIF
-                ENDIF
-                RETURN String.Concat(str2, SELF:Prototype)
-            END GET
-        END PROPERTY
-
-        VIRTUAL PROPERTY FullName AS string
-            GET
-                //
-                IF (SELF:Parent != null)
-                    //
-                    RETURN String.Concat(SELF:Parent:FullName, ".", SUPER:Name)
-                ENDIF
-                RETURN SUPER:Name
-            END GET
-        END PROPERTY
-
-        PROPERTY HasParameters AS Logic
-            GET
-                //
-                RETURN (ElementExtensions.HasParameters(SUPER:Kind) .AND. (SELF:Parameters:Count > 0))
-            END GET
-        END PROPERTY
-
-        PROPERTY IsArray AS Logic AUTO 
-
-        PROPERTY Locals AS List<XVariable>
-            GET
-                //
-                RETURN SELF:_locals
-            END GET
-        END PROPERTY
-
-        NEW PROPERTY Parent AS XTYPE
-            GET
-                //
-                RETURN (XType) SUPER:parent
-            END GET
-            SET
-                //
-                SUPER:parent := value
-            END SET
-        END PROPERTY
-	    PROPERTY ParameterList AS string
-            GET
-                //
-                var str := ""
-                FOREACH variable AS XVariable IN SELF:Parameters
-                    //
-                    IF (str:Length > 1)
-                        //
-                        str := String.Concat(str, ", ")
-                    ENDIF
-                    str := String.Concat(str, variable:Name, " as ", variable:TypeName)
-                NEXT
-                RETURN str
-            END GET
-        END PROPERTY
-
-        PROPERTY Parameters AS List<XVariable>
-            GET
-                //
-                RETURN SELF:_parameters
-            END GET
-        END PROPERTY
-
-
-        VIRTUAL PROPERTY Prototype AS string
-            GET
-                //
-                var str := ""
-                IF SELF:Kind:HasParameters()
-                    //
-                    str := String.Concat("(", SELF:ParameterList, ")")
-                ENDIF
-                var str2 := String.Concat(SUPER:Name, str)
-                IF SELF:Kind:HasReturnType()
-                    //
-                    str2 := String.Concat(str2, " AS ", SELF:TypeName)
-                ENDIF
-                RETURN str2
-            END GET
-        END PROPERTY
-
-        PROPERTY Suffix AS string AUTO 
-
-        PROPERTY TypeName AS string
-            GET
-                //
-                RETURN SELF:_typeName
-            END GET
-        END PROPERTY
-
-
-    END CLASS
-
-END NAMESPACE 
+using XSharpModel
+begin namespace XSharpModel
+	[DebuggerDisplay("{Prototype,nq}")];
+		class XTypeMember inherit XElement
+		// Fields
+		private _locals as List<XVariable>
+		private _parameters as List<XVariable>
+		private _typeName as string
+		
+		// Methods
+		constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, span as TextRange, position as TextInterval, isStatic as logic)
+			
+			super(name, kind, modifiers, visibility, span, position)
+			//
+			self:Parent := null
+			self:_parameters := List<XVariable>{}
+			self:_locals := List<XVariable>{}
+			self:_typeName := ""
+			super:_isStatic := isStatic
+		
+		constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, span as TextRange, position as TextInterval, typeName as string, isStatic as logic)
+			self(name, kind, modifiers, visibility, span, position, isStatic)
+			//
+			self:_typeName := typeName
+		
+		method Namesake() as List<XTypeMember>
+			var list := List<XTypeMember>{}
+			if (self:Parent != null)
+				foreach var oMember in ((XType) self:Parent):Members
+					if String.Compare(oMember:FullName, self:FullName, true) == 0 .AND. String.Compare(oMember:Prototype, self:Prototype, true) > 0
+						//// 
+						list:Add(oMember)
+					endif
+				next
+			endif
+			return list
+		//
+		// Properties
+		virtual property Description as string
+			get
+				//
+				var str := ""
+				if (super:Modifiers != Modifiers.None)
+					//
+					str := String.Concat(str, super:Modifiers:ToString(), " ")
+				endif
+				var str2 := String.Concat(str, super:Visibility:ToString(), " ")
+				if (super:Kind != Kind.Field)
+					//
+					str2 := String.Concat(str2, super:Kind:DisplayName(), " ")
+					if (super:Kind == Kind.VODefine)
+						//
+						return String.Concat(str2, super:Name, self:Suffix)
+					endif
+				endif
+				return String.Concat(str2, self:Prototype)
+			end get
+		end property
+		
+		virtual property FullName as string
+			get
+				//
+				if (self:Parent != null)
+					//
+					return String.Concat(self:Parent:FullName, ".", super:Name)
+				endif
+				return super:Name
+			end get
+		end property
+		
+		property HasParameters as logic
+			get
+				//
+				return super:Kind:HasParameters() .AND. self:Parameters:Count > 0
+			end get
+		end property
+		
+		property IsArray as logic auto 
+		
+		property Locals as List<XVariable>
+			get
+				//
+				return self:_locals
+			end get
+		end property
+		
+		new property Parent as XTYPE
+			get
+				//
+				return (XType) super:parent
+			end get
+			set
+				//
+				super:parent := value
+			end set
+		end property
+		property ParameterList as string
+			get
+				//
+				var str := ""
+				foreach variable as XVariable in self:Parameters
+					//
+					if (str:Length > 1)
+						//
+						str := String.Concat(str, ", ")
+					endif
+					str := String.Concat(str, variable:Name, " as ", variable:TypeName)
+				next
+				return str
+			end get
+		end property
+		
+		property Parameters as List<XVariable>
+			get
+				//
+				return self:_parameters
+			end get
+		end property
+		
+		
+		virtual property Prototype as string
+			get
+				//
+				var str := ""
+				if self:Kind:HasParameters()
+					//
+					str := String.Concat("(", self:ParameterList, ")")
+				endif
+				var str2 := String.Concat(super:Name, str)
+				if self:Kind:HasReturnType()
+					//
+					str2 := String.Concat(str2, " AS ", self:TypeName)
+				endif
+				return str2
+			end get
+		end property
+		
+		property Suffix as string auto 
+		
+		property TypeName as string
+			get
+				//
+				return self:_typeName
+			end get
+		end property
+		
+		
+	end class
+	
+end namespace 
 

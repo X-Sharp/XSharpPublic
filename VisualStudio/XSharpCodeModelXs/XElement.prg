@@ -12,7 +12,7 @@ using System.Diagnostics
 using System
 begin namespace XSharpModel
 	[DebuggerDisplay("Kind, {Name,nq}")];
-		class XElement
+	class XElement
 		// Fields
 		private _File as XFile
 		private _interval as TextInterval

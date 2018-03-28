@@ -6,49 +6,39 @@
 using LanguageService.CodeAnalysis
 using LanguageService.CodeAnalysis.Text
 
-BEGIN NAMESPACE XSharpModel
-    CLASS XError
-        // Fields
-
-        // Methods
-         CONSTRUCTOR(path AS string, span AS LinePositionSpan, errCode AS string, message AS string, params AS Object[]);SUPER()
-            //
-            SELF:Path := path
-            SELF:Span := span
-            SELF:ErrCode := errCode
-            SELF:Message := message
-            SELF:Params := params
-            SELF:Severity := DiagnosticSeverity.Error
-
-        VIRTUAL METHOD ToString() AS string
-            //
-            RETURN String.Format(SELF:Message, SELF:Params)
-
-
-        // Properties
-        PROPERTY ErrCode AS string AUTO 
-
-        PROPERTY Message AS string AUTO 
-
-        PROPERTY Params AS Object[] AUTO 
-
-        PROPERTY Path AS string AUTO 
-
-        PROPERTY Severity AS DiagnosticSeverity AUTO 
-
-        PROPERTY Span AS LinePositionSpan AUTO 
-
-
-    END CLASS
-
-    CLASS XWarning INHERIT XError
-        // Methods
-         CONSTRUCTOR(path AS string, span AS LinePositionSpan, errCode AS string, message AS string, args AS Object[])
-        SUPER(path, span, errCode, message, args)
-            //
-            SUPER:Severity := DiagnosticSeverity.Warning
-
-
-    END CLASS
-END NAMESPACE 
+begin namespace XSharpModel
+	class XError
+		
+		// Methods
+		constructor(path as string, span as LinePositionSpan, errCode as string, message as string, params as object[]);super()
+			//
+			self:Path := path
+			self:Span := span
+			self:ErrCode := errCode
+			self:Message := message
+			self:Params := params
+			self:Severity := DiagnosticSeverity.Error
+		
+		virtual method ToString() as string
+			return String.Format(self:Message, self:Params)
+		
+		
+		// Properties
+		property ErrCode as string auto 
+		property Message as string auto 
+		property Params as object[] auto 
+		property Path as string auto 
+		property Severity as DiagnosticSeverity auto 
+		property Span as LinePositionSpan auto 
+		
+	end class
+	
+	class XWarning inherit XError
+		constructor(path as string, span as LinePositionSpan, errCode as string, message as string, args as object[])
+			super(path, span, errCode, message, args)
+			super:Severity := DiagnosticSeverity.Warning
+		
+		
+	end class
+end namespace 
 

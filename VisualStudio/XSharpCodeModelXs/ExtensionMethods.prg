@@ -5,9 +5,33 @@
 //
 
 using System
+using System.Linq
+using System.Collections.Generic
+using Microsoft.VisualStudio.Text
+using Microsoft.VisualStudio.Text.Classification
+using Microsoft.VisualStudio.Text.Tagging
+using LanguageService.CodeAnalysis.Text
 begin namespace XSharpModel
 	
-	static class ElementExtensions
+	static class ExtensionMethods
+		
+		static method IsEmpty( self cType as CompletionType) as logic
+			return cType == null .OR. ! cType:IsInitialized
+		
+		static method Find( self collection as IEnumerable<XTypeMember>, pred as System.Func<XTypeMember, logic>) as XTypeMember
+			//
+			return collection:Where(pred):FirstOrDefault()
+		static method AddUnique<TKey, TValue>( self dict as Dictionary<TKey, TValue>, key as TKey, value as TValue) as TValue 
+			if dict != null .AND. key != null
+				if ! dict:ContainsKey(key)
+					dict:Add(key, value)
+					return value
+				endif
+				return dict:Item[key]
+			endif
+			return default (TValue)
+		
+		
 		static method DisplayName( self elementKind as Kind) as string
 			switch elementKind
 				case Kind.VOGlobal
@@ -87,6 +111,16 @@ begin namespace XSharpModel
 					return true
 			end switch
 			return false
+		
+	// textspan extensions
+		static method GetText( self snapshot as ITextSnapshot, span as TextSpan) as string
+			return snapshot:GetText(Span{span:Start, span:Length})
+		
+		static method ToClassificationSpan( self span as TextSpan, snapshot as ITextSnapshot, classificationType as IClassificationType) as ClassificationSpan
+			return ClassificationSpan{SnapshotSpan{snapshot, span:Start, span:Length}, classificationType}
+		
+		static method ToTagSpan( self span as TextSpan, snapshot as ITextSnapshot, classificationType as IClassificationType) as ITagSpan<IClassificationTag>
+			return TagSpan<IClassificationTag>{SnapshotSpan{snapshot, span:Start, span:Length}, ClassificationTag{classificationType}}
 		
 		
 	end class

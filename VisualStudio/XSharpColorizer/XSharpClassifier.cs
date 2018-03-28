@@ -436,7 +436,7 @@ namespace XSharpColorizer
             ClassificationSpan result = null;
             IClassificationType type = null;
             IToken startToken = null;
-            if (keywordContext != null )
+            if (keywordContext != null)
             {
                 startToken = keywordContext;
                 if (startToken.Line != token.Line)
@@ -579,7 +579,7 @@ namespace XSharpColorizer
                 {
                     var token = tokenStream.Get(iToken);
                     // Orphan End ?
-                    if ( ( keywordContext != null ) && (keywordContext.Line != token.Line ) && (keywordContext.Type == XSharpLexer.END ) )
+                    if ((keywordContext != null) && (keywordContext.Line != token.Line) && (keywordContext.Type == XSharpLexer.END))
                     {
                         newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
                         keywordContext = null;
@@ -787,6 +787,7 @@ namespace XSharpColorizer
 
     internal class XClassificationSpans
     {
+        private readonly object gate = new object();
         private IList<ClassificationSpan> _tags;
         private IDictionary<int, List<ClassificationSpan>> _hash;
         private IList<ClassificationSpan> _multilineTokens;
@@ -798,7 +799,10 @@ namespace XSharpColorizer
         }
         internal void Add(ClassificationSpan span)
         {
-            _tags.Add(span);
+            lock (gate)
+            {
+                _tags.Add(span);
+            }
             int start = span.Span.Start.GetContainingLine().LineNumber;
             int end = span.Span.End.GetContainingLine().LineNumber;
             if (end > start + 1)
@@ -853,13 +857,32 @@ namespace XSharpColorizer
             }
             return result;
         }
-        internal int Count => _tags.Count;
+        internal int Count
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return _tags.Count;
+                }
+            }
+        }
+
         internal void Clear()
         {
             _tags.Clear();
             _hash.Clear();
         }
-        internal ImmutableList<ClassificationSpan> Tags => _tags.ToImmutableList();
+        internal ImmutableList<ClassificationSpan> Tags
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return _tags.ToImmutableList();
+                }
+            }
+        }
+
     }
 }
-

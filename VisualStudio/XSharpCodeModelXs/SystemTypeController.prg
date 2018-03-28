@@ -5,30 +5,43 @@
 //
 using System.Collections.Concurrent
 using System.Collections.Generic
+using System.Collections.Immutable
 using System
 begin namespace XSharpModel
 	class SystemTypeController
-		// Fields
+		#region fields
 		static private assemblies := ConcurrentDictionary<string, AssemblyInfo>{StringComparer.OrdinalIgnoreCase} as ConcurrentDictionary<string, XSharpModel.AssemblyInfo>
 		static private _mscorlib := null as AssemblyInfo
+		#endregion
+
+		#region properties
+		// Properties
+		static property AssemblyFileNames as ImmutableList<string>
+			get
+				//
+				return SystemTypeController.assemblies:Keys:ToImmutableList()
+			end get
+		end property
 		
+		static property MsCorLib as AssemblyInfo get _mscorlib set _mscorlib := value
+		
+
+		#endregion
+
 		// Methods
 		static method Clear() as void
-			//
-			SystemTypeController.assemblies:Clear()
+			assemblies:Clear()
+			_mscorlib := null
 		
 		static method FindAssemblyByLocation(location as string) as string
-			//
-			if (SystemTypeController.assemblies:ContainsKey(location))
-				//
-				return SystemTypeController.assemblies:Item[location]:FullName
+			if (assemblies:ContainsKey(location))
+				return assemblies:Item[location]:FullName
 			endif
 			return null
 		
 		static method FindAssemblyByName(fullName as string) as string
 			local info as AssemblyInfo
-			//
-			foreach pair as KeyValuePair<string, AssemblyInfo> in SystemTypeController.assemblies
+			foreach var pair in assemblies
 				//
 				info := pair:Value
 				if (String.Compare(info:FullName, fullName, System.StringComparison.OrdinalIgnoreCase) == 0)
@@ -41,7 +54,7 @@ begin namespace XSharpModel
 		static method FindAssemblyLocation(fullName as string) as string
 			local info as AssemblyInfo
 			//
-			foreach pair as KeyValuePair<string, AssemblyInfo> in SystemTypeController.assemblies
+			foreach var pair in assemblies
 				//
 				info := pair:Value
 				if (! String.IsNullOrEmpty(info:FullName) .AND. (String.Compare(info:FullName, fullName, System.StringComparison.OrdinalIgnoreCase) == 0))
@@ -84,7 +97,7 @@ begin namespace XSharpModel
 					typeName := str2 + "`" + strArray2:Length:ToString()
 				endif
 			endif
-			type := SystemTypeController.Lookup(typeName, assemblies)
+			type := Lookup(typeName, assemblies)
 			if (type != null)
 				//
 				return type
@@ -93,7 +106,7 @@ begin namespace XSharpModel
 				//
 				foreach str4 as string in usings:Expanded()
 					//
-					type := SystemTypeController.Lookup(String.Concat(str4, ".", typeName), assemblies)
+					type := Lookup(String.Concat(str4, ".", typeName), assemblies)
 					if (type != null)
 						//
 						return type
@@ -108,7 +121,7 @@ begin namespace XSharpModel
 						//
 						foreach str6 as string in info:ImplicitNamespaces
 							//
-							type := SystemTypeController.Lookup(String.Concat(str6, ".", typeName), assemblies)
+							type := Lookup(String.Concat(str6, ".", typeName), assemblies)
 							if (type != null)
 								//
 								return type
@@ -117,7 +130,7 @@ begin namespace XSharpModel
 					endif
 				next
 			endif
-			type := SystemTypeController.Lookup(String.Concat("Functions.", typeName), assemblies)
+			type := Lookup(String.Concat("Functions.", typeName), assemblies)
 			if (type != null)
 				//
 				return type
@@ -143,19 +156,19 @@ begin namespace XSharpModel
 			local key as string
 			//
 			lastWriteTime := System.IO.File.GetLastWriteTime(cFileName)
-			if (SystemTypeController.assemblies:ContainsKey(cFileName))
-				info := SystemTypeController.assemblies:Item[cFileName]
+			if (assemblies:ContainsKey(cFileName))
+				info := assemblies:Item[cFileName]
 			else
 				info := AssemblyInfo{cFileName, System.DateTime.MinValue}
-				SystemTypeController.assemblies:TryAdd(cFileName, info)
+				assemblies:TryAdd(cFileName, info)
 			endif
 			if (cFileName:EndsWith("mscorlib.dll", System.StringComparison.OrdinalIgnoreCase))
-				SystemTypeController.mscorlib := AssemblyInfo{cFileName, System.DateTime.MinValue}
+				mscorlib := AssemblyInfo{cFileName, System.DateTime.MinValue}
 			endif
 			if (System.IO.Path.GetFileName(cFileName):ToLower() == "system.dll")
 				key := System.IO.Path.Combine(System.IO.Path.GetDirectoryName(cFileName), "mscorlib.dll")
-				if (! SystemTypeController.assemblies:ContainsKey(key) .AND. System.IO.File.Exists(key))
-					SystemTypeController.LoadAssembly(key)
+				if (! assemblies:ContainsKey(key) .AND. System.IO.File.Exists(key))
+					LoadAssembly(key)
 				endif
 			endif
 			return info
@@ -166,7 +179,7 @@ begin namespace XSharpModel
 			if (String.IsNullOrEmpty(path))
 				return AssemblyInfo{reference}
 			endif
-			return SystemTypeController.LoadAssembly(path)
+			return LoadAssembly(path)
 		
 		static method Lookup(typeName as string, theirassemblies as IReadOnlyList<AssemblyInfo>) as System.Type
 			local type as System.Type
@@ -193,52 +206,36 @@ begin namespace XSharpModel
 					
 				endif
 			next
-			if ((type == null) .AND. (SystemTypeController.mscorlib != null))
+			if ((type == null) .AND. (mscorlib != null))
 				//
-				type := SystemTypeController.mscorlib:GetType(typeName)
+				type := mscorlib:GetType(typeName)
 			endif
 			return type
 		
 		static method RemoveAssembly(cFileName as string) as void
 			local info as AssemblyInfo
-			//
-			if (SystemTypeController.assemblies:ContainsKey(cFileName))
-				//
-				SystemTypeController.assemblies:TryRemove(cFileName, out info)
+			if assemblies:ContainsKey(cFileName)
+				assemblies:TryRemove(cFileName, out info)
 			endif
 		
 		static method UnloadUnusedAssemblies() as void
 			local list as List<string>
 			local info as AssemblyInfo
-			//
 			list := List<string>{}
-			foreach pair as KeyValuePair<string, AssemblyInfo> in SystemTypeController.assemblies
-				//
-				if (! pair:Value:HasProjects)
-					//
+			foreach var pair in assemblies
+				if ! pair:Value:HasProjects 
 					list:Add(pair:Key)
 				endif
 			next
 			foreach str as string in list
-				//
-				SystemTypeController.assemblies:TryRemove(str, out info)
+				assemblies:TryRemove(str, out info)
 			next
-			if (SystemTypeController.assemblies:Count == 0)
+			if (assemblies:Count == 0)
 				//
-				SystemTypeController.mscorlib := null
+				mscorlib := null
 			endif
 			System.GC.Collect()
 		
-		
-		// Properties
-		static property AssemblyFileNames as System.Collections.Immutable.ImmutableList<string>
-			get
-				//
-				return System.Collections.Immutable.ImmutableList.ToImmutableList<string>(SystemTypeController.assemblies:Keys)
-			end get
-		end property
-		
-		static property MsCorLib as AssemblyInfo get SystemTypeController._mscorlib set SystemTypeController._mscorlib := value
 		
 		
 	end class

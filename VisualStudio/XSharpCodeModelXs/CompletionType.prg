@@ -45,7 +45,7 @@ begin namespace XSharpModel
 			self:_stype := sType
 		
 		constructor(element as XElement);super()
-			local @@member as XTypeMember
+			local oMember as XTypeMember
 			local parent as XTypeMember
 			//
 			self:_stype := null
@@ -60,8 +60,8 @@ begin namespace XSharpModel
 				//
 				if ((element is XTypeMember))
 
-					@@member := (XTypeMember)(element)
-					self:CheckType(@@member:TypeName, @@member:file, @@member:Parent:NameSpace)
+					oMember := (XTypeMember)(element)
+					self:CheckType(oMember:TypeName, oMember:file, oMember:Parent:NameSpace)
 				else
 
 					if ((element:Parent is XType))
@@ -93,7 +93,7 @@ begin namespace XSharpModel
 			self:_codeElt := null
 			self:_file := null
 			self:_file := element:file
-			if (ElementExtensions.HasReturnType(element:Kind))
+			if element:Kind:HasReturnType()
 				//
 				self:CheckType(element:TypeName, element:file, element:Parent:NameSpace)
 			else

@@ -8,7 +8,7 @@ using XSharpModel
 using System.Diagnostics
 begin namespace XSharpModel
 	[DebuggerDisplay("{Prototype,nq}")];
-		class XVariable inherit XElement
+	class XVariable inherit XElement
 		// Fields
 		private _isParameter as logic
 		private _typeName as string

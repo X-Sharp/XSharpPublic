@@ -21,22 +21,25 @@ begin namespace XSharpModel
 		private _xtype as XType
 		
 		// Methods
-		constructor();super()
+		constructor()
+			super()
 			//
 			self:_stype := null
 			self:_xtype := null
 			self:_codeElt := null
 			self:_file := null
 		
-		constructor(elt as CodeElement);super()
+		constructor(elt as CodeElement)
+			super()
 			//
 			self:_stype := null
 			self:_xtype := null
 			self:_codeElt := null
-			self:_file := null
+			self:_file := null 
 			self:_codeElt := elt
 		
-		constructor(sType as System.Type);super()
+		constructor(sType as System.Type)
+			super()
 			//
 			self:_stype := null
 			self:_xtype := null
@@ -44,7 +47,8 @@ begin namespace XSharpModel
 			self:_file := null
 			self:_stype := sType
 		
-		constructor(element as XElement);super()
+		constructor(element as XElement)
+			super()
 			local oMember as XTypeMember
 			local parent as XTypeMember
 			//
@@ -78,20 +82,21 @@ begin namespace XSharpModel
 				endif
 			endif
 		
-		constructor(xType as XType);super()
+		constructor(xType as XType)
+			super()
 			//
 			self:_stype := null
 			self:_xtype := null
 			self:_codeElt := null
-			self:_file := null
 			self:_xtype := xType
+			self:_file  := xType:File
 		
-		constructor(element as XTypeMember);super()
+		constructor(element as XTypeMember)
+			super()
 			//
 			self:_stype := null
 			self:_xtype := null
 			self:_codeElt := null
-			self:_file := null
 			self:_file := element:file
 			if element:Kind:HasReturnType()
 				//
@@ -101,7 +106,8 @@ begin namespace XSharpModel
 				self:_xtype := (XType) element:Parent
 			endif
 		
-		constructor(xvar as XVariable, defaultNS as string);super()
+		constructor(xvar as XVariable, defaultNS as string)
+			super()
 			local parent as XTypeMember
 			//
 			self:_stype := null
@@ -119,75 +125,78 @@ begin namespace XSharpModel
 				self:CheckType(xvar:TypeName, parent:file, defaultNS)
 			endif
 		
-		constructor(typeName as string, xFile as XFile, usings as IReadOnlyList<string>);super()
+		constructor(typeName as string, xFile as XFile, usings as IReadOnlyList<string>)
+			super()
 			//
 			self:_stype := null
 			self:_xtype := null
 			self:_codeElt := null
-			self:_file := null
+			self:_file := xFile
 			self:CheckType(typeName, xFile, usings)
 		
-		constructor(typeName as string, xFile as XFile, defaultNS as string);super()
+		constructor(typeName as string, xFile as XFile, defaultNS as string)
+			super()
 			//
 			self:_stype := null
 			self:_xtype := null
 			self:_codeElt := null
-			self:_file := null
+            		SELF:_file := null
 			self:CheckType(typeName, xFile, defaultNS)
 		
 		private method CheckProjectType(typeName as string, xprj as XProject, usings as IReadOnlyList<string>) as void
-			local fullName as XType
-			local str2 as string
+			local xType as XType
+			local fqn as string
 			//
-			fullName := xprj:Lookup(typeName, true)
-			if fullName == null
-				fullName := xprj:LookupFullName(typeName, true)
-				if fullName == null .AND. usings != null
+			xType := xprj:Lookup(typeName, true)
+			if xType == null
+				xType := xprj:LookupFullName(typeName, true)
+				if xType == null .AND. usings != null
 
-					foreach str as string in usings:Expanded()
-						str2 := str + "." + typeName
-						fullName := xprj:LookupFullName(str2, true)
-						if (fullName != null)
+					foreach usingStatement as string in usings:Expanded()
+						fqn := fqn + "." + typeName
+						xType := xprj:LookupFullName(fqn, true)
+						if (xType != null)
 							exit
 						endif
 					next
 				endif
 			endif
-			if fullName != null
-				self:_xtype := fullName
+			if xType != null
+				self:_xtype := xType
 			endif
 		
 		private method CheckStrangerProjectType(typeName as string, xprj as XProject, usings as IReadOnlyList<string>) as void
-			local forStranger as CodeElement
-			forStranger := xprj:LookupForStranger(typeName, true)
-			if forStranger == null
-				foreach str as string in usings:Expanded()
-					var str2 := str +  "." + typeName
-					forStranger := xprj:LookupForStranger(str2, true)
-					if forStranger != null
+			local codeElt as CodeElement
+            		LOCAL fqn AS string
+			codeElt := xprj:LookupForStranger(typeName, true)
+			if codeElt == null
+				foreach usingStatement as string in usings:Expanded()
+					fqn :=  usingStatement +  "." + typeName
+					codeElt := xprj:LookupForStranger(fqn, true)
+					if codeElt != null
 						exit
 					endif
 				next
 			endif
-			if forStranger != null
-				self:_codeElt := forStranger
+			if codeElt != null
+				self:_codeElt := codeElt
 			endif
 		
 		private method CheckSystemType(typeName as string, usings as IReadOnlyList<string>) as void
-			local type as System.Type
-			type := self:SimpleTypeToSystemType(typeName)
-			if type == null .AND. self:_file != null
+			local sType as System.Type
+			sType := self:SimpleTypeToSystemType(typeName)
+			if sType == null .AND. self:_file != null
 				typeName := typeName:GetSystemTypeName()
-				type := self:_file:Project:FindSystemType(typeName, usings)
+				sType := self:_file:Project:FindSystemType(typeName, usings)
 			endif
-			if type != null
-				self:_stype := type
+			if sType != null
+				self:_stype := sType
 			endif
 		
 		private method CheckType(typeName as string, xFile as XFile, usings as IReadOnlyList<string>) as void
 			//
 			self:_file := xFile
-			if self:_file:Project != null
+			if self:_file?:Project != null
 				//
 				self:CheckProjectType(typeName, xFile:Project, usings)
 				if ! self:IsInitialized
@@ -195,8 +204,8 @@ begin namespace XSharpModel
 					self:CheckSystemType(typeName, usings)
 					if ! self:IsInitialized
 	
-						foreach project as XProject in xFile:Project:ReferencedProjects
-							self:CheckProjectType(typeName, project, usings)
+						foreach prj as XProject in xFile:Project:ReferencedProjects
+							self:CheckProjectType(typeName, prj, usings)
 							if self:IsInitialized
 								exit
 							endif
@@ -268,7 +277,7 @@ begin namespace XSharpModel
 		
 		// Properties
 		property CodeElement as CodeElement get self:_codeElt
-		property file as XFile get self:_file
+		property File as XFile get self:_file
 		
 		property FullName as string
 			get

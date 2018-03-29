@@ -58,7 +58,7 @@ namespace XSharpColorizer
         private ITextDocumentFactoryService _txtdocfactory;
         private bool _hasParserErrors = false;
         private bool _first = true;
-        private XSharpParser.SourceContext _tree = null;
+        private XSharpModel.ParseResult _info = null;
         private IToken keywordContext;
         #endregion
 
@@ -137,17 +137,8 @@ namespace XSharpColorizer
             _sourceWalker.Snapshot = snapshot;
             Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             ITokenStream tokens;
-            if (_first)
-            {
-                tokens = _sourceWalker.Lex();
-                _tree = null;
-            }
-            else
-            {
-                _tree = _sourceWalker.Parse();
-                tokens = _sourceWalker.TokenStream;
-            }
-            _hasParserErrors = _sourceWalker.HasParseErrors;
+            tokens = _sourceWalker.Lex();
+            _info = _sourceWalker.Parse();
             BuildColorClassifications(tokens, snapshot);
             Debug("Ending classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             return tokens;
@@ -221,24 +212,23 @@ namespace XSharpColorizer
             // this happens the first time in the buffer only
             var snapshot = e.Argument as ITextSnapshot;
             ITokenStream tokens = null;
-            if (_tree == null || _sourceWalker.Snapshot.Version != snapshot.Version)
+            if (_info == null || _sourceWalker.Snapshot.Version != snapshot.Version)
             {
                 Debug("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 _sourceWalker.Snapshot = snapshot;
-                var tree = _sourceWalker.Parse();
+                var info = _sourceWalker.Parse();
                 lock (gate)
                 {
-                    _tree = tree;
+                    _info = info;
                 }
                 Debug("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                _hasParserErrors = _sourceWalker.HasParseErrors;
             }
             tokens = _sourceWalker.TokenStream;
-            if (_tree != null && tokens != null)
+            if (_info != null && tokens != null)
             {
                 Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                _sourceWalker.BuildModel(_tree, true);
-                var regionTags = BuildRegionTags(_tree, snapshot, xsharpRegionStart, xsharpRegionStop);
+                _sourceWalker.BuildModel(_info, true);
+                var regionTags = BuildRegionTags(_info, snapshot, xsharpRegionStart, xsharpRegionStop);
                 BuildColorClassifications(tokens, snapshot, regionTags);
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
@@ -259,28 +249,28 @@ namespace XSharpColorizer
             }
 
         }
-        public IImmutableList<ClassificationSpan> BuildRegionTags(XSharpParser.SourceContext xTree, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
+        public IImmutableList<ClassificationSpan> BuildRegionTags(XSharpModel.ParseResult info, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildRegionTags()");
             IImmutableList<ClassificationSpan> regions = null;
-            if (xTree != null && snapshot != null && !_hasParserErrors)
+            if (info != null && snapshot != null && !_hasParserErrors)
             {
-                var rdiscover = new XSharpRegionDiscover(snapshot);
-                //
-                try
-                {
-                    var treeWalker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
-                    //
-                    rdiscover.xsharpRegionStartType = start;
-                    rdiscover.xsharpRegionStopType = stop;
-                    // Walk the tree. The XSharpRegionDiscover class will collect the tags.
-                    treeWalker.Walk(rdiscover, xTree);
-                    regions = rdiscover.GetRegionTags();
-                }
-                catch (Exception e)
-                {
-                    Debug("BuildRegionTags failed: " + e.Message);
-                }
+                //var rdiscover = new XSharpRegionDiscover(snapshot);
+                ////
+                //try
+                //{
+                //    var treeWalker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
+                //    //
+                //    rdiscover.xsharpRegionStartType = start;
+                //    rdiscover.xsharpRegionStopType = stop;
+                //    // Walk the tree. The XSharpRegionDiscover class will collect the tags.
+                //    treeWalker.Walk(rdiscover, xTree);
+                //    regions = rdiscover.GetRegionTags();
+                //}
+                //catch (Exception e)
+                //{
+                //    Debug("BuildRegionTags failed: " + e.Message);
+                //}
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
             return regions;

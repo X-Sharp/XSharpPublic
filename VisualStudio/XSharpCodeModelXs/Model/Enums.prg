@@ -71,22 +71,24 @@ begin namespace XSharpModel
 		member @@VODLL
 		member @@VOStruct
 		member @@VOGlobal
+		member @@Unknown
 	end enum
 	enum Modifiers as long
 		member @@None:=0
-		member @@Private:=1
-		member @@Hidden:=1
-		member @@ProtectedInternal:=2
-		member @@Internal:=3
-		member @@Protected:=4
-		member @@Public:=5
-		member @@Export:=5
-		member @@Abstract:=10
-		member @@New:=11
-		member @@Partial:=12
-		member @@Sealed:=13
-		member @@Static:=14
-		member @@Unsafe:=15
+		member @@Private:= 0x01
+		member @@Hidden:=  0x01
+		member @@ProtectedInternal:=0x02
+		member @@Internal:=0x04
+		member @@Protected:=0x08
+		member @@Public:=0x10
+		member @@Export:=0x10
+		member @@Abstract:=0x100
+		member @@New:=0x200
+		member @@Partial:=0x400
+		member @@Sealed:=0x800
+		member @@Static:=0x1000
+		member @@Unsafe:=0x2000
+		member @@Virtual:=0x4000
 	end enum
 	enum XFileType as long
 		member Unknown:=-1

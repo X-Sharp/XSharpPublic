@@ -7,9 +7,9 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharpCodeModel</RootNamespace>
-    <AssemblyName>XSharpCodeModelXs</AssemblyName>
+    <AssemblyName>XSharpModel</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>XSharp.VoEditors</Name>
+    <Name>XSharpModelXs</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
@@ -48,7 +48,7 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>165,219,1030</DisabledWarnings>
+    <DisabledWarnings>165,219,1030,9047</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -58,7 +58,7 @@
     <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths>$(SolutionDir)\Common</IncludePaths>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -187,6 +187,7 @@
     <Compile Include="TypeExtensions.prg" />
     <Compile Include="Walker\ModelWalker.prg" />
     <Compile Include="Walker\Parser.prg" />
+    <Compile Include="Walker\ParseResult.prg" />
     <Compile Include="Walker\SourceWalker.prg" />
     <Compile Include="XError.prg" />
     <Compile Include="XFileTypeHelpers.prg" />

@@ -7,7 +7,9 @@
 using System.Collections.Generic
 using System.Collections
 using System.Text
+using System.Text.RegularExpressions
 using System.IO
+using System.Diagnostics
 //
 //function Start() as void
 //local cFileName as string
@@ -28,7 +30,33 @@ begin namespace XSharpModel
 		static protect aEntityWords as string[]
 		static protect aOperators as char[]
 		static protect aEndKeywords as string[]
-		//STATIC PROTECT nLineCount AS INT
+		static protect aTypes as string[]
+		
+		// instance fields
+		private aEntities as List<EntityObject> 
+		private aLocals   as List<EntityObject> 
+		private aResult   as List<EntityObject> 
+		private aLinesWithSpecialStuff as List<LineObject> 
+		private aLines    as List<LineObject> 
+		private aSourceLines    as IList<String>
+		private aTypeStack as Stack<EntityObject>
+		private oGlobalObject as EntityObject
+		private _nLength  as int
+				
+		constructor()
+			self:aEntities				:= List<EntityObject>{}
+			self:aLocals				:= List<EntityObject>{}
+			self:aLinesWithSpecialStuff := List<LineObject>{}
+			self:aLines					:= List<LineObject>{}
+
+			self:aTypeStack				:= Stack<EntityObject>{}
+			self:oGlobalObject			:= EntityObject{EntityType._Class}
+			self:oGlobalObject:cName    := "(Global Scope)"
+			self:oGlobalObject:lStatic  := true
+			self:oGlobalObject:lPartial := true
+			self:oGlobalObject:nStartLine	:= 1
+			self:oGlobalObject:nCol		:= 1
+		
 		
 		static constructor()
 			oEntityMarkers := Dictionary<string , string>{}
@@ -40,6 +68,7 @@ begin namespace XSharpModel
 			aEntityWords := <string>{"EVENT" , "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"} 
 			aOperators := <char>{'+','-','*','/','%','&','|','>','<','=','!','~'}
 			aEndKeyWords := <string>{"CLASS","STRUCTURE","STRUCT","INTERFACE","ENUM"}
+			aTypes := <string>{"CLASS","STRUCTURE","STRUCT","INTERFACE","DELEGATE","ENUM","VOSTRUCT","UNION"}
 			local aWords as string[]
 			
 			aWords := <string>{;
@@ -49,7 +78,7 @@ begin namespace XSharpModel
 				oEntityMarkers:Add(cWord:ToUpper() , cWord)
 			next
 			
-
+			
 			aWords := <string>{;
 								"VIRTUAL", "PARTIAL", "_DLL", "ABSTRACT", "SEALED", ;
 								"INTERNAL", "HIDDEN", "STATIC", "PROTECTED", "INSTANCE", ;
@@ -76,7 +105,7 @@ begin namespace XSharpModel
 			
 			return
 		
-			/*	static method ParseAndDisplay(aLineCollection as IEnumerable) as void
+				/*	static method ParseAndDisplay(aLineCollection as IEnumerable) as void
 		local aLocals := List<EntityObject>{} as List<EntityObject>
 		local aEntities := List<EntityObject>{} as List<EntityObject>
 		local nLineCount as int
@@ -119,7 +148,35 @@ begin namespace XSharpModel
 		
 		return
 		*/
-		static method Parse(aLineCollection as IEnumerable<string>, aLocals as List<EntityObject>,aEntities as List<EntityObject>) as int
+		
+		internal method _SetLineType(oLine as LineObject, eLineType as LineType) as void
+			oLine:eType := eLineType
+			if ! self:aLinesWithSpecialStuff:Contains(oLine)
+				self:aLinesWithSpecialStuff:Add(oLine)
+			endif
+		
+		
+		property Entities		as IList<EntityObject>	get aEntities				
+		property Types		    as IList<EntityObject>	get aResult
+		property SpecialLines	as IList<LineObject>	get aLinesWithSpecialStuff 
+		property SourceLength   as int					get _nLength
+		property LineCount      as int					get aSourceLines:Count
+
+		method AddEntity(oInfo as EntityObject, oLine as LineObject) as void
+			local oLast as EntityObject
+			if aEntities:Count > 0
+				oLast := aEntities[aEntities:Count-1]
+			endif
+			aEntities:Add(oInfo)
+			oInfo:nOffSet := oLine:OffSet
+			if oLast != NULL_OBJECT
+				oLast:oNext := oInfo
+			ENDIF
+			return
+			
+
+
+		method Parse(aLineCollection as IList<string>) as ParseResult
 			local oLine as LineObject
 			local oStatementLine as LineObject
 			local nLine,nLineLen as int
@@ -144,6 +201,7 @@ begin namespace XSharpModel
 			local cEnumType as string
 			local nChar as int
 			local oInfo as EntityObject
+			local oCurrentMethod as EntityObject
 			local lStatic as logic
 			local eAccessLevel as AccessLevel
 			local eModifiers as EntityModifiers
@@ -180,7 +238,7 @@ begin namespace XSharpModel
 			
 			local lInProperty as logic
 			local nAfterColonEquals as int
-			
+			aSourceLines := aLineCollection
 			aLineFields := List<EntityObject>{}
 			aLineLocals := List<EntityObject>{}
 			cShortClassName := ""
@@ -199,9 +257,12 @@ begin namespace XSharpModel
 			state:Reset()
 			
 			nLine := 0
+			_nLength := 0
 			foreach cLine as string in aLineCollection
 				nLine ++
-				oLine := LineObject{nLine}
+				oLine := LineObject{nLine, _nLength}
+				aLines:Add(oLine)
+				_nLength += cLine:Length + 2
 				
 				// Line parsing
 				nChar := 0
@@ -484,7 +545,7 @@ begin namespace XSharpModel
 					endif
 					
 					#warning need to check this
-					/*IF lMustLoop
+									/*IF lMustLoop
 					LOOP
 					END IF*/
 					
@@ -559,29 +620,30 @@ begin namespace XSharpModel
 							eWordSubStatus := WordSubStatus.TextDirective
 							state:lDirective := true
 							state:lIgnore := true
+							oStatementLine:cArgument :=cWord
 							switch cUpperWord
 								case "REGION"
-									oStatementLine:eType := LineType.RegionIn
+									_SetLineType(oStatementLine, LineType.RegionIn)
 								case "ENDREGION"
-									oStatementLine:eType := LineType.RegionOut
+									_SetLineType(oStatementLine, LineType.RegionOut)
 								case "IFDEF" 
 								case "IFNDEF" 
 								case "ELSE"
-									oStatementLine:eType := LineType.IfdefIn
+									_SetLineType(oStatementLine, LineType.IfdefIn)
 								case "ENDIF"
-									oStatementLine:eType := LineType.IfdefOut
+									_SetLineType(oStatementLine, LineType.IfdefOut)
 								case "DEFINE"
-									oStatementLine:eType := LineType.Define
+									_SetLineType(oStatementLine, LineType.Define)
 								case "INCLUDE"
-									oStatementLine:eType := LineType.Include
+									_SetLineType(oStatementLine, LineType.Include)
 									eStep := ParseStep.AfterInclude
 									oStatementLine:cArgument := ""
 								case "USING"
-									oStatementLine:eType := LineType.Using
+									_SetLineType(oStatementLine, LineType.Using)
 									eStep := ParseStep.AfterUsing
 									oStatementLine:cArgument := ""
 								otherwise
-									oStatementLine:eType := LineType.OtherDirective
+									_SetLineType(oStatementLine, LineType.OtherDirective)
 							end switch
 						else
 							eWordStatus := WordStatus.Literal
@@ -656,7 +718,7 @@ begin namespace XSharpModel
 							lEscapedWord := false
 							loop
 						case state:lFirstWord .and. cUpperWord == "RETURN" .and. .not. lEscapedWord
-							oStatementLine:eType := LineType.Return
+							_SetLineType(oStatementLine, LineType.Return)
 							oStatementLine:cArgument := null
 							state:lIgnore := true
 						case lAllowEntityParse .and. cChar == ',' .and. (state:lField .or. state:lLocal) .and. state:lNameFound .and. eStep != ParseStep.AfterAs .and. eStep != ParseStep.AfterRef
@@ -726,11 +788,11 @@ begin namespace XSharpModel
 								nAfterColonEquals := 0
 							end if
 						case lAllowEntityParse .and. .not. lEscapedWord .and. state:lFirstWord .and. cUpperWord == "USING"
-							oStatementLine:eType := LineType.Using
+							_SetLineType(oStatementLine, LineType.Using)
 							eStep := ParseStep.AfterUsing
 							oStatementLine:cArgument := ""
 						case state:lVisFound .and. lInProperty .and. (cUpperWord == "SET" .or. cUpperWord == "GET") .and. .not. lEscapedWord
-							oStatementLine:eType := LineType.TokenIn
+							_SetLineType(oStatementLine, LineType.TokenIn)
 							oStatementLine:cArgument := cUpperWord
 							state:lIgnore := true
 						case lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. hEnt:ContainsKey(cUpperWord)
@@ -742,9 +804,12 @@ begin namespace XSharpModel
 								state:lIgnore := true
 							endif
 							state:lEntityFound := true
-							state:lEntityIsClass := System.Array.IndexOf(<string>{"CLASS","STRUCTURE","STRUCT","INTERFACE","DELEGATE","ENUM","VOSTRUCT","UNION"} , cUpperWord) != -1
+							state:lEntityIsClass := System.Array.IndexOf(aTypes , cUpperWord) != -1
 							if eStep == ParseStep.AfterEnd .and. state:lEntityIsClass
-								oStatementLine:eType := LineType.EndClass
+								_SetLineType(oStatementLine, LineType.EndClass)
+								if aTypeStack:Count > 0
+									aTypeStack:Pop()
+								endif
 								state:lEntityFound := false
 								state:lEntityIsClass := false
 								state:lIgnore := true
@@ -755,7 +820,7 @@ begin namespace XSharpModel
 								cClassType := ""
 								lInProperty := false
 							elseif eStep == ParseStep.AfterEnd .and. cUpperWord == "PROPERTY"
-								oStatementLine:eType := LineType.EndProperty
+								_SetLineType(oStatementLine, LineType.EndProperty)
 								state:lEntityFound := false
 								state:lEntityIsClass := false
 								state:lIgnore := true
@@ -763,9 +828,23 @@ begin namespace XSharpModel
 								lInProperty := false
 							else
 								lInEnum := cUpperWord == "ENUM"
-								oInfo := EntityObject{}
+								oInfo := EntityObject{GetEntityType(cUpperWord)}
+								if oInfo:eType:IsClass()
+									aTypeStack:Push(oInfo)
+								elseif oInfo:eType:IsClassMember()
+									if aTypeStack:Count > 0
+										var oParent := aTypeStack:Peek()
+										oParent:AddChild(oInfo)
+									endif
+								elseif oInfo:eType:IsGlobalMember()
+									self:oGlobalObject:AddChild(oInfo)
+								endif
 								oInfo:SetNamespaces(aNameSpaces)
-								oInfo:eType := GetEntityType(cUpperWord)
+								if (oInfo:eType:HasBody())
+									oCurrentMethod := oInfo
+								else
+									oCurrentMethod := NULL_OBJECT
+								endif
 								lInProperty := oInfo:eType == EntityType._Property
 								if state:lEntityIsClass
 									cClassType := cUpperWord
@@ -791,26 +870,30 @@ begin namespace XSharpModel
 											oInfo:cImplements := ""
 									end switch
 								else
-									if oInfo:eType == EntityType._Method .or. oInfo:eType == EntityType._Access .or. oInfo:eType == EntityType._Property .or. ;
-										oInfo:eType == EntityType._Function .or. oInfo:eType == EntityType._Global
-										oInfo:cRetType := "USUAL" // Default
-									else
-										oInfo:cRetType := ""
-									end if
+									switch oInfo:eType
+										case EntityType._Method 
+										case EntityType._Access 
+										case EntityType._Property 
+										case EntityType._Function 
+										case EntityType._Global
+											oInfo:cRetType := "USUAL" // Default
+										otherwise
+											oInfo:cRetType := ""
+									end switch
 								end if
 								oInfo:lStatic := lStatic
 								oInfo:eAccessLevel := eAccessLevel
 								oInfo:eModifiers := eModifiers
 								if oInfo:eType == EntityType._Constructor .or. oInfo:eType == EntityType._Destructor
 									state:lNameFound := true // Dont't wait for a name, add it to the list now
-									oInfo:nLine := nEntityStartLine
+									oInfo:nStartLine := nEntityStartLine
 									oInfo:nCol := nEntityStartCol
 									oInfo:cName := iif(oInfo:eType == EntityType._Constructor , ".ctor" , ".dtor")
 									oInfo:cShortClassName := cShortClassName
 									oInfo:cTypedClassName := cTypedClassName
 									oInfo:cClassNameSpace := cClassNameSpace
 									oInfo:cClassType := cClassType
-									aEntities:Add(oInfo)
+									AddEntity(oInfo, oLine)
 									if cChar == '('
 										state:lInParams := true
 									end if
@@ -984,14 +1067,13 @@ begin namespace XSharpModel
 											eStep := ParseStep.None
 											aNameSpaces:Add(cWord)
 											cBaseNameSpace := GetNameSpace(aNameSpaces)
-											oStatementLine:eType := LineType.BeginNamespace
-											//							oStatementLine:cBeginNamespace := cWord
+											_SetLineType(oStatementLine, LineType.BeginNamespace)
 											oStatementLine:cArgument := cWord
 											state:lIgnore := true
 										case .not. state:lNameFound
 											state:lNameFound := true
-											oInfo:nLine := nEntityStartLine
-											oInfo:nCol := nEntityStartCol
+											oInfo:nStartLine := nEntityStartLine
+											oInfo:nCol	:= nEntityStartCol
 											oInfo:cName := cWord
 											if oInfo:IsFuncProcGlobal
 												oInfo:cShortClassName := ""
@@ -1007,7 +1089,8 @@ begin namespace XSharpModel
 											if oInfo:eType == EntityType._Class .and. lPartial
 												oInfo:lPartial := true
 											end if
-											aEntities:Add(oInfo)
+											AddEntity(oInfo, oLine)
+											
 											lPartial := false
 									end case
 								
@@ -1015,12 +1098,15 @@ begin namespace XSharpModel
 							if state:lInParams
 								if cChar == ','
 									if .not. state:lParam
-										oInfo:AddParam(cWord)
+										var oParam := oInfo:AddParam(cWord)
+										oParam:nCol := nChar - cWord:Length
+										
 									end if
 									state:lParam := false
 								elseif .not. state:lParam .and. sWord:Length != 0
 									if .not. cWord == "SELF"
-										oInfo:AddParam(cWord)
+										var oParam := oInfo:AddParam(cWord)
+										oParam:nCol := nChar - cWord:Length
 										state:lParam := true
 									end if
 								end if
@@ -1046,39 +1132,39 @@ begin namespace XSharpModel
 							else
 								switch cUpperWord
 									case "LOCK"
-										oStatementLine:eType := LineType.TokenIn
+										_SetLineType(oStatementLine, LineType.TokenIn)
 										oStatementLine:cArgument := "BEGIN"
 									case "SEQUENCE"
-										oStatementLine:eType := LineType.TokenIn
+										_SetLineType(oStatementLine, LineType.TokenIn)
 										oStatementLine:cArgument := "BEGIN"
 									case "SCOPE"
-										oStatementLine:eType := LineType.TokenIn
+										_SetLineType(oStatementLine, LineType.TokenIn)
 										oStatementLine:cArgument := "BEGIN"
 									case "CHECKED" 
 									case  "UNCHECKED" 
 									case "UNSAFE" 
 									case "USING" 
 									case "FIXED"
-										oStatementLine:eType := LineType.TokenIn
+										_SetLineType(oStatementLine, LineType.TokenIn)
 										oStatementLine:cArgument := "BEGIN"
 								end switch
 							end if
 						case state:lFirstWord .and. cUpperWord == "END"
 							lInEnum := false
 							eStep := ParseStep.AfterEnd
-							oStatementLine:eType := LineType.TokenOut
+							_SetLineType(oStatementLine, LineType.TokenOut)
 							oStatementLine:cArgument := "END"
 						case eStep == ParseStep.AfterEnd
 							state:lIgnore := true
 							lInEnum := false
 							if System.Array.IndexOf(aEndKeywords , cUpperWord) != -1
-								oStatementLine:eType := LineType.EndClass
+								_SetLineType(oStatementLine, LineType.EndClass)
 								cShortClassName := ""
 								cTypedClassName := ""
 								cClassNameSpace := ""
 								cClassType := ""
 							elseif cUpperWord == "NAMESPACE"
-								oStatementLine:eType := LineType.EndNamespace
+								_SetLineType(oStatementLine, LineType.EndNamespace)
 								if lAllowEntityParse
 									if aNameSpaces:Count != 0
 										aNameSpaces:RemoveAt(aNameSpaces:Count - 1)
@@ -1090,7 +1176,7 @@ begin namespace XSharpModel
 						case state:lFirstWord .and. cUpperWord == "USING"
 							lInEnum := false
 							eStep := ParseStep.AfterUsing
-							oStatementLine:eType := LineType.Using
+							_SetLineType(oStatementLine, LineType.Using)
 						
 						case lAllowEntityParse .and. ;  // 2nd .not. is for IF(logic) CASE(something) etc syntax (paren after IF/CASE etc)
 							.not. (.not. lEscapedWord .and. cRealChar == '(' .and. System.Array.IndexOf(<string>{"IF", "ELSEIF", "WHILE", "CASE", "FOR"} , cUpperWord) != -1) .and. ;
@@ -1106,12 +1192,20 @@ begin namespace XSharpModel
 							state:lEntityFound := true
 							oInfo := EntityObject{}
 							oInfo:SetNamespaces(aNameSpaces)
+							oInfo:nCol := nChar - cWord:Length
 							if state:lLocal
 								oInfo:eType := EntityType._Local
+								if oCurrentMethod != null
+									oCurrentMethod:AddChild(oInfo)
+								endif
 							elseif state:lEvent
 								oInfo:eType := EntityType._Event
 							else
 								oInfo:eType := EntityType._Field
+								if aTypeStack:Count > 0
+									var oParent := aTypeStack:Peek()
+									oParent:AddChild(oInfo)
+								endif
 							end if
 							oInfo:lStatic := lStatic
 							oInfo:eAccessLevel := eAccessLevel
@@ -1133,31 +1227,31 @@ begin namespace XSharpModel
 									state:lEntityFound := false
 								end if
 							endif
-							oInfo:nLine := nLine
-							oInfo:cName := cWord
+							oInfo:nStartLine := nLine
+							oInfo:cName		 := cWord
 							oInfo:cShortClassName := cShortClassName
 							oInfo:cTypedClassName := cTypedClassName
 							oInfo:cClassNameSpace := cClassNameSpace
 							oInfo:cClassType := cClassType
 							if state:lField
-								aEntities:Add(oInfo)
-							end if
+								AddEntity(oInfo, oLine)
+							end if 
 							if state:lLocal
 								aLocals:Add(oInfo)
 							end if
 						case state:lFirstWord .or. state:lFirstChar
 							if System.Array.IndexOf(aTokenIn, cUpperWord) != -1
-								oStatementLine:eType := LineType.TokenIn
+								_SetLineType(oStatementLine, LineType.TokenIn)
 								oStatementLine:cArgument := cUpperWord
 							elseif System.Array.IndexOf(aTokenOut , cUpperWord) != -1
-								oStatementLine:eType := LineType.TokenOut
+								_SetLineType(oStatementLine, LineType.TokenOut)
 								oStatementLine:cArgument := cUpperWord
 							elseif cUpperWord == "GET" .or. cUpperWord == "SET"
 								if lInProperty
-									oStatementLine:eType := LineType.TokenIn
+									_SetLineType(oStatementLine, LineType.TokenIn)
 									oStatementLine:cArgument := cUpperWord
 								endif
-							else
+								else
 								if .not. lContinueNextLine
 									if .not. cUpperWord == "FOR" // Allow LOCAL after FOR
 										state:lIgnore := true
@@ -1181,9 +1275,17 @@ begin namespace XSharpModel
 					
 				end do
 			next
-			
-			
-			return nLine
+			// Finish and add types to aTypes
+			aResult := List<EntityObject>{}
+			aResult:Add(self:oGlobalObject)
+			foreach oEnt as EntityObject in aEntities
+				if oEnt:eType:IsClass()
+					aResult:Add(oEnt)
+				elseif oEnt:oParent == null
+					aResult:Add(oEnt)
+				endif
+			next
+			return ParseResult{self}
 		
 		
 		protected static method GetNameSpace(aNameSpaces as List<string>) as string
@@ -1250,49 +1352,99 @@ begin namespace XSharpModel
 			end switch
 			return eType
 		
+		static method IsClass(self e as ENtityType) as logic
+			switch e
+				case EntityType._Class
+				case EntityType._Structure
+				case EntityType._Interface
+				case EntityType._Delegate
+				case EntityType._Enum
+				case EntityType._Union
+				case EntityType._VOStruct
+					return true
+			end switch
+			return false
+		static method IsGlobalMember(self e as ENtityType) as logic
+			switch e
+				case EntityType._Function
+				case EntityType._Procedure
+				case EntityType._Define
+				case EntityType._Global
+				case EntityType._Resource
+				case EntityType._Structure
+					return true
+			end switch
+			return false
+		static method IsClassMember(self e as ENtityType) as logic
+			switch e
+				case EntityType._Field
+				case EntityType._Property
+				case EntityType._Access
+				case EntityType._Assign
+				case EntityType._Method
+				case EntityType._Constructor
+				case EntityType._Destructor
+				case EntityType._Operator
+				case EntityType._Event
+					return true
+			end switch
+			return false
+		static method HasBody(self e as EntityType) as logic
+			switch e
+				case EntityType._Property
+				case EntityType._Access
+				case EntityType._Assign
+				case EntityType._Method
+				case EntityType._Constructor
+				case EntityType._Destructor
+				case EntityType._Operator
+				case EntityType._Event
+				case EntityType._Function
+				case EntityType._Procedure
+					return true
+				end switch
+				return false
+		
 	end class
 	
-	
-	internal class LineObject
+	[DebuggerDIsplay("{Line} {eType}")];
+		class LineObject
 		protect _nLine as int
+		protect _nOffSet as int
 		protect _nCol as int
-		
 		protect _eType as LineType
 		protect _cArgument as string
 		
-		protect _aLinesWithSpecialStuff as List<LineObject>
+		
 		
 		internal constructor(nLine as int)
 			self(nLine , 0)
 			return
-
-		internal constructor(nLine as int, nCol as int)
+		
+		internal constructor(nLine as int, nOffSet as int)
 			self:_nLine := nLine
-			self:_nCol := nCol
-			self:_aLinesWithSpecialStuff := List<LineObject>{}
+			self:_nOffSet := nOffSet
 			return
 		
+		private constructor(nLine as int, nOffSet as int, nCol as int)
+			self:_nLine := nLine
+			self:_nOffSet := nOffSet
+			self:_nCol  := nCol
+			return		
 		
 		internal method AddSubLine(nColStart as int) as LineObject
-			return LineObject{self:_nLine , nColStart}
+			return LineObject{self:_nLine , self:_nOffSet+nColStart, nColStart}
 		
-		internal property LinesWithSpecialStuff as List<LineObject> get _aLinesWithSpecialStuff
+		property Line as int get self:_nLine
+		property OffSet as int get self:_nOffSet
+		property eType as LineType get self:_eType set self:_eType := VALUE
 		
-		internal property Line as int get self:_nLine
-		internal property eType as LineType
-			get
-				return self:_eType
-			end get
-			set
-				self:_eType := VALUE
-				_aLinesWithSpecialStuff:Add(self)
-			end set
-		end property
-
-		internal property cArgument as string get self:_cArgument set self:_cArgument := value
+		property cArgument as string get self:_cArgument set self:_cArgument := value
+		
 		
 	end class
 	
+	[DebuggerDIsplay("{eType} {cName,nq}")];
 	class EntityObject
 		property eType as EntityType auto
 		property cName as string auto
@@ -1305,13 +1457,17 @@ begin namespace XSharpModel
 		property cTypedClassName as string auto
 		property cClassNamespace as string auto
 		property aParams as List<EntityParamsObject> auto
-		property nLine as int  auto
+		property nStartLine as int  auto
+		property nOffSet as int auto
 		property nCol as int  auto
-		property aNameSpaces as List<string> auto // prosoxh, kai se functions etc
+		property aNameSpaces as List<string> auto 
 		property lStatic as logic auto
 		property lPartial as logic auto
 		property cClassType as string auto
 		property lExtension as logic auto
+		property oParent as EntityObject auto
+		property aChildren as IList<EntityObject> auto
+		property oNext as EntityObject auto
 		
 		internal constructor()
 			super()
@@ -1319,8 +1475,17 @@ begin namespace XSharpModel
 			self:cImplements := ""
 			self:cRetType := ""
 			self:cClassType := ""
+			self:aChildren := List<EntityObject>{}
+			self:oParent := null
 			return
-
+		internal constructor(nType as EntityType)
+			self()
+			self:eType := nType
+		
+		internal method AddChild(oChild as EntityObject) as void
+			self:aChildren:Add(oChild)
+			oChild:oParent := self
+		
 		internal access IsFuncProcGlobal as logic
 			return self:eType == EntityType._Function .or. self:eType == EntityType._Procedure .or. self:eType == EntityType._Global
 		
@@ -1347,17 +1512,19 @@ begin namespace XSharpModel
 				self:aNameSpaces:Add(_aNameSpaces[n])
 			next
 			return
-		internal method AddParam(cParam as string) as void
-			self:AddParam(cParam, "USUAL")
-			return
 
-		internal method AddParam(cParam as string , cType as string) as void
+		internal method AddParam(cParam as string) as EntityParamsObject
+			return self:AddParam(cParam, "USUAL")
+		
+		internal method AddParam(cParam as string , cType as string) as EntityParamsObject
 			if self:aParams == null
 				self:aParams := List<EntityParamsObject>{}
 			end if
-			self:aParams:Add(EntityParamsObject{cParam , cType})
-			return
-
+			local oParam as EntityParamsObject
+			oParam := EntityParamsObject{cParam , cType}
+			self:aParams:Add(oParam)
+			return oParam
+		
 		internal method SetParamType(cType as string) as void
 			local oParam as EntityParamsObject
 			if self:aParams == null .or. self:aParams:Count == 0 .or. String.IsNullOrEmpty(cType)
@@ -1372,10 +1539,12 @@ begin namespace XSharpModel
 			return
 	end class
 	
-	class EntityParamsObject
+	[DebuggerDIsplay("{cName,nq} {cType,nq}")];
+		class EntityParamsObject
 		property cName as string auto
 		property cType as string auto
 		property lReference as logic auto
+		property nCol as int auto
 		internal constructor(_cName as string , _cType as string)
 			super()
 			self:cName := _cName
@@ -1431,27 +1600,27 @@ begin namespace XSharpModel
 	
 	enum EntityType as Int32 
 		member _None
-		member _Constructor	:= Kind.Constructor
-		member _Destructor	:= Kind.Destructor
-		member _Method		:= Kind.Method
-		member _Access		:= Kind.Access
-		member _Assign		:= Kind.Assign
-		member _Class		:= Kind.Class
-		member _Function	:= Kind.Function
-		member _Procedure	:= Kind.Procedure
-		member _Enum		:= Kind.Enum
-		member _VOStruct	:= Kind.VOStruct
-		member _Global		:= Kind.VOGlobal
-		member _Structure	:= Kind.Structure
-		member _Interface	:= Kind.Interface
-		member _Delegate	:= Kind.Delegate
-		member _Event		:= Kind.Event
-		member @@_Field		:= Kind.Field
-		member _Union		:= Kind.Union
-		member _Operator	:= Kind.Operator
-		member _Local		:= Kind.Local
-		member _Property	:= Kind.Property
-		member _Define		:= Kind.VODefine
+		member _Constructor
+		member _Destructor	
+		member _Method		
+		member _Access		
+		member _Assign		
+		member _Class		
+		member _Function	
+		member _Procedure	
+		member _Enum		
+		member _VOStruct	
+		member _Global		
+		member _Structure	
+		member _Interface	
+		member _Delegate	
+		member _Event		
+		member @@_Field		
+		member _Union		
+		member _Operator	
+		member _Local		
+		member _Property	
+		member _Define		
 		member _Resource	
 		member _TextBlock	
 	end enum
@@ -1459,10 +1628,10 @@ begin namespace XSharpModel
 	
 	[Flags];
 	enum AccessLevel
-		member @@Public 			:= Modifiers.Public
-		member @@Protected			:= Modifiers.Protected
-		member @@Hidden				:= Modifiers.Hidden
-		member @@Internal			:= Modifiers.Internal
+		member @@Public := 0
+		member @@Protected := 1
+		member @@Hidden := 2
+		member @@Internal := 4
 	end enum
 	
 	enum WordStatus
@@ -1492,7 +1661,7 @@ begin namespace XSharpModel
 	end enum
 	
 	[Flags];
-	enum	 WordStyle as int
+		enum WordStyle as int
 		member None := 0
 		member EscapedLiteral := 1
 		member InAttribute := 2
@@ -1558,3 +1727,5 @@ begin namespace XSharpModel
 	end structure
 	
 end namespace
+
+

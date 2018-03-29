@@ -16,7 +16,6 @@ begin namespace XSharpModel
 	class XFile
 		// Fields
 		private _globalType as XType
-		private _hasLocals as logic
 		private _lastWritten as System.DateTime
 		private _lock as object
 		private _parsed as logic
@@ -50,14 +49,6 @@ begin namespace XSharpModel
 				return element:Value:Members:FirstOrDefault()
 			end
 		
-		method GetLocals(currentBuffer as string) as void
-			local walker as SourceWalker
-			walker := SourceWalker{self, currentBuffer}
-			begin using walker
-				var xTree := walker:Parse()
-				walker:BuildModel(xTree, true)
-			end using
-		
 		
 		method InitTypeList() as void
 			if self:HasCode
@@ -68,18 +59,17 @@ begin namespace XSharpModel
 				self:_usingStatics := List<string>{}
 			endif
 		
-		method SetTypes(types as IDictionary<string, XType>, usings as IList<string>, staticusings as IList<string>, hasLocals as logic) as void
+		method SetTypes(types as IDictionary<string, XType>, usings as IList<string>, staticusings as IList<string>) as void
 			if self:HasCode
 				System.Diagnostics.Trace.WriteLine(String.Concat("-->> XFile.SetTypes() ", System.IO.Path.GetFileName(self:SourcePath)))
 				begin lock self
 					self:_typeList:Clear()
 					self:_usings:Clear()
 					self:_usingStatics:Clear()
-					self:_hasLocals := hasLocals
-					foreach pair as KeyValuePair<string, XType> in types
-						self:_typeList:TryAdd(pair:Key, pair:Value)
-						if (XType.IsGlobalType(pair:Value))
-							self:_globalType := pair:Value
+					foreach type as KeyValuePair<string, XType> in types
+						self:_typeList:TryAdd(type:Key, type:Value)
+						if (XType.IsGlobalType(type:Value))
+							self:_globalType := type:Value
 						endif
 					next
 					self:_usings:AddRange(usings)
@@ -88,29 +78,50 @@ begin namespace XSharpModel
 				System.Diagnostics.Trace.WriteLine(String.Concat("<<-- XFile.SetTypes() ", System.IO.Path.GetFileName(self:SourcePath), " ", self:_typeList:Count:ToString()))
 			endif
 		
+		method BuildTypes(oInfo as ParseResult) as void
+			local aTypes	      as Dictionary<string, XType>
+			local aUsings		  as List<string>
+			local aUsingStatics   as List<String>
+			local oType		      as XType
+			aTypes  := Dictionary<string, XType>{}
+			aUsings			:= List<string>{}
+			aUsingStatics	:= List<String>{}
+			foreach oElement as EntityObject in oInfo:Types
+				oType   := XType.create(self, oElement,oInfo)
+				aTypes:Add( oType:Name, oType)
+			next
+			foreach oLine as LineObject in oInfo:SpecialLines
+				if oLine:eType == LineType.Using
+					local cName as string
+					cName := oLine:cArgument
+					if cName:ToLower():StartsWith("static")
+						aUsingStatics:Add(cName:Substring(6))
+					else
+						aUsings:Add(cName)
+					endif
+				endif
+			next
+			self:SetTypes(aTypes, aUsings, aUsingStatics)
+			return
+
+
 		method WaitParsing() as void
-			local walker as SourceWalker
 			//
 			if self:HasCode
 				
 				System.Diagnostics.Trace.WriteLine("-->> XFile.WaitParsing()")
 				begin lock self:_lock
 					
-					if (! self:Parsed)
-						
-						walker := SourceWalker{self}
-						begin using walker
-							
+					if ! self:Parsed
+						begin using var walker := SourceWalker{self}
 							try
 								
-								var xTree := walker:Parse()
-								walker:BuildModel(xTree, false)
+								var info := walker:Parse()
+								BuildTypes(info)						
 							catch exception as System.Exception
-								
 								Support.Debug(String.Concat("XFile.WaitParsing", exception:Message), Array.Empty<object>())
 							end try
 						end using
-						
 					endif
 				end lock
 				System.Diagnostics.Trace.WriteLine("<<-- XFile.WaitParsing()")
@@ -126,24 +137,24 @@ begin namespace XSharpModel
 					return null
 				endif
 				System.Diagnostics.Trace.WriteLine("-->> XFile.AllUsingStatics")
-				var list := List<string>{}
+				var statics := List<string>{}
 				begin lock self:_lock
 					
-					list:AddRange(self:_usingStatics)
+					statics:AddRange(self:_usingStatics)
 					if (((self:Project != null) .AND. (self:Project:ProjectNode != null)) .AND. self:Project:ProjectNode:ParseOptions:IsDialectVO)
 						
-						foreach info as AssemblyInfo in self:Project:AssemblyReferences
+						foreach asm as AssemblyInfo in self:Project:AssemblyReferences
 							
-							var globalClassName := info:GlobalClassName
-							if (! String.IsNullOrEmpty(globalClassName))
+							var globalclass := asm:GlobalClassName
+							if (! String.IsNullOrEmpty(globalclass))
 								
-								list:AddUnique(globalClassName)
+								statics:AddUnique(globalclass)
 							endif
 						next
 					endif
 				end lock
 				System.Diagnostics.Trace.WriteLine("<<-- XFile.AllUsingStatics")
-				return list:ToImmutableList()
+				return statics:ToImmutableList()
 			end get
 		end property
 		
@@ -154,15 +165,15 @@ begin namespace XSharpModel
 				endif
 				begin lock self:_lock
 					
-					var num2 := 0U
+					var hash := 0U
 					foreach type as XType in self:TypeList:Values
 						
 						foreach xmem as XTypeMember in type:Members
 							
-							num2 := num2 + (dword)xmem:Prototype:GetHashCode() 
+							hash := hash + (dword)xmem:Prototype:GetHashCode() 
 						next
 					next
-					return num2
+					return hash
 				end lock
 			end get
 		end property
@@ -170,7 +181,6 @@ begin namespace XSharpModel
 		property FullPath as string get self:filePath set self:filePath := value
 		property GlobalType as XType get self:_globalType
 		property HasCode as logic get self:IsSource .OR. self:IsXaml
-		property HasLocals as logic get self:_hasLocals
 		property HasParseErrors as logic auto
 		property IsSource as logic get self:_type == XFileType.SourceCode
 		property IsXaml as logic get self:_type == XFileType.XAML
@@ -200,7 +210,6 @@ begin namespace XSharpModel
 				return self:_project
 			end get
 			set
-				
 				self:_project := value
 			end set
 		end property
@@ -254,4 +263,5 @@ begin namespace XSharpModel
 	end class
 	
 end namespace 
+
 

@@ -49,18 +49,18 @@ begin namespace XSharpModel
 			endif
 		
 		method AddAssemblyReference(path as string) as void
-			local item as AssemblyInfo
+			local assemblyInfo as AssemblyInfo
 			//
-			item := SystemTypeController.LoadAssembly(path)
-			self:_AssemblyReferences:Add(item)
-			item:AddProject(self)
+			assemblyInfo := SystemTypeController.LoadAssembly(path)
+			self:_AssemblyReferences:Add(assemblyInfo)
+			assemblyInfo:AddProject(self)
 		
 		method AddAssemblyReference(reference as VSLangProj.Reference) as void
-			local item as AssemblyInfo
+			local assemblyInfo as AssemblyInfo
 			//
-			item := SystemTypeController.LoadAssembly(reference)
-			self:_AssemblyReferences:Add(item)
-			item:AddProject(self)
+			assemblyInfo := SystemTypeController.LoadAssembly(reference)
+			self:_AssemblyReferences:Add(assemblyInfo)
+			assemblyInfo:AddProject(self)
 		
 		method AddFile(filePath as string) as logic
 			local xFile as XFile
@@ -138,9 +138,9 @@ begin namespace XSharpModel
 		
 		method ClearAssemblyReferences() as void
 			//
-			foreach info as AssemblyInfo in self:_AssemblyReferences
+			foreach asm as AssemblyInfo in self:_AssemblyReferences
 				//
-				info:RemoveProject(self)
+				asm:RemoveProject(self)
 			next
 			self:_AssemblyReferences:Clear()
 		
@@ -183,12 +183,12 @@ begin namespace XSharpModel
 			return self:_typeController:GetNamespaces(self:_AssemblyReferences)
 		
 		private method GetStrangerOutputDLL(sProject as string, p as Project) as string
-			var path := ""
+			var outputFile := ""
 			try
 				//
 				var activeConfiguration := p:ConfigurationManager:ActiveConfiguration
 				var item := activeConfiguration:Properties:Item("OutputPath")
-				
+				var path := ""
 				if item != null
 					path := (string) item:Value
 				endif
@@ -197,12 +197,12 @@ begin namespace XSharpModel
 					if group:FileCount == 1  .AND. group:CanonicalName == "Built"
 						var names := (System.Array) group:Filenames
 						foreach str as string	 in names
-							path := System.IO.Path.Combine(path, str)
+							outputFile := System.IO.Path.Combine(path, str)
 						next
 					endif
 				next
 				if ! System.IO.Path.IsPathRooted(path)
-					path := System.IO.Path.Combine(System.IO.Path.GetDirectoryName(sProject), path)
+					outputFile := System.IO.Path.Combine(System.IO.Path.GetDirectoryName(sProject), path)
 				endif
 			catch exception as Exception
 				//
@@ -211,114 +211,114 @@ begin namespace XSharpModel
 					System.Diagnostics.Debug.WriteLine(exception:Message)
 				endif
 			end try
-			return path
+			return outputFile
 		
 		method Lookup(typeName as string, caseInvariant as logic) as XType
-			local type as XType
-			local type2 as XType
-			local fileArray as XFile[]
+			local xType as XType
+			local xTemp as XType
+			local aFiles as XFile[]
 			//
-			type := null
-			type2 := null
-			fileArray := System.Linq.Enumerable.ToArray<XFile>(self:xSourceFilesDict:Values)
-			foreach file as XFile in fileArray
+			xType := null
+			xTemp := null
+			aFiles := self:xSourceFilesDict:Values:ToArray()
+			foreach file as XFile in aFiles
 				//
 				if (file:TypeList != null)
 					//
-					file:TypeList:TryGetValue(typeName, out type2)
-					if (((type2 != null) .AND. ! caseInvariant) .AND. ((type:FullName != typeName) .AND. (type:Name != typeName)))
+					file:TypeList:TryGetValue(typeName, out xTemp)
+					if (((xTemp != null) .AND. ! caseInvariant) .AND. ((xType:FullName != typeName) .AND. (xType:Name != typeName)))
 						//
-						type := null
+						xType := null
 					endif
-					if (type2 != null)
+					if (xTemp != null)
 						//
-						if (! type2:IsPartial)
+						if (! xTemp:IsPartial)
 							//
-							return type2
+							return xTemp
 						endif
-						if (type != null)
+						if (xType != null)
 							//
-							type := type:Merge(type2)
+							xType := xType:Merge(xTemp)
 						else
 							//
-							type := type2:Duplicate()
+							xType := xTemp:Duplicate()
 						endif
 					endif
 				endif
 			next
-			return type
+			return xType
 		
 		method LookupForStranger(typeName as string, caseInvariant as logic) as CodeElement
 			//
 			return null
 		
 		method LookupFullName(typeName as string, caseInvariant as logic) as XType
-			local type as XType
-			local otherType as XType
+			local xType as XType
+			local xTemp as XType
 			local fileArray as XFile[]
-			local type3 as XType
+			local x as XType
 			//
-			type := null
-			otherType := null
-			fileArray := System.Linq.Enumerable.ToArray<XFile>(self:xSourceFilesDict:Values)
+			xType := null
+			xTemp := null
+			fileArray := self:xSourceFilesDict:Values:ToArray()
 			foreach file as XFile in fileArray
 				//
-				type3 := null
+				x := null
 				if (file:TypeList != null)
 					//
-					if (file:TypeList:TryGetValue(typeName, out type3))
+					if (file:TypeList:TryGetValue(typeName, out x))
 						//
-						otherType := type3
-						if (! caseInvariant .AND. ((type3:FullName != typeName) .AND. (type3:Name != typeName)))
+						xTemp := x
+						if (! caseInvariant .AND. ((x:FullName != typeName) .AND. (x:Name != typeName)))
 							//
-							otherType := null
+							xTemp := null
 						endif
 					endif
-					if (otherType != null)
+					if (xTemp != null)
 						//
-						if (! otherType:IsPartial)
+						if (! xTemp:IsPartial)
 							//
-							return otherType
+							return xTemp
 						endif
-						if (type != null)
+						if (xType != null)
 							//
-							type := type:Merge(otherType)
+							xType := xType:Merge(xTemp)
 						else
 							//
-							type := otherType:Duplicate()
+							xType := xTemp:Duplicate()
 						endif
 					endif
 				endif
 			next
-			return type
+			return xType
 		
 		method LookupFullNameReferenced(typeName as string, caseInvariant as logic) as XType
-			local fullName as XType
+			local xType as XType
 			//
-			fullName := null
+			xType := null
 			foreach project as XProject in self:ReferencedProjects
 				//
-				fullName := project:LookupFullName(typeName, caseInvariant)
-				if (fullName != null)
+				xType := project:LookupFullName(typeName, caseInvariant)
+				if (xType != null)
 					//
-					return fullName
+					return xType
 				endif
 			next
-			return fullName
+			return xType
 		
 		method LookupReferenced(typeName as string, caseInvariant as logic) as XType
-			local type as XType
+			local xType as XType
 			//
-			type := null
+			xType := null
 			foreach project as XProject in self:ReferencedProjects
 				//
-				type := project:Lookup(typeName, caseInvariant)
-				if (type != null)
+				xType := project:Lookup(typeName, caseInvariant)
+				if (xType != null)
 					//
-					return type
+					return xType
 				endif
 			next
-			return type
+			return xType
 		
 		method RemoveAssemblyReference(fileName as string) as void
 			//
@@ -334,7 +334,6 @@ begin namespace XSharpModel
 		
 		method RemoveFile(url as string) as void
 			local file as XFile
-			local file2 as XFile
 			//
 			if (self:xOtherFilesDict:ContainsKey(url))
 				//
@@ -346,7 +345,7 @@ begin namespace XSharpModel
 			endif
 			if (self:xSourceFilesDict:ContainsKey(url))
 				//
-				self:xSourceFilesDict:TryRemove(url, out file2)
+				self:xSourceFilesDict:TryRemove(url, out file)
 			endif
 		
 		method RemoveProjectOutput(sProjectURL as string) as void
@@ -358,19 +357,19 @@ begin namespace XSharpModel
 			endif
 		
 		method RemoveProjectReference(url as string) as logic
-			local item as XProject
-			local outputFile as string
+			local prj as XProject
+			local outputname as string
 			//
 			if (self:_unprocessedProjectReferences:Contains(url))
 				//
 				self:_unprocessedProjectReferences:Remove(url)
 				return true
 			endif
-			item := XSolution.FindProject(url)
-			if (self:_ReferencedProjects:Contains(item))
+			prj := XSolution.FindProject(url)
+			if (self:_ReferencedProjects:Contains(prj))
 				//
-				outputFile := item:ProjectNode:OutputFile
-				self:_ReferencedProjects:Remove(item)
+				outputname := prj:ProjectNode:OutputFile
+				self:_ReferencedProjects:Remove(prj)
 				return true
 			endif
 			self:RemoveProjectOutput(url)
@@ -381,7 +380,7 @@ begin namespace XSharpModel
 			self:RemoveAssemblyReference(DLL)
 		
 		method RemoveStrangerProjectReference(url as string) as logic
-			local item as Project
+			local prj as Project
 			//
 			if (self:_unprocessedStrangerProjectReferences:Contains(url))
 				//
@@ -389,10 +388,10 @@ begin namespace XSharpModel
 				return true
 			endif
 			self:RemoveProjectOutput(url)
-			item := self:ProjectNode:FindProject(url)
-			if ((item != null) .AND. self:_StrangerProjects:Contains(item))
+			prj := self:ProjectNode:FindProject(url)
+			if ((prj != null) .AND. self:_StrangerProjects:Contains(prj))
 				//
-				self:_StrangerProjects:Remove(item)
+				self:_StrangerProjects:Remove(prj)
 				return true
 			endif
 			return false
@@ -404,61 +403,60 @@ begin namespace XSharpModel
 				self:ResolveUnprocessedProjectReferences()
 				self:ResolveUnprocessedStrangerReferences()
 			endif
-			foreach str as string in self:_projectOutputDLLs:Values
+			foreach DLL as string in self:_projectOutputDLLs:Values
 				//
-				if (SystemTypeController.FindAssemblyByLocation(str) == null)
+				if (SystemTypeController.FindAssemblyByLocation(DLL) == null)
 					//
-					self:AddAssemblyReference(str)
+					self:AddAssemblyReference(DLL)
 				endif
 			next
 		
 		private method ResolveUnprocessedProjectReferences() as void
-			local list as List<string>
-			local item as XProject
+			local existing as List<string>
+			local p as XProject
 			local outputFile as string
 			//
 			if (self:_unprocessedProjectReferences:Count != 0)
 				//
-				list := List<string>{}
-				foreach str as string in self:_unprocessedProjectReferences
+				existing := List<string>{}
+				foreach sProject as string in self:_unprocessedProjectReferences
 					//
-					item := XSolution.FindProject(str)
-					if (item != null)
+					p := XSolution.FindProject(sProject)
+					if (p != null)
 						//
-						list:Add(str)
-						self:_ReferencedProjects:Add(item)
-						outputFile := item:ProjectNode:OutputFile
-						self:AddProjectOutput(str, outputFile)
+						existing:Add(sProject)
+						self:_ReferencedProjects:Add(p)
+						outputFile := p:ProjectNode:OutputFile
+						self:AddProjectOutput(sProject, outputFile)
 					endif
 				next
-				foreach str3 as string in list
+				foreach sProject as string in existing
 					//
-					self:_unprocessedProjectReferences:Remove(str3)
+					self:_unprocessedProjectReferences:Remove(sProject)
 				next
 			endif
 		
 		private method ResolveUnprocessedStrangerReferences() as void
-			local list as List<string>
-			local item as Project
-			local strangerOutputDLL as string
+			local existing as List<string>
+			local p as Project
+			local outputFile as string
 			//
 			if (self:_unprocessedStrangerProjectReferences:Count != 0)
 				//
-				list := List<string>{}
-				foreach str as string in self:_unprocessedStrangerProjectReferences
+				existing := List<string>{}
+				foreach sProject as string in self:_unprocessedStrangerProjectReferences
 					//
-					item := self:ProjectNode:FindProject(str)
-					if (item != null)
-						//
-						list:Add(str)
-						self:_StrangerProjects:Add(item)
-						strangerOutputDLL := self:GetStrangerOutputDLL(str, item)
-						self:AddProjectOutput(str, strangerOutputDLL)
+					p := self:ProjectNode:FindProject(sProject)
+					if (p != null)
+						existing:Add(sProject)
+						self:_StrangerProjects:Add(p)
+			                        outputFile := SELF:GetStrangerOutputDLL(sProject, p)
+			                        SELF:AddProjectOutput(sProject, outputFile)
 					endif
 				next
-				foreach str3 as string in list
+				foreach sProject as string in existing
 					//
-					self:_unprocessedStrangerProjectReferences:Remove(str3)
+					self:_unprocessedStrangerProjectReferences:Remove(sProject)
 				next
 			endif
 		
@@ -469,9 +467,9 @@ begin namespace XSharpModel
 		method UnLoad() as void
 			//
 			self:Loaded := false
-			foreach info as AssemblyInfo in self:_AssemblyReferences
+			foreach asm as AssemblyInfo in self:_AssemblyReferences
 				//
-				info:RemoveProject(self)
+				asm:RemoveProject(self)
 			next
 			self:_AssemblyReferences:Clear()
 		
@@ -491,32 +489,27 @@ begin namespace XSharpModel
 		// Properties
 		property AssemblyReferences as List<AssemblyInfo>
 			get
-				//
 				return self:_AssemblyReferences
 			end get
 		end property
 		
 		private property hasUnprocessedReferences as logic
 			get
-				//
 				return ((self:_unprocessedProjectReferences:Count + self:_unprocessedStrangerProjectReferences:Count) > 0)
 			end get
 		end property
 		
 		property Loaded as logic
 			get
-				//
 				return self:_loaded
 			end get
 			set
-				//
 				self:_loaded := value
 			end set
 		end property
 		
 		property Name as string
 			get
-				//
 				return System.IO.Path.GetFileNameWithoutExtension(self:ProjectNode:Url)
 			end get
 		end property
@@ -546,7 +539,7 @@ begin namespace XSharpModel
 		property OtherFiles as List<XFile>
 			get
 				//
-				return System.Linq.Enumerable.ToList<XFile>(self:xOtherFilesDict:Values)
+				return self:xOtherFilesDict:Values:ToList()
 			end get
 		end property
 		
@@ -580,7 +573,7 @@ begin namespace XSharpModel
 		property SourceFiles as List<XFile>
 			get
 				//
-				return System.Linq.Enumerable.ToList<XFile>(self:xSourceFilesDict:Values)
+				return self:xSourceFilesDict:Values:ToList()
 			end get
 		end property
 		
@@ -588,7 +581,7 @@ begin namespace XSharpModel
 			get
 				//
 				self:ResolveUnprocessedStrangerReferences()
-				return System.Collections.Immutable.ImmutableList.ToImmutableList<Project>(self:_StrangerProjects)
+				return self:_StrangerProjects:ToImmutableList()
 			end get
 		end property
 		

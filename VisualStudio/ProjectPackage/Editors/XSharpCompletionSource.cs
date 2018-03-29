@@ -2386,7 +2386,7 @@ namespace XSharpLanguage
             stopToken = null;
             // lex the entire document
             // Get compiler options
-            XSharpParseOptions parseoptions; ;
+            XSharpParseOptions parseoptions; 
             if (file != null)
             {
                 var prj = file.Project.ProjectNode;
@@ -2404,7 +2404,9 @@ namespace XSharpLanguage
             if (fromMember != null)
             {
                 // So the code of the member is....
-                bufferText = bufferText.Substring(fromMember.Interval.Start, fromMember.Interval.Width);
+                int nWidth = fromMember.Interval.Width;
+                nWidth = Math.Min(nWidth, bufferText.Length - fromMember.Interval.Start);
+                bufferText = bufferText.Substring(fromMember.Interval.Start, nWidth);
                 // Adapt the positions.
                 triggerPointPosition = triggerPointPosition - fromMember.Interval.Start;
                 triggerPointLineNumber = triggerPointLineNumber - (fromMember.Range.StartLine - 1);
@@ -2796,14 +2798,6 @@ namespace XSharpLanguage
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 #endif
-            // HACK: Disable looking up locals in large buffers ( > 100 Kb)
-            if (currentBuffer.Length < (100 * 1024))
-            {
-                if (!file.HasLocals)
-                {
-                    file.GetLocals(currentBuffer);
-                }
-            }
             foundElement = null;
             if (currentMember == null)
             {

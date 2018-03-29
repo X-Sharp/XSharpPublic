@@ -9,24 +9,29 @@ using System.Collections.Immutable
 using System
 using System.IO
 begin namespace XSharpModel
+    /// <summary>
+    /// We have one SystemTypeController in memory : It will handle all references types for all projects
+    /// Assemblies are stored inside a List of AssemblyInfo
+    /// </summary>
 	class SystemTypeController
 		#region fields
-		static private assemblies := ConcurrentDictionary<string, AssemblyInfo>{StringComparer.OrdinalIgnoreCase} as ConcurrentDictionary<string, XSharpModel.AssemblyInfo>
-		static private _mscorlib := null as AssemblyInfo
+		static private assemblies  	as ConcurrentDictionary<string, XSharpModel.AssemblyInfo>
+		static private _mscorlib 	as AssemblyInfo
 		#endregion
 
+		static constructor
+			assemblies := ConcurrentDictionary<string, AssemblyInfo>{StringComparer.OrdinalIgnoreCase} 
+			_mscorlib := null 
+			return 
+			
 		#region properties
 		// Properties
 		static property AssemblyFileNames as ImmutableList<string>
 			get
-				//
 				return SystemTypeController.assemblies:Keys:ToImmutableList()
 			end get
 		end property
-		
 		static property MsCorLib as AssemblyInfo get _mscorlib set _mscorlib := value
-		
-
 		#endregion
 
 		// Methods
@@ -41,13 +46,10 @@ begin namespace XSharpModel
 			return null
 		
 		static method FindAssemblyByName(fullName as string) as string
-			local info as AssemblyInfo
-			foreach var pair in assemblies
-				//
-				info := pair:Value
-				if (String.Compare(info:FullName, fullName, System.StringComparison.OrdinalIgnoreCase) == 0)
-					//
-					return info:FullName
+			foreach var item in assemblies
+				var asm := item:Value
+				if String.Compare(asm:FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0
+					return asm:FullName
 				endif
 			next
 			return null
@@ -111,10 +113,11 @@ begin namespace XSharpModel
 				next
 			endif
 			if assemblies != null
-				foreach var info in assemblies
-					if (info:ImplicitNamespaces != null)
-						foreach strNs as string in info:ImplicitNamespaces
-							type := Lookup(strNs+  "."+  typeName, assemblies)
+				foreach var asm in assemblies
+					if (asm:ImplicitNamespaces != null)
+						foreach strNs as string in asm:ImplicitNamespaces
+							var fullname := strNs + "." + typeName
+							type := Lookup(fullName, assemblies)
 							if type != null
 								return type
 							endif
@@ -122,6 +125,7 @@ begin namespace XSharpModel
 					endif
 				next
 			endif
+            // Also Check into the Functions Class for Globals/Defines/...
 			type := Lookup("Functions." + typeName, assemblies)
 			return type
 		
@@ -132,7 +136,7 @@ begin namespace XSharpModel
 					list:AddUnique( str)
 				next
 			next
-			return System.Collections.Immutable.ImmutableList.ToImmutableList<string>(list)
+			return list:ToImmutableList()
 		
 		static method LoadAssembly(cFileName as string) as AssemblyInfo
 			local info as AssemblyInfo
@@ -166,27 +170,28 @@ begin namespace XSharpModel
 			return LoadAssembly(path)
 		
 		static method Lookup(typeName as string, theirassemblies as IReadOnlyList<AssemblyInfo>) as System.Type
-			local type as System.Type
-			type := null
-			foreach var info in theirassemblies
-				if (info:Types:Count == 0)
-					info:UpdateAssembly()
+			local sType as System.Type
+			sType := null
+			foreach var assembly in theirassemblies
+				if (assembly:Types:Count == 0)
+					assembly:UpdateAssembly()
 				endif
-				if (info:Types:TryGetValue(typeName, out type))
+				if (assembly:Types:TryGetValue(typeName, out sType))
 					exit
 					
 				endif
-				if (info != null)
-					type := info:GetType(typeName)
+				if (assembly != null)
+					sType := assembly:GetType(typeName)
 				endif
-				if type != null
+				if sType != null
 					exit
 				endif
 			next
-			if type == null .AND. mscorlib != null
-				type := mscorlib:GetType(typeName)
+			if sType == null .AND. mscorlib != null
+                // check mscorlib 
+				sType := mscorlib:GetType(typeName)
 			endif
-			return type
+			return sType
 		
 		static method RemoveAssembly(cFileName as string) as void
 			local info as AssemblyInfo
@@ -195,21 +200,23 @@ begin namespace XSharpModel
 			endif
 		
 		static method UnloadUnusedAssemblies() as void
-			local list as List<string>
-			local info as AssemblyInfo
-			list := List<string>{}
-			foreach var pair in assemblies
-				if ! pair:Value:HasProjects 
-					list:Add(pair:Key)
+			local unused as List<string>
+			unused := List<string>{}
+            // collect list of assemblies which are no longer in use
+			foreach var asm in assemblies
+				if ! asm:Value:HasProjects 
+					unused:Add(asm:Key)
 				endif
 			next
-			foreach str as string in list
-				assemblies:TryRemove(str, out info)
+			foreach key as string in unused
+				local info as AssemblyInfo
+				assemblies:TryRemove(key, out info)
 			next
+            // when no assemblies left, then unload mscorlib
 			if (assemblies:Count == 0)
 				mscorlib := null
 			endif
-			System.GC.Collect()
+			GC.Collect()
 		
 		
 		

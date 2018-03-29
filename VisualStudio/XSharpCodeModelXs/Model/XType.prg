@@ -5,6 +5,7 @@
 //
 using System
 using System.Collections.Generic
+using System.Collections.Immutable
 using System.Linq
 using System.Text
 using System.Threading.Tasks
@@ -14,30 +15,54 @@ using System.Diagnostics
 using System.Collections.Immutable
 
 begin namespace XSharpModel
+    /// <summary>
+    /// Model for Namespace, Class, Interface, Structure, Enum
+    /// </summary>
 	[DebuggerDisplay("{FullName,nq}")];
 	class XType inherit XElement
-		// Fields
 		private _isPartial as logic
 		private _members as List<XTypeMember>
 		private _nameSpace as string
 		private _parentName as string
-		const public GlobalName := "(Global Scope)" as string
 		
-		// Methods
-		constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, span as TextRange, position as TextInterval)
+		constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, ;
+			span as TextRange, position as TextInterval)
 			super(name, kind, modifiers, visibility, span, position)
-			//
+
 			self:_members := List<XTypeMember>{}
 			self:_parentName := "System.Object"
 			self:_nameSpace := ""
 			if modifiers:HasFlag(Modifiers.Static)
-				super:_isStatic := true
+				self:_isStatic := true
 			endif
 			if modifiers:HasFlag(Modifiers.Partial)
-				//
 				self:_isPartial := true
 			endif
 		
+
+		static method create(oFile as XFile, oElement as EntityObject, oInfo as ParseResult) as XType
+			local cName := oElement:cName as STRING
+			local kind  := Etype2Kind(oElement:eType) as Kind
+			local mods  := oElement:eModifiers:ToModifiers() as Modifiers
+			local vis   := oElement:eAccessLevel:ToModifiers() as Modifiers
+			local span  as TextRange
+			local intv  as TextInterval
+			local oResult as XType
+			
+			CalculateRange(oElement, oInfo, out span, out intv)
+			oResult := XType{cName, kind, mods, vis, span, intv}
+			oResult:File := oFile
+			if oElement:eType:IsClass()
+				foreach var oMember in oElement:aChildren
+					local xMember as XTypeMember
+					xMember := XTypeMember.create(oMember, oInfo, oFile)
+					xMember:Parent := oResult
+					oResult:AddMember(xMember)
+				next
+			endif
+			return oResult
+
+
 		method AddMember(oMember as XTypeMember) as void
 			begin lock self:_members
 				self:_members:Add(oMember)
@@ -47,57 +72,73 @@ begin namespace XSharpModel
 			begin lock self:_members
 				self:_members:AddRange(members)
 			end lock
+		property Members as IImmutableList<XTypeMember>
+			get
+				//
+				begin lock self:_members
+					//
+					return self:_members:ToImmutableArray()
+				end lock
+			end get
+		end property
 		
-		static method CreateGlobalType(xfile as XFile) as XType
-			//
-			var oType := XType{GlobalName, Kind.Class, Modifiers.None, Modifiers.Public, TextRange{1, 1, 1, 1}, TextInterval{}} 
-			oType:IsPartial:=true
-			oType:IsStatic:=true
-			oType:File:=xfile
-			return oType
-		
-		method Duplicate() as XType
-			var type := XType{super:Name, super:Kind, super:Modifiers, super:Visibility, super:Range, super:Interval} 
-			type:AddMembers(self:Members)
-			return type
 		
 		method GetMember(elementName as string) as IImmutableList<XTypeMember>
-			var list := List<XTypeMember>{} 
-			foreach oMember as XTypeMember in self:Members
-				if nameEquals(oMember:Name, elementName) 
-					list:Add(oMember)
+			var tempMembers := List<XTypeMember>{} 
+			foreach x as XTypeMember in self:Members
+				if nameEquals(x:Name, elementName) 
+					tempMembers:Add(x)
 				endif
 			next
-			return ImmutableArray.ToImmutableArray<XTypeMember>(list)
+			return tempMembers:ToImmutableArray();
+
+		private method nameEquals(name as string, compareWith as string) as logic
+			return String.Compare(name, compareWith, StringComparison.OrdinalIgnoreCase) == 0
+	
+	
+		property FullName as string
+			get
+				if (! String.IsNullOrEmpty(self:_nameSpace))
+					return self:NameSpace + "." + super:Name
+				endif
+				return super:Name
+			end get
+		end property
+			
 		
-		static method IsGlobalType(type as XType) as logic
-			return type:Name == GlobalName
 		
+		
+	    /// <summary>
+        /// Merge two XType Objects : Used to create the resulting  XType from partial classes
+        /// </summary>
+        /// <param name="otherType"></param>
 		method Merge(otherType as XType) as XType
-			local type as XType
-			type := self:Duplicate()
+			local clone as XType
+			clone := self:Duplicate()
 			if (String.Compare(otherType:File:FullPath, super:File:FullPath, System.StringComparison.OrdinalIgnoreCase) != 0) .OR. (super:Range:StartLine != otherType:Range:StartLine)
 				self:IsPartial := true
 				if otherType != null
-					type:AddMembers(otherType:Members)
-					if type:Parent == null .AND. otherType:Parent != null
-						type:Parent := otherType:Parent
+					clone:AddMembers(otherType:Members)
+					if clone:Parent == null .AND. otherType:Parent != null
+						clone:Parent := otherType:Parent
 					else
-						if type:ParentName == null .AND. otherType:ParentName != null
-							type:ParentName := otherType:ParentName
+						if clone:ParentName == null .AND. otherType:ParentName != null
+							clone:ParentName := otherType:ParentName
 						endif
 					endif
 				endif
 			endif
-			return type
+			return clone
 		
 		
 		property NameSpace as string get _namespace set _namespace := value
-		private method nameEquals(name as string, compareWith as string) as logic
-			return name:ToLower():CompareTo(compareWith:ToLower()) == 0
 		
 		
-		// Properties
+        /// <summary>
+        /// If this XType is a Partial type, return a Copy of it, merged with all other informations
+        /// coming from other files.
+        /// </summary>
+
 		property Clone as XType
 			get
 				if (self:IsPartial)
@@ -107,65 +148,52 @@ begin namespace XSharpModel
 			end get
 		end property
 		
-		virtual property Description as string
+		property Description as string
 			get
-				var str := ""
+				var modVis := ""
 				if (super:Kind == Kind.Class)
 					if (super:Modifiers != Modifiers.None)
-						str := String.Concat(str, super:Modifiers:ToString(), " ")
+						modVis := modVis + super:Modifiers:ToString()+  " "
 					endif
-					str := String.Concat(str, super:Visibility:ToString(), " ")
+					modVis := modVis + super:Visibility:ToString()+ " "
 				endif
-				var str2 := str
+			
 				if (super:Kind == Kind.Keyword)
-					return String.Concat(super:Name, " ", super:Kind:ToString())
+					return super:Name + " " + super:Kind:ToString()
 				endif
-				return String.Concat(String.Concat(str2, super:Kind:ToString(), " "), self:Prototype)
+				return modVis + super:Kind:ToString() + " " + self:Prototype
 			end get
 		end property
 		
-		virtual property FullName as string
-			get
-				if (! String.IsNullOrEmpty(self:_nameSpace))
-					return String.Concat(self:NameSpace, ".", super:Name)
-				endif
-				return super:Name
-			end get
-		end property
 		
 		property IsPartial as logic get self:_isPartial set self:_isPartial := value
 		
 		property IsType as logic
 			get
-				//
-
 				switch super:Kind
-					case Kind.Enum 
-					case Kind.VOStruct 
-					case Kind.Union 
 					case Kind.Class 
 					case Kind.Structure 
+					case Kind.VOStruct 
+					case Kind.Union 
 					case Kind.Interface 
-						//
+					case Kind.Enum
 						return true
 				end switch
 				return false
 			end get
 		end property
 		
-		property Members as IImmutableList<XTypeMember>
-			get
-				//
-				begin lock self:_members
-					//
-					return ImmutableArray.ToImmutableArray<XTypeMember>(self:_members)
-				end lock
-			end get
-		end property
+        /// <summary>
+        /// Duplicate the current Object, so we have the same properties in another object
+        /// </summary>
+        /// <returns></returns>
+		method Duplicate() as XType
+			var temp := XType{super:Name, super:Kind, super:Modifiers, super:Visibility, super:Range, super:Interval} 
+			temp:AddMembers(self:Members)
+			return temp
 		
 		
-		
-		virtual property ParentName as string
+		property ParentName as string
 			get
 				if (super:Parent != null)
 					return super:Parent:Name
@@ -184,6 +212,16 @@ begin namespace XSharpModel
 		end property
 		
 		
+		static method CreateGlobalType(xfile as XFile) as XType
+			var globalType := XType{GlobalName, Kind.Class, Modifiers.None, Modifiers.Public, TextRange{1, 1, 1, 1}, TextInterval{}} 
+			globalType:IsPartial:=true
+			globalType:IsStatic:=true
+			globalType:File:=xfile
+			return globalType
+
+		static method IsGlobalType(type as XType) as logic
+			return type:Name == XType.GlobalName
+
 	end class
 	
 end namespace 

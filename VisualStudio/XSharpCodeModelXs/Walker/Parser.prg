@@ -26,6 +26,7 @@ begin namespace XSharpModel
 		static protect oDirectives as Dictionary<string , string>
 		static protect hBrk as Dictionary<char,char>
 		static protect aTokenIn as string[]
+		static protect aTokenInOut as string[]
 		static protect aTokenOut as string[]
 		static protect aEntityWords as string[]
 		static protect aOperators as char[]
@@ -49,13 +50,13 @@ begin namespace XSharpModel
 			self:aLinesWithSpecialStuff := List<LineObject>{}
 			self:aLines					:= List<LineObject>{}
 
-			self:aTypeStack				:= Stack<EntityObject>{}
-			self:oGlobalObject			:= EntityObject{EntityType._Class}
-			self:oGlobalObject:cName    := "(Global Scope)"
-			self:oGlobalObject:lStatic  := true
-			self:oGlobalObject:lPartial := true
+			self:aTypeStack					:= Stack<EntityObject>{}
+			self:oGlobalObject				:= EntityObject{EntityType._Class}
+			self:oGlobalObject:cName		:= XELement.GlobalName
+			self:oGlobalObject:lStatic		:= true
+			self:oGlobalObject:lPartial		:= true
 			self:oGlobalObject:nStartLine	:= 1
-			self:oGlobalObject:nCol		:= 1
+			self:oGlobalObject:nCol			:= 1
 		
 		
 		static constructor()
@@ -63,7 +64,8 @@ begin namespace XSharpModel
 			oEntityVisibility := Dictionary<string , string>{}
 			oDirectives := Dictionary<string , string>{}
 			hBrk := Dictionary<char,char>{}
-			aTokenIn := <string>{"IF", "ELSE", "ELSEIF", "DO", "WHILE", "CASE", "OTHERWISE", "FOR", "FOREACH", "TRY", "CATCH", "FINALLY", "RECOVER", "REPEAT", "SWITCH"} 
+			aTokenIn := <string>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH"} 
+			aTokenInOut := <string>{"ELSE", "ELSEIF", "CASE", "OTHERWISE", "CATCH", "FINALLY", "RECOVER" } 
 			aTokenOut := <string>{"ENDIF", "ENDDO", "ENDCASE", "NEXT", "ENDTRY", "UNTIL"}
 			aEntityWords := <string>{"EVENT" , "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"} 
 			aOperators := <char>{'+','-','*','/','%','&','|','>','<','=','!','~'}
@@ -159,7 +161,7 @@ begin namespace XSharpModel
 		property Entities		as IList<EntityObject>	get aEntities				
 		property Types		    as IList<EntityObject>	get aResult
 		property SpecialLines	as IList<LineObject>	get aLinesWithSpecialStuff 
-		property SourceLength   as int					get _nLength
+		property SourceLength   as int					get _nLength -2 // exclude last CRLF
 		property LineCount      as int					get aSourceLines:Count
 
 		method AddEntity(oInfo as EntityObject, oLine as LineObject) as void
@@ -780,6 +782,9 @@ begin namespace XSharpModel
 								state:lLocal := true
 								state:lImpliedLocal := false
 							end if
+							if cUpperWord == "FOREACH"
+								_SetLineType(oStatementLine, LineType.TokenIn)
+							endif
 						case lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. (cUpperWord == "VAR" .and. state:lFirstWord)
 							state:lVisFound := true
 							if cUpperWord == "VAR"
@@ -1108,6 +1113,8 @@ begin namespace XSharpModel
 										var oParam := oInfo:AddParam(cWord)
 										oParam:nCol := nChar - cWord:Length
 										state:lParam := true
+									else
+										oCurrentMethod:lExtension := true
 									end if
 								end if
 							endif
@@ -1153,7 +1160,7 @@ begin namespace XSharpModel
 							lInEnum := false
 							eStep := ParseStep.AfterEnd
 							_SetLineType(oStatementLine, LineType.TokenOut)
-							oStatementLine:cArgument := "END"
+							oStatementLine:cArgument := cUpperWord
 						case eStep == ParseStep.AfterEnd
 							state:lIgnore := true
 							lInEnum := false
@@ -1240,7 +1247,10 @@ begin namespace XSharpModel
 								aLocals:Add(oInfo)
 							end if
 						case state:lFirstWord .or. state:lFirstChar
-							if System.Array.IndexOf(aTokenIn, cUpperWord) != -1
+							if System.Array.IndexOf(aTokenInOut, cUpperWord) != -1
+								_SetLineType(oStatementLine, LineType.TokenInOut)
+								oStatementLine:cArgument := cUpperWord
+							elseif System.Array.IndexOf(aTokenIn, cUpperWord) != -1
 								_SetLineType(oStatementLine, LineType.TokenIn)
 								oStatementLine:cArgument := cUpperWord
 							elseif System.Array.IndexOf(aTokenOut , cUpperWord) != -1
@@ -1404,6 +1414,16 @@ begin namespace XSharpModel
 					return true
 				end switch
 				return false
+
+		static method NeedsEndKeyword(self e as EntityType) as logic
+			switch e
+				case EntityType._Class
+				case EntityType._Structure
+				case EntityType._Interface
+				case EntityType._Enum
+					return true
+				end switch
+				return false
 		
 	end class
 	
@@ -1468,6 +1488,7 @@ begin namespace XSharpModel
 		property oParent as EntityObject auto
 		property aChildren as IList<EntityObject> auto
 		property oNext as EntityObject auto
+		property oCargo as object auto
 		
 		internal constructor()
 			super()
@@ -1485,6 +1506,7 @@ begin namespace XSharpModel
 		internal method AddChild(oChild as EntityObject) as void
 			self:aChildren:Add(oChild)
 			oChild:oParent := self
+			return
 		
 		internal access IsFuncProcGlobal as logic
 			return self:eType == EntityType._Function .or. self:eType == EntityType._Procedure .or. self:eType == EntityType._Global
@@ -1673,6 +1695,7 @@ begin namespace XSharpModel
 		member RegionIn
 		member RegionOut
 		member TokenIn
+		member TokenInOut
 		member TokenOut
 		member BeginNamespace
 		member EndNamespace

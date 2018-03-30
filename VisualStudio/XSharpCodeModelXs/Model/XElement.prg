@@ -153,23 +153,20 @@ begin namespace XSharpModel
 			local nPosStart, nPosEnd as long
 			nLineStart := oElement:nStartLine  // parser has 1 based lines and columns
 			nLineEnd   := oElement:nStartLine
-			if oElement:oNext != NULL_OBJECT
+			nColStart  := oElement:nCol
+			nPosStart  := oElement:nOffSet
+			if oElement:cName == GlobalName
+				nLineEnd   := nLineStart		
+				nColEnd    := nColStart
+			elseif oElement:oNext != NULL_OBJECT
 				nLineEnd := oElement:oNext:nStartLine -1
 				nPosEnd  := oElement:oNext:nOffSet -2		// subtract CRLF
 			else
-				nLineEnd   := oInfo:LineCount
-				nPosEnd    := oInfo:SourceLength
+				nLineEnd   := nLineStart		
+				nColEnd    := nColStart
+				nPosEnd    := oInfo:SourceLength-2
 			endif
-			nColStart  := oElement:nCol
-			nPosStart  := oElement:nOffSet
 			oLast := oElement
-			if oElement:eType:IsClass() //.and. oElement:aChildren:Count > 0
-				oLast := oElement:aChildren:LastOrDefault()
-				if (oLast:oNext != null)
-					nLineEnd := oLast:oNext:nStartLine -1
-					nPosEnd  := oLast:oNext:nOffSet -2		// subtract CRLF
-				endif
-			endif
 			span	 := TextRange{nLineStart, nColStart, nLineEnd, nColEnd}
 			interval := TextInterval{nPosStart, nPosEnd}
 			return

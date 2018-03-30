@@ -178,7 +178,7 @@ namespace XSharp.CodeDom
                 return (_members[name].MemberType | mtype) != 0;
             }
             bool result = false;
-            XElement element = baseType.Members.Find(x => String.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            XElement element = baseType.Members.Where(x => String.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             if (element != null)
             {
                 System.Type t = typeof(void);

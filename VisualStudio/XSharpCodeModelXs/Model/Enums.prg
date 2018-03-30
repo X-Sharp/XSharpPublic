@@ -82,6 +82,7 @@ begin namespace XSharpModel
 		member @@Protected:=0x08
 		member @@Public:=0x10
 		member @@Export:=0x10
+		member @@VisibilityMask := 0xFF
 		member @@Abstract:=0x100
 		member @@New:=0x200
 		member @@Partial:=0x400

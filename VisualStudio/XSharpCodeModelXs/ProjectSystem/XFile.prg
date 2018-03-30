@@ -15,14 +15,15 @@ begin namespace XSharpModel
 	[DebuggerDisplay("{FullPath,nq}")];
 	class XFile
 		// Fields
-		private _globalType as XType
-		private _lastWritten as System.DateTime
-		private _lock as object
-		private _parsed as logic
-		private _type as XFileType
-		private _typeList as ConcurrentDictionary<string, XType>
-		private _usings := List<string>{} as List<string>
-		private _usingStatics := List<string>{} as List<string>
+		private _globalType		as XType
+		private _lastWritten	as System.DateTime
+		private _lock			as object
+		private _parsed			as logic
+		private _type			as XFileType
+		private _typeList		as ConcurrentDictionary<string, XType>
+		private _entityList		as IList<XElement>
+		private _usings			as List<string>
+		private _usingStatics	as List<string>
 		private filePath as string
 		private _project as XProject
 		
@@ -36,6 +37,7 @@ begin namespace XSharpModel
 			self:_parsed := ! self:HasCode
 			self:_lock := object{}
 			self:_lastWritten := System.DateTime.MinValue
+
 		
 		method FirstMember() as XTypeMember
 			if (! self:HasCode)
@@ -48,18 +50,53 @@ begin namespace XSharpModel
 				var element := self:TypeList:FirstOrDefault()
 				return element:Value:Members:FirstOrDefault()
 			end
-		
+		///
+		/// <Summary>Find member in file based on 0 based line number</Summary>
+		///
+		///
+		method FindMemberAtRow(nLine as long) as XElement
+			local oResult := null_object as XElement
+			nLine += 1
+			foreach oMember as XElement in _entityList
+				if oMember:Range:StartLine > nLine
+					exit
+				endif
+				if oMember:Range:StartLine <= nLine .and. oMember:Range:EndLine >= nLine
+					oResult := oMember
+					exit
+				endif
+			next
+			return oResult
+		///
+		/// <Summary>Find member in file based on 0 based position</Summary>
+		///
+		///
+		method FindMemberAtPosition(nPos as long) as XElement
+			local oResult := null_object as XElement
+			foreach oMember as XElement in _entityList
+				if oMember:Interval:Start > nPos
+					exit
+				endif
+				if oMember:Interval:Start <= nPos .and. oMember:Interval:Stop >= nPos
+					oResult := oMember
+					exit
+				endif
+			next
+			return oResult
+
 		
 		method InitTypeList() as void
 			if self:HasCode
-				self:_typeList := ConcurrentDictionary<string, XType>{System.StringComparer.InvariantCultureIgnoreCase}
-				self:_globalType := XType.CreateGlobalType(self)
+				self:_typeList		:= ConcurrentDictionary<string, XType>{System.StringComparer.InvariantCultureIgnoreCase}
+				self:_globalType	:= XType.CreateGlobalType(self)
 				self:_typeList:TryAdd(self:_globalType:Name, self:_globalType)
-				self:_usings := List<string>{}
-				self:_usingStatics := List<string>{}
+				self:_usings		:= List<string>{}
+				self:_usingStatics	:= List<string>{}
+				self:_entityList    := List<XElement>{}
 			endif
 		
-		method SetTypes(types as IDictionary<string, XType>, usings as IList<string>, staticusings as IList<string>) as void
+		method SetTypes(types as IDictionary<string, XType>, usings as IList<string>, ;
+			staticusings as IList<string>, aEntities as IList<XElement>) as void
 			if self:HasCode
 				System.Diagnostics.Trace.WriteLine(String.Concat("-->> XFile.SetTypes() ", System.IO.Path.GetFileName(self:SourcePath)))
 				begin lock self
@@ -74,6 +111,7 @@ begin namespace XSharpModel
 					next
 					self:_usings:AddRange(usings)
 					self:_usings:AddRange(staticusings)
+					self:_entityList := aEntities
 				end lock
 				System.Diagnostics.Trace.WriteLine(String.Concat("<<-- XFile.SetTypes() ", System.IO.Path.GetFileName(self:SourcePath), " ", self:_typeList:Count:ToString()))
 			endif
@@ -83,6 +121,7 @@ begin namespace XSharpModel
 			local aUsings		  as List<string>
 			local aUsingStatics   as List<String>
 			local oType		      as XType
+			local aEntities		  as List<XElement>
 			aTypes  := Dictionary<string, XType>{}
 			aUsings			:= List<string>{}
 			aUsingStatics	:= List<String>{}
@@ -101,7 +140,14 @@ begin namespace XSharpModel
 					endif
 				endif
 			next
-			self:SetTypes(aTypes, aUsings, aUsingStatics)
+			// get our objects in file order from the oInfo:Entities list
+			aEntities := List<XELement>{}
+			foreach oElement as EntityObject in oInfo:Entities
+				if oElement:oCargo != null_object
+					aEntities:add ( (XElement) oElement:oCargo)
+				endif
+			next
+			self:SetTypes(aTypes, aUsings, aUsingStatics, aEntities:ToImmutableArray())
 			return
 
 

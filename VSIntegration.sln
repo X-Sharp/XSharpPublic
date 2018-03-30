@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpColorizer", "VisualSt
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XPorter", "VisualStudio\XPorter\XPorter.xsproj", "{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpModel", "VisualStudio\XSharpModel\XSharpModel.csproj", "{2C3B9217-E012-4681-97CE-F0A658C40336}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpModelCs", "VisualStudio\XSharpModel\XSharpModelCs.csproj", "{2C3B9217-E012-4681-97CE-F0A658C40336}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupCheck2017", "VisualStudio\SetupCheck\SetupCheck2017.csproj", "{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}"
 EndProject
@@ -32,7 +32,9 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVoEditors", "VisualSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpDebugger", "VisualStudio\XSharpDebugger\XSharpDebugger.csproj", "{16272550-75E6-4B9D-91E3-653BD141C755}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpCodeModelXs", "VisualStudio\XSharpCodeModelXs\XSharpCodeModelXs.xsproj", "{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpModelXs", "VisualStudio\XSharpCodeModelXs\XSharpModelXs.xsproj", "{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XsCodeModelTest", "VisualStudio\XsCodeModelTest\XsCodeModelTest.xsproj", "{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +132,14 @@ Global
 		{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}.Release|x86.ActiveCfg = Release|Any CPU
 		{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}.Release|x86.Build.0 = Release|Any CPU
+		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Debug|x86.Build.0 = Debug|Any CPU
+		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Release|x86.ActiveCfg = Release|Any CPU
+		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

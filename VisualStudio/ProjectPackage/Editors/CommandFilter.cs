@@ -253,7 +253,7 @@ namespace XSharp.Project
                 if (file == null)
                     return;
                 // Check if we can get the member where we are
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
 
                 // Then, the corresponding Type/Element if possible
@@ -529,7 +529,7 @@ namespace XSharp.Project
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 // Check if we can get the member where we are
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
                 List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
@@ -723,7 +723,7 @@ namespace XSharp.Project
                         string identifier = idSpan.GetText();
                         //
                         XFile _file = buffer.GetFile();
-                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.Position, _file);
+                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.GetContainingLine().LineNumber, _file);
                         //
                         if (currentMember == null)
                             continue;
@@ -732,12 +732,16 @@ namespace XSharp.Project
                         XVariable element = null;
                         // Search in Parameters
                         if (currentMember.Parameters != null)
-                            element = currentMember.Parameters.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                        {
+                            element = (XVariable) currentMember.Parameters.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
+                        }
                         if (element == null)
                         {
                             // then Locals
                             if (currentMember.Locals != null)
-                                element = currentMember.Locals.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                            {
+                                element = currentMember.Locals.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
+                            }
                             if (element == null)
                             {
                                 if (currentMember.Parent != null)

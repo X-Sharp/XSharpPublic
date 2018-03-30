@@ -5,6 +5,7 @@
 //
 using LanguageService.CodeAnalysis.XSharp
 using System
+using System.IO
 using System.Collections.Generic
 using System.Linq
 using System.Text
@@ -52,7 +53,7 @@ begin namespace XSharpModel
 					foreach line as ITextSnapshotline in self:_snapshot:Lines
 						aLines:Add(line:GetText())
 					next
-					self:_lines := aLines
+					self:_lines := aLines:ToArray()
 					self:_tokenStream := null
 				end set
 			end property

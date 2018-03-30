@@ -453,7 +453,7 @@ namespace XSharp.Project
                 // Parameters ?
                 if (this.NodeType == LibraryNodeType.Members)
                 {
-                    if (((XTypeMember)member).Parameters.Count > 0)
+                    if (((XTypeMember)member).HasParameters)
                     {
                         descText = "(";
                         description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
@@ -469,7 +469,7 @@ namespace XSharp.Project
                             //
                             description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, navInfo);
                             // Need a comma ?
-                            if (paramNum < ((XTypeMember)member).Parameters.Count)
+                            if (paramNum < ((XTypeMember)member).ParameterCount)
                             {
                                 paramNum++;
                                 descText = ",";

@@ -139,15 +139,28 @@ namespace XSharpColorizer
                         //
                         if (startLine.LineNumber <= endLineNumber && endLine.LineNumber >= startLineNumber)
                         {
-                            SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, endLine.End);
+                            SnapshotSpan sSpan;
+                            try
+                            {
+                                sSpan = new SnapshotSpan(startLine.Start, endLine.End);
+                            }
+                            catch (Exception e)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Incorrect span " + e.Message);
+                                sSpan = new SnapshotSpan(startLine.Start, startLine.Start);
+                            }
                             hoverText = sSpan.GetText();
+                            if (hoverText.Length > 1024)
+                            {
+                                hoverText = hoverText.Substring(0, 1024)+"\r\n......";
+                            }
                             //
                             sSpan = new SnapshotSpan(startLine.Start, startLine.End);
                             String lineText = sSpan.GetText();
-                           ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
+                            ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
                             yield return new TagSpan<IOutliningRegionTag>(
                                 new SnapshotSpan(startLine.End, endLine.End),
-                                new OutliningRegionTag(false, true, ellipsis, hoverText));
+                                new OutliningRegionTag(false, true, ellipsis+" "+startTag.Span.GetText(), hoverText));
                         }
                     }
                 }

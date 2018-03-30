@@ -16,7 +16,7 @@ local cFileName as string
 return	
 
 
-		function ParseAndDisplay(aLineCollection as IEnumerable<String>) as void
+		function ParseAndDisplay(aLineCollection as IList<String>) as void
 		local nLineCount as int
 		local d as DateTime
 		

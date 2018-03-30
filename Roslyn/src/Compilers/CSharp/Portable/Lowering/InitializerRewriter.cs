@@ -86,6 +86,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var syntax = fieldInit.Syntax;
             var boundReceiver = fieldInit.Field.IsStatic ? null :
                                         new BoundThisReference(syntax, fieldInit.Field.ContainingType);
+
 #if XSHARP
             var initValue = fieldInit.InitialValue;
             // a generated initial value for VO NULL_STRING initialization
@@ -131,7 +132,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     { WasCompilerGenerated = true })
                 { WasCompilerGenerated = fieldInit.WasCompilerGenerated };
 #endif
-            Debug.Assert(LocalRewriter.IsFieldOrPropertyInitializer(boundStatement)); 
+            Debug.Assert(LocalRewriter.IsFieldOrPropertyInitializer(boundStatement));
             return boundStatement;
         }
 

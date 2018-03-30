@@ -74,15 +74,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 isIndexer = false;
                 _isIndexedProperty = true;
             }
-            if (syntax.XNode != null)
-                _location = syntax.XNode.GetLocation();
-            else
-                _location = location;
-#else
-            _location = location;
 #endif
 
-
+            _location = location;
             _containingType = containingType;
             _syntaxRef = syntax.GetReference();
             syntax.Type.SkipRef(out _refKind);

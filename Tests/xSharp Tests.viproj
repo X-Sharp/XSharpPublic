@@ -30909,7 +30909,7 @@ FileGUID = 09ADA900-3379-4524-9DA0-7927480D3EBA
 FileType = Code
 [C312 - PCALL complete sample References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C312 - PCALL complete sample Resources]
@@ -32512,7 +32512,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C327 - cannot convert DWORD to IntPtr Resources]
 [C327 - cannot convert DWORD to IntPtr Native Resources]
 [C327 - cannot convert DWORD to IntPtr License files]
@@ -33113,7 +33113,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C333 - PCALL() with class field PTR Resources]
 [C333 - PCALL() with class field PTR Native Resources]
 [C333 - PCALL() with class field PTR License files]
@@ -34314,7 +34314,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C345 - Problem passing string as PSZ parameter Resources]
 [C345 - Problem passing string as PSZ parameter Native Resources]
 [C345 - Problem passing string as PSZ parameter License files]
@@ -34615,8 +34615,8 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
 [C348 - Incorrect error about mixing STRICT/CLIPPER Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER Native Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER License files]
@@ -34817,7 +34817,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C350 - Problem passing VOSTRUCT as parameter Resources]
 [C350 - Problem passing VOSTRUCT as parameter Native Resources]
 [C350 - Problem passing VOSTRUCT as parameter License files]
@@ -35118,7 +35118,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C353 - Some issues with VOSTRUCTs Resources]
 [C353 - Some issues with VOSTRUCTs Native Resources]
 [C353 - Some issues with VOSTRUCTs License files]
@@ -35219,7 +35219,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
 [C354 - No error with missing /ins compiler option Resources]
 [C354 - No error with missing /ins compiler option Native Resources]
 [C354 - No error with missing /ins compiler option License files]
@@ -38018,7 +38018,7 @@ FileType = Code
 [C381 - Helpdisplay References]
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C381 - Helpdisplay Resources]
 [C381 - Helpdisplay Native Resources]
 [C381 - Helpdisplay License files]
@@ -38619,7 +38619,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = External , %AppPath%\Prg\C386.rc
@@ -46037,7 +46037,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -49764,9 +49764,9 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C493 - VO compatibility isssues with VOSTRUCTs Resources]
 [C493 - VO compatibility isssues with VOSTRUCTs Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C493.rc
@@ -50570,7 +50570,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanVOInternetClasses,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C501 - Error about ambiguous function (used to be a warning) Resources]
 [C501 - Error about ambiguous function (used to be a warning) Native Resources]
 [C501 - Error about ambiguous function (used to be a warning) License files]
@@ -54685,10 +54685,10 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Resources]
 [C541 - Runtime AccessViolationException with VOSTRUCT and PSZ Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\C541.rc
@@ -55092,7 +55092,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C545 - Problem using _DLL FUNCs with __arglist params Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params Native Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params License files]
@@ -60542,7 +60542,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C596 - VO allows also LOCAL STATIC
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C597 - /vo16 does not apply ClipperCallingConvention attribute to constructors inherited from external library *************
 Application = C597 - /vo16 does not apply ClipperCallingConvention attribute to constructors inherited from external library
 IDEVersion = 1.06
@@ -60643,7 +60643,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C597 - /vo16 does not apply ClipperCallingConvention attribute to constructors inherited from external library
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C597_helper *************
 Application = C597_helper
 IDEVersion = 1.06
@@ -60843,7 +60843,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C598 - Another case of no line/col info supplied in error message in ACCESS in PARTIAL CLASS
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C599 - Bogus error when using ++/-- in alias expression *************
 Application = C599 - Bogus error when using ++/-- in alias expression
 IDEVersion = 1.06

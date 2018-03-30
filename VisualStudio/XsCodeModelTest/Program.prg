@@ -17,37 +17,37 @@ return
 
 
 		function ParseAndDisplay(aLineCollection as IList<String>) as void
-		local nLineCount as int
+		local oInfo as ParseResult
 		local d as DateTime
 		
 		? "Starting parsing..."
 		d := DateTime.Now
 		//LineObject.LinesWithSpecialStuff:Clear()
 		var parser := Parser{}
-		nLineCount   := parser:Parse(aLineCollection)
+		oInfo   := parser:Parse(aLineCollection)
 		? "Parsing completed!"
 		?
 		? "Time elapsed:" , DateTime.Now - d
 		?
-		? "Total Lines:" , nLineCount
+		? "Total Lines:" , oInfo:LineCount
 		//? "Entities:" , Parser:Entities:Count
-		? "Types:" , Parser:Types:Count
+		? "Types:" , oInfo:Types:Count
 		//? "Directives, block commands etc:" , LineObject.LinesWithSpecialStuff:Count
 		?
 		? "Press enter to list info"
 		Console.ReadLine()
 		?
 		? "Types:"
-		foreach oEntity as EntityObject in Parser:Types
-			? "Line:" , oEntity:nLine ,"Type:" , oEntity:eType , "Name:" , oEntity:cName ,  "Children", oEntity:aChildren:Count
+		foreach oEntity as EntityObject in oInfo:Types
+			? "Line:" , oEntity:nStartLine ,"Type:" , oEntity:eType , "Name:" , oEntity:cName ,  "Children", oEntity:aChildren:Count
 			? "Children:"
 			foreach oChild as EntityObject in oEntity:aChildren
-				? "  line:" , oChild:nLine , "Type:" , oChild:eType, "Name:" , oChild:cName ,  "Return Type =", oChild:cRetType
+				? "  line:" , oChild:nStartLine , "Type:" , oChild:eType, "Name:" , oChild:cName ,  "Return Type =", oChild:cRetType
 				if oChild:aChildren:Count > 0
 					?? "  Locals: ", oChild:aChildren:Count
 				endif
 				foreach oLocal as EntityObject in oChild:aChildren
-					? "      Line:" , oLocal:nLine , "Type:" , oLocal:eType , "Name:" , oLocal:cName ,  "Return Type =", oLocal:cRetType
+					? "      Line:" , oLocal:nStartLine , "Type:" , oLocal:eType , "Name:" , oLocal:cName ,  "Return Type =", oLocal:cRetType
 				next
 				if oChild:aParams != null
 					? "  Parameters: ", oChild:aParams:Count

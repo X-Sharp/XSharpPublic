@@ -173,7 +173,7 @@ namespace XSharp.Project.Editors.HighlightWord
                 if (xFile != null)
                 {
                     // Now, retrieve the current member
-                    XSharpModel.XTypeMember member = XSharpTokenTools.FindMember(point.Position, xFile);
+                    XSharpModel.XTypeMember member = XSharpTokenTools.FindMemberAtPosition(point.Position, xFile);
                     if (member == null)
                         return;
                     // Ok, so we now have the "range" of the Member, and will only select text in THIS member

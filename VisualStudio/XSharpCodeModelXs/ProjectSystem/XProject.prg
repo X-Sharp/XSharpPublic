@@ -241,7 +241,7 @@ begin namespace XSharpModel
 							xType := xType:Merge(xTemp)
 						else
 							//
-							xType := xTemp:Duplicate()
+							xType := XType{xTemp}
 						endif
 					endif
 				endif
@@ -285,7 +285,7 @@ begin namespace XSharpModel
 							xType := xType:Merge(xTemp)
 						else
 							//
-							xType := xTemp:Duplicate()
+							xType := XType{xTemp}
 						endif
 					endif
 				endif

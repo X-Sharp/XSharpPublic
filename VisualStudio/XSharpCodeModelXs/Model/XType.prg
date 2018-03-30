@@ -39,6 +39,21 @@ begin namespace XSharpModel
 				self:_isPartial := true
 			endif
 		
+        /// <summary>
+        /// Duplicate the current Object, so we have the same properties in another object
+        /// </summary>
+        /// <returns></returns>
+		constructor( oOther as XType)
+			self(oOther:Name, oOther:Kind, oOther:Modifiers, oOther:Visibility, oOther:Range, oOther:Interval)
+			self:Parent := oOther:Parent
+            self:ParentName := oOther:ParentName
+            self:IsPartial := oOther:IsPartial
+            self:IsStatic := oOther:IsStatic
+            self:File := oOther:File
+			self:AddMembers(oOther:Members)
+			return
+
+
 
 		static method create(oFile as XFile, oElement as EntityObject, oInfo as ParseResult) as XType
 			local cName := oElement:cName as STRING
@@ -47,31 +62,40 @@ begin namespace XSharpModel
 			local vis   := oElement:eAccessLevel:ToModifiers() as Modifiers
 			local span  as TextRange
 			local intv  as TextInterval
-			local oResult as XType
+			local oXType as XType
+			mods &= ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
 			
 			CalculateRange(oElement, oInfo, out span, out intv)
-			oResult := XType{cName, kind, mods, vis, span, intv}
-			oResult:File := oFile
+			oXType := XType{cName, kind, mods, vis, span, intv}
+			oXType:File := oFile
+			oXType:ParentName := oElement:cInherit
+			
+			oElement:oCargo := oXType
 			if oElement:eType:IsClass()
 				foreach var oMember in oElement:aChildren
 					local xMember as XTypeMember
-					xMember := XTypeMember.create(oMember, oInfo, oFile)
-					xMember:Parent := oResult
-					oResult:AddMember(xMember)
+					xMember := XTypeMember.create(oMember, oInfo, oFile, oXType)
+					oMember:oCargo := xMember
+					oXType:AddMember(xMember)
 				next
 			endif
-			return oResult
+			return oXType
 
 
 		method AddMember(oMember as XTypeMember) as void
 			begin lock self:_members
 				self:_members:Add(oMember)
+				oMember:Parent := SELF
 			end lock
 		
 		method AddMembers(members as IEnumerable<XTypeMember>) as void
 			begin lock self:_members
 				self:_members:AddRange(members)
+				foreach var oMember in members
+					oMember:Parent := self
+				next
 			end lock
+
 		property Members as IImmutableList<XTypeMember>
 			get
 				//
@@ -114,7 +138,7 @@ begin namespace XSharpModel
         /// <param name="otherType"></param>
 		method Merge(otherType as XType) as XType
 			local clone as XType
-			clone := self:Duplicate()
+			clone := XType{self}
 			if (String.Compare(otherType:File:FullPath, super:File:FullPath, System.StringComparison.OrdinalIgnoreCase) != 0) .OR. (super:Range:StartLine != otherType:Range:StartLine)
 				self:IsPartial := true
 				if otherType != null
@@ -183,14 +207,6 @@ begin namespace XSharpModel
 			end get
 		end property
 		
-        /// <summary>
-        /// Duplicate the current Object, so we have the same properties in another object
-        /// </summary>
-        /// <returns></returns>
-		method Duplicate() as XType
-			var temp := XType{super:Name, super:Kind, super:Modifiers, super:Visibility, super:Range, super:Interval} 
-			temp:AddMembers(self:Members)
-			return temp
 		
 		
 		property ParentName as string

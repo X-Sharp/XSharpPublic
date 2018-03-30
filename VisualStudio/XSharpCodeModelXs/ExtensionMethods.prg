@@ -19,9 +19,6 @@ begin namespace XSharpModel
 		static method IsEmpty( self cType as CompletionType) as logic
 			return cType == null .OR. ! cType:IsInitialized
 		
-		static method Find( self collection as IEnumerable<XTypeMember>, pred as System.Func<XTypeMember, logic>) as XTypeMember
-			//
-			return collection:Where(pred):FirstOrDefault()
 		static method AddUnique<TKey, TValue>( self dict as Dictionary<TKey, TValue>, key as TKey, value as TValue) as TValue 
 			if dict != null .AND. key != null
 				if ! dict:ContainsKey(key)
@@ -179,6 +176,9 @@ begin namespace XSharpModel
 		if mod:HasFlag(EntityModifiers._New)
 			result |= Modifiers.New
 		endif
+		if result == Modifiers.None
+			result := Modifiers.Public
+		endif
 		return result
 
 		static method ToModifiers(self acc as AccessLevel) as Modifiers
@@ -194,6 +194,10 @@ begin namespace XSharpModel
 		case AccessLevel.@@Internal
 			result := Modifiers.@@Internal
 		end switch
+		if result == Modifiers.None
+			result := Modifiers.Public
+		endif
+
 		return result
 
 

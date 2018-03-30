@@ -56,7 +56,6 @@ namespace XSharpColorizer
         private XClassificationSpans _tags = new XClassificationSpans();
         private IImmutableList<ClassificationSpan> _tagsRegion = ImmutableList<ClassificationSpan>.Empty;
         private ITextDocumentFactoryService _txtdocfactory;
-        private bool _hasParserErrors = false;
         private bool _first = true;
         private XSharpModel.ParseResult _info = null;
         private IToken keywordContext;
@@ -239,41 +238,207 @@ namespace XSharpColorizer
 
         private void DoRepaintRegions()
         {
-            if (!_hasParserErrors)
+            if (_buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
             {
-                if (_buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
-                {
-                    var tagger = _buffer.Properties[typeof(XSharpOutliningTagger)] as XSharpOutliningTagger;
-                    tagger.Update();
-                }
+                var tagger = _buffer.Properties[typeof(XSharpOutliningTagger)] as XSharpOutliningTagger;
+                tagger.Update();
             }
 
         }
         public IImmutableList<ClassificationSpan> BuildRegionTags(XSharpModel.ParseResult info, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildRegionTags()");
-            IImmutableList<ClassificationSpan> regions = null;
-            if (info != null && snapshot != null && !_hasParserErrors)
+            var regions = new List<ClassificationSpan>();
+            var classList = new List<EntityObject>();
+            var propertyList = new List<EntityObject>();
+            if (info != null && snapshot != null )
             {
-                //var rdiscover = new XSharpRegionDiscover(snapshot);
-                ////
-                //try
-                //{
-                //    var treeWalker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
-                //    //
-                //    rdiscover.xsharpRegionStartType = start;
-                //    rdiscover.xsharpRegionStopType = stop;
-                //    // Walk the tree. The XSharpRegionDiscover class will collect the tags.
-                //    treeWalker.Walk(rdiscover, xTree);
-                //    regions = rdiscover.GetRegionTags();
-                //}
-                //catch (Exception e)
-                //{
-                //    Debug("BuildRegionTags failed: " + e.Message);
-                //}
+                
+                // walk list of entities
+                foreach (var oElement in info.Entities)
+                {
+                    if (oElement.eType.NeedsEndKeyword())
+                    {
+                        classList.Add(oElement);
+                    }
+                    if (oElement.eType == EntityType._Property)
+                    {
+                        if (oElement.oParent?.eType != EntityType._Interface)
+                        {
+                            // make sure we only push multi line properties
+                            var text = snapshot.GetLineFromPosition(oElement.nOffSet).GetText();
+                            var substatements = text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                            var words = substatements[0].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                            var singleLine = false;
+                            foreach (var word in words)
+                            {
+                                switch (word.ToLower())
+                                {
+                                    case "auto":
+                                    case "get":
+                                    case "set":
+                                        singleLine = true;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            if (!singleLine)
+                            {
+                                propertyList.Add(oElement);
+                            }
+                        }
+                    }
+                    //else if (oElement.eType == EntityType._Property)
+                    //{
+                    //    classStack.Push(oElement);
+                    //}
+                    else if (oElement.eType.HasBody() 
+                            || oElement.eType == EntityType._VOStruct 
+                            || oElement.eType == EntityType._Union )
+                    {
+                        int nStart, nEnd;
+                        nStart = oElement.nOffSet;
+                        nEnd = oElement.nOffSet;
+                        if (oElement.oNext != null)
+                        {
+                            var nLine = snapshot.GetLineNumberFromPosition(oElement.oNext.nOffSet);
+                            nEnd = snapshot.GetLineFromLineNumber(nLine - 1).Start;
+                        }
+                        else
+                        {
+                            var nLine = snapshot.LineCount;
+                            nEnd = snapshot.GetLineFromLineNumber(nLine - 1).Start;
+                        }
+                        if (nEnd > snapshot.Length)
+                        {
+                            nEnd = snapshot.Length ;
+                        }
+                        AddRegionSpan(regions, snapshot, nStart, nEnd );
+
+                    }
+
+                }
+
+            }
+            var blockStack = new Stack<LineObject>();
+            var nsStack = new Stack<LineObject>();
+            foreach (var oLine in info.SpecialLines)
+            {
+                int nStart= 0, nEnd = 0;
+                switch (oLine.eType)
+                {
+                    case LineType.BeginNamespace:
+                        nsStack.Push(oLine);
+                        break;
+                    case LineType.EndNamespace:
+                        if (nsStack.Count > 0)
+                        {
+                            var nsStart = nsStack.Pop();
+                            nStart = nsStart.OffSet;
+                            nEnd = oLine.OffSet;
+                            AddRegionSpan(regions, snapshot, nStart, nEnd);
+                        }
+                        break;
+                    case LineType.EndClass:
+                        if (classList.Count > 0)
+                        {
+                            var cls = classList[0];
+                            classList.RemoveAt(0);
+                            nStart = cls.nOffSet;
+                            nEnd = oLine.OffSet;
+                            AddRegionSpan(regions, snapshot, nStart, nEnd);
+                        }
+                        break;
+                    case LineType.EndProperty:
+                        if (propertyList.Count > 0)
+                        {
+                            var prop = propertyList[0];
+                            propertyList.RemoveAt(0);
+                            nStart = prop.nOffSet;
+                            nEnd = oLine.OffSet;
+                            AddRegionSpan(regions, snapshot, nStart, nEnd);
+                        }
+                        break;
+                    case LineType.TokenIn:
+                        blockStack.Push(oLine);
+                        break;
+                    case LineType.TokenInOut:
+                        if (blockStack.Count > 0)
+                        {
+                            var blStart = blockStack.Peek();
+                            // remove previous ELSEIF but not the IF
+                            if (blStart.eType == LineType.TokenInOut)
+                            {
+                                blockStack.Pop();
+                            }
+                            if (blStart.cArgument == "DO" || blStart.cArgument == "SWITCH")
+                            {
+                                // no contents before the first case
+                                ;
+                            }
+                            else
+                            {
+                                nStart = blStart.OffSet;
+                                // our lines are 1 based. 
+                                // we do not want to include the next case line in the block from the previous one
+                                nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
+                                AddRegionSpan(regions, snapshot, nStart, nEnd);
+                            }
+                        }
+                        blockStack.Push(oLine);
+                        break;
+                    case LineType.TokenOut:
+                        if (blockStack.Count > 0)
+                        {
+                            // bop back to first token of the if .. endif or do case .. endcase
+                            while (blockStack.Count > 0 && blockStack.Peek().eType == LineType.TokenInOut)
+                            {
+                                var blStart = blockStack.Pop();
+                                nStart = blStart.OffSet;
+                                nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
+                                AddRegionSpan(regions, snapshot, nStart, nEnd);
+                            }
+                            if (blockStack.Count > 0)
+                            {
+                                var blStart = blockStack.Pop();
+                                nStart = blStart.OffSet;
+                                nEnd = oLine.OffSet-4;
+                                AddRegionSpan(regions, snapshot, nStart, nEnd);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
-            return regions;
+            return regions.ToImmutableList();
+        }
+        private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int nStart, int nEnd)
+        {
+            try
+            {
+                TextSpan tokenSpan;
+                ClassificationSpan span;
+                int nLineLength = snapshot.GetLineFromPosition(nStart).Length;
+                tokenSpan = new TextSpan(nStart, nLineLength);
+                span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart);
+                regions.Add(span);
+                nLineLength = snapshot.GetLineFromPosition(nEnd).Length;
+                if (nEnd + nLineLength >= snapshot.Length)
+                {
+                    nLineLength = snapshot.Length - nEnd - 1;
+                }
+                tokenSpan = new TextSpan(nEnd, nLineLength);
+                span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop);
+                regions.Add(span);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Error setting region: " + e.Message);
+            }
+            return;
         }
 
         /// <summary>
@@ -633,7 +798,15 @@ namespace XSharpColorizer
             {
                 _tags = newtags;
             }
-            if (!_hasParserErrors && parserRegionTags != null)
+            if (parserRegionTags != null)
+            {
+                var list = regionTags.ToImmutableList();
+                lock (gate)
+                {
+                    _tagsRegion = list;
+                }
+            }
+            else
             {
                 var list = regionTags.ToImmutableList();
                 lock (gate)
@@ -652,12 +825,14 @@ namespace XSharpColorizer
             int iLine = lastFound.Line;
             iLast = start;
             IToken nextToken = lastFound;
-            for (int i = start + 1; i < TokenStream.Size; i++)
+            IToken nextToken2 = lastFound;
+            for (int i = start + 1; i < TokenStream.Size-2; i++)
             {
                 nextToken = TokenStream.Get(i);
+                nextToken2 = TokenStream.Get(i+2);  // STATIC <WS> DEFINE for example.
                 if (nextToken.Line > iLine)
                 {
-                    if (nextToken.Type == type)
+                    if (nextToken.Type == type || (nextToken2.Type == type && nextToken.Type == XSharpLexer.STATIC))
                     {
                         lastFound = nextToken;
                         iLine = nextToken.Line;

@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using System.Collections.Generic
+using System.Collections.Immutable
 using System.Diagnostics
 using XSharpModel
 begin namespace XSharpModel
@@ -26,7 +27,7 @@ begin namespace XSharpModel
 				self:_typeName := typeName
 				self:_isStatic := isStatic
 
-			static method create(oElement as EntityObject, oInfo as ParseResult, oFile as XFile) as XTypeMember
+			static method create(oElement as EntityObject, oInfo as ParseResult, oFile as XFile, oType as XType) as XTypeMember
 				local cName := oElement:cName as string
 				local kind  := Etype2Kind(oElement:eType) as Kind
 				local cType := oElement:cRetType as string
@@ -35,18 +36,26 @@ begin namespace XSharpModel
 				local span   as textRange
 				local intv    as TextInterval
 				local isStat := oElement:lStatic as logic
+				mods &=  ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
 				CalculateRange(oElement, oInfo, out span, out intv)
 				local result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} as XTypeMember
 				result:File := oFile
 				foreach oLocal as EntityObject in oElement:aChildren
+					if oElement:eType:IsClassMember() .and. oType:Name != GlobalName
+						local oVar as XVariable
+						span := TextRange{oElement:nStartLine, oElement:nCol, oElement:nStartLine, oElement:nCol}
+						oVar := XVariable{result, "SELF", Kind.Local, span, default(TextInterval), oType:FullName, false}
+						result:AddLocal(oVar)
+						if !String.IsNullOrEmpty(oType:ParentName )
+							oVar := XVariable{result, "SUPER", Kind.Local, span, default(TextInterval), oType:ParentName, false}
+							result:AddLocal(oVar)
+						endif
+					endif
 					if oLocal:eType == EntityType._Local
 						local oVar as XVariable
 						span := TextRange{oLocal:nStartLine, oLocal:nCol, oLocal:nStartLine, oLocal:cName:Length+oLocal:nCol}
-						
 						oVar := XVariable{result, oLocal:cName, Kind.Local, span,default(TextInterval),oLocal:cRetType, false}
-						oVar:Parent := result
-						oVar:File := oFile
-						result:Locals:Add(oVar)
+						result:AddLocal(oVar)
 					endif
 				next
 				if oElement:aParams != null
@@ -55,15 +64,25 @@ begin namespace XSharpModel
 						span := TextRange{oElement:nStartLine, oParam:nCol, oElement:nStartLine, oParam:nCol+oParam:cName:Length}
 						intv := TextInterval{oElement:nOffSet+oParam:nCol, oElement:nOffSet+oParam:nCol+oParam:cName:Length}
 						oVar := XVariable{result, oParam:cName, Kind.Local,  span, intv, oParam:cType, true}
-						oVar:File := oFile
-						oVar:Parent := result
-						result:Parameters:Add(oVar)
+						result:AddParameter(oVar)
 					next
 				endif
 				return result
 			
 			
 		#endregion
+		method AddLocal(oVar as XVariable) as VOID
+			oVar:Parent := self
+			oVar:File := self:File
+			_locals:Add(oVar)
+			return
+
+		method AddParameter(oVar as XVariable) as VOID
+			oVar:Parent := self
+			oVar:File := self:File
+			_parameters:Add(oVar)
+			return
+
 		method Namesake() as List<XTypeMember>
 			var _namesake := List<XTypeMember>{}
 			if (self:Parent != null)
@@ -83,18 +102,18 @@ begin namespace XSharpModel
 				var modVis := ""
 				if (super:Modifiers != Modifiers.None)
 					//
-					modVis := String.Concat(modVis, super:Modifiers:ToString(), " ")
+					modVis := modVis + super:Modifiers:ToString()+ " "
 				endif
-				var desc := String.Concat(modVis, super:Visibility:ToString(), " ")
+				var desc := modVis + super:Visibility:ToString()+  " "
 				if (super:Kind != Kind.Field)
 					//
-					desc := String.Concat(desc, super:Kind:DisplayName(), " ")
+					desc := desc + super:Kind:DisplayName()+ " "
 					if (super:Kind == Kind.VODefine)
 						//
-						return String.Concat(desc, super:Name, self:Suffix)
+						return desc + super:Name + self:Suffix
 					endif
 				endif
-				return String.Concat(desc, self:Prototype)
+				return desc + self:Prototype
 			end get
 		end property
 		
@@ -103,17 +122,22 @@ begin namespace XSharpModel
 				//
 				if (self:Parent != null)
 					//
-					return String.Concat(self:Parent:FullName, ".", super:Name)
+					return self:Parent:FullName +"." + super:Name
 				endif
 				return super:Name
 			end get
 		end property
 		
-		property HasParameters as logic get self:Kind:HasParameters() .AND. self:Parameters:Count > 0
+		property HasParameters as logic get self:Kind:HasParameters() .AND. self:_parameters:Count > 0
+		property ParameterCount  as int get self:_parameters:Count
 		
 		property IsArray as logic auto 
 		
-		property Locals as List<XVariable>  get self:_locals
+		property Locals as IEnumerable<XVariable>  
+		get 
+			return self:_locals
+		end get
+		end property
 		
 		new property Parent as XType get (XType) super:parent  set super:parent := value
 
@@ -125,15 +149,19 @@ begin namespace XSharpModel
 					//
 					if (parameters:Length > 1)
 						//
-						parameters := String.Concat(parameters, ", ")
+						parameters := parameters + ", "
 					endif
-					parameters := String.Concat(parameters, variable:Name, " as ", variable:TypeName)
+					parameters += variable:Name + " as " + variable:TypeName
 				next
 				return parameters
 			end get
 		end property
 		
-		property Parameters as List<XVariable> get  self:_parameters
+		property Parameters as IEnumerable<XVariable> 
+		get  
+			return self:_parameters
+		end get
+		end property
 		
 		property Prototype as string
 			get
@@ -141,12 +169,12 @@ begin namespace XSharpModel
 				var vars := ""
 				if self:Kind:HasParameters()
 					//
-					vars := String.Concat("(", self:ParameterList, ")")
+					vars := "(" + self:ParameterList + ")"
 				endif
-				var desc := String.Concat(super:Name, vars)
+				var desc := super:Name + vars
 				if self:Kind:HasReturnType()
 					//
-					desc := String.Concat(desc, " AS ", self:TypeName)
+					desc := desc + " AS " + self:TypeName
 				endif
 				return desc
 			end get

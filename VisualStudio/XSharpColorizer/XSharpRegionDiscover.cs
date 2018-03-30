@@ -335,6 +335,13 @@ namespace XSharpColorizer
                 {
                     LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)endToken).Symbol;
                     var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                    // Attribute ?
+                    if (context.Start.Text == "[")
+                    {
+                        // Skip it
+                        int newStart = getStatementForAttribute(_snapshot, context.Start.StartIndex);
+                        tokenSpan = new TextSpan(newStart, 1);
+                    }
                     _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStartType));
                     tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
                     _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStopType));

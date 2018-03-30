@@ -77,7 +77,7 @@ namespace XSharp.Project.Editors.HighlightWord
         NormalizedSnapshotSpanCollection WordSpans { get; set; }
         SnapshotSpan? selectedWord { get; set; }
         SnapshotSpan? currentWord { get; set; }
-        String selectedText;
+
         SnapshotPoint RequestedPoint { get; set; }
         object updateLock = new object();
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -118,89 +118,95 @@ namespace XSharp.Project.Editors.HighlightWord
 
         private void OnSelectionChanged(object sender, object e)
         {
-            this.selectedText = this.View.Selection.StreamSelectionSpan.GetText();
-            if (!string.IsNullOrEmpty(this.selectedText) && !string.IsNullOrWhiteSpace(this.selectedText))
+            try
             {
-                // where are we
-                SnapshotPoint currentRequest = this.View.Selection.Start.Position;
-                List<SnapshotSpan> wordSpans = new List<SnapshotSpan>();
-                // Search for me please
-                TextExtent word = TextStructureNavigator.GetExtentOfWord(currentRequest);
-                bool foundWord = true;
-                //
-                if (!WordExtentIsValid(currentRequest, word))
+                String selectedText = this.View.Selection.StreamSelectionSpan.GetText();
+                if (!string.IsNullOrEmpty(selectedText) && !string.IsNullOrWhiteSpace(selectedText))
                 {
-                    //Same context ?
-                    if (word.Span.Start != currentRequest
-                         || currentRequest == currentRequest.GetContainingLine().Start
-                         || char.IsWhiteSpace((currentRequest - 1).GetChar()))
-                    {
-                        foundWord = false;
-                    }
-                    else
-                    {
-                        // Move back, and start again
-                        word = TextStructureNavigator.GetExtentOfWord(currentRequest - 1);
-
-                        //If the word still isn't valid, we're done
-                        if (!WordExtentIsValid(currentRequest, word))
-                            foundWord = false;
-                    }
-                }
-
-                if (!foundWord)
-                {
-                    //If we couldn't find a word, clear out the existing markers
-                    SynchronousUpdate(new NormalizedSnapshotSpanCollection());
-                    return;
-                }
-                SnapshotSpan currentWord = word.Span;
-                selectedWord = this.View.Selection.StreamSelectionSpan.SnapshotSpan;
-
-
-                //If this is the current word, and the caret moved within a word, we're done.
-                if (!(selectedWord.HasValue && currentWord == selectedWord))
-                {
-                    return;
-                }
-                //Find the new spans
-                FindData findData = new FindData(currentWord.GetText(), currentWord.Snapshot);
-                findData.FindOptions = FindOptions.WholeWord | FindOptions.MatchCase;
-                // Values are zero-based
-                SnapshotPoint point = View.Caret.Position.BufferPosition;
-                // Retrieve the XFile
-                XSharpModel.XFile xFile = this.View.TextBuffer.GetFile();
-                if (xFile != null)
-                {
-                    // Now, retrieve the current member
-                    XSharpModel.XTypeMember member = XSharpTokenTools.FindMemberAtPosition(point.Position, xFile);
-                    if (member == null)
-                        return;
-                    // Ok, so we now have the "range" of the Member, and will only select text in THIS member
-                    SnapshotSpan memberSpan = new SnapshotSpan(currentWord.Snapshot, member.Interval.Start, member.Interval.Width );
-                    // Get all the corresponding Words
-                    Collection<SnapshotSpan> allFound = TextSearchService.FindAll(findData);
-                    Collection<SnapshotSpan> memberFound = new Collection<SnapshotSpan>();
-                    foreach (SnapshotSpan ssp in allFound)
-                    {
-                        // Inside the Member ?
-                        if (memberSpan.Contains(ssp))
-                            memberFound.Add(ssp);
-                    }
+                    // where are we
+                    SnapshotPoint currentRequest = this.View.Selection.Start.Position;
+                    List<SnapshotSpan> wordSpans = new List<SnapshotSpan>();
+                    // Search for me please
+                    TextExtent word = TextStructureNavigator.GetExtentOfWord(currentRequest);
+                    bool foundWord = true;
                     //
-                    wordSpans.AddRange(memberFound);
-                    // Show please
-                    SynchronousUpdate(new NormalizedSnapshotSpanCollection(wordSpans));
+                    if (!WordExtentIsValid(currentRequest, word))
+                    {
+                        //Same context ?
+                        if (word.Span.Start != currentRequest
+                             || currentRequest == currentRequest.GetContainingLine().Start
+                             || char.IsWhiteSpace((currentRequest - 1).GetChar()))
+                        {
+                            foundWord = false;
+                        }
+                        else
+                        {
+                            // Move back, and start again
+                            word = TextStructureNavigator.GetExtentOfWord(currentRequest - 1);
+
+                            //If the word still isn't valid, we're done
+                            if (!WordExtentIsValid(currentRequest, word))
+                                foundWord = false;
+                        }
+                    }
+
+                    if (!foundWord)
+                    {
+                        //If we couldn't find a word, clear out the existing markers
+                        SynchronousUpdate(new NormalizedSnapshotSpanCollection());
+                        return;
+                    }
+                    SnapshotSpan currentWord = word.Span;
+                    selectedWord = this.View.Selection.StreamSelectionSpan.SnapshotSpan;
+
+
+                    //If this is the current word, and the caret moved within a word, we're done.
+                    if (!(selectedWord.HasValue && currentWord == selectedWord))
+                    {
+                        return;
+                    }
+                    //Find the new spans
+                    FindData findData = new FindData(currentWord.GetText(), currentWord.Snapshot);
+                    findData.FindOptions = FindOptions.WholeWord | FindOptions.MatchCase;
+                    // Values are zero-based
+                    SnapshotPoint point = View.Caret.Position.BufferPosition;
+                    // Retrieve the XFile
+                    XSharpModel.XFile xFile = this.View.TextBuffer.GetFile();
+                    if (xFile != null)
+                    {
+                        // Now, retrieve the current member
+                        XSharpModel.XTypeMember member = XSharpTokenTools.FindMemberAtPosition(point.Position, xFile);
+                        if (member == null)
+                            return;
+                        // Ok, so we now have the "range" of the Member, and will only select text in THIS member
+                        SnapshotSpan memberSpan = new SnapshotSpan(currentWord.Snapshot, member.Interval.Start, member.Interval.Width);
+                        // Get all the corresponding Words
+                        Collection<SnapshotSpan> allFound = TextSearchService.FindAll(findData);
+                        Collection<SnapshotSpan> memberFound = new Collection<SnapshotSpan>();
+                        foreach (SnapshotSpan ssp in allFound)
+                        {
+                            // Inside the Member ?
+                            if (memberSpan.Contains(ssp))
+                                memberFound.Add(ssp);
+                        }
+                        //
+                        wordSpans.AddRange(memberFound);
+                        // Show please 
+                        SynchronousUpdate(new NormalizedSnapshotSpanCollection(wordSpans));
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("HighlightWordTag Exception: " + ex.Message);
+            }
         }
-
         static bool WordExtentIsValid(SnapshotPoint currentRequest, TextExtent word)
         {
-            return word.IsSignificant
+            return word.IsSignificant 
                 && currentRequest.Snapshot.GetText(word.Span).Any(c => char.IsLetter(c));
         }
-
+   
         void SynchronousUpdate(NormalizedSnapshotSpanCollection newSpans)
         {
             lock (updateLock)
@@ -210,9 +216,7 @@ namespace XSharp.Project.Editors.HighlightWord
 
                 WordSpans = newSpans;
 
-                var tempEvent = TagsChanged;
-                if (tempEvent != null)
-                    tempEvent(this, new SnapshotSpanEventArgs(new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
+                TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
             }
         }
 

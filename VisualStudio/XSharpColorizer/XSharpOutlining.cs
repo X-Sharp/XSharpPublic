@@ -156,11 +156,10 @@ namespace XSharpColorizer
                             }
                             //
                             sSpan = new SnapshotSpan(startLine.Start, startLine.End);
-                            String lineText = sSpan.GetText();
                             ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
                             yield return new TagSpan<IOutliningRegionTag>(
                                 new SnapshotSpan(startLine.End, endLine.End),
-                                new OutliningRegionTag(false, true, ellipsis+" "+startTag.Span.GetText(), hoverText));
+                                new OutliningRegionTag(false, true, ellipsis, hoverText));
                         }
                     }
                 }

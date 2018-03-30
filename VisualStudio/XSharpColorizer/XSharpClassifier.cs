@@ -307,8 +307,24 @@ namespace XSharpColorizer
                         }
                         else
                         {
-                            var nLine = snapshot.LineCount;
-                            nEnd = snapshot.GetLineFromLineNumber(nLine - 1).Start;
+                            if (oElement.oParent.cName != XElement.GlobalName)
+                            {
+                                // find the endclass line after this element
+                                foreach (var oLine in info.SpecialLines)
+                                {
+                                    if (oLine.eType == LineType.EndClass && oLine.Line > oElement.nStartLine)
+                                    {
+                                        var nLine = snapshot.GetLineNumberFromPosition(oLine.OffSet);
+                                        nEnd = snapshot.GetLineFromLineNumber(nLine - 1).Start;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (nEnd == nStart)
+                            {
+                                var nLine = snapshot.LineCount;
+                                nEnd = snapshot.GetLineFromLineNumber(nLine - 1).Start;
+                            }
                         }
                         if (nEnd > snapshot.Length)
                         {

@@ -12,64 +12,49 @@ using System.Diagnostics
 using System
 using System.Runtime.InteropServices
 begin namespace XSharpModel
-	[StructLayout(LayoutKind.Sequential), DebuggerDisplay("{Start}-{Stop}")];
-		structure TextInterval
+	[DebuggerDisplay("{Start}-{Stop}")];
+	structure TextInterval
 		// Fields
-		initonly private _StartIndex as long
-		initonly private _StopIndex as long
+		private initonly _StartIndex as long
+		private initonly _StopIndex as long
 		
-		// Methods
-		//CONSTRUCTOR(context AS ParserRuleContext)
-		//SELF(context:Start:StartIndex, context:Stop:StopIndex)
-		
+		// Constructors
 		
 		constructor(start as long, stop as long)
 			//
 			self:_StartIndex := start
 			self:_StopIndex := stop
 		
-		method ContainsExclusive(position as long) as logic
-			//
-			return ((position > self:_StartIndex) .AND. (position < self:_StopIndex))
 		
-		method ContainsInclusive(position as long) as logic
-			//
-			return ((position >= self:_StartIndex) .AND. (position <= self:_StopIndex))
-		
+		static property Empty as TextInterval get TextInterval{}
+
+
 		method IsEmpty() as logic
-			//
 			return ((self:_StartIndex == 0) .AND. (self:_StopIndex == 0))
 		
+        /// <summary>
+        /// 0 based StartIndex
+        /// </summary>
+		property Start as long get self:_StartIndex
+
+        /// <summary>
+        /// 0 based StopIndex
+        /// </summary>
+		property Stop as long get self:_StopIndex
 		
-		// Properties
-		static property Empty as TextInterval
-			get
-				//
-				return TextInterval{}
-			end get
-		end property
+		property Width as long get self:_StopIndex - self:_StartIndex + 1
+
+		method ContainsInclusive(position as long) as logic
+			if position >= self:_StartIndex  .AND. position <= self:_StopIndex
+				return true
+			endif
+			return false
 		
-		property Start as long
-			get
-				//
-				return self:_StartIndex
-			end get
-		end property
-		
-		property Stop as long
-			get
-				//
-				return self:_StopIndex
-			end get
-		end property
-		
-		property Width as long
-			get
-				//
-				return ((self:_StopIndex - self:_StartIndex) + 1)
-			end get
-		end property
-		
+		method ContainsExclusive(position as long) as logic
+			if position > self:_StartIndex .AND. position < self:_StopIndex
+				return true
+			endif
+			return  false
 		
 	end structure
 	

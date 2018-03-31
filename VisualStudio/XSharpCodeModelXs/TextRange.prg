@@ -13,9 +13,11 @@ using System
 using System.Runtime.InteropServices
 using System
 begin namespace XSharpModel
-	[StructLayout(LayoutKind.Sequential), DebuggerDisplay("{StartLine}.{StartColumn}-{EndLine}.{EndColumn}")];
-		structure TextRange
-		// Fields
+    /// <summary>
+    /// 1 based TextRange
+    /// </summary>
+	[DebuggerDisplay("{StartLine}.{StartColumn}-{EndLine}.{EndColumn}")];
+	structure TextRange
 		initonly private _EndColumn as long
 		initonly private _EndLine as long
 		initonly private _StartColumn as long
@@ -33,22 +35,36 @@ begin namespace XSharpModel
 			self:_EndLine := el
 			self:_EndColumn := ec
 		
+		static property Empty as TextRange get TextRange{1, 1, 1, 1}
+		
+        /// <summary>
+        /// 1 based Start Line
+        /// </summary>
+		property StartLine as long get self:_StartLine
+        /// <summary>
+        /// 1 based End Line
+        /// </summary>
+		property EndLine as long get self:_EndLine
+        /// <summary>
+        /// 1 based Start Column
+        /// </summary>
+		property StartColumn as long get self:_StartColumn
+        /// <summary>
+        /// 1 based End Column
+        /// </summary>
+		property EndColumn as long get self:_EndColumn
+		
+		
 		method ContainsExclusive(line as long, col as long) as logic
-			//
 			if ((line > self:_StartLine) .AND. (line < self:_EndLine))
-				//
 				return true
 			endif
 			if (line == self:_StartLine)
-				//
 				if (col > self:_StartColumn)
-					//
 					if (line < self:_EndLine)
-						//
 						return true
 					endif
 					if (line == self:_EndLine)
-						//
 						return (col < self:_EndColumn)
 					endif
 				endif
@@ -57,21 +73,16 @@ begin namespace XSharpModel
 			return ((line == self:_EndLine) .AND. (col < self:_EndColumn))
 		
 		method ContainsInclusive(line as long, col as long) as logic
-			//
 			if ((line > self:_StartLine) .AND. (line < self:_EndLine))
-				//
 				return true
 			endif
 			if (line == self:_StartLine)
-				//
 				if (col >= self:_StartColumn)
 					//
 					if (line < self:_EndLine)
-						//
 						return true
 					endif
 					if (line == self:_EndLine)
-						//
 						return (col <= self:_EndColumn)
 					endif
 				endif
@@ -80,41 +91,7 @@ begin namespace XSharpModel
 			return ((line == self:_EndLine) .AND. (col <= self:_EndColumn))
 		
 		
-		// Properties
-		static property Empty as TextRange
-			get
-				//
-				return TextRange{1, 1, 1, 1}
-			end get
-		end property
 		
-		property EndColumn as long
-			get
-				//
-				return self:_EndColumn
-			end get
-		end property
-		
-		property EndLine as long
-			get
-				//
-				return self:_EndLine
-			end get
-		end property
-		
-		property StartColumn as long
-			get
-				//
-				return self:_StartColumn
-			end get
-		end property
-		
-		property StartLine as long
-			get
-				//
-				return self:_StartLine
-			end get
-		end property
 		
 		
 	end structure

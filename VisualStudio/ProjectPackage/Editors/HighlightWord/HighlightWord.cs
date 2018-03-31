@@ -158,6 +158,8 @@ namespace XSharp.Project.Editors.HighlightWord
                     }
                     SnapshotSpan currentWord = word.Span;
                     selectedWord = this.View.Selection.StreamSelectionSpan.SnapshotSpan;
+
+
                     //If this is the current word, and the caret moved within a word, we're done.
                     if (!(selectedWord.HasValue && currentWord == selectedWord))
                     {
@@ -173,7 +175,7 @@ namespace XSharp.Project.Editors.HighlightWord
                     if (xFile != null)
                     {
                         // Now, retrieve the current member
-                        XSharpModel.XTypeMember member = XSharpTokenTools.FindMember(point.Position, xFile);
+                        XSharpModel.XTypeMember member = XSharpTokenTools.FindMemberAtPosition(point.Position, xFile);
                         if (member == null)
                             return;
                         // Ok, so we now have the "range" of the Member, and will only select text in THIS member
@@ -189,7 +191,7 @@ namespace XSharp.Project.Editors.HighlightWord
                         }
                         //
                         wordSpans.AddRange(memberFound);
-                        // Show please
+                        // Show please 
                         SynchronousUpdate(new NormalizedSnapshotSpanCollection(wordSpans));
                     }
                 }
@@ -199,13 +201,12 @@ namespace XSharp.Project.Editors.HighlightWord
                 System.Diagnostics.Debug.WriteLine("HighlightWordTag Exception: " + ex.Message);
             }
         }
-
         static bool WordExtentIsValid(SnapshotPoint currentRequest, TextExtent word)
         {
-            return word.IsSignificant
+            return word.IsSignificant 
                 && currentRequest.Snapshot.GetText(word.Span).Any(c => char.IsLetter(c));
         }
-
+   
         void SynchronousUpdate(NormalizedSnapshotSpanCollection newSpans)
         {
             lock (updateLock)
@@ -215,9 +216,7 @@ namespace XSharp.Project.Editors.HighlightWord
 
                 WordSpans = newSpans;
 
-                var tempEvent = TagsChanged;
-                if (tempEvent != null)
-                    tempEvent(this, new SnapshotSpanEventArgs(new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
+                TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
             }
         }
 

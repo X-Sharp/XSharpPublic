@@ -79,7 +79,6 @@
     <Compile Include="XSharpClassifier.cs" />
     <Compile Include="XSharpClassifierProvider.cs" />
     <Compile Include="XSharpOutlining.cs" />
-    <Compile Include="XSharpRegionDiscover.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -138,9 +137,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharpModel\XSharpModel.csproj">
-      <Project>{2c3b9217-e012-4681-97ce-f0a658c40336}</Project>
-      <Name>XSharpModel</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModelXs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

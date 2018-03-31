@@ -36,12 +36,13 @@ namespace XSharp.LanguageService
                 {
                     if (span.iStartIndex == 0 && span.iEndIndex == 0)
                     {
-                        if (span.iEndLine > span.iStartLine )
+                        if (span.iEndLine > span.iStartLine)
                         {
                             span.iEndLine--;
                         }
                     }
-                    span2 = this.CommentLines(span, commentFormat.LineStart);
+                    // Use our own to align comment
+                    span2 = this.xsCommentLines(span, commentFormat.LineStart);
                     return span2;
                 }
                 if (!string.IsNullOrEmpty(commentFormat.BlockStart) && !string.IsNullOrEmpty(commentFormat.BlockEnd))
@@ -50,6 +51,29 @@ namespace XSharp.LanguageService
                 }
             }
             return span2;
+        }
+
+        private TextSpan xsCommentLines(TextSpan span, String commentStart)
+        {
+            int commentpos = 0;
+            // First Search the min position for comment
+            for (int line = span.iStartLine; line <= span.iEndLine; line++)
+            {
+                int pos = ScanToNonWhitespaceChar(line);
+                if (pos < GetLineLength(line))
+                {
+                    commentpos = Math.Min(commentpos, pos);
+                }
+            }
+            // Apply
+            for (int line = span.iStartLine; line <= span.iEndLine; line++)
+            {
+                if (ScanToNonWhitespaceChar(line) < GetLineLength(line))
+                {
+                    SetText(line, commentpos, line, commentpos, commentStart);
+                }
+            }
+            return span;
         }
 
 

@@ -15,8 +15,9 @@ begin namespace XSharpModel
 		static initonly public VarType := "$VAR$" as string
 		static initonly public UsualType := "USUAL" as string
 		// Methods
-		constructor(parent as XElement, name as string, kind as Kind, visibility as Modifiers, span as TextRange, position as TextInterval, typeName as string,  isParameter := false as logic)
-			super(name, kind, Modifiers.None, visibility, span, position)
+		constructor(parent as XElement, name as string, kind as Kind,  ;
+			span as TextRange, position as TextInterval, typeName as string,  isParameter := false as logic)
+			super(name, kind, Modifiers.None, Modifiers.None, span, position)
 			if String.IsNullOrEmpty(typeName)
 				typeName := UsualType
 			endif
@@ -26,25 +27,25 @@ begin namespace XSharpModel
 		
 		
 		// Properties
-		virtual property Description as string
+		property Description as string
 			get
 				//
-				local str as string
+				local prefix as string
 				if (self:_isParameter)
 					//
-					str := "PARAMETER "
+					prefix := "PARAMETER "
 				else
 					//
-					str := "LOCAL "
+					prefix := "LOCAL "
 				endif
-				var textArray1 := <string>{str, self:Prototype, " as ", self:TypeName, iif(self:IsArray,"[]","")}
+				var textArray1 := <string>{prefix, self:Prototype, " as ", self:TypeName, iif(self:IsArray,"[]","")}
 				return String.Concat(textArray1)
 			end get
 		end property
 		
 		property IsArray as logic auto 
 		
-		virtual property Prototype as string get super:NAme
+		property Prototype as string get super:NAme
 		
 		property TypeName as string
 			get

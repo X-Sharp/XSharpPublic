@@ -68,14 +68,11 @@ namespace XSharp.LanguageService
                 return false;
             }
 
-            XType typeAtPos = null;
             //
             dropDownTypes.Clear();
             dropDownMembers.Clear();
             int nSelType = -1;
             int nSelMbr = -1;
-            bool bInSel;
-            int distance = int.MaxValue;
             //int distanceM = int.MaxValue;
             DROPDOWNFONTATTR ft;
             //
@@ -95,29 +92,35 @@ namespace XSharp.LanguageService
             }
             XType typeGlobal = null;
             int nSelect  = 0;
+
+            XElement selectedElement = file.FindMemberAtRow(line);
+            XTypeMember currentMember = null;
+            XType currentType = null;
+
+            if (selectedElement is XTypeMember)
+            {
+                currentMember = selectedElement as XTypeMember;
+                currentType = currentMember.Parent;
+            }
+            else if (selectedElement is XType)
+            {
+                currentType = selectedElement as XType;
+                currentMember = null;
+            }
+            nSelect = 0;
+            DropDownMember elt;
             foreach (XType eltType in xList)
             {
                 if (eltType.Kind == Kind.Namespace)
                     continue;
                 //
                 if (XType.IsGlobalType(eltType))
-                    typeGlobal = eltType;
-                TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
-                //
-                
-                bModification = true;
-                bInSel = false;
-                //
-                if (TextSpanHelper.ContainsInclusive(sp, line, col))
                 {
-                    //
-                    if (line - sp.iStartLine < distance)
-                    {
-                        distance = line - sp.iStartLine;
-                        bInSel = true;
-                    }
+                    typeGlobal = eltType;
                 }
-                if (bInSel)
+                TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
+                bModification = true;
+                if (eltType == currentType)
                 {
                     ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                 }
@@ -127,72 +130,66 @@ namespace XSharp.LanguageService
                 }
                 string name = eltType.Name ;
                 if (string.IsNullOrEmpty(name))
+                {
                     name = "?";
-                DropDownMember elt = new DropDownMember(name, sp, eltType.Glyph, ft);
+                }
+                elt = new DropDownMember(name, sp, eltType.Glyph, ft);
                 nSelect = dropDownTypes.Add(elt);
-
-                if (bInSel )
+                if (eltType == currentType)
                 {
                     nSelType = nSelect;
-                    typeAtPos = eltType;
                 }
+                //
             }
-            //
-            
-            if (typeAtPos == null)
-                typeAtPos = typeGlobal;
-            int lastBefore = -1;
-            int lastLineBefore = -1;
-            nSelect = 0;
-            if (typeAtPos != null)
+
+            if (currentType == null)
+                currentType = typeGlobal;
+            if (currentType != null)    // should not happen since all files have a global type
             {
-                nSelMbr = -1;
-                IEnumerable<XTypeMember> members = typeAtPos.Members;
+                nSelMbr = 0;
+                IEnumerable<XTypeMember> members = currentType.Members;
                 if (sortItems)
                 {
                     members = members.OrderBy(x => x.Name);
                 }
+                // Add member for class declaration
+                TextSpan spM = this.TextRangeToTextSpan(currentType.Range);
+                ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                if (currentType != typeGlobal)
+                {
+                    elt = new DropDownMember("("+currentType.Name+")", spM, currentType.Glyph, ft);
+                    dropDownMembers.Add(elt);
+                }
                 foreach (XTypeMember member in members)
                 {
-                    TextSpan spM = this.TextRangeToTextSpan(member.Range);
-                    //
-                    if (spM.iStartLine <= line && spM.iEndLine >= line)
+                    if (includeFields || member.Kind != Kind.Field)
                     {
-                        ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                        bInSel = true;
-                    }
-                    else
-                    {
-                        ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
-                        bInSel = false;
-                    }
-                    //
-                    if (includeFields || member.Kind != Kind.Field )
-                    {
-                        DropDownMember eltM = new DropDownMember(member.Prototype, spM, member.Glyph, ft);
-                        nSelect = dropDownMembers.Add(eltM);
-                        //
-                        if (bInSel)
+                        spM = this.TextRangeToTextSpan(member.Range);
+
+                        if (member == currentMember)
+                        {
+                            ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
+                        }
+                        else
+                        {
+                            ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                        }
+                        string prototype = member.Prototype;
+                        if (prototype.Length > 80)
+                        {
+                            prototype = prototype.Substring(0, 80) + "...";
+                        }
+                        elt = new DropDownMember(prototype, spM, member.Glyph, ft);
+                        nSelect = dropDownMembers.Add(elt);
+                        if (member == currentMember)
                         {
                             nSelMbr = nSelect;
-                        }
-                        else if (nSelMbr == -1 && spM.iEndLine <= line && spM.iEndLine > lastLineBefore)
-                        {
-                            lastBefore = nSelect;
-                            lastLineBefore = spM.iEndLine;
                         }
                     }
                 }
             }
-            if (nSelMbr == -1 )
-            {
-                if (lastBefore != -1)
-                    nSelMbr = lastBefore;
-                else
-                    nSelMbr = 0;
-            }
-            selectedType = nSelType;
-            selectedMember = nSelMbr;
+            selectedType    = nSelType;
+            selectedMember  = nSelMbr;
             return bModification;
         }
 

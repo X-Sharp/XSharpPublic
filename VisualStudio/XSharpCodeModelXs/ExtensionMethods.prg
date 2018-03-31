@@ -19,9 +19,6 @@ begin namespace XSharpModel
 		static method IsEmpty( self cType as CompletionType) as logic
 			return cType == null .OR. ! cType:IsInitialized
 		
-		static method Find( self collection as IEnumerable<XTypeMember>, pred as System.Func<XTypeMember, logic>) as XTypeMember
-			//
-			return collection:Where(pred):FirstOrDefault()
 		static method AddUnique<TKey, TValue>( self dict as Dictionary<TKey, TValue>, key as TKey, value as TValue) as TValue 
 			if dict != null .AND. key != null
 				if ! dict:ContainsKey(key)
@@ -145,6 +142,65 @@ begin namespace XSharpModel
 			next
 			return List:ToImmutableList() 
 		
+		// parser enums
+		static method ToModifiers(self mod as EntityModifiers) as Modifiers
+		// FLags enum 
+		local result as Modifiers
+		if mod:HasFlag(EntityModifiers._Protected)
+			result |= Modifiers.Protected
+		endif
+		if mod:HasFlag(EntityModifiers._Private)
+			result |= Modifiers.Private
+		endif
+		if mod:HasFlag(EntityModifiers._Protected)
+			result |= Modifiers.Protected
+		endif
+		if mod:HasFlag(EntityModifiers._Internal)
+			result |= Modifiers.Internal
+		endif
+		if mod:HasFlag(EntityModifiers._Virtual)
+			result |= Modifiers.Virtual
+		endif
+		if mod:HasFlag(EntityModifiers._Abstract)
+			result |= Modifiers.Abstract
+		endif
+		if mod:HasFlag(EntityModifiers._Sealed)
+			result |= Modifiers.Sealed
+		endif
+		if mod:HasFlag(EntityModifiers._Static)
+			result |= Modifiers.Static
+		endif
+		if mod:HasFlag(EntityModifiers._Partial)
+			result |= Modifiers.Partial
+		endif
+		if mod:HasFlag(EntityModifiers._New)
+			result |= Modifiers.New
+		endif
+		if result == Modifiers.None
+			result := Modifiers.Public
+		endif
+		return result
+
+		static method ToModifiers(self acc as AccessLevel) as Modifiers
+		// FLags enum 
+		local result as Modifiers
+		switch acc
+		case AccessLevel.@@Hidden
+			result := Modifiers.@@Hidden
+		case AccessLevel.@@Protected
+			result := Modifiers.@@Protected
+		case AccessLevel.@@Public
+			result := Modifiers.@@Public
+		case AccessLevel.@@Internal
+			result := Modifiers.@@Internal
+		end switch
+		if result == Modifiers.None
+			result := Modifiers.Public
+		endif
+
+		return result
+
+
 	end class
 	
 end namespace 

@@ -179,7 +179,8 @@ namespace XSharpLanguage
                 // Start of Process
                 String filterText = "";
                 // Check if we can get the member where we are
-                XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._file);
+                var containingline = triggerPoint.GetContainingLine().LineNumber;
+                XTypeMember member = XSharpTokenTools.FindMember(containingline, this._file);
                 XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
                 List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false, _file, false, member);
@@ -2386,7 +2387,7 @@ namespace XSharpLanguage
             stopToken = null;
             // lex the entire document
             // Get compiler options
-            XSharpParseOptions parseoptions; ;
+            XSharpParseOptions parseoptions; 
             if (file != null)
             {
                 var prj = file.Project.ProjectNode;
@@ -2404,7 +2405,9 @@ namespace XSharpLanguage
             if (fromMember != null)
             {
                 // So the code of the member is....
-                bufferText = bufferText.Substring(fromMember.Interval.Start, fromMember.Interval.Width);
+                int nWidth = fromMember.Interval.Width;
+                nWidth = Math.Min(nWidth, bufferText.Length - fromMember.Interval.Start);
+                bufferText = bufferText.Substring(fromMember.Interval.Start, nWidth);
                 // Adapt the positions.
                 triggerPointPosition = triggerPointPosition - fromMember.Interval.Start;
                 triggerPointLineNumber = triggerPointLineNumber - (fromMember.Range.StartLine - 1);
@@ -2686,93 +2689,53 @@ namespace XSharpLanguage
 #endif
             return null;
         }
-        public static XTypeMember FindMember(int position, XFile file)
+        public static XTypeMember FindMemberAtPosition(int nPosition, XFile file)
         {
             if (file == null)
             {
                 return null;
             }
-
-            // First, Check for Function/Procedure
-            XType gbl = file.GlobalType;
-            XTypeMember lastGlobalElement = null;
-            //
-            if (gbl != null)
+            var member = file.FindMemberAtPosition(nPosition);
+            if (member is XTypeMember)
             {
-                foreach (XTypeMember elt in gbl.Members)
-                {
-                    if (elt.Interval.ContainsInclusive(position))
-                    {
-                        return elt;
-                    }
-                    if (lastGlobalElement == null && elt.Interval.Start < position)
-                    {
-                        lastGlobalElement = elt;
-                    }
-                    else if (lastGlobalElement != null && elt.Interval.Stop > lastGlobalElement.Interval.Stop
-                        && elt.Interval.Start < position)
-                    {
-                        lastGlobalElement = elt;
-                    }
-                }
+                return member as XTypeMember;
             }
-            // If we are here, we found nothing
-            // but we might be after the code of the last Function in the file, so the parser don't know where we are
-            // Keep it in lastElt, and check Members
-            XTypeMember lastTypeElement = null;
-            if (file.TypeList != null)
+            // if we can't find a member then look for the global type in the file
+            // and return its last member
+            var xType = file.TypeList.FirstOrDefault();
+            if (xType.Value != null)
             {
-                foreach (XType eltType in file.TypeList.Values)
-                {
-                    if (eltType.Interval.ContainsInclusive(position))
-                    {
-                        foreach (XTypeMember elt in eltType.Members)
-                        {
-                            if (elt.Interval.ContainsInclusive(position))
-                            {
-                                return elt;
-                            }
-                            if (lastTypeElement == null && elt.Interval.Start < position)
-                            {
-                                lastTypeElement = elt;
-                            }
-                            else if (lastTypeElement != null && elt.Interval.Stop > lastTypeElement.Interval.Stop
-                                && elt.Interval.Start < position)
-                            {
-                                lastTypeElement = elt;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // we simply want to find the last member that starts before the current position
-                        foreach (XTypeMember elt in eltType.Members)
-                        {
-                            if (lastTypeElement == null && elt.Interval.Start < position)
-                            {
-                                lastTypeElement = elt;
-                            }
-                            else if (lastTypeElement != null && elt.Interval.Stop > lastTypeElement.Interval.Stop
-                                && elt.Interval.Start < position)
-                            {
-                                lastTypeElement = elt;
-                            }
-                        }
-
-                    }
-                }
+                return xType.Value.Members.LastOrDefault();
             }
-            if (lastGlobalElement != null)
-            {
-                return lastGlobalElement;
-            }
-            if (lastTypeElement != null)
-            {
-                return lastTypeElement;
-            }
-            //
 #if DEBUG
-            Support.Debug(String.Format("Cannot find member as position {0} in file {0} .", position, file.FullPath));
+            Support.Debug(String.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
+#endif
+            return null;
+
+        }
+
+        public static XTypeMember FindMember(int nLine, XFile file)
+        {
+            if (file == null)
+            {
+                return null;
+            }
+            var member = file.FindMemberAtRow(nLine);
+            if (member is XTypeMember)
+            {
+                return member as XTypeMember;
+            }
+            // if we can't find a member then look for the global type in the file
+            // and return its last member
+            var xType = file.TypeList.FirstOrDefault();
+            if (xType.Value != null)
+            {
+                return xType.Value.Members.LastOrDefault();
+            }
+  
+            
+#if DEBUG
+            Support.Debug(String.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
 #endif
             return null;
         }
@@ -2793,17 +2756,9 @@ namespace XSharpLanguage
         {
             //
 #if TRACE
-            Stopwatch stopWatch = new Stopwatch();
+             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 #endif
-            // HACK: Disable looking up locals in large buffers ( > 100 Kb)
-            if (currentBuffer.Length < (100 * 1024))
-            {
-                if (!file.HasLocals)
-                {
-                    file.GetLocals(currentBuffer);
-                }
-            }
             foundElement = null;
             if (currentMember == null)
             {
@@ -3022,11 +2977,11 @@ namespace XSharpLanguage
             {
                 cType = new CompletionType(member.Parent);
             }
-            element = member.Parameters.Find(x => StringEquals(x.Name, name));
+            element = member.Parameters.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
             if (element == null)
             {
                 // then Locals
-                element = member.Locals.Find(x => StringEquals(x.Name, name));
+                element = member.Locals.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
                 if (element == null)
                 {
                     // We can have a Property/Field of the current CompletionType
@@ -3042,7 +2997,7 @@ namespace XSharpLanguage
                     // Find Defines and globals in this file
                     if (element == null && cType.IsEmpty() && member.File.GlobalType != null)
                     {
-                        element = member.File.GlobalType.Members.Find(x => StringEquals(x.Name, name));
+                        element = member.File.GlobalType.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
                     }
                     if (element == null)
                     {
@@ -3082,14 +3037,14 @@ namespace XSharpLanguage
             if (cType.XType != null)
             {
                 // 
-                XTypeMember xMethod = cType.XType.Members.Find(x =>
+                XTypeMember xMethod = cType.XType.Members.Where(x =>
                 {
                     if ((x.Kind == Kind.Constructor))
                     {
                         return true;
                     }
                     return false;
-                });
+                }).FirstOrDefault();
                 //if (elt.IsStatic)
                 //    continue;
                 if ((xMethod != null) && (xMethod.Visibility < minVisibility))
@@ -3303,14 +3258,14 @@ namespace XSharpLanguage
             foundElement = null;
             if (cType.XType != null)
             {
-                XTypeMember element = cType.XType.Members.Find(x =>
+                XTypeMember element = cType.XType.Members.Where(x =>
                 {
                     if ((x.Kind == Kind.Property) || (x.Kind == Kind.Access) || (x.Kind == Kind.Assign))
                     {
                         return StringEquals(x.Name, currentToken);
                     }
                     return false;
-                });
+                }).FirstOrDefault();
                 //
                 if ((element != null) && (element.Visibility < minVisibility))
                 {
@@ -3414,14 +3369,14 @@ namespace XSharpLanguage
             foundElement = null;
             if (cType.XType != null)
             {
-                XTypeMember element = cType.XType.Members.Find(x =>
+                XTypeMember element = cType.XType.Members.Where(x =>
                 {
                     if (x.Kind.IsField())
                     {
                         return StringEquals(x.Name, currentToken);
                     }
                     return false;
-                });
+                }).FirstOrDefault();
                 //
                 if ((element != null) && (element.Visibility < minVisibility))
                 {
@@ -3518,14 +3473,14 @@ namespace XSharpLanguage
             if (cType.XType != null)
             {
                 // 
-                XTypeMember xMethod = cType.XType.Members.Find(x =>
+                XTypeMember xMethod = cType.XType.Members.Where(x =>
                 {
                     if ((x.Kind == Kind.Method))
                     {
                         return StringEquals(x.Name, currentToken);
                     }
                     return false;
-                });
+                }).FirstOrDefault();
                 //
                 if ((xMethod != null) && staticOnly && !xMethod.IsStatic)
                 {

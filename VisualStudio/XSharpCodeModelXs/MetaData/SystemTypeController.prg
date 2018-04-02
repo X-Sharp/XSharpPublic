@@ -40,7 +40,7 @@ begin namespace XSharpModel
 			_mscorlib := null
 		
 		static method FindAssemblyByLocation(location as string) as string
-			if (assemblies:ContainsKey(location))
+			if assemblies:ContainsKey(location)
 				return assemblies:Item[location]:FullName
 			endif
 			return null

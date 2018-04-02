@@ -1403,6 +1403,10 @@ namespace XSharp.Project
                 _rootNamespace = value;
             }
         }
+
+        public bool DisableLexing => package.GetIntellisenseOptionsPage().DisableSyntaxColorization;
+        public bool DisableParsing => package.GetIntellisenseOptionsPage().DisableEntityParsing;
+        public bool DisableRegions  => package.GetIntellisenseOptionsPage().DisableRegions;
         #endregion
 
 
@@ -1820,6 +1824,7 @@ namespace XSharp.Project
         {
             bool silent;
             int result;
+            
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
@@ -2628,4 +2633,5 @@ namespace XSharp.Project
         }
     }
 }
+
 

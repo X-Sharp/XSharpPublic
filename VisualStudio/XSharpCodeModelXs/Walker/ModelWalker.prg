@@ -67,8 +67,9 @@ begin namespace XSharpModel
 				begin using var walker := SourceWalker{file}
 					try
 						//
-						var xTree := walker:Parse()
-						walker:BuildModel(xTree, false)
+						var lines := System.IO.File.ReadAllLines(file:SourcePath)
+						var xTree := walker:Parse(lines, false)
+						walker:BuildModel(xTree)
 						file:LastWritten := lastWriteTime
 						if file:Project != null
 							//
@@ -217,7 +218,7 @@ begin namespace XSharpModel
 		static property IsSuspended as logic
 			get
 				//
-				return (ModelWalker.suspendLevel > 0)
+				return ModelWalker.suspendLevel > 0
 			end get
 		end property
 		

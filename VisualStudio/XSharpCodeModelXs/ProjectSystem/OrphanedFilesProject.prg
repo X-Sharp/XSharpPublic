@@ -29,6 +29,9 @@ begin namespace XSharpModel
 		property Project as XProject auto
 		property RootNameSpace as string get "" 
 		property Url as string get "" 
+		property DisableRegions as logic get false
+		property DisableLexing as logic get false
+		property DisableParsing as LOGIC GET FALSE
 	#endregion
 		
 		

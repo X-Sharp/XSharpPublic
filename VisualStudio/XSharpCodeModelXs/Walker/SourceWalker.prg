@@ -3,20 +3,16 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using LanguageService.CodeAnalysis.XSharp
 using System
 using System.IO
 using System.Collections.Generic
 using System.Linq
 using System.Text
 using System.Threading.Tasks
-using Microsoft.VisualStudio.Text
-using Microsoft.VisualStudio.Text.Classification
 using LanguageService.SyntaxTree
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser
-using LanguageService.CodeAnalysis.XSharp.Syntax
 using System.Collections.Immutable
 using LanguageService.CodeAnalysis
+using LanguageService.CodeAnalysis.XSharp
 using static XSharp.Parser.VsParser
 using LanguageService.CodeAnalysis.Text
 using XSharp.Parser
@@ -28,9 +24,6 @@ begin namespace XSharpModel
 			private _file as XFile
 			private _gate as object
 			private _prjNode as IXSharpProject
-			private _snapshot as ITextSnapshot
-			private _lines  as IList<string>
-			private _source as string
 			private _tokenStream as ITokenStream
 			private _info as ParseResult
 			
@@ -40,62 +33,23 @@ begin namespace XSharpModel
 			
 			private property parseOptions as XSharpParseOptions get self:_prjNode:ParseOptions
 			
-			property Snapshot as ITextSnapshot
-				get
-					//
-					return self:_snapshot
-				end get
-				set
-					//
-					self:_snapshot := value
-					self:_source  := self:_snapshot:GetText()
-					var aLines := List<string>{}
-					foreach line as ITextSnapshotline in self:_snapshot:Lines
-						aLines:Add(line:GetText())
-					next
-					self:_lines := aLines:ToArray()
-					self:_tokenStream := null
-				end set
-			end property
-			
 			property TokenStream as ITokenStream get self:_tokenStream
 			
 			
 		#endregion
 		
-		#region constructors
-			constructor(file as XFile);super()
-				local sourcePath as string
-				//
-				self:_gate := object{}
-				self:_file := file
-				self:_prjNode := self:_file?:Project?:ProjectNode
-				sourcePath := self:_file:SourcePath
-				if (System.IO.File.Exists(sourcePath))
-					//
-					self:_lines  := System.IO.File.ReadAllLines(sourcePath)
-					self:_source := System.IO.File.ReadAllText(sourcePath)
-				endif
+		constructor(file as XFile)
+			super()
+			local sourcePath as string
+			self:_gate := object{}
+			self:_file := file
+			self:_prjNode := self:_file?:Project?:ProjectNode
+			//
+			sourcePath := self:_file:SourcePath
 			
-			constructor(file as XFile, snapshot as ITextSnapshot)
-				super()
-				//
-				self:_gate := object{}
-				self:_file := file
-				self:_prjNode := self:_file?:Project?:ProjectNode
-				self:Snapshot := snapshot
 			
-			constructor(file as XFile, source as string)
-				super()
-				//
-				self:_gate := object{}
-				self:_file := file
-				self:_prjNode := self:_file?:Project?:ProjectNode
-				self:_snapshot := null
-				self:_source := source
-		#endregion
 		
-		method BuildModel(oInfo as ParseResult, buildLocals as logic) as void
+		method BuildModel(oInfo as ParseResult) as void
 			if self:_prjNode != null .AND. self:_file:Project:Loaded
 				//
 				try
@@ -115,31 +69,46 @@ begin namespace XSharpModel
 				self:_file := null
 				self:_prjNode := null
 				self:_tokenStream := null
-				self:_snapshot := null
 			endif
-		
-		method Lex() as ITokenStream
+
+
+		method Lex(cSource as string) as ITokenStream
 			local lOk := false as logic
 			System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Lex()")
 			self:_errors := List<XError>{}
+			local stream := null as ITokenStream
+			XSharp.Parser.VsParser.Lex(cSource, self:_file:SourcePath, self:_file:Project:ProjectNode:ParseOptions, self, out stream)
 			begin lock self
-				local stream := null as ITokenStream
-				XSharp.Parser.VsParser.Lex(self:_source, self:_file:SourcePath, self:_file:Project:ProjectNode:ParseOptions, self, out stream)
 				self:_tokenStream := stream
 			end lock
 			System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.Lex()")
-			return self:_tokenStream
+			return stream
 		
-		method Parse() as ParseResult
+		private method createLines(cSource as string) as List<String>
+			var lines := List<String>{}
+			begin using var reader := StringReader{cSource}
+				local cLine as string
+				do while (cLine := reader:ReadLine()) != null
+					lines.Add(cLine)
+				enddo
+			end using
+			return lines
+
+			//method Parse(cSource as string, lIncludeLocals as LOGIC) as ParseResult
+			//var lines := createLines(cSource)
+			//return self:Parse(lines, lIncludeLocals)
+
+		method Parse(lines as IList<String> , lIncludeLocals as LOGIC) as ParseResult
 			System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Parse()")
 			
 			var oParser := XSharpModel.Parser{}
-			var info := oParser:Parse(self:_lines)
+			var info := oParser:Parse(lines, lIncludeLocals)
 			begin lock self
 				self:_info := info				
 			end lock
 			System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.Parse()")
 			return self:_info
+
 		
 		#region Errors		
 			virtual method ReportError(fileName as string, span as LinePositionSpan, errorCode as string, message as string, args as object[]) as void

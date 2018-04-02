@@ -56,16 +56,22 @@ begin namespace XSharpModel
 		///
 		method FindMemberAtRow(nLine as long) as XElement
 			local oResult := null_object as XElement
+			local oLast as XElement
 			nLine += 1
-			foreach oMember as XElement in _entityList
-				if oMember:Range:StartLine > nLine
+			foreach oElement as XElement in _entityList
+				if oElement:Range:StartLine > nLine
+					oResult := oLast
 					exit
-				endif
-				if oMember:Range:StartLine <= nLine .and. oMember:Range:EndLine >= nLine
-					oResult := oMember
+				elseif oElement:Range:EndLine >= nLine
+					oResult := oElement
 					exit
+				else
+					oLast := oElement
 				endif
 			next
+			if (oResult == null_object)
+				oResult := oLast
+			endif
 			return oResult
 		///
 		/// <Summary>Find member in file based on 0 based position</Summary>
@@ -161,8 +167,8 @@ begin namespace XSharpModel
 					if ! self:Parsed
 						begin using var walker := SourceWalker{self}
 							try
-								
-								var info := walker:Parse()
+								var lines := System.IO.File.ReadAllLines(self:SourcePath)								
+								var info := walker:Parse(lines, false)
 								BuildTypes(info)						
 							catch exception as System.Exception
 								Support.Debug(String.Concat("XFile.WaitParsing", exception:Message), Array.Empty<object>())

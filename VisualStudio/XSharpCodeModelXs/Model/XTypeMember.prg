@@ -11,7 +11,6 @@ begin namespace XSharpModel
 	[DebuggerDisplay("{Prototype,nq}")];
 		class XTypeMember inherit XElement
 		// Fields
-		private _locals as List<XVariable>
 		private _parameters as List<XVariable>
 		private _typeName as string
 		
@@ -22,7 +21,6 @@ begin namespace XSharpModel
 				super(name, kind, modifiers, visibility, span, position)
 				self:Parent := null
 				self:_parameters := List<XVariable>{}
-				self:_locals := List<XVariable>{}
 				self:_typeName := ""
 				self:_typeName := typeName
 				self:_isStatic := isStatic
@@ -40,24 +38,6 @@ begin namespace XSharpModel
 				CalculateRange(oElement, oInfo, out span, out intv)
 				local result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} as XTypeMember
 				result:File := oFile
-				foreach oLocal as EntityObject in oElement:aChildren
-					if oElement:eType:IsClassMember() .and. oType:Name != GlobalName
-						local oVar as XVariable
-						span := TextRange{oElement:nStartLine, oElement:nCol, oElement:nStartLine, oElement:nCol}
-						oVar := XVariable{result, "SELF", Kind.Local, span, default(TextInterval), oType:FullName, false}
-						result:AddLocal(oVar)
-						if !String.IsNullOrEmpty(oType:ParentName )
-							oVar := XVariable{result, "SUPER", Kind.Local, span, default(TextInterval), oType:ParentName, false}
-							result:AddLocal(oVar)
-						endif
-					endif
-					if oLocal:eType == EntityType._Local
-						local oVar as XVariable
-						span := TextRange{oLocal:nStartLine, oLocal:nCol, oLocal:nStartLine, oLocal:cName:Length+oLocal:nCol}
-						oVar := XVariable{result, oLocal:cName, Kind.Local, span,default(TextInterval),oLocal:cRetType, false}
-						result:AddLocal(oVar)
-					endif
-				next
 				if oElement:aParams != null
 					foreach oParam as EntityParamsObject in oElement:aParams
 						local oVar as XVariable
@@ -71,11 +51,8 @@ begin namespace XSharpModel
 			
 			
 		#endregion
-		method AddLocal(oVar as XVariable) as VOID
-			oVar:Parent := self
-			oVar:File := self:File
-			_locals:Add(oVar)
-			return
+
+
 
 		method AddParameter(oVar as XVariable) as VOID
 			oVar:Parent := self
@@ -110,7 +87,7 @@ begin namespace XSharpModel
 					desc := desc + super:Kind:DisplayName()+ " "
 					if (super:Kind == Kind.VODefine)
 						//
-						return desc + super:Name + self:Suffix
+						return desc + super:Name 
 					endif
 				endif
 				return desc + self:Prototype
@@ -133,11 +110,6 @@ begin namespace XSharpModel
 		
 		property IsArray as logic auto 
 		
-		property Locals as IEnumerable<XVariable>  
-		get 
-			return self:_locals
-		end get
-		end property
 		
 		new property Parent as XType get (XType) super:parent  set super:parent := value
 
@@ -180,13 +152,8 @@ begin namespace XSharpModel
 			end get
 		end property
 		
-		property Suffix as string auto 
-		
 		property TypeName as string get self:_typeName
-		#endregion		
-
-		
-		
+		#endregion
 	end class
 	
 end namespace 

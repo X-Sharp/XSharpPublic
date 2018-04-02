@@ -2485,7 +2485,10 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "vsopts")]
         public virtual BuildResult Build(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target)
         {
-            System.Diagnostics.Trace.WriteLine("<<-- ProjectNode.Build()");
+            string cTarget = target;
+            if (String.IsNullOrEmpty(cTarget))
+                cTarget = "null";
+            System.Diagnostics.Trace.WriteLine("<<-- ProjectNode.Build("+cTarget+")");
             BuildResult result = BuildResult.FAILED;
             lock (ProjectNode.BuildLock)
             {

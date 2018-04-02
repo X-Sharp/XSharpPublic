@@ -242,6 +242,12 @@ namespace XSharp.Project
         public void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, XSharpProjectNode ProjectNode)
         {
             // No Hierarchy or... Hierarchy already registered ?
+            var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
+            if (optionsPage.DisableClassViewObjectView)
+            {
+                return;
+            }
+
             if ((null == hierarchy) || hierarchies.ContainsKey(hierarchy))
             {
                 return;
@@ -368,6 +374,7 @@ namespace XSharp.Project
         private void WalkerThread()
         {
             const int waitTimeout = 500;
+
             // Define the array of events this function is interest in.
             WaitHandle[] eventsToWait = new WaitHandle[] { requestPresent, shutDownStarted };
             // Execute the tasks.
@@ -621,6 +628,7 @@ namespace XSharp.Project
 
         private void CreateParseRequest(string file, XSharpModuleId id)
         {
+
             LibraryTask task = new LibraryTask(file, id);
             task.ModuleID = id;
             lock (requests)

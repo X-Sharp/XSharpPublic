@@ -38,6 +38,9 @@ begin namespace XSharpModel
 		property PrefixClassesWithDefaultNamespace as logic get 
 		property RootNameSpace as string get 
 		property Url as string get 
+		property DisableLexing  as logic get
+		property DisableParsing  as logic get
+		property DisableRegions as logic get
 		
 	end interface
 	

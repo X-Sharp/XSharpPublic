@@ -26,6 +26,10 @@ namespace XSharp.Project.Editors.LightBulb
 
         public ISuggestedActionsSource CreateSuggestedActionsSource(ITextView textView, ITextBuffer textBuffer)
         {
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.DisableLightBulb)
+                return null;
             if (textBuffer == null && textView == null)
             {
                 return null;

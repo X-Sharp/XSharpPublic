@@ -7,6 +7,7 @@ class ParseResult
 	property Types			as IList<EntityObject> auto
 	property Entities		as IList<EntityObject> auto
 	property SpecialLines   as IList<LineObject> auto
+	property Locals         as IList<EntityObject> auto
 	property SourceLength   as int auto
 	property LineCount      as int auto
 
@@ -16,5 +17,7 @@ class ParseResult
 		self:SpecialLines   := oParser:SpecialLines:ToImmutableArray()
 		self:SourceLength   := oParser:SourceLength
 		self:LineCount      := oParser:LineCount
+		self:Locals			:= oParser:Locals
+
 end class
 end namespace

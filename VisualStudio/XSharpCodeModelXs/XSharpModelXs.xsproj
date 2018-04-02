@@ -76,7 +76,8 @@
     <PPO>false</PPO>
     <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths>$(SolutionDir)\Common</IncludePaths>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
@@ -113,20 +114,6 @@
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>Microsoft.VisualStudio.Shell.14.0.dll</AssemblyName>
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Text.Data">
-      <Name>Microsoft.VisualStudio.Text.Data</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>Microsoft.VisualStudio.Text.Data.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Text.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Text.Logic">
-      <Name>Microsoft.VisualStudio.Text.Logic</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>Microsoft.VisualStudio.Text.Logic.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />

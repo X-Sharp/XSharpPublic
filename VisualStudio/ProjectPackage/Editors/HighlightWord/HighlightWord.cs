@@ -35,6 +35,11 @@ namespace XSharp.Project.Editors.HighlightWord
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.DisableHighLightWord)
+                return null;
+
             // Sorry, not the same buffer
             if (textView.TextBuffer != buffer)
                 return null;

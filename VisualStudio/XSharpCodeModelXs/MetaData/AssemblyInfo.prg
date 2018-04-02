@@ -10,7 +10,7 @@ using System.Diagnostics
 using System.Reflection
 begin namespace XSharpModel
 	[DebuggerDisplay("{DisplayName,nq}")];
-		class AssemblyInfo
+	class AssemblyInfo
 		// Fields
 		private _aExtensions as IList<MethodInfo>
 		private _assembly as Assembly
@@ -40,12 +40,10 @@ begin namespace XSharpModel
 		
 		constructor(reference as VSLangProj.Reference)
 			self()
-			//
 			self:_reference := reference
 		
 		constructor(_cFileName as string, _dModified as System.DateTime)
 			self()
-			//
 			self:FileName := _cFileName
 			self:Modified := _dModified
 			self:UpdateAssembly()
@@ -69,106 +67,78 @@ begin namespace XSharpModel
 			endif
 		
 		private method CurrentDomain_AssemblyResolve(sender as object, args as System.ResolveEventArgs) as Assembly
-			local list as List<string>
-			local directoryName as string
-			local str2 as string
-			local path as string
-			local assembly as Assembly
-			local assembly3 as Assembly
 			//
-			list := List<string>{}
-			directoryName := System.IO.Path.GetDirectoryName(self:FileName)
-			str2 := AssemblyName{args:Name}:Name + ".dll"
-			path := System.IO.Path.Combine(directoryName, str2)
-			if (System.IO.File.Exists(path))
-				//
-				assembly := AssemblyInfo.LoadAssemblyFromFile(path)
+			var folders := List<string>{}	// list of folders that we have tried
+			var folderPath := System.IO.Path.GetDirectoryName(self:FileName)
+			var name := AssemblyName{args:Name}:Name + ".dll"
+			var assemblyPath := System.IO.Path.Combine(folderPath, name)
+			if (System.IO.File.Exists(assemblyPath))
+				var assembly := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
 				if (assembly != null)
-					//
 					return assembly
 				endif
 			endif
-			list:Add(directoryName)
-			foreach str4 as string in SystemTypeController.AssemblyFileNames
-				//
-				directoryName := System.IO.Path.GetDirectoryName(str4)
-				if (! list:Contains(directoryName))
+			folders:Add(folderPath)
+			foreach path as string in SystemTypeController.AssemblyFileNames
+				folderPath := System.IO.Path.GetDirectoryName(path)
+				if ! folders:Contains(folderPath)
 					//
-					path := System.IO.Path.Combine(directoryName, str2)
-					if (System.IO.File.Exists(path))
-						//
-						assembly3 := Assembly.LoadFrom(path)
-						if (assembly3 != null)
-							//
-							return assembly3
+					assemblyPath := System.IO.Path.Combine(folderPath, name)
+					if System.IO.File.Exists(assemblyPath)
+						var asm := Assembly.LoadFrom(path)
+						if asm != null
+							return asm
 						endif
 					endif
-					list:Add(directoryName)
+					folders:Add(folderPath)
 				endif
 			next
 			return null
 		
 		method GetType(name as string) as System.Type
 			//
-			if (self:IsModifiedOnDisk)
-				//
+			if self:IsModifiedOnDisk
 				self:LoadAssembly()
 			endif
-			if ((self:_assembly != null) .AND. (self:_aTypes:Count == 0))
-				//
+			if self:_assembly != null .AND. self:_aTypes:Count == 0
 				self:UpdateAssembly()
 			endif
-			if (self:_aTypes:ContainsKey(name))
-				//
+			if self:_aTypes:ContainsKey(name)
 				return self:Types:Item[name]
 			endif
 			return null
 		
 		private method GetTypeTypesFromType(oType as System.Type) as AssemblyInfo.TypeTypes
-			//
-			if (oType:IsValueType)
-				//
+			if oType:IsValueType
 				return AssemblyInfo.TypeTypes.Structure
 			endif
-			if (oType:IsInterface)
-				//
+			if oType:IsInterface
 				return AssemblyInfo.TypeTypes.Interface
 			endif
-			if (typeof(System.Delegate):IsAssignableFrom(oType))
-				//
+			if typeof(System.Delegate):IsAssignableFrom(oType)
 				return AssemblyInfo.TypeTypes.Delegate
 			endif
 			return AssemblyInfo.TypeTypes.Class
 		
-		private static method HasExtensionAttribute(oInfo as MemberInfo) as logic
-			local customAttributes as object[]
-			local i as long
-			//
+		private static method HasExtensionAttribute(memberInfo as MemberInfo) as logic
 			try
-				//
-				customAttributes := oInfo:GetCustomAttributes(false)
-				i := 1
-				while ((i <= customAttributes:Length))
+				var customAttributes := memberInfo:GetCustomAttributes(false)
+				foreach var custattr in customAttributes
 					//
-					if (customAttributes[(i - 1) + 1]:ToString() == "System.Runtime.CompilerServices.ExtensionAttribute")
-						//
+					if custattr:ToString() == "System.Runtime.CompilerServices.ExtensionAttribute"
 						return true
 					endif
-					i++
-				enddo
+				next
 			catch 
-				
+				// Failed to retrieve custom attributes
 			end try
 			return false
 		
 		internal method LoadAssembly() as void
-			//
-			if (String.IsNullOrEmpty(self:FileName) .AND. (self:_reference != null))
-				//
+			if String.IsNullOrEmpty(self:FileName) .AND. self:_reference != null
 				self:FileName := self:_reference:Path
 			endif
-			if (System.IO.File.Exists(self:FileName))
-				//
+			if System.IO.File.Exists(self:FileName)
 				self:_assembly := AssemblyInfo.LoadAssemblyFromFile(self:FileName)
 				self:_fullName := self:_assembly:FullName
 				self:Modified := System.IO.File.GetLastWriteTime(self:FileName)
@@ -176,42 +146,32 @@ begin namespace XSharpModel
 			endif
 		
 		static method LoadAssemblyFromFile(fileName as string) as Assembly
-			local input as System.IO.FileStream
-			local rawAssembly as byte[]
-			local path as string
-			local str2 as string
-			local flag2 as logic
-			local assembly2 as Assembly
-			//
-			if (System.IO.File.Exists(fileName))
-				//
+			local result  as Assembly
+			if System.IO.File.Exists(fileName)
 				try
-					//
-					input := System.IO.FileStream{fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read}
-					rawAssembly := System.IO.BinaryReader{input}:ReadBytes((long)input:Length )
-					if (rawAssembly:Length != input:Length)
-						
+					var input := System.IO.FileStream{fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read}
+					var rawAssembly := System.IO.BinaryReader{input}:ReadBytes((long)input:Length )
+					if rawAssembly:Length != input:Length
+							// Error ?
 					endif
 					input:Close()
-					path := System.IO.Path.ChangeExtension(fileName, ".pdb")
-					str2 := System.IO.Path.ChangeExtension(fileName, ".p$$")
-					flag2 := false
-					if (System.IO.File.Exists(path))
-						//
-						flag2 := true
-						if (System.IO.File.Exists(str2))
-							//
-							System.IO.File.Delete(str2)
+					var cPdb := System.IO.Path.ChangeExtension(fileName, ".pdb")
+					var cTmp := System.IO.Path.ChangeExtension(fileName, ".p$$")
+					local renamed := false as logic
+					if System.IO.File.Exists(cPdb)
+						renamed := true
+						if (System.IO.File.Exists(cTmp))
+							System.IO.File.Delete(cTmp)
 						endif
-						System.IO.File.Move(path, str2)
+						System.IO.File.Move(cPdb, cTmp)
 					endif
-					assembly2 := Assembly.Load(rawAssembly)
-					if (flag2 .AND. System.IO.File.Exists(str2))
+					result := Assembly.Load(rawAssembly)
+					if (renamed .AND. System.IO.File.Exists(cTmp))
 						//
-						System.IO.File.Move(str2, path)
+						System.IO.File.Move(cTmp, cPdb)
 					endif
 					input:Dispose()
-					return assembly2
+					return result
 				catch exception as System.Exception
 					//
 					Support.Debug("Generic exception:", Array.Empty<object>())
@@ -222,190 +182,181 @@ begin namespace XSharpModel
 		
 		method RemoveProject(project as XProject) as void
 			//
-			if (self:_projects:Contains(project))
-				//
+			if self:_projects:Contains(project)
 				self:_projects:Remove(project)
 			endif
-		
 		internal method UpdateAssembly() as void
-			local num as long
-			local dictionary as Dictionary<string, System.Type>
-			local list as List<MethodInfo>
-			local key as string
+			local aTypes as Dictionary<string, System.Type>
+			local aExtensions as List<MethodInfo>
+			local nspace as string
 			local fullName as string
-			local typeName as string
-			local o as object[]
+			local simpleName as string
 			local message as string
-			local methods as MethodInfo[]
+			local types := null as System.Type[]
 			local index as long
-			local container as AssemblyInfo.NameSpaceContainer
 			//
-			if (self:_failed <= 3)
+			if (self:_failed > 3)
+				return
+			endif
+			aTypes := Dictionary<string, System.Type>{System.StringComparer.OrdinalIgnoreCase}
+			aExtensions := List<MethodInfo>{}
+			fullName := ""
+			simpleName := ""
+			self:_nameSpaces:Clear()
+			self:_nameSpaceTexts:Clear()
+			self:_zeroNamespace:Clear()
+			self:_globalClassName := ""
+			self:_HasExtensions := false
+			self:LoadAssembly()
+
+			var currentDomain := System.AppDomain.CurrentDomain
+			currentDomain:AssemblyResolve += System.ResolveEventHandler{ self, @CurrentDomain_AssemblyResolve() }
+			try
+				if self:_assembly != null
+					var customAttributes := self:_assembly:GetCustomAttributes(false)
+					local found := 0 as int
+					foreach var custattr in customAttributes
+						//
+						var type := custattr:GetType()
+						switch custattr:ToString()
+							case "Vulcan.Internal.VulcanClassLibraryAttribute"
+								self:_globalClassName := type:GetProperty("globalClassName"):GetValue(custattr, null):ToString()
+								var defaultNs := type:GetProperty("defaultNamespace"):GetValue(custattr, null):ToString()
+								if ! String.IsNullOrEmpty(defaultNs)
+									self:_implicitNamespaces:Add(defaultNs)
+								endif
+								found += 1
+							case "System.Runtime.CompilerServices.ExtensionAttribute"
+								self:_HasExtensions  := true
+								found += 2
+							case "Vulcan.VulcanImplicitNamespaceAttribute"
+								var ns := type:GetProperty("Namespace"):GetValue(custattr, null):ToString()
+								if ! String.IsNullOrEmpty(ns)
+									self:_implicitNamespaces:Add(ns)
+								endif
+								found += 4
+						end switch
+						// All attributes found then get out of here
+						if found == 7
+							exit
+						endif
+					next
+						
+				endif
+			catch e as Exception
+				// failed to load custom attributes					
+				Support.Debug(e:Message)
+			end try
+			try
+				if self:_assembly != null
+					types := self:_assembly:GetTypes()
+				endif
+				self:_failed := 0
+			catch exception as ReflectionTypeLoadException
 				//
-				dictionary := Dictionary<string, System.Type>{System.StringComparer.OrdinalIgnoreCase}
-				list := List<MethodInfo>{}
-				key := ""
-				fullName := ""
-				typeName := ""
-				self:_nameSpaces:Clear()
-				self:_nameSpaceTexts:Clear()
-				self:_zeroNamespace:Clear()
-				self:_globalClassName := ""
-				self:_HasExtensions := false
-				self:LoadAssembly()
-				try
-					//
-					if (self:_assembly != null)
-						var customAttributes := self:_assembly:GetCustomAttributes(false)
-						for num := 1 to customAttributes:Length step 1
-							//
-							var custattr := customAttributes[(num - 1) + 1]
-							var type := custattr:GetType()
-							switch custattr:ToString()
-								case "Vulcan.Internal.VulcanClassLibraryAttribute"
-									self:_globalClassName := type:GetProperty("globalClassName"):GetValue(custattr, null):ToString()
-									var defaultNs := type:GetProperty("defaultNamespace"):GetValue(custattr, null):ToString()
-									if ! String.IsNullOrEmpty(defaultNs)
-										self:_implicitNamespaces:Add(defaultNs)
-									endif
-								case "System.Runtime.CompilerServices.ExtensionAttribute"
-									self:_HasExtensions  := true
-								case "Vulcan.VulcanImplicitNamespaceAttribute"
-									var ns := type:GetProperty("Namespace"):GetValue(custattr, null):ToString()
-									if ! String.IsNullOrEmpty(ns)
-										self:_implicitNamespaces:Add(ns)
-									endif
-							end switch
-						next
-						
-						
-						
+				Support.Debug("Cannot load types from "+ self:_assembly:GetName():Name)
+				Support.Debug("Exception details:")
+				message := null
+				foreach var exception2 in exception:LoaderExceptions
+					if exception2:Message != message
+						Support.Debug(exception2:Message)
+						message := exception2:Message
 					endif
-				catch //obj1 as Object
-					
-				end try
-				var currentDomain := System.AppDomain.CurrentDomain
-				currentDomain:AssemblyResolve += System.ResolveEventHandler{ self, @CurrentDomain_AssemblyResolve() }
-				local types := null as System.Type[]
-				try
-					if (self:_assembly != null)
-						//
-						types := self:_assembly:GetTypes()
+				next
+				Support.Debug("Types loaded:")
+				foreach var t in exception:Types
+					if t != null
+						Support.Debug(t:FullName)
 					endif
-					self:_failed := 0
-				catch exception as ReflectionTypeLoadException
-					//
-					o := <object>{self:_assembly:GetName():Name}
-					Support.Debug("Cannot load types from {0}", o)
-					Support.Debug("Exception details:")
-					message := null
-					foreach var exception2 in exception:LoaderExceptions
-						if (exception2:Message != message)
-							Support.Debug(exception2:Message)
-							message := exception2:Message
-						endif
-					next
-					Support.Debug("Types loaded:", Array.Empty<object>())
-					foreach var t in exception:Types
-						//
-						if (t != null)
-							//
-							Support.Debug(t:FullName)
-						endif
-					next
-					self:_assembly := null
-					self:_failed++
-				catch exception3 as System.Exception
-					//
-					Support.Debug("Generic exception:")
-					Support.Debug(exception3:Message)
-				end try
-				currentDomain:AssemblyResolve -= System.ResolveEventHandler{ self, @CurrentDomain_AssemblyResolve() }
+				next
+				self:_assembly := null
+				self:_failed++
+			catch ex as System.Exception
+				//
+				Support.Debug("Generic exception:")
+				Support.Debug(ex:Message)
+			end try
+			currentDomain:AssemblyResolve -= System.ResolveEventHandler{ self, @CurrentDomain_AssemblyResolve() }
 				
-				if (((types != null) .AND. (types:Length != 0)) .AND. (iif((dictionary != null),(dictionary:Count == 0),false) | ! self:_LoadedTypes))
-					//
-					try
-						//
-						num := 1
-						while ((num <= types:Length))
+			if types?:Length != 0 .AND. (aTypes?:Count == 0  .or. ! _LoadedTypes)
+				try
+					foreach var type in types
+						fullName := type:FullName
+						if ! fullName:StartsWith("$") .AND. ! fullName:StartsWith("<")
+							if self:_HasExtensions .AND. AssemblyInfo.HasExtensionAttribute(type)
+								var methods := type:GetMethods(BindingFlags.Public | BindingFlags.Static)
+								foreach info as MethodInfo in methods
+									if AssemblyInfo.HasExtensionAttribute(info)
+										aExtensions:Add(info)
+									endif
+								next
+							endif
 							//
-							fullName := types[(num - 1) + 1]:FullName
-							if (! fullName:StartsWith("$") .AND. ! fullName:StartsWith("<"))
-								//
-								if (self:_HasExtensions .AND. AssemblyInfo.HasExtensionAttribute(types[(num - 1) + 1]))
-									//
-									methods := types[(num - 1) + 1]:GetMethods((BindingFlags.Public | BindingFlags.Static))
-									foreach info as MethodInfo in methods
-										//
-										if (AssemblyInfo.HasExtensionAttribute(info))
-											//
-											list:Add(info)
-										endif
-									next
+		                    // Nested Type ?
+							if fullName:Contains("+")
+								fullName := fullName:Replace('+', '.')
+							endif
+							// Generic ?
+							if fullName:Contains("`")
+								fullName := fullName:Substring(0, fullName:IndexOf("`") + 2)
+							endif
+		                    // Add to the FullyQualified name
+							if ! aTypes:ContainsKey(fullName)
+								aTypes:Add(fullName, type)
+							endif
+	                        // Now, with Standard name
+							simpleName := type:Name:Replace('+', '.')
+							// Not Empty namespace, not a generic, not nested, not starting with underscore
+							if String.IsNullOrEmpty(type:Namespace) .AND. simpleName:IndexOf('`') == -1 .AND. ;
+								simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
+								self:_zeroNamespace:AddType(simpleName, self:GetTypeTypesFromType(type))
+							endif
+	                        // Public Type, not Nested and no Underscore
+							if type:IsPublic .and. simpleName.IndexOf('+') == -1  .and. simpleName.IndexOf('_') == -1
+								// Get the Namespace
+								nspace := type:Namespace
+								// and the normal name
+								simpleName := type:Name
+								simpleName := simpleName:Replace('+', '.')
+								// Generic ?
+								index := simpleName:IndexOf('`')
+								if index != -1
+									simpleName := simpleName:Substring(0, index)
 								endif
-								if (fullName:Contains("+"))
-									fullName := fullName:Replace('+', '.')
-								endif
-								if (fullName:Contains("`"))
-									fullName := fullName:Substring(0, (fullName:IndexOf("`") + 2))
-								endif
-								if (! dictionary:ContainsKey(fullName))
-									dictionary:Add(fullName, types[(num - 1) + 1])
-								endif
-								typeName := types[(num - 1) + 1]:Name:Replace('+', '.')
-								if (((String.IsNullOrEmpty(types[(num - 1) + 1]:Namespace) .AND. (typeName:IndexOf('`') == -1)) .AND. ((typeName:IndexOf('+') == -1) .AND. (typeName:IndexOf('<') == -1))) .AND. ! typeName:StartsWith("_"))
-									//
-									self:_zeroNamespace:AddType(typeName, self:GetTypeTypesFromType(types[(num - 1) + 1]))
-								endif
-								if ((types[(num - 1) + 1]:IsPublic .AND. (typeName:IndexOf('+') == -1)) .AND. (typeName:IndexOf('_') == -1))
-									//
-									key := types[(num - 1) + 1]:Namespace
-									typeName := types[(num - 1) + 1]:Name:Replace('+', '.')
-									index := typeName:IndexOf('`')
-									if (index != -1)
-										//
-										typeName := typeName:Substring(0, index)
+								if nspace?:Length > 0
+									local container as AssemblyInfo.NameSpaceContainer
+									if ! self:_nameSpaces:ContainsKey(nspace)
+										container := AssemblyInfo.NameSpaceContainer{nspace}
+										container:AddType(simpleName, self:GetTypeTypesFromType(type))
+										self:_nameSpaces:Add(nspace, container)
+										self:_nameSpaceTexts:Add(nspace)
+									else
+										container := (AssemblyInfo.NameSpaceContainer)self:_nameSpaces[nspace]
+										container:AddType(simpleName, self:GetTypeTypesFromType(type))
 									endif
-									if ((key != null) .AND. (key:Length > 0))
-										//
-										if (! self:_nameSpaces:ContainsKey(key))
-											//
-											container := AssemblyInfo.NameSpaceContainer{key}
-											container:AddType(typeName, self:GetTypeTypesFromType(types[(num - 1) + 1]))
-											self:_nameSpaces:Add(key, container)
-											self:_nameSpaceTexts:Add(key)
-										else
-											//
-											var c:= (AssemblyInfo.NameSpaceContainer)self:_nameSpaces:Item[key]
-											c:AddType(typeName, self:GetTypeTypesFromType(types[(num - 1) + 1]))
+									do while nspace:Contains(".")
+										nspace := nspace:Substring(0, nspace:LastIndexOf('.'))
+										if ! self:_nameSpaceTexts:Contains(nspace)
+											self:_nameSpaceTexts:Add(nspace)
 										endif
-										while (key:Contains("."))
-											//
-											key := key:Substring(0, key:LastIndexOf('.'))
-											if (! self:_nameSpaceTexts:Contains(key))
-												//
-												self:_nameSpaceTexts:Add(key)
-											endif
-										enddo
-									endif
+									enddo
 								endif
 							endif
-							num++
-						enddo
-						self:_LoadedTypes := true
-						self:_aTypes := (IDictionary<string, System.Type>)ImmutableDictionary.ToImmutableDictionary<string, System.Type>(dictionary, System.StringComparer.OrdinalIgnoreCase) 
-						self:_aExtensions := (IList<MethodInfo>)ImmutableList.ToImmutableList<MethodInfo>(list) 
-						self:_failed := 0
-						self:_assembly := null
-					catch exception4 as System.Exception
-						//
-						Support.Debug("Generic exception:", Array.Empty<object>())
-						Support.Debug(exception4:Message, Array.Empty<object>())
-						self:_clearInfo()
-					end try
-				endif
+						endif
+					next
+					self:_LoadedTypes := true
+					self:_aTypes := aTypes.ToImmutableDictionary(System.StringComparer.OrdinalIgnoreCase) 
+					self:_aExtensions := aExtensions.ToImmutableList()
+					self:_failed := 0
+					self:_assembly := null
+				catch e as System.Exception
+					//
+					Support.Debug("Generic exception:")
+					Support.Debug(e:Message)
+					self:_clearInfo()
+				end try
 			endif
-		
+		*/
 		
 		// Properties
 		property DisplayName as string
@@ -466,7 +417,6 @@ begin namespace XSharpModel
 			internal _NameSpace := "" as string
 			internal _Types as SortedList<string, AssemblyInfo.TypeTypes>
 			
-			// Methods
 			constructor(_cNameSpace as string);super()
 				//
 				self:_NameSpace := _cNameSpace

@@ -24,7 +24,7 @@ return
 		d := DateTime.Now
 		//LineObject.LinesWithSpecialStuff:Clear()
 		var parser := Parser{}
-		oInfo   := parser:Parse(aLineCollection)
+		oInfo   := parser:Parse(aLineCollection, true)
 		? "Parsing completed!"
 		?
 		? "Time elapsed:" , DateTime.Now - d

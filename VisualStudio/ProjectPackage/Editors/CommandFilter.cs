@@ -248,7 +248,7 @@ namespace XSharp.Project
                 // First, where are we ?
                 int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
                 int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
-                String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
+                var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
                 XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
                 if (file == null)
                     return;
@@ -259,7 +259,7 @@ namespace XSharp.Project
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false, member);
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 XSharpLanguage.CompletionElement gotoElement;
@@ -269,7 +269,7 @@ namespace XSharp.Project
                     currentNS = currentNamespace.Name;
                 }
                 bool done = false;
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber);
                 //
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {
@@ -281,7 +281,7 @@ namespace XSharp.Project
                 {
                     // try again with just the last element in the list
                     tokenList.RemoveRange(0, tokenList.Count - 1);
-                    cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
+                    cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber);
                 }
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {
@@ -522,7 +522,7 @@ namespace XSharp.Project
                 } while (startLineNumber == lineNumber);
                 //
                 caretPos = ssp.Position;
-                String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
+                var snapshot  = this.TextView.TextBuffer.CurrentSnapshot;
                 XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
                 if (file == null)
                     return false;
@@ -531,14 +531,14 @@ namespace XSharp.Project
                 // Check if we can get the member where we are
                 XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file, false, member);
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 String currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
-                cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
+                cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber);
             }
             //
             if ((gotoElement != null) && (gotoElement.IsInitialized))
@@ -669,6 +669,8 @@ namespace XSharp.Project
             //
             var package = XSharp.Project.XSharpProjectPackage.Instance;
             var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.DisableCaseSynchronization)
+                return;
             int kwCase = optionsPage.KeywordCase;
             bool syncIdentifier = optionsPage.IdentifierCase;
             //
@@ -723,7 +725,8 @@ namespace XSharp.Project
                         string identifier = idSpan.GetText();
                         //
                         XFile _file = buffer.GetFile();
-                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.GetContainingLine().LineNumber, _file);
+                        var lineNumber = caret.GetContainingLine().LineNumber;
+                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
                         //
                         if (currentMember == null)
                             continue;
@@ -738,9 +741,10 @@ namespace XSharp.Project
                         if (element == null)
                         {
                             // then Locals
-                            if (currentMember.Locals != null)
+                            var locals = currentMember.GetLocals(TextView.TextSnapshot, lineNumber);
+                            if (locals != null)
                             {
-                                element = currentMember.Locals.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
+                                element = locals.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
                             }
                             if (element == null)
                             {

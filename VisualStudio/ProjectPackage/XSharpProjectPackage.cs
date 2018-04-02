@@ -146,16 +146,7 @@ namespace XSharp.Project
                  "#201"         // Localized name of property page
                  )]
 
-    /*
-
-    [ProvideLanguageEditorOptionPage(typeof(Options.AdvancedOptionPage), "CSharp", null, "Advanced", pageNameResourceId: "#102", keywordListResourceId: 306)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingStylePage), "CSharp", null, @"Code Style", pageNameResourceId: "#114", keywordListResourceId: 313)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.IntelliSenseOptionPage), "CSharp", null, "IntelliSense", pageNameResourceId: "#103", keywordListResourceId: 312)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingOptionPage), "CSharp", "Formatting", "General", pageNameResourceId: "#108", keywordListResourceId: 307)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingIndentationOptionPage), "CSharp", "Formatting", "Indentation", pageNameResourceId: "#109", keywordListResourceId: 308)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingWrappingPage), "CSharp", "Formatting", "Wrapping", pageNameResour
-    */
-    [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
+     [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
         null,
         null,
@@ -233,6 +224,7 @@ namespace XSharp.Project
             var page = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
             return page;
         }
+
         internal IVsTextManager4 GetTextManager()
         {
             return (IVsTextManager4)GetService(typeof(SVsTextManager));

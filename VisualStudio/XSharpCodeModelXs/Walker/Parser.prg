@@ -107,59 +107,15 @@ begin namespace XSharpModel
 			
 			return
 		
-				/*	static method ParseAndDisplay(aLineCollection as IEnumerable) as void
-		local aLocals := List<EntityObject>{} as List<EntityObject>
-		local aEntities := List<EntityObject>{} as List<EntityObject>
-		local nLineCount as int
-		local d as DateTime
-		
-		? "Starting parsing..."
-		d := DateTime.Now
-		LineObject.LinesWithSpecialStuff:Clear()
-		nLineCount := Parse(aLineCollection , aLocals , aEntities)
-		? "Parsing completed!"
-		?
-		? "Time elapsed:" , DateTime.Now - d
-		?
-		? "Total Lines:" , nLineCount
-		? "Locals:" , aLocals:Count
-		? "Entities:" , aEntities:Count
-		? "Directives, block commands etc:" , LineObject.LinesWithSpecialStuff:Count
-		?
-		? "Press enter to list info"
-		Console.ReadLine()
-		?
-		? "Locals:"
-		foreach oLocal as EntityObject in aLocals
-		? "Line:" , oLocal:nLine , "Name:" , oLocal:cName , "Type =", oLocal:cRetType
-		next
-		?
-		? "Entities:"
-		foreach oEntity as EntityObject in aEntities
-		? "Line:" , oEntity:nLine , "Name:" , oEntity:cName , "Type:" , oEntity:eType , "Return Type =", oEntity:cRetType
-		next
-		?
-		? "Directives, Block commands etc:"
-		foreach oLine as LineObject in LineObject.LinesWithSpecialStuff
-		if oLine:eType == LineType.EndClass .or. oLine:eType == LineType.Return .or. oLine:eType == LineType.Define
-		loop
-		end if
-		? "Line:" , oLine:Line , "Type:" , oLine:eType , ":" , oLine:cArgument
-		next
-		
-		
-		return
-		*/
-		
 		internal method _SetLineType(oLine as LineObject, eLineType as LineType) as void
 			oLine:eType := eLineType
 			if ! self:aLinesWithSpecialStuff:Contains(oLine)
 				self:aLinesWithSpecialStuff:Add(oLine)
 			endif
 		
-		
 		property Entities		as IList<EntityObject>	get aEntities				
 		property Types		    as IList<EntityObject>	get aResult
+		property Locals		    as IList<EntityObject>	get aLocals
 		property SpecialLines	as IList<LineObject>	get aLinesWithSpecialStuff 
 		property SourceLength   as int					get _nLength -2 // exclude last CRLF
 		property LineCount      as int					get aSourceLines:Count
@@ -170,7 +126,6 @@ begin namespace XSharpModel
 				oLast := aEntities[aEntities:Count-1]
 			endif
 			aEntities:Add(oInfo)
-			oInfo:nOffSet := oLine:OffSet
 			if oLast != NULL_OBJECT
 				oLast:oNext := oInfo
 			ENDIF
@@ -178,7 +133,7 @@ begin namespace XSharpModel
 			
 
 
-		method Parse(aLineCollection as IList<string>) as ParseResult
+		method Parse(aLineCollection as IList<string>, lIncludeLocals as logic) as ParseResult
 			local oLine as LineObject
 			local oStatementLine as LineObject
 			local nLine,nLineLen as int
@@ -221,6 +176,7 @@ begin namespace XSharpModel
 			local lInAttribute as logic
 			local lAllowAttribute as logic
 			local nEntityStartLine as int
+			local nEntityStartOffset as int
 			local nEntityStartCol as int
 			local nAt as int
 			
@@ -299,6 +255,7 @@ begin namespace XSharpModel
 					lAllowAttribute := true
 					oInfo := null
 					nEntityStartLine := 0
+					nEntityStartOffset := 0
 					nEntityStartCol := 0
 					oStatementLine := oLine
 				endif
@@ -358,6 +315,7 @@ begin namespace XSharpModel
 							lAllowAttribute := true
 							oInfo := null
 							nEntityStartLine := 0
+							nEntityStartOffset := 0
 							nEntityStartCol := 0
 							oStatementLine := oLine:AddSubLine(nChar)
 							cOldChar := ' '
@@ -376,7 +334,6 @@ begin namespace XSharpModel
 									case '['
 										cBracketOpen := '['
 										cBracketClose := ']'
-									//							lInAttribute := TRUE
 								end switch
 								nBracketCount := 1
 							end if
@@ -537,7 +494,7 @@ begin namespace XSharpModel
 					end case
 					
 					if nBracketCount == 0
-						lInAttribute := lAllowAttribute .and. cRealChar == '[' .and. sWord:Length == 0
+						 lInAttribute := lAllowAttribute .and. cRealChar == '[' .and. sWord:Length == 0
 					else
 						if cChar == cBracketOpen
 							nBracketCount ++
@@ -557,6 +514,7 @@ begin namespace XSharpModel
 					end if
 					if .not. lIsSpaceChar .and. nEntityStartLine == 0
 						nEntityStartLine := nLine
+						nEntityStartOffset := oLine:OffSet
 						nEntityStartCol := nChar - 1
 					end if
 					if lIsSpaceChar
@@ -892,7 +850,8 @@ begin namespace XSharpModel
 								if oInfo:eType == EntityType._Constructor .or. oInfo:eType == EntityType._Destructor
 									state:lNameFound := true // Dont't wait for a name, add it to the list now
 									oInfo:nStartLine := nEntityStartLine
-									oInfo:nCol := nEntityStartCol
+									oInfo:nOffSet	:= nEntityStartOffSet
+									oInfo:nCol		:= nEntityStartCol
 									oInfo:cName := iif(oInfo:eType == EntityType._Constructor , ".ctor" , ".dtor")
 									oInfo:cShortClassName := cShortClassName
 									oInfo:cTypedClassName := cTypedClassName
@@ -1079,6 +1038,7 @@ begin namespace XSharpModel
 											state:lNameFound := true
 											oInfo:nStartLine := nEntityStartLine
 											oInfo:nCol	:= nEntityStartCol
+											oInfo:nOffSet := nEntityStartOffSet
 											oInfo:cName := cWord
 											if oInfo:IsFuncProcGlobal
 												oInfo:cShortClassName := ""
@@ -1202,9 +1162,6 @@ begin namespace XSharpModel
 							oInfo:nCol := nChar - cWord:Length
 							if state:lLocal
 								oInfo:eType := EntityType._Local
-								if oCurrentMethod != null
-									oCurrentMethod:AddChild(oInfo)
-								endif
 							elseif state:lEvent
 								oInfo:eType := EntityType._Event
 							else
@@ -1243,7 +1200,7 @@ begin namespace XSharpModel
 							if state:lField
 								AddEntity(oInfo, oLine)
 							end if 
-							if state:lLocal
+							if state:lLocal .and. lIncludeLocals
 								aLocals:Add(oInfo)
 							end if
 						case state:lFirstWord .or. state:lFirstChar

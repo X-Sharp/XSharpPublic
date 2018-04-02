@@ -56,6 +56,14 @@ namespace XSharp.LanguageService
             //
             var package = XSharp.Project.XSharpProjectPackage.Instance;
             var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.DisableEditorDropdowns)
+            {
+                dropDownTypes.Clear();
+                dropDownMembers.Clear();
+                selectedType = selectedMember = -1;
+                return true;
+            }
+
             var sortItems = optionsPage.SortNavigationBars;
             var includeFields = optionsPage.IncludeFieldsInNavigationBars;
             bool bModification = false;

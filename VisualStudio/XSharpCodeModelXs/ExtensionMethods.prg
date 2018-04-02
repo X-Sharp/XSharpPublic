@@ -8,9 +8,6 @@ using System
 using System.Linq
 using System.Collections.Generic
 using System.Collections.Immutable
-using Microsoft.VisualStudio.Text
-using Microsoft.VisualStudio.Text.Classification
-using Microsoft.VisualStudio.Text.Tagging
 using LanguageService.CodeAnalysis.Text
 begin namespace XSharpModel
 	
@@ -111,15 +108,15 @@ begin namespace XSharpModel
 			return false
 		
 	// textspan extensions
-		static method GetText( self snapshot as ITextSnapshot, span as TextSpan) as string
-			return snapshot:GetText(Span{span:Start, span:Length})
-		
-		static method ToClassificationSpan( self span as TextSpan, snapshot as ITextSnapshot, classificationType as IClassificationType) as ClassificationSpan
-			return ClassificationSpan{SnapshotSpan{snapshot, span:Start, span:Length}, classificationType}
-		
-		static method ToTagSpan( self span as TextSpan, snapshot as ITextSnapshot, classificationType as IClassificationType) as ITagSpan<IClassificationTag>
-			return TagSpan<IClassificationTag>{SnapshotSpan{snapshot, span:Start, span:Length}, ClassificationTag{classificationType}}
-	
+		//static method GetText( self snapshot as ITextSnapshot, span as TextSpan) as string
+			//return snapshot:GetText(Span{span:Start, span:Length})
+		//
+		//static method ToClassificationSpan( self span as TextSpan, snapshot as ITextSnapshot, classificationType as IClassificationType) as ClassificationSpan
+			//return ClassificationSpan{SnapshotSpan{snapshot, span:Start, span:Length}, classificationType}
+		//
+		//static method ToTagSpan( self span as TextSpan, snapshot as ITextSnapshot, classificationType as IClassificationType) as ITagSpan<IClassificationTag>
+			//return TagSpan<IClassificationTag>{SnapshotSpan{snapshot, span:Start, span:Length}, ClassificationTag{classificationType}}
+	//
 	//list exstensions
 			static method AddUnique( self list as List<string>, item as string) as void
 			if !list:Contains(item, System.StringComparer.OrdinalIgnoreCase)

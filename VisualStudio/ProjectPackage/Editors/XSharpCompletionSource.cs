@@ -2810,7 +2810,10 @@ namespace XSharpLanguage
                     {
                         String startToken = currentToken.Substring(0, dotPos);
                         if (String.IsNullOrEmpty(startToken))
+                        {
+                            currentPos += 1;
                             continue;
+                        }
                         cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
                         if (cType.IsEmpty())
                         {

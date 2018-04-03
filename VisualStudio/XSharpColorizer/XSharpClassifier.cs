@@ -53,8 +53,9 @@ namespace XSharpColorizer
         private readonly SourceWalker _sourceWalker;
         private readonly ITextBuffer _buffer;
 
-        private XClassificationSpans _tags = new XClassificationSpans();
-        private IImmutableList<ClassificationSpan> _tagsRegion = ImmutableList<ClassificationSpan>.Empty;
+        private XClassificationSpans _colorTags = new XClassificationSpans();
+        private IImmutableList<ClassificationSpan> _lexerRegions = ImmutableList<ClassificationSpan>.Empty;
+        private IImmutableList<ClassificationSpan> _parserRegions = ImmutableList<ClassificationSpan>.Empty;
         private ITextDocumentFactoryService _txtdocfactory;
         private bool _first = true;
         private XSharpModel.ParseResult _info = null;
@@ -258,8 +259,11 @@ namespace XSharpColorizer
                 Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 _sourceWalker.BuildModel(info);
                 var regionTags = BuildRegionTags(info, snapshot, xsharpRegionStart, xsharpRegionStop);
-                BuildColorClassifications(tokens, snapshot, regionTags);
-                 DoRepaintRegions();
+                lock (gate)
+                {
+                    _parserRegions = regionTags.ToImmutableList();
+                }
+                DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
@@ -471,7 +475,8 @@ namespace XSharpColorizer
                             {
                                 var blStart = blockStack.Pop();
                                 nStart = blStart.OffSet;
-                                nEnd = oLine.OffSet-4;
+                                // get position of the line based on the line number
+                                nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 1).Start;
                                 AddRegionSpan(regions, snapshot, nStart, nEnd);
                             }
                         }
@@ -774,20 +779,12 @@ namespace XSharpColorizer
                 }
             }
         }
+  
         private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot)
-        {
-            if (tokenStream != null && snapshot != null)
-            {
-                BuildColorClassifications(tokenStream, snapshot, null);
-            }
-        }
-
-        private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot,
-            IImmutableList<ClassificationSpan> parserRegionTags)
         {
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             XClassificationSpans newtags;
-            var regionTags = new List<ClassificationSpan>();
+            var regionTags  = new List<ClassificationSpan>();
             if (tokenStream != null)
             {
                 int iLastInclude = -1;
@@ -858,19 +855,14 @@ namespace XSharpColorizer
             }
             else
             {
-                newtags = _tags;
+                newtags = _colorTags;
             }
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
-            if (parserRegionTags != null)
-            {
-                regionTags.AddRange(parserRegionTags);
-            }
-            var list = regionTags.ToImmutableList();
             lock (gate)
             {
                 _snapshot = snapshot;
-                _tags = newtags;
-                _tagsRegion = list;
+                _colorTags = newtags;
+                _lexerRegions = regionTags.ToImmutableList();
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
@@ -919,13 +911,27 @@ namespace XSharpColorizer
         public IImmutableList<ClassificationSpan> GetRegionTags()
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
-            IImmutableList<ClassificationSpan> ret;
+            IImmutableList<ClassificationSpan> result;
             lock (gate)
             {
-                ret = _tagsRegion;
+                if (_parserRegions != null)
+                {
+                    var list = _parserRegions.ToList();
+                    if (_lexerRegions != null)
+                        list.AddRange(_lexerRegions);
+                    result = list.ToImmutableList(); ;
+                }
+                else if (_lexerRegions != null)
+                {
+                    result = _lexerRegions;
+                }
+                else
+                {
+                    result = ImmutableList<ClassificationSpan>.Empty;
+                }
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");
-            return ret;
+            return result;
         }
 
         public IImmutableList<ClassificationSpan> GetTags()
@@ -934,7 +940,7 @@ namespace XSharpColorizer
             IImmutableList<ClassificationSpan> ret;
             lock (gate)
             {
-                ret = _tags.Tags;
+                ret = _colorTags.Tags;
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
             return ret;
@@ -973,7 +979,7 @@ namespace XSharpColorizer
             // In that case we need to keep a reference to the tokenstream in stead of the tags
             // There also must be a smart way to find the first matching tag.
             var result = new List<ClassificationSpan>();
-            var tags = _tags;
+            var tags = _colorTags;
             if (tags.Count == 0)
                 return result;
             int iStart = span.Start.GetContainingLine().LineNumber;

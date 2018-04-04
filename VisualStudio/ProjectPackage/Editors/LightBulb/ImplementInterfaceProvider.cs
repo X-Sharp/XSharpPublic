@@ -125,7 +125,7 @@ namespace XSharp.Project.Editors.LightBulb
         public bool SearchImplement()
         {
             // Try to retrieve an already parsed list of Tags
-            XSharpClassifier xsClassifier = null;
+             XSharpClassifier xsClassifier = null;
             if (m_textBuffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
             {
                 xsClassifier = m_textBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
@@ -135,13 +135,14 @@ namespace XSharp.Project.Editors.LightBulb
             {
                 //
                 ITextSnapshot snapshot = xsClassifier.Snapshot;
-
+                // Note we should use the same snapshot everywhere in this code.
+                // the snapshot in the classifier may be older than the current snapshot
                 if (snapshot.Length == 0)
                     return false; // Should not happen : This means that the buffer is empty !!!
                 //
                 ITextCaret caret = m_textView.Caret;
                 ITextViewLine iLine = caret.ContainingTextViewLine;
-                SnapshotSpan Span = new SnapshotSpan(iLine.Snapshot, iLine.Start.Position, iLine.Length);
+                SnapshotSpan Span = new SnapshotSpan(snapshot, iLine.Start.Position, iLine.Length);
                 //
                 IList<ClassificationSpan> classifications = xsClassifier.GetClassificationSpans(Span);
                 //
@@ -155,8 +156,7 @@ namespace XSharp.Project.Editors.LightBulb
                     if (name.Contains("keyword"))
                     {
                         SnapshotSpan cspan = classification.Span;
-                        ITextSnapshot vsnapshot = m_textView.TextSnapshot;
-                        string Keyword = vsnapshot.GetText(cspan);
+                        string Keyword = snapshot.GetText(cspan);
                         Keyword = Keyword.ToLower();
                         // Search for Implements
                         if (Keyword.Equals("implements"))

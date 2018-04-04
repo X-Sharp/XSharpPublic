@@ -143,7 +143,7 @@ namespace XSharp.LanguageService
                 }
                 elt = new DropDownMember(name, sp, eltType.Glyph, ft);
                 nSelect = dropDownTypes.Add(elt);
-                if (eltType == currentType)
+                if (eltType?.FullName == currentType?.FullName)
                 {
                     nSelType = nSelect;
                 }

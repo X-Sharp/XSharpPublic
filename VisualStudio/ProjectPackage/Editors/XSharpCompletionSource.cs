@@ -3829,16 +3829,16 @@ namespace XSharpLanguage
 
             internal static IToken GetPreviousToken(ITokenStream tokens, IToken currentToken)
             {
-                IToken prev = null;
+                XSharpToken prev = null;
                 if (currentToken != null)
                 {
-                    prev = currentToken;
+                    prev = (XSharpToken) currentToken;
                     int Line = prev.Line;
                     do
                     {
-                        if (prev.TokenIndex == 0)
+                        if (prev.OriginalTokenIndex == 0)
                             break;
-                        prev = tokens.Get(prev.TokenIndex - 1);
+                        prev = (XSharpToken)tokens.Get(prev.OriginalTokenIndex - 1);
                         if (prev.Line != Line)
                         {
                             prev = null;

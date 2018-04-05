@@ -94,7 +94,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualSByteTests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL l as SByte
 			u := (SByte)1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualUInt64Tests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL d as UInt64
 			u := (Uint64) 1
 			Assert.Equal(UsualType(u), (DWORD) INT64)
@@ -139,7 +139,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualwordTests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL w as WORD
 			u :=  (WORD) 1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
@@ -154,7 +154,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualByteTests() AS VOID
-			LOCAL u AS __Usual
+			LOCAL u AS Usual
 			LOCAL b as Byte
 			b := 1
 			u :=  b

@@ -6,24 +6,24 @@
 using XSharp
 
 /// <summary>
-/// Create an uninitialized, one-dimensional __Array.
+/// Create an uninitialized, one-dimensional Array.
 /// </summary>
-/// <param name="dwDim">The number of elements in the new __Array.</param>
+/// <param name="dwDim">The number of elements in the new Array.</param>
 /// <returns>
 /// An uninitialized of the given length.
 /// </returns>
-FUNCTION ArrayCreate(dwDim AS DWORD) AS __Array 
-	RETURN __Array{(int)dwDim}
+FUNCTION ArrayCreate(dwDim AS DWORD) AS Array 
+	RETURN Array{(int)dwDim}
 
 
 /// <summary>
-/// Create an initialized __Array.
+/// Create an initialized Array.
 /// </summary>
 /// <param name="dwDim"></param>
 /// <param name="ptrBuff"></param>
 /// <returns>
 /// </returns>
-unsafe FUNCTION ArrayInit(dwDim AS DWORD,ptrBuff AS PTR) AS __Array 
+unsafe FUNCTION ArrayInit(dwDim AS DWORD,ptrBuff AS PTR) AS Array 
 	/// THROW NotImplementedException{}
 RETURN NULL
 
@@ -35,27 +35,27 @@ RETURN NULL
 	/// <param name="x"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AAdd(a AS __Array,x AS __USUAL) AS __USUAL
+	FUNCTION AAdd(a AS Array,x AS Usual) AS Usual
 		a:Add(x)
 	RETURN x 
 
 	/// <summary>
-	/// Duplicate a multidimensional __Array.
+	/// Duplicate a multidimensional Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AClone(a AS __Array) AS __Array
-		RETURN (__Array) a:Clone()
+	FUNCTION AClone(a AS Array) AS Array
+		RETURN (Array) a:Clone()
 
 	/// <summary>
-	/// Duplicate an Array without its sub__Arrays.
+	/// Duplicate an Array without its subArrays.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ACloneShallow(a AS __Array) AS __Array
-		RETURN (__Array) a:CloneShallow()
+	FUNCTION ACloneShallow(a AS Array) AS Array
+		RETURN (Array) a:CloneShallow()
 
 	/// <summary>
 	/// Delete an Array element.
@@ -64,7 +64,7 @@ RETURN NULL
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ADel(a AS __Array,dwEl AS DWORD) AS __Array
+	FUNCTION ADel(a AS Array,dwEl AS DWORD) AS Array
 		a:RemoveAt(dwEl)  
 	RETURN a
 
@@ -73,7 +73,7 @@ RETURN NULL
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ADim(a AS __Array) AS DWORD
+	FUNCTION ADim(a AS Array) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -82,7 +82,7 @@ RETURN NULL
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ADimPic(a AS __Array) AS STRING
+	FUNCTION ADimPic(a AS Array) AS STRING
 		/// THROW NotImplementedException{}
 	RETURN String.Empty
 
@@ -93,7 +93,7 @@ RETURN NULL
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AIns(a AS __Array,dwEl AS DWORD) AS __Array
+	FUNCTION AIns(a AS Array,dwEl AS DWORD) AS Array
 		a:Insert(dwEl)
 	RETURN a
 
@@ -103,7 +103,7 @@ RETURN NULL
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ALen(a AS __Array) AS DWORD
+	FUNCTION ALen(a AS Array) AS DWORD
 		RETURN a:Length
 
 	/// <summary>
@@ -111,7 +111,7 @@ RETURN NULL
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AMemSize(a AS __Array) AS DWORD
+	FUNCTION AMemSize(a AS Array) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -120,17 +120,17 @@ RETURN NULL
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION APageCount(a AS __Array) AS DWORD
+	FUNCTION APageCount(a AS Array) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Removes write protection from an entire __Array.
+	/// Removes write protection from an entire Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayDeProtect(a AS __Array) AS LOGIC
+	FUNCTION ArrayDeProtect(a AS Array) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -142,7 +142,7 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
     
-	FUNCTION ArrayGet(a AS __Array,dwEl AS DWORD) AS __USUAL
+	FUNCTION ArrayGet(a AS Array,dwEl AS DWORD) AS Usual
 	return a:__GetElement( (int) dwEl-1)
     
 	/// <summary>
@@ -151,7 +151,7 @@ RETURN NULL
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	UNSAFE FUNCTION ArrayGetPtr(a AS __Array,dwEl AS DWORD) AS PTR
+	UNSAFE FUNCTION ArrayGetPtr(a AS Array,dwEl AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN NULL   
 
@@ -161,7 +161,7 @@ RETURN NULL
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayProtect(a AS __Array) AS LOGIC
+	FUNCTION ArrayProtect(a AS Array) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -173,7 +173,7 @@ RETURN NULL
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayPut(a AS __Array,dwEl AS DWORD,u AS __USUAL) AS __USUAL
+	FUNCTION ArrayPut(a AS Array,dwEl AS DWORD,u AS Usual) AS Usual
 		a:__SetElement(u, (int)dwEl -1)
 	RETURN u
 
@@ -185,7 +185,7 @@ RETURN NULL
 	/// <param name="dwLen"></param>
 	/// <returns>
 	/// </returns>
-	UNSAFE FUNCTION ArrayStore(a AS __Array,Buff AS PTR,dwLen AS DWORD) AS DWORD
+	UNSAFE FUNCTION ArrayStore(a AS Array,Buff AS PTR,dwLen AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -197,28 +197,28 @@ RETURN NULL
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArraySwap(a AS __Array,dwEl AS DWORD,u AS __USUAL) AS __USUAL
+	FUNCTION ArraySwap(a AS Array,dwEl AS DWORD,u AS Usual) AS Usual
 	RETURN a:Swap(dwEl, u)
 
 	/// <summary>
-	/// Scan a sorted __Array until a value is found or a code block returns 0.
+	/// Scan a sorted Array until a value is found or a code block returns 0.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="x"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AScanBin(a AS __Array,x AS __USUAL) AS DWORD
+	FUNCTION AScanBin(a AS Array,x AS Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Scan a sorted __Array until there is an exact match or a code block returns 0.
+	/// Scan a sorted Array until there is an exact match or a code block returns 0.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="x"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AScanBinExact(a AS __Array,x AS __USUAL) AS DWORD
+	FUNCTION AScanBinExact(a AS Array,x AS Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -229,7 +229,7 @@ RETURN NULL
 	/// <param name="dwDim"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ASize(a AS __Array,dwDim AS DWORD) AS __Array
+	FUNCTION ASize(a AS Array,dwDim AS DWORD) AS Array
 		a:Resize(dwDim) 
 		RETURN a  
 
@@ -244,7 +244,7 @@ RETURN NULL
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ATail(a AS __Array) AS __USUAL
+	FUNCTION ATail(a AS Array) AS Usual
 		RETURN a:Tail()
 
 	/// <summary>
@@ -260,7 +260,7 @@ RETURN NULL
 
 
 	/// <summary>
-	/// Copy elements from one __Array to another.
+	/// Copy elements from one Array to another.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="aDest"></param>
@@ -269,13 +269,13 @@ RETURN NULL
 	/// <param name="nStartDest"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ACopy(a AS __Usual,aDest AS __Usual,nStart AS __Usual,nCount AS __Usual,nStartDest AS __Usual) AS __Array
+	FUNCTION ACopy(a AS Usual,aDest AS Usual,nStart AS Usual,nCount AS Usual,nStartDest AS Usual) AS Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
 
 	/// <summary>
-	/// Fill __Array elements with a specified value.
+	/// Fill Array elements with a specified value.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="x"></param>
@@ -283,21 +283,21 @@ RETURN NULL
 	/// <param name="iCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AFill(a AS __Usual,x AS __Usual,iStart AS __Usual,iCount AS __Usual) AS __Array
+	FUNCTION AFill(a AS Usual,x AS Usual,iStart AS Usual,iCount AS Usual) AS Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
 
 	/// <summary>
-	/// Create an empty __Array.
+	/// Create an empty Array.
 	/// </summary>
 	/// <returns>
 	/// </returns>
 	FUNCTION ArrayBuild() AS Array
-		RETURN __Array{}
+		RETURN Array{}
 
 	/// <summary>
-	/// Create an uninitialized __Array with the specified number of elements and dimensions.
+	/// Create an uninitialized Array with the specified number of elements and dimensions.
 	/// </summary>
 	/// <param name="nDim"></param>
 	/// <returns>
@@ -314,10 +314,10 @@ RETURN NULL
 	/// <param name="nCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AReplicate<T>(x AS __Usual,nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	FUNCTION AReplicate<T>(x AS Usual,nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 		var a:=__ArrayBase<T>{(int)nCount} 
 		//Todo
-		//__Array.ArrayFill(a,x)
+		//Array.ArrayFill(a,x)
 	RETURN a
 
 
@@ -342,9 +342,9 @@ RETURN NULL
 /// <param name="n1"></param>
 /// <returns>
 /// </returns>
-function _ArrayGetPoly(a as __Usual,n1 as __Usual) as __Usual
+function _ArrayGetPoly(a as Usual,n1 as Usual) as Usual
 	/// THROW NotImplementedException{}
-return	 __Usual._NIL   
+return	 NIL   
 
 /// <summary>
 /// </summary>
@@ -352,21 +352,9 @@ return	 __Usual._NIL
 /// <param name="n1"></param>
 /// <returns>
 /// </returns>
-function _ArrayGetCollection(a as __Usual,n1 as __Usual) as __Usual
+function _ArrayGetCollection(a as Usual,n1 as Usual) as Usual
 	/// THROW NotImplementedException{}
-return	 __Usual._NIL   
-
-/// <summary>
-/// </summary>
-/// <param name="a"></param>
-/// <param name="x"></param>
-/// <param name="n1"></param>
-/// <returns>
-/// </returns>
-function _ArrayPutCollection(a as __Usual,x as __Usual,n1 as __Usual) as __Usual
-	/// THROW NotImplementedException{}
-return	 __Usual._NIL   
-
+return	 NIL   
 
 /// <summary>
 /// </summary>
@@ -375,13 +363,25 @@ return	 __Usual._NIL
 /// <param name="n1"></param>
 /// <returns>
 /// </returns>
-function _ArrayPutPoly(a as __Usual,x as __Usual,n1 as __Usual) as __Usual
+function _ArrayPutCollection(a as Usual,x as Usual,n1 as Usual) as Usual
 	/// THROW NotImplementedException{}
-return	 __Usual._NIL  
+return	 NIL   
+
+
+/// <summary>
+/// </summary>
+/// <param name="a"></param>
+/// <param name="x"></param>
+/// <param name="n1"></param>
+/// <returns>
+/// </returns>
+function _ArrayPutPoly(a as Usual,x as Usual,n1 as Usual) as Usual
+	/// THROW NotImplementedException{}
+return	 NIL  
 
 
 	/// <summary>
-	/// Execute a code block for each element in an __Array.
+	/// Execute a code block for each element in an Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="cb"></param>
@@ -389,12 +389,12 @@ return	 __Usual._NIL
 	/// <param name="iCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AEval(a AS __Usual,cb AS __Usual,iStart AS __Usual,iCount AS __Usual) AS __Usual
+	FUNCTION AEval(a AS Usual,cb AS Usual,iStart AS Usual,iCount AS Usual) AS Usual
 		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+	RETURN NIL   
 
 	/// <summary>
-	/// Execute a code block for each element in an __Array and assign the return value to each element in the __Array.
+	/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="cb"></param>
@@ -402,12 +402,12 @@ return	 __Usual._NIL
 	/// <param name="iCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AEvalA(a AS __Usual,cb AS __Usual,iStart AS __Usual,iCount AS __Usual) AS __Usual
+	FUNCTION AEvalA(a AS Usual,cb AS Usual,iStart AS Usual,iCount AS Usual) AS Usual
 		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+	RETURN NIL   
 
 	/// <summary>
-	/// Execute a code block for each element in an __Array.
+	/// Execute a code block for each element in an Array.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <param name="cod"></param>
@@ -415,8 +415,8 @@ return	 __Usual._NIL
 	/// <param name="nCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AEvalOld(c AS __Usual,cod AS __Usual,nStart AS __Usual,nCount AS __Usual) AS __Usual
+	FUNCTION AEvalOld(c AS Usual,cod AS Usual,nStart AS Usual,nCount AS Usual) AS Usual
 		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+	RETURN NIL   
 
 

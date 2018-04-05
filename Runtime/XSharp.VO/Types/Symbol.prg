@@ -24,6 +24,9 @@ begin namespace XSharp
 		
 		#region fields
 			private initonly _index		as dword
+			private _PszDict			as Dictionary<DWORD, PSZ>
+			// next field is only used when someone requests a PSZ representation 
+			// by calling SysGetAtomName
 		#endregion
 		
 		#region constrúctors
@@ -46,7 +49,14 @@ begin namespace XSharp
 				self:_index := value
 			
 		#endregion
-		
+		internal static method Find(sValue as string ) as __symbol
+			if SymbolTable:LookupTable:ContainsKey(sValue)
+				var index := __Symbol.SymbolTable:LookupTable[sValue]
+				return __Symbol{index}
+			endif
+			return __Symbol{0}
+
+
 		internal property _value as STRING
 		get
 			return SymbolTable.GetString(self:_index)
@@ -76,7 +86,7 @@ begin namespace XSharp
 			virtual method GetHashCode() as long
 				return self:_index:GetHashCode()
 			
-			method GetHashCode(obj as __Symbol) as long
+			method GetHashCode(obj as Symbol) as long
 				return obj:GetHashCode()
 			
 			method GetTypeCode() as TypeCode
@@ -84,6 +94,19 @@ begin namespace XSharp
 			
 			virtual method ToString() as string
 				return _value
+
+			method SysGetAtomName() as Psz
+				if _pszDict == null
+					_pszDict := Dictionary<dword, Psz>{}
+				endif
+				if _pszDict:ContainsKey(_index)
+					return _pszDict[_index]
+				endif
+				local pszAtom as PSZ
+				pszAtom := __Psz.CreatePsz(_value)
+				_pszDict:add(_index, pszAtom)
+				return pszAtom
+
 		#endregion
 		
 		#region Equality
@@ -108,79 +131,79 @@ begin namespace XSharp
 			static operator ==(lhs as symbol, rhs as string) as logic
 				return lhs:_value == rhs
 			
-			static operator !=(lhs as __Symbol, rhs as string) as logic
+			static operator !=(lhs as Symbol, rhs as string) as logic
 				return lhs:_value != rhs
 			
-			static operator ==(lhs as string, rhs as __Symbol) as logic
+			static operator ==(lhs as string, rhs as Symbol) as logic
 				return lhs == rhs:_value
 			
-			static operator !=(lhs as string, rhs as __Symbol) as logic
+			static operator !=(lhs as string, rhs as Symbol) as logic
 				return lhs != rhs:_value
 			
-			static operator ==(lhs as __Symbol, rhs as dword) as logic
+			static operator ==(lhs as Symbol, rhs as dword) as logic
 				return lhs:_index == rhs
 			
-			static operator !=(lhs as __Symbol, rhs as dword) as logic
+			static operator !=(lhs as Symbol, rhs as dword) as logic
 				return lhs:_index != rhs
 			
-			static operator ==(lhs as dword, rhs as __Symbol) as logic
+			static operator ==(lhs as dword, rhs as Symbol) as logic
 				return lhs == rhs:_index
 			
-			static operator !=(lhs as dword, rhs as __Symbol) as logic
+			static operator !=(lhs as dword, rhs as Symbol) as logic
 				return lhs != rhs:_index
 			
-			static operator explicit(value as dword) as __Symbol
+			static operator explicit(value as dword) as Symbol
 				if value <= SymbolTable.Count
-					return __Symbol{value}
+					return Symbol{value}
 				endif
-				return __Symbol{0}
+				return Symbol{0}
 			
-			static operator explicit(value as __Symbol) as dword
+			static operator explicit(value as Symbol) as dword
 				return value:_index
 			
-			static operator implicit(value as string) as __Symbol
-				return __Symbol{value, true}
+			static operator implicit(value as string) as Symbol
+				return Symbol{value, true}
 			
-			static operator implicit(value as __Symbol) as string
+			static operator implicit(value as Symbol) as string
 				return value:_value
 			
 			// relative comparisons
 			// compare symbols or symbols and strings
-			static operator >(lhs as __Symbol, rhs as __Symbol) as logic
+			static operator >(lhs as Symbol, rhs as Symbol) as logic
 				return __StringCompare(lhs:_value, rhs:_value) > 0
 			
-			static operator >(lhs as __Symbol, rhs as string) as logic
+			static operator >(lhs as Symbol, rhs as string) as logic
 				return __StringCompare(lhs:_value, rhs) > 0
 			
-			static operator >(lhs as string, rhs as __Symbol) as logic
+			static operator >(lhs as string, rhs as Symbol) as logic
 				return __StringCompare(lhs, rhs:_value) > 0
 			
-			static operator <(lhs as __Symbol, rhs as __Symbol) as logic
+			static operator <(lhs as Symbol, rhs as Symbol) as logic
 				return __StringCompare(lhs:_value, rhs:_value) < 0
 			
-			static operator <(lhs as __Symbol, rhs as string) as logic
+			static operator <(lhs as Symbol, rhs as string) as logic
 				return __StringCompare(lhs:_value, rhs) < 0
 			
-			static operator <(lhs as string, rhs as __Symbol) as logic
+			static operator <(lhs as string, rhs as Symbol) as logic
 				return __StringCompare(lhs, rhs:_value) < 0
 			
 			// or Equals
-			static operator >=(lhs as __Symbol, rhs as __Symbol) as logic
+			static operator >=(lhs as Symbol, rhs as Symbol) as logic
 				return __StringCompare(lhs:_value, rhs:_value) >= 0
 			
-			static operator >=(lhs as __Symbol, rhs as string) as logic
+			static operator >=(lhs as Symbol, rhs as string) as logic
 				return __StringCompare(lhs:_value, rhs) >= 0
 			
-			static operator >=(lhs as string, rhs as __Symbol) as logic
+			static operator >=(lhs as string, rhs as Symbol) as logic
 				return __StringCompare(lhs, rhs:_value) >= 0
 			
-			static operator <=(lhs as __Symbol, rhs as __Symbol) as logic
+			static operator <=(lhs as Symbol, rhs as Symbol) as logic
 				return __StringCompare(lhs:_value, rhs:_value) <= 0
 			
-			static operator <=(lhs as __Symbol, rhs as string) as logic
+			static operator <=(lhs as Symbol, rhs as string) as logic
 				return __StringCompare(lhs:_value, rhs) <= 0
 			
-			static operator <=(lhs as string, rhs as __Symbol) as logic
+			static operator <=(lhs as string, rhs as Symbol) as logic
 				return __StringCompare(lhs, rhs:_value) <= 0
 			
 		#endregion
@@ -238,18 +261,18 @@ begin namespace XSharp
 		
 		#region IClonable
 			method Clone() as object
-				return __Symbol{self:_index}
+				return Symbol{self:_index}
 		#endregion
 		
 		#region IEnumerable
-			// Vulcan.__Symbol
+			// Vulcan.Symbol
 			//METHOD GetEnumerator() as IEnumerator
 			//return SymbolTable.strings.GetEnumerator()
 			
 		#endregion
        internal class SymbolDebugView
-            private _svalue as __Symbol
-			constructor( s as __Symbol)
+            private _svalue as Symbol
+			constructor( s as Symbol)
             _svalue := s
             
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;

@@ -11,30 +11,54 @@ using System.Reflection
 begin namespace XSharp
 	
 	
-	[DebuggerDisplay( "{DebuggerString(),nq}", Type := "PSZ" ), DefaultMember( "Item" ) ] ;
-	unsafe structure __Psz
+	[DebuggerDisplay( "{DebuggerString(),nq}", Type := "PSZ" ) ] ;
+	structure __Psz
 		private _value as byte ptr
 		static property _NULL_PSZ as __Psz get (__Psz) IntPtr.zero
+		private static _pszList as List< IntPtr>
+
+		internal static method RegisterPsz(pszToRegister as PSZ) as void
+			if _pszList == null
+				_pszList := List<IntPtr>{}
+				AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @__FreePSZs() }
+			endif
+			if !_pszList:Contains(pszToRegister:Address)
+				_pszList:add(pszToRegister:Address)
+			endif
+			return
 		
+		internal static method CreatePsz( cString as string) as psz
+				return Psz{cString}
+		
+		private static method __FreePSZs(o AS OBJECT, args AS EventArgs ) AS VOID
+			foreach var pszToFree in _pszList
+				try
+					MemFree(pszToFree)
+				catch
+					nop
+				end try
+			next
+			_pszList := NULL
 		
 		constructor (s as string)
 			// this constructor has a memory leak
 			// there is no garbage collection for structures
 			// to free the memory we need to call MemFree on the pointer
 			_value := String2Mem(s)
+			RegisterPsz(_value)
 			return
 		
 		constructor (p as IntPtr)
 			_value := p
 		
 		override method ToString() as string
-		return Mem2String( _value, Length ) 
+			return Mem2String( _value, Length ) 
 		
 		method DebuggerString() as string
 			return iif( _value == null_ptr, "NULL_PSZ", e"\""+ tostring() +  e"\"" )
 		
 		
-		method equals( p as __Psz ) as logic
+		method equals( p as Psz ) as logic
 			
 			local ret := false as logic
 			if _value == p:_value
@@ -44,7 +68,7 @@ begin namespace XSharp
 			endif
 			return ret   
 		
-		method LessThan( p as __Psz ) as logic
+		method LessThan( p as Psz ) as logic
 			// todo: should this follow nation rules ?
 			local ret := false as logic
 			if _value == p:_value
@@ -54,7 +78,7 @@ begin namespace XSharp
 			endif
 			return ret       
 		
-		method GreaterThan( p as __Psz ) as logic
+		method GreaterThan( p as Psz ) as logic
 			local ret := false as logic
 			// todo: should this follow nation rules ?
 			if _value == p:_value
@@ -68,14 +92,14 @@ begin namespace XSharp
 		override method Equals( o as object ) as logic
 			local ret := false as logic
 			
-			if o is __Psz
-				ret := self:Equals( (__Psz) o )
+			if o is Psz
+				ret := self:Equals( (Psz) o )
 			endif
 			
 		return ret
 		
 		override method GetHashCode() as int
-		return (int) _value
+			return (int) _value
 		
 		method Free() as void
 			if _value != null_ptr
@@ -125,120 +149,119 @@ begin namespace XSharp
 		end property
 		property IsNull as logic get _value == null
 		property Address as IntPtr get _value
-		property Item[offset as dword] as byte
+	
+		property Item[index as int] as byte
 			get
-				return _value[offset]
+				return _value[index]
 			end get
 			set
-				_value[offset] := value
+				_value[index] := value
 			end set
 		end property
 		
-		
-		
 		#region operator methods
 			// binary
-			operator +( lhs as __Psz, rhs as __Psz ) as __Psz
-				return __Psz{ lhs:ToString() + rhs:ToString() }
+			operator +( lhs as Psz, rhs as Psz ) as Psz
+				return Psz{ lhs:ToString() + rhs:ToString() }
 			
-			operator +( lhs as __Psz, rhs as string ) as __Psz
-				return __Psz{ lhs:ToString() + rhs }
+			operator +( lhs as Psz, rhs as string ) as Psz
+				return Psz{ lhs:ToString() + rhs }
 			
-			operator +( lhs as string, rhs as __Psz ) as string
+			operator +( lhs as string, rhs as Psz ) as string
 				return lhs + rhs:ToString()
 			
-			operator -( lhs as __Psz, rhs as __Psz ) as __Psz
+			operator -( lhs as Psz, rhs as Psz ) as Psz
 				local l   := lhs:ToString() as string
 				local r   := rhs:ToString() as string
-				return __Psz{ String.Concat( l:TrimEnd(), r:TrimEnd() ):PadRight( l:Length + r:Length ) }
+				return Psz{ String.Concat( l:TrimEnd(), r:TrimEnd() ):PadRight( l:Length + r:Length ) }
 			
 			
-			operator -( lhs as __Psz, rhs as string ) as __Psz
+			operator -( lhs as Psz, rhs as string ) as Psz
 				local l   := lhs:ToString() as string
-				return __Psz{ String.Concat( l:TrimEnd(), rhs:TrimEnd() ):PadRight( l:Length + rhs:Length ) }
+				return Psz{ String.Concat( l:TrimEnd(), rhs:TrimEnd() ):PadRight( l:Length + rhs:Length ) }
 			
-			operator -( lhs as string, rhs as __Psz ) as string
+			operator -( lhs as string, rhs as Psz ) as string
 				local r   := rhs:ToString() as string
 				return String.Concat( lhs:TrimEnd(), r:TrimEnd() ):PadRight( lhs:Length + r:Length )
 			
 			// Comparison Operators
-			operator ==( lhs as __Psz, rhs as __Psz ) as logic
+			operator ==( lhs as Psz, rhs as Psz ) as logic
 				return lhs:Equals( rhs )
 			
-			operator !=( lhs as __Psz, rhs as __Psz ) as logic
+			operator !=( lhs as Psz, rhs as Psz ) as logic
 				return ! lhs:Equals( rhs )
 			
-			operator <( lhs as __Psz, rhs as __Psz ) as logic
+			operator <( lhs as Psz, rhs as Psz ) as logic
 				return lhs:LessThan( rhs )
 			
-			operator <=( lhs as __Psz, rhs as __Psz ) as logic
+			operator <=( lhs as Psz, rhs as Psz ) as logic
 				return ! lhs:GreaterThan( rhs )
 			
-			operator >( lhs as __Psz, rhs as __Psz ) as logic
+			operator >( lhs as Psz, rhs as Psz ) as logic
 				return lhs:GreaterThan( rhs )
 			
-			operator >=( lhs as __Psz, rhs as __Psz ) as logic
+			operator >=( lhs as Psz, rhs as Psz ) as logic
 				return ! lhs:LessThan( rhs )
 			
 			// Conversion Operators - To PSZ...  
 			
 			// PTR -> PSZ
-			operator implicit( p as ptr ) as __Psz
-				return __Psz{ (IntPtr) p }
+			operator implicit( p as ptr ) as Psz
+				return Psz{ (IntPtr) p }
 			
 			// BYTE PTR -> PSZ
-			operator implicit( p as byte ptr ) as __Psz
-				return __Psz{ (IntPtr) p }
+			operator implicit( p as byte ptr ) as Psz
+				return Psz{ (IntPtr) p }
 			
 			// SByte PTR -> PSZ
-			operator implicit( p as SByte ptr ) as __Psz
-				return __Psz{ (IntPtr) p }
+			operator implicit( p as SByte ptr ) as Psz
+				return Psz{ (IntPtr) p }
 			
 			// IntPtr -> PSZ
-			operator implicit( p as IntPtr ) as __Psz
-				return __Psz{ p }
+			operator implicit( p as IntPtr ) as Psz
+				return Psz{ p }
 			
 			// INT -> PSZ
-			operator implicit( i as int ) as __Psz
-				return __Psz{ IntPtr{ i } }
+			operator implicit( i as int ) as Psz
+				return Psz{ IntPtr{ i } }
 			
 			// DWORD -> PSZ
-			operator implicit( d as dword ) as __Psz
-				return __Psz{ IntPtr{ (ptr) d } }
+			operator implicit( d as dword ) as Psz
+				return Psz{ IntPtr{ (ptr) d } }
 			
 			///////////////////////////////////////////////////////////////////////////
 			// Conversion Operators - From PSZ...  
 			
 			// PSZ -> PTR
-			operator implicit( p as __Psz ) as ptr
+			operator implicit( p as Psz ) as ptr
 				return p:_value
 			
 			// PSZ -> BYTE PTR
-			operator implicit( p as __Psz ) as byte ptr
+			operator implicit( p as Psz ) as byte ptr
 				return p:_value
 			
 			// PSZ -> SByte PTR
-			operator implicit( p as __Psz ) as SByte ptr
+			operator implicit( p as Psz ) as SByte ptr
 				return (SByte ptr) p:_value
 			
 			// PSZ -> IntPtr
-			operator implicit( p as __Psz ) as IntPtr
+			operator implicit( p as Psz ) as IntPtr
 				return p:_value
 			
 			// PSZ -> STRING
-			operator implicit( p as __Psz ) as string
+			operator implicit( p as Psz ) as string
 				return p:ToString()
 			
 			// PSZ -> INT
-			operator implicit( p as __Psz ) as int
+			operator implicit( p as Psz ) as int
 				return (int) p:_value
 			
 			// PSZ -> INT64
-			operator implicit( p as __Psz ) as int64
+			operator implicit( p as Psz ) as int64
 				return (int64) p:_value
 			
 			// PSZ -> DWORD
-			operator implicit( p as __Psz ) as dword
+			operator implicit( p as Psz ) as dword
 				return (dword) p:_value			
 		#endregion
 		
@@ -250,27 +273,11 @@ end namespace
 
 
 
+// This function is handled by the compiler. The runtime function should never be called
+function Cast2Psz(cSource as string) as Psz
+	THROW NotImplementedException{}
 
+// This function is handled by the compiler. The runtime function should never be called
+function String2Psz(cSource as string) as Psz
+	throw NotImplementedException{}
 
-function String2Mem(s as string) as IntPtr
-	local result := 0 as IntPtr
-	if s != null
-		var encoding := System.Text.Encoding.Default
-		var bytes    := encoding:GetBytes(s)
-		var len      := bytes:Length
-		result	     := MemAlloc((dword) (len+1))
-		Marshal.Copy(bytes,0,result, len)	
-	endif
-	return result 
-
-unsafe function Mem2String(pString as IntPtr, nLen as dword) as string
-	if pString == IntPtr.Zero .or. nLen == 0
-		return String.Empty
-	endif
-	var encoding := System.Text.Encoding.Default
-	var numchars := encoding:GetCharCount( (byte ptr) pString, (int) nLen) 
-	var buffer   := (char ptr) MemAlloc( (dword) (numchars * sizeof(char)) )
-	numchars     := encoding:GetChars((byte ptr) pString, (int) nLen, buffer, numchars)
-	var result   := string {buffer, 0, numchars}
-	MemFree(buffer)
-return result

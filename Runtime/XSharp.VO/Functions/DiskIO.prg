@@ -7,7 +7,7 @@
 using static XSharp.Functions
 
 /// <summary>
-/// Fill a series of __Arrays with directory information.
+/// Fill a series of Array with directory information.
 /// </summary>
 /// <param name="cPath"></param>
 /// <param name="aFNAME"></param>
@@ -32,7 +32,7 @@ function DefaultDirInit() as void
 	return  
 
 /// <summary>
-/// Create an __Array of directory and file information.
+/// Create an Array of directory and file information.
 /// </summary>
 /// <param name="cPath"></param>
 /// <param name="xAttr"></param>

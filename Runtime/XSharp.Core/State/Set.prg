@@ -160,7 +160,7 @@ function SetDateCountry(dwCountry as long) as long
 
 
 /// <summary>
-/// Return the current __VODate format.
+/// Return the current Date format.
 /// </summary>
 /// <returns>
 /// </returns>

@@ -11,9 +11,9 @@ using XSharp
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Evaluate(c as string) as __Usual
+function Evaluate(c as string) as Usual
 	/// THROW NotImplementedException{}
-return	 __Usual._NIL   
+return	 NIL   
 
 
 /// <summary>
@@ -21,9 +21,9 @@ return	 __Usual._NIL
 /// <param name="ptrEvInf"></param>
 /// <returns>
 /// </returns>
-unsafe function EvalLaunch(ptrEvInf as ptr) as __Usual
+unsafe function EvalLaunch(ptrEvInf as ptr) as Usual
 	/// THROW NotImplementedException{}
-return __Usual._NIL   
+return NIL  
 
 /// <summary>
 /// </summary>
@@ -78,9 +78,9 @@ return	 String.Empty
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function MExec(c as string) as __Usual
+function MExec(c as string) as Usual
 	/// THROW NotImplementedException{}
-return	 __Usual._NIL   
+return	 NIL  
 
 /// <summary>
 /// </summary>
@@ -117,6 +117,6 @@ return	 String.Empty
 /// <param name="l"></param>
 /// <returns>
 /// </returns>
-function MCSHORT(l as __Usual) as logic
+function MCSHORT(l as Usual) as logic
 	/// THROW NotImplementedException{}
 	return false  

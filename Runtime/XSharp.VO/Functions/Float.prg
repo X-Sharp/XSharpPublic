@@ -10,29 +10,29 @@ using XSharp
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION AbsFloat(f AS __VOFloat) AS __VOFloat
-RETURN __VOFloat{Math.Abs(f:Value)}
+FUNCTION AbsFloat(f AS Float) AS Float
+RETURN Float{Math.Abs(f:Value)}
 
 
 
 /// <summary>
-/// Convert a string containing a 80-bit __VOFloating point number to a __VOFloat value.
+/// Convert a string containing a 80-bit Floating point number to a Float value.
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-FUNCTION Bin2F(c AS STRING) AS __VOFloat
+FUNCTION Bin2F(c AS STRING) AS Float
 	/// THROW NotImplementedException{}
 RETURN 0   
 
 
 /// <summary>
-/// Convert a __VOFloat to a string containing an 80-bit __VOFloating point number.
+/// Convert a Float to a string containing an 80-bit Floating point number.
 /// </summary>
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION F2Bin(f AS __VOFloat) AS STRING
+FUNCTION F2Bin(f AS Float) AS STRING
 	/// THROW NotImplementedException{}
 RETURN String.Empty
 
@@ -42,7 +42,7 @@ RETURN String.Empty
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-FUNCTION Fact(n AS DWORD) AS __VOFloat
+FUNCTION Fact(n AS DWORD) AS Float
 	local result := 1 as double
 	if  n > 0
 		local i as dword
@@ -50,7 +50,7 @@ FUNCTION Fact(n AS DWORD) AS __VOFloat
 			result := result * i
 		next
 	endif
-RETURN __VOFloat{result}
+RETURN Float{result}
 
 
 /// <summary>
@@ -58,29 +58,47 @@ RETURN __VOFloat{result}
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
-FUNCTION FClone(o AS __VOFloat) AS __VOFloat
-	RETURN __VoFloat{o:Value, o:Digits, o:Decimals}
+function FClone(o as float) as Float
+	// no need to clone. Value type
+	RETURN o
 
 
 
 /// <summary>
-/// Set the display format for a __VOFloating point numeric.
+/// Set the display format for a Floating point numeric.
 /// </summary>
 /// <param name="f"></param>
 /// <param name="nLen"></param>
 /// <param name="nDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION FloatFormat(f AS __VOFloat,nLen AS INT,nDec AS INT) AS __VOFloat
-	/// THROW NotImplementedException{}
-	RETURN __VoFloat{f:Value, nLen, nDec}  
+FUNCTION FloatFormat(f AS Float,nLen AS INT,nDec AS INT) AS Float
+	if nDec < 0
+		nDec := f:Decimals
+	endif
+	if nLen < 0
+		// determine length by creating new float and converting it to string
+		// not very efficient but this is what VO does
+		local nDigits as int
+		nDigits := f:Digits
+		if nDigits < 0
+			nDigits := RuntimeState.Digits
+		endif
+		local fTemp as float
+		fTemp := float{f:value, nDigits, nDec}
+		var cTemp := Ntrim(fTemp)
+		nLen := cTemp:Length
+	elseif nDec != 0 .and. nLen != 0 .and. nLen < nDec +2
+		nLen := nDec + 2
+	endif
+	RETURN Float{f:Value, nLen, nDec}  
 
 /// <summary>
 /// </summary>
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION FloatNext(f AS __VOFloat) AS __VOFloat
+FUNCTION FloatNext(f AS Float) AS Float
 	/// THROW NotImplementedException{}
 RETURN 0   
 
@@ -92,7 +110,7 @@ RETURN 0
 /// <param name="dwDec"></param>
 /// <returns>
 /// </returns>
-UNSAFE FUNCTION Float2Str(uValue AS __USUAL,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+UNSAFE FUNCTION Float2Str(uValue AS Usual,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
 RETURN String.Empty
 		
@@ -104,7 +122,7 @@ RETURN String.Empty
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION Frac(f AS __VOFloat) AS __VOFloat
+FUNCTION Frac(f AS Float) AS Float
 	/// THROW NotImplementedException{}
 RETURN 0   
 
@@ -115,7 +133,7 @@ RETURN 0
 /// <param name="wDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION MyDalFloatVal(xd AS REAL8,wDec AS WORD) AS __VOFloat
+FUNCTION MyDalFloatVal(xd AS REAL8,wDec AS WORD) AS Float
 	/// THROW NotImplementedException{}
 RETURN 0   
 
@@ -126,11 +144,13 @@ RETURN 0
 	/// <param name="fDelta"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetFloatDelta(fDelta AS OBJECT) AS __VoFLoat
-		/// THROW NotImplementedException{}
-	RETURN 0   
+FUNCTION SetFloatDelta(fDelta AS Real8) AS Real8
+	var result := RuntimeState.FloatDelta
+	RuntimeState.FloatDelta := fDelta
+	return result
 
-
+FUNCTION SetFloatDelta() AS Real8
+	return RuntimeState.FloatDelta
 
 
 /// <summary>
@@ -139,7 +159,7 @@ RETURN 0
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION Str1(f AS __VOFloat) AS STRING
+FUNCTION Str1(f AS Float) AS STRING
 	/// THROW NotImplementedException{}
 RETURN String.Empty   
 
@@ -150,7 +170,7 @@ RETURN String.Empty
 /// <param name="dwLen"></param>
 /// <returns>
 /// </returns>
-FUNCTION Str2(f AS __VOFloat,dwLen AS DWORD) AS STRING
+FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
 RETURN String.Empty   
 
@@ -162,7 +182,7 @@ RETURN String.Empty
 /// <param name="dwDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION Str3(f AS __VOFloat,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+FUNCTION Str3(f AS Float,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	/// THROW NotImplementedException{}
 RETURN String.Empty   
 
@@ -174,7 +194,7 @@ RETURN String.Empty
 /// <param name="dwRadix"></param>
 /// <returns>
 /// </returns>
-FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS __VOFloat
+FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS Float
 	/// THROW NotImplementedException{}
 RETURN 0   
 
@@ -184,7 +204,7 @@ RETURN 0
 /// <param name="dwRadix"></param>
 /// <returns>
 /// </returns>
-FUNCTION StrToLong(c AS STRING,dwRadix AS DWORD) AS __VOFloat
+FUNCTION StrToLong(c AS STRING,dwRadix AS DWORD) AS Float
 	/// THROW NotImplementedException{}
 RETURN 0   
 

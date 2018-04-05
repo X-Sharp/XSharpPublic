@@ -123,6 +123,7 @@
     </Compile>
     <Compile Include="Defines.prg" />
     <Compile Include="Functions\Convert.prg" />
+    <Compile Include="Functions\Debug.prg" />
     <Compile Include="Functions\Error.prg" />
     <Compile Include="Functions\FileSearch.prg" />
     <Compile Include="Functions\DT.prg" />

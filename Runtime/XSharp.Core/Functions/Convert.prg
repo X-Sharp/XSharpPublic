@@ -81,7 +81,7 @@ function Bin2Ptr(c as string) as IntPtr
 return (IntPtr) Bin2L(c)
 
 /// <summary>
-/// Convert a string containing a 32-bit __VOFloating point number to a Real4 value.
+/// Convert a string containing a 32-bit Floating point number to a Real4 value.
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
@@ -101,7 +101,7 @@ function Bin2Real4(c as string) as real4
 
 
 /// <summary>
-/// Convert a string containing a 32-bit __VOFloating point number to a Real8 value.
+/// Convert a string containing a 32-bit Floating point number to a Real8 value.
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
@@ -294,7 +294,7 @@ function LTOC(l as logic) as string
 
 
 /// <summary>
-/// Convert a Real4 value to a string containing a 32-bit __VOFloating point number.
+/// Convert a Real4 value to a string containing a 32-bit Floating point number.
 /// </summary>
 /// <param name="n"></param>
 /// <returns>
@@ -304,7 +304,7 @@ function Real42Bin(n as real4) as string
 	return _bytes2String(byteArray)
 
 /// <summary>
-/// Convert a Real8 value to a string containing an 8-byte __VOFloating point number.
+/// Convert a Real8 value to a string containing an 8-byte Floating point number.
 /// </summary>
 /// <param name="n"></param>
 /// <returns>

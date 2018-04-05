@@ -29,13 +29,13 @@ function EmptyUsual(dwType as dword) as __Usual
 		result := __Usual{NULL_ARRAY}
 	case byte; case word; case dword; case shortint;  case long; case int64
 		result := __Usual{0}
-	case float; case real4; case real8; case (DWORD) __UsualType.Decimal
+	case float; case real4; case real8; case (DWORD) UsualType.Decimal
 		result := __Usual{0.0}
 	case string
 		result := __Usual{NULL_STRING}
 	case date
 		result := __Usual{(DATE) 0}
-	case (DWORD) __UsualType.DateTime
+	case (DWORD) UsualType.DateTime
 		result := __Usual{DateTime.MinValue}
 	case logic
 		result := __Usual{FALSE}
@@ -65,7 +65,7 @@ function Val(c as string) as __Usual
 
 
 /// <summary>
-/// Determine if a value is an __Array.
+/// Determine if a value is an Array.
 /// </summary>
 /// <param name="uVal"></param>
 /// <returns>
@@ -93,7 +93,7 @@ function IsCodeBlock(uVal as Usual) as logic
 	return uVal:IsCodeBlock
 
 /// <summary>
-/// Determine if a value is a __VODate.
+/// Determine if a value is a Date.
 /// </summary>
 /// <param name="uVal"></param>
 /// <returns>
@@ -122,7 +122,7 @@ function IsDecimal(uVal as Usual) as logic
 
 
 /// <summary>
-/// Determine if a value is a __VOFloat.
+/// Determine if a value is a Float.
 /// </summary>
 /// <param name="uVal"></param>
 /// <returns> 
@@ -195,7 +195,7 @@ function IsString(uVal as Usual) as logic
 	return uVal:IsString
 
 /// <summary>
-/// Determine if a value is a __Symbol.
+/// Determine if a value is a Symbol.
 /// </summary>
 /// <param name="uVal"></param>
 /// <returns>
@@ -207,7 +207,7 @@ function IsSymbol(uVal as Usual) as logic
 
 
 /// <summary>
-/// Return the length of a string or an __Array.
+/// Return the length of a string or an Array.
 /// </summary>
 /// <param name="u"></param>
 /// <returns>

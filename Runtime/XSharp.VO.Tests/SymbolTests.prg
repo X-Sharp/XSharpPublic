@@ -63,6 +63,31 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			sym2 := (Symbol) 0x42U
 			Assert.NotEqual(sym1, sym2)
 			
+		[Fact, Trait("Category", "Symbol")];
+		METHOD AtomTester() as void
+			local sym1 as symbol
+			local sym2 as symbol
+			local dwStart as dword
+			dwStart := MaxAtom()
+			sym1 := SysAddAtom("Robert")
+			sym2 := String2Symbol("Robert")
+			Assert.Equal(MaxAtom(),dwstart+2)		// there are symbols defined in the global symbol table
+			Assert.NotEqual(sym1, sym2)
+			Assert.NotEqual(sym1:ToString(), sym2:ToString())
+			Assert.Equal(sym1:ToString():ToUpper(), sym2:ToString())
+			sym2 := SysFindAtom("Robert")
+			Assert.Equal(sym1, sym2)
+			sym2 := SysFindAtom("RobertIsNotThere")		// Find should not have added the new symbol
+			Assert.Equal(MaxAtom(),dwstart+2)
+			Assert.NotEqual(sym1, sym2)
+			sym1 := ConCatAtom(#one, #two)
+			Assert.Equal(sym1, #onetwo)
+			sym1 := ConCatAtom3(#one, #two,#three)
+			Assert.Equal(sym1, #onetwothree)
+			sym1 := ConCatAtom5(#one, #two,#three,#four,#five)
+			Assert.Equal(sym1, #onetwothreefourfive)
+			Assert.Equal(MaxAtom(),dwstart+2)			// the literals do not create a new atom
+
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

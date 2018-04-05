@@ -27,15 +27,6 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AmPmTest() as void
-		var time := "16:55:23"
-		Assert.Equal("04:55:23",AmPm(time))
-		time := "26:55:23"
-		Assert.Equal(null,AmPm(time))
-		Assert.Equal(null,AmPm(null))
-	RETURN
-	
-	[Fact, Trait("Category", "String")];
 	METHOD AscTest() as void
 		local value := " 123" as string
 		Assert.Equal((dword)32,Asc(value))

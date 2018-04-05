@@ -250,15 +250,6 @@ function Month(d as DATE) as dword
 	endif
 	return month
 
-	/// <summary>
-	/// Return the number of seconds that have elapsed since midnight.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION Seconds() AS __VOFloat
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
 
 
 
@@ -287,25 +278,6 @@ function Today() as DATE
 	return (DATE) DateTime.Now
 
 
-/// <summary>
-/// Return the system time in a format determined by various international settings.
-/// </summary>
-/// <returns>
-/// </returns>
-function Time() as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
-
-/// <summary>
-/// Return the system time in 24-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
-function Time24() as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
-
-
 
 /// <summary>
 /// Convert a specified number of seconds to a time string.
@@ -313,9 +285,18 @@ function Time24() as string
 /// <param name="uSeconds"></param>
 /// <returns>
 /// </returns>
-function TString(uSeconds as __Usual) as string
-	/// THROW NotImplementedException{}
+function TString(uSeconds as Usual) as string
+	if uSeconds:IsNil
+		return global::Functions.Tstring( (DWORD) 0 )
+	elseif uSeconds:IsFLoat
+		return global::Functions.TString ( (float) uSeconds)
+	elseif uSeconds:IsInteger
+		return global::Functions.TString ( (dword) uSeconds)
+	endif
 	return String.Empty   
+
+
+
 
 
 /// <summary>

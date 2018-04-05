@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using XSharp
+using System.IO
 /// <summary>
 /// Return the last DOS error code  (Exit code) and set a new code.
 /// </summary>
@@ -46,6 +47,35 @@ function GetDosError() as dword
 function GetEnv(cVar as string) as string
 	return System.Environment.GetEnvironmentVariable(cVar)
 
+
+/// <summary>
+/// Update or replace the contents of a DOS environment variable.
+/// </summary>
+/// <param name="cVar"></param>
+/// <param name="cValue"></param>
+/// <param name="lAppend"></param>
+/// <returns>
+/// </returns>
+function SetEnv(cVar as string,cValue as string,lAppend as logic) as logic
+	local result as logic
+	try
+		if lAppend
+			local cOldValue as string
+			cOldValue := System.Environment.GetEnvironmentVariable(cVar)
+			IF ! String.IsNullOrEmpty( cOldValue )
+				cOldValue += ";"
+			endif
+			cValue := cOldValue + cValue
+		endif
+		System.Environment.SetEnvironmentVariable(cVar, cValue)
+		result := System.Environment.GetEnvironmentVariable(cVar) == cValue
+	catch
+		result := false
+	END TRY
+	RETURN FALSE   
+
+
+
 /// <summary>
 /// Identify the current workstation.
 /// </summary>
@@ -53,28 +83,54 @@ function GetEnv(cVar as string) as string
 function NetName() as string
 	return System.Environment.MachineName
 
+
 /// <summary>
 /// Return the current Windows directory.
 /// </summary>
 /// <param name="cDisk"></param>
 /// <returns>
 /// </returns>
+function CurDir (cDisk as string) as STRING
+	return CurDir()
+
+/// <summary>
+/// Return the current Windows directory.
+/// </summary>
+/// <returns>
+/// </returns>
 function CurDir() as string
 	local cDir as string
 	local index as int
 	cDir := System.Environment.CurrentDirectory
-	index := cDir:Indexof(System.IO.Path.VolumeSeparatorChar)
+	index := cDir:Indexof(Path.VolumeSeparatorChar)
 	if index > 0
 		cDir := cDir:Substring(index+1)
 	endif
-	if cDir[0] == System.IO.Path.DirectorySeparatorChar
+	if cDir[0] == Path.DirectorySeparatorChar
 		cDir := cDir:Substring(1)
 	endif
-	if cDir[cDir:Length-1]  ==System.IO.Path.DirectorySeparatorChar
+	if cDir[cDir:Length-1]  == Path.DirectorySeparatorChar
 		cDir := cDir:Substring(0, cDir:Length-1)
 	endif
 	return cDir
 
+/// <summary>
+/// Return the current Windows drive.
+/// </summary>
+/// <returns>
+/// Return the letter of the current drive without colon
+/// </returns>
+function CurDrive() as string
+	local currentDirectory := System.IO.Directory.GetCurrentDirectory() as string
+	local drive := "" as string
+	local position as int
+	
+	position := currentDirectory:IndexOf(System.IO.Path.VolumeSeparatorChar)
+	if position > 0
+		drive := currentDirectory:Substring(0,position)
+	endif
+	return drive
+	
 
 /// <summary>
 /// Return the currently selected working directory.
@@ -86,9 +142,9 @@ function WorkDir() as string
 	local asm   as System.Reflection.Assembly
 	asm := System.Reflection.Assembly.GetCallingAssembly()
 	cPath := asm:ManifestModule:FullyQualifiedName
-	cPath := System.IO.Path.GetDirectoryName(cPath)
-	if cPath[cPath:Length-1] !=  System.IO.Path.DirectorySeparatorChar
-		cPath += System.IO.Path.DirectorySeparatorChar:ToString()
+	cPath := Path.GetDirectoryName(cPath)
+	if cPath[cPath:Length-1] !=  Path.DirectorySeparatorChar
+		cPath += Path.DirectorySeparatorChar:ToString()
 	endif
 	return cPath
 
@@ -113,7 +169,7 @@ internal function DiskNo2DiskName(nDisk as INT) as string
 /// The free space on the specified disk drive.
 /// </returns>	   
 function DiskFree(cDrive as STRING) as INT64
-	return System.IO.DriveInfo{cDrive}:TotalFreeSpace
+	return DriveInfo{cDrive}:TotalFreeSpace
 
 
 /// <summary>
@@ -157,7 +213,7 @@ function DiskSpace(nDisk as INT) as int64
 /// <returns>
 /// </returns>
 function DiskSpace(cDisk as STRING) as int64
-	return System.IO.DriveInfo{cDisk}:TotalSize
+	return DriveInfo{cDisk}:TotalSize
 
 /// <summary>
 /// Detect a concurrency conflict.
@@ -199,3 +255,80 @@ function LockTries(nValue as int) as int
 	nResult := RuntimeState.LockTries
 	RuntimeState.LockTries := nValue
 	return nValue
+
+
+
+/// <summary>
+/// Change the current Windows directory.
+/// </summary>
+/// <param name="pszDir"></param>
+/// <returns>
+/// </returns>
+function DirChange(cDir as STRING) as int
+	local result as int
+	try
+		if !Directory.Exists(cDir)
+			Directory.SetCurrentDirectory(cDir)
+			result := 0
+		else
+			result := -1
+		endif
+	catch 
+		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+	end try
+	return result
+	
+/// <summary>
+/// Create a directory.
+/// </summary>
+/// <param name="pszDir"></param>
+/// <returns>
+/// </returns>
+function DirMake(cDir as STRING) as int
+	local result as int
+	try
+		if !Directory.Exists(cDir)
+			Directory.CreateDirectory(cDir)
+			result := 0
+		else
+			result := -1
+		endif
+	catch 
+		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+	end try
+	return result
+	
+/// <summary>
+/// Remove a directory.
+/// </summary>
+/// <param name="pszDir"></param>
+/// <returns>
+/// </returns>
+function DirRemove(cDir as string) as int
+	local result as int
+	try
+		if Directory.Exists(cDir)
+			Directory.Delete(cDir,false)
+			result := 0
+		else
+			result := -1
+		endif
+	catch 
+		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+	end try
+	return result
+
+
+/// <summary>
+/// Change the current disk drive.
+/// </summary>
+/// <param name="pszDisk"></param>
+/// <returns>
+/// </returns>
+
+function DiskChange(c as string) as logic
+	if String.IsNullOrEmpty(c)
+		return false
+	endif
+	c := c:Substring(0,1)+Path.VolumeSeparatorChar:ToString()+Path.DirectorySeparatorChar:ToString()
+	return DirChange(c) == 0

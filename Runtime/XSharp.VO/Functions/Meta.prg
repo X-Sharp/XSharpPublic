@@ -23,7 +23,7 @@ function ArgCount() as dword
 	/// <param name="nArgs"></param>
 	/// <returns>
 	/// </returns>
- 	unsafe FUNCTION DeclareMethod(symClass AS __Symbol,symMeth AS __Symbol,nType AS DWORD,pFunc AS PTR,nArgs AS DWORD) AS INT
+ 	unsafe FUNCTION DeclareMethod(symClass AS Symbol,symMeth AS Symbol,nType AS DWORD,pFunc AS PTR,nArgs AS DWORD) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -33,7 +33,7 @@ function ArgCount() as dword
 	/// <param name="symFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FParamCount(symFunc AS __Symbol) AS DWORD
+	FUNCTION FParamCount(symFunc AS Symbol) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -42,7 +42,7 @@ function ArgCount() as dword
 	/// <param name="symFunc"></param>
 	/// <returns>
 	/// </returns>
-	unsafe FUNCTION FunctionSym2Ptr(symFunc AS __Symbol) AS PTR
+	unsafe FUNCTION FunctionSym2Ptr(symFunc AS Symbol) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -52,7 +52,7 @@ function ArgCount() as dword
 	/// <param name="symClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsClass(symClassName AS __Symbol) AS LOGIC
+	FUNCTION IsClass(symClassName AS Symbol) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -63,7 +63,7 @@ function ArgCount() as dword
 	/// <param name="symSuperClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsClassOf(symClassName AS __Symbol,symSuperClassName AS __Symbol) AS LOGIC
+	FUNCTION IsClassOf(symClassName AS Symbol,symSuperClassName AS Symbol) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -74,17 +74,17 @@ function ArgCount() as dword
 	/// <param name="symMethodName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsMethodClass(symClassName AS __Symbol,symMethodName AS __Symbol) AS LOGIC
+	FUNCTION IsMethodClass(symClassName AS Symbol,symMethodName AS Symbol) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Store all instance variables of a class into an __Array.
+	/// Store all instance variables of a class into an Array.
 	/// </summary>
 	/// <param name="symClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IvarListClass(symClassName AS __Symbol) AS __Array
+	FUNCTION IvarListClass(symClassName AS Symbol) AS Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
@@ -94,7 +94,7 @@ function ArgCount() as dword
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarBlockSym(symVar AS __Symbol) AS OBJECT
+	FUNCTION MemVarBlockSym(symVar AS Symbol) AS OBJECT
 		/// THROW NotImplementedException{}
 	RETURN NULL_OBJECT   
 
@@ -103,9 +103,9 @@ function ArgCount() as dword
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarGetSym(symVar AS __Symbol) AS __Usual
+	FUNCTION MemVarGetSym(symVar AS Symbol) AS Usual
 		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+	RETURN NIL   
 
 	/// <summary>
 	/// </summary>
@@ -113,17 +113,17 @@ function ArgCount() as dword
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarPutSym(symVar AS __Symbol,u AS __Usual) AS __Usual
+	FUNCTION MemVarPutSym(symVar AS Symbol,u AS Usual) AS Usual
 		/// THROW NotImplementedException{}
-	RETURN __Usual._NIL   
+	RETURN NIL      
 
 	/// <summary>
-	/// Create a class list in the form of an __Array for the specified class.
+	/// Create a class list in the form of an Array for the specified class.
 	/// </summary>
 	/// <param name="symClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MethodListClass(symClassName AS __Symbol) AS __Array
+	FUNCTION MethodListClass(symClassName AS Symbol) AS Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
@@ -134,7 +134,7 @@ function ArgCount() as dword
 	/// <param name="symMethod"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MParamCount(symClass AS __Symbol,symMethod AS __Symbol) AS DWORD
+	FUNCTION MParamCount(symClass AS Symbol,symMethod AS Symbol) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -145,7 +145,7 @@ function ArgCount() as dword
 	/// <param name="symClass"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION UnDeclareClass(symClass AS __Symbol) AS INT
+	FUNCTION UnDeclareClass(symClass AS Symbol) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
  
@@ -164,6 +164,6 @@ function ArgCount() as dword
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION FunctionList() AS __Array
+	FUNCTION FunctionList() AS Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   

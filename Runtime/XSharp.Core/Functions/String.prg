@@ -381,7 +381,7 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 function CharEven(c as string) as string
 	local evenChars:=null as string
 	if ( !string.IsNullOrEmpty(c) ) 
-		//local chars  := c:ToChar__Array() as char[]
+		//local chars  := c:ToCharArray() as char[]
 		local isEven := false as  logic
 		local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
 		
@@ -437,7 +437,7 @@ function CharMix(cOdd as string,cEven as string) as string
 function CharOdd(c as string) as string
 	local oddChars:=null as string
 	if ( !string.IsNullOrEmpty(c) ) 
-		//local chars  := c:ToChar__Array() as char[]
+		//local chars  := c:ToCharArray() as char[]
 		local isOdd  := true as  logic
 		local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
 		
@@ -478,7 +478,7 @@ function CharPos(c as string, nStart as dword) as string
 /// </returns>
 function CHR(dwChar as dword) as string
 	var buffer := byte[]{1} 
-	buffer[ __ARRAYBASE__] := (byte) dwChar
+	buffer[ __ArrayBASE__] := (byte) dwChar
 	return System.Text.Encoding:ASCII:GetString(buffer)
 
 

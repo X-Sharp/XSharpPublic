@@ -14,7 +14,7 @@ using XSharp
 /// <param name="nCharSoft"></param>
 /// <returns>
 /// </returns>
-function MemoTran(cSource as __Usual,nCharHard as __Usual,nCharSoft as __Usual) as string
+function MemoTran(cSource as Usual,nCharHard as Usual,nCharSoft as Usual) as string
     /// THROW NotImplementedException{}
     return String.Empty   
 
@@ -28,7 +28,7 @@ function MemoTran(cSource as __Usual,nCharHard as __Usual,nCharSoft as __Usual) 
 /// <param name="lWrap"></param>
 /// <returns>
 /// </returns>
-function MLCount(c as __Usual,nWidth as __Usual,nTabsize as __Usual,lWrap as __Usual) as dword
+function MLCount(c as Usual,nWidth as Usual,nTabsize as Usual,lWrap as Usual) as dword
     /// THROW NotImplementedException{}
     return 0   
 
@@ -40,7 +40,7 @@ function MLCount(c as __Usual,nWidth as __Usual,nTabsize as __Usual,lWrap as __U
 /// <param name="nOffset"></param>
 /// <returns>
 /// </returns>
-function MLine(c as __Usual,nLine as __Usual,nOffset as __Usual) as string
+function MLine(c as Usual,nLine as Usual,nOffset as Usual) as string
     /// THROW NotImplementedException{}
     return String.Empty   
 
@@ -57,7 +57,7 @@ function MLine(c as __Usual,nLine as __Usual,nOffset as __Usual) as string
 /// <param name="lWrap"></param>
 /// <returns>
 /// </returns>
-function MLcToPos(cMemo as __Usual,nWidth as __Usual,nLineNum as __Usual,nCol as __Usual,nTabSize as __Usual,lWrap as __Usual) as dword
+function MLcToPos(cMemo as Usual,nWidth as Usual,nLineNum as Usual,nCol as Usual,nTabSize as Usual,lWrap as Usual) as dword
     /// THROW NotImplementedException{}
     return 0   
 
@@ -69,7 +69,7 @@ function MLcToPos(cMemo as __Usual,nWidth as __Usual,nLineNum as __Usual,nCol as
 /// <param name="PtrN"></param>
 /// <returns>
 /// </returns>
-function MLine3(c as string,nLine as dword,PtrN as __Usual) as string
+function MLine3(c as string,nLine as dword,PtrN as Usual) as string
     /// THROW NotImplementedException{}
     return String.Empty   
 
@@ -84,7 +84,7 @@ function MLine3(c as string,nLine as dword,PtrN as __Usual) as string
 /// <param name="lWrap"></param>
 /// <returns>
 /// </returns>
-function MLPos(cMemo as __Usual,nWidth as __Usual,nLineNum as __Usual,nTabSize as __Usual,lWrap as __Usual) as dword
+function MLPos(cMemo as Usual,nWidth as Usual,nLineNum as Usual,nTabSize as Usual,lWrap as Usual) as dword
     /// THROW NotImplementedException{}
     return 0   
 
@@ -98,7 +98,7 @@ function MLPos(cMemo as __Usual,nWidth as __Usual,nLineNum as __Usual,nTabSize a
 /// <param name="lWrap"></param>
 /// <returns>
 /// </returns>
-function MPosToLc(cMemo as __Usual,nWidth as __Usual,nPos as __Usual,nTabSize as __Usual,lWrap as __Usual) as __Array
+function MPosToLc(cMemo as Usual,nWidth as Usual,nPos as Usual,nTabSize as Usual,lWrap as Usual) as Array
     /// THROW NotImplementedException{}
     return null_array   
 

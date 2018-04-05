@@ -10,7 +10,7 @@ using XSharp
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-function __VOFloat2Long(f as __Usual) as long
+function Float2Long(f as Usual) as long
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -20,9 +20,9 @@ function __VOFloat2Long(f as __Usual) as long
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Abs(n as __Usual) as __Usual
+function Abs(n as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL
 
 
 /// <summary>
@@ -31,7 +31,7 @@ function Abs(n as __Usual) as __Usual
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function ACot(n as __Usual) as __VOFloat
+function ACot(n as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -41,7 +41,7 @@ function ACot(n as __Usual) as __VOFloat
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function ATan(n as __Usual) as __VOFloat
+function ATan(n as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -52,9 +52,9 @@ function ATan(n as __Usual) as __VOFloat
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Ceil(n as __Usual) as __Usual
+function Ceil(n as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL
 
 
 /// <summary>
@@ -63,7 +63,7 @@ function Ceil(n as __Usual) as __Usual
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Cos(n as __Usual) as __VOFloat
+function Cos(n as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -73,7 +73,7 @@ function Cos(n as __Usual) as __VOFloat
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Cot(n as __Usual) as __VOFloat
+function Cot(n as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -84,7 +84,7 @@ function Cot(n as __Usual) as __VOFloat
 /// <param name="x"></param>
 /// <returns>
 /// </returns>
-function EXP(x as __Usual) as __VOFloat
+function EXP(x as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -98,9 +98,9 @@ function EXP(x as __Usual) as __VOFloat
 /// <param name="x"></param>
 /// <returns>
 /// </returns>
-function Floor(x as __Usual) as __Usual
+function Floor(x as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL
 
 
 
@@ -110,9 +110,9 @@ function Floor(x as __Usual) as __Usual
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Integer(n as __Usual) as __Usual
+function Integer(n as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL
 
 
 
@@ -123,7 +123,7 @@ function Integer(n as __Usual) as __Usual
 /// <param name="x"></param>
 /// <returns>
 /// </returns>
-function LOG(x as __Usual) as __VOFloat
+function LOG(x as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -133,7 +133,7 @@ function LOG(x as __Usual) as __VOFloat
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Log10(n as __Usual) as __VOFloat
+function Log10(n as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -146,7 +146,7 @@ function Log10(n as __Usual) as __VOFloat
 /// <param name="y"></param>
 /// <returns>
 /// </returns>
-function POW(x as __Usual,y as __Usual) as __VOFloat
+function POW(x as Usual,y as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0  
 
@@ -156,7 +156,7 @@ function POW(x as __Usual,y as __Usual) as __VOFloat
 /// <param name="nSeed"></param>
 /// <returns>
 /// </returns>
-function Rand(nSeed as __Usual) as __VOFloat
+function Rand(nSeed as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -167,9 +167,9 @@ function Rand(nSeed as __Usual) as __VOFloat
 /// <param name="iDec"></param>
 /// <returns>
 /// </returns>
-function Round(n as __Usual,iDec as int) as __Usual
+function Round(n as Usual,iDec as int) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL
 
 
 /// <summary>
@@ -178,7 +178,7 @@ function Round(n as __Usual,iDec as int) as __Usual
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Sin(n as __Usual) as __VOFloat
+function Sin(n as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   
 
@@ -188,7 +188,7 @@ function Sin(n as __Usual) as __VOFloat
 /// <param name="x"></param>
 /// <returns>
 /// </returns>
-function SQRT(x as __Usual) as __VOFloat
+function SQRT(x as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0  
 
@@ -199,6 +199,6 @@ function SQRT(x as __Usual) as __VOFloat
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Tan(n as __Usual) as __VOFloat
+function Tan(n as Usual) as Float
 	/// THROW NotImplementedException{}
 	return 0   

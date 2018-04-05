@@ -25,12 +25,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
  		
-		[Fact, Trait("Category", "Date")];
-		METHOD ElapTimeTest() as void
-			Assert.Equal("11:23:34",elaptime("12:00:00","23:23:34"))
-			Assert.Equal("-11:23:34",elaptime("23:23:34","12:00:00"))	
-			Assert.Equal("",elaptime("29:23:34","12:00:00"))
-		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD STODTest() as void
@@ -104,7 +98,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			i := (LONG) d
 			dw := (DWORD) d
 			Assert.Equal(d, (Date) i)
-			Assert.Equal(d, (__VoDate) dw)
+			Assert.Equal(d, (Date) dw)
 
 		RETURN
 		[Fact, Trait("Category", "Date")];
@@ -201,6 +195,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(dDate1, dDate2)
 
 
+		[Fact, Trait("Category", "Date")];
+		METHOD TStringTest() as void
+		//local r8 as real8
+		//r8 := 12.0 * 60.0*60.0 
+		//Assert.Equal("12:00:00", Tstring( r8))
+		RETURN
 
 				 
 

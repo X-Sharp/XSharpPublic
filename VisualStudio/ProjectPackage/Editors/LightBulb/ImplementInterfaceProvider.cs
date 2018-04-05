@@ -131,7 +131,8 @@ namespace XSharp.Project.Editors.LightBulb
                 xsClassifier = m_textBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
             }
 
-            if (xsClassifier != null)
+            ITextCaret caret = m_textView.Caret;
+            if (xsClassifier != null && xsClassifier.Snapshot.Version == caret.Position.BufferPosition.Snapshot.Version)
             {
                 //
                 ITextSnapshot snapshot = xsClassifier.Snapshot;
@@ -140,7 +141,6 @@ namespace XSharp.Project.Editors.LightBulb
                 if (snapshot.Length == 0)
                     return false; // Should not happen : This means that the buffer is empty !!!
                 //
-                ITextCaret caret = m_textView.Caret;
                 ITextViewLine iLine = caret.ContainingTextViewLine;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, iLine.Start.Position, iLine.Length);
                 //

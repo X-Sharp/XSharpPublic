@@ -934,10 +934,10 @@ namespace XSharpColorizer
             return result;
         }
 
-        public IImmutableList<ClassificationSpan> GetTags()
+        public IList<ClassificationSpan> GetTags()
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetTags()");
-            IImmutableList<ClassificationSpan> ret;
+            IList<ClassificationSpan> ret;
             lock (gate)
             {
                 ret = _colorTags.Tags;
@@ -1112,14 +1112,15 @@ namespace XSharpColorizer
                 _hash.Clear();
             }
         }
-        internal ImmutableList<ClassificationSpan> Tags
+        internal IList<ClassificationSpan> Tags
         {
             get
             {
                 lock (gate)
                 {
-                    var tags = _tags;
-                    return tags.ToImmutableList();
+                    var tags = new ClassificationSpan[_tags.Count];
+                    _tags.CopyTo(tags, 0);
+                    return tags;
                 }
             }
 

@@ -49,6 +49,33 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		[Fact, Trait("Category", "Misc")]; 
 		METHOD CurDriveTest() as void
 			Assert.Equal("C",CurDrive():ToUpper())
+		[Fact, Trait("Category", "Misc")]; 
+		METHOD GetFAttrTest() as void
+			Assert.Equal((DWORD) FA_VOLUME, GetFAttr("V"))
+			Assert.Equal((DWORD) FA_COMPRESSED, GetFAttr("C"))
+			Assert.Equal((DWORD) FC_ARCHIVED, GetFAttr("A"))
+			Assert.Equal((DWORD) FC_HIDDEN, GetFAttr("H"))
+			Assert.Equal((DWORD) FC_SYSTEM, GetFAttr("S"))
+			Assert.Equal((DWORD) FC_READONLY, GetFAttr("R"))
+			Assert.Equal((dword) FC_HIDDEN|FC_SYSTEM, GetFAttr("HS"))
+			Assert.Equal((DWORD) FC_HIDDEN|FC_SYSTEM, GetFAttr(FC_HIDDEN+FC_SYSTEM))
+			Assert.Equal((DWORD) FA_VOLUME, String2FAttr("V"))
+			Assert.Equal((DWORD) FA_COMPRESSED, String2FAttr("C"))
+			Assert.Equal((DWORD) FC_ARCHIVED, String2FAttr("A"))
+			Assert.Equal((DWORD) FC_HIDDEN, String2FAttr("H"))
+			Assert.Equal((DWORD) FC_SYSTEM, String2FAttr("S"))
+			Assert.Equal((DWORD) FC_READONLY, String2FAttr("R"))
+			Assert.Equal((DWORD) FC_HIDDEN|FC_SYSTEM, String2FAttr("HS"))
+
+		RETURN
+		[Fact, Trait("Category", "Misc")]; 
+		METHOD GetFMaskTest() as void
+			Assert.Equal("C:*.*", GetFMask("C:"))
+			Assert.Equal("C:\*.*", GetFMask("C:\"))
+			Assert.Equal("C:\*.DBF", GetFMask("C:\*.DBF"))
+			Assert.Equal("C:\*.", GetFMask("C:\*."))
+			Assert.Equal("*.*", GetFMask(NULL))
+
 		RETURN
 		//[Fact];
 		//METHOD DiskFreeTest() as void

@@ -137,6 +137,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConversionTests.prg" />
     <Compile Include="DynamicTest.prg" />
     <Compile Include="FileIOTestsprg.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">

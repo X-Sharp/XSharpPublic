@@ -45,7 +45,14 @@ BEGIN NAMESPACE XSharp
 		MEMBER MESSAGE     := 36		// INT
 		MEMBER MCENTER     := 37		// LOGIC
 		member SCROLLBREAK := 38		// LOGIC
-		MEMBER ERRRORLOG   := 39		// LOGIC
+		member ERRRORLOG   := 39		// LOGIC
+		// extra helper values
+		member EpochCent   := 40		// Numeric
+		member EpochYear   := 41		// Numeric
+		member DateFormatNet := 42		// String
+		member DateFormatEmpty := 43    // String
+		member OPTIONVO11		:= 44	// Logic
+		member OPTIONOVF		:= 45	// Logic
 
 		// 48 and 49 unused
 		MEMBER DIGITS      	:= 50	// INT   Vulcan had 39

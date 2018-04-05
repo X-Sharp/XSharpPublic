@@ -15,11 +15,11 @@ USING XSharp.RDD
 
 CLASS XSharp.RuntimeState
 	// Static Fields
-	PRIVATE INITONLY STATIC mainState  AS RuntimeState 
+	PRIVATE INITONLY STATIC initialState  AS RuntimeState 
 	// Static Methods and Constructor
-	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  mainState:Clone()} }  AS ThreadLocal<RuntimeState> 
-	STATIC CONSTRUCTOR
-		mainState	 := RuntimeState{}
+	private static currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()} }  as ThreadLocal<RuntimeState> 
+	static constructor
+		initialState	:= RuntimeState{true}
 		
 	/// <Summary>Retrieve the runtime state for the current thread</Summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
@@ -28,38 +28,38 @@ CLASS XSharp.RuntimeState
 	/// <Summary>List of number - value pairs </Summary>
 	PRIVATE oSettings AS Dictionary<INT, OBJECT> 
 
-	// Private methods
-	PRIVATE CONSTRUCTOR()
-		SELF(TRUE)
-
-	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
-		VAR oThread := Thread.CurrentThread
-		SELF:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
+	PRIVATE CONSTRUCTOR(initialize as logic)       
+		var oThread := Thread.CurrentThread
+		self:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
 		oSettings := Dictionary<INT, OBJECT>{}
 		if initialize
-			SetValue(Set.DateFormat ,"MM/DD/YYYY")
-			SetValue(Set.Epoch, 1900)
+
+			self:_SetThreadValue(Set.DateFormat ,"MM/DD/YYYY")
+			self:_SetThreadValue(Set.Epoch, 1900U)
+			self:_SetThreadValue(Set.EpochYear, 0U)
+			self:_SetThreadValue(Set.EpochCent, 1900U)
 			// Initialize the values that are not 'blank'
 			// RDD Settings
-			RuntimeState.Ansi      	:= TRUE
-			RuntimeState.AutoOpen      := TRUE
-			RuntimeState.AutoOrder     := TRUE
-			RuntimeState.AutoShareMode	:= AutoShareMode.Auto
-			RuntimeState.Optimize		:= TRUE
-			RuntimeState.LockRetries	:= 1
-			RuntimeState.MemoBlockSize	:= 32
-			SetValue(Set.DefaultRDD	, "DBFNTX")
-			SetValue(Set.Exclusive, TRUE)
+			self:_SetThreadValue(Set.Ansi , true)
+			self:_SetThreadValue(Set.AutoOpen , true)
+			self:_SetThreadValue(Set.AutoOrder , true)
+			self:_SetThreadValue(Set.Optimize , true)
+			self:_SetThreadValue(Set.AutoShare, AutoShareMode.Auto)
+			self:_SetThreadValue(Set.LOCKTRIES , 1)
+			self:_SetThreadValue(Set.MemoBlockSize , 32)
+			self:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
+			self:_SetThreadValue(Set.Exclusive , TRUE)
 			// Console Settings
-			SetValue(Set.Bell, TRUE)
-			SetValue(Set.Color, "W/N,N/W,N/N,N/N,N/W")
-			// Global Settings
-			SetValue(Set.DECIMALS, 2)
-			SetValue(Set.Digits,10)
-			SetValue(Set.Exact, TRUE)
-			SetValue(Set.FLOATDELTA, 0.0000000000001)
+			self:_SetThreadValue(Set.Bell , TRUE)
+			self:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
+			self:_SetThreadValue(Set.DECIMALS , 2)
+			self:_SetThreadValue(Set.Digits , 10)
+			self:_SetThreadValue(Set.Exact , TRUE)
+			self:_SetThreadValue(Set.FLOATDELTA , 0.0000000000001)
+
 			// Date and time settings
-			SetInternational(CollationMode.Windows, TRUE)
+			self:_SetThreadValue(Set.FLOATDELTA , 0.0000000000001)
+			self:_SetInternationalWindows()
 
 			// Other settings
 			// Collation Table including Compare delegates
@@ -77,11 +77,13 @@ CLASS XSharp.RuntimeState
 
 	DESTRUCTOR()
 		// What do we need to clean ?
-		oSettings:Clear()
+		if oSettings != null
+			oSettings:Clear()
+		endif
 
 	PRIVATE METHOD Clone() AS RuntimeState
 		LOCAL oNew AS RuntimeState
-		oNew := RuntimeState{FALSE}		
+		oNew := RuntimeState{false}		
 		BEGIN LOCK oSettings
 			// Copy all values from Current State to New state
 			FOREACH VAR element IN oSettings     
@@ -148,6 +150,18 @@ CLASS XSharp.RuntimeState
         GET GetValue<AutoShareMode>(Set.AutoShare);
         SET SetValue<AutoShareMode>(Set.AutoShare, VALUE)
 
+	static property CompilerOptionVO11 as logic ;
+        GET GetValue<LOGIC>(Set.OPTIONVO11);
+        SET SetValue<LOGIC>(Set.OPTIONVO11, VALUE)
+
+	static property CompilerOptionOVF as logic ;
+        GET GetValue<LOGIC>(Set.OPTIONOVF);
+        SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
+	
+	static property CompilerOptionFOVF as logic ;
+        GET GetValue<LOGIC>(Set.OPTIONOVF);
+        SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
+
    STATIC PROPERTY Century AS LOGIC ;
         GET GetValue<LOGIC>(Set.Century);
         SET SetValue<LOGIC>(Set.Century, VALUE)
@@ -194,6 +208,13 @@ CLASS XSharp.RuntimeState
         GET GetValue<DWORD>(Set.EPOCH);
         SET SetValue<DWORD>(Set.EPOCH, VALUE)
 
+    STATIC PROPERTY EpochYear AS DWORD ;
+        GET GetValue<DWORD>(Set.EPOCHYEar)
+
+    STATIC PROPERTY EpochCent AS DWORD ;
+        GET GetValue<DWORD>(Set.EPOCHCent)
+
+
 	/// <Summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</Summary>
 	/// <Returns>Logic value</Returns>
     STATIC PROPERTY Exact AS LOGIC ;
@@ -204,7 +225,7 @@ CLASS XSharp.RuntimeState
         GET GetValue<CollationMode>(Set.Intl);
         SET SetValue<CollationMode>(Set.Intl, VALUE)
 
-    STATIC PROPERTY LockRetries AS LONG ;
+    STATIC PROPERTY LockTries AS LONG ;
         GET GetValue<LONG>(Set.LOCKTRIES);
         SET SetValue<LONG>(Set.LOCKTRIES, VALUE)
 
@@ -212,6 +233,10 @@ CLASS XSharp.RuntimeState
         GET GetValue<LONG>(Set.MEMOBLOCKSIZE);
         SET SetValue<LONG>(Set.MEMOBLOCKSIZE, VALUE)
 
+
+    STATIC PROPERTY NetErr AS LOGIC;
+        GET GetValue<LOGIC>(Set.NETERR);
+        SET SetValue<LOGIC>(Set.NETERR, VALUE)
 	/// <Summary>RDD Optimize Flag</Summary>
 	/// <Returns>Logic value</Returns>
     STATIC PROPERTY Optimize AS LOGIC ;
@@ -233,50 +258,64 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.Unique);
         SET SetValue<LOGIC>(Set.Unique, VALUE)
 
-
 	STATIC METHOD SetInternational(mode AS CollationMode, force := FALSE AS LOGIC) AS VOID
 		IF mode != RuntimeState.International	.or. force
-			IF mode == CollationMode.Clipper
-				SetValue(Set.AMEXT, "")
-				SetValue(Set.PMEXT, "")
-				SetValue(Set.AMPM, FALSE)
-				SetValue(Set.Century, FALSE)
-				SetValue(Set.DateCountry, 1)
-				SetValue(Set.Decimals, 2)
-				SetValue(Set.DECIMALSEP, ".")
-				SetValue(Set.THOUSANDSEP, ",")
-				SetValue(Set.DateFormat, "MM/DD/YYYY")
+			if mode == CollationMode.Clipper
+				currentState:Value:_SetInternationalClipper()				
 			ELSE
-				VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
-				SetValue(Set.AMEXT, dtInfo:AMDesignator)
-				SetValue(Set.PMEXT, dtInfo:PMDesignator)
-				SetValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
-				VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
-				// reduce to single m and d
-				if (dateformat.IndexOf("mm") != -1)
-					dateformat		:= dateformat:Replace("mmmm", "m")
-					dateformat		:= dateformat:Replace("mmm", "m")
-					dateformat		:= dateformat:Replace("mm", "m")
-				ENDIF
-				IF dateformat.IndexOf("dd") != -1
-					dateformat		:= dateformat:Replace("dd", "d")
-				ENDIF
-				SetValue(Set.Century, dateformat:IndexOf("yyyy") != -1)
-				dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
-				RuntimeState.DateFormat  := dateformat
-				//State.DateCountry := 1
-				RuntimeState.Decimals	  := 2
-				VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
-				SetValue(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
-				SetValue(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
-				SetValue(Set.EPOCH, 1910)
-				
+				currentState:Value:_SetInternationalWindows()				
 			ENDIF
-			RuntimeState.International := mode
 		ENDIF
+	internal method _SetInternationalClipper() as void
+		self:_SetThreadValue(Set.AMEXT, "")
+		self:_SetThreadValue(Set.PMEXT, "")
+		self:_SetThreadValue(Set.AMPM, FALSE)
+		self:_SetThreadValue(Set.Century, FALSE)
+		self:_SetThreadValue(Set.DateCountry, 1)
+		self:_SetThreadValue(Set.Decimals, 2)
+		self:_SetThreadValue(Set.DECIMALSEP, ".")
+		self:_SetThreadValue(Set.THOUSANDSEP, ",")
+		self:_SetThreadValue(Set.DateFormat, "MM/DD/YYYY")
+		self:_SetThreadValue(Set.Intl, CollationMode.Clipper)
+
+	internal method _SetInternationalWindows() as void
+		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
+		self:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
+		self:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
+		self:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
+		// reduce to single m and d
+		if (dateformat.IndexOf("mm") != -1)
+			dateformat		:= dateformat:Replace("mmmm", "m")
+			dateformat		:= dateformat:Replace("mmm", "m")
+			dateformat		:= dateformat:Replace("mm", "m")
+		ENDIF
+		IF dateformat.IndexOf("dd") != -1
+			dateformat		:= dateformat:Replace("dd", "d")
+		ENDIF
+		_SetThreadValue(Set.Century, dateformat:IndexOf("yyyy") != -1)
+		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
+		self:_SetThreadValue(Set.DateFormat,  dateformat)
+		self:_SetThreadValue(Set.DateCountry, 1)
+		self:_SetThreadValue(Set.DECIMALS , 2)
+		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
+		self:_SetThreadValue(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
+		self:_SetThreadValue(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
+		self:_SetThreadValue(Set.EPOCH, 1910U)
+		self:_SetThreadValue(Set.EpochYear, 10U)
+		self:_SetThreadValue(Set.EpochCent, 1900U)
+
+		self:_SetThreadValue(Set.Intl, CollationMode.Windows)
+		RETURN
 
 	INTERNAL STATIC METHOD _SetDateFormat(format AS STRING) AS VOID
 		format := format:ToUpper()
+		// ensure we have dd, mm and yy
+		if format:IndexOf("DD") == -1 .or. format:IndexOf("MM") == -1 .or. format:IndexOf("YY") == -1
+			return
+		endif
+		SetValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
+		SetValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		SetValue(SET.CENTURY, format:Contains("YYYY"))
 		SetValue(Set.DATEFORMAT, format)
 		SWITCH format

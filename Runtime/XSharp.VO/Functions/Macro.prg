@@ -102,7 +102,7 @@ return	 String.Empty
 /// <returns>
 /// </returns>
 function TYPE(c as string) as string
-	/// THROW NotImplementedException{}
+
 return	 String.Empty   
 
 

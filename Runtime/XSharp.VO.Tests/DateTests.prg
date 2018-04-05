@@ -3,7 +3,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 using XUnit
-
+using System.Globalization
 
 
 BEGIN NAMESPACE XSharp.VO.Tests
@@ -11,11 +11,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS DateTests
 
 		[Fact, Trait("Category", "Date")];
-		METHOD CTODTest() as void 
-			var u := ctod("03/13/2016")
+		method CTODTest() as void 
+			SetEpoch(1900)
+			SetDateFormat("dd/mm/yyyy")
 			Assert.Equal(2016.01.01 ,ctod("01/01/2016"))
 			Assert.Equal(2016.02.13 ,ctod("13/02/2016"))
-			Assert.Equal(0001.01.01 ,ctod("03/13/2016"))	
+			Assert.Equal(0001.01.01 ,ctod("01/01/0001"))
+			Assert.Equal(1901.01.01 ,ctod("01/01/01"))
+			SetDateFormat("mm/dd/yyyy")	
+			Assert.Equal(2016.01.01 ,ctod("01/01/2016"))
+			Assert.Equal(2016.02.13 ,ctod("02/13/2016"))
+			Assert.Equal(2016.03.13 ,ctod("03/13/2016"))
 		RETURN
 
  		
@@ -28,17 +34,27 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Date")];
 		METHOD STODTest() as void
-			Assert.Equal(__VODate{2016,05,06},STOD("20160506"))
+			Assert.Equal(Date{2016,05,06},STOD("20160506"))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD CDOWTest() as void
-		//	Assert.Equal("Dienstag",CDOW(Condate(2016,5,24)))
+		method CDOWTest() as void
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"en-US"}
+			Assert.Equal("Tuesday",CDOW(Condate(2016,5,24)))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"de-DE"}
+			Assert.Equal("Dienstag",CDOW(Condate(2016,5,24)))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
+			Assert.Equal("dinsdag",CDOW(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD CMonthTest() as void
-			//Assert.Equal("Mai",CMonth(Condate(2016,5,24)))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"en-US"}
+			Assert.Equal("May",CMonth(Condate(2016,5,24)))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"de-DE"}
+			Assert.Equal("Mai",CMonth(Condate(2016,5,24)))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
+			Assert.Equal("mei",CMonth(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
@@ -52,8 +68,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD DTOCTest() as void
-			//Assert.Equal("24.05.2016",DTOC(CTOD("24/05/2016")))
+		method DTOCTest() as void
+			SetDateFormat("DD/MM/YYYY")
+			Assert.Equal("24/05/2016",DTOC(CTOD("24/05/2016")))
+			SetDateFormat("DD/MM/YY")
+			Assert.Equal("24/05/16",DTOC(CTOD("24/05/2016")))
+			SetDateFormat("MM/DD/YY")
+			Assert.Equal("  /  /  ",DTOC(CTOD("24/05/2016")))
+			SetDateFormat("mm-dd-YYYY")
+			Assert.Equal("  -  -    ",DTOC(CTOD("24/05/2016")))
+			SetDateFormat("dd-mm-YYYY")
+			Assert.Equal("24-05-2016",DTOC(CTOD("24/05/2016")))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
@@ -116,14 +141,68 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.True(d3 <= d1)
 
 		[Fact, Trait("Category", "Numeric")];
-		METHOD NToCDoWTest() as void
-		//	Assert.Equal("Freitag",NToCDoW(DOW(CTOD("27/05/2016"))))
+		method NToCDoWTest() as void
+			SetDateFormat("DD/MM/YYYY")
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"en-US"}
+			Assert.Equal("Friday",NToCDoW(DOW(CTOD("27/05/2016"))))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"de-DE"}
+			Assert.Equal("Freitag",NToCDoW(DOW(CTOD("27/05/2016"))))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
+			Assert.Equal("vrijdag",NToCDoW(DOW(CTOD("27/05/2016"))))
+		
 		RETURN
 
 		[Fact, Trait("Category", "Numeric")];
 		METHOD NToCMonthTest() as void
-		//	Assert.Equal("Juni",NToCMonth((dword)6))
-		RETURN		 
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"en-US"}
+			Assert.Equal("June",NToCMonth((dword)6))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"de-DE"}
+			Assert.Equal("Juni",NToCMonth((dword)6))
+			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
+			Assert.Equal("juni",NToCMonth((dword)6))
+		
+		return		
+		
+		[Fact, Trait("Category", "Date")];
+		METHOD CoNDateTest() as void
+			local d1918 as Date
+			local d2018 as date
+			local dtest as date
+			local nEpoch := SetEpoch()
+			SetEpoch(1900)
+			d2018 := ConDate(2018,03,15)
+			d1918 := ConDate(1918,03,15)
+			dtest := ConDate(18,3,15)
+			Assert.Equal(d1918, dtest)
+			SetEpoch(2000)
+			dtest := ConDate(18,3,15)
+			Assert.Equal(d2018, dtest)
+			SetEpoch(1917)
+			dtest := ConDate(18,3,15)	// should be 1918
+			Assert.Equal(d1918, dtest)
+			SetEpoch(1917)
+			dtest := ConDate(18,3,15) // should be 1918
+			SetEpoch(1918)
+			Assert.Equal(d1918, dtest)
+			dtest := ConDate(18,3,15) // should be 1918
+			SetEpoch(1919)
+			Assert.Equal(d2018, dtest)
+			SetEpoch(nEpoch)
+		return		
+		[Fact, Trait("Category", "Date")];
+		method Date2BinTest() as void
+			local dwDate as STRING
+			local dDate1 as date
+			local dDate2 as date
+
+			dDate1 := Today()
+			dwDate := Date2Bin(dDate1)
+			dDate2 := Bin2Date(dwDate)
+			Assert.Equal(dDate1, dDate2)
+
+
+
+				 
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

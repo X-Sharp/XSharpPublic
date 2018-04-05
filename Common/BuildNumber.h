@@ -6,7 +6,7 @@
 #define REG_COMPANY_NAME  "XSharpBV"
 		
 // This is used for the assembly version number, which the CLR uses to determine binding
-// This generally changes when we release a new full build
+// This generally changes when we release a new full build 
 // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE
 #define VERSION_NUMBER_STR     "1.2.0.0"
 #define VERSION_NUMBER			1,2,0,0

@@ -30,14 +30,6 @@ UNSAFE  FUNCTION EncodeBase64(hfIn AS PTR,hfOut AS PTR) AS INT
 	
 
 	
-	/// </summary>
-	/// <param name="p"></param>
-	/// <returns>
-	/// </returns>
-UNSAFE	 FUNCTION Ptr2Bin(p AS PTR) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN String.Empty   
-	
 	
 	
 	/// <summary>

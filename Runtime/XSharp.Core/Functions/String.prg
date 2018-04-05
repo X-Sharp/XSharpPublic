@@ -536,14 +536,49 @@ function HardCR(c as string) as string
 	return c:Replace( (char) 141, (char) 13 )
 
 
+function _nibble (c as char) as byte
+	local b as byte
+	switch c
+	case '0'
+	case '1'
+	case '2'
+	case '3'
+	case '4'
+	case '5'
+	case '6'
+	case '7'
+	case '8'
+	case '9'
+		b := (byte) c - '0'
+	case 'A'
+	case 'B'
+	case 'C'
+	case 'D'
+	case 'E'
+	case 'F'
+		b := (byte) c - 'A' + 10
+	OTHERWISE
+		b := 0
+	end switch
+	return b
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
 function Hex2C(c as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	local i as int
+	local sb as StringBuilder
+	sb := StringBuilder{c:Length}
+	i := 0
+	do while i <= c:Length - 2
+		var b1 := _nibble(c[i])
+		var b2 := _nibble(c[i+1])
+		var b  := (b1 << 4) + b2
+		sb:Append( chr( b))
+		i += 2
+	enddo
+	return sb:ToString()
 
 /// <summary>
 /// Indicate whether a substring is contained in a string.
@@ -1310,3 +1345,4 @@ function IsLower(cSource as string) as logic
 		ret := Char.IsLower(cSource, 0 )
 	endif
 	return ret
+

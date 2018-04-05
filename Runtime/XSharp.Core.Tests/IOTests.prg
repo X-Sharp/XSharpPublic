@@ -9,10 +9,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	CLASS IOTests
 
 		[Fact, Trait("Category", "Misc")]; 
-		METHOD FileTest() as void
+		method FileTest() as void
 			Assert.Equal(true,File("c:\windows\system32\shell32.dll"))
 			Assert.Equal(false,File(null))
+
+			Assert.Equal("XSHARP\DEVRT\BINARIES\DEBUG", CurDir():ToUpper())
 		RETURN
 
 	END CLASS
-END NAMESPACE // XSharp.Runtime.Tests
+end namespace // XSharp.Runtime.Tests
+

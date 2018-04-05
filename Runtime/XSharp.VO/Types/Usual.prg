@@ -216,27 +216,66 @@ begin namespace XSharp
             self:_flags:usualType	:= __UsualType.STRING
             self:_refData 			:= s
             return
+        private constructor(o as object, lIsNull as logic)
+            self:_flags:usualType	:= __UsualType.OBJECT
+            self:_refData 			:= null
+            return
+
         #endregion
         
         #region properties
+			private property _isByRef		as LOGIC	get _flags:isByRef
             private property _usualType		as __UsualType	get _flags:usualType 
-            private property _decimalValue	as System.Decimal get (System.Decimal) _refData 
-            private property _i64Value		as int64	get _valueData:i64 
-            private property _r8Value		as real8	get _valueData:r8 
+
+			private property _arrayValue    as array	get iif(UsualType == __UsualType.Array, (array) _refData , null_array)
+			private property _codeblockValue as codeblock	get iif(UsualType == __UsualType.CodeBlock, (Codeblock) _refData , null_codeblock)
             private property _dateValue		as __VoDate get _valueData:d 
             private property _dateTimeValue as DateTime get _valueData:dt
+            private property _decimalValue	as System.Decimal get (System.Decimal) _refData 
+            private property _floatValue    as __VoFloat get __VoFloat{ _valueData:r8, _width, _decimals}
+            private property _i64Value		as int64	get _valueData:i64 
             private property _intValue		as int		get _valueData:i  
-            private property _symValue		as __Symbol	get _valueData:s 
             private property _logicValue	as logic	get _valueData:l 
             private property _ptrValue		as IntPtr	get _valueData:p 
+            private property _r8Value		as real8	get _valueData:r8 
             private property _stringValue   as string	get iif(UsualType == __UsualType.String, (string) _refData , String.Empty)
-            private property _floatValue    as __VoFloat get __VoFloat{ _valueData:r8, _width, _decimals}
+            private property _symValue		as __Symbol	get _valueData:s 
+
             // properties for floats
             private property _width			as SBYTE get _flags:width 
             private property _decimals		as SBYTE get _flags:decimals 
             internal property UsualType		as __UsualType get  _usualType
+			// Is .. ?
+			internal property IsArray		as logic get _usualtype == __usualType.Array
+			internal property IsCodeblock	as logic get _usualtype == __usualType.CodeBlock
+			internal property IsDate		as logic get _usualtype == __usualType.Date
+			internal property IsDateTime	as logic get _usualtype == __usualType.DateTime
+			internal property IsDecimal		as logic get _usualtype == __usualType.Decimal
+			internal property IsFloat		as logic get _usualtype == __usualType.Float .or. _usualtype == __usualType.Decimal
+			internal property IsLogic		as logic get _usualtype == __usualType.Logic
+			internal property IsLong		as logic get _usualtype == __usualType.Long
+			internal property IsInteger		as logic get _usualtype == __usualType.Long .or. _usualtype == __usualType.Int64
+
+			internal property IsNumeric
+				get
+					switch _usualType
+					case __usualType.Long
+					case __usualType.Int64
+					case __usualType.Float
+					case __usualType.Decimal
+						return true
+					otherwise
+						return false
+					end switch
+				end get
+			end property
+			internal property IsObject		as logic get _usualtype == __usualType.Object
+			internal property IsPtr			as logic get _usualtype == __usualType.Ptr
+			internal property IsSymbol		as logic get _usualtype == __usualType.Symbol
+			internal property IsString		as logic get _usualtype == __usualType.String
+			internal property IsByRef		as logic get _isByRef
             
-            private property isReferenceType as logic
+            private property IsReferenceType as logic
                 get
                     switch _usualType
                         case __UsualType.Array
@@ -249,14 +288,87 @@ begin namespace XSharp
                     end switch
                 end get
             end property
-            
+  			internal property IsEmpty as logic
+				get
+				switch _usualType
+				case __usualType.Array
+					return _refData == null .or. ((Array)_refData):Length == 0
+				case __usualType.CodeBlock
+					return _refData == null 
+				case __usualType.Date
+					return _dateValue:IsEmpty
+				case __usualType.DateTime
+					return _dateTimeValue == DateTime.MinValue
+				case __usualType.Float
+					return _floatValue == 0.0
+				case __usualType.Decimal
+					return _decimalValue == 0
+				case __usualType.Long
+					return _intValue == 0
+				case __usualType.Ptr
+					return _ptrValue == IntPtr.Zero
+				case __usualType.String
+					return EmptyString(_stringValue)
+				case __usualType.Symbol
+					return _symValue == 0
+				case __usualType.Psz
+					return _ptrValue == IntPtr.Zero
+				case __usualType.Void
+					return true
+				otherwise
+					Debug.Fail( "Unhandled data type in Usual:Empty()" )
+				end switch
+				return false
+				end get
+			end property
+          
             internal property IsNil as logic
                 get
-                    return self:usualType == __UsualType.Void .or. ;
+                    return self:_usualType == __UsualType.Void .or. ;
                     (self:IsReferenceType .and. self:_refData  == null)
                     
                 end get
             end property
+
+            internal property SystemType as System.Type
+                get
+					switch _usualType
+					case __usualType.Array
+						return typeof(Array)
+					case __usualType.Codeblock
+						return typeof(Codeblock)
+					case __usualType.Date
+						return typeof(Date)
+					case __usualType.DateTime
+						return typeof(System.DateTime)
+					case __usualType.Decimal
+						return typeof(System.Decimal)
+					case __usualType.Float
+						return typeof(Float)
+					case __usualType.Long
+						return typeof(INT)
+					case __usualType.Int64
+						return typeof(INT64)
+					case __usualType.Logic
+						return typeof(LOGIC)
+					case __usualType.OBJECT
+						return typeof(OBJECT)
+					case __usualType.PTR
+						return typeof(IntPtr)
+					case __usualType.STRING
+						return typeof(STRING)
+					case __usualType.SYMBOL
+						return typeof(SYMBOL)
+					case __usualType.VOID
+						return typeof(USUAL)
+					otherwise
+						Debug.Fail( "Unhandled data type in Usual:SystemType" )
+					end switch 					                    
+					return null
+                end get
+				
+            end property
+
         #endregion
         #region Properties for the Debugger
             property Value as object 
@@ -669,13 +781,22 @@ begin namespace XSharp
         
         #region Operators for Equality
             public method Equals(obj as object) as logic
-            return super:Equals(obj)
+				if obj == null
+					return self:IsNil
+				endif
+				return UsualEquals((USUAL) obj, "Usual.Equals()")
+
             
             public method GetHashCode() as int
-            return super:GetHashCode()
+				local oValue as object
+				oValue := self:Value
+				if oValue == NULL
+					return 0
+				endif
+				return oValue:GetHashCode()
             
             static operator ==(lhs as __Usual, rhs as __Usual) as logic
-            return lhs:UsualEquals(rhs, "==")
+				return lhs:UsualEquals(rhs, "==")
             
             static operator !=(lhs as __Usual, rhs as __Usual) as logic
             if lhs:UsualType == __UsualType.STRING .and. rhs:UsualType == __UsualType.STRING
@@ -689,7 +810,7 @@ begin namespace XSharp
             switch self:UsualType
                 case __UsualType.Object
                     if rhs:UsualType == __UsualType.Object
-                        return _refData == rhs:_refData
+                        return self:_refData == rhs:_refData
                     else
                         nop
                     endif
@@ -699,10 +820,10 @@ begin namespace XSharp
                 
                 case __UsualType.Long
                     switch rhs:UsualType
-                        case __UsualType.Long		; return _intValue == rhs:_intValue
-                        case __UsualType.Int64		; return (int64) _intValue == rhs:_i64Value	// cast lhs to int64 to avoid overflow 
-                        case __UsualType.Float		; return (real8) _intValue == rhs:_r8Value // cast lhs to real8 to avoid overflow 
-                        case __UsualType.Decimal	; return (System.Decimal) _intValue == rhs:_decimalValue	// cast lhs to decimal to avoid overflow 
+                        case __UsualType.Long		; return self:_intValue == rhs:_intValue
+                        case __UsualType.Int64		; return (int64) self:_intValue == rhs:_i64Value	// cast lhs to int64 to avoid overflow 
+                        case __UsualType.Float		; return (real8) self:_intValue == rhs:_r8Value // cast lhs to real8 to avoid overflow 
+                        case __UsualType.Decimal	; return (System.Decimal) self:_intValue == rhs:_decimalValue	// cast lhs to decimal to avoid overflow 
                         case __UsualType.Logic		; return rhs:_logicValue == (self:_intValue <> 0)
                         otherwise
                             nop
@@ -1325,23 +1446,31 @@ begin namespace XSharp
         #endregion
         #region Implicit Numeric Operators
             static operator implicit(u as __Usual) as byte
-            local b := 0 as byte 
             try
-                // todo use CompilerOptionVO11 for types with decimal
                 switch u:UsualType
-                    case __UsualType.Long		; b := checked((byte) u:_intValue)
-                    case __UsualType.Int64		; b := checked((byte) u:_i64Value)
-                    case __UsualType.Float		; b := checked((byte) u:_r8Value)
-                    case __UsualType.Logic		; b := iif(u:_logicValue, 1, 0)
-                    case __UsualType.Decimal	; b := checked((byte) u:_decimalValue )
-                    case __UsualType.Void		; b := 0
+                    case __UsualType.Long		; return checked((byte) u:_intValue)
+                    case __UsualType.Int64		; return checked((byte) u:_i64Value)
+                    case __UsualType.Float		
+						if RuntimeState.CompilerOptionVO11
+							return Convert.ToByte(u:_r8Value)
+						else
+							return checked((byte) u:_r8Value)
+						endif
+                    case __UsualType.Logic		; return iif(u:_logicValue, 1, 0)
+                    case __UsualType.Decimal	
+						if RuntimeState.CompilerOptionVO11
+							return Convert.ToByte(u:_decimalValue )
+						else
+							return checked((byte) u:_decimalValue )
+						endif
+                    case __UsualType.Void		; return  0
                     otherwise
                         throw ConversionError("BYTE", typeof(byte), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "BYTE", typeof(byte), u)
             end try
-            return b
+            return 0
             
             static operator implicit(u as __Usual) as short
             try
@@ -1349,8 +1478,20 @@ begin namespace XSharp
                 switch u:UsualType
                     case __UsualType.Long	; return checked((short) u:_intValue)
                     case __UsualType.Int64	; return checked((short) u:_i64Value)
-                    case __UsualType.Float	; return checked((short) u:_r8Value)
-                    case __UsualType.Decimal; return checked((short) u:_decimalValue )
+                    case __UsualType.Float	
+						if RuntimeState.CompilerOptionVO11
+							return Convert.ToInt16(u:_r8value)
+						else
+							return checked((short) u:_r8Value)
+						endif
+
+                    case __UsualType.Decimal
+						if RuntimeState.CompilerOptionVO11
+							return Convert.ToInt16(u:_decimalValue )
+						else
+							return checked((short) u:_decimalValue )
+						endif
+
                     case __UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case __UsualType.Void	; return 0
                     otherwise
@@ -1362,12 +1503,21 @@ begin namespace XSharp
             
             static operator implicit(u as __Usual) as long
             try
-                // todo use CompilerOptionVO11 for types with decimal
                 switch u:UsualType
                     case __UsualType.Long	; return u:_intValue
                     case __UsualType.Int64	; return checked((long) u:_i64Value)
-                    case __UsualType.Float	; return checked((long) u:_r8Value)
-                    case __UsualType.Decimal; return checked((long) u:_decimalValue )
+                    case __UsualType.Float	
+						if RuntimeState.CompilerOptionVO11
+							return Convert.ToInt32(u:_r8Value)
+						else
+							return  checked((long) u:_r8Value)
+						endif
+                    case __UsualType.Decimal
+						if RuntimeState.CompilerOptionVO11
+							return Convert.ToInt32(u:_decimalValue )
+						else
+							return checked((long) u:_decimalValue )
+						endif
                     case __UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case __UsualType.Void	; return 0
                     otherwise
@@ -1379,12 +1529,22 @@ begin namespace XSharp
             
             static operator implicit(u as __Usual) as int64
             try
-                // todo use CompilerOptionVO11 for types with decimal
                 switch u:UsualType
                     case __UsualType.Long	; return u:_intValue
                     case __UsualType.Int64	; return checked((int64) u:_i64Value)
-                    case __UsualType.Float	; return checked((int64) u:_r8Value)
-                    case __UsualType.Decimal; return checked((int64) u:_decimalValue )
+                    case __UsualType.Float	
+						if RuntimeState.CompilerOptionVO11
+							return Convert.ToInt64(u:_r8Value)
+						else
+							return  checked((int64) u:_r8Value)
+						endif
+                    case __UsualType.Decimal
+						if RuntimeState.CompilerOptionVO11
+							return Convert.ToInt64(u:_decimalValue )
+						else
+							return checked((int64) u:_decimalValue )
+						endif
+
                     case __UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case __UsualType.Void	; return 0
                     otherwise
@@ -1526,6 +1686,18 @@ begin namespace XSharp
             
         #endregion
         #region Implicit from Other Type to Usual
+
+            static operator implicit(value as object) as Usual
+				local result as USUAL
+				if value != null .and. value:GetType() == typeof(__Usual)
+					result := (Usual) value
+				elseif value == null
+					result := Usual{NULL, true}
+				else
+					result := usual{value}
+				endif
+				return result
+
             static operator implicit(value as logic) as __Usual
             return __Usual{value}
             
@@ -1558,6 +1730,9 @@ begin namespace XSharp
             
             static operator implicit(value as uint64) as __Usual
             return __Usual{value}
+
+            static operator implicit(value as symbol) as __Usual
+				return __Usual{value}
             
             static operator implicit(value as System.Decimal) as __Usual
             return __Usual{value}
@@ -1637,26 +1812,45 @@ begin namespace XSharp
             
             public method ToSingle(provider as System.IFormatProvider) as real4
             return self
-            
+           
+			public method AsString()
+				return self:ToString()
+			
+			
+			public method Clone() as usual
+				// clone types that need cloning
+				local result as usual
+				switch self:_usualType
+				case __UsualType.Object
+					result := usual{self:value}
+				case __UsualType.String
+					result := usual { String.Copy(self:_stringValue)}
+				case __UsualType.Array
+					result := usual { Aclone(self:_arrayValue) }
+				otherwise
+					result := self
+				end switch
+				return result
+				 
             public method ToString() as string
             local strResult as string
             
             switch (self:usualType)
-                case __UsualType.Array
-                case __UsualType.CODEBLOCK
-                case __UsualType.OBJECT	; strResult := self:_refData:ToString()
-                case __UsualType.Date	; strResult := self:_dateValue:ToString()
-                case __UsualType.DateTime; strResult := self:_dateTimeValue:ToString()
-                case __UsualType.Decimal; strResult := self:_decimalValue:ToString()
-                case __UsualType.Float	; strResult := self:_r8Value:ToString()
-                case __UsualType.Long	; strResult := self:_intValue:ToString()
-                case __UsualType.Int64	; strResult := self:_i64Value:ToString()
-                case __UsualType.LOGIC	; strResult := iif(!self:_logicValue , ".F." , ".T.")
-                case __UsualType.PTR	; strResult := self:_ptrValue:ToString()
-                case __UsualType.STRING	; strResult := self:_stringValue
-                case __UsualType.Symbol	; strResult := self:_symValue:ToString()
-                case __UsualType.Void	; strResult := "NIL"
-                otherwise				; strResult := ""
+                case __UsualType.Array		; strResult := iif (self:_refData == null, "NULL_ARRAY", self:_arrayValue:ToString())
+                case __UsualType.CODEBLOCK  ; strResult := iif (self:_refData == null, "NULL_CODEBLOCK", self:_codeblockValue:ToString())
+                case __UsualType.OBJECT		; strResult := iif (self:_refData == null, "NULL_OBJECT", self:_refData:ToString())
+                case __UsualType.Date		; strResult := self:_dateValue:ToString()
+                case __UsualType.DateTime	; strResult := self:_dateTimeValue:ToString()
+                case __UsualType.Decimal	; strResult := iif (self:_refData == null, "0", self:_decimalValue:ToString())
+                case __UsualType.Float		; strResult := self:_r8Value:ToString()
+                case __UsualType.Long		; strResult := self:_intValue:ToString()
+                case __UsualType.Int64		; strResult := self:_i64Value:ToString()
+                case __UsualType.LOGIC		; strResult := iif(!self:_logicValue , ".F." , ".T.")
+                case __UsualType.PTR		; strResult := self:_ptrValue:ToString()
+                case __UsualType.STRING		; strResult := iif (self:_refData == null, "NULL_STRING", self:_stringValue:ToString())
+                case __UsualType.Symbol		; strResult := self:_symValue:ToString()
+                case __UsualType.Void		; strResult := "NIL"
+                otherwise					; strResult := ""
             end switch
             return strResult
             
@@ -1739,7 +1933,27 @@ begin namespace XSharp
                     endif
             end switch
             return "?"
-            
+           internal method ValType() as string
+            switch self:UsualType
+                case __UsualType.Array		; return "A"
+                case __UsualType.CodeBlock	; return "B"
+                case __UsualType.Date		; return "D"
+                case __UsualType.DateTime	; return "D"
+                case __UsualType.DECIMAL	; return "N"
+                case __UsualType.FLOAT		; return "N"
+                case __UsualType.Int64		; return "N"
+                case __UsualType.Long		; return "N"
+                case __UsualType.Logic		; return "L"
+                case __UsualType.PTR		; return "-"
+                case __UsualType.String		; return "C"
+				case __UsualType.Object		; return "O"
+                case __UsualType.Symbol		; return "#"
+                case __UsualType.Void		; return "U"
+                otherwise
+					Debug.Fail( "Unhandled data type in Usual:Valtype" )
+            end switch
+			return "?"                        
+
             static method ConversionError(toTypeString as string, toType as System.Type, u as __Usual) as Error
             var err			:= Error{InvalidCastException{}}
             err:GenCode		:= GenCode.EG_DataType
@@ -1786,6 +2000,40 @@ begin namespace XSharp
             
             
         #endregion
+
+		#region Special methods used by the compiler
+		static method __InexactEquals( lhs as usual, rhs as usual ) as logic
+			if lhs:IsString .and. rhs:IsString
+				return __StringEquals( lhs:_stringValue, rhs:_stringValue)
+			else
+				return lhs:UsualEquals(rhs, "=")
+			endif
+
+		static method __InexactEquals( lhs as usual, rhs as string ) as logic
+			if lhs:IsString 
+				return __StringEquals( lhs:_stringValue, rhs)
+			else
+				throw BinaryError("=", "Arguments incompatible", true, lhs, rhs)
+			endif
+
+		static method __InexactNotEquals( lhs as usual, rhs as usual ) as logic
+			// emulate VO behavior for "" and NIL
+			// "" = NIL but also "" != NIL, NIL = "" and NIL != ""
+			if lhs:IsString .and. rhs:IsNil .and. lhs:_stringValue != null .and. lhs:_stringValue:Length == 0
+				return false
+			elseif rhs:IsString .and. lhs:IsNil .and. rhs:_stringValue != null .and. rhs:_stringValue:Length == 0
+				return false
+			else
+				return ! lhs:UsualEquals(rhs, "<>")
+			endif
+		static method __InexactNotEquals( lhs as usual, rhs as string ) as logic
+			if lhs:IsString 
+				return __StringNotEquals( lhs:_stringValue, rhs)
+			else
+				throw BinaryError("<>", "Arguments incompatible", true, lhs, rhs)
+			endif
+
+		#endregion
         internal class UsualDebugView
             private _uvalue as __Usual
             public constructor (u as __Usual)
@@ -1859,14 +2107,32 @@ begin namespace XSharp
         constructor(type as __UsualType)
         usualType := type
     end structure
-    /// <summary>
-    /// Determine the data type of an expression.
-    /// </summary>
-    /// <param name="x"></param>
-    /// <returns>
-    /// </returns>
-    function UsualType(u as __Usual) as dword
-    return (dword) u:UsualType
+/// <summary>
+/// Determine the data type of an expression.
+/// </summary>
+/// <param name="x"></param>
+/// <returns>
+/// </returns>
+function UsualType(u as __Usual) as dword
+	return (dword) u:UsualType
     
+/// <summary>
+/// Access contents of an address, whether it is passed by reference or not.
+/// </summary>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
+function UsualVal(u as const  Usual) as Usual
+	return u
+
+/// <summary>
+/// Determine the data type of an expression.
+/// </summary>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
+function ValType(u as const Usual) as string
+	return u:ValType()
+
     
 end namespace

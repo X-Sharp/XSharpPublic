@@ -131,6 +131,7 @@
     <Compile Include="Functions\International.prg" />
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Numeric.prg" />
+    <Compile Include="Functions\OS.prg" />
     <Compile Include="Functions\Registry.prg" />
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\unsafe.prg" />

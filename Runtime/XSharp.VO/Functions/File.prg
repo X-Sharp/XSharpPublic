@@ -1,4 +1,5 @@
 ﻿using XSharp
+using System.Runtime.InteropServices
 /// <summary>
 /// Create a file or open and truncate an existing file.
 /// </summary>
@@ -6,9 +7,12 @@
 /// <param name="uxFileAttr"></param>
 /// <returns>
 /// </returns>
-unsafe function FCreate(cFile ,uxFileAttr ) as ptr
-	/// THROW NotImplementedException{}
-return IntPtr.Zero
+function FCreate(cFile as string ,uxFileAttr as usual) as IntPtr
+	if uxFileAttr == NIL
+		return global::Functions.FCreate(cFile)
+	else
+		return global::Functions.FCreate2(cFile, uxFileAttr)
+	endif
 
 
 /// <summary>
@@ -19,8 +23,11 @@ return IntPtr.Zero
 /// <returns>
 /// </returns>
 function FGetS(pFile ,nBuffLen ) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	if (nBuffLen == NIL)
+		return global::Functions.FGets(pFile)
+	else
+		return global::Functions.FGetS2(pFile, nBuffLen)
+	endif
 
 
 
@@ -31,9 +38,14 @@ function FGetS(pFile ,nBuffLen ) as string
 /// <param name="wMode"></param>
 /// <returns>
 /// </returns>
-unsafe function FOpen(cFile ,wMode ) as ptr
-	/// THROW NotImplementedException{}
-return IntPtr.Zero
+function FOpen(cFile ,wMode ) as IntPtr
+	if wMode == NIL
+		return global::Functions.Fopen(cFile)
+	else
+		return global::Functions.Fopen2(cFile, wMode)
+	endif
+
+
 
 
 /// <summary>
@@ -45,21 +57,29 @@ return IntPtr.Zero
 /// <returns>
 /// </returns>
 function FPutS(pFile ,c ,nCount ) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+	if nCount == NIL
+		return global::Functions.FPutS(pFile, c)
+	else
+		return global::Functions.FPutS(pFile, c, nCount)
+	endif
 
 
 /// <summary>
 /// Read characters from a file into a buffer variable that is passed by reference.
 /// </summary>
 /// <param name="pHandle"></param>
-/// <param name="refC"></param>
+/// <param name="pData"></param>
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
-unsafe function FRead(pHandle as IntPtr,refC as object,dwCount as dword) as dword
-	/// THROW NotImplementedException{}
-return 0   
+function FRead(pHandle as IntPtr,pData as IntPtr,dwCount as dword) as dword
+	local bData as byte[]
+	local dwResult as DWORD
+	bData := byte[] {(int) dwCount}
+	dwResult := FRead3(pHandle, bData, dwCount)
+	Marshal.Copy(bData, 0, pData, (int) dwResult)
+	return dwResult
+	
 
 
 
@@ -70,10 +90,12 @@ return 0
 /// <param name="nBuffLen"></param>
 /// <returns>
 /// </returns>
-function FReadLine(pFile as __Usual,nBuffLen as __Usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
-
+function FReadLine(pFile ,nBuffLen) as string
+	if nBuffLen == NIL
+		return global::Functions.FreadLine(pFile, 0)
+	else
+		return global::Functions.FreadLine(pFile, nBuffLen)
+	endif
 
 
 /// <summary>
@@ -84,9 +106,13 @@ function FReadLine(pFile as __Usual,nBuffLen as __Usual) as string
 /// <param name="nOrigin"></param>
 /// <returns>
 /// </returns>
-function FSeek(nFile ,nOffset ,nOrigin ) as long
-	/// THROW NotImplementedException{}
-	return 0   
+function FSeek(hFile ,nOffset ,nOrigin ) as long
+	if nOrigin == NIL
+		return global::Functions.FSeek3(hFile, nOffSet, FS_SET)
+	else
+		return global::Functions.FSeek3(hFile, nOffSet, nOrigin)
+	endif
+	
 
 
 /// <summary>
@@ -98,8 +124,11 @@ function FSeek(nFile ,nOffset ,nOrigin ) as long
 /// <returns>
 /// </returns>
 function FWrite(pHandle ,c ,nCount ) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+	if nCount == NIL
+		return global::Functions.Fwrite(pHandle, c)
+	else
+		return global::Functions.Fwrite3(pHandle, c, nCount)
+	endif
 
 /// <summary>
 /// Write a string, a carriage-return character, and a linefeed character to an open file.
@@ -109,9 +138,12 @@ function FWrite(pHandle ,c ,nCount ) as dword
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWriteLine(pFile as __Usual,c as __Usual,nCount as __Usual) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+function FWriteLine(pFile ,c ,nCount) as dword
+	if nCount == NIL
+		return global::Functions.FwriteLine(pFile, c)
+	else
+		return global::Functions.FwriteLine3(pFile, c, nCount)
+	endif
 
 /// <summary>
 /// Write a string to an open file, with SetAnsi() dependency.
@@ -121,7 +153,44 @@ function FWriteLine(pFile as __Usual,c as __Usual,nCount as __Usual) as dword
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWriteText(pHandle as __Usual,c as __Usual,nCount as __Usual) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+function FWriteText(pHandle ,c ,nCount ) as dword
+	if nCount == NIL
+		return global::Functions.FWriteText3(pHandle, c, Slen(c))
+	else
+		return global::Functions.FWriteText3(pHandle, c, nCount)
+	endif 
 
+
+/// <summary>
+/// Break a path name into its components.
+/// </summary>
+/// <param name="pszPath"></param>
+/// <param name="pszDrive"></param>
+/// <param name="pszDir"></param>
+/// <param name="pszName"></param>
+/// <param name="pszExt"></param>
+/// <returns>
+/// </returns>
+function SplitPath(pszPath as __Psz,pszDrive as __Psz,pszDir as __Psz,pszName as __Psz,pszExt as __Psz) as void
+   LOCAL cDrive AS STRING
+   LOCAL cDir   AS STRING
+   LOCAL cName  AS STRING
+   LOCAL cExt   AS STRING
+   local cPath  as string
+   cPath := Psz2String(pszPath)
+   _SplitPath(cPath, out cDrive, out cDir, out cName, out cExt)
+	if pszDrive != null_psz
+		MemCopyString(pszDrive, cDrive, (DWORD) pszLen(pszDrive)+1)
+	endif
+	if pszDir != null_psz
+		MemCopyString(pszDir, cDir, (DWORD) pszLen(pszDir)+1)
+	endif
+	if pszName != null_psz
+		MemCopyString(pszName, cName, (DWORD) pszLen(pszName)+1)
+	endif
+	if pszExt != null_psz
+		MemCopyString(pszExt, cExt, (DWORD) pszLen(pszExt)+1)
+	endif
+
+
+	return

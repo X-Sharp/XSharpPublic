@@ -12,8 +12,7 @@ using XSharp
 /// <returns>
 /// </returns>
 function Bin2Date(c as string) as DATE
-	/// THROW NotImplementedException{}
-	return	 (DATE)0   
+	return (DATE)(DWORD) Bin2L( c )
 
 
 
@@ -30,7 +29,7 @@ function CDoW(d as DATE) as string
 		local dt := d as Datetime
 		result := dt:ToString("dddd")
 	endif
-	return	 result
+	return result
 
 /// <summary>
 /// Extract the name of the month from a Date.
@@ -40,12 +39,7 @@ function CDoW(d as DATE) as string
 /// A string with the name of the month.
 /// </returns>
 function CMonth(d as DATE) as string
-	local result := String.Empty as string
-	if d != null
-		local dt := d as Datetime
-		result := dt:ToString("MMMM")
-	endif
-	return	 result 
+	return NTOCMonth( d:DMonth)
 
 /// <summary>
 /// Format a set of numbers representing a year, month, and day as a Date.
@@ -55,8 +49,16 @@ function CMonth(d as DATE) as string
 /// <param name="dwDay"></param>
 /// <returns>
 /// </returns>
-function ConDate(dwY as dword,dwM as dword,dwDay as dword) as DATE
-	return	 DATE{dwY,dwM,dwDay}   
+function ConDate(dwY as dword,dwM as dword,dwDay as dword) as date
+	if dwY < 100
+		local lAfter as logic
+		lAfter := dwY > XSharp.RuntimeState.EpochYear
+		dwY += XSharp.RuntimeState.EpochCent
+		if lAfter
+			dwY -= 100
+		endif
+	endif
+	return Date{dwY,dwM,dwDay}   
 
 /// <summary>
 /// Convert a Date string to DATE format.
@@ -65,11 +67,64 @@ function ConDate(dwY as dword,dwM as dword,dwDay as dword) as DATE
 /// <returns>
 /// </returns>
 function CToD(cDate as string) as DATE
-	local parsedDate as DateTime
-	if !DateTime.TryParse(cDate,out parsedDate)
-		parsedDate := DateTime.MinValue
+	return CTOD(cDate, XSharp.RuntimeState.DateFormat)
+
+function CToD(cDate as string, cDateFormat as string) as date
+	local dDate as date
+	local nDay, nMonth, nYear as dword
+	local nDayPos, nMonthPos, nYearPos as int
+	dDate := (DATE) 0
+	if string.IsNullOrEmpty(cDate) .or. String.IsNullOrEmpty(cDateFormat)
+		return dDate
 	endif
-	return	 DATE{parsedDate}   
+	local nPos as int
+	local cSep as string
+	nDayPos := nMonthPos := nYearPos := 0
+	cSep := "./-"
+	nPos := 0
+	foreach c as char in cDateFormat
+		switch c
+		case 'D'
+			if nDayPos == 0
+				++nPos
+				nDayPos  := nPos
+			endif
+		case 'M'
+			if nMonthPos == 0
+				++nPos
+				nMonthPos  := nPos
+			endif
+		case 'Y'
+			if nYearPos == 0
+				++nPos
+				nYearPos  := nPos
+			endif
+		otherwise
+			if cSep:IndexOf(c) == -1
+				cSep += c:ToString()
+			endif
+		end switch
+	next
+	if nDayPos == 0 .or. nMonthPos == 0 .or. nYearPos == 0
+		return dDate
+	endif
+	try
+		// we now know the seperators and the positions in the string
+		local aNums := cDate:Split(cSep:ToCharArray()) as string[]
+		nDay   := Uint32.Parse(aNums[nDayPos])
+		nMonth := Uint32.Parse(aNums[nMonthPos])
+		nYear  := Uint32.Parse(aNums[nYearPos])
+		if aNums[nYearPos]:Length < 4
+			// Century missing ?
+			dDate := ConDate(nYear, nMonth, nDay)
+		else
+			dDate := date{nYear, nMonth, nDay}
+		endif
+	catch 
+		dDate := (DATE) 0
+	end try
+	return dDate
+
 
 /// <summary>
 /// Convert an ANSI Date string to Date format.
@@ -78,8 +133,7 @@ function CToD(cDate as string) as DATE
 /// <returns>
 /// </returns>
 function CToDAnsi(cDate as string) as DATE
-	/// THROW NotImplementedException{}
-	return	 (DATE)0   
+	return CTOD(cDate, "YYYY.MM.DD")
 
 
 /// <summary>
@@ -88,9 +142,9 @@ function CToDAnsi(cDate as string) as DATE
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function Date2Bin(d as DATE) as string
-	/// THROW NotImplementedException{}
-	return	 String.Empty   
+function Date2Bin(d as date) as string
+	return L2Bin((Long) (Date) d)
+ 
 
 /// <summary>
 /// Extract the number of the day of the month from a Date.
@@ -131,12 +185,12 @@ function DoW(d as DATE) as dword
 /// </returns>
 function DToC(d as DATE) as string
 	local result:="" as string		
-	
+	local cFormat := XSharp.RuntimeState.GetValue<String>(Set.DateFormatNet) as string
 	if ! d:IsEmpty
 		local dt := d as Datetime
-		result := d:ToString()
+		result := d:ToString(cFormat)
 	else
-		result := default(DateTime):ToString()
+		result := XSharp.RuntimeState.GetValue<String>(Set.DateFormatEmpty) 
 	endif
 	return result 
 
@@ -215,11 +269,11 @@ function Month(d as DATE) as dword
 /// <returns>
 /// </returns>
 function SToD(cDate as string) as DATE
-	local convertedDate := DATE{} as DATE
+	local convertedDate as DATE
 	try
 		convertedDate := (DATE)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
-		//catch ex as exeption
-		//   nop
+	catch
+		convertedDate := DATE{} 
 	end try
 	return	 convertedDate
 

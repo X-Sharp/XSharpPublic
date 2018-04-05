@@ -300,8 +300,14 @@ function SetEpoch() as dword
 /// <param name="wYear"></param>
 /// <returns>
 /// </returns>
-function SetEpoch(wYear as dword) as dword
-	setstate dword Set.Epoch wYear
+function SetEpoch(wEpoch as dword) as dword
+	local wYear as dword
+	local wCent as dword
+	wYear := wEpoch % 100
+	wCent := (( wEpoch / 100) +1) * 100
+	XSharp.RuntimeState.SetValue<dword> (Set.EpochYear, wYear)
+	XSharp.RuntimeState.SetValue<DWORD> (Set.EpochCent, wCent)
+	setstate dword Set.Epoch	 wEpoch
 
 /// <summary>
 /// Return the setting that determines whether error information is written to the error log file by the default runtime error handler.

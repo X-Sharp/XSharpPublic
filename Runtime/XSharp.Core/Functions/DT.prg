@@ -63,24 +63,6 @@ FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
 	RETURN ts:ToString()   
 
 
-/// <summary>
-/// </summary>
-/// <param name="wMonth"></param>
-/// <returns>
-/// </returns>
-FUNCTION JNTOCMONTH(wMonth AS WORD) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-
-/// <summary>
-/// </summary>
-/// <param name="wYear"></param>
-/// <returns>
-/// </returns>
-FUNCTION JNTOCYEAR(wYear AS WORD) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
 
 /// <summary>
 /// Convert the number that identifies a day into the name of the day.

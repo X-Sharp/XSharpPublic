@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 		[Fact, Trait("Category", "Symbol")];
 		METHOD CompareSymbolTest() as void
-			var sym1 :=#TestSymbol
+			var sym1 := #TestSymbol
 			var sym2 := #TestSymbol
 			Assert.Equal(true,sym1==sym2)
 			Assert.Equal(true,sym1=="TESTSYMBOL")
@@ -33,6 +33,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(true,sym2 > sym1)
 			Assert.Equal(true,sym2 >= sym1)
 			Assert.Equal(false,sym2 < sym1)
+			sym2 := #testSymbol
+			Assert.Equal(false,sym1=sym2)
+			SetExact(false)
+			// with setequal FALSE then #TestSymbol1 == #testSymbol
+			Assert.Equal(false,sym1<sym2)
+			Assert.Equal(true,sym1<=sym2)
 		RETURN
 
 		[Fact, Trait("Category", "Symbol")];

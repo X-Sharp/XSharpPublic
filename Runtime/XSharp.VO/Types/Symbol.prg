@@ -13,7 +13,8 @@ using static XSharp.Functions
 // Todo: Implement System.IConvertible ?
 
 begin namespace XSharp
-	[DebuggerDisplay("{ToString(),nq}", Type := "SYMBOL")];
+	[DebuggerDisplay("{_debuggervalue,nq}",Type := "SYMBOL")];
+    [DebuggerTypeProxy(typeof(SymbolDebugView))];
 	public structure __Symbol ;
 		implements IEqualityComparer<__Symbol>, ;
 		IEquatable<__Symbol>,;
@@ -46,7 +47,19 @@ begin namespace XSharp
 			
 		#endregion
 		
-		property _value as string get SymbolTable.GetString(self:_index)
+		internal property _value as STRING
+		get
+			return SymbolTable.GetString(self:_index)
+		end get
+		end property
+		internal property _debuggervalue as STRING
+		get
+			if (_index == 0)
+				return "NULL_SYMBOL"
+			endif
+			return "#"+_value
+		end get
+		end property
 		
 		#region methods
 			virtual method Equals(obj as object) as logic 
@@ -234,5 +247,15 @@ begin namespace XSharp
 			//return SymbolTable.strings.GetEnumerator()
 			
 		#endregion
-	end        	structure
+       internal class SymbolDebugView
+            private _svalue as __Symbol
+			constructor( s as __Symbol)
+            _svalue := s
+            
+            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
+            public property Value as object get _svalue:_VALUE
+            
+        end class
+
+	end structure
 end namespace

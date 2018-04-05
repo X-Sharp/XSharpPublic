@@ -432,3 +432,25 @@ FUNCTION GetPrivPtr() AS IntPtr
 [Obsolete( "'GetStgServer()' is not supported and always returns ''" )] ;
 FUNCTION GetStgServer(pStgRoot AS IntPtr,cSubStorage AS STRING) AS STRING
 	RETURN String.Empty   
+
+[Obsolete( "'FxOpen()' is not supported and always returns IntPtr.Zero" )] ;
+function FxOpen(cFile as string,dwMode as dword,cPath as string) as IntPtr
+	return IntPtr.Zero
+
+[Obsolete( "'ErrorBuild()' is not supported and always returns an empty Error Object" )] ;
+function ErrorBuild(pErrInfo as IntPtr) as XSharp.ERROR
+	return  XSharp.Error{ES_ERROR}
+
+
+[Obsolete( "'ErrorExec()' is not supported and always returns NIL" )] ;
+function ErrorExec(pErrInfo as IntPtr) as Usual
+return NIL   
+
+
+[Obsolete( "'JNTOCMONTH()' is not supported and always returns ''" )] ;
+FUNCTION JNTOCMONTH(wMonth AS WORD) AS STRING
+	RETURN String.Empty   
+
+[Obsolete( "'JNTOCYEAR()' is not supported and always returns ''" )] ;
+FUNCTION JNTOCYEAR(wYear AS WORD) AS STRING
+	RETURN String.Empty   

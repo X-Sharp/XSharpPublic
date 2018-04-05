@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+using System.Text
 /// <summary>
 /// Convert a string containing a 32-bit unsigned integer to a double word.
 /// </summary>
@@ -69,7 +69,8 @@ function Bin2L(c as string) as long
 function Bin2Logic(c as string) as logic
 	return c != null .and. c[0] != 0
 
-/// <summary>
+FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
+	RETURN L2Bin( p:ToInt32())
 
 /// <summary>
 /// </summary>
@@ -156,15 +157,38 @@ function CTOL(c as string) as logic
 	return false
 
 
+function _GetHexChar(c as char, c1 out char, c2 out char) as string
+	local s as string
+	s := String.Format("{0:X2}",(int) c)
+	c1 := s[0]
+	c2 := s[1]
+	return s
+
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function C2Hex(c as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+function C2Hex(cSource as string) as string
+	local sb as StringBuilder
+	sb := StringBuilder{cSource:Length*2}
+	foreach c as char in cSource
+		local c1, c2 as char
+		_GetHexChar(c, out c1, out c2)
+		sb:Append(c1)
+		sb:Append(c2)
+	next
+	return sb:ToString()
 
+// helper function to convert bytes to string
+
+function _bytes2String(byteArray as byte[]) as string
+	local sb as StringBuilder
+	sb := StringBuilder{}
+	foreach var b in byteArray
+		sb:Append( (char) b)
+	next
+	return sb:ToString()
 
 /// <summary>
 /// Convert a double word to a string containing a 32-bit unsigned integer.
@@ -174,7 +198,7 @@ function C2Hex(c as string) as string
 /// </returns>
 function DW2Bin(n as dword) as string
 	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return System.Text.Encoding.ASCII:GetString(byteArray)
+	return _bytes2String(byteArray)
 
 /// <summary>
 /// Return the high-order (leftmost) byte in a number.
@@ -193,7 +217,7 @@ function HiByte(dw as word) as byte
 /// <returns>
 /// </returns>
 function HiWord(dw as dword) as word
-	local upper := Convert.ToByte(dw >> 16) as word
+	local upper := Convert.ToUInt16(dw >> 16) as word
 	return (word) upper
 
 
@@ -205,7 +229,7 @@ function HiWord(dw as dword) as word
 /// </returns>
 function I2Bin(n as short) as string
 	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return System.Text.Encoding.ASCII:GetString(byteArray)  
+	return _bytes2String(byteArray)
 
 
 
@@ -217,8 +241,7 @@ function I2Bin(n as short) as string
 /// </returns>
 function L2Bin(n as long) as string
 	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return System.Text.Encoding.ASCII:GetString(byteArray)     
-
+	return _bytes2String(byteArray)
 
 
 /// <summary>
@@ -248,9 +271,9 @@ function LoWord(dw as dword) as word
 /// </returns>
 function Logic2Bin(l as logic) as string
 	if l
-		return e"\1"
+		return e"\x0001"
 	else
-		return e"\0"
+		return e"\x0000"
 	endif
 
 
@@ -278,7 +301,7 @@ function LTOC(l as logic) as string
 /// </returns>
 function Real42Bin(n as real4) as string
 	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return System.Text.Encoding.ASCII:GetString(byteArray)        
+	return _bytes2String(byteArray)
 
 /// <summary>
 /// Convert a Real8 value to a string containing an 8-byte __VOFloating point number.
@@ -288,7 +311,7 @@ function Real42Bin(n as real4) as string
 /// </returns>
 function Real82Bin(n as real8) as string
 	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return System.Text.Encoding.ASCII:GetString(byteArray)   
+	return _bytes2String(byteArray)
 
 
 
@@ -301,4 +324,4 @@ function Real82Bin(n as real8) as string
 /// </returns>
 function W2Bin(n as word) as string
 	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return System.Text.Encoding.ASCII:GetString(byteArray)    
+	return _bytes2String(byteArray)

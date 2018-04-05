@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 #include "GetSet.xh"
-USING XSharp
+using XSharp
 
 
 /// <summary>
@@ -12,183 +12,146 @@ USING XSharp
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION GetAnsi() AS LOGIC
+function GetAnsi() as logic
 	return RuntimeState.Ansi
-
-
-/// <summary>
-/// </summary>
-/// <param name="pBuffer"></param>
-/// <param name="nSize"></param>
-/// <returns>
-/// </returns>
-//FUNCTION GetCallStack(pBuffer AS __Psz,nSize AS INT) AS LOGIC
-/// THROW NotImplementedException{}
-//RETURN FALSE   
-
-/// <summary>
-/// </summary>
-/// <param name="b1"></param>
-/// <param name="b2"></param>
-/// <param name="b3"></param>
-/// <param name="nPad"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetChunkBase64(b1 AS BYTE,b2 AS BYTE,b3 AS BYTE,nPad AS INT) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-/// <summary>
-/// Get the current <%APP%> search path for opening file.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetCurPath() AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetDASPtr() AS IntPtr
-	/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero   
-
-
-/// <summary>
-/// Return the <%APP%> default drive and directory.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetDefault() AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-/// <summary>
-/// Return the current SetDefaultDir() setting.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetDefaultDir() AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-/// <summary>
-/// Return the DOS error code from any application.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetDosError() AS DWORD
-	/// THROW NotImplementedException{}
-	RETURN 0   
-
-/// <summary>
-/// Retrieve the contents of a DOS environment variable.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetEnv(c AS STRING) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-/// <summary>
-/// Convert file attributes to numbers.
-/// </summary>
-/// <param name="uxFileAttr"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetFAttr(uxFileAttr AS OBJECT) AS DWORD
-	/// THROW NotImplementedException{}
-	RETURN 0   
-
-/// <summary>
-/// Prepare a file specification for wildcard searching.
-/// </summary>
-/// <param name="cFileMask"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetFMask(cFileMask AS OBJECT) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty
-
-/// <summary>
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetMimType(c AS STRING) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-/// <summary>
-/// Get the current DLL for nation-dependent operations and messages.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetNatDLL() AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-
-/// <summary>
-/// Returns a string representing the evening extension for time strings in 12-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetPMExt() AS STRING
-	GETSTATE STRING Set.PmExt
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetRTFullPath() AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty   
-
-
-/// <summary>
-/// </summary>
-/// <param name="dwRes"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetStringDXAX(dwRes AS DWORD) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN String.Empty
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetThreadCount() AS DWORD
-	/// THROW NotImplementedException{}
-	RETURN 0   
-
-/// <summary>
-/// Get the number of 1/10000 seconds that have elapsed since Windows was started.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetTickCountLow() AS DWORD
 	
-	RETURN 0   
+	
+	/// <summary>
+	/// </summary>
+	/// <param name="pBuffer"></param>
+	/// <param name="nSize"></param>
+	/// <returns>
+	/// </returns>
+	//FUNCTION GetCallStack(pBuffer AS __Psz,nSize AS INT) AS LOGIC
+	/// THROW NotImplementedException{}
+	//RETURN FALSE   
+	
+	/// <summary>
+	/// </summary>
+	/// <param name="b1"></param>
+	/// <param name="b2"></param>
+	/// <param name="b3"></param>
+	/// <param name="nPad"></param>
+	/// <returns>
+	/// </returns>
+function GetChunkBase64(b1 as byte,b2 as byte,b3 as byte,nPad as int) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+	
+	/// <summary>
+	/// Get the current <%APP%> search path for opening file.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetCurPath() as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+	
+	/// <summary>
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetDASPtr() as IntPtr
+	/// THROW NotImplementedException{}
+	return IntPtr.Zero   
+	
+	
+	/// <summary>
+	/// Return the <%APP%> default drive and directory.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetDefault() as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+	
+	/// <summary>
+	/// Return the current SetDefaultDir() setting.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetDefaultDir() as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+	
+ 
 
-/// <summary>
-/// Return the current separation character used in time strings.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetTimeSep() AS DWORD
-	GETSTATE DWORD Set.TimeSep
 
-/// <summary>
-/// Returns TimeZone difference for current timezone in Hours
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetTimeZoneDiff() AS INT
-	RETURN TimeZoneInfo.Local.BaseUtcOffSet:Hours
+
+
+	
+
+function GetMimType(c as string) as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+	
+	/// <summary>
+	/// Get the current DLL for nation-dependent operations and messages.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetNatDLL() as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+	
+	
+	/// <summary>
+	/// Returns a string representing the evening extension for time strings in 12-hour format.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetPMExt() as string
+	getstate string Set.PmExt
+	
+	
+	/// <summary>
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetRTFullPath() as string
+	/// THROW NotImplementedException{}
+	return String.Empty   
+	
+	
+	/// <summary>
+	/// </summary>
+	/// <param name="dwRes"></param>
+	/// <returns>
+	/// </returns>
+function GetStringDXAX(dwRes as dword) as string
+	/// THROW NotImplementedException{}
+	return String.Empty
+	
+	/// <summary>
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetThreadCount() as dword
+	/// THROW NotImplementedException{}
+	return 0   
+	
+	/// <summary>
+	/// Get the number of 1/10000 seconds that have elapsed since Windows was started.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetTickCountLow() as dword
+	
+	return 0   
+	
+	/// <summary>
+	/// Return the current separation character used in time strings.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetTimeSep() as dword
+	getstate dword Set.TimeSep
+	
+	/// <summary>
+	/// Returns TimeZone difference for current timezone in Hours
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetTimeZoneDiff() as int
+return TimeZoneInfo.Local.BaseUtcOffSet:Hours
 

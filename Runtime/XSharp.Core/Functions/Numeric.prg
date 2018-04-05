@@ -63,11 +63,15 @@ FUNCTION SwapByte(b AS BYTE) AS BYTE
 /// <summary>
 /// Exchange the right and left halves of a double word.
 /// </summary>
-/// <param name="li"></param>
+/// <param name="dw"></param>
 /// <returns>
 /// </returns>
-FUNCTION SwapDWord(li AS DWORD) AS DWORD
-RETURN	 (((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))   
+function SwapDWord(dw as dword) as dword
+	local dw1, dw2 as dword
+	dw1 := (dw & 0x0000ffff) << 16
+	dw2 := (dw >> 16) & 0x0000ffff
+	dw := dw1 | dw2
+RETURN	dw
 
 /// <summary>
 /// Exchange the right and left halves of an integer.
@@ -85,7 +89,11 @@ FUNCTION SwapInt(li AS LONG) AS LONG
 /// <returns>
 /// </returns>
 FUNCTION SwapLong(li AS LONG) AS LONG
-RETURN	 ((LONG)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))
+	local li1, li2 as LONG
+	li1 := (li & 0x0000ffff) << 16
+	li2 := (li >> 16) & 0x0000ffff
+	li := li1 | li2
+	return li
 
 
 /// <summary>

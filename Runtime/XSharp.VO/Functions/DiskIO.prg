@@ -22,15 +22,6 @@ function ADir(cPath as Usual,aFNAME as Usual,aFSIZE as Usual,aFDATE as Usual,aFT
 	return 0   
 
 
-/// <summary>
-/// Return the current Windows directory.
-/// </summary>
-/// <param name="cDisk"></param>
-/// <returns>
-/// </returns>
-function CurDir(cDisk as Usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
 
 /// <summary>
 /// </summary>
@@ -53,53 +44,6 @@ function Directory(cPath as Usual,xAttr as Usual) as Array
 
 
 
-/// <summary>
-/// Return the space available on the current disk drive.
-/// </summary>
-/// <param name="cDisk"></param>
-/// <returns>
-/// </returns>
-function DiskFree() as Usual
-	return DiskFree(CurDrive())
-
-/// <summary>
-/// Return the space available on a specified disk.
-/// </summary>
-/// <param name="cDisk">The drivename to get the free space from.</param>
-/// <returns>
-/// The free space on the specified disk drive.
-/// </returns>	   
-function DiskFree(cDisk as Usual) as Usual
-	return System.IO.DriveInfo{cDisk}:TotalFreeSpace
-
-/// <summary>
-/// Return the current Windows drive.
-/// </summary>
-/// <returns>
-/// The current windows drive.
-/// </returns>
-function DiskName() as string
-	return CurDrive()
-
-/// <summary>
-/// Return the capacity of the current disk.
-/// </summary>
-/// <returns>
-/// The capacity of the current disk.
-/// </returns>
-function DiskSpace() as Usual
-	return DiskSpace(CurDrive())
-
-
-
-/// <summary>
-/// Return the capacity of the specified disk.
-/// </summary>
-/// <param name="nDisk"></param>
-/// <returns>
-/// </returns>
-function DiskSpace(nDisk as Usual) as Usual
-	return System.IO.DriveInfo{nDisk}:TotalSize
 
 
 

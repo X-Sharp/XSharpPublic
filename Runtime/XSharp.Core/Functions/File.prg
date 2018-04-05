@@ -1,5 +1,5 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Copyright (c) XSharp B.V.  All Rights Reserved. 
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
@@ -274,7 +274,8 @@ begin namespace XSharp.IO
 			local nPos	as int64
 			local oStream := XSharp.IO.File.findStream(pFile) as FileStream
 			if iCount <= 0
-				iCount := 254
+				// According to the VO docs the default value for the buffer length = 256
+				iCount := 256
 			endif
 			if oStream != null_object
 				try
@@ -522,7 +523,8 @@ function FFUnLock(phandle as IntPtr,dwOffset as dword,dwLength as dword) as logi
 /// <returns>
 /// </returns>
 function FGetS(pHandle as IntPtr) as string
-	return XSharp.IO.File.readLine(pHandle,0)
+	// According to the VO docs the dedault value for the buffer length = 256
+	return XSharp.IO.File.readLine(pHandle,256)
 
 
 /// <summary>
@@ -829,6 +831,48 @@ function FCreate2(cFile as string,dwAttr as dword) as IntPtr
 
 
 /// <summary>
+/// Create a file or open and truncate an existing file, specifying the filename
+/// </summary>
+/// <param name="cFile"></param>
+/// <returns>
+/// </returns>
+function FCreate2(cFile as string) as IntPtr
+	return FCreate(cFile, FC_NORMAL)
+
+
+/// <summary>
+/// Create a file or open and truncate an existing file.
+/// </summary>
+/// <param name="cFile"></param>
+/// <returns>
+/// </returns>
+function FCreate(cFile as string ) as IntPtr
+	return FCreate2(cFile, FA_NORMAL)
+
+
+/// <summary>
+/// Create a file or open and truncate an existing file.
+/// </summary>
+/// <param name="cFile"></param>
+/// <param name="dwFileAttr"></param>
+/// <returns>
+/// </returns>
+function FCreate(cFile as string ,dwFileAttr as DWORD) as IntPtr
+	return FCreate2(cFile, dwFileAttr)
+
+
+/// <summary>
+/// Create a file or open and truncate an existing file.
+/// </summary>
+/// <param name="cFile"></param>
+/// <param name="iFileAttr "></param>
+/// <returns>
+/// </returns>
+function FCreate(cFile as string ,iFileAttr as int) as IntPtr
+	return FCreate2(cFile, (DWORD) iFileAttr)
+
+
+/// <summary>
 /// Open a file, specifying one strongly-typed arguments.
 /// </summary>
 /// <param name="cFile"></param>
@@ -861,41 +905,80 @@ function FOpen2(cFile as string,dwMode as dword) as IntPtr
 
 
 
+
+
+
+
+
 /// <summary>
-/// Open a file.
+/// Convert file attributes to numbers.
 /// </summary>
-/// <param name="cFile"></param>
-/// <param name="dwMode"></param>
-/// <param name="cPath"></param>
+/// <param name="uxFileAttr"></param>
 /// <returns>
 /// </returns>
-function FxOpen(cFile as string,dwMode as dword,cPath as string) as IntPtr
-	/// THROW NotImplementedException{}
-	return IntPtr.Zero
-
-
-
-/// <summary>
+function GetFAttr(cAttributes as string) as dword
+	return String2FAttr(cAttributes)
+	
+	/// <summary>
+	/// Convert file attributes to numbers.
+	/// </summary>
+	/// <param name="dwAttributes"></param>
+	/// <returns>
+	/// Does not do anything. Returns the original value
+	/// </returns>
+function GetFAttr(dwAttributes as dword) as dword
+	return dwAttributes
+	
+	
+	/// <summary>
+	/// Prepare a file specification for wildcard searching.
+	/// </summary>
+	/// <param name="cFileMask"></param>
+	/// <returns>
+	/// When the source string ends with ":" or "\" then *.* is added
+	/// </returns>
+function GetFMask(cFileMask as string) as string
+	local cResult as STRING
+	if String.IsNullOrEmpty(cFileMask)
+		cResult := "*.*"
+	else
+		var cChar := cFilemask[cFileMask:Length-1]
+		switch cChar
+		case ':'
+		case '\\'
+			cResult := cFileMask + "*.*"
+		otherwise
+			cResult := cFileMask
+		end switch
+	endif
+	return cResult
+	
 /// </summary>
-/// <param name="cAttr"></param>
+/// <param name="cAttr"> One or more of the following constants or strings: ADHSRV</param>
 /// <returns>
 /// </returns>
 function String2FAttr(cAttr as string) as dword
-	local dwAttributes := 0 as dword
-	foreach c as char in cAttr
-		do case
-			case c == 'A'
-				dwAttributes |= FC_ARCHIVED
-			case c == 'D'
-				dwAttributes |= FA_DIRECTORY
-			case c == 'H'
-				dwAttributes |= FC_HIDDEN
-			case c == 'S'
-				dwAttributes |= FC_SYSTEM
-			case c == 'V'
-				dwAttributes |= FA_VOLUME
-		end case
-	next
+	local dwAttributes := FC_NORMAL as dword
+	if !String.IsNullOrEmpty(cAttr)
+		foreach c as char in cAttr
+			switch Char.ToUpper(c)
+				case 'A'
+					dwAttributes |= FC_ARCHIVED
+				case 'C'
+					dwAttributes |= FA_COMPRESSED
+				case 'D'
+					dwAttributes |= FA_DIRECTORY
+				case 'H'
+					dwAttributes |= FC_HIDDEN
+				case 'R'
+					dwAttributes |= FC_READONLY
+				case 'S'
+					dwAttributes |= FC_SYSTEM
+				case 'V'
+					dwAttributes |= FA_VOLUME
+			end switch	
+		next
+	endif
 	return dwAttributes
 
 

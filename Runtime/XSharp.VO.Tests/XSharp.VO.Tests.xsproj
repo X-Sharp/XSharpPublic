@@ -97,7 +97,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArrayTests.prg" />
+    <Compile Include="ConversionTests.prg" />
     <Compile Include="DateTests.prg" />
     <Compile Include="FloatTests.prg" />
     <Compile Include="MemoryTests.prg" />

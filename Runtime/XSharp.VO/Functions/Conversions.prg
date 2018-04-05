@@ -32,8 +32,22 @@ function AsPadr(u as __Usual,dwLen as dword) as string
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function AsString(u as __Usual) as string
-	return (string) u   
+function AsString(u as usual) as string
+	local result as string
+	do case
+	case u:IsString
+		result := (string) u
+	case u:IsNumeric
+		result := Ntrim(u)
+	case u:IsSymbol
+		result := Symbol2String( (symbol) u)
+	case u:IsDate
+		result := DTOC( (date) u)
+	OTHERWISE
+		result := u:ToString()
+	ENDCASE
+	return result
+	
 
 /// <summary>
 /// Convert a string or a __Psz to a __Symbol.
@@ -67,28 +81,6 @@ function DescendA(uValue as __Usual) as __Usual
 	/// THROW NotImplementedException{}
 	return __Usual._NIL   
 
-
-/// <summary>
-/// Make sure a variable is a numeric.
-/// </summary>
-/// <param name="refu"></param>
-/// <returns> 
-/// </returns>
-function EnforceNumeric(refu as __Usual) as void
-	/// THROW NotImplementedException{}
-	return  
-
-
-/// <summary>
-/// Make sure a variable is of a certain type.
-/// </summary>
-/// <param name="refu"></param>
-/// <param name="nType"></param>
-/// <returns>
-/// </returns>
-function EnforceType(refu as __Usual,nType as dword) as void
-	/// THROW NotImplementedException{}
-	return  
 
 
 

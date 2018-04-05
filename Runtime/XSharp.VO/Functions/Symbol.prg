@@ -37,15 +37,24 @@ FUNCTION String2Atom(c AS STRING) AS __Symbol
 RETURN NULL_SYMBOL  
 
 /// <summary>
-/// Convert a string to an uppercase __Symbol.
+/// Convert a string to an uppercase Symbol.
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-FUNCTION String2Symbol(c AS STRING) AS __Symbol
+FUNCTION String2Symbol(c AS STRING) AS Symbol
 	/// THROW NotImplementedException{}
 return null_symbol   
 
+
+/// <summary>
+/// Convert a symbol to string
+/// </summary>
+/// <param name="s"></param>
+/// <returns>
+/// </returns>
+FUNCTION Symbol2String(s AS SYMBOL) AS String
+return (STRING) s
 	/// <summary>
 	/// Concatenate two __Symbols.
 	/// </summary>

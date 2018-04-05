@@ -74,3 +74,18 @@ function SubStr(c as usual,iStart as usual,wLen as usual) as string
 
 
 
+function EmptyString (s as string) as logic
+	if !String.IsNullOrEmpty(s)
+		foreach c as char in s
+			switch c
+			case '\r'
+			case '\n'
+			case '\t'
+			case ' '
+				nop
+			otherwise
+				return false
+			end switch
+		next
+	endif
+	return true

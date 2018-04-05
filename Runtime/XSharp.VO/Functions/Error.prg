@@ -15,18 +15,6 @@ function ErrorBlock(cobError as Usual) as Usual
 	/// THROW NotImplementedException{}
 	return NIL   
 
-
-/// <summary>
-/// Call the currently installed error function and create a new error object.
-/// </summary>
-/// <param name="ptrERRINFO"></param>
-/// <returns>
-/// </returns>
-[Obsolete];
-	function ErrorBuild(ptrERRINFO as IntPtr) as XSharp.ERROR
-	/// THROW NotImplementedException{}
-return  XSharp.Error{}
-
 /// <summary>
 /// Return the number of errors that have occurred during program execution.
 /// </summary>
@@ -38,17 +26,6 @@ function ErrorCount(dw as Usual) as dword
 	return 0   
 
 
-
-/// <summary>
-/// Call the currently installed error function and error block.
-/// </summary>
-/// <param name="ptrERRINFO"></param>
-/// <returns>
-/// </returns>
-[Obsolete];
-	function ErrorExec(ptrERRINFO as IntPtr) as Usual
-	/// THROW NotImplementedException{}
-return NIL   
 
 /// <summary>
 /// Install an error function.

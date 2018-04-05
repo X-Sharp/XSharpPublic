@@ -281,19 +281,7 @@ using XSharp
 		/// THROW NotImplementedException{}
 		return __PSZ._NULL_PSZ 
 	
-	/// <summary>
-	/// Break a path name into its components.
-	/// </summary>
-	/// <param name="pzsPath"></param>
-	/// <param name="pszDrive"></param>
-	/// <param name="pszDir"></param>
-	/// <param name="pszName"></param>
-	/// <param name="pszExt"></param>
-	/// <returns>
-	/// </returns>
-	function SplitPath(pzsPath as __Psz,pszDrive as __Psz,pszDir as __Psz,pszName as __Psz,pszExt as __Psz) as void
-		/// THROW NotImplementedException{}
-		return
+
 	
 	/// <summary>
 	/// Convert a __VOFloat expression to a __Psz.

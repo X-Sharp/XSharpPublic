@@ -46,32 +46,11 @@ function CParamCount(uCodeBlock as __Usual) as dword
 
 
 
-/// <summary>
-/// Assign a default value to a __Usual._NIL argument.
-/// </summary>
-/// <param name="xRef"></param>
-/// <param name="x"></param>
-/// <returns>
-/// </returns>
-function Default(xRef as __Usual,x as __Usual) as void
-	/// THROW NotImplementedException{}
-	return  
 
 
 
 
 
-
-
-/// <summary>
-/// Determine if the result of an expression is empty.
-/// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
-function Empty(uVal as __Usual) as logic
-	/// THROW NotImplementedException{}
-	return false   
 
 
 
@@ -215,30 +194,6 @@ function SysObject(o as __Usual) as object
 	return null_object   
 
 
-
-
-
-
-
-/// <summary>
-/// Access contents of an address, whether it is passed by reference or not.
-/// </summary>
-/// <param name="u"></param>
-/// <returns>
-/// </returns>
-function UsualVal(u as __Usual) as __Usual
-	/// THROW NotImplementedException{}
-	return __Usual._NIL   
-
-/// <summary>
-/// Determine the data type of an expression.
-/// </summary>
-/// <param name="x"></param>
-/// <returns>
-/// </returns>
-function ValType(x as __Usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
 
 
 

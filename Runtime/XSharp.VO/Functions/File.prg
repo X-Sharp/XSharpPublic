@@ -171,7 +171,7 @@ function FWriteText(pHandle ,c ,nCount ) as dword
 /// <param name="pszExt"></param>
 /// <returns>
 /// </returns>
-function SplitPath(pszPath as __Psz,pszDrive as __Psz,pszDir as __Psz,pszName as __Psz,pszExt as __Psz) as void
+function SplitPath(pszPath as Psz,pszDrive as Psz,pszDir as Psz,pszName as Psz,pszExt as Psz) as void
    LOCAL cDrive AS STRING
    LOCAL cDir   AS STRING
    LOCAL cName  AS STRING

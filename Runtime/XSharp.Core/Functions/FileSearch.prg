@@ -165,7 +165,7 @@ function FAttrib() as dword
 
 
 /// <summary>
-/// Return the __VODate stamp of the file found by FFCount(), FFirst(), or FNext().
+/// Return the Date stamp of the file found by FFCount(), FFirst(), or FNext().
 /// </summary>
 /// <returns>
 /// </returns>

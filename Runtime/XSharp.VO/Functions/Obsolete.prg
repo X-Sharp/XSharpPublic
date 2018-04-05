@@ -454,3 +454,20 @@ FUNCTION JNTOCMONTH(wMonth AS WORD) AS STRING
 [Obsolete( "'JNTOCYEAR()' is not supported and always returns ''" )] ;
 FUNCTION JNTOCYEAR(wYear AS WORD) AS STRING
 	RETURN String.Empty   
+
+
+[Obsolete( "'CreateAtomTable()' is not supported and always returns 0" )] ;
+FUNCTION CreateAtomTable(dwVS AS DWORD,dwStep AS DWORD) AS DWORD
+RETURN 0   
+
+[Obsolete( "'ReadAtomTable()' is not supported and always returns 0" )] ;
+FUNCTION ReadAtomTable(hf AS DWORD) AS DWORD
+RETURN 0   
+
+[Obsolete( "'PszLenW()' is not supported and always returns 0" )] ;
+function PszLenW(pszUnicode as Psz) as dword
+	return 0
+
+[Obsolete( "'ReleaseString()' is not supported and always returns NULL_PSZ" )] ;
+function ReleaseString() AS Psz
+	return NULL_PSZ

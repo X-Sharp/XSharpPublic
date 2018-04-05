@@ -34,14 +34,14 @@ begin namespace XSharp
 			next
 			return
 		
-		public static method ArrayCreate(dimensions params int[] ) as __Array
+		public static method ArrayCreate(dimensions params int[] ) as Array
 			local count := dimensions:Length as int
 			if count <= 0
 				throw ArgumentException{"No dimensions provided."}
 			endif
 			local initializer := object[]{dimensions[1]} as object[]
-			local arrayNew as __Array
-			arrayNew := __Array{initializer}
+			local arrayNew as Array
+			arrayNew := Array{initializer}
 			
 			if count > 1
 				local i as int
@@ -54,19 +54,19 @@ begin namespace XSharp
 			return arrayNew
 		
 		public static method __ArrayNew( dimensions params int[] ) as __Array
-			local newArray as __Array 
+			local newArray as Array 
 			if dimensions:Length != 0 
 				newArray := __ArrayNewHelper(dimensions,1)
 			else
-				newArray := __Array{}
+				newArray := Array{}
 			endif
 			return newArray
 		
-		public static method __ArrayNewHelper(dimensions as int[], currentDim as int) as __Array
+		public static method __ArrayNewHelper(dimensions as int[], currentDim as int) as Array
 			local capacity  as int // one based ?
-			local newArray as __Array
+			local newArray as Array
 			capacity := dimensions[currentDim-1]
-			newArray := __Array{capacity} 
+			newArray := Array{capacity} 
 			if currentDim != dimensions:Length
 				local nextDim := currentDim+1 as int
 				local index   := 1 as int
@@ -105,7 +105,7 @@ begin namespace XSharp
 		///
 		public method __GetElement(index params int[]) as usual
 			local indexLength := index:Length as int
-			local currentArray := self as __Array
+			local currentArray := self as Array
 			local i as int
 			
 			for i:= 1  upto indexLength  -1 // walk all but the last level
@@ -113,10 +113,10 @@ begin namespace XSharp
 				if u:IsNil 
 					return u
 				endif
-				if u:UsualType != __UsualType.ARRAY
+				if u:IsArray
 					throw InvalidOperationException{"out of range error."}
 				endif
-				currentArray := (__Array) u
+				currentArray := (Array) u
 			next
 			return currentArray:_internalList[ index[i] ]
 		
@@ -124,22 +124,22 @@ begin namespace XSharp
 			// indices are 0 based
 			if self:CheckLock()
 				local length := index:Length as int
-				local currentArray := self as __Array
+				local currentArray := self as Array
 				
 				for var i := 1 upto length-1
 					local uArray := _internalList[index[i]] as usual
-					if !(uArray:UsualType == __UsualType.ARRAY)
+					if !(uArray:IsArray)
 						throw InvalidOperationException{"Out of range error."}
 					endif
-					currentArray := (__Array) uArray
+					currentArray := (Array) uArray
 				next
 				currentArray:_internalList[index[length]] := u
 			endif
 			return u
 		
 		internal class ArrayDebugView
-			private _value as __Array
-			public constructor (a as __Array)
+			private _value as Array
+			public constructor (a as Array)
 				_value := a
 			//[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
 			public property Elements as List<usual> get _value:_internalList

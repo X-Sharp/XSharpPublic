@@ -7,12 +7,21 @@
 /// <param name="nType"></param>
 /// <returns>
 /// </returns>
-function Any2Usual(x as __Usual,nType as dword) as __Usual
+function Any2Usual(x as Usual,nType as dword) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 
-
+function AsHexString(uValue as usual) as string
+	local result as string
+	if IsString(uValue)
+		result := "0x"+c2Hex( (string) uValue)
+	elseif IsNumeric(uValue)
+		result := String.Format("{0:X8}", (int64) uValue)
+	else
+		result := ""
+	ENDIF
+	return result
 
 /// <summary>
 /// Convert a value to a right-padded string.
@@ -21,7 +30,7 @@ function Any2Usual(x as __Usual,nType as dword) as __Usual
 /// <param name="dwLen"></param>
 /// <returns>
 /// </returns>
-function AsPadr(u as __Usual,dwLen as dword) as string
+function AsPadr(u as Usual,dwLen as dword) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -50,14 +59,14 @@ function AsString(u as usual) as string
 	
 
 /// <summary>
-/// Convert a string or a __Psz to a __Symbol.
+/// Convert a string or a Psz to a Symbol.
 /// </summary>
-/// <param name="u">The __Usual holding a string or __Psz</param>
+/// <param name="u">The Usual holding a string or Psz</param>
 /// <returns>
-/// The __Symbol representing the given string or __Psz.
+/// The Symbol representing the given string or Psz.
 /// </returns>
-function AsSymbol(u as __Usual) as __Symbol
-	return __Symbol{(string)u}   
+function AsSymbol(u as Usual) as Symbol
+	return Symbol{(string)u}   
 
 
 
@@ -68,18 +77,18 @@ function AsSymbol(u as __Usual) as __Symbol
 /// <param name="uValue"></param>
 /// <returns>
 /// </returns>
-function Descend(uValue as __Usual) as __Usual
+function Descend(uValue as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 /// <summary>
 /// </summary>
 /// <param name="uValue"></param>
 /// <returns>
 /// </returns>
-function DescendA(uValue as __Usual) as __Usual
+function DescendA(uValue as Usual) as Usual
 	/// THROW NotImplementedException{}
-	return __Usual._NIL   
+	return NIL   
 
 
 
@@ -90,7 +99,7 @@ function DescendA(uValue as __Usual) as __Usual
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function NTrim(n as __Usual) as string
+function NTrim(n as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -101,66 +110,66 @@ function NTrim(n as __Usual) as string
 /// <param name="nDec"></param>
 /// <returns>
 /// </returns>
-unsafe function Psz2Float(ptrBuff as ptr,nLen as int,nDec as int) as __VOFloat
+unsafe function Psz2Float(ptrBuff as ptr,nLen as int,nDec as int) as Float
 	throw NotImplementedException{}
 return 0   
 
 /// <summary>
-/// Convert a __Psz to a __Usual with a __Psz tag.
+/// Convert a Psz to a Usual with a Psz tag.
 /// </summary>
 /// <param name="ptrSource"></param>
 /// <returns>
 /// </returns>
-unsafe function Psz2Usual(ptrSource as ptr) as __Usual
+unsafe function Psz2Usual(ptrSource as ptr) as Usual
 	throw NotImplementedException{}
-return __Usual._NIL   
+return NIL   
 
 /// <summary>
-/// Pad character, numeric, and __VODate values with fill characters on the right.
+/// Pad character, numeric, and Date values with fill characters on the right.
 /// </summary>
 /// <param name="cSource"></param>
 /// <param name="nLen"></param>
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function Pad(cSource as __Usual,nLen as __Usual,cPad as __Usual) as string
+function Pad(cSource as Usual,nLen as Usual,cPad as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
 /// <summary>
-/// Pad character, numeric, and __VODate values with fill characters on both the right and left.
+/// Pad character, numeric, and Date values with fill characters on both the right and left.
 /// </summary>
 /// <param name="cSource"></param>
 /// <param name="nLen"></param>
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function PadC(cSource as __Usual,nLen as __Usual,cPad as __Usual) as string
+function PadC(cSource as Usual,nLen as Usual,cPad as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
 
 /// <summary>
-/// Pad character, numeric, and __VODate values with fill characters on the left.
+/// Pad character, numeric, and Date values with fill characters on the left.
 /// </summary>
 /// <param name="cSource"></param>
 /// <param name="nLen"></param>
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function PadL(cSource as __Usual,nLen as __Usual,cPad as __Usual) as string
+function PadL(cSource as Usual,nLen as Usual,cPad as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
 /// <summary>
-/// Pad character, numeric, and __VODate values with fill characters on the right.
+/// Pad character, numeric, and Date values with fill characters on the right.
 /// </summary>
 /// <param name="cSource"></param>
 /// <param name="nLen"></param>
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function PadR(cSource as __Usual,nLen as __Usual,cPad as __Usual) as string
+function PadR(cSource as Usual,nLen as Usual,cPad as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -174,7 +183,7 @@ function PadR(cSource as __Usual,nLen as __Usual,cPad as __Usual) as string
 /// <param name="nDec"></param>
 /// <returns>
 /// </returns>
-function Str(n as __Usual,nLen as __Usual,nDec as __Usual) as string
+function Str(n as Usual,nLen as Usual,nDec as Usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
 
@@ -187,7 +196,7 @@ function Str(n as __Usual,nLen as __Usual,nDec as __Usual) as string
 	/// <param name="iDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrZero(n AS __Usual,iLen AS __Usual,iDec AS __Usual) AS STRING
+	FUNCTION StrZero(n AS Usual,iLen AS Usual,iDec AS Usual) AS STRING
 		/// THROW NotImplementedException{}
 	RETURN String.Empty   
 
@@ -200,7 +209,7 @@ function Str(n as __Usual,nLen as __Usual,nDec as __Usual) as string
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Transform(exp AS __Usual,p AS __Usual) AS STRING
+	FUNCTION Transform(exp AS Usual,p AS Usual) AS STRING
 		/// THROW NotImplementedException{}
 	RETURN String.Empty   
 
@@ -211,6 +220,44 @@ function Str(n as __Usual,nLen as __Usual,nDec as __Usual) as string
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ToWord(n AS __Usual) AS DWORD
+	FUNCTION ToWord(n AS Usual) AS DWORD
+		return (dword) n
+
+
+	/// <summary>
+	/// Convert an integer expression to a Psz.
+	/// </summary>
+	/// <param name="l"></param>
+	/// <param name="dwLen"></param>
+	/// <param name="dwDec"></param>
+	/// <returns>
+	/// </returns>
+	function StrInt(l as long,dwLen as dword,dwDec as dword) as Psz
 		/// THROW NotImplementedException{}
-	RETURN 0   
+		return NULL_PSZ
+	
+	/// <summary>
+	/// Convert a long integer expression to a Psz.
+	/// </summary>
+	/// <param name="l"></param>
+	/// <param name="dwLen"></param>
+	/// <param name="dwDec"></param>
+	/// <returns>
+	/// </returns>
+	function StrLong(l as long,dwLen as dword,dwDec as dword) as Psz
+		/// THROW NotImplementedException{}
+		return NULL_PSZ
+	
+	/// <summary>
+	/// Convert a Float expression to a Psz.
+	/// </summary>
+	/// <param name="flSource"></param>
+	/// <param name="dwLen"></param>
+	/// <param name="dwDec"></param>
+	/// <returns>
+	/// </returns>
+	function StrFloat(flSource as Float,dwLen as dword,dwDec as dword) as Psz
+		/// THROW NotImplementedException{}
+		return NULL_PSZ
+	
+	

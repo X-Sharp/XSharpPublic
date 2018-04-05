@@ -42,16 +42,16 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 
     VIRTUAL METHOD Open(lpOpenInfo AS DBOPENINFO) AS Logic
         //LOCAL sName AS string
-        //LOCAL usual3 AS __Usual
-        //LOCAL usual AS __Usual
-        //LOCAL @@array AS __Array
+        //LOCAL usual3 AS Usual
+        //LOCAL usual AS Usual
+        //LOCAL @@array AS Array
         //LOCAL i AS Long
-        //LOCAL array2 AS __Array
+        //LOCAL array2 AS Array
         //LOCAL pucTableName AS string
         //LOCAL pucPassword AS string
         //LOCAL pucName AS Char[]
         //LOCAL length AS Word
-        //LOCAL usual2 AS __Usual
+        //LOCAL usual2 AS Usual
         ////
         //SUPER:PrintCallTrace(<string>{"Open"})
         //SUPER:AxCheckRDDInfo()
@@ -60,7 +60,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             //SUPER:ACECALL(ACEUNPUB.AdsSetLastError(5036, "The SQL driver requires a connection to Advantage."))
             //RETURN FALSE
         //ENDIF
-        //usual3 := __Usual._NIL
+        //usual3 := Usual._NIL
         //IF (Functions.VODBRDDInfo(205, @(usual3)))
             ////
             //sName := usual3
@@ -124,8 +124,8 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             ////
             //RETURN FALSE
         //ENDIF
-        //usual := __Usual._NIL
-        //IF (Functions.VODBRDDInfo(206, @(usual)) .AND. (usual != __Usual._NIL))
+        //usual := Usual._NIL
+        //IF (Functions.VODBRDDInfo(206, @(usual)) .AND. (usual != Usual._NIL))
             ////
             //TRY
                 ////
@@ -184,7 +184,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             //SUPER:m_Encoding := System.Text.Encoding.GetEncoding((Long)SUPER:GetWinCodePage() )
         //ENDIF
         //SUPER:m_uiArea := lpOpenInfo:uiArea
-        //usual2 := (__Usual)lpOpenInfo:sAlias:Substring(0, lpOpenInfo:sAlias:IndexOf(' ')) 
+        //usual2 := (Usual)lpOpenInfo:sAlias:Substring(0, lpOpenInfo:sAlias:IndexOf(' ')) 
         //Functions.Default(@(usual2), "")
         //SUPER:m_alias := Functions.__ConstructUniqueAlias(usual2)
         //RDDBase.aliases[((Long)RuntimeState.get_CurrentWorkarea()  - 1) + 1] := SUPER:m_alias

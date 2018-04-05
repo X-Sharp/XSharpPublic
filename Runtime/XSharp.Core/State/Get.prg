@@ -22,7 +22,7 @@ function GetAnsi() as logic
 	/// <param name="nSize"></param>
 	/// <returns>
 	/// </returns>
-	//FUNCTION GetCallStack(pBuffer AS __Psz,nSize AS INT) AS LOGIC
+	//FUNCTION GetCallStack(pBuffer AS Psz,nSize AS INT) AS LOGIC
 	/// THROW NotImplementedException{}
 	//RETURN FALSE   
 	
@@ -136,9 +136,7 @@ function GetThreadCount() as dword
 	/// <returns>
 	/// </returns>
 function GetTickCountLow() as dword
-	
-	return 0   
-	
+	RETURN (DWORD)Environment.TickCount*10	
 	/// <summary>
 	/// Return the current separation character used in time strings.
 	/// </summary>

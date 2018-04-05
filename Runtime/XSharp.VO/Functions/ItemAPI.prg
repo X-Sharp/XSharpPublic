@@ -39,7 +39,7 @@ RETURN IntPtr.Zero
 /// <param name="dwLen"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemCopyC(pszVal AS __Psz,ptrAny AS IntPtr,dwLen AS DWORD) AS DWORD
+FUNCTION ItemCopyC(pszVal AS Psz,ptrAny AS IntPtr,dwLen AS DWORD) AS DWORD
 	/// THROW NotImplementedException{}
 RETURN 0   
 
@@ -48,7 +48,7 @@ RETURN 0
 /// <param name="pszVal"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemFreeC(pszVal AS __Psz) AS LOGIC
+FUNCTION ItemFreeC(pszVal AS Psz) AS LOGIC
 	/// THROW NotImplementedException{}
 RETURN FALSE   
 
@@ -57,9 +57,9 @@ RETURN FALSE
 /// <param name="ptrAny"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemGetC(ptrAny AS IntPtr) AS __Psz
+FUNCTION ItemGetC(ptrAny AS IntPtr) AS Psz
 	/// THROW NotImplementedException{}
-RETURN __PSZ._NULL_PSZ 
+RETURN NULL_PSZ
 
 /// <summary>
 /// </summary>
@@ -67,9 +67,9 @@ RETURN __PSZ._NULL_PSZ
 /// <param name="pszDate"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemGetDS(ptrAny AS IntPtr,pszDate AS __Psz) AS __Psz
+FUNCTION ItemGetDS(ptrAny AS IntPtr,pszDate AS Psz) AS Psz
 	/// THROW NotImplementedException{}
-RETURN __PSZ._NULL_PSZ 
+RETURN NULL_PSZ
 
 	/// <summary>
 /// </summary>
@@ -114,9 +114,9 @@ RETURN 0
 /// <param name="dwDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemGetNS(ptrAny AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
+FUNCTION ItemGetNS(ptrAny AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS Psz
 	/// THROW NotImplementedException{}
-RETURN __PSZ._NULL_PSZ 
+RETURN NULL_PSZ
 
 /// <summary>
 /// </summary>
@@ -124,7 +124,7 @@ RETURN __PSZ._NULL_PSZ
 /// <param name="pszVal"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemPutC(ptrAny AS IntPtr,pszVal AS __Psz) AS IntPtr
+FUNCTION ItemPutC(ptrAny AS IntPtr,pszVal AS Psz) AS IntPtr
 	/// THROW NotImplementedException{}
 RETURN IntPtr.Zero
 
@@ -135,7 +135,7 @@ RETURN IntPtr.Zero
 /// <param name="uilen"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS __Psz,uilen AS DWORD) AS IntPtr
+FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS Psz,uilen AS DWORD) AS IntPtr
 	/// THROW NotImplementedException{}
 RETURN IntPtr.Zero
 
@@ -145,7 +145,7 @@ RETURN IntPtr.Zero
 /// <param name="pszDate"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemPutDS(ptrAny AS IntPtr,pszDate AS __Psz) AS IntPtr
+FUNCTION ItemPutDS(ptrAny AS IntPtr,pszDate AS Psz) AS IntPtr
 	/// THROW NotImplementedException{}
 RETURN IntPtr.Zero
 
@@ -157,7 +157,7 @@ RETURN IntPtr.Zero
 /// <param name="dwDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION ItemPutNS(ptrAny AS IntPtr,pszVal AS __Psz,dwLen AS DWORD,dwDec AS DWORD) AS IntPtr
+FUNCTION ItemPutNS(ptrAny AS IntPtr,pszVal AS Psz,dwLen AS DWORD,dwDec AS DWORD) AS IntPtr
 	/// THROW NotImplementedException{}
 RETURN IntPtr.Zero
 

@@ -4,18 +4,19 @@
 // See License.txt in the project root for license information.
 //
 using XSharp
-
+using System.Runtime.InteropServices
+using System.Text
 
 #region functions
 	/// <summary>
-	/// Remove spaces from a file name specified as a __Psz, changing the contents of the original file name as well as the returned file name.
+	/// Remove spaces from a file name specified as a Psz, changing the contents of the original file name as well as the returned file name.
 	/// </summary>
 	/// <param name="pszFileName"></param>
 	/// <returns>
 	/// </returns>
-	function AdjustFNamePSZ(pszFileName as __Psz) as __Psz
+	function AdjustFNamePSZ(pszFileName as Psz) as Psz
 		/// THROW NotImplementedException{}
-		return (__Psz) IntPtr.Zero
+		return (Psz) IntPtr.Zero
 	
 	/// <summary>
 	/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
@@ -25,19 +26,19 @@ using XSharp
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	function Ansi2OemBuff(pszDest as __Psz,pszSource as __Psz,dwCount as dword) as __Psz
+	function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 		/// THROW NotImplementedException{}
-		return (__Psz) IntPtr.Zero
+		return (Psz) IntPtr.Zero
 	
 	/// <summary>
-	/// Convert a value to a static __Psz.
+	/// Convert a value to a static Psz.
 	/// </summary>
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	function AsPsz(u as __Usual) as __Psz
+	function AsPsz(u as __Usual) as Psz
 		/// THROW NotImplementedException{}
-		return (__Psz) IntPtr.Zero
+		return (Psz) IntPtr.Zero
 	
 	/// <summary>
 	/// Convert a string containing an 8-bit logical into a logical value.
@@ -45,68 +46,20 @@ using XSharp
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	function Bin2Logic(pszC as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
+	function Bin2Logic(pszC as Psz) as logic
+		if pszC != null_psz
+			return pszC:Item[0] != 0
+		endif	
+		return false
 	
-	/// <summary>
-	/// Check a strongly typed string for String.Empty and return a valid (non-zero) __Psz.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <returns>
-	/// </returns>
-	function Cast2Psz(cSource as string) as __Psz
-		/// THROW NotImplementedException{}
-		return (__Psz) IntPtr.Zero
-	
-	/// <summary>
-	/// Change the current Windows directory.
-	/// </summary>
-	/// <param name="pszDir"></param>
-	/// <returns>
-	/// </returns>
-	function DirChange(pszDir as __Psz) as int
-		/// THROW NotImplementedException{}
-		return 0   
-	
-	/// <summary>
-	/// Create a directory.
-	/// </summary>
-	/// <param name="pszDir"></param>
-	/// <returns>
-	/// </returns>
-	function DirMake(pszDir as __Psz) as int
-		/// THROW NotImplementedException{}
-		return 0   
-	
-	/// <summary>
-	/// Remove a directory.
-	/// </summary>
-	/// <param name="pszDir"></param>
-	/// <returns>
-	/// </returns>
-	function DirRemove(pszDir as __Psz) as int
-		/// THROW NotImplementedException{}
-		return 0   
-	
-	/// <summary>
-	/// Change the current disk drive.
-	/// </summary>
-	/// <param name="pszDisk"></param>
-	/// <returns>
-	/// </returns>
-	function DiskChange(pszDisk as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
-	
+
 	/// <summary>
 	/// </summary>
 	/// <param name="PSZValue"></param>
 	/// <returns>
 	/// </returns>
-	function EmptyPSZ(PSZValue as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
+	function EmptyPSZ(PSZValue as Psz) as logic
+		   RETURN PSZValue:IsEmpty
 	
 	/// <summary>
 	/// </summary>
@@ -117,7 +70,7 @@ using XSharp
 	/// <param name="dwB3"></param>
 	/// <returns>
 	/// </returns>
-	function ErrorMessageBox(pszText as __Psz,pszCapt as __Psz,dwB1 as dword,dwB2 as dword,dwB3 as dword) as dword
+	function ErrorMessageBox(pszText as Psz,pszCapt as Psz,dwB1 as dword,dwB2 as dword,dwB3 as dword) as dword
 		/// THROW NotImplementedException{}
 		return 0     
 	
@@ -127,7 +80,7 @@ using XSharp
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	function IsAlNum(pszC as __Psz) as logic
+	function IsAlNum(pszC as Psz) as logic
 		/// THROW NotImplementedException{}
 		return false   
 	
@@ -137,38 +90,44 @@ using XSharp
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	function IsAlpha(pszSource as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
+	function IsAlpha(pszSource as psz) as logic
+		if pszSource != NULL_PSZ
+			return System.Char.IsLetter(pszSource:Item[0])
+		endif
+		return false
 	
 	/// <summary>
 	/// </summary>
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	function IsAlphaNum(pszSource as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
-	
+	function IsAlphaNum(pszSource as Psz) as logic
+		if pszSource != NULL_PSZ
+			return System.Char.IsLetterOrDigit(pszSource:Item[0])	
+		endif
+		return false
 	/// <summary>
 	/// Determine if the leftmost character in a string is a binary digit (0 or 1).
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	function IsBDigit(pszC as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
-	
+	function IsBDigit(pszSource as Psz) as logic
+		if pszSource != NULL_PSZ
+			return pszSource:Item[0] == '0' .or. pszSource:Item[0] == '1'
+		endif
+		return false
 	/// <summary>
 	/// Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	function IsDigit(pszC as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
+	function IsDigit(pszSource as Psz) as logic
+		if pszSource != NULL_PSZ
+			return System.Char.IsDigit(pszSource:Item[0])	
+		endif
+		return false
 	
 	/// <summary>
 	/// Determine if the leftmost character in a string is a lowercase letter.
@@ -176,9 +135,12 @@ using XSharp
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	function IsLower(pszSource as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
+	function IsLower(pszSource as Psz) as logic
+		if pszSource != NULL_PSZ
+			return System.Char.IsLower(pszSource:Item[0])	
+		endif
+		return false
+
 	
 	/// <summary>
 	/// Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).
@@ -186,19 +148,22 @@ using XSharp
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	function IsSpace(pszC as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
-	
+	function IsSpace(pszSource as Psz) as logic
+		if pszSource != NULL_PSZ
+			return System.Char.IsWhiteSpace(pszSource:Item[0])	
+		endif
+		return false
 	/// <summary>
 	/// Determine if the leftmost character in a string is uppercase.
 	/// </summary>
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	function IsUpper(pszSource as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
+	function IsUpper(pszSource as Psz) as logic
+		if pszSource != NULL_PSZ
+			return System.Char.IsUpper(pszSource:Item[0])	
+		endif
+		return false
 	
 	/// <summary>
 	/// Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).
@@ -206,9 +171,13 @@ using XSharp
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	function IsXDigit(pszC as __Psz) as logic
-		/// THROW NotImplementedException{}
-		return false   
+	function IsXDigit(pszSource as Psz) as logic
+		if pszSource != null_psz
+			local ch := pszSource:Item[0] as char
+			return System.Char.IsDigit(ch) .or. (ch >= 'A' .and. ch <= 'F') .or. (ch >= 'a' .and. ch <= 'f')
+		endif
+		return false
+		
 	
 	
 	/// <summary>
@@ -216,9 +185,9 @@ using XSharp
 	/// <param name="pObj"></param>
 	/// <returns>
 	/// </returns>
-	function ObjAsPsz(pObj as IntPtr) as __Psz
+	function ObjAsPsz(pObj as IntPtr) as Psz
 		/// THROW NotImplementedException{}
-		return (__Psz) IntPtr.Zero
+		return (Psz) IntPtr.Zero
 	
 	/// <summary>
 	/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
@@ -228,9 +197,9 @@ using XSharp
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	function Oem2AnsiBuff(pszDest as __Psz,pszSource as __Psz,dwCount as dword) as __Psz
+	function Oem2AnsiBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
+		return NULL_PSZ
 	
 
 	
@@ -240,169 +209,65 @@ using XSharp
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	function Psz2String(pszSource as __Psz) as string
-		/// THROW NotImplementedException{}
-		return String.Empty   
+	function Psz2String(pszSource as psz) as string
+		// The compiler converts to a call to the implicit converter
+		return pszSource
+
+	/// <summary>
+	/// Convert a null-terminated string to a Usual with a string value
+	/// </summary>
+	/// <param name="pszSource"></param>
+	/// <returns>
+	/// </returns>
+	function Psz2Usual(pszSource as psz) as Usual
+		// The compiler converts to a call to the implicit converter
+		return pszSource
 	
 	/// <summary>
-	/// Copy a buffer pointed to by a __Psz to a newly allocated block of memory and return a new pointer to that memory.
+	/// Copy a buffer pointed to by a Psz to a newly allocated block of memory and return a new pointer to that memory.
 	/// </summary>
 	/// <param name="ptrSource"></param>
 	/// <returns>
 	/// </returns>
-	function PszAlloc(ptrSource as IntPtr) as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
+	function PszAlloc(ptrSource as Psz) as Psz
+		RETURN Psz{ ptrSource:Address }
 	
 	/// <summary>
-	/// Return the length of a __Psz.
+	/// Return the length of a Psz.
 	/// </summary>
 	/// <param name="pszX"></param>
 	/// <returns>
 	/// </returns>
-	function PszLen(pszX as __Psz) as dword
-		/// THROW NotImplementedException{}
-		return 0   
+	function PszLen(pszX as Psz) as dword
+		return pszX:Length
 	
+
+
 	/// <summary>
+	/// Copy a string to a newly allocated block of memory and return a Psz to the memory.
 	/// </summary>
-	/// <param name="pszUnicode"></param>
+	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
-	function PszLenW(pszUnicode as __Psz) as dword
-		/// THROW NotImplementedException{}
-		return 0   
+	function StringAlloc(cSource as string) as Psz
+		return Psz{cSource}
 	
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	function ReleaseString() as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
-	
+
 
 	
 	/// <summary>
-	/// Convert a __VOFloat expression to a __Psz.
 	/// </summary>
-	/// <param name="flSource"></param>
-	/// <param name="dwLen"></param>
-	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	function StrFloat(flSource as __VOFloat,dwLen as dword,dwDec as dword) as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
-	
-	/// <summary>
-	/// Convert a strongly typed string to a null-terminated string.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <returns>
-	/// </returns>
-	function String2Psz(cSource as string) as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
-	
-	/// <summary>
-	/// Copy a string to a newly allocated block of memory and return a __Psz to the memory.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <returns>
-	/// </returns>
-	function StringAlloc(cSource as string) as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
-	
-	/// <summary>
-	/// Convert an integer expression to a __Psz.
-	/// </summary>
-	/// <param name="l"></param>
-	/// <param name="dwLen"></param>
-	/// <param name="dwDec"></param>
-	/// <returns>
-	/// </returns>
-	function StrInt(l as long,dwLen as dword,dwDec as dword) as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
-	
-	/// <summary>
-	/// Convert a long integer expression to a __Psz.
-	/// </summary>
-	/// <param name="l"></param>
-	/// <param name="dwLen"></param>
-	/// <param name="dwDec"></param>
-	/// <returns>
-	/// </returns>
-	function StrLong(l as long,dwLen as dword,dwDec as dword) as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
-	
-	/// <summary>
-	/// Convert a null-terminated string to a __Symbol and add it to the atom table.
-	/// </summary>
-	/// <param name="p"></param>
-	/// <returns>
-	/// </returns>
-	function SysAddAtom(p as __Psz) as __Symbol
-		/// THROW NotImplementedException{}
-		return null_symbol   
-	
-	/// <summary>
-	/// Convert a null-terminated string to an uppercase __Symbol and add it to the atom table.
-	/// </summary>
-	/// <param name="p"></param>
-	/// <returns>
-	/// </returns>
-	function SysAddAtomUpperA(p as __Psz) as __Symbol
-		/// THROW NotImplementedException{}
-		return null_symbol   
-	
-	/// <summary>
-	/// </summary>
-	/// <param name="p"></param>
-	/// <returns>
-	/// </returns>
-	function SysAddAtomUpperBuff(p as __Psz) as __Symbol
-		/// THROW NotImplementedException{}
-		return null_symbol   
-	
-	/// <summary>
-	/// Determine whether a __Symbol is in the atom table.
-	/// </summary>
-	/// <param name="p"></param>
-	/// <returns>
-	/// </returns>
-	function SysFindAtom(p as __Psz) as __Symbol
-		/// THROW NotImplementedException{}
-		return null_symbol   
-	
-	/// <summary>
-	/// Convert a __Symbol to a null-terminated string.
-	/// </summary>
-	/// <param name="s"></param>
-	/// <returns>
-	/// </returns>
-	function SysGetAtomName(s as __Symbol) as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
+	function TimePsz() as Psz
+		return String2Psz(Time())
 	
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	function TimePsz() as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
-	
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	function TimePsz24() as __Psz
-		/// THROW NotImplementedException{}
-		return __PSZ._NULL_PSZ 
+	function TimePsz24() as Psz
+		return String2Psz(Time24())
 	
 #endregion
 
@@ -413,6 +278,63 @@ using XSharp
 /// <param name="pszSource"></param>
 /// <returns>
 /// </returns>
-function __UpperPsz(pszSource as __Psz) as __Psz
-	/// THROW NotImplementedException{}
-	return	 (__Psz) IntPtr.Zero  
+function __UpperPsz(pszSource as Psz) as Psz
+	return pszSource	
+
+function String2Mem(s as string) as IntPtr
+	local result := 0 as IntPtr
+	if s != null
+		var encoding := System.Text.Encoding.Default
+		var bytes    := encoding:GetBytes(s)
+		var len      := bytes:Length
+		result	     := MemAlloc((dword) (len+1))
+		Marshal.Copy(bytes,0,result, len)	
+	endif
+	return result 
+
+unsafe function Mem2String(pString as IntPtr, nLen as dword) as string
+	if pString == IntPtr.Zero .or. nLen == 0
+		return String.Empty
+	endif
+	var encoding := System.Text.Encoding.Default
+	var numchars := encoding:GetCharCount( (byte ptr) pString, (int) nLen) 
+	var buffer   := (char ptr) MemAlloc( (dword) (numchars * sizeof(char)) )
+	numchars     := encoding:GetChars((byte ptr) pString, (int) nLen, buffer, numchars)
+	var result   := string {buffer, 0, numchars}
+	MemFree(buffer)
+return result
+
+
+
+
+// The following functions are used by Crypt
+FUNCTION __String2MemRaw( s AS STRING ) AS PSZ
+   LOCAL ret AS BYTE PTR
+   LOCAL x   AS INT
+   LOCAL len AS INT
+   ret := NULL_PTR
+   IF s != NULL
+      len := s:Length 
+      ret := (BYTE PTR) MemAlloc( (DWORD)( len + 1 ) )
+      FOR x := 1 UPTO len
+         ret[x] := (BYTE)( s[x-1] & 0xFF )
+      NEXT   
+   ENDIF   
+   
+   RETURN Psz{ ret }
+   
+FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
+   LOCAL sb AS StringBuilder
+   LOCAL x  AS DWORD
+   
+   IF len > 0
+       sb  := StringBuilder{ (INT) len }
+       
+       FOR x := 0 UPTO len - 1
+          sb:Append( (Char) p:Item[(int)x] )
+       NEXT
+   
+       RETURN sb:ToString()
+    ELSE
+       RETURN ""
+    ENDIF   

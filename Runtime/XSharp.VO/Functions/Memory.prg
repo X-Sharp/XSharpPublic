@@ -139,7 +139,7 @@ FUNCTION MemGrpOpen() AS DWORD
 /// <param name="cbCell"></param>
 /// <returns>
 /// </returns>
-UNSAFE FUNCTION MemGrpCAlloc(dwGroup AS DWORD,cb AS DWORD,cbCell AS DWORD) AS IntPtr
+FUNCTION MemGrpCAlloc(dwGroup AS DWORD,cb AS DWORD,cbCell AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(dwGroup, cb * cbCell)
 
 /// <summary>
@@ -168,7 +168,7 @@ RETURN result
 /// <param name="pEnum">MemWalker Delegate</param>
 /// <returns>TRUE when all delegate calls return TRUE</returns>
 
-UNSAFE FUNCTION MemGrpEnum(dwGroup AS DWORD, pEnum AS MemWalker) AS LOGIC
+FUNCTION MemGrpEnum(dwGroup AS DWORD, pEnum AS MemWalker) AS LOGIC
 	LOCAL lOk AS LOGIC
 	lOk := TRUE
 	FOREACH VAR element IN FixedMemory.AllocatedBlocks
@@ -222,7 +222,7 @@ RETURN result
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>The location of the first special console character within the specified portion of <pMemory>.  
 /// If a special console character does not exist, MemAtSpecial() returns 0.</returns>
-UNSAFE FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
+FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 	
 	LOCAL ret := 0 AS DWORD
 	IF pMemory == NULL_PTR
@@ -244,7 +244,7 @@ UNSAFE FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of <bChar> within the first <dwCount> bytes of <pMemory>.  
 /// If <bChar> is not matched, MemChr() returns a NULL_PTR.</returns>
-UNSAFE FUNCTION MemByte( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
+FUNCTION MemByte( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError("MemByte",nameof(pMemory), 1)
 	ENDIF
@@ -256,7 +256,7 @@ UNSAFE FUNCTION MemByte( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BY
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of <bChar> within the first <dwCount> bytes of <pMemory>.  
 /// If <bChar> is not matched, MemChr() returns a NULL_PTR.</returns>
-UNSAFE FUNCTION MemChr( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
+FUNCTION MemChr( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 	LOCAL pChr   AS BYTE PTR
 	LOCAL pRet   as BYTE PTR
 	IF pMemory == IntPtr.Zero
@@ -289,7 +289,7 @@ FUNCTION MemClear( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 /// <param name="dwCount">The number of bytes to compare.</param>
 /// <returns>-1, 0, or 1 if the first <dwCount> bytes of <pMem1> are less than, equal to, 
 /// or greater than the first <dwCount> bytes of <pMem2>, respectively.</returns>
-UNSAFE FUNCTION MemComp( pMem1 AS PTR, pMem2 AS PTR, dwCount AS DWORD ) AS INT
+FUNCTION MemComp( pMem1 AS PTR, pMem2 AS PTR, dwCount AS DWORD ) AS INT
 	LOCAL pByte1 AS BYTE PTR
 	LOCAL pByte2 AS BYTE PTR
 	local result as INT
@@ -325,7 +325,7 @@ UNSAFE FUNCTION MemComp( pMem1 AS PTR, pMem2 AS PTR, dwCount AS DWORD ) AS INT
 /// <remarks>MemCopy() copies the specified number of bytes from the source memory buffer to the destination memory buffer.  
 /// If portions of memory occupied by the source string overlap with portions in the destination, the overlapping region 
 /// is overwritten.  Use MemMove() to copy overlapping regions before they are overwritten.</remarks>
-UNSAFE FUNCTION MemCopy( pDestination AS PTR, pSource AS PTR, dwCount AS DWORD ) AS PTR
+FUNCTION MemCopy( pDestination AS PTR, pSource AS PTR, dwCount AS DWORD ) AS PTR
 	IF pDestination == IntPtr.Zero
 		THROW Error.NullArgumentError("MemCopy",nameof(pDestination), 1)
 	ENDIF
@@ -373,7 +373,7 @@ FUNCTION MemCopyString( pDestination AS IntPtr, cSource AS STRING, dwCount AS DW
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of <dwValue> within the first <dwCount> bytes of <pMemory>.  
 /// If <dwValue> is not matched, MemDWord() returns a NULL_PTR.</returns>
-UNSAFE FUNCTION MemDWord( pMemory AS PTR, dwValue AS DWORD, dwCount AS DWORD ) AS DWORD PTR
+FUNCTION MemDWord( pMemory AS PTR, dwValue AS DWORD, dwCount AS DWORD ) AS DWORD PTR
 	LOCAL pDword AS DWORD PTR
 	LOCAL pRet   as DWORD PTR
 	IF pMemory == IntPtr.Zero
@@ -395,7 +395,7 @@ UNSAFE FUNCTION MemDWord( pMemory AS PTR, dwValue AS DWORD, dwCount AS DWORD ) A
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of <iValue> within the first <dwCount> bytes of <pMemory>.  
 /// If <iValue> is not matched, MemInt() returns a NULL_PTR.</returns>
-UNSAFE FUNCTION MemInt( pMemory AS PTR, iValue AS INT, dwCount AS DWORD ) AS INT PTR 
+FUNCTION MemInt( pMemory AS PTR, iValue AS INT, dwCount AS DWORD ) AS INT PTR 
 	LOCAL pInt   AS INT PTR
 	LOCAL pRet   as INT PTR
 	IF pMemory == IntPtr.Zero
@@ -416,7 +416,7 @@ UNSAFE FUNCTION MemInt( pMemory AS PTR, iValue AS INT, dwCount AS DWORD ) AS INT
 /// <param name="dwGroup"></param>
 /// <returns>
 /// </returns>
-UNSAFE FUNCTION MemLen( pMemory AS PTR ) AS DWORD
+FUNCTION MemLen( pMemory AS PTR ) AS DWORD
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError("MemLen",nameof(pMemory), 1)
 	ENDIF
@@ -428,7 +428,7 @@ UNSAFE FUNCTION MemLen( pMemory AS PTR ) AS DWORD
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of <liValue> within the first <dwCount> bytes of <pMemory>.  
 /// If <liValue> is not matched, MemLong() returns a NULL_PTR.</returns>
-UNSAFE FUNCTION MemLong( pMemory AS PTR, liValue AS INT, dwCount AS DWORD ) AS INT PTR
+FUNCTION MemLong( pMemory AS PTR, liValue AS INT, dwCount AS DWORD ) AS INT PTR
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError("MemLong",nameof(pMemory), 1)
 	ENDIF
@@ -441,7 +441,7 @@ UNSAFE FUNCTION MemLong( pMemory AS PTR, liValue AS INT, dwCount AS DWORD ) AS I
 /// <param name="dwGroup"></param>
 /// <returns>
 /// </returns>
-UNSAFE FUNCTION MemLower( pMemory AS PTR, dwCount AS DWORD ) AS PTR
+FUNCTION MemLower( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 	// Ansi based lower casing
 	LOCAL pChr   AS BYTE PTR
 	IF pMemory == IntPtr.Zero
@@ -464,7 +464,7 @@ UNSAFE FUNCTION MemLower( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 /// to the destination memory buffer.  If portions of the source buffer overlap with portions 
 /// of the destination buffer, the overlapping region is copied and kept for the duration of 
 /// the operation before it is overwritten.</remarks>
-UNSAFE FUNCTION MemMove( pDestination AS PTR, pSource AS PTR, nSize AS DWORD ) AS IntPtr
+FUNCTION MemMove( pDestination AS PTR, pSource AS PTR, nSize AS DWORD ) AS IntPtr
    LOCAL dst AS BYTE PTR
    LOCAL src AS BYTE PTR
 
@@ -506,7 +506,7 @@ FUNCTION MemSet( pMemory AS IntPtr, bValue AS BYTE, dwCount AS DWORD ) AS IntPtr
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of <siValue> within the first <dwCount> bytes of <pMemory>.  
 /// If <siValue> is not matched, MemShort() returns a NULL_PTR.</returns>
-UNSAFE FUNCTION MemShort( pMemory AS PTR, siValue AS SHORT, dwCount AS DWORD ) AS SHORT PTR
+FUNCTION MemShort( pMemory AS PTR, siValue AS SHORT, dwCount AS DWORD ) AS SHORT PTR
 	LOCAL pShort  AS SHORT PTR
 	LOCAL pRet   as SHORT PTR
 	IF pMemory == IntPtr.Zero
@@ -527,7 +527,7 @@ UNSAFE FUNCTION MemShort( pMemory AS PTR, siValue AS SHORT, dwCount AS DWORD ) A
 /// <param name="dwGroup"></param>
 /// <returns>
 /// </returns>
-UNSAFE FUNCTION MemUpper( pMemory AS PTR, dwCount AS DWORD ) AS PTR
+FUNCTION MemUpper( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 	// Ansi based upper casing
 	LOCAL pChr   AS BYTE PTR
 	IF pMemory == IntPtr.Zero
@@ -548,7 +548,7 @@ UNSAFE FUNCTION MemUpper( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of <wValue> within the first <dwCount> bytes of <pMemory>.  
 /// If <wValue> is not matched, MemWord() returns a NULL_PTR.</returns>
-UNSAFE FUNCTION MemWord( pMemory AS PTR, wValue AS WORD, dwCount AS DWORD ) AS WORD PTR
+FUNCTION MemWord( pMemory AS PTR, wValue AS WORD, dwCount AS DWORD ) AS WORD PTR
 	LOCAL pWord  AS WORD PTR
 	LOCAL pRet   as WORD PTR
 	IF pMemory == IntPtr.Zero

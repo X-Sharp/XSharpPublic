@@ -1275,13 +1275,13 @@ function _allocFieldNames(aStru as Array)           as XSharp.RDD._FIELDNAMES  p
 	
 	local n,i       as dword
 	local fldNames  as _FIELDNAMES
-	local pszName   as __PSZ
+	local pszName   as PSZ
 	//  UH 11/12/1997
 	local cName     as string
 	local nSize     as dword
 	n := ALen(aStru)
 	
-	fldNames := MemAlloc( (_sizeof(dword)) + (n * _sizeof(__PSZ)) )
+	fldNames := MemAlloc( (_sizeof(dword)) + (n * _sizeof(PSZ)) )
 	
 	fldNames.uiFieldCount := n
 	

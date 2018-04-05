@@ -52,13 +52,12 @@ CLASS XSharp.RuntimeState
 			// Console Settings
 			self:_SetThreadValue(Set.Bell , TRUE)
 			self:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
-			self:_SetThreadValue(Set.DECIMALS , 2)
+			self:_SetThreadValue(Set.Decimals , 2)
 			self:_SetThreadValue(Set.Digits , 10)
 			self:_SetThreadValue(Set.Exact , TRUE)
-			self:_SetThreadValue(Set.FLOATDELTA , 0.0000000000001)
+			self:_SetThreadValue(Set.FLoatDelta , 0.0000000000001)
 
 			// Date and time settings
-			self:_SetThreadValue(Set.FLOATDELTA , 0.0000000000001)
 			self:_SetInternationalWindows()
 
 			// Other settings
@@ -202,6 +201,12 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.DELETED);
         SET SetValue<LOGIC>(Set.DELETED, VALUE)
 
+	/// <Summary>The default number of digits for new FLOAT values that are created without explicit decimals</Summary>
+	/// <Returns>DWORD value</Returns>
+    STATIC PROPERTY Digits AS LONG ;
+        GET GetValue<LONG>(Set.DIGITS);
+        SET SetValue<LONG>(Set.DIGITS, VALUE)
+
 	/// <Summary>Date Epoch value that determines how dates without century digits are interpreted.</Summary>
 	/// <Returns>DWORD value</Returns>
     STATIC PROPERTY Epoch AS DWORD ;
@@ -220,6 +225,10 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Exact AS LOGIC ;
         GET GetValue<LOGIC>(Set.EXACT);
         SET SetValue<LOGIC>(Set.EXACT, VALUE)
+
+   STATIC PROPERTY FLoatDelta AS Real8 ;
+        GET GetValue<Real8>(Set.FloatDelta);
+        SET SetValue<Real8>(Set.FloatDelta, VALUE)
 
      STATIC PROPERTY International AS CollationMode ;
         GET GetValue<CollationMode>(Set.Intl);
@@ -282,6 +291,12 @@ CLASS XSharp.RuntimeState
 		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
 		self:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
 		self:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
+		var separator := dtInfo:TimeSeparator
+		if String.IsNullOrEmpty(separator)
+			self:_SetThreadValue(Set.TimeSep, (dword) 0)
+		else
+			self:_SetThreadValue(Set.TimeSep, (dword) separator[0])
+		endif
 		self:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
 		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
 		// reduce to single m and d

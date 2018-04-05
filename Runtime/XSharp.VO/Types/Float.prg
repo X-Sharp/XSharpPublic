@@ -51,194 +51,243 @@ begin namespace XSharp
 				self:_decimals	:= (short) value:Decimals
 		#endregion
 		#region Properties
-			property Value    as real8	get _value		
+			property Value    as real8	get _value			
 			property Digits   as int	get _length		
 			property Decimals as int	get _decimals	
 		#endregion
 		
 		#region Equality Operators
-			virtual method Equals(rhs as object  ) as logic
+			override method Equals(rhs as object  ) as logic
 				local result as logic
-				if rhs != null .and. rhs is __VoFloat
-					result := self:Equals( (__VoFLoat) rhs)
+				if rhs != null .and. rhs is Float
+					result := self:Equals( (Float) rhs)
 				else
 					result := false
 				endif
 				return result
-			
+
+			method equals(rhs as float ) as logic
+				local delta as real8
+				local diff  as real8
+				local equal as logic
+				delta := RuntimeState.FloatDelta
+				diff := _value - rhs:_value
+				if delta == 0.0
+					equal :=  diff == 0.0
+				elseif diff < 0.0
+					equal :=  Math.Abs(diff) < delta
+				else
+					equal := diff < delta
+				endif
+				return equal
+
 			virtual method GetHashCode() as int
 				return self:_value:GetHashCode()
 			
 			method GetTypeCode() as TypeCode
 				return TypeCode.Double
 			
-			method Equals( rhs as __VOFLoat) as logic
-				//Todo Use SetFloatDelta
-				return self:_value:Equals(rhs:_value)
 			
-			operator ==(lhs as __VoFLoat, rhs as __VoFLoat) as logic
-				return lhs:EQUALS(rhs)
+			operator ==(lhs as Float, rhs as Float) as logic
+				return lhs:Equals(rhs)
 			
-			operator !=(lhs as __VoFLoat, rhs as __VoFLoat) as logic
+			operator !=(lhs as Float, rhs as Float) as logic
 				return ! lhs:Equals(rhs)
 		#endregion
 		
 		#region Comparison Operators
-			operator >(lhs as __VoFLoat, rhs as __VoFLoat) as logic
-				//Todo Use SetFloatDelta
-				return lhs:_Value > rhs:_Value
+			operator >(lhs as Float, rhs as Float) as logic
+				local delta as real8
+				local diff  as real8
+				delta := RuntimeState.FloatDelta
+				diff := lhs:_value - rhs:_value
+				if (delta == 0.0)
+					return diff > 0.0
+				endif
+				return diff > delta
+				
 			
-			operator <(lhs as __VoFLoat, rhs as __VoFLoat) as logic
-				//Todo Use SetFloatDelta
-				return lhs:_Value < rhs:_Value
+			operator <(lhs as Float, rhs as Float) as logic
+				local delta as real8
+				local diff  as real8
+				delta := RuntimeState.FloatDelta
+				diff := lhs:_value - rhs:_value
+				if (delta == 0.0)
+					return diff < 0.0
+				endif
+				return diff < delta
 			
-			operator >=(lhs as __VoFLoat, rhs as __VoFLoat) as logic
-				//Todo Use SetFloatDelta
-				return lhs:_Value >= rhs:_Value
-			
-			operator <=(lhs as __VoFLoat, rhs as __VoFLoat) as logic
-				//Todo Use SetFloatDelta
-				return lhs:_Value <= rhs:_Value
+			operator >=(lhs as float, rhs as float) as logic
+				// call other operator methods for simplicity
+				// we may want to optimize this later
+				return lhs > rhs .or. lhs == rhs
+
+			operator <=(lhs as Float, rhs as Float) as logic
+				// call other operator methods for simplicity
+				// we may want to optimize this later
+				return lhs < rhs .or. lhs == rhs
+
 		#endregion
 		
 		#region Implicit Converters
-			static operator implicit(value as byte) as __VoFLoat
-				return __VoFloat{value, 0}
+			static operator implicit(b as byte) as Float
+				return Float{b, 0}
 			
-			static operator implicit(value as SByte) as __VoFLoat
-				return __VoFloat{value, 0}
+			static operator implicit(sb as SByte) as Float
+				return Float{sb, 0}
 			
-			static operator implicit(value as short) as __VoFLoat
-				return __VoFloat{value, 0}
+			static operator implicit(si as short) as Float
+				return Float{si, 0}
 			
-			static operator implicit(value as word) as __VoFLoat
-				return __VoFloat{value, 0}
+			static operator implicit(w as word) as Float
+				return Float{w, 0}
 			
-			static operator implicit(value as int) as __VoFLoat
-				return __VoFloat{value, 0}
+			static operator implicit(i as int) as Float
+				return Float{i, 0}
 			
-			static operator implicit(value as dword) as __VoFLoat
-				return __VoFloat{value, 0}
+			static operator implicit(dw as dword) as Float
+				return Float{dw, 0}
 			
-			static operator implicit(value as int64) as __VoFLoat
-				return __VoFloat{value, 0}
+			static operator implicit(i64 as int64) as Float
+				return Float{i64, 0}
 			
-			static operator implicit(value as uint64) as __VoFLoat
-				return __VoFloat{value, 0}
+			static operator implicit(ui64 as uint64) as Float
+				return Float{ui64, 0}
 			
-			static operator implicit(value as real4) as __VoFLoat
-				return __VoFloat{value, RuntimeState.Decimals}
+			static operator implicit(r4 as real4) as Float
+				return Float{r4, RuntimeState.Decimals}
 			
-			static operator implicit(value as real8) as __VoFLoat
-				return __VoFloat{value, RuntimeState.Decimals}
+			static operator implicit(r8 as real8) as Float
+				return Float{r8, RuntimeState.Decimals}
 			
 			
-			static operator implicit(value as System.Decimal) as __VoFLoat
-				return __VoFloat{ (real8) value, RuntimeState.Decimals}
+			static operator implicit(value as System.Decimal) as Float
+				return Float{ (real8) value, RuntimeState.Decimals}
 			
-			static operator implicit(value as __VoFLoat) as real8
-				return value:_value
+			static operator implicit(fl  as Float) as real8
+				return fl:_value
 			
-			static operator implicit(value as __VoFLoat) as real4
-				return (real4) value:_value
+			static operator implicit(fl  as Float) as real4
+				return (real4) fl:_value
 			
-			static operator implicit(value as __VoFLoat) as System.Decimal
-				return (System.Decimal) value:_value			
+			static operator implicit(fl  as Float) as System.Decimal
+				return (System.Decimal) fl:_value			
 		#endregion
 		#region Explicit Converters
-			static operator explicit(value as __VoFloat) as byte
-				// todo use CompilerOptionVO11 
-				return (byte) value:_value
-			static operator explicit(value as __VoFloat) as SByte
-				return (SByte) value:_value
-			static operator explicit(value as __VoFloat) as short
-				// todo use CompilerOptionVO11 
-				return (short) value:_value
-			static operator explicit(value as __VoFloat) as word
-				return (word) value:_value
-			static operator explicit(value as __VoFloat) as long
-				// todo use CompilerOptionVO11 
-				return (long) value:_value
-			static operator explicit(value as __VoFloat) as dword
-				return (dword) value:_value
-			static operator explicit(value as __VoFloat) as int64
-				// todo use CompilerOptionVO11 
-				return (int64) value:_value
-			static operator explicit(value as __VoFloat) as uint64
-				return (uint64) value:_value
+			static operator explicit(fl  as Float) as byte
+				if RuntimeState.CompilerOptionVO11
+					return Convert.ToByte(fl:_value)
+				endif
+				return (byte) fl:_value
+			static operator explicit(fl as Float) as SByte
+				return (SByte) fl:_value
+			static operator explicit(fl  as Float) as short
+				if RuntimeState.CompilerOptionVO11
+					return Convert.ToInt16(fl:_value)
+				endif
+				return (short) fl:_value
+			static operator explicit(fl  as Float) as word
+				return (word) fl:_value
+			static operator explicit(fl  as Float) as long
+				if RuntimeState.CompilerOptionVO11
+					return Convert.ToInt32(fl:_value)
+				endif
+				return (long) fl:_value
+			static operator explicit(fl  as Float) as dword
+				return (dword) fl:_value
+			static operator explicit(fl  as Float) as int64
+				if RuntimeState.CompilerOptionVO11
+					return Convert.ToInt64(fl:_value)
+				endif
+				return (int64) fl:_value
+			static operator explicit(fl  as Float) as uint64
+				return (uint64) fl:_value
 			
 		#endregion
 		
 		#region Numeric Operators
-			operator +(value as __VoFLoat) as __VoFLoat
-				return value
+			operator +(fl  as Float) as Float
+				return fl
 			
-			operator -(value as __VoFLoat) as __VoFLoat
-				return __VoFLoat{- value:_value, value:Digits, value:Decimals}
+			operator -(fl  as Float) as Float
+				return Float{- fl:_value, fl:Digits, fl:Decimals}
 			
-			operator+(lhs as __VoFloat, rhs as __VoFLoat) as __VoFLoat
+			operator+(lhs as Float, rhs as Float) as Float
 				return lhs:Add(rhs)
 			
-			operator+(lhs as __VoFloat, rhs as usual) as __VoFLoat
+			operator+(lhs as Float, rhs as usual) as Float
 				return lhs:Add(rhs)
 			
-			operator+(lhs as usual, rhs as __VoFloat) as __VoFLoat
+			operator+(lhs as usual, rhs as Float) as Float
 				return rhs:Add(lhs)
 			
-			operator-(lhs as __VoFloat, rhs as __VoFLoat) as __VoFLoat
+			operator-(lhs as Float, rhs as Float) as Float
 				return lhs:Subtract(rhs)
 			
-			
-			operator-(lhs as __VoFloat, rhs as usual) as __VoFLoat
+			operator-(lhs as Float, rhs as usual) as Float
 				return lhs:Subtract(rhs)
 			
-			operator-(lhs as usual, rhs as __VoFloat) as __VoFLoat
+			operator-(lhs as usual, rhs as Float) as Float
 				// set decimals for LHS to 0, so max decmals is decimals right
-				return __VoFLoat{lhs, 0}:Subtract(rhs)		
+				return Float{lhs, 0}:Subtract(rhs)		
 			
-			operator*(lhs as __VoFloat, rhs as __VoFLoat) as __VoFLoat
-				return __VoFloat{ lhs:_value * rhs:_value, lhs:Decimals + rhs:Decimals}
+			operator*(lhs as Float, rhs as Float) as Float
+				return Float{ lhs:_value * rhs:_value, lhs:Decimals + rhs:Decimals}
 			
-			operator/(lhs as __VoFloat, rhs as __VoFLoat) as __VoFLoat
-				return __VoFloat{ lhs:_value / rhs:_value, RuntimeState.Decimals}
+			operator/(lhs as Float, rhs as Float) as Float
+				return Float{ lhs:_value / rhs:_value, RuntimeState.Decimals}
 			
-			operator%(lhs as __VoFloat, rhs as __VoFLoat) as __VoFLoat
-				return __VoFloat{ lhs:_value % rhs:_value, RuntimeState.Decimals}
+			operator%(lhs as Float, rhs as Float) as Float
+				return Float{ lhs:_value % rhs:_value, RuntimeState.Decimals}
 			
-			operator ++ (value as __VoFLoat) as __VoFLoat
-				return __VoFLoat{value:_value+1, value:Digits, value:Decimals}
+		#endregion
+		#region Unary Operators
+			operator ++ (fl  as Float) as Float
+				return Float{fl:_value+1, fl:Digits, fl:Decimals}
 			
-			operator -- (value as __VoFLoat) as __VoFLoat
-				return __VoFLoat{value:_value-1, value:Digits, value:Decimals}
+			operator -- (fl  as Float) as Float
+				return Float{fl:_value-1, fl:Digits, fl:Decimals}
 		#endregion
 		
+		#region Explicit casts. Used inside Transform
+	   METHOD CastToInt() AS INT
+		  RETURN (INT)(SELF:_value)
+
+	   METHOD CastToInt64() AS INT64
+		  RETURN (INT64)(SELF:_value)
+
+		#endregion
 		#region Add and Subtract
-			method Add(rhs as __VoFloat) as __VoFloat
-				return __VoFloat{ self:_value + rhs:_value, math.Max(self:_decimals, rhs:_decimals)}
+			method Add(rhs as Float) as Float
+				return Float{ self:_value + rhs:_value, math.Max(self:_decimals, rhs:_decimals)}
 			
-			method Add(rhs as usual) as __VoFloat
-				local result as __VoFLoat
-				if rhs:UsualType == __UsualType.Float
-					result := self:Add ( (__VoFloat) rhs)
-				elseif  rhs:UsualType == __UsualType.Long
-					result := __VoFLoat{ self:_value + (long) rhs, self:Digits, self:Decimals}
+			method Add(rhs as usual) as Float
+				local result as Float
+				if rhs:IsFloat
+					result := self:Add ( (Float) rhs)
+				elseif rhs:IsDecimal
+					result := self:Add ( (System.Decimal) rhs)
+				elseif  rhs:IsLong
+					result := Float{ self:_value + (long) rhs, self:Digits, self:Decimals}
 				else
-					throw Error.ArgumentError(rhs, "Argument is not numeric")
+					throw Error.ArgumentError(nameof(rhs), "Argument is not numeric")
 				endif
 				return result
 			
 			
-			method Subtract(rhs as __VoFloat) as __VoFloat
-				return __VoFloat{ self:_value - rhs:_value, math.Max(self:_decimals, rhs:_decimals)}
+			method Subtract(rhs as Float) as Float
+				return Float{ self:_value - rhs:_value, math.Max(self:_decimals, rhs:_decimals)}
 			
-			method Subtract(rhs as usual) as __VoFloat
-				local result as __VoFLoat
-				if rhs:UsualType == __UsualType.Float
-					result := self:Subtract( (__VoFloat) rhs)
-				elseif  rhs:UsualType == __UsualType.Long
-					result := __VoFLoat{ self:_value - (long) rhs, self:Digits, self:Decimals}			
+			method Subtract(rhs as usual) as Float
+				local result as Float
+				if rhs:IsFloat
+					result := self:Subtract( (Float) rhs)
+				elseif rhs:IsDecimal
+					result := self:Subtract( (System.Decimal) rhs)
+				elseif  rhs:IsLong
+					result := Float{ self:_value - (long) rhs, self:Digits, self:Decimals}			
 				else
-					throw Error.ArgumentError(rhs, "Argument is not numeric")
+					throw Error.ArgumentError(nameof(rhs), "Argument is not numeric")
 				endif
 				return result
 			
@@ -295,15 +344,21 @@ begin namespace XSharp
 				return ((IConvertible) _value):ToString(provider)
 		#endregion
 		#region IFormattable
+			public method ToString() as string
+				return Str1(self)
+			
+			public method ToString(sFormat as STRING) as string
+				return _value:ToString(sFormat)
+
 			public method ToString(format as string, provider as System.IFormatProvider) as string
 				return ((IFormattable) _value):ToString(format, provider)
 		#endregion
 		#region IComparable
-			public method CompareTo(rhs as __VoFLoat) as int
+			public method CompareTo(rhs as Float) as int
 				return _Value:CompareTo( rhs:_Value)
 			
 			public method CompareTo(rhs as object) as int
-				return self:CompareTo( (__VoFLoat) rhs)
+				return self:CompareTo( (Float) rhs)
 		#endregion
 	end structure
 	

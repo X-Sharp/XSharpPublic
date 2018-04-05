@@ -107,7 +107,8 @@ namespace XSharp.Project.Editors.BraceMatching
             //if the requested snapshot isn't the same as the one the brace is on, translate our spans to the expected snapshot
             if (spans[0].Snapshot != currentChar.Snapshot)
             {
-                currentChar = currentChar.TranslateTo(spans[0].Snapshot, PointTrackingMode.Positive);
+                //currentChar = currentChar.TranslateTo(spans[0].Snapshot, PointTrackingMode.Positive);
+                yield break;
             }
 
             //get the current char and the previous char
@@ -157,12 +158,14 @@ namespace XSharp.Project.Editors.BraceMatching
                     xsClassifier = SourceBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
                 }
 
-                if (xsClassifier != null)
+                if (xsClassifier != null )
                 {
-                    //
+                    
                     ITextSnapshot snapshot = xsClassifier.Snapshot;
+                    if (snapshot.Version != currentChar.Snapshot.Version)
+                        yield break;
                     SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                    IImmutableList<ClassificationSpan> classifications = xsClassifier.GetTags();
+                    var classifications = xsClassifier.GetTags();
                     // We cannot use SortedList, because we may have several Classification that start at the same position
                     List<ClassificationSpan> sortedTags = new List<ClassificationSpan>();
                     foreach (var tag in classifications)
@@ -182,7 +185,8 @@ namespace XSharp.Project.Editors.BraceMatching
                         {
                             if (FindMatchingCloseTag(sortedTags, indexTag, snapshot, out pairSpan))
                             {
-                                yield return new TagSpan<TextMarkerTag>(currentTag.Span, new TextMarkerTag("bracehighlight"));
+                                var span = currentTag.Span;
+                                yield return new TagSpan<TextMarkerTag>(span, new TextMarkerTag("bracehighlight"));
                                 yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("bracehighlight"));
                             }
                         }
@@ -190,8 +194,9 @@ namespace XSharp.Project.Editors.BraceMatching
                         {
                             if (FindMatchingOpenTag(sortedTags, indexTag, snapshot, out pairSpan))
                             {
+                                var span = currentTag.Span;
                                 yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("bracehighlight"));
-                                yield return new TagSpan<TextMarkerTag>(currentTag.Span, new TextMarkerTag("bracehighlight"));
+                                yield return new TagSpan<TextMarkerTag>(span, new TextMarkerTag("bracehighlight"));
                             }
                         }
                     }

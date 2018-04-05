@@ -4,7 +4,7 @@
 
 #define Compression     "lzma2/ultra64"
 ;#define Compression     "none"
-;#define FOX
+#define FOX
 
 
 ; version info and similar stuff.

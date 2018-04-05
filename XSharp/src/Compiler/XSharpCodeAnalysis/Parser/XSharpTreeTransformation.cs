@@ -5692,12 +5692,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCatchBlock([NotNull] XP.CatchBlockContext context)
         {
             context.SetSequencePoint(context.end);
-            context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
-                context.Id == null ? null : _syntaxFactory.CatchDeclaration(
+            CatchDeclarationSyntax decl = null;
+            if (context.Type != null || context.Id != null)
+            {
+                SyntaxToken id = null;
+                TypeSyntax type = null;
+                if (context.Id != null)
+                {
+                    id = context.Id.Get<SyntaxToken>();
+                }
+                if (context.Type != null)
+                {
+                    type = context.Type.Get<TypeSyntax>();
+                }
+                decl = _syntaxFactory.CatchDeclaration(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    context.Type?.Get<TypeSyntax>() ?? MissingType(),
-                    context.Id.Get<SyntaxToken>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)),
+                    type, 
+                    id,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            }
+
+            context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
+                decl,
                 null, // TODO: (grammar) catch filters?
                 context.StmtBlk.Get<BlockSyntax>()));
         }

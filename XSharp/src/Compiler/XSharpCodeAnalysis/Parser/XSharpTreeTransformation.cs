@@ -5705,6 +5705,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     type = context.Type.Get<TypeSyntax>();
                 }
+                else
+                {
+                    type = GenerateQualifiedName("System.Exception");
+                }
                 decl = _syntaxFactory.CatchDeclaration(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                     type, 

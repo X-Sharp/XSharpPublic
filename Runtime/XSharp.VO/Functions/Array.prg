@@ -23,10 +23,19 @@ FUNCTION ArrayCreate(dwDim AS DWORD) AS Array
 /// <param name="ptrBuff"></param>
 /// <returns>
 /// </returns>
-unsafe FUNCTION ArrayInit(dwDim AS DWORD,ptrBuff AS PTR) AS Array 
-	/// THROW NotImplementedException{}
-RETURN NULL
-
+FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS Array 
+   LOCAL aTemp AS ARRAY
+   LOCAL x AS INT
+   
+   IF dwDim > (DWORD) aValues:Length
+      Throw Error.ArgumentError( nameof(dwDim), "Element too big")
+   ENDIF
+   
+   aTemp := ArrayNew(aValues:Length)
+   FOR x := 1 UPTO aValues:Length
+      aTemp [x] := aValues[x] 
+   NEXT
+   RETURN aTemp
 
 	/// <summary>
 	/// Add a new element to the end of an Array.
@@ -105,24 +114,7 @@ RETURN NULL
 	/// </returns>
 	FUNCTION ALen(a AS Array) AS DWORD
 		RETURN a:Length
-
-	/// <summary>
-	/// </summary>
-	/// <param name="a"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION AMemSize(a AS Array) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="a"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION APageCount(a AS Array) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	
 
 	/// <summary>
 	/// Removes write protection from an entire Array.
@@ -131,8 +123,7 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
 	FUNCTION ArrayDeProtect(a AS Array) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+		return a:Lock(FALSE)
 
 	/// <summary>
 	/// Read an Array element.
@@ -143,18 +134,9 @@ RETURN NULL
 	/// </returns>
     
 	FUNCTION ArrayGet(a AS Array,dwEl AS DWORD) AS Usual
-	return a:__GetElement( (int) dwEl-1)
+		return a:__GetElement( (int) dwEl-1)
     
-	/// <summary>
-	/// </summary>
-	/// <param name="a"></param>
-	/// <param name="dwEl"></param>
-	/// <returns>
-	/// </returns>
-	UNSAFE FUNCTION ArrayGetPtr(a AS Array,dwEl AS DWORD) AS PTR
-		/// THROW NotImplementedException{}
-	RETURN NULL   
-
+	
 	/// <summary>
 	/// Protect an Array from change in all functions except the one in which it was declared.
 	/// </summary>
@@ -162,8 +144,7 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
 	FUNCTION ArrayProtect(a AS Array) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+		return a:Lock(TRUE)
 
 	/// <summary>
 	/// Write a value to an Array element.
@@ -303,8 +284,7 @@ RETURN NULL
 	/// <returns>
 	/// </returns>
 	FUNCTION ArrayNew(nDim PARAMS int[]) AS Array
-		/// THROW NotImplementedException{}
-	RETURN __Array.ArrayCreate(nDim)
+		RETURN __Array.ArrayCreate(nDim)
 
 
 	/// <summary>

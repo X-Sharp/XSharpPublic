@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Primary Expressions</title>
   <body>
     <header>
@@ -147,10 +147,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Constructor call</para>
+          <para styleclass="Body Text">Constructor call with parameters and optional initializer</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">datatype LCURLY argumentlist RCURLY</para>
+          <para styleclass="Body Text">datatype LCURLY argumentlist RCURLY( LCURLY initializer RCURLY) ?</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
@@ -159,18 +159,18 @@
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
+          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Constructor call with initializer</para>
+          <para styleclass="Body Text">Constructor call without parameters and with optional initializer</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">datatype LCURLY RCURLY LCURLY initializer RCURLY</para>
+          <para styleclass="Body Text">datatype LCURLY RCURLY (LCURLY initializer RCURLY) ?</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
+          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>

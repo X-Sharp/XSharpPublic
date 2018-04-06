@@ -767,14 +767,14 @@ begin namespace XSharpModel
 								state:lIgnore := true
 							endif
 							state:lEntityFound := true
-							state:lEntityIsClass := System.Array.IndexOf(aTypes , cUpperWord) != -1
-							if eStep == ParseStep.AfterEnd .and. state:lEntityIsClass
+							state:lEntityIsType := System.Array.IndexOf(aTypes , cUpperWord) != -1
+							if eStep == ParseStep.AfterEnd .and. state:lEntityIsType
 								_SetLineType(oStatementLine, LineType.EndClass)
 								if aTypeStack:Count > 0
 									aTypeStack:Pop()
 								endif
 								state:lEntityFound := false
-								state:lEntityIsClass := false
+								state:lEntityIsType := false
 								state:lIgnore := true
 								lInEnum := false
 								cShortClassName := ""
@@ -785,14 +785,14 @@ begin namespace XSharpModel
 							elseif eStep == ParseStep.AfterEnd .and. cUpperWord == "PROPERTY"
 								_SetLineType(oStatementLine, LineType.EndProperty)
 								state:lEntityFound := false
-								state:lEntityIsClass := false
+								state:lEntityIsType := false
 								state:lIgnore := true
 								lInEnum := false
 								lInProperty := false
 							else
 								lInEnum := cUpperWord == "ENUM"
 								oInfo := EntityObject{GetEntityType(cUpperWord)}
-								if oInfo:eType:IsClass()
+								if oInfo:eType:IsType()
 									aTypeStack:Push(oInfo)
 								elseif oInfo:eType:IsClassMember()
 									if aTypeStack:Count > 0
@@ -809,7 +809,7 @@ begin namespace XSharpModel
 									oCurrentMethod := NULL_OBJECT
 								endif
 								lInProperty := oInfo:eType == EntityType._Property
-								if state:lEntityIsClass
+								if state:lEntityIsType
 									cClassType := cUpperWord
 									switch cUpperWord
 										case "CLASS"
@@ -955,7 +955,7 @@ begin namespace XSharpModel
 										
 									end if
 									
-									if state:lEntityIsClass .and. .not. state:lNameFound
+									if state:lEntityIsType .and. .not. state:lNameFound
 										cTypedClassName := cWord
 										nAt := cWord:LastIndexOf('.')
 										if nAt <= 0 .or. nAt >= cWord:Length - 1
@@ -1246,7 +1246,7 @@ begin namespace XSharpModel
 			aResult := List<EntityObject>{}
 			aResult:Add(self:oGlobalObject)
 			foreach oEnt as EntityObject in aEntities
-				if oEnt:eType:IsClass()
+				if oEnt:eType:IsType()
 					aResult:Add(oEnt)
 				elseif oEnt:oParent == null
 					aResult:Add(oEnt)
@@ -1319,7 +1319,7 @@ begin namespace XSharpModel
 			end switch
 			return eType
 		
-		static method IsClass(self e as ENtityType) as logic
+		static method IsType(self e as ENtityType) as logic
 			switch e
 				case EntityType._Class
 				case EntityType._Structure
@@ -1671,7 +1671,7 @@ begin namespace XSharpModel
 	internal structure ParseState				   
 		internal property  lVisFound as logic			   auto
 		internal property  lEntityFound as logic			   auto
-		internal property  lEntityIsClass as logic		   auto
+		internal property  lEntityIsType as logic		   auto
 		internal property  lFirstChar as logic			   auto
 		internal property  lFirstWord as logic			   auto
 		internal property  lInParams as logic			   auto
@@ -1689,7 +1689,7 @@ begin namespace XSharpModel
 		method Reset() as void
 			lVisFound := false
 			lEntityFound := false
-			lEntityIsClass := false
+			lEntityIsType := false
 			lFirstChar := true
 			lFirstWord := true
 			lInParams := false

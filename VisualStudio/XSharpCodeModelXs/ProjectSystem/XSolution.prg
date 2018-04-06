@@ -59,7 +59,8 @@ begin namespace XSharpModel
 		static method FindProject(projectFile as string) as XProject
 			local project as XProject
 			projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
-			if xProjects:TryGetValue(projectFile, out project)
+			project := null
+			if xProjects:TryGetValue(projectFile, out project) .and. project != null
 				return project
 			endif
 			return null

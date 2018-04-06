@@ -31,7 +31,8 @@ begin namespace XSharpModel
 		property Url as string get "" 
 		property DisableRegions as logic get false
 		property DisableLexing as logic get false
-		property DisableParsing as LOGIC GET FALSE
+		property DisableParsing as logic get false
+		property KeywordsUppercase as logic get TRUE
 	#endregion
 		
 		

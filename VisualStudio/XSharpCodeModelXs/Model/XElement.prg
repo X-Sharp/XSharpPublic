@@ -5,12 +5,11 @@
 //
 using EnvDTE
 using Microsoft.VisualStudio.Language.Intellisense
-
 using System.Collections.Generic
-using System.Collections.Immutable
 using System.Diagnostics
 using System
 using System.Linq
+
 begin namespace XSharpModel
 	[DebuggerDisplay("Kind, {Name,nq}")];
 	class XElement
@@ -24,6 +23,7 @@ begin namespace XSharpModel
 		private _parent as XElement
 		private _range as TextRange
 		private _Visibility as Modifiers
+		private _nKeywordCase := -1 as int
 		const public GlobalName := "(Global Scope)" as string
 
 		// Methods
@@ -49,7 +49,7 @@ begin namespace XSharpModel
 			property Name as string get self:_Name
 			property Interval as TextInterval get self:_interval
 			property IsStatic as logic get _isStatic set _isStatic := value
-			property FileUsings as IImmutableList<string> get self:_File:Usings
+			property FileUsings as IList<string> get self:_File:Usings
 			property Parent as XElement get self:_parent set self:_parent := value
 			property ParentName as string get self:_parent?:FullName
 			property Prototype as string get self:Name
@@ -149,24 +149,45 @@ begin namespace XSharpModel
 		static method CalculateRange(oElement as EntityObject, oInfo as ParseResult, span out TextRange, interval out TextInterval) as void
 			local nLineStart, nColStart as int	
 			local nLineEnd, nColEnd		as int
-			local oLast					as EntityObject
 			local nPosStart, nPosEnd as long
+			local lHasEnd as LOGIC
 			nLineStart := oElement:nStartLine  // parser has 1 based lines and columns
 			nLineEnd   := oElement:nStartLine
 			nColStart  := oElement:nCol
 			nPosStart  := oElement:nOffSet
+			lHasEnd    := FALSE
 			if oElement:cName == GlobalName
 				nLineEnd   := nLineStart		
 				nColEnd    := nColStart
-			elseif oElement:oNext != NULL_OBJECT
+				lHasEnd    := TRUE
+			elseif oElement:eType:IsType()
+				// find the last member
+				// and the entity after it is our end
+				var oLast := oElement:aChildren:LastOrDefault()
+				if oLast != null_object 
+					IF oLast:oNext != NULL_OBJECT 
+						nLineEnd := oLast:oNext:nStartLine -1
+						nPosEnd  := oLast:oNext:nOffSet -2		// subtract CRLF
+						lHasEnd    := TRUE
+					endif
+				else
+					// type without children ?
+					IF oElement:oNext != NULL_OBJECT 
+						nLineEnd := oElement:oNext:nStartLine -1
+						nPosEnd  := oElement:oNext:nOffSet -2		// subtract CRLF
+						lHasEnd    := TRUE
+					endif
+				endif
+			elseif oElement:oNext != NULL_OBJECT 
 				nLineEnd := oElement:oNext:nStartLine -1
 				nPosEnd  := oElement:oNext:nOffSet -2		// subtract CRLF
-			else
-				nLineEnd   := nLineStart		
+				lHasEnd    := true
+			endif
+			if ! lHasEnd
+				nLineEnd   := oInfo:LineCount		
 				nColEnd    := nColStart
 				nPosEnd    := oInfo:SourceLength-2
 			endif
-			oLast := oElement
 			span	 := TextRange{nLineStart, nColStart, nLineEnd, nColEnd}
 			interval := TextInterval{nPosStart, nPosEnd}
 			return
@@ -177,12 +198,11 @@ begin namespace XSharpModel
 				get
 					var modVis := ""
 					if (self:Modifiers != Modifiers.None)
-						modVis := modVis + self:Modifiers:ToString()+ " "
+						modVis := modVis + self:ModifiersKeyword
 					endif
-					modVis += self:Visibility:ToString()
+					modVis += self:VisibilityKeyword
 					var desc := modVis
-					desc += self:Kind:ToString() 
-					desc += " "+  self:Prototype
+					desc += self:KindKeyword +  self:Prototype
 					return desc
 				end get
 			end property
@@ -336,6 +356,26 @@ begin namespace XSharpModel
 					throw System.NotImplementedException{}
 				end get
 			end property
+
+			property KeywordsUpperCase as logic
+				get 
+					if _nKeywordCase == -1
+						if self:File?:Project?:ProjectNode != null
+							_nKeywordcase := iif(self:File:Project:ProjectNode:KeywordsUppercase,1,0)
+						else
+							_nKeywordcase := 1
+						endif
+					endif
+					return _nKeywordCase == 1
+				end get
+			end property
+
+			property AsKeyWord			as string get iif(self:KeywordsUpperCase, " AS ", " as ")
+			property ModifiersKeyword	as string get iif(self:KeywordsUpperCase, self:Modifiers:ToString():ToUpper(), self:Modifiers:ToString():ToLower()) + " "
+			property VisibilityKeyword	as string get iif(self:KeywordsUpperCase, self:Visibility:ToString():ToUpper(), self:Visibility:ToString():ToLower()) + " "
+			property KindKeyword		as string get iif(self:KeywordsUpperCase, self:Kind:DisplayName():ToUpper(), self:Kind:DisplayName():ToLower()) + " "
+
+
 		#endregion
 	end class
 	

@@ -9,7 +9,7 @@ using System.Diagnostics
 using XSharp.Internal
 begin namespace XSharp
     [StructLayout(LayoutKind.Sequential)];
-    [DebuggerDisplay("{Value} ({UsualType})", Type := "USUAL")];
+    [DebuggerDisplay("{Value,nq} ({_usualType})", Type := "USUAL")];
     [DebuggerTypeProxy(typeof(UsualDebugView))];
     public structure __Usual implements IConvertible,IComparable
         #region static fields
@@ -18,7 +18,7 @@ begin namespace XSharp
         
         #region private fields
             private initonly _flags    	as UsualFlags	// type, byref, width, decimals
-            private initonly _valueData	as UsualData		// for non GC data
+            private initonly _valueData	as _UsualData		// for non GC data
             private initonly _refData  	as object			// for GC data
         #endregion
         
@@ -205,7 +205,7 @@ begin namespace XSharp
                                 self:_valueData:d :=  (Date) o
                             elseif vartype == typeof(Symbol)
                                 self:_flags:usualType := UsualType.Symbol
-                                self:_valueData:s :=  (Symbol) o
+                                self:_valueData:s :=   (Symbol) o
                             endif
                     end switch
                 endif
@@ -2049,15 +2049,15 @@ begin namespace XSharp
     
     
     [StructLayout(LayoutKind.Explicit)];
-    internal structure UsualData
+    public structure _UsualData
         // Fields
-        [FieldOffset(0)] export d as Date
+        [FieldOffset(0)] export d as __VoDate
         [FieldOffset(0)] export r8 as real8
         [FieldOffset(0)] export i as long
         [FieldOffset(0)] export i64 as int64
         [FieldOffset(0)] export l as logic
         [FieldOffset(0)] export p as System.IntPtr
-        [FieldOffset(0)] export s as Symbol
+        [FieldOffset(0)] export s as symbol
         [FieldOffset(0)] export dt as System.DateTime
         
     end structure

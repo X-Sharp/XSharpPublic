@@ -114,7 +114,7 @@ begin namespace XSharp
 				endif
 				return u
 			
-			
+			// Note: Zero based !			
 			public property self[index as dword] as T
 				get
 					return self[ (int) index]
@@ -123,20 +123,20 @@ begin namespace XSharp
 					self[ (int) index] := value
 				end set
 			end property
-			
+			// Note: Zero based !
 			public property self[i as int] as T
 				get
-					if i<__ARRAYBASE__ || i > _internalList:Count
+					if i < 0 || i > _internalList:Count-1
 						throw ArgumentOutOfRangeException{}
 					endif
-					return _internalList[i - __ARRAYBASE__ ]
+					return _internalList[i ]
 				end get
 				set
 					if self:CheckLock()
-						if i<__ARRAYBASE__|| i > _internalList:Count
+						if i< 0 || i > _internalList:Count-1
 							throw ArgumentOutOfRangeException{}
 						endif
-						_internalList[i-__ARRAYBASE__] := value
+						_internalList[i] := value
 					endif
 				end set
 			end property
@@ -269,22 +269,18 @@ begin namespace XSharp
 			return original
 		
 		public method Swap(position as int, element as object) as T
-			if (element is T)
-				return Swap( position, (T) element)
-			else
-				throw ArgumentException{"Parameter is of incorrect type "+element:GetType():FullName,nameof(element)}
-			endif
+			//try
+				var elementT := (T) (object) element
+				return Swap( position, elementT)
+			//catch
+			//	throw ArgumentException{"Parameter is of incorrect type "+element:GetType():FullName,nameof(element)}
+			//end try
 		
 		public method Swap(position as dword, element as object) as T
-			if (element is T)
-				return Swap( position, (T) element)
-			else
-				throw ArgumentException{"Parameter is of incorrect type "+element:GetType():FullName,nameof(element)}
-			endif
-		
+			return self:Swap((int) position, element)		
+
 		public method Tail() as T
 			return _internalList:LastOrDefault()
-		
 		
 		#region locking
 			method Lock(lLocked as logic) as logic

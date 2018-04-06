@@ -7,10 +7,13 @@ using System.Collections
 using System.Collections.Generic
 using System.Linq
 using System.Diagnostics
+using System.Reflection
+using System.Text
 using XSharp
 begin namespace XSharp	
 	
-	[DebuggerDisplay("USUAL{ToString(),nq}", Type := "ARRAY")];
+	[DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
+	[DefaultMember("Item")];
 	[DebuggerTypeProxy(typeof(ArrayDebugView))];
 	public sealed class __Array inherit __ArrayBase<usual>
 		
@@ -19,6 +22,14 @@ begin namespace XSharp
 		
 		constructor(capacity as int)
 			super(capacity)
+
+		constructor( elements as usual[] )
+			self()
+			if elements == null
+				throw ArgumentNullException{nameof(elements)}
+			endif
+			_internalList:AddRange(elements) 
+			return
 		
 		constructor( elements as object[] )
 			self()
@@ -65,7 +76,7 @@ begin namespace XSharp
 		public static method __ArrayNewHelper(dimensions as int[], currentDim as int) as Array
 			local capacity  as int // one based ?
 			local newArray as Array
-			capacity := dimensions[currentDim-1]
+			capacity := dimensions[currentDim]
 			newArray := Array{capacity} 
 			if currentDim != dimensions:Length
 				local nextDim := currentDim+1 as int
@@ -76,18 +87,23 @@ begin namespace XSharp
 				enddo
 				return newArray
 			endif
-			local i as int
-			for i:=1 upto capacity
-				newArray:Add(default(usual))
-			next
 			return newArray
-		
-		property Item[index params int[]] as usual
+
+		 property Item[index1 as int,index2 as int, index3 as int] as usual
 			get
-				return __GetElement(index)
+				return __GetElement(index1, index2,index3)
 			end get
-			set
-				__SetElement(value, index)
+			set 
+				__SetElement(value, index1, index2,index3)
+			end set
+		end property
+		
+		 property Item[index1 as int,index2 as int] as usual
+			get
+				return __GetElement(<int> {index1, index2})
+			end get
+			set 
+				__SetElement(value, <int> {index1, index2})
 			end set
 		end property
 		
@@ -100,6 +116,12 @@ begin namespace XSharp
 			end set
 		end property
 		
+		new public method Swap(position as dword, element as usual) as usual
+			return super:Swap(position, element)
+
+		new public method Swap(position as int, element as usual) as usual
+			return super:Swap(position, element)
+
 		///
 		/// <Summary>Access the array element using ZERO based array index</Summary>
 		///
@@ -119,7 +141,29 @@ begin namespace XSharp
 				currentArray := (Array) u
 			next
 			return currentArray:_internalList[ index[i] ]
-		
+		internal method DebuggerString() as string
+			local sb as StringBuilder
+			local cnt, tot as long
+			sb := StringBuilder{}
+			sb:Append(self:ToString())
+			sb:Append("{")
+			tot := _internallist:Count
+			cnt := 0
+			foreach var element in self:_internallist
+				if cnt > 0
+					sb:Append(",")
+				endif
+				sb:Append(element:ToString())
+				cnt++
+				if cnt > 5 
+					if cnt < tot
+						sb:Append(",..")
+					endif
+					exit
+				endif
+			next		
+			sb:Append("}")
+			return sb:ToString()
 		public method __SetElement(u as usual, index params int[] ) as usual
 			// indices are 0 based
 			if self:CheckLock()

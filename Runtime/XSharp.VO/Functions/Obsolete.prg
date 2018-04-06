@@ -470,4 +470,17 @@ function PszLenW(pszUnicode as Psz) as dword
 
 [Obsolete( "'ReleaseString()' is not supported and always returns NULL_PSZ" )] ;
 function ReleaseString() AS Psz
-	return NULL_PSZ
+	return null_psz
+
+[Obsolete( "'AMemSize()' is not supported and always returns 0" )] ;
+FUNCTION AMemSize(a AS Array) AS DWORD
+	RETURN 0   
+
+[Obsolete( "'APageCount()' is not supported and always returns 0" )] ;
+FUNCTION APageCount(a AS Array) AS DWORD
+	RETURN 0   
+
+
+[Obsolete( "'ArrayGetPtr()' is not supported and always returns IntPtr.Zero" )] ;
+function ArrayGetPtr(a as array,dwEl as dword) as intPtr
+	return IntPtr.Zero

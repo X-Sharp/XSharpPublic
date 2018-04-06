@@ -6,23 +6,20 @@ using System.Text
 BEGIN NAMESPACE ConsoleApplication1
 
 	FUNCTION Start() AS VOID
-		SetEpoch(1900)
-		? ConDate(18,3,15)
-		SetEpoch(2000)
-		? ConDate(18,3,15)
-		test()
+		local i as int
+		local j as byte
+		local p as IntPtr
+		local r8 as real8
+		p := MemAlloc(1000)
+		r8 := Seconds()
+		for i := 1 to 500000
+			for j := 1 to 254
+				memset(p, j, 1000)
+			next
+		next
+		? "Done", Seconds() - r8
+		MemFree(p)
 		Console.ReadLine()
-
-
-	function test as void
-		? Procname(-2)
-		? Procname(-1)
-		? Procname()
-		? Procname(1)
-		? Procname(2)
-		? ProcLine()
-		? ProcFile()
-
 END NAMESPACE
 
 

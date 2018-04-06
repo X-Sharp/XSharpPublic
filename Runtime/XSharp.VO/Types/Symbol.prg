@@ -24,7 +24,7 @@ begin namespace XSharp
 		
 		#region fields
 			private initonly _index		as dword
-			private _PszDict			as Dictionary<DWORD, PSZ>
+			private static _PszDict			as Dictionary<DWORD, PSZ>
 			// next field is only used when someone requests a PSZ representation 
 			// by calling SysGetAtomName
 		#endregion
@@ -70,6 +70,14 @@ begin namespace XSharp
 			return "#"+_value
 		end get
 		end property
+		internal static property PszDict as Dictionary<dword, Psz>
+		get
+			if _pszDict == null
+				_pszDict := Dictionary<dword, Psz>{}
+			endif
+			return _PszDict
+		end get
+		end property
 		
 		#region methods
 			virtual method Equals(obj as object) as logic 
@@ -96,15 +104,12 @@ begin namespace XSharp
 				return _value
 
 			method SysGetAtomName() as Psz
-				if _pszDict == null
-					_pszDict := Dictionary<dword, Psz>{}
-				endif
-				if _pszDict:ContainsKey(_index)
-					return _pszDict[_index]
+				if PszDict:ContainsKey(_index)
+					return PszDict[_index]
 				endif
 				local pszAtom as PSZ
 				pszAtom := __Psz.CreatePsz(_value)
-				_pszDict:add(_index, pszAtom)
+				PszDict:add(_index, pszAtom)
 				return pszAtom
 
 		#endregion
@@ -270,15 +275,15 @@ begin namespace XSharp
 			//return SymbolTable.strings.GetEnumerator()
 			
 		#endregion
-       internal class SymbolDebugView
-            private _svalue as Symbol
-			constructor( s as Symbol)
-            _svalue := s
-            
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            public property Value as object get _svalue:_VALUE
-            
-        end class
-
 	end structure
+    internal class SymbolDebugView
+        private _svalue as Symbol
+		constructor( s as Symbol)
+        _svalue := s
+            
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
+        public property Value as object get _svalue:_VALUE
+            
+    end class
+
 end namespace

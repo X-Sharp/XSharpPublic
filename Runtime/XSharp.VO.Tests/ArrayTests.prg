@@ -13,15 +13,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
  		[Trait("Category", "Array")];
 		[Fact]; 
 		METHOD ArrayCreateTest() as void
-			local testArray := __Array:ArrayCreate(2,3) as __Array
+			local testArray := ArrayNew(2,3) as Array 
 			Assert.NotEqual(null,testArray)
-			Assert.Equal((dword)2,testArray:Length)
-			Assert.Equal((dword)3,((__Array)testArray[1]):Length)
+			Assert.Equal((dword)2,testArray:Length) 
+			Assert.Equal((dword)3,((Array)testArray[1]):Length)
 		RETURN
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayFillTest() as void
-			local testArray := __Array{3} as __Array
+			local testArray := Array{3} as Array
 			testArray[1] := 1
 			testArray[2] := 2
 			testArray[3] := 3
@@ -30,9 +30,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
 		METHOD ArraySwapTest() as void
 			local values := <object>{1,2,3} as object[]
-			local testArray := __Array{values} as __Array
+			local testArray := Array{values} as Array
 			local newValue := 4 as int
-			local oldValue := testArray:Swap(2,newValue) as __Usual
+			local oldValue := ArraySwap(testArray, 2,newValue) as Usual
 			Assert.Equal( 2 , (int) oldValue)
 			Assert.Equal( 4 , (int) testArray[2])
 		return
@@ -41,19 +41,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
 		METHOD ArrayDeleteTest() as void
 			local values := <object>{1,2,3} as object[]
-			local testArray := __Array{values} as __Array
-			testArray:Delete(1)
+			local testArray := Array{values} as Array
+			Adel(testArray, 1)
 			Assert.Equal( (dword)3 , testArray:Length)
-			Assert.Equal( __Usual._NIL ,  testArray[3])
+			Assert.Equal( NIL ,  testArray[3])
 		return
 		
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArraySizeTest() as void
 			local values := <object>{1,2,3} as object[]
-			local testArray := __Array{values} as __Array
+			local testArray := Array{values} as Array
 			testArray:ReSize(4)
-			Assert.Equal( __Usual._NIL ,  testArray[4])
+			Assert.Equal( NIL ,  testArray[4])
 			testArray:ReSize(2)
 			Assert.Equal((dword)2,testArray:Length)
 		return
@@ -62,25 +62,24 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
 		METHOD ArrayTailTest() as void
 			local values := <object>{1,2,3} as object[]
-			local testArray := __Array{values} as __Array
+			local testArray := Array{values} as Array
 			Assert.Equal( 3 , (int) testArray:Tail())
 		return
 		
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayDimTest() as void
-			local values := <object>{5,4} as object[]
-			local subArray := __Array{values} as __Array
-			local mainArray := __Array{} as __Array
-			mainArray:Add(1)
-			mainArray:Add("2")
-			mainArray:Add(true)
-			mainArray:Add("test")
-			mainArray:Add(__Usual{subArray})
-			var u := mainArray:__GetElement(4,1)
+			local subArray := {5,4,1,2,3,4,5,6} as Array
+			local mainArray := Array{} as Array
+			AAdd(mainArray,1)
+			AAdd(mainArray,"2")
+			AAdd(mainArray,true)
+			AAdd(mainArray,"test")
+			AAdd(mainArray,subArray)
+			var u := mainArray[5][2] 
 			Assert.Equal( 4, (int) u)
-			mainArray:__SetElement ("anothertest", 4,1)
-			u := mainArray:__GetElement(4,1)
+			mainArray[5][2] := "anothertest"
+			u := mainArray[5][2]
 			Assert.Equal( "anothertest", (string) u)
 		return
 	END CLASS

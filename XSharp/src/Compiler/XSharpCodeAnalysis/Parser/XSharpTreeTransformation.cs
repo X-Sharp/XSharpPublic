@@ -2372,6 +2372,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string filename = PathUtilities.GetFileName(_fileName);
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = RemoveUnwantedCharacters(filename);
+                string className = GlobalClassName + "$" + filename + "$";
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
                 GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.StaticGlobalClassMembers));
                 GlobalEntities.StaticGlobalClassMembers.Clear();

@@ -573,7 +573,7 @@ namespace Microsoft.CodeAnalysis
             "XSharp.Internal.ClassLibraryAttribute",
             "XSharp.Internal.CompilerServices",
             "XSharp.Internal.ImplicitNamespaceAttribute",
-            "XSharp_VO.Functions",
+            "XSharp.VO.Functions",
             "XSharp.Codeblock",
             "XSharp.__VOFloat",
             "XSharp.__VODate",

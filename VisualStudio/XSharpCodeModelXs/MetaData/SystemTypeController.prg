@@ -67,7 +67,7 @@ begin namespace XSharpModel
 			next
 			return null
 		
-		method FindType(typeName as string, usings as IReadOnlyList<string>, assemblies as IReadOnlyList<AssemblyInfo>) as System.Type
+		method FindType(typeName as string, usings as IList<string>, assemblies as IList<AssemblyInfo>) as System.Type
 			local strArray as string[]
 			local num as long
 			local index as long
@@ -169,16 +169,15 @@ begin namespace XSharpModel
 			endif
 			return LoadAssembly(path)
 		
-		static method Lookup(typeName as string, theirassemblies as IReadOnlyList<AssemblyInfo>) as System.Type
+		static method Lookup(typeName as string, theirassemblies as IList<AssemblyInfo>) as System.Type
 			local sType as System.Type
 			sType := null
 			foreach var assembly in theirassemblies
 				if (assembly:Types:Count == 0)
 					assembly:UpdateAssembly()
 				endif
-				if (assembly:Types:TryGetValue(typeName, out sType))
+				if assembly:Types:TryGetValue(typeName, out sType) .and. sType != NULL
 					exit
-					
 				endif
 				if (assembly != null)
 					sType := assembly:GetType(typeName)

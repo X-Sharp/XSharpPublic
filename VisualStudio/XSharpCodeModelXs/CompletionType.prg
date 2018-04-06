@@ -125,7 +125,7 @@ begin namespace XSharpModel
 				self:CheckType(xvar:TypeName, parent:file, defaultNS)
 			endif
 		
-		constructor(typeName as string, xFile as XFile, usings as IReadOnlyList<string>)
+		constructor(typeName as string, xFile as XFile, usings as IList<string>)
 			super()
 			//
 			self:_stype := null
@@ -143,7 +143,7 @@ begin namespace XSharpModel
             		SELF:_file := null
 			self:CheckType(typeName, xFile, defaultNS)
 		
-		private method CheckProjectType(typeName as string, xprj as XProject, usings as IReadOnlyList<string>) as void
+		private method CheckProjectType(typeName as string, xprj as XProject, usings as IList<string>) as void
 			local xType as XType
 			local fqn as string
 			//
@@ -165,7 +165,7 @@ begin namespace XSharpModel
 				self:_xtype := xType
 			endif
 		
-		private method CheckStrangerProjectType(typeName as string, xprj as XProject, usings as IReadOnlyList<string>) as void
+		private method CheckStrangerProjectType(typeName as string, xprj as XProject, usings as IList<string>) as void
 			local codeElt as CodeElement
             		LOCAL fqn AS string
 			codeElt := xprj:LookupForStranger(typeName, true)
@@ -182,7 +182,7 @@ begin namespace XSharpModel
 				self:_codeElt := codeElt
 			endif
 		
-		private method CheckSystemType(typeName as string, usings as IReadOnlyList<string>) as void
+		private method CheckSystemType(typeName as string, usings as IList<string>) as void
 			local sType as System.Type
 			sType := self:SimpleTypeToSystemType(typeName)
 			if sType == null .AND. self:_file != null
@@ -193,7 +193,7 @@ begin namespace XSharpModel
 				self:_stype := sType
 			endif
 		
-		private method CheckType(typeName as string, xFile as XFile, usings as IReadOnlyList<string>) as void
+		private method CheckType(typeName as string, xFile as XFile, usings as IList<string>) as void
 			//
 			self:_file := xFile
 			if self:_file?:Project != null

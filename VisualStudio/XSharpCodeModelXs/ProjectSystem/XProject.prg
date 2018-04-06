@@ -12,7 +12,6 @@ using EnvDTE
 using LanguageService.CodeAnalysis
 using LanguageService.CodeAnalysis.XSharp
 using System.Collections.Concurrent
-using System.Collections.Immutable
 using EnvDTE80
 using Microsoft.VisualStudio
 using Microsoft.VisualStudio.Shell.Interop
@@ -32,6 +31,7 @@ begin namespace XSharpModel
 		private _unprocessedAssemblyReferences			as Dictionary<string, string>
 		private _unprocessedProjectReferences			as List<string>
 		private _unprocessedStrangerProjectReferences	as List<string>
+		private _mergedTypes							as Dictionary<string, XType>
 		public  FileWalkComplete						as XProject.OnFileWalkComplete
 		private xOtherFilesDict							as ConcurrentDictionary<string, XFile>
 		private xSourceFilesDict						as ConcurrentDictionary<string, XFile>
@@ -44,7 +44,7 @@ begin namespace XSharpModel
 			self:_unprocessedProjectReferences := List<string>{} 
 			self:_unprocessedStrangerProjectReferences := List<string>{} 
 			self:_projectOutputDLLs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} 
-
+			self:_mergedTypes   := Dictionary<string, XType>{StringComparer.OrdinalIgnoreCase} 
 			self:_ReferencedProjects := List<XProject>{} 
 			SELF:_StrangerProjects := List<Project>{} 
 			self:_projectNode := project
@@ -263,9 +263,10 @@ begin namespace XSharpModel
 		method ResolveProjectReferenceDLLs() as void
 			if self:hasUnprocessedReferences
 				System.Diagnostics.Trace.WriteLine("<<-- ResolveProjectReferenceDLLs()")
+				self:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project {0}", self:Name))
+				self:ProjectNode:SetStatusBarAnimation(true, 0)
+		
 				try
-					self:ProjectNode:SetStatusBarText("Resolving references for project "+self:Name)
-					Self:ProjectNode:SetStatusBarAnimation(true,6) // Searching see shell.idl
 					self:ResolveUnprocessedAssemblyReferences()
 					self:ResolveUnprocessedProjectReferences()
 					self:ResolveUnprocessedStrangerReferences()
@@ -276,10 +277,9 @@ begin namespace XSharpModel
 					next
 					// repeat the assemblyreferences because we can have _projectOutputDLLs added to the list
 					self:ResolveUnprocessedAssemblyReferences()
-				finally
-					self:ProjectNode:SetStatusBarText("")
-					self:ProjectNode:SetStatusBarAnimation(false,6)
 				end try
+				self:ProjectNode:SetStatusBarAnimation(false, 0)
+				self:ProjectNode:SetStatusBarText("")
 				System.Diagnostics.Trace.WriteLine(">>-- ResolveProjectReferenceDLLs()")
 			endif
 			return
@@ -342,9 +342,8 @@ begin namespace XSharpModel
 		
 		
 		method FindFunction(name as string) as XTypeMember
-			local members as IImmutableList<XTypeMember>
 			foreach file as XFile in self:SourceFiles
-				members := file:GlobalType:Members
+				var members := file:GlobalType:Members
 				if members != null
 					//
 					foreach oMember as XTypeMember in members
@@ -356,11 +355,11 @@ begin namespace XSharpModel
 			next
 			return null
 		
-		method FindSystemType(name as string, usings as IReadOnlyList<string>) as Type
+		method FindSystemType(name as string, usings as IList<string>) as Type
 			self:ResolveProjectReferenceDLLs()
 			return self:_typeController:FindType(name, usings, self:_AssemblyReferences)
 		
-		method GetAssemblyNamespaces() as ImmutableList<string>
+		method GetAssemblyNamespaces() as IList<string>
 			return self:_typeController:GetNamespaces(self:_AssemblyReferences)
 		
 		method Lookup(typeName as string, caseInvariant as logic) as XType
@@ -368,11 +367,14 @@ begin namespace XSharpModel
 			local xTemp as XType
 			local aFiles as XFile[]
 			//
-			xType := null
-			xTemp := null
+			xType := self:LookupMergedType(typeName)
+			if xType != NULL
+				return xType
+			endif
 			aFiles := self:xSourceFilesDict:Values:ToArray()
 			foreach file as XFile in aFiles
 				if file:TypeList != null
+					xTemp := NULL
 					file:TypeList:TryGetValue(typeName, out xTemp)
 					if xTemp != null .AND. ! caseInvariant .AND. xType:FullName != typeName .AND. xType:Name != typeName
 						xType := null
@@ -389,23 +391,26 @@ begin namespace XSharpModel
 					endif
 				endif
 			next
+			if xType != null
+				self:AddMergedType(xType)
+			endif
 			return xType
 		
 		method LookupFullName(typeName as string, caseInvariant as logic) as XType
 			local xType as XType
 			local xTemp as XType
 			local fileArray as XFile[]
-			local x as XType
 			//
-			xType := null
+			xType := self:LookupMergedType(typeName)
+			if xType != NULL
+				return xType
+			endif
 			xTemp := null
 			fileArray := self:xSourceFilesDict:Values:ToArray()
 			foreach file as XFile in fileArray
-				x := null
 				if file:TypeList != null
-					if (file:TypeList:TryGetValue(typeName, out x))
-						xTemp := x
-						if (! caseInvariant .AND. ((x:FullName != typeName) .AND. (x:Name != typeName)))
+					if file:TypeList:TryGetValue(typeName, out xTemp ) .and. xTemp  != null
+						if (! caseInvariant .AND. ((xTemp:FullName != typeName) .AND. xTemp:Name != typeName))
 							xTemp := null
 						endif
 					endif
@@ -421,6 +426,9 @@ begin namespace XSharpModel
 					endif
 				endif
 			next
+			if xType != null
+				self:AddMergedType(xType)
+			endif
 			return xType
 		
 		method LookupFullNameReferenced(typeName as string, caseInvariant as logic) as XType
@@ -488,7 +496,7 @@ begin namespace XSharpModel
 			end get
 		end property
 		
-		property Namespaces as ImmutableList<XType>
+		property Namespaces as IList<XType>
 			get
 				var types := List<XType>{}
 				var fileArray := self:SourceFiles:ToArray()
@@ -504,7 +512,7 @@ begin namespace XSharpModel
 						next
 					endif
 				next
-				return types.ToImmutableList()
+				return types
 			end get
 		end property
 		
@@ -525,24 +533,49 @@ begin namespace XSharpModel
 		
 		property ProjectNode as IXSharpProject get self:_projectNode set self:_projectNode := value
 		
-		property ReferencedProjects as IImmutableList<XProject>
+		property ReferencedProjects as ILIst<XProject>
 			get
 				self:ResolveUnprocessedProjectReferences()
-				return self:_ReferencedProjects.ToImmutableList()
+				return self:_ReferencedProjects.ToArray()
 			end get
 		end property
 		
 		property SourceFiles as List<XFile> get self:xSourceFilesDict:Values:ToList()
 		
-		property StrangerProjects as IImmutableList<Project>
+		property StrangerProjects as IList<Project>
 			get
 				self:ResolveUnprocessedStrangerReferences()
-				return self:_StrangerProjects:ToImmutableList()
+				return self:_StrangerProjects:ToArray()
 			end get
 		end property
 		
 		public delegate OnFileWalkComplete(xFile as XFile) as void
 		
+		internal method AddMergedType(xType as XType) as void
+			if xType:Name != XElement.GlobalName
+				var name := xType:FullName
+				if self:_mergedTypes:ContainsKey(name)
+					self:_mergedTypes:Remove(name)
+				endif
+				self:_mergedTypes:Add(name, xType)
+			endif
+			return
+
+		internal method RemoveMergedType(xType as XType) as void
+			if xType:Name != XElement.GlobalName
+				var name := xType:FullName
+				if self:_mergedTypes:ContainsKey(name)
+					self:_mergedTypes:Remove(name)
+				endif
+			endif
+			return
+
+		internal method LookupMergedType(fullName as string) as XType
+			if _mergedTypes:ContainsKey(fullname)
+				return _mergedTypes[fullName]
+			endif
+			return null
+
 	end class
 	
 end namespace 

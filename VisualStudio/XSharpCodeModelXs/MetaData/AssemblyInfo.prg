@@ -12,19 +12,19 @@ begin namespace XSharpModel
 	[DebuggerDisplay("{DisplayName,nq}")];
 	class AssemblyInfo
 		// Fields
-		private _aExtensions as IList<MethodInfo>
+		private _aExtensions as ImmutableList<MethodInfo>
 		private _assembly as Assembly
 		private _aTypes as IDictionary<string, System.Type>
 		private _failed as long
 		private _fullName as string
 		private _globalClassName as string
 		private _HasExtensions as logic
-		private _implicitNamespaces as List<string>
+		private _implicitNamespaces as ImmutableList<string>
 		private _LoadedTypes as logic
 		private _Modified as System.DateTime
 		private _nameSpaces as System.Collections.Hashtable
-		private _nameSpaceTexts as List<string>
-		private _projects as IList<XProject>
+		private _nameSpaceTexts as ImmutableList<string>
+		private _projects as ImmutableList<XProject>
 		private _reference as VSLangProj.Reference
 		private _zeroNamespace as AssemblyInfo.NameSpaceContainer
 		
@@ -35,7 +35,7 @@ begin namespace XSharpModel
 			self:_fullName := ""
 			self:_failed := 0
 			self:_assembly := null
-			self:_projects := List<XProject>{}
+			self:_projects := ImmutableList<XProject>.Empty
 			self:_clearInfo()
 		
 		constructor(reference as VSLangProj.Reference)
@@ -51,23 +51,20 @@ begin namespace XSharpModel
 		private method _clearInfo() as void
 			//
 			self:_aTypes := Dictionary<string, System.Type>{System.StringComparer.OrdinalIgnoreCase}
-			self:_aExtensions := List<MethodInfo>{}
+			self:_aExtensions := ImmutableList<MethodInfo>.Empty
 			self:_nameSpaces := System.Collections.Hashtable{System.StringComparer.OrdinalIgnoreCase}
-			self:_nameSpaceTexts := List<string>{}
-			self:_implicitNamespaces := List<string>{}
+			self:_nameSpaceTexts := ImmutableList<string>.Empty
+			self:_implicitNamespaces := ImmutableList<string>.Empty
 			self:_zeroNamespace := AssemblyInfo.NameSpaceContainer{"_"}
 			self:_LoadedTypes := false
 			self:_HasExtensions := false
 		
 		method AddProject(project as XProject) as void
-			//
 			if (! self:_projects:Contains(project))
-				//
-				self:_projects:Add(project)
+				self:_projects := self:_projects:Add(project)
 			endif
 		
 		private method CurrentDomain_AssemblyResolve(sender as object, args as System.ResolveEventArgs) as Assembly
-			//
 			var folders := List<string>{}	// list of folders that we have tried
 			var folderPath := System.IO.Path.GetDirectoryName(self:FileName)
 			var name := AssemblyName{args:Name}:Name + ".dll"
@@ -82,7 +79,6 @@ begin namespace XSharpModel
 			foreach path as string in SystemTypeController.AssemblyFileNames
 				folderPath := System.IO.Path.GetDirectoryName(path)
 				if ! folders:Contains(folderPath)
-					//
 					assemblyPath := System.IO.Path.Combine(folderPath, name)
 					if System.IO.File.Exists(assemblyPath)
 						var asm := Assembly.LoadFrom(path)
@@ -96,7 +92,6 @@ begin namespace XSharpModel
 			return null
 		
 		method GetType(name as string) as System.Type
-			//
 			if self:IsModifiedOnDisk
 				self:LoadAssembly()
 			endif
@@ -124,7 +119,6 @@ begin namespace XSharpModel
 			try
 				var customAttributes := memberInfo:GetCustomAttributes(false)
 				foreach var custattr in customAttributes
-					//
 					if custattr:ToString() == "System.Runtime.CompilerServices.ExtensionAttribute"
 						return true
 					endif
@@ -183,11 +177,11 @@ begin namespace XSharpModel
 		method RemoveProject(project as XProject) as void
 			//
 			if self:_projects:Contains(project)
-				self:_projects:Remove(project)
+				self:_projects := self:_projects:Remove(project)
 			endif
+
 		internal method UpdateAssembly() as void
 			local aTypes as Dictionary<string, System.Type>
-			local aExtensions as List<MethodInfo>
 			local nspace as string
 			local fullName as string
 			local simpleName as string
@@ -199,11 +193,11 @@ begin namespace XSharpModel
 				return
 			endif
 			aTypes := Dictionary<string, System.Type>{System.StringComparer.OrdinalIgnoreCase}
-			aExtensions := List<MethodInfo>{}
+			_aExtensions := ImmutableList<MethodInfo>.Empty
 			fullName := ""
 			simpleName := ""
 			self:_nameSpaces:Clear()
-			self:_nameSpaceTexts:Clear()
+			_nameSpaceTexts := ImmutableList<String>.Empty
 			self:_zeroNamespace:Clear()
 			self:_globalClassName := ""
 			self:_HasExtensions := false
@@ -223,7 +217,7 @@ begin namespace XSharpModel
 								self:_globalClassName := type:GetProperty("globalClassName"):GetValue(custattr, null):ToString()
 								var defaultNs := type:GetProperty("defaultNamespace"):GetValue(custattr, null):ToString()
 								if ! String.IsNullOrEmpty(defaultNs)
-									self:_implicitNamespaces:Add(defaultNs)
+									self:_implicitNamespaces := self:_implicitNamespaces:Add(defaultNs)
 								endif
 								found += 1
 							case "System.Runtime.CompilerServices.ExtensionAttribute"
@@ -232,7 +226,7 @@ begin namespace XSharpModel
 							case "Vulcan.VulcanImplicitNamespaceAttribute"
 								var ns := type:GetProperty("Namespace"):GetValue(custattr, null):ToString()
 								if ! String.IsNullOrEmpty(ns)
-									self:_implicitNamespaces:Add(ns)
+									self:_implicitNamespaces := self:_implicitNamespaces:Add(ns)
 								endif
 								found += 4
 						end switch
@@ -278,7 +272,7 @@ begin namespace XSharpModel
 			end try
 			currentDomain:AssemblyResolve -= System.ResolveEventHandler{ self, @CurrentDomain_AssemblyResolve() }
 				
-			if types?:Length != 0 .AND. (aTypes?:Count == 0  .or. ! _LoadedTypes)
+			if types != null .and. types:Length != 0 .AND. (aTypes:Count == 0  .or. ! _LoadedTypes)
 				try
 					foreach var type in types
 						fullName := type:FullName
@@ -287,7 +281,7 @@ begin namespace XSharpModel
 								var methods := type:GetMethods(BindingFlags.Public | BindingFlags.Static)
 								foreach info as MethodInfo in methods
 									if AssemblyInfo.HasExtensionAttribute(info)
-										aExtensions:Add(info)
+										_aExtensions := _aExtensions:Add(info)
 									endif
 								next
 							endif
@@ -329,7 +323,7 @@ begin namespace XSharpModel
 										container := AssemblyInfo.NameSpaceContainer{nspace}
 										container:AddType(simpleName, self:GetTypeTypesFromType(type))
 										self:_nameSpaces:Add(nspace, container)
-										self:_nameSpaceTexts:Add(nspace)
+										self:_nameSpaceTexts := self:_nameSpaceTexts:Add(nspace)
 									else
 										container := (AssemblyInfo.NameSpaceContainer)self:_nameSpaces[nspace]
 										container:AddType(simpleName, self:GetTypeTypesFromType(type))
@@ -337,7 +331,7 @@ begin namespace XSharpModel
 									do while nspace:Contains(".")
 										nspace := nspace:Substring(0, nspace:LastIndexOf('.'))
 										if ! self:_nameSpaceTexts:Contains(nspace)
-											self:_nameSpaceTexts:Add(nspace)
+											self:_nameSpaceTexts := self:_nameSpaceTexts:Add(nspace)
 										endif
 									enddo
 								endif
@@ -346,7 +340,6 @@ begin namespace XSharpModel
 					next
 					self:_LoadedTypes := true
 					self:_aTypes := aTypes.ToImmutableDictionary(System.StringComparer.OrdinalIgnoreCase) 
-					self:_aExtensions := aExtensions.ToImmutableList()
 					self:_failed := 0
 					self:_assembly := null
 				catch e as System.Exception
@@ -375,10 +368,10 @@ begin namespace XSharpModel
 		
 		property HasProjects as logic get self:_projects:Count > 0
 		
-		property ImplicitNamespaces as ImmutableList<string>
+		property ImplicitNamespaces as IList<string>
 			get
 				//
-				return ImmutableList.ToImmutableList<string>(self:_implicitNamespaces)
+				return self:_implicitNamespaces
 			end get
 		end property
 		
@@ -396,10 +389,10 @@ begin namespace XSharpModel
 		
 		property Modified as System.DateTime get self:_Modified set self:_Modified := value
 		
-		property Namespaces as ImmutableList<string>
+		property Namespaces as IList<string>
 			get
 				//
-				return ImmutableList.ToImmutableList<string>(self:_nameSpaceTexts)
+				return self:_nameSpaceTexts
 			end get
 		end property
 		

@@ -21,9 +21,9 @@ begin namespace XSharpModel
 		private _parsed			as logic
 		private _type			as XFileType
 		private _typeList		as ConcurrentDictionary<string, XType>
-		private _entityList		as IList<XElement>
-		private _usings			as List<string>
-		private _usingStatics	as List<string>
+		private _entityList		as ImmutableList<XElement>
+		private _usings			as ImmutableList<string>
+		private _usingStatics	as ImmutableList<string>
 		private filePath as string
 		private _project as XProject
 		
@@ -54,41 +54,69 @@ begin namespace XSharpModel
 		/// <Summary>Find member in file based on 0 based line number</Summary>
 		///
 		///
-		method FindMemberAtRow(nLine as long) as XElement
+
+		delegate FindMemberComparer (oElement as XELement, nValue as long ) as long
+		method FindMember(oDel as FindMemberComparer, nValue as LONG) as XElement
 			local oResult := null_object as XElement
 			local oLast as XElement
-			nLine += 1
-			foreach oElement as XElement in _entityList
-				if oElement:Range:StartLine > nLine
-					oResult := oLast
-					exit
-				elseif oElement:Range:EndLine >= nLine
+			// perform binary search to speed up things
+			var current := 0
+            var bottom := 0
+            var top := _entityList:Count
+			oLast := _entityList:FirstOrDefault()
+            do while top - bottom > 1
+				// determine middle
+                current := (bottom + top) / 2
+				var oElement := _entityList[current]
+				var result := oDel(oElement, nValue)
+				if result == 0
+					// found
 					oResult := oElement
 					exit
-				else
+				elseif result = 1 // element is after the search point
+					top := current
+				else		// element is before the search point
 					oLast := oElement
+					bottom := current
 				endif
-			next
-			if (oResult == null_object)
-				oResult := oLast
+			enddo
+			if oResult == null
+				oResult := oLast	// the last entity we saw before the selected line
 			endif
 			return oResult
+
+		private method CompareByLine(oElement as XELement, nLine as LONG) as LONG
+			local nResult as long
+			if oElement:Range:StartLine <= nLine .and. oElement:Range:EndLine >= nLine
+				nResult := 0
+			elseif oElement:Range:StartLine > nLine
+				nResult := 1
+			else 
+				nResult := -1
+			endif
+			return nResult
+
+		method FindMemberAtRow(nLine as long) as XElement
+			nLine += 1
+			return self:FindMember(CompareByLine, nLine)
+								
 		///
 		/// <Summary>Find member in file based on 0 based position</Summary>
 		///
 		///
+		private method CompareByPosition(oElement as XELement, nPos as LONG) as LONG
+			local nResult as long
+			if oElement:Interval:Start <= nPos .and. oElement:Interval:Stop >= nPos
+				nResult := 0
+			elseif oElement:Interval:Start > nPos
+				nResult := 1
+			else 
+				nResult := -1
+			endif
+			return nResult
+
 		method FindMemberAtPosition(nPos as long) as XElement
-			local oResult := null_object as XElement
-			foreach oMember as XElement in _entityList
-				if oMember:Interval:Start > nPos
-					exit
-				endif
-				if oMember:Interval:Start <= nPos .and. oMember:Interval:Stop >= nPos
-					oResult := oMember
-					exit
-				endif
-			next
-			return oResult
+			return self:FindMember(CompareByPosition, nPos)
 
 		
 		method InitTypeList() as void
@@ -96,9 +124,9 @@ begin namespace XSharpModel
 				self:_typeList		:= ConcurrentDictionary<string, XType>{System.StringComparer.InvariantCultureIgnoreCase}
 				self:_globalType	:= XType.CreateGlobalType(self)
 				self:_typeList:TryAdd(self:_globalType:Name, self:_globalType)
-				self:_usings		:= List<string>{}
-				self:_usingStatics	:= List<string>{}
-				self:_entityList    := List<XElement>{}
+				self:_usings		:= ImmutableList<string>.Empty
+				self:_usingStatics	:= ImmutableList<string>.Empty
+				self:_entityList    := ImmutableList<XElement>.Empty
 			endif
 		
 		method SetTypes(types as IDictionary<string, XType>, usings as IList<string>, ;
@@ -107,17 +135,18 @@ begin namespace XSharpModel
 				System.Diagnostics.Trace.WriteLine(String.Concat("-->> XFile.SetTypes() ", System.IO.Path.GetFileName(self:SourcePath)))
 				begin lock self
 					self:_typeList:Clear()
-					self:_usings:Clear()
-					self:_usingStatics:Clear()
+					self:_usings		:= self:_usings:Clear()
+					self:_usingStatics	:= self:_usingStatics:Clear()
 					foreach type as KeyValuePair<string, XType> in types
 						self:_typeList:TryAdd(type:Key, type:Value)
 						if (XType.IsGlobalType(type:Value))
 							self:_globalType := type:Value
 						endif
 					next
-					self:_usings:AddRange(usings)
-					self:_usings:AddRange(staticusings)
-					self:_entityList := aEntities
+					self:_usings := self:_usings:AddRange(usings)
+					self:_usings := self:_usingStatics:AddRange(staticusings)
+					self:_entityList := self:_entityList:Clear()
+					self:_entityList := self:_entityList:AddRange(aEntities)
 				end lock
 				System.Diagnostics.Trace.WriteLine(String.Concat("<<-- XFile.SetTypes() ", System.IO.Path.GetFileName(self:SourcePath), " ", self:_typeList:Count:ToString()))
 			endif
@@ -134,6 +163,7 @@ begin namespace XSharpModel
 			foreach oElement as EntityObject in oInfo:Types
 				oType   := XType.create(self, oElement,oInfo)
 				aTypes:Add( oType:Name, oType)
+				self:Project:RemoveMergedType(oType)
 			next
 			foreach oLine as LineObject in oInfo:SpecialLines
 				if oLine:eType == LineType.Using
@@ -181,7 +211,7 @@ begin namespace XSharpModel
 		
 		
 		// Properties
-		property AllUsingStatics as System.Collections.Immutable.ImmutableList<string>
+		property AllUsingStatics as IList<string>
 			get
 				
 				if (! self:HasCode)
@@ -206,7 +236,7 @@ begin namespace XSharpModel
 					endif
 				end lock
 				System.Diagnostics.Trace.WriteLine("<<-- XFile.AllUsingStatics")
-				return statics:ToImmutableList()
+				return statics
 			end get
 		end property
 		
@@ -254,7 +284,6 @@ begin namespace XSharpModel
 		
 		property Project as XProject
 			get
-				
 				if self:_project == null
 					self:_project := XSolution.OrphanedFilesProject
 					self:_project:AddFile(self:filePath)
@@ -268,38 +297,30 @@ begin namespace XSharpModel
 		
 		property SourcePath as string
 			get
-				
 				if (self:IsXaml)
-					
 					return self:XamlCodeBehindFile
 				endif
 				return self:FullPath
 			end get
 		end property
 		
-		property TypeList as System.Collections.Immutable.IImmutableDictionary<string, XType>
+		property TypeList as IDictionary<string, XType>
 			get
 				if ! self:HasCode
 					return null
 				endif
 				begin lock self:_lock
-					return System.Collections.Immutable.ImmutableDictionary.ToImmutableDictionary<string, XType>(self:_typeList, System.StringComparer.OrdinalIgnoreCase)
+					return self:_typeList
 				end lock
 			end get
 		end property
 		
-		property Usings as ImmutableList<string>
+		property Usings as IList<string>
 			get
 				if ! self:HasCode
 					return null
 				endif
-				System.Diagnostics.Trace.WriteLine("-->> XFile.Usings")
-				local list as ImmutableList<string>
-				begin lock self:_lock
-					list := self:_usings:ToImmutableList()
-				end lock
-				System.Diagnostics.Trace.WriteLine("<<-- XFile.Usings")
-				return list
+				return _usings
 			end get
 		end property
 		

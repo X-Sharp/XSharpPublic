@@ -3,15 +3,11 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Package;
 using System.Collections;
 using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio;
 using XSharpModel;
 
 namespace XSharp.LanguageService
@@ -19,30 +15,34 @@ namespace XSharp.LanguageService
 
     public sealed class XSharpTypeAndMemberDropDownBars : TypeAndMemberDropdownBars
     {
-        XSharpLanguageService langservice = null;
-
-        internal class sortXElement : IComparer
-        {
-            // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
-            int IComparer.Compare(Object x, Object y)
-            {
-                XElement elt1 = x as XElement;
-                XElement elt2 = y as XElement;
-                //
-                return elt1.Name.CompareTo(elt2.Name);
-            }
-
-        }
+        int lastLine = -1;
+        XElement _lastSelected;
+        ArrayList _members = null;
+        XFile _file = null;
+        uint _lastHashCode = 0;
 
         public XSharpTypeAndMemberDropDownBars(
             XSharpLanguageService lang,
             IVsTextView view)
             : base(lang)
         {
-            langservice = lang;
-            //
         }
-
+        public override int OnItemChosen(int combo, int entry)
+        {
+            bool handled = false;
+            if (combo == 1 && entry < _members?.Count && entry >= 0)
+            {
+                var member = _members[entry] as XDropDownMember;
+                if (member.Element.File != _file)
+                { 
+                    member.Element.OpenEditor();
+                    handled = true;
+                }
+            }
+            if (! handled)
+                return base.OnItemChosen(combo, entry);
+            return 0;
+        }
         public override bool OnSynchronizeDropdowns(
             Microsoft.VisualStudio.Package.LanguageService languageService,
             IVsTextView textView,
@@ -63,20 +63,62 @@ namespace XSharp.LanguageService
                 selectedType = selectedMember = -1;
                 return true;
             }
+            // when the line did not change, we do nothing for performance reasons
+            // this speeds up typing  for buffers with lots of entities
+            if (line == lastLine)
+                return false;
+            lastLine = line;
 
-            var sortItems = optionsPage.SortNavigationBars;
-            var includeFields = optionsPage.IncludeFieldsInNavigationBars;
-            bool bModification = false;
             Source src = languageService.GetSource(textView);
-            String srcFile = src.GetFilePath();
+            string srcFile = src.GetFilePath();
             //
-            XFile file = XSharpModel.XSolution.FindFullPath(srcFile);
+            XFile file = XSolution.FindFullPath(srcFile);
             if (file == null || file.TypeList == null)
             {
                 return false;
             }
-
-            //
+            XElement selectedElement = file.FindMemberAtRow(line);
+            if (selectedElement == _lastSelected)
+            {
+                return false;
+            }
+            if (file.ContentHashCode == _lastHashCode)
+            {
+                // no need to rebuild the list. Just focus to another element
+                // locate item in members collection
+                selectedMember = 0;
+                selectedType = 0;
+                _lastSelected = selectedElement;
+                bool selectedIsType = false;
+                for (int i = 0; i < dropDownMembers.Count; i++)
+                {
+                    var member = (XDropDownMember) dropDownMembers[i];
+                    if (member.Element.Prototype == selectedElement.Prototype)
+                    {
+                        selectedMember = i;
+                        selectedIsType = (i == 0 && member.Label.StartsWith("("));
+                        break;
+                    }
+                }
+                for (int i = 0; i < dropDownTypes.Count; i++)
+                {
+                    var member = (XDropDownMember)dropDownTypes[i];
+                    if (selectedIsType && member.Element.Name == selectedElement.Name)
+                    {
+                        selectedType = i;
+                        break;
+                    }
+                    else
+                    if (member.Element.Name == selectedElement.Parent.Name)
+                    {
+                        selectedType = i;
+                        break;
+                    }
+                }
+                return true;
+            }
+            var sortItems = optionsPage.SortNavigationBars;
+            var includeFields = optionsPage.IncludeFieldsInNavigationBars;
             dropDownTypes.Clear();
             dropDownMembers.Clear();
             int nSelType = -1;
@@ -101,7 +143,6 @@ namespace XSharp.LanguageService
             XType typeGlobal = null;
             int nSelect  = 0;
 
-            XElement selectedElement = file.FindMemberAtRow(line);
             XTypeMember currentMember = null;
             XType currentType = null;
 
@@ -116,7 +157,13 @@ namespace XSharp.LanguageService
                 currentMember = null;
             }
             nSelect = 0;
-            DropDownMember elt;
+            XDropDownMember elt;
+            // C# shows all items PLAIN
+            // but when the selection is not really on an item, but for example on a comment
+            // between methods, or on the comments between the namespace and the first class
+            // then the next method/class is selected and displayed in GRAY
+            // C# also includes members (for partial classes) that are defined in other source files
+            // these are colored GRAY
             foreach (XType eltType in xList)
             {
                 if (eltType.Kind == Kind.Namespace)
@@ -127,46 +174,67 @@ namespace XSharp.LanguageService
                     typeGlobal = eltType;
                 }
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
-                bModification = true;
                 if (eltType == currentType)
                 {
-                    ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
+                    if (currentType.Range.EndLine >= line + 1 || currentType.Range.StartLine <= line + 1)
+                        ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
+                    else
+                        ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
                 }
                 else
                 {
-                    ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                    ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                 }
                 string name = eltType.Name ;
                 if (string.IsNullOrEmpty(name))
                 {
                     name = "?";
                 }
-                elt = new DropDownMember(name, sp, eltType.Glyph, ft);
+                elt = new XDropDownMember(name, sp, eltType.Glyph, ft);
+                elt.Element = eltType;
                 nSelect = dropDownTypes.Add(elt);
                 if (eltType?.FullName == currentType?.FullName)
                 {
                     nSelType = nSelect;
                 }
-                //
             }
 
             if (currentType == null)
+            { 
                 currentType = typeGlobal;
+            }
+            bool hasPartial = false;
             if (currentType != null)    // should not happen since all files have a global type
             {
                 nSelMbr = 0;
-                IEnumerable<XTypeMember> members = currentType.Members;
+                IList<XTypeMember> members;
+                if (currentType != typeGlobal && currentType.IsPartial)
+                {
+                    // retrieve members from other files ?
+                    var fullType = file.Project.LookupFullName(currentType.FullName, true);
+                    hasPartial = true;
+                    members = fullType.Members;
+                }
+                else
+                {
+                    members = currentType.Members;
+                }
                 if (sortItems)
                 {
-                    members = members.OrderBy(x => x.Name);
+                    members = members.OrderBy(x => x.Name).ToList();
                 }
                 // Add member for class declaration
                 TextSpan spM = this.TextRangeToTextSpan(currentType.Range);
-                ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                 if (currentType != typeGlobal)
                 {
-                    elt = new DropDownMember("("+currentType.Name+")", spM, currentType.Glyph, ft);
+                    elt = new XDropDownMember("("+currentType.Name+")", spM, currentType.Glyph, ft);
+                    elt.Element = currentType;
                     dropDownMembers.Add(elt);
+                }
+                if (currentMember == null)
+                { 
+                    currentMember = currentType.Members.FirstOrDefault();
                 }
                 foreach (XTypeMember member in members)
                 {
@@ -176,19 +244,29 @@ namespace XSharp.LanguageService
 
                         if (member == currentMember)
                         {
-                            ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
+                            if (member.Range.EndLine >= line+1 &&  member.Range.StartLine <= line+1)
+                                ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
+                            else
+                                ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
                         }
                         else
                         {
-                            ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                            if (hasPartial)
+                            { 
+                                if (member.File == file)
+                                    ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
+                                else
+                                    ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                            }
                         }
                         string prototype = member.Prototype;
                         if (prototype.Length > 80)
                         {
                             prototype = prototype.Substring(0, 80) + "...";
                         }
-                        elt = new DropDownMember(prototype, spM, member.Glyph, ft);
+                        elt = new XDropDownMember(prototype, spM, member.Glyph, ft);
                         nSelect = dropDownMembers.Add(elt);
+                        elt.Element = member;
                         if (member == currentMember)
                         {
                             nSelMbr = nSelect;
@@ -196,9 +274,13 @@ namespace XSharp.LanguageService
                     }
                 }
             }
+            _members = dropDownMembers;
+            _file = file;
+            _lastSelected = selectedElement;
+            _lastHashCode = file.ContentHashCode;
             selectedType    = nSelType;
             selectedMember  = nSelMbr;
-            return bModification;
+            return true;
         }
 
         private TextSpan TextRangeToTextSpan(TextRange tr)
@@ -224,5 +306,13 @@ namespace XSharp.LanguageService
         }
 
     }
+    internal class XDropDownMember : DropDownMember
+    {
+            internal XDropDownMember(string label, TextSpan span, int glyph, DROPDOWNFONTATTR fontAttribute) :
+            base(label, span, glyph, fontAttribute)
+        {
 
+        }
+        internal XElement Element { get; set; }
+    }
 }

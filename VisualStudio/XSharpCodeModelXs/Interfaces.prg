@@ -41,6 +41,7 @@ begin namespace XSharpModel
 		property DisableLexing  as logic get
 		property DisableParsing  as logic get
 		property DisableRegions as logic get
+		property KeywordsUppercase as logic get
 		
 	end interface
 	

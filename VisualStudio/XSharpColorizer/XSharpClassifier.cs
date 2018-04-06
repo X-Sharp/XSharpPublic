@@ -15,7 +15,6 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.ComponentModel;
 using XSharpModel;
 using System.Linq;
-using System.Collections.Immutable;
 using System.Threading;
 namespace XSharpColorizer
 {
@@ -54,8 +53,8 @@ namespace XSharpColorizer
         private readonly ITextBuffer _buffer;
 
         private XClassificationSpans _colorTags = new XClassificationSpans();
-        private IImmutableList<ClassificationSpan> _lexerRegions = ImmutableList<ClassificationSpan>.Empty;
-        private IImmutableList<ClassificationSpan> _parserRegions = ImmutableList<ClassificationSpan>.Empty;
+        private IList<ClassificationSpan> _lexerRegions = null;
+        private IList<ClassificationSpan> _parserRegions = null;
         private ITextDocumentFactoryService _txtdocfactory;
         private bool _first = true;
         private XSharpModel.ParseResult _info = null;
@@ -261,7 +260,7 @@ namespace XSharpColorizer
                 var regionTags = BuildRegionTags(info, snapshot, xsharpRegionStart, xsharpRegionStop);
                 lock (gate)
                 {
-                    _parserRegions = regionTags.ToImmutableList();
+                    _parserRegions = regionTags.ToArray();
                 }
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
@@ -279,11 +278,11 @@ namespace XSharpColorizer
             }
 
         }
-        public IImmutableList<ClassificationSpan> BuildRegionTags(XSharpModel.ParseResult info, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
+        public IList<ClassificationSpan> BuildRegionTags(XSharpModel.ParseResult info, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
         {
             if (disableRegions)
             {
-                return new List<ClassificationSpan>().ToImmutableList();
+                return new List<ClassificationSpan>();
             }
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildRegionTags()");
             var regions = new List<ClassificationSpan>();
@@ -486,7 +485,7 @@ namespace XSharpColorizer
                 }
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
-            return regions.ToImmutableList();
+            return regions;
         }
         private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int nStart, int nEnd)
         {
@@ -862,7 +861,7 @@ namespace XSharpColorizer
             {
                 _snapshot = snapshot;
                 _colorTags = newtags;
-                _lexerRegions = regionTags.ToImmutableList();
+                _lexerRegions = regionTags;
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
@@ -908,10 +907,10 @@ namespace XSharpColorizer
             return lastFound;
         }
 
-        public IImmutableList<ClassificationSpan> GetRegionTags()
+        public IList<ClassificationSpan> GetRegionTags()
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
-            IImmutableList<ClassificationSpan> result;
+            IList<ClassificationSpan> result;
             lock (gate)
             {
                 if (_parserRegions != null)
@@ -919,7 +918,7 @@ namespace XSharpColorizer
                     var list = _parserRegions.ToList();
                     if (_lexerRegions != null)
                         list.AddRange(_lexerRegions);
-                    result = list.ToImmutableList(); ;
+                    result = list; ;
                 }
                 else if (_lexerRegions != null)
                 {
@@ -927,7 +926,7 @@ namespace XSharpColorizer
                 }
                 else
                 {
-                    result = ImmutableList<ClassificationSpan>.Empty;
+                    result = new List<ClassificationSpan>();
                 }
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");

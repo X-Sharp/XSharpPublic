@@ -255,7 +255,7 @@ namespace XSharp.Project
                 //
                 ITextSnapshot snapshot = xsClassifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetRegionTags();
+                var  classifications = xsClassifier.GetRegionTags();
                 // We cannot use SortedList, because we may have several Classification that start at the same position
                 List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
                 foreach (var tag in classifications)
@@ -914,7 +914,7 @@ namespace XSharp.Project
             }
             if (xsClassifier != null)
             {
-                System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetRegionTags();
+                var classifications = xsClassifier.GetRegionTags();
                 result = (classifications.Count > 0);
             }
             return result;
@@ -938,16 +938,16 @@ namespace XSharp.Project
                     //
                     ITextSnapshot snapshot = xsClassifier.Snapshot;
                     SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                    System.Collections.Immutable.IImmutableList<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> classifications = xsClassifier.GetRegionTags();
+                    var  classifications = xsClassifier.GetRegionTags();
                     // We cannot use SortedList, because we may have several Classification that start at the same position
-                    List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                    var sortedTags = new List<ClassificationSpan>();
                     foreach (var tag in classifications)
                     {
                         sortedTags.Add(tag);
                     }
                     sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
                     //
-                    Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> startStack = new Stack<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                    var startStack = new Stack<ClassificationSpan>();
                     foreach (var tag in sortedTags)
                     {
                         // Is it a Region ?
@@ -999,10 +999,10 @@ namespace XSharp.Project
             minIndent = -1;
             doSkipped = false;
             List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line);
-            String keyword = "";
+            string keyword = "";
             //
-            String startOfLine = line.GetText();
-            startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
+            string startOfLine = line.GetText();
+            startOfLine = startOfLine.Replace("\t", new string(' ', _tabSize));
             // So, at least, to align to previous line, we will need...
             minIndent = (startOfLine.Length - startOfLine.TrimStart(' ').Length);
             //
@@ -1076,6 +1076,8 @@ namespace XSharp.Project
                 case "ABSTRACT":
                 case "VIRTUAL":
                 case "PARTIAL":
+                case "UNSAFE":
+                case "NEW":
                     return true;
                 default:
                     return false;

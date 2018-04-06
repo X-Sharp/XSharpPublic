@@ -71,7 +71,7 @@ begin namespace XSharpModel
 			oXType:ParentName := oElement:cInherit
 			
 			oElement:oCargo := oXType
-			if oElement:eType:IsClass()
+			if oElement:eType:IsType()
 				foreach var oMember in oElement:aChildren
 					local xMember as XTypeMember
 					xMember := XTypeMember.create(oMember, oInfo, oFile, oXType)
@@ -96,25 +96,25 @@ begin namespace XSharpModel
 				next
 			end lock
 
-		property Members as IImmutableList<XTypeMember>
+		property Members as IList<XTypeMember>
 			get
 				//
 				begin lock self:_members
 					//
-					return self:_members:ToImmutableArray()
+					return self:_members:ToArray()
 				end lock
 			end get
 		end property
 		
 		
-		method GetMember(elementName as string) as IImmutableList<XTypeMember>
+		method GetMember(elementName as string) as IList<XTypeMember>
 			var tempMembers := List<XTypeMember>{} 
 			foreach x as XTypeMember in self:Members
 				if nameEquals(x:Name, elementName) 
 					tempMembers:Add(x)
 				endif
 			next
-			return tempMembers:ToImmutableArray();
+			return tempMembers;
 
 		private method nameEquals(name as string, compareWith as string) as logic
 			return String.Compare(name, compareWith, StringComparison.OrdinalIgnoreCase) == 0

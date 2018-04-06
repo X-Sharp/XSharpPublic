@@ -4,18 +4,16 @@
 // See License.txt in the project root for license information.
 //
 using System.Collections.Generic
-using System.Collections.Immutable
 using System.Diagnostics
 using XSharpModel
 begin namespace XSharpModel
 	[DebuggerDisplay("{Prototype,nq}")];
-		class XTypeMember inherit XElement
+	class XTypeMember inherit XElement
 		// Fields
 		private _parameters as List<XVariable>
 		private _typeName as string
 		
 		#region constructors
-			
 			
 			private constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, span as TextRange, position as TextInterval, typeName as string, isStatic as logic)
 				super(name, kind, modifiers, visibility, span, position)
@@ -32,7 +30,7 @@ begin namespace XSharpModel
 				local mods  := oElement:eModifiers:ToModifiers() as Modifiers
 				local vis   := oElement:eAccessLevel:ToModifiers() as Modifiers
 				local span   as textRange
-				local intv    as TextInterval
+				local intv   as TextInterval
 				local isStat := oElement:lStatic as logic
 				mods &=  ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
 				CalculateRange(oElement, oInfo, out span, out intv)
@@ -75,18 +73,14 @@ begin namespace XSharpModel
 		#region Properties
 		property Description as string
 			get
-				//
 				var modVis := ""
 				if (super:Modifiers != Modifiers.None)
-					//
-					modVis := modVis + super:Modifiers:ToString()+ " "
+					modVis := modVis + super:ModifiersKeyword
 				endif
-				var desc := modVis + super:Visibility:ToString()+  " "
+				var desc := modVis + super:VisibilityKeyword
 				if (super:Kind != Kind.Field)
-					//
-					desc := desc + super:Kind:DisplayName()+ " "
+					desc := desc + super:KindKeyword
 					if (super:Kind == Kind.VODefine)
-						//
 						return desc + super:Name 
 					endif
 				endif
@@ -115,15 +109,14 @@ begin namespace XSharpModel
 
 		property ParameterList as string
 			get
-				//
 				var parameters := ""
 				foreach variable as XVariable in self:Parameters
-					//
 					if (parameters:Length > 1)
-						//
 						parameters := parameters + ", "
 					endif
-					parameters += variable:Name + " as " + variable:TypeName
+					if ! string.IsNullOrEmpty(variable:TypeName)
+						parameters += variable:Name + SELF:AsKeyWord + variable:TypeName
+					endif
 				next
 				return parameters
 			end get
@@ -137,16 +130,13 @@ begin namespace XSharpModel
 		
 		property Prototype as string
 			get
-				//
 				var vars := ""
 				if self:Kind:HasParameters()
-					//
 					vars := "(" + self:ParameterList + ")"
 				endif
 				var desc := super:Name + vars
-				if self:Kind:HasReturnType()
-					//
-					desc := desc + " AS " + self:TypeName
+				if self:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(self:TypeName)
+					desc := desc + SELF:AsKeyWord + self:TypeName
 				endif
 				return desc
 			end get

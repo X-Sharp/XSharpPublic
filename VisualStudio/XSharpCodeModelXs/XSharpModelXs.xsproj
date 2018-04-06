@@ -57,7 +57,7 @@
     <PPO>false</PPO>
     <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths>$(SolutionDir)\Common</IncludePaths>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>

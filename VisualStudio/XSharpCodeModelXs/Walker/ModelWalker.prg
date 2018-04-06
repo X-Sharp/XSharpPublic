@@ -21,6 +21,7 @@ begin namespace XSharpModel
 	class ModelWalker
 		// Fields
 		private _projects := ConcurrentQueue<XProject>{} as ConcurrentQueue<XProject>
+		private _projectsForTypeResolution := ConcurrentQueue<XProject>{} as ConcurrentQueue<XProject>
 		static private _walker as ModelWalker
 		private _WalkerThread as System.Threading.Thread
 		static private suspendLevel  as long
@@ -104,21 +105,16 @@ begin namespace XSharpModel
 			ModelWalker.suspendLevel--
 		
 		internal method StopThread() as void
-			//
 			try
-				//
 				if (self:_WalkerThread == null)
-					//
 					return
 				endif
 				if (self:_WalkerThread:IsAlive)
-					//
 					self:_WalkerThread:Abort()
 				endif
 			catch exception as System.Exception
-				//
-				Support.Debug("Cannot stop Background walker Thread : ", Array.Empty<object>())
-				Support.Debug(exception:Message, Array.Empty<object>())
+				Support.Debug("Cannot stop Background walker Thread : ")
+				Support.Debug(exception:Message)
 			end try
 			self:_WalkerThread := null
 		
@@ -128,11 +124,8 @@ begin namespace XSharpModel
 		
 		method Walk() as void
 			local start as System.Threading.ThreadStart
-			//
 			if (ModelWalker.suspendLevel <= 0)
-				//
 				try
-					//
 					self:StopThread()
 					start := System.Threading.ThreadStart{ self, @Walker() }
 					self:_WalkerThread := System.Threading.Thread{start}
@@ -141,54 +134,69 @@ begin namespace XSharpModel
 					self:_WalkerThread:Name := "ModelWalker"
 					self:_WalkerThread:Start()
 				catch exception as System.Exception
-					//
-					Support.Debug("Cannot start Background walker Thread : ", Array.Empty<object>())
-					Support.Debug(exception:Message, Array.Empty<object>())
+					Support.Debug("Cannot start Background walker Thread : ")
+					Support.Debug(exception:Message)
 				end try
 			endif
+
 		internal iProcessed as long
 		internal aFiles as XFile[]
 		private method Walker() as void
 			local project as XProject
-			local walker as ModelWalker
 			local parallelOptions as System.Threading.Tasks.ParallelOptions
-			//
 			project := null
 			if ((self:_projects:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(self:_projects):ProjectNode:IsVsBuilding)
-				//
-				while (true)
-					//
+				do while (true)
 					if (ModelWalker.suspendLevel > 0)
-						//
 						if (project != null)
-							//
 							self:_projects:Enqueue(project)
 						endif
 						exit
-						
 					endif
-					System.Diagnostics.Trace.WriteLine("-->> ModelWalker.Walker()")
-					walker := self
-					begin lock walker
+					begin lock self
 						if ((self:_projects:Count == 0) .OR. ! self:_projects:TryDequeue( out project))
 							exit
-							
 						endif
 						project:ProjectNode:SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
 					end lock
-					System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.Walker()")
+					System.Diagnostics.Trace.WriteLine("-->> ModelWalker.Walker("+project.Name+")")
 					aFiles := project:SourceFiles:ToArray()
 					iProcessed := 0
 					parallelOptions := ParallelOptions{}
 					if (System.Environment.ProcessorCount > 1)
-						//
 						parallelOptions:MaxDegreeOfParallelism := ((System.Environment.ProcessorCount * 3) / 4)
 					endif
 					project:ProjectNode:SetStatusBarAnimation(true, 0)
 					Parallel.ForEach(aFiles, walkOneFile)
+					begin lock self
+						_projectsForTypeResolution:Enqueue(project)
+					end lock
 					project:ProjectNode:SetStatusBarText("")
 					project:ProjectNode:SetStatusBarAnimation(false, 0)
+					System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.Walker("+project.Name+")")
 				enddo
+
+
+			endif
+			if ((self:_projectsForTypeResolution:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(self:_projectsForTypeResolution):ProjectNode:IsVsBuilding)
+				do while (true)
+					if (ModelWalker.suspendLevel > 0)
+						if (project != null)
+							self:_projectsForTypeResolution:Enqueue(project)
+						endif
+						exit
+					endif
+					
+					begin lock self
+						if ((self:_projectsForTypeResolution:Count == 0) .OR. ! self:_projectsForTypeResolution:TryDequeue( out project))
+							exit
+						endif
+					end lock
+					System.Diagnostics.Trace.WriteLine("-->> ModelWalker.Walker() Resolve types "+project:Name)
+					project:ResolveProjectReferenceDLLs()
+					System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.Walker() Resolve types "+project:Name)
+				enddo
+
 			endif
 		
 		private method walkOneFile(file as XFile) as void
@@ -196,42 +204,39 @@ begin namespace XSharpModel
 			if (project:Loaded)
 				iProcessed++
 				do while (project:ProjectNode:IsVsBuilding)
-					//
 					System.Threading.Thread.Sleep(1000)
 				enddo
 				project:ProjectNode:SetStatusBarText(String.Format("Walking {0} : Processing File {1} ({2} of {3})", project:Name, file:Name, iProcessed, aFiles:Length))
 				self:FileWalk(file)
 			endif
 			do while ModelWalker.IsSuspended .AND. System.Threading.Thread.CurrentThread:IsBackground
-				//
 				System.Threading.Thread.Sleep(100)
 			enddo
 			return
+
 		// Properties
 		property HasWork as logic
 			get
-				//
 				return (self:_projects:Count > 0)
 			end get
 		end property
 		
 		static property IsSuspended as logic
 			get
-				//
 				return ModelWalker.suspendLevel > 0
 			end get
 		end property
 		
 		property IsWalkerRunning as logic
 			get
-				//
 				try
-					//
-					return self:_WalkerThread:IsAlive
+					if self:_WalkerThread != null
+						return self:_WalkerThread:IsAlive
+					endif
 				catch exception as System.Exception
 					//
-					Support.Debug("Cannot check Background walker Thread : ", Array.Empty<object>())
-					Support.Debug(exception:Message, Array.Empty<object>())
+					Support.Debug("Cannot check Background walker Thread : ")
+					Support.Debug(exception:Message)
 				end try
 				return false
 			end get

@@ -19,7 +19,6 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Text.Classification;
 using XSharpColorizer;
 using XSharpModel;
-using System.Collections.Immutable;
 namespace XSharpColorizer
 {
 
@@ -110,7 +109,7 @@ namespace XSharpColorizer
                 //
                 ITextSnapshot snapshot = xsClassifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                IImmutableList<ClassificationSpan> classifications = xsClassifier.GetRegionTags();
+                var classifications = xsClassifier.GetRegionTags();
                 
                 SnapshotSpan fullSpan = new SnapshotSpan(spans[0].Start, spans[spans.Count - 1].End).TranslateTo(snapshot, SpanTrackingMode.EdgeExclusive);
                 int startLineNumber = fullSpan.Start.GetContainingLine().LineNumber;

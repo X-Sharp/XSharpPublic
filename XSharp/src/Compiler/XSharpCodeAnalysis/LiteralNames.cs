@@ -157,7 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSetWa = "global::XSharp.Functions.__FieldSetWa";
         internal const string MemVarGet = "global::XSharp.Functions.__MemVarGet";
         internal const string MemVarPut = "global::XSharp.Functions.__MemVarPut";
-        internal const string NullDate = "global::Vulcan.__VODate.NullDate";
+        internal const string NullDate = "global::XSharp.__VODate.NullDate";
         internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::XSharp.Internal.CompilerServices.String2Psz";
         internal const string ArrayNew = "global::XSharp.__Array.__ArrayNew";

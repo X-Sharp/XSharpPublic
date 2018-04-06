@@ -100,7 +100,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal const string CoreFunctionsClass = XSharpFunctionNames.FunctionsClass;
         internal const string VOExeFunctionsClass = ".Exe.Functions";
-        internal const string XSharpCoreFunctionsClass = "XSharp_Core.Functions";
+        internal const string XSharpCoreFunctionsClass = "Functions";
         internal const string XSharpRDDFunctionsClass = "XSharp_RDD.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp_VO.Functions";
         internal const string VODllFunctionsClass = ".Functions";

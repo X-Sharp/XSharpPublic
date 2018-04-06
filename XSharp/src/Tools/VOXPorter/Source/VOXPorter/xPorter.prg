@@ -19,7 +19,7 @@ GLOBAL Replace_VOOleContainer := NULL AS STRING
 DEFINE ToolName := "VO-xPorter" AS STRING
 
 [STAThread];
-FUNCTION Start() AS VOID
+FUNCTION Start(asParams AS STRING[]) AS VOID
 	LOCAL oOptions AS xPorterOptions
 	oOptions := xPorterOptions{}
 
@@ -40,14 +40,45 @@ FUNCTION Start() AS VOID
 	
 	ReadIni()
 	
+	ReadCommandLine(asParams)
+
 	ShowWarningScreen()
 
 	xPorter.uiForm := xPorterUI{oOptions}
-
+	
 	Application.EnableVisualStyles()
 	Application.Run(xPorter.uiForm)
 	
 RETURN
+
+FUNCTION ReadCommandLine(asParams AS STRING[]) AS VOID
+	FOREACH cParam AS STRING IN asParams
+		LOCAL cUpper := cParam:ToUpper() AS STRING
+		LOCAL cFileName AS STRING
+		TRY
+			DO CASE
+			CASE cUpper:StartsWith("/S:")
+				cFileName := cParam:Substring(3)
+				IF SafeFileExists(cFileName) .or. SafeFolderExists(cFileName)
+					DefaultSourceFolder := cFileName
+				END IF
+			CASE cUpper:StartsWith("/D:")
+				cFileName := cParam:Substring(3)
+				IF Path.IsPathRooted(cFileName)
+					DefaultOutputFolder := cFileName
+				END IF
+			CASE cUpper:StartsWith("/R:")
+				cFileName := cParam:Substring(3)
+				IF SafeFolderExists(cFileName)
+					RuntimeFolder := cFileName
+				END IF
+			CASE cUpper:StartsWith("/NOWARNING")
+				NoWarningScreen := TRUE
+			END CASE
+		END TRY
+	NEXT
+	
+RETURN 
 
 FUNCTION ReadIni() AS VOID
 	LOCAL cFileName AS STRING
@@ -2560,4 +2591,17 @@ RETURN sCode:ToString()
 FUNCTION MakePathLegal(cPath AS STRING) AS STRING
 // vary neat piece of code above, found in stackoverflow!
 RETURN String.Join("_" , cPath:Split( Path.GetInvalidFileNameChars() ) )
+
+FUNCTION SafeFileExists(cFileName AS STRING) AS LOGIC
+	LOCAL lRet := FALSE AS LOGIC
+	TRY
+		lRet := File.Exists(cFileName)
+	END TRY
+RETURN lRet
+FUNCTION SafeFolderExists(cFolder AS STRING) AS LOGIC
+	LOCAL lRet := FALSE AS LOGIC
+	TRY
+		lRet := Directory.Exists(cFolder)
+	END TRY
+RETURN lRet
 

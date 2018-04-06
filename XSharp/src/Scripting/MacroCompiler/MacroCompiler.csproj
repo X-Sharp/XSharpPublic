@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EB3F3142-07F7-48CA-B38D-F611C45A9511}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharp.MacroCompiler</RootNamespace>
+    <AssemblyName>XSharp.MacroCompiler</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Binder\Binder.Argument.cs" />
+    <Compile Include="Binder\Binder.BinaryOp.cs" />
+    <Compile Include="Binder\Binder.Call.cs" />
+    <Compile Include="Binder\Binder.Conversion.cs" />
+    <Compile Include="Binder\Binder.cs" />
+    <Compile Include="Binder\Binder.Expr.cs" />
+    <Compile Include="Binder\Binder.Type.cs" />
+    <Compile Include="Binder\BoundNode.cs" />
+    <Compile Include="Binder\Constant.cs" />
+    <Compile Include="Binder\Conversion.cs" />
+    <Compile Include="Binder\Operator.cs" />
+    <Compile Include="Binder\OverloadResult.cs" />
+    <Compile Include="Binder\Symbol.cs" />
+    <Compile Include="CodeGen\CodeGen.cs" />
+    <Compile Include="CodeGen\CodeGen.Emit.cs" />
+    <Compile Include="CodeGen\EmitNode.cs" />
+    <Compile Include="Common\LiteralNames.cs" />
+    <Compile Include="Common\NativeTypes.cs" />
+    <Compile Include="Common\WellKnownMembers.cs" />
+    <Compile Include="Compiler\Compiler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Syntax\Lexer.cs" />
+    <Compile Include="Syntax\Literal.cs" />
+    <Compile Include="Syntax\Parser.cs" />
+    <Compile Include="Syntax\SyntaxNode.cs" />
+    <Compile Include="Syntax\SyntaxToken.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

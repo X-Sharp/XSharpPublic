@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
-        public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.Other;
+        public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.None;
         public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;
         public bool Vo2 { get; internal set; } = false;

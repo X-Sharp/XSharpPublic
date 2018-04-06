@@ -392,8 +392,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var methodGroup = originalexpr as BoundMethodGroup;
                     if (string.Equals(methodGroup.Name, "Item", StringComparison.OrdinalIgnoreCase))
                     {
-                        diagnostics.Clear();
-                        expr = CheckValue(methodGroup.InstanceOpt, BindValueKind.RValue, diagnostics);
+                        var newDiag = DiagnosticBag.GetInstance();
+                        expr = CheckValue(methodGroup.InstanceOpt, BindValueKind.RValue, newDiag);
+                        if (expr.Kind != BoundKind.BadExpression)
+                        {
+                            diagnostics.Clear();
+                        }
                     }
                 }
             }

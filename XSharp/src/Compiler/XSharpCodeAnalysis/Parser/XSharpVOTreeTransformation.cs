@@ -124,6 +124,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal Dictionary<string, FieldDeclarationSyntax> LiteralSymbols => _literalSymbols;
         internal static SyntaxList<AttributeListSyntax> VOClassAttribs { get { return _voClassAttribs; } }
 
+        public override string GetGlobalClassName(XSharpTargetDLL targetDLL)
+        {
+            switch (targetDLL)
+            {
+                case XSharpTargetDLL.Core:
+                case XSharpTargetDLL.VO:
+                case XSharpTargetDLL.RDD:
+                    return base.GetGlobalClassName(targetDLL);
+            }
+            string name = _options.CommandLineArguments?.CompilationOptions.ModuleName;
+            string firstSource = _options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
+            if (String.IsNullOrEmpty(name))
+            {
+                name = firstSource;
+            }
+
+            if (!String.IsNullOrEmpty(name))
+            {
+                string filename = PathUtilities.GetFileName(name);
+                filename = PathUtilities.RemoveExtension(filename);
+                filename = filename.Replace('.', '_');
+                if (_options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
+                    name = filename + XSharpSpecialNames.VOExeFunctionsClass;
+                else
+                    name = filename + XSharpSpecialNames.VODllFunctionsClass;
+            }
+            else
+            {
+                name = XSharpSpecialNames.CoreFunctionsClass;
+            }
+            return name;
+        }
         internal SyntaxList<AttributeListSyntax> GetVOClassAttributes()
         {
             if (_voClassAttribs == null)
@@ -175,42 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region SyntaxTree
-
-        public override string GetGlobalClassName(XSharpTargetDLL targetDLL)
-        {
-            switch (targetDLL)
-            {
-                case XSharpTargetDLL.Core:
-                case XSharpTargetDLL.RDD:
-                case XSharpTargetDLL.VO:
-                    return base.GetGlobalClassName(targetDLL);
-            }
-            // calculate the global class name;
-            string name = _options.CommandLineArguments?.CompilationOptions.ModuleName;
-            string firstSource = _options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
-            if (String.IsNullOrEmpty(name))
-            {
-                name = firstSource;
-            }
-
-            if (!String.IsNullOrEmpty(name))
-            {
-                string filename = PathUtilities.GetFileName(name);
-                filename = PathUtilities.RemoveExtension(filename);
-                filename = filename.Replace('.', '_');
-                if (_options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
-                    name = filename + XSharpSpecialNames.VOExeFunctionsClass;
-                else
-                    name = filename + XSharpSpecialNames.VODllFunctionsClass;
-            }
-            else
-            {
-                name = XSharpSpecialNames.CoreFunctionsClass;
-            }
-            return name;
-        }
-
-            private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall)
+        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall)
         {
 
             // Create Global Functions class with the Members to call the Init procedures
@@ -1290,16 +1287,151 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Name.Get<SimpleNameSyntax>()));
         }
 
+        public override void ExitPrefixExpression([NotNull] XP.PrefixExpressionContext context)
+        {
+            ExpressionSyntax expr = context.Expr.Get<ExpressionSyntax>();
+            var Op = context.Op;
+            // 
+            if (expr.XNode is XP.PrimaryExpressionContext && expr.XNode.GetChild(0) is XP.AliasedFieldContext)
+            {
+                // prefix on an aliased field
+                // ++Customer->CustNo
+                // translate to 
+                // Functions.__FieldSetWa("Customer", "CustNo", Functions.__FieldGetWa("Customer", "CustNo") + 1);
+                XP.AliasedFieldContext fieldNode = expr.XNode.GetChild(0) as XP.AliasedFieldContext;
+                var alias = fieldNode.Alias?.GetText();
+                var field = fieldNode.Field.GetText();
+                expr = GenerateFieldGet(alias, field);
+                var lit = GenerateLiteral(1);
+                switch (Op.Type)
+                {
+                    case XSharpLexer.INC:
+                        expr = _syntaxFactory.BinaryExpression(SyntaxKind.AddExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.PlusToken), lit);
+                        expr = GenerateFieldSet(alias, field, expr);
+                        context.Put(expr);
+                        return;
+                    case XSharpLexer.DEC:
+                        expr = _syntaxFactory.BinaryExpression(SyntaxKind.SubtractExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.MinusToken), lit);
+                        expr = GenerateFieldSet(alias, field, expr);
+                        context.Put(expr);
+                        return;
+                    case XSharpLexer.TILDE:
+                    case XSharpLexer.PLUS:
+                    case XSharpLexer.MINUS:
+                    case XSharpLexer.ADDROF:
+                        // these all are normal operators and do not change the field
+                        break;
+                }
+            }
+            else if (expr.XNode is XP.PrimaryExpressionContext && expr.XNode.GetChild(0) is XP.NameExpressionContext)
+            {
+                // (Expr) ->++FIELD 
+                // FIELD Is a NameExpression here
+                // we need to redo this here
+                var nameExpr = expr.XNode.GetChild(0) as XP.NameExpressionContext;
+                expr = GeneratePrePostFixField(nameExpr, context.Op);
+                if (expr != null)
+                {
+                    context.Put(expr);
+                    return;
+                }
+            }
+            base.ExitPrefixExpression(context);
 
+        }
+
+        private ExpressionSyntax GeneratePrePostFixField(XP.NameExpressionContext nameExpr, IToken Op)
+        {
+            ExpressionSyntax expr = null;
+            var lit = GenerateLiteral(1);
+            string field = nameExpr.GetText();
+            MemVarFieldInfo fieldInfo = null;
+            if (CurrentEntity != null)
+            {
+                fieldInfo = CurrentEntity.Data.GetField(field);
+            }
+            if (fieldInfo != null)
+            {
+                if (fieldInfo.IsField)
+                {
+                    expr = GenerateFieldGet(fieldInfo.Alias, fieldInfo.Name);
+                }
+                else
+                {
+                    expr = GenerateMemVarGet(fieldInfo.Name);
+                }
+
+                if (Op.Type == XSharpLexer.INC)
+                {
+                    expr = _syntaxFactory.BinaryExpression(SyntaxKind.AddExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.PlusToken), lit);
+                }
+                else
+                {
+                    expr = _syntaxFactory.BinaryExpression(SyntaxKind.SubtractExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.MinusToken), lit);
+                }
+                if (fieldInfo.IsField)
+                {
+                    expr = GenerateFieldSet(null, field, expr);
+                }
+                else
+                {
+                    expr = GenerateMemVarPut(field, expr);
+                }
+            }
+            return expr;
+        }
+
+        public override void ExitPostfixExpression([NotNull] XP.PostfixExpressionContext context)
+        {
+            ExpressionSyntax expr = context.Expr.Get<ExpressionSyntax>();
+            var Op = context.Op;
+            // 
+            if (expr.XNode is XP.PrimaryExpressionContext && expr.XNode.GetChild(0)  is XP.AliasedFieldContext)
+            {
+                // postfix on an aliased field
+                // Customer->CustNo ++
+                // translate to 
+                // Functions.__FieldSetWa("Customer", "CustNo", Functions.__FieldGetWa("Customer", "CustNo") + 1);
+
+                XP.AliasedFieldContext fieldNode = expr.XNode.GetChild(0) as XP.AliasedFieldContext;
+                var alias = fieldNode.Alias?.GetText();
+                var field = fieldNode.Field.GetText();
+                expr = GenerateFieldGet(alias, field);
+                var lit = GenerateLiteral(1);
+                if (Op.Type == XSharpLexer.INC)
+                    expr = _syntaxFactory.BinaryExpression(SyntaxKind.AddExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.PlusToken), lit);
+                else
+                    expr = _syntaxFactory.BinaryExpression(SyntaxKind.SubtractExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.MinusToken), lit);
+                    expr = GenerateFieldSet(alias, field, expr);
+                context.Put(expr);
+                return;
+                
+            }
+            else if (expr.XNode is XP.PrimaryExpressionContext && expr.XNode.GetChild(0) is XP.NameExpressionContext)
+            {
+                // (Expr) ->FIELD ++
+                // FIELD gets converted to an InvocationSyntax of FieldGet or MemVarGet (depending on FIELD or MEMVAR statement)
+                // we need to redo this here
+                var nameExpr = expr.XNode.GetChild(0)  as XP.NameExpressionContext;
+                expr = GeneratePrePostFixField(nameExpr, context.Op);
+                if (expr != null)
+                { 
+                    context.Put(expr);
+                    return;
+                }
+            }
+            base.ExitPostfixExpression(context);
+
+        }
         public override void ExitAssignmentExpression([NotNull] XP.AssignmentExpressionContext context)
         {
             // when /vo12 is used then for the types .ASSIGN_DIV add conversion for the LHS and RHS to Double
             // Check for Field or MemVar assignments
             ExpressionSyntax left = context.Left.Get<ExpressionSyntax>();
             ExpressionSyntax right = context.Right.Get<ExpressionSyntax>();
-            if (left.XNode is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)left.XNode).Expr is XP.AliasedFieldContext)
+            if (left.XNode is XP.PrimaryExpressionContext && left.XNode.GetChild(0) is XP.AliasedFieldContext)
             {
-                XP.AliasedFieldContext fieldNode = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.AliasedFieldContext;
+                XP.AliasedFieldContext fieldNode = left.XNode.GetChild(0) as XP.AliasedFieldContext;
                 //ToDo
                 // Convert _FIELD->NAME += 1 to _FIELD->NAME := _FIELD->NAME + 1
 
@@ -1331,9 +1463,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
 
             }
-            else if (left.XNode is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)left.XNode).Expr is XP.NameExpressionContext)
+            else if (left.XNode is XP.PrimaryExpressionContext && left.XNode.GetChild(0) is XP.NameExpressionContext)
             {
-                XP.NameExpressionContext namecontext = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.NameExpressionContext;
+                XP.NameExpressionContext namecontext = left.XNode.GetChild(0) as XP.NameExpressionContext;
                 string name = namecontext.Name.GetText();
                 MemVarFieldInfo fieldInfo = null;
                 if (CurrentEntity != null)
@@ -1829,8 +1961,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // VAR Xs$Return := SELF:Field
                     // RETURN
 
-                    if (ent.Data.IsInitAxit && context.Expr is XP.PrimaryExpressionContext &&
-                        ((XP.PrimaryExpressionContext)context.Expr).Expr is XP.SelfExpressionContext)
+                    if (ent.Data.IsInitAxit && context.Expr is XP.PrimaryExpressionContext && context.Expr.GetChild(0) is XP.SelfExpressionContext)
                     {
                         // allow return SELF and ignore SELF
                         context.Put(GenerateReturn(null));
@@ -1910,13 +2041,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (expr is XP.PrimaryExpressionContext)
             {
-                var prim = (XP.PrimaryExpressionContext)expr;
-                var lit = prim.Expr as XP.LiteralExpressionContext;
+                var lit = expr.GetChild(0) as XP.LiteralExpressionContext;
                 if (lit != null)
                 {
                     return lit;
                 }
-                var paren = prim.Expr as XP.ParenExpressionContext;
+                var paren = expr.GetChild(0) as XP.ParenExpressionContext;
                 if (paren != null)
                 {
                     return GetLiteralExpression(paren.Expr);
@@ -3223,8 +3353,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax alias = context.Alias.Get<ExpressionSyntax>();
             if (context.Id != null)
             {
-                if (context.Expr is XP.PrimaryExpressionContext &&
-                    ((XP.PrimaryExpressionContext)context.Expr).Expr is XP.NameExpressionContext)
+                if (context.Expr is XP.PrimaryExpressionContext && context.Expr.GetChild(0) is XP.NameExpressionContext)
                 {
                     string field = context.Expr.GetText();
                     context.Put(GenerateFieldGet(context.Id.GetText(), field));

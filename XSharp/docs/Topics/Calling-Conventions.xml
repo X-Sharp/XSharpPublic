@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Calling Conventions</title>
   <keywords>
+    <keyword>_WINCALL</keyword>
     <keyword>CLIPPER</keyword>
     <keyword>FASTCALL</keyword>
     <keyword>PASCAL</keyword>
@@ -13,13 +14,6 @@
     <header>
       <para styleclass="Heading1">Calling Conventions</para>
     </header>
-    <para styleclass="Normal">CLIPPER</para>
-    <para styleclass="Normal">STRICT</para>
-    <para styleclass="Normal">PASCAL</para>
-    <para styleclass="Normal">FASTCALL</para>
-    <para styleclass="Normal">THISCALL</para>
-    <para styleclass="Normal">ASPEN</para>
-    <para styleclass="Normal">WINCALL</para>
-    <para styleclass="Normal">CALLBACK</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">CLIPPER</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">STRICT</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">PASCAL</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">FASTCALL</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">THISCALL</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">ASPEN</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">CALLBACK</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">_WINCALL</text></para>
   </body>
 </topic>

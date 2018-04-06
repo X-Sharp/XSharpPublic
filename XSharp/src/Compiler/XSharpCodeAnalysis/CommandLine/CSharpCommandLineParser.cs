@@ -159,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 options.TargetDLL = XSharpTargetDLL.RDD;
                                 break;
                             default:
-                                options.TargetDLL = XSharpTargetDLL.Other;
+                                options.TargetDLL = XSharpTargetDLL.None;
                                 break;
                         }
                     }

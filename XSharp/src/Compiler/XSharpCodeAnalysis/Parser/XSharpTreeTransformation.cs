@@ -234,7 +234,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (_defTree == null)
                     {
-                        var t = new XSharpTreeTransformation(null,CSharpParseOptions.Default , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+                        var opt = CSharpParseOptions.Default;
+                        XSharpSpecificCompilationOptions xopt = new XSharpSpecificCompilationOptions();
+                        xopt.TargetDLL = targetDLL;
+                        opt = opt.WithXSharpSpecificOptions(xopt);
+                        var t = new XSharpTreeTransformation(null,opt , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
                         string globalClassName = t.GetGlobalClassName(targetDLL);
 
@@ -2366,7 +2370,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (GlobalEntities.StaticGlobalClassMembers.Count > 0)
             {
                 string filename = PathUtilities.GetFileName(_fileName);
-                string className = GlobalClassName + "$" + filename + "$";
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = RemoveUnwantedCharacters(filename);
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
@@ -5689,12 +5692,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCatchBlock([NotNull] XP.CatchBlockContext context)
         {
             context.SetSequencePoint(context.end);
-            context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
-                context.Id == null ? null : _syntaxFactory.CatchDeclaration(
+            CatchDeclarationSyntax decl = null;
+            if (context.Type != null || context.Id != null)
+            {
+                SyntaxToken id = null;
+                TypeSyntax type = null;
+                if (context.Id != null)
+                {
+                    id = context.Id.Get<SyntaxToken>();
+                }
+                if (context.Type != null)
+                {
+                    type = context.Type.Get<TypeSyntax>();
+                }
+                else
+                {
+                    type = GenerateQualifiedName("System.Exception");
+                }
+                decl = _syntaxFactory.CatchDeclaration(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    context.Type?.Get<TypeSyntax>() ?? MissingType(),
-                    context.Id.Get<SyntaxToken>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)),
+                    type, 
+                    id,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            }
+
+            context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
+                decl,
                 null, // TODO: (grammar) catch filters?
                 context.StmtBlk.Get<BlockSyntax>()));
         }

@@ -1493,7 +1493,7 @@ begin namespace XSharpModel
 			return
 
 		internal method AddParam(cParam as string) as EntityParamsObject
-			return self:AddParam(cParam, "USUAL")
+			return self:AddParam(cParam, "")
 		
 		internal method AddParam(cParam as string , cType as string) as EntityParamsObject
 			if self:aParams == null

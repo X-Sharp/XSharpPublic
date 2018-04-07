@@ -247,9 +247,9 @@
             this.chkIncludeFields.AutoSize = true;
             this.chkIncludeFields.Location = new System.Drawing.Point(13, 17);
             this.chkIncludeFields.Name = "chkIncludeFields";
-            this.chkIncludeFields.Size = new System.Drawing.Size(182, 17);
+            this.chkIncludeFields.Size = new System.Drawing.Size(222, 17);
             this.chkIncludeFields.TabIndex = 0;
-            this.chkIncludeFields.Text = "Include fields (instance variables)";
+            this.chkIncludeFields.Text = "Include fields (instance variables) & defines";
             this.chkIncludeFields.UseVisualStyleBackColor = true;
             this.chkIncludeFields.CheckedChanged += new System.EventHandler(this.chkIncludeFields_CheckedChanged);
             // 

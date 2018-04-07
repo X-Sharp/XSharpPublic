@@ -15,7 +15,7 @@ begin namespace XSharpModel
 		
 		#region constructors
 			
-			private constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, span as TextRange, position as TextInterval, typeName as string, isStatic as logic)
+			private  constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, span as TextRange, position as TextInterval, typeName as string, isStatic as logic)
 				super(name, kind, modifiers, visibility, span, position)
 				self:Parent := null
 				self:_parameters := List<XVariable>{}
@@ -114,7 +114,7 @@ begin namespace XSharpModel
 					if (parameters:Length > 1)
 						parameters := parameters + ", "
 					endif
-					if ! string.IsNullOrEmpty(variable:TypeName)
+					if variable:IsTyped
 						parameters += variable:Name + SELF:AsKeyWord + variable:TypeName
 					endif
 				next

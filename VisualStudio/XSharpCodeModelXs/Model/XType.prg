@@ -69,7 +69,9 @@ begin namespace XSharpModel
 			oXType := XType{cName, kind, mods, vis, span, intv}
 			oXType:File := oFile
 			oXType:ParentName := oElement:cInherit
-			
+			if String.IsNullOrEmpty(oXType:ParentName) .and. ! oXType:IsPartial
+				oXType:ParentName := "System.Object"
+			endif	
 			oElement:oCargo := oXType
 			if oElement:eType:IsType()
 				foreach var oMember in oElement:aChildren
@@ -78,7 +80,14 @@ begin namespace XSharpModel
 					oMember:oCargo := xMember
 					oXType:AddMember(xMember)
 				next
+				if oXType.Kind == Kind.Delegate
+					// Add "pseudo method" for the delegate for the editor
+					local xMember as XTypeMember
+					xMember := XTypeMember.Create(oElement, oInfo, oFile, oXType)
+					oXType:AddMember(xMember)
+				endif
 			endif
+
 			return oXType
 
 
@@ -152,6 +161,10 @@ begin namespace XSharpModel
 					endif
 				endif
 			endif
+			if String.IsNullOrEmpty(clone:ParentName) 
+				clone:ParentName := "System.Object"
+			endif	
+
 			return clone
 		
 		

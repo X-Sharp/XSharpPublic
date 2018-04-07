@@ -21,9 +21,9 @@ begin namespace XSharpModel
 		private _parsed			as logic
 		private _type			as XFileType
 		private _typeList		as ConcurrentDictionary<string, XType>
-		private _entityList		as ImmutableList<XElement>
-		private _usings			as ImmutableList<string>
-		private _usingStatics	as ImmutableList<string>
+		private _entityList		as List<XElement>
+		private _usings			as List<string>
+		private _usingStatics	as List<string>
 		private filePath as string
 		private _project as XProject
 		
@@ -71,8 +71,7 @@ begin namespace XSharpModel
 				var result := oDel(oElement, nValue)
 				if result == 0
 					// found
-					oResult := oElement
-					exit
+					return oElement
 				elseif result = 1 // element is after the search point
 					top := current
 				else		// element is before the search point
@@ -87,9 +86,18 @@ begin namespace XSharpModel
 
 		private method CompareByLine(oElement as XELement, nLine as LONG) as LONG
 			local nResult as long
-			if oElement:Range:StartLine <= nLine .and. oElement:Range:EndLine >= nLine
+			local nStart, nEnd as long
+			nStart := oElement:Range:StartLine 
+			nEnd   := oElement:Range:EndLine 
+			if oElement is XType
+				var oType := oElement astype XType
+				if oType:Members:Count > 0
+					nEnd := oType:Members[0]:Range:StartLine-1
+				endif
+			endif
+			if nStart <= nLine .and. nEnd>= nLine
 				nResult := 0
-			elseif oElement:Range:StartLine > nLine
+			elseif nStart > nLine
 				nResult := 1
 			else 
 				nResult := -1
@@ -106,9 +114,18 @@ begin namespace XSharpModel
 		///
 		private method CompareByPosition(oElement as XELement, nPos as LONG) as LONG
 			local nResult as long
-			if oElement:Interval:Start <= nPos .and. oElement:Interval:Stop >= nPos
+			local nStart, nEnd as long
+			nStart := oElement:Interval:Start 
+			nEnd   := oElement:Interval:Stop 
+			if oElement is XType
+				var oType := oElement astype XType
+				if oType:Members:Count > 0
+					nEnd := oType:Members[0]:Interval:Start-2
+				endif
+			endif
+			if nStart <= nPos .and. nEnd >= nPos
 				nResult := 0
-			elseif oElement:Interval:Start > nPos
+			elseif nStart > nPos
 				nResult := 1
 			else 
 				nResult := -1
@@ -124,9 +141,9 @@ begin namespace XSharpModel
 				self:_typeList		:= ConcurrentDictionary<string, XType>{System.StringComparer.InvariantCultureIgnoreCase}
 				self:_globalType	:= XType.CreateGlobalType(self)
 				self:_typeList:TryAdd(self:_globalType:Name, self:_globalType)
-				self:_usings		:= ImmutableList<string>.Empty
-				self:_usingStatics	:= ImmutableList<string>.Empty
-				self:_entityList    := ImmutableList<XElement>.Empty
+				self:_usings		:= List<string>{}
+				self:_usingStatics	:= List<string>{}
+				self:_entityList    := List<XElement>{}
 			endif
 		
 		method SetTypes(types as IDictionary<string, XType>, usings as IList<string>, ;
@@ -135,18 +152,18 @@ begin namespace XSharpModel
 				System.Diagnostics.Trace.WriteLine(String.Concat("-->> XFile.SetTypes() ", System.IO.Path.GetFileName(self:SourcePath)))
 				begin lock self
 					self:_typeList:Clear()
-					self:_usings		:= self:_usings:Clear()
-					self:_usingStatics	:= self:_usingStatics:Clear()
+					self:_usings:Clear()
+					self:_usingStatics:Clear()
 					foreach type as KeyValuePair<string, XType> in types
 						self:_typeList:TryAdd(type:Key, type:Value)
 						if (XType.IsGlobalType(type:Value))
 							self:_globalType := type:Value
 						endif
 					next
-					self:_usings := self:_usings:AddRange(usings)
-					self:_usings := self:_usingStatics:AddRange(staticusings)
-					self:_entityList := self:_entityList:Clear()
-					self:_entityList := self:_entityList:AddRange(aEntities)
+					self:_usings:AddRange(usings)
+					self:_usingStatics:AddRange(staticusings)
+					self:_entityList:Clear()
+					self:_entityList:AddRange(aEntities)
 				end lock
 				System.Diagnostics.Trace.WriteLine(String.Concat("<<-- XFile.SetTypes() ", System.IO.Path.GetFileName(self:SourcePath), " ", self:_typeList:Count:ToString()))
 			endif
@@ -320,7 +337,7 @@ begin namespace XSharpModel
 				if ! self:HasCode
 					return null
 				endif
-				return _usings
+				return _usings:ToArray()
 			end get
 		end property
 		

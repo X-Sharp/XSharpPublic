@@ -43,6 +43,7 @@ begin namespace XSharpModel
 				case Kind.Constructor 
 				case Kind.Method 
 				case Kind.Assign 
+				case Kind.Access
 				case Kind.Function 
 				case Kind.Procedure 
 				case Kind.Event 
@@ -56,7 +57,7 @@ begin namespace XSharpModel
 		
 		static method HasReturnType( self elementKind as Kind) as logic
 			switch elementKind
-				case  Kind.Method 
+				case Kind.Method 
 				case Kind.Access 
 				case Kind.Property 
 				case Kind.Function 
@@ -87,7 +88,7 @@ begin namespace XSharpModel
 		
 		static method IsField( self elementKind as Kind) as logic
 			switch elementKind
-				case  Kind.Field 
+				case Kind.Field 
 				case Kind.VOGlobal 
 				case Kind.VODefine 
 					return true
@@ -96,13 +97,28 @@ begin namespace XSharpModel
 		
 		static method IsType( self elementKind as Kind) as logic
 			switch elementKind
-				case  Kind.Class 
+				case Kind.Class 
 				case Kind.Structure 
 				case Kind.Interface 
 				case Kind.Delegate 
 				case Kind.Enum 
 				case Kind.VOStruct 
 				case Kind.Union 
+					return true
+			end switch
+			return false
+		static method HasBody( self elementKind as Kind) as logic
+			switch elementKind
+				case Kind.Function
+				case Kind.Procedure
+				case Kind.Method
+				case Kind.Access
+				case Kind.Assign
+				case Kind.Property
+				case Kind.Event
+				case Kind.Operator
+				case Kind.Constructor
+				case Kind.Destructor
 					return true
 			end switch
 			return false
@@ -201,4 +217,5 @@ begin namespace XSharpModel
 	end class
 	
 end namespace 
+
 

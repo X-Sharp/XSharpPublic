@@ -17,9 +17,11 @@ namespace XSharp.LanguageService
     {
         int lastLine = -1;
         XElement _lastSelected;
+        XElement  _lastType;
         ArrayList _members = null;
         XFile _file = null;
         uint _lastHashCode = 0;
+        bool lastIncludeFields = false;
 
         public XSharpTypeAndMemberDropDownBars(
             XSharpLanguageService lang,
@@ -56,6 +58,8 @@ namespace XSharp.LanguageService
             //
             var package = XSharp.Project.XSharpProjectPackage.Instance;
             var optionsPage = package.GetIntellisenseOptionsPage();
+            var sortItems = optionsPage.SortNavigationBars;
+            var includeFields = optionsPage.IncludeFieldsInNavigationBars;
             if (optionsPage.DisableEditorDropdowns)
             {
                 dropDownTypes.Clear();
@@ -66,7 +70,10 @@ namespace XSharp.LanguageService
             // when the line did not change, we do nothing for performance reasons
             // this speeds up typing  for buffers with lots of entities
             if (line == lastLine)
+            {
+                // same line, no changes
                 return false;
+            }
             lastLine = line;
 
             Source src = languageService.GetSource(textView);
@@ -80,45 +87,65 @@ namespace XSharp.LanguageService
             XElement selectedElement = file.FindMemberAtRow(line);
             if (selectedElement == _lastSelected)
             {
+                // Same element, no changes
                 return false;
             }
-            if (file.ContentHashCode == _lastHashCode)
+            // check if we are on the same type. When not then we need to reload the members.
+            // Note that the first item in the members combo can also be a type (Classname)
+            XElement parentType = null;
+            if (selectedElement is XTypeMember)
+            {
+                parentType  = selectedElement.Parent;
+            }
+            else if (selectedElement is XType)
+            {
+                parentType = selectedElement as XType;
+            }
+            bool newType = true;
+            if (parentType != null && _lastType != null && parentType.FullName == _lastType.FullName)
+            {
+                newType = false;
+            }
+            // when we are on the same type and there are no new methods then we can 
+            // select the element in the members combo and we do not have to rebuild the members 
+            // list. We must set the selectedType and selectedMember
+            if (! newType && file.ContentHashCode == _lastHashCode && lastIncludeFields == includeFields )
             {
                 // no need to rebuild the list. Just focus to another element
                 // locate item in members collection
-                selectedMember = 0;
-                selectedType = 0;
-                _lastSelected = selectedElement;
-                bool selectedIsType = false;
+                selectedMember = -1;
+                selectedType = -1;
                 for (int i = 0; i < dropDownMembers.Count; i++)
                 {
                     var member = (XDropDownMember) dropDownMembers[i];
                     if (member.Element.Prototype == selectedElement.Prototype)
                     {
                         selectedMember = i;
-                        selectedIsType = (i == 0 && member.Label.StartsWith("("));
                         break;
                     }
                 }
-                for (int i = 0; i < dropDownTypes.Count; i++)
+                // find the parentType in the types combo
+                if (selectedMember != -1 && parentType != null) // should never be null
                 {
-                    var member = (XDropDownMember)dropDownTypes[i];
-                    if (selectedIsType && member.Element.Name == selectedElement.Name)
+                    for (int i = 0; i < dropDownTypes.Count; i++)
                     {
-                        selectedType = i;
-                        break;
-                    }
-                    else
-                    if (member.Element.Name == selectedElement.Parent.Name)
-                    {
-                        selectedType = i;
-                        break;
+                        var member = (XDropDownMember)dropDownTypes[i];
+                        var type = member.Element as XType;
+                        if (type.FullName == parentType.FullName)
+                        {
+                            selectedType = i;
+                            break;
+                        }
                     }
                 }
-                return true;
+                // normally we should always find it. But if it fails then we simply build the list below.
+                if (selectedMember != -1 && selectedType != -1)
+                {
+                    // remember for later. No need to remember the type because it has not changed
+                    _lastSelected = selectedElement;
+                    return true;
+                }
             }
-            var sortItems = optionsPage.SortNavigationBars;
-            var includeFields = optionsPage.IncludeFieldsInNavigationBars;
             dropDownTypes.Clear();
             dropDownMembers.Clear();
             int nSelType = -1;
@@ -143,13 +170,13 @@ namespace XSharp.LanguageService
             XType typeGlobal = null;
             int nSelect  = 0;
 
-            XTypeMember currentMember = null;
+            XElement  currentMember = null;
             XType currentType = null;
 
             if (selectedElement is XTypeMember)
             {
                 currentMember = selectedElement as XTypeMember;
-                currentType = currentMember.Parent;
+                currentType = ((XTypeMember) currentMember).Parent;
             }
             else if (selectedElement is XType)
             {
@@ -174,17 +201,7 @@ namespace XSharp.LanguageService
                     typeGlobal = eltType;
                 }
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
-                if (eltType == currentType)
-                {
-                    if (currentType.Range.EndLine >= line + 1 || currentType.Range.StartLine <= line + 1)
-                        ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                    else
-                        ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
-                }
-                else
-                {
-                    ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                }
+                ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                 string name = eltType.Name ;
                 if (string.IsNullOrEmpty(name))
                 {
@@ -223,47 +240,37 @@ namespace XSharp.LanguageService
                 {
                     members = members.OrderBy(x => x.Name).ToList();
                 }
-                // Add member for class declaration
+                // Add member for class declaration. This also makes sure that there at least one
+                // element in the members list, which is convenient.
                 TextSpan spM = this.TextRangeToTextSpan(currentType.Range);
                 ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                 if (currentType != typeGlobal)
                 {
-                    elt = new XDropDownMember("("+currentType.Name+")", spM, currentType.Glyph, ft);
+                    if (currentType.Kind != Kind.Delegate)
+                    {
+                        elt = new XDropDownMember("(" + currentType.Name + ")", spM, currentType.Glyph, ft);
+                        elt.Element = currentType;
+                        dropDownMembers.Add(elt);
+                    }
+                }
+                else
+                {
+                    elt = new XDropDownMember(currentType.Name, spM, currentType.Glyph, ft);
                     elt.Element = currentType;
                     dropDownMembers.Add(elt);
                 }
-                if (currentMember == null)
-                { 
-                    currentMember = currentType.Members.FirstOrDefault();
-                }
-                foreach (XTypeMember member in members)
+                foreach (XElement  member in members)
                 {
-                    if (includeFields || member.Kind != Kind.Field)
+                    if (includeFields || (member.Kind != Kind.Field  && member.Kind != Kind.VODefine))
                     {
                         spM = this.TextRangeToTextSpan(member.Range);
 
-                        if (member == currentMember)
-                        {
-                            if (member.Range.EndLine >= line+1 &&  member.Range.StartLine <= line+1)
-                                ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                            else
-                                ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                        if (hasPartial)
+                        { 
+                            ft = member.File == file ? DROPDOWNFONTATTR.FONTATTR_PLAIN : DROPDOWNFONTATTR.FONTATTR_GRAY;
                         }
-                        else
-                        {
-                            if (hasPartial)
-                            { 
-                                if (member.File == file)
-                                    ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                                else
-                                    ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
-                            }
-                        }
+
                         string prototype = member.Prototype;
-                        if (prototype.Length > 80)
-                        {
-                            prototype = prototype.Substring(0, 80) + "...";
-                        }
                         elt = new XDropDownMember(prototype, spM, member.Glyph, ft);
                         nSelect = dropDownMembers.Add(elt);
                         elt.Element = member;
@@ -274,12 +281,15 @@ namespace XSharp.LanguageService
                     }
                 }
             }
+            // save the info so we can optimize the next call.
             _members = dropDownMembers;
             _file = file;
             _lastSelected = selectedElement;
+            _lastType = currentType;
             _lastHashCode = file.ContentHashCode;
             selectedType    = nSelType;
             selectedMember  = nSelMbr;
+            lastIncludeFields = includeFields;
             return true;
         }
 
@@ -316,3 +326,4 @@ namespace XSharp.LanguageService
         internal XElement Element { get; set; }
     }
 }
+

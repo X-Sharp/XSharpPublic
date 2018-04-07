@@ -103,6 +103,11 @@ namespace XSharpColorizer
             {
                 xsClassifier = buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
             }
+            if (spans[0].Snapshot.Version != xsClassifier.Snapshot.Version)
+            {
+                // different snapshot. Do nothing. Maybe translate to new snapshot later
+                yield break;
+            }
 
             if (xsClassifier != null)
             {
@@ -118,8 +123,6 @@ namespace XSharpColorizer
                 Stack<ClassificationSpan> startStack = new Stack<ClassificationSpan>();
                 // convert classifications to an array so there will be no crash when the classifications are changed
                 // in another thread.
-                
-
                 
                 // Now, let's have a look at all the Classifications we have in the document
                 foreach (var tag in classifications)

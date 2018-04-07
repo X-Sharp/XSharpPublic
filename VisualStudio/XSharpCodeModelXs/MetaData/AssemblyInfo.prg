@@ -134,8 +134,10 @@ begin namespace XSharpModel
 			endif
 			if System.IO.File.Exists(self:FileName)
 				self:_assembly := AssemblyInfo.LoadAssemblyFromFile(self:FileName)
-				self:_fullName := self:_assembly:FullName
-				self:Modified := System.IO.File.GetLastWriteTime(self:FileName)
+				if self:_assembly != null
+					self:_fullName := self:_assembly:FullName
+					self:Modified := System.IO.File.GetLastWriteTime(self:FileName)
+				endif
 				self:_clearInfo()
 			endif
 		

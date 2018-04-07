@@ -11,6 +11,7 @@ begin namespace XSharpModel
 	class XVariable inherit XElement
 		// Fields
 		private _isParameter as logic
+		private _isTyped     as logic
 		private _typeName as string
 		static initonly public VarType := "$VAR$" as string
 		static initonly public UsualType := "USUAL" as string
@@ -18,11 +19,9 @@ begin namespace XSharpModel
 		constructor(parent as XElement, name as string, kind as Kind,  ;
 			span as TextRange, position as TextInterval, typeName as string,  isParameter := false as logic)
 			super(name, kind, Modifiers.None, Modifiers.None, span, position)
-			if String.IsNullOrEmpty(typeName)
-				typeName := UsualType
-			endif
-			self:_typeName := typeName
-			self:_isParameter := isParameter
+			self:_typeName		:= typeName
+			self:_isParameter	:= isParameter
+			self:_isTyped		:= !String.IsNullOrEmpty(typeName)
 			super:Parent := parent
 		
 		
@@ -38,24 +37,30 @@ begin namespace XSharpModel
 					//
 					prefix := "LOCAL "
 				endif
-				var textArray1 := <string>{prefix, self:Prototype, " as ", self:TypeName, iif(self:IsArray,"[]","")}
-				return String.Concat(textArray1)
+				var result := prefix + self:Prototype
+				if (_isTyped)
+					result += self:AsKeyWord + self:TypeName + iif(self:IsArray,"[]","")
+				endif
+				return result				
 			end get
 		end property
 		
 		property IsArray as logic auto 
+		property IsTyped as logic get _isTyped
 		
-		property Prototype as string get super:NAme
+		property Prototype as string get super:Name
 		
 		property TypeName as string
 			get
-				return self:_typeName
+				if IsTyped
+					return self:_typeName
+				else
+					return UsualType
+				endif
 			end get
 			set
-				if (String.IsNullOrEmpty(value))
-					value := UsualType
-				endif
 				self:_typeName := value
+				_isTyped := String.IsNullOrEmpty(_typeName)
 			end set
 		end property
 		

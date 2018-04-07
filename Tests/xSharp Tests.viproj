@@ -60279,7 +60279,7 @@ ExportResources = 0
 ExportImages = 0
 [R594 FileGroups]
 [R594 Files]
-File = %AppPath%\Prg\Start.prg
+File = %AppPath%\Prg\R594.prg
 FileGUID = 27B8E080-8363-4C41-8566-C726A6B21CAB
 FileType = Code
 [R594 References]
@@ -60339,7 +60339,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   DefineDebug=0
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=1
+  WarningsErrors=0
   ForceConsole=0
   ForceX86=0
 ENDApplication = R594

@@ -3,7 +3,7 @@
 
 CLASS Test
 	ACCESS Foo  
-		RETURN  
+		RETURN 
 	ASSIGN Foo(u)  
 		RETURN  
 END CLASS

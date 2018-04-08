@@ -632,7 +632,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var unary = expr as BoundUnaryOperator;
                 var type = VOGetType(unary.Operand);
-                if (unary.OperatorKind == UnaryOperatorKind.IntUnaryMinus)
+                if (unary.OperatorKind.Operator() == UnaryOperatorKind.IntUnaryMinus)
                 {
                     // see if we must change unsigned into signed
                     if (type == Compilation.GetSpecialType(SpecialType.System_Byte))

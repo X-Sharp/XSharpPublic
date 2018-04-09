@@ -103,11 +103,6 @@ namespace XSharpColorizer
             {
                 xsClassifier = buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
             }
-            if (spans[0].Snapshot.Version != xsClassifier.Snapshot.Version)
-            {
-                // different snapshot. Do nothing. Maybe translate to new snapshot later
-                yield break;
-            }
 
             if (xsClassifier != null)
             {
@@ -139,7 +134,9 @@ namespace XSharpColorizer
                         var startLine = startTag.Span.Start.GetContainingLine();
                         var endLine = tag.Span.End.GetContainingLine();
                         //
-                        if (startLine.LineNumber <= endLineNumber && endLine.LineNumber >= startLineNumber)
+                        if ( startTag.Span.Start < tag.Span.End && 
+                            startLine.LineNumber <= endLineNumber 
+                            && endLine.LineNumber >= startLineNumber)
                         {
                             SnapshotSpan sSpan;
                             try

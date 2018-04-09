@@ -29,7 +29,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings />
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -49,6 +49,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>

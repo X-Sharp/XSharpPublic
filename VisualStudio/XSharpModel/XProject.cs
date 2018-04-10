@@ -195,7 +195,7 @@ namespace XSharpModel
             if (xFile != null)
             {
 
-                if (xFile.IsSource)
+                if (xFile.IsSource )
                 {
                     if (xSourceFilesDict.ContainsKey(xFile.FullPath))
                     {
@@ -204,6 +204,27 @@ namespace XSharpModel
                     }
                     xFile.Project = this;
                     return xSourceFilesDict.TryAdd(xFile.FullPath, xFile);
+                }
+                else if (xFile.IsXaml)
+                {
+                    xFile.Project = this;
+                    string codeBeHind = xFile.XamlCodeBehindFile;
+                    // Add code behind to source files
+                    if (xSourceFilesDict.ContainsKey(codeBeHind))
+                    {
+                        XFile fileOld;
+                        xSourceFilesDict.TryRemove(codeBeHind, out fileOld);
+                    }
+                    xSourceFilesDict.TryAdd(codeBeHind, xFile);
+                    // add XML to OtherFiles
+                    if (xOtherFilesDict.ContainsKey(xFile.FullPath))
+                    {
+                        XFile fileOld;
+                        xOtherFilesDict.TryRemove(xFile.FullPath, out fileOld);
+                    }
+                    xFile.Project = this;
+                    return xOtherFilesDict.TryAdd(xFile.FullPath, xFile);
+
                 }
                 else
                 {
@@ -483,17 +504,28 @@ namespace XSharpModel
 
         }
 
+        public void WalkFile(XFile file)
+        {
+            ModelWalker walker = ModelWalker.GetWalker();
+            walker.FileWalk(file);
+        }
+
         public void RemoveFile(string url)
         {
+            // First Otherfiles, so we can find XAML and then also remove its codebehind.
+            if (this.xOtherFilesDict.ContainsKey(url))
+            {
+                XFile file;
+                this.xOtherFilesDict.TryRemove(url, out file);
+                if (file.IsXaml)
+                {
+                    url = file.XamlCodeBehindFile;
+                }
+            }
             if (this.xSourceFilesDict.ContainsKey(url))
             {
                 XFile file;
                 this.xSourceFilesDict.TryRemove(url, out file);
-            }
-            else if (this.xOtherFilesDict.ContainsKey(url))
-            {
-                XFile file;
-                this.xOtherFilesDict.TryRemove(url, out file);
             }
         }
 

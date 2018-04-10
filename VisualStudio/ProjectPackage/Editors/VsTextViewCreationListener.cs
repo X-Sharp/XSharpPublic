@@ -102,7 +102,15 @@ namespace XSharp.Project
             // Ask for the Language. X# returns the product name
             // the implementation for this property is inside XSharpFileNode.
             hierarchy.GetProperty(itemID, (int)__VSHPROPID8.VSHPROPID_DiagHubLanguage, out result);
-            return (result is string && (string)result == Constants.Product);
+            bool ours = (result is string && (string)result == Constants.Product);
+            if (! ours)
+            {
+                // this could be a XAML generated source file that is not in the hierarchy
+                // in that case it is part of the XSolution and we should be able to find its XAML parent
+                var file = XSharpModel.XSolution.FindFullPath(fileName);
+                ours = (file != null);
+            }
+            return ours;
         }
     }
 

@@ -51,7 +51,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XSHARP; SMARTINDENT</DefineConstants>
+    <DefineConstants>DEBUG;XSHARP; SMARTINDENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -66,7 +66,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>TRACE;XSHARP; SMARTINDENT</DefineConstants>
+    <DefineConstants>XSHARP; SMARTINDENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -801,15 +801,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharpModel\XSharpModel.csproj">
-      <Project>{2c3b9217-e012-4681-97ce-f0a658c40336}</Project>
-      <Name>XSharpModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>XSharpCodeDomProvider</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModelXs</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharpColorizer\XSharpColorizer.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>

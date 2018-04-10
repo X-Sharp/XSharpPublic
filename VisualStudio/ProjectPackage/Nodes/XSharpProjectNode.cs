@@ -116,15 +116,14 @@ namespace XSharp.Project
 
         private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
-            if (IsXamlFile(e.FileName))
+            //System.Diagnostics.Trace.WriteLine("FileChangedOnDisk " + System.IO.Path.GetFileName(e.FileName));
+            if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
             {
-                this.ProjectModel.RemoveFile(e.FileName);
-                this.ProjectModel.AddFile(e.FileName);
-                this.ProjectModel.Walk();
-            }
-            else if (IsCodeFile(e.FileName))
-            {
-                XSharpModel.XSolution.WalkFile(e.FileName);
+                XFile file = this.ProjectModel.FindFullPath(e.FileName);
+                if (file != null)
+                {
+                    this.ProjectModel.WalkFile(file);
+                }
             }
         }
 
@@ -893,7 +892,7 @@ namespace XSharp.Project
                             {
                                 this.ProjectModel.AddFile(url);
                                 // make sure generated code is updated when changed
-                                if (xnode.IsDependent)
+                                if (xnode.IsDependent || IsXamlFile(url))
                                 {
                                     filechangemanager.ObserveItem(url);
                                 }
@@ -1404,6 +1403,13 @@ namespace XSharp.Project
                 _rootNamespace = value;
             }
         }
+
+        public bool DisableLexing => package.GetIntellisenseOptionsPage().DisableSyntaxColorization;
+        public bool DisableParsing => package.GetIntellisenseOptionsPage().DisableEntityParsing;
+        public bool DisableRegions  => package.GetIntellisenseOptionsPage().DisableRegions;
+
+        public bool KeywordsUppercase => package.GetIntellisenseOptionsPage().KeywordCase == 1;
+
         #endregion
 
 
@@ -1821,6 +1827,7 @@ namespace XSharp.Project
         {
             bool silent;
             int result;
+            
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
@@ -2629,4 +2636,5 @@ namespace XSharp.Project
         }
     }
 }
+
 

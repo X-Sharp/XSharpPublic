@@ -117,6 +117,13 @@ namespace XSharp.LanguageService
         {
             return new XSharpViewFilter(mgr, newView);
         }
+
+        public override Source CreateSource(IVsTextLines buffer)
+        {
+            XSharpSource src = new XSharpSource(this, buffer, GetColorizer(buffer));
+            return src;
+        }
+
         public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
         {
             // This called for the online help

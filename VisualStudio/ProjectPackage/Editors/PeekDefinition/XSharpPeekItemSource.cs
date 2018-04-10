@@ -42,10 +42,12 @@ namespace XSharp.Project
                 IToken stopToken;
                 //
                 // Check if we can get the member where we are
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.Position, _file);
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
 
-                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _textBuffer.CurrentSnapshot.GetText(), out stopToken, false, _file, false, member);
+                var lineNumber = triggerPoint.GetContainingLine().LineNumber;
+                var snapshot = _textBuffer.CurrentSnapshot;
+                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, lineNumber, snapshot, out stopToken, false, _file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 String currentNS = "";
@@ -53,7 +55,7 @@ namespace XSharp.Project
                 {
                     currentNS = currentNamespace.Name;
                 }
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, _textBuffer.CurrentSnapshot.GetText());
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber);
                 //
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {

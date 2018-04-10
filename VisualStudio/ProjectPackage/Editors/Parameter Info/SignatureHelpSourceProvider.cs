@@ -24,6 +24,11 @@ namespace XSharp.Project
     {
         public ISignatureHelpSource TryCreateSignatureHelpSource(ITextBuffer textBuffer)
         {
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.DisableParameterInfo)
+                return null;
+
             return new XSharpSignatureHelpSource(textBuffer);
         }
     }

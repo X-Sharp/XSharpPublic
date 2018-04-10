@@ -148,10 +148,6 @@ namespace XSharpModel
             }
         }
 
-        /// <summary>
-        /// Duplicate the current Object, so we have the same properties in another object
-        /// </summary>
-        /// <returns></returns>
         public XType Duplicate()
         {
             XType temp = new XType(this.Name, this.Kind, this.Modifiers, this.Visibility, this.Range, this.Interval);

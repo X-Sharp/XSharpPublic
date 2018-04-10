@@ -78,6 +78,19 @@ namespace XSharp.Project.OptionsPages
 
         }
 
+        public bool DisableBraceMatching { get; set; }
+        public bool DisableLightBulb { get; set; }
+        public bool DisableHighLightWord { get; set; }
+        public bool DisableParameterInfo { get; set; }
+        public bool DisablePeekDefinition { get; set; }
+        public bool DisableQuickInfo { get; set; }
+        public bool DisableSyntaxColorization { get; set; }
+        public bool DisableEntityParsing { get; set; }
+        public bool DisableRegions { get; set; }
+        public bool DisableCaseSynchronization { get; set; }
+        public bool DisableEditorDropdowns { get; set; }
+        public bool DisableClassViewObjectView { get; set; }
+        public bool DisableCodeCompletion { get; set; }
 
         protected override IWin32Window Window
         {

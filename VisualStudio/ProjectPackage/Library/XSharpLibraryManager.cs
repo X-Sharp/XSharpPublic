@@ -131,6 +131,10 @@ namespace XSharp.Project
             hierarchies = new Dictionary<IVsHierarchy, HierarchyListener>();
             library = new Library(new Guid(XSharpConstants.Library));
             library.LibraryCapabilities = (_LIB_FLAGS2)_LIB_FLAGS.LF_PROJECT;
+            // A Dictionary with :
+            // ModuleId : The ID of a File in the Project Hierarchy
+            // A library Node
+            // --> For a single ModuleId we can have Multiple Library Node
             files = new MultiValueDictionary<XSharpModuleId, XSharpLibraryNode>();
             //
             requests = new Queue<LibraryTask>();
@@ -238,6 +242,12 @@ namespace XSharp.Project
         public void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, XSharpProjectNode ProjectNode)
         {
             // No Hierarchy or... Hierarchy already registered ?
+            var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
+            if (optionsPage.DisableClassViewObjectView)
+            {
+                return;
+            }
+
             if ((null == hierarchy) || hierarchies.ContainsKey(hierarchy))
             {
                 return;
@@ -364,6 +374,7 @@ namespace XSharp.Project
         private void WalkerThread()
         {
             const int waitTimeout = 500;
+
             // Define the array of events this function is interest in.
             WaitHandle[] eventsToWait = new WaitHandle[] { requestPresent, shutDownStarted };
             // Execute the tasks.
@@ -371,7 +382,7 @@ namespace XSharp.Project
             {
                 // Wait for a task or a shutdown request.
                 int waitResult = WaitHandle.WaitAny(eventsToWait, waitTimeout, false);
-                if (waitResult == 1 )
+                if (waitResult == 1)
                 {
                     // The shutdown of this component is started, so exit the thread.
                     return;
@@ -401,35 +412,46 @@ namespace XSharp.Project
                 XFile scope = null;
                 if (System.IO.File.Exists(task.FileName))
                 {
-                    //scope = ScopeWalker.GetScopesFromFile(task.FileName);
                     scope = XSharpModel.XSolution.FindFile(task.FileName);
-                    if (scope == null)
+                    if (scope == null || (!scope.HasCode))
                         continue;
                 }
                 // If the file already exist
                 lock (files)
                 {
-                    HashSet<XSharpLibraryNode> values = null;
-                    // Ok, now remove ALL nodes for that key
-                    if (files.TryGetValue(task.ModuleID, out values))
+                    // These are the existing Modules
+                    XSharpModuleId[] aTmp = new XSharpModuleId[files.Keys.Count];
+                    files.Keys.CopyTo(aTmp, 0);
+                    // Does this module already exist ?
+                    XSharpModuleId found = Array.Find<XSharpModuleId>(aTmp, (x => x.Equals(task.ModuleID)));
+                    if (found != null)
                     {
-                        foreach (XSharpLibraryNode node in values)
+                        // Doesn't it have the same members?
+                        if (found.ContentHashCode == task.ModuleID.ContentHashCode)
+                            continue;
+                        //
+                        HashSet<XSharpLibraryNode> values = null;
+                        // Ok, now remove ALL nodes for that key
+                        if (files.TryGetValue(task.ModuleID, out values))
                         {
-                            if (node.Freeing(task.ModuleID.ItemID) == 0)
-                                if (node.parent != null)
-                                {
-                                    node.parent.RemoveNode(node);
-                                }
+                            foreach (XSharpLibraryNode node in values)
+                            {
+                                if (node.Freeing(task.ModuleID.ItemID) == 0)
+                                    if (node.parent != null)
+                                    {
+                                        node.parent.RemoveNode(node);
+                                    }
+                            }
+                            // and then remove the key
+                            files.Remove(task.ModuleID);
                         }
-                        // and then remove the key
-                        files.Remove(task.ModuleID);
                     }
                     //
                     LibraryNode prjNode = this.library.SearchHierarchy(task.ModuleID.Hierarchy);
                     if (prjNode is XSharpLibraryProject)
                     {
                         //
-                        CreateModuleTree((XSharpLibraryProject)prjNode, scope, task.ModuleID );
+                        CreateModuleTree((XSharpLibraryProject)prjNode, scope, task.ModuleID);
                         //
                         prjNode.updateCount += 1;
                         //this.prjNode.AddNode(node);
@@ -440,14 +462,18 @@ namespace XSharp.Project
             }
         }
 
-        private void CreateModuleTree(XSharpLibraryProject prjNode, XFile scope, XSharpModuleId moduleId )
+        private void CreateModuleTree(XSharpLibraryProject prjNode, XFile scope, XSharpModuleId moduleId)
         {
             if ((null == scope))
             {
                 return;
             }
+            if (!scope.HasCode)
+                return;
             // Retrieve all Types
             var elements = scope.TypeList;
+            if (elements == null)
+                return;
             // 
             // First search for NameSpaces
             foreach (KeyValuePair<string, XType> pair in elements)
@@ -493,7 +519,7 @@ namespace XSharp.Project
                 if ((xType.Kind.IsType()))
                 {
                     string nSpace = prjNode.DefaultNameSpace;
-                    if ( !String.IsNullOrEmpty( xType.NameSpace ) )
+                    if (!String.IsNullOrEmpty(xType.NameSpace))
                         nSpace = xType.NameSpace;
                     // Search for the corresponding NameSpace
                     LibraryNode nsNode = prjNode.SearchNameSpace(nSpace);
@@ -588,16 +614,21 @@ namespace XSharp.Project
         private void OnFileWalkComplete(XFile xfile)
         {
             // Retrieve the corresponding node
+            if (!xfile.HasCode)
+                return;
             XSharpProjectNode prjNode = (XSharpProjectNode)xfile.Project.ProjectNode;
             Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
             if (node != null)
             {
-                CreateParseRequest(xfile.FullPath, new XSharpModuleId(prjNode.InteropSafeHierarchy, node.ID));
+                XSharpModuleId module = new XSharpModuleId(prjNode.InteropSafeHierarchy, node.ID);
+                module.ContentHashCode = xfile.ContentHashCode;
+                CreateParseRequest(xfile.SourcePath, module);
             }
         }
 
         private void CreateParseRequest(string file, XSharpModuleId id)
         {
+
             LibraryTask task = new LibraryTask(file, id);
             task.ModuleID = id;
             lock (requests)
@@ -758,12 +789,12 @@ namespace XSharp.Project
 
         public int OnAfterSave(uint docCookie)
         {
-            string fileName = getFileNameFromCookie(docCookie);
-            var xFile = XSolution.FindFile(fileName);
-            if (xFile != null)
-            {
-                OnFileWalkComplete(xFile);
-            }
+            //string fileName = getFileNameFromCookie(docCookie);
+            //var xFile = XSolution.FindFile(fileName);
+            //if (xFile != null && xFile.HasCode)
+            //{
+            //    xFile.Project.WalkFile(xFile);
+            //}
             return VSConstants.S_OK;
         }
 

@@ -50,9 +50,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DocumentationFile>
-    </DocumentationFile>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -61,8 +59,16 @@
     <PPO>false</PPO>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>NDEBUG;TRACE</DefineConstants>
+    <DefineConstants>NDEBUG</DefineConstants>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <DisabledWarnings>1591</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <NoStandardDefs>true</NoStandardDefs>
+    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Optimize>false</Optimize>

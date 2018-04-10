@@ -186,4 +186,8 @@ http://www.xsharp.info</value>
     <value>Intellisense</value>
     <comment>Caption of Intellisense Options page in Tools/Option/TextEditor</comment>
   </data>
+  <data name="202" xml:space="preserve">
+    <value>Editor Options</value>
+    <comment>Text for the debug switches page</comment>
+  </data>
 </root>

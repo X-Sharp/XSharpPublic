@@ -53,6 +53,7 @@ ApplicationGroup = C300-C349,DBAFC850-8A63-413C-9C9F-0450290A3721,715D7617-320E-
 ApplicationGroup = C500-C549,A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C550-C599,EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C600-C649,A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 
@@ -59550,7 +59551,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C586 - Incorrect overload chosen for array argument in VO/Vulcan dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C587 - Failed to emit module error with incorrect code *************
 Application = C587 - Failed to emit module error with incorrect code
 IDEVersion = 1.06
@@ -61143,7 +61144,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C601 - Warning XS0219 (variable is assigned but its value is never used) not reported in some cases
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C602 - iif(true,-1,1) returns 255 instead of 1 with /ovf *************
 Application = C602 - iif(true,-1,1) returns 255 instead of 1 with /ovf
 IDEVersion = 1.06

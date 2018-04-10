@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\packages\xunit.core.2.3.1\build\xunit.core.props" Condition="Exists('..\..\packages\xunit.core.2.3.1\build\xunit.core.props')" />
   <Import Project="..\..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup Label="Globals">
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <NuGetPackageImportStamp>
@@ -50,7 +51,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
+    <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
@@ -74,14 +75,13 @@
     <DebuggerCommandArguments>$(TargetPath)</DebuggerCommandArguments>
     <DebuggerWorkingDirectory>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\</DebuggerWorkingDirectory>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
-    <EmitDebugInformation>true</EmitDebugInformation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>false</DebugSymbols>
+    <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -102,11 +102,6 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.abstractions</Name>
       <AssemblyName>xunit.abstractions.dll</AssemblyName>

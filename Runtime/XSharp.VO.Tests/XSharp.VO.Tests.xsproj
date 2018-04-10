@@ -4,9 +4,12 @@
   <Import Project="..\..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props')" />
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+
     <ProjectGuid>16d523f2-b871-4bdc-94ef-33b3db7ae617</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -50,20 +53,25 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <DebuggerCommand>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\xunit.console.exe</DebuggerCommand>
+    <DebuggerCommandArguments>$(TargetPath)</DebuggerCommandArguments>
+    <DebuggerWorkingDirectory>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\</DebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -73,24 +81,28 @@
       <AssemblyName>xunit.abstractions.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
     <Reference Include="xunit.assert, Version=2.3.1.3858, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.assert</Name>
       <AssemblyName>xunit.assert.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\packages\xunit.assert.2.3.1\lib\netstandard1.1\xunit.assert.dll</HintPath>
     </Reference>
     <Reference Include="xunit.core, Version=2.3.1.3858, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.core</Name>
       <AssemblyName>xunit.core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\packages\xunit.extensibility.core.2.3.1\lib\netstandard1.1\xunit.core.dll</HintPath>
     </Reference>
     <Reference Include="xunit.execution.desktop, Version=2.3.1.3858, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.execution.desktop</Name>
       <AssemblyName>xunit.execution.desktop.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\packages\xunit.extensibility.execution.2.3.1\lib\net452\xunit.execution.desktop.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

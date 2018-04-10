@@ -74,7 +74,7 @@ FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS Array
 	/// <returns>
 	/// </returns>
 	FUNCTION ADel(a AS Array,dwEl AS DWORD) AS Array
-		a:RemoveAt(dwEl)  
+		a:Delete(dwEl)  
 	RETURN a
 
 	/// <summary>

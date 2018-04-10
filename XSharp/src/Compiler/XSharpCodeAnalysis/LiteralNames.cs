@@ -100,9 +100,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal const string CoreFunctionsClass = XSharpFunctionNames.FunctionsClass;
         internal const string VOExeFunctionsClass = ".Exe.Functions";
-        internal const string XSharpCoreFunctionsClass = "XSharp.Functions";
-        internal const string XSharpRDDFunctionsClass = "XSharp_RDD.Functions";
-        internal const string XSharpVOFunctionsClass = "XSharp_VO.Functions";
+        internal const string XSharpCoreFunctionsClass = "Functions";
+        internal const string XSharpRDDFunctionsClass = "XSharp.RDD.Functions";
+        internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
 
@@ -157,7 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSetWa = "global::XSharp.Functions.__FieldSetWa";
         internal const string MemVarGet = "global::XSharp.Functions.__MemVarGet";
         internal const string MemVarPut = "global::XSharp.Functions.__MemVarPut";
-        internal const string NullDate = "global::Vulcan.__VODate.NullDate";
+        internal const string NullDate = "global::XSharp.__VODate.NullDate";
         internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::XSharp.Internal.CompilerServices.String2Psz";
         internal const string ArrayNew = "global::XSharp.__Array.__ArrayNew";

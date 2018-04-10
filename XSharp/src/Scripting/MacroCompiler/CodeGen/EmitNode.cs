@@ -42,6 +42,21 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class BinaryExpr : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (Symbol is OperatorSymbolWithMethod)
+            {
+                var op = (OperatorSymbolWithMethod)Symbol;
+                Left.Emit(ilg);
+                Right.Emit(ilg);
+                ilg.Emit(OpCodes.Call, op.Method.Method);
+            }
+            else {
+                throw new NotImplementedException();
+            }
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
     }
     internal partial class PrefixExpr : Expr
     {
@@ -82,6 +97,21 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class TypeCast : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg, preserve);
+            if (preserve)
+            {
+                switch (((ConversionSymbol)Symbol).Kind)
+                {
+                    case ConversionKind.ImplicitUserDefined:
+                        ilg.Emit(OpCodes.Call, ((ConversionSymbolWithMethod)Symbol).Method.Method);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+        }
     }
     internal partial class TypeConversion : TypeCast
     {
@@ -155,7 +185,7 @@ namespace XSharp.MacroCompiler.Syntax
             bool isVoid = true;
             if (Body != null)
             {
-                isVoid &= Body.Datatype == typeof(void);
+                isVoid &= Body.Datatype.NativeType == NativeType.Void;
                 Body.Emit(ilg,true);
             }
             if (isVoid)

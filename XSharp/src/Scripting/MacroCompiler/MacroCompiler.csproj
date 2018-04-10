@@ -30,16 +30,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Binder\Binder.Argument.cs" />
+    <Compile Include="Binder\Binder.BinaryOp.cs" />
     <Compile Include="Binder\Binder.Call.cs" />
+    <Compile Include="Binder\Binder.Conversion.cs" />
     <Compile Include="Binder\Binder.cs" />
     <Compile Include="Binder\Binder.Expr.cs" />
+    <Compile Include="Binder\Binder.Type.cs" />
     <Compile Include="Binder\BoundNode.cs" />
     <Compile Include="Binder\Constant.cs" />
+    <Compile Include="Binder\Conversion.cs" />
+    <Compile Include="Binder\Operator.cs" />
+    <Compile Include="Binder\OverloadResult.cs" />
     <Compile Include="Binder\Symbol.cs" />
     <Compile Include="CodeGen\CodeGen.cs" />
     <Compile Include="CodeGen\CodeGen.Emit.cs" />
     <Compile Include="CodeGen\EmitNode.cs" />
     <Compile Include="Common\LiteralNames.cs" />
+    <Compile Include="Common\NativeTypes.cs" />
     <Compile Include="Common\WellKnownMembers.cs" />
     <Compile Include="Compiler\Compiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

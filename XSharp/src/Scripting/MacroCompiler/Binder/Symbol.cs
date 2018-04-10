@@ -46,6 +46,7 @@ namespace XSharp.MacroCompiler
     {
         bool Cached = false;
         internal Type Type;
+        internal NativeType NativeType;
         internal TypeSymbol(Type type) { Type = type; }
         internal void UpdateCache()
         {
@@ -89,7 +90,8 @@ namespace XSharp.MacroCompiler
     internal class MemberSymbol : Symbol
     {
         internal MemberInfo Member;
-        internal MemberSymbol(MemberInfo member) { Member = member; }
+        internal TypeSymbol Type;
+        internal MemberSymbol(MemberInfo member, TypeSymbol type) { Member = member; Type = type; }
         internal override Symbol Lookup(string name) { return null; }
         internal static MemberSymbol Create(MemberInfo member)
         {
@@ -97,8 +99,16 @@ namespace XSharp.MacroCompiler
             {
                 case MemberTypes.Method:
                     return new MethodSymbol((MethodInfo)member);
+                case MemberTypes.Field:
+                    return new MemberSymbol(member, Binder.FindType((member as FieldInfo).FieldType));
+                case MemberTypes.Event:
+                    return new MemberSymbol(member, Binder.FindType((member as EventInfo).EventHandlerType));
+                case MemberTypes.Property:
+                    return new MemberSymbol(member, Binder.FindType((member as PropertyInfo).PropertyType));
+                case MemberTypes.Constructor:
+                    return new MemberSymbol(member, Binder.FindType((member as ConstructorInfo).DeclaringType));
                 default:
-                    return new MemberSymbol(member);
+                    return new MemberSymbol(member, null);
             }
         }
     }
@@ -107,6 +117,6 @@ namespace XSharp.MacroCompiler
         internal MethodInfo Method { get { return (MethodInfo)base.Member; } }
         //internal ParameterInfo[] Parameters { get { Interlocked.CompareExchange(ref _parameters, Method.GetParameters(), null); return _parameters; } }
         //ParameterInfo[] _parameters;
-        internal MethodSymbol(MethodInfo method) : base(method) { }
+        internal MethodSymbol(MethodInfo method) : base(method, Binder.FindType(method.ReturnType)) { }
     }
 }

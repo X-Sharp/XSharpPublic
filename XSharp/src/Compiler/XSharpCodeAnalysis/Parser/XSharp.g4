@@ -259,7 +259,7 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 
 
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
-                      ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? e=eos
+                      ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
                       (Members+=enummember)+
                       END ENUM? Ignored=identifier? eos
                     ;
@@ -546,7 +546,7 @@ caseBlock			: Key=CASE Cond=expression end=eos StmtBlk=statementBlock NextCase=c
 switchBlock         : (Key=CASE Const=expression | Key=OTHERWISE) end=eos StmtBlk=statementBlock
                     ;
 
-catchBlock			: (Id=identifier (AS Type=datatype)?)? end=eos StmtBlk=statementBlock
+catchBlock			: (Id=identifier)? (AS Type=datatype)? end=eos StmtBlk=statementBlock
                     ;
 
 recoverBlock		: (USING Id=identifier)? end=eos StmtBlock=statementBlock
@@ -667,7 +667,8 @@ primary				: Key=SELF													#selfExpression
                     | Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY						#delegateCtorCall		// delegate{ obj , @func() }
                     | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?	#ctorCall		// id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | Type=datatype LCURLY ArgList=argumentList  RCURLY			#ctorCall				// id{ expr [, expr...] }
+                    | Type=datatype LCURLY ArgList=argumentList  RCURLY	
+                                                   Init=objectOrCollectioninitializer? #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
                     | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )

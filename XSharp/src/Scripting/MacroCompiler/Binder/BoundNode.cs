@@ -16,13 +16,90 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class Expr: Node
     {
-        internal Type Datatype = null;
+        internal TypeSymbol Datatype = null;
     }
     internal partial class TypeExpr : Expr
     {
     }
     internal partial class NativeTypeExpr : TypeExpr
     {
+        internal override Node Bind(Binder b)
+        {
+            switch (Kind)
+            {
+                case TokenType.ARRAY:
+                case TokenType.CODEBLOCK:
+                case TokenType.DATE:
+                case TokenType.FLOAT:
+                case TokenType.PSZ:
+                case TokenType.SYMBOL:
+                    // TODO nvk: create special types
+                    break;
+                case TokenType.USUAL:
+                    Symbol = Compilation.GetNativeType(NativeType.__Usual);
+                    break;
+                case TokenType.BYTE:
+                    Symbol = Compilation.GetNativeType(NativeType.Byte);
+                    break;
+                case TokenType.CHAR:
+                    Symbol = Compilation.GetNativeType(NativeType.Char);
+                    break;
+                case TokenType.DATETIME:
+                    Symbol = Compilation.GetNativeType(NativeType.DateTime);
+                    break;
+                case TokenType.DECIMAL:
+                    Symbol = Compilation.GetNativeType(NativeType.Decimal);
+                    break;
+                case TokenType.DWORD:
+                    Symbol = Compilation.GetNativeType(NativeType.UInt32);
+                    break;
+                case TokenType.DYNAMIC:
+                    Symbol = Compilation.GetNativeType(NativeType.Object); // TODO nvk: special dynamic type?
+                    break;
+                case TokenType.INT:
+                    Symbol = Compilation.GetNativeType(NativeType.Int32);
+                    break;
+                case TokenType.INT64:
+                    Symbol = Compilation.GetNativeType(NativeType.Int64);
+                    break;
+                case TokenType.LOGIC:
+                    Symbol = Compilation.GetNativeType(NativeType.Boolean);
+                    break;
+                case TokenType.LONGINT:
+                    Symbol = Compilation.GetNativeType(NativeType.Int32);
+                    break;
+                case TokenType.OBJECT:
+                    Symbol = Compilation.GetNativeType(NativeType.Object);
+                    break;
+                case TokenType.PTR:
+                    Symbol = Compilation.GetNativeType(NativeType.Unknown); // TODO nvk: PTR type
+                    break;
+                case TokenType.REAL4:
+                    Symbol = Compilation.GetNativeType(NativeType.Single);
+                    break;
+                case TokenType.REAL8:
+                    Symbol = Compilation.GetNativeType(NativeType.Double);
+                    break;
+                case TokenType.SHORTINT:
+                    Symbol = Compilation.GetNativeType(NativeType.Int16);
+                    break;
+                case TokenType.STRING:
+                    Symbol = Compilation.GetNativeType(NativeType.String);
+                    break;
+                case TokenType.UINT64:
+                    Symbol = Compilation.GetNativeType(NativeType.UInt64);
+                    break;
+                case TokenType.VOID:
+                    Symbol = Compilation.GetNativeType(NativeType.Void);
+                    break;
+                case TokenType.WORD:
+                    Symbol = Compilation.GetNativeType(NativeType.UInt16);
+                    break;
+                default:
+                    break;
+            }
+            return null;
+        }
     }
     internal partial class NameExpr : TypeExpr
     {
@@ -32,22 +109,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = b.Lookup(null, Name);
-            if (Symbol is MemberSymbol)
-            {
-                var m = (Symbol as MemberSymbol).Member;
-                switch (m.MemberType)
-                {
-                    case MemberTypes.Field:
-                        Datatype = (m as FieldInfo).FieldType;
-                        break;
-                    case MemberTypes.Event:
-                        Datatype = (m as EventInfo).EventHandlerType;
-                        break;
-                    case MemberTypes.Property:
-                        Datatype = (m as PropertyInfo).PropertyType;
-                        break;
-                }
-            }
+            Datatype = (Symbol as MemberSymbol)?.Type;
             return null;
         }
     }
@@ -71,6 +133,14 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class BinaryExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Left);
+            b.Bind(ref Right);
+            Symbol = Binder.BinaryOperation(OperatorSymbol.BinaryOperatorKind(Kind), ref Left, ref Right);
+            Datatype = (Symbol as OperatorSymbolWithMethod)?.Method.Type;
+            return null;
+        }
     }
     internal partial class PrefixExpr : Expr
     {
@@ -91,7 +161,7 @@ namespace XSharp.MacroCompiler.Syntax
                     Symbol = Constant.Create(false);
                     break;
                 case TokenType.CHAR_CONST:
-                    Symbol = Constant.Create(true);
+                    Symbol = Constant.Create(Literals.CharValue(Value));
                     break;
                 case TokenType.STRING_CONST:
                 case TokenType.ESCAPED_STRING_CONST:
@@ -250,7 +320,7 @@ namespace XSharp.MacroCompiler.Syntax
                     }
                     break;
                 case TokenType.NULL:
-                    Symbol = Constant.Create<object>(null);
+                    Symbol = Constant.Create((object)null);
                     break;
                 case TokenType.DATE_CONST:
                 case TokenType.NIL:
@@ -300,9 +370,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class TypeCast : Expr
     {
+        internal static TypeCast Bound(Expr e, TypeSymbol t) { return new TypeCast(null, e) { Datatype = t }; }
     }
     internal partial class TypeConversion : TypeCast
     {
+        internal static TypeConversion Bound(Expr e, TypeSymbol t, ConversionSymbol conv) { return new TypeConversion(null, e) { Datatype = t, Symbol = conv }; }
     }
     internal partial class IsExpr : Expr
     {
@@ -318,7 +390,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             b.Bind(ref Args);
             Symbol = b.BindCall(Expr, Args, out Self);
-            Datatype = (((MethodSymbol)Symbol)?.Member as MethodInfo)?.ReturnType;
+            Datatype = ((MethodSymbol)Symbol)?.Type;
             return null;
         }
     }

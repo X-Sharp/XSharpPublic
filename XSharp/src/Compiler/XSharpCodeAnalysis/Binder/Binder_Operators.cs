@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.IsDialectVO && this.Compilation.Options.VOStringComparisons)
             {
                 // VO Style String Comparison
-                type = Compilation.FunctionsType();
+                type = Compilation.RuntimeFunctionsType();
                 string methodName = XSharpFunctionNames.StringCompare ;
                 var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
                 if (symbols.Length == 1)
@@ -80,7 +80,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
-            var type = Compilation.FunctionsType();
+            var type = Compilation.RuntimeFunctionsType();
             var methodName = XSharpFunctionNames.StringEquals; 
             var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 1)
@@ -632,7 +632,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var unary = expr as BoundUnaryOperator;
                 var type = VOGetType(unary.Operand);
-                if (unary.OperatorKind == UnaryOperatorKind.IntUnaryMinus)
+                if (unary.OperatorKind.Operator() == UnaryOperatorKind.UnaryMinus)
                 {
                     // see if we must change unsigned into signed
                     if (type == Compilation.GetSpecialType(SpecialType.System_Byte))

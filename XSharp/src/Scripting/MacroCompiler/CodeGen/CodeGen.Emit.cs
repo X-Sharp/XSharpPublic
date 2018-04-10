@@ -14,28 +14,28 @@ namespace XSharp.MacroCompiler
         {
             if (t.Type.IsValueType)
             {
-                switch (Type.GetTypeCode(t.Type))
+                switch (t.NativeType)
                 {
-                    case TypeCode.Byte:
-                    case TypeCode.Char:
-                    case TypeCode.Int16:
-                    case TypeCode.Int32:
-                    case TypeCode.SByte:
-                    case TypeCode.UInt16:
-                    case TypeCode.UInt32:
+                    case NativeType.Byte:
+                    case NativeType.Char:
+                    case NativeType.Int16:
+                    case NativeType.Int32:
+                    case NativeType.SByte:
+                    case NativeType.UInt16:
+                    case NativeType.UInt32:
                         ilg.Emit(OpCodes.Ldc_I4_0);
                         break;
-                    case TypeCode.UInt64:
-                    case TypeCode.Int64:
+                    case NativeType.UInt64:
+                    case NativeType.Int64:
                         ilg.Emit(OpCodes.Ldc_I4_0);
                         break;
-                    case TypeCode.Double:
+                    case NativeType.Double:
                         ilg.Emit(OpCodes.Ldc_R4, 0);
                         break;
-                    case TypeCode.Single:
+                    case NativeType.Single:
                         ilg.Emit(OpCodes.Ldc_R4,0);
                         break;
-                    case TypeCode.Decimal:
+                    case NativeType.Decimal:
                         ilg.Emit(OpCodes.Ldsfld, (FieldInfo)Compilation.GetMember(WellKnownMembers.System_Decimal_Zero).Member);
                         break;
                     default:
@@ -54,15 +54,15 @@ namespace XSharp.MacroCompiler
         }
         internal static void EmitLiteral(ILGenerator ilg, Constant c)
         {
-            switch (Type.GetTypeCode(c.Type))
+            switch (c.Type.NativeType)
             {
-                case TypeCode.Byte:
-                case TypeCode.Char:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
+                case NativeType.Byte:
+                case NativeType.Char:
+                case NativeType.Int16:
+                case NativeType.Int32:
+                case NativeType.SByte:
+                case NativeType.UInt16:
+                case NativeType.UInt32:
                     int? ordinal = c.Int;
                     switch (ordinal)
                     {
@@ -101,25 +101,24 @@ namespace XSharp.MacroCompiler
                             break;
                     }
                     break;
-                case TypeCode.UInt64:
-                case TypeCode.Int64:
+                case NativeType.UInt64:
+                case NativeType.Int64:
                     ilg.Emit(OpCodes.Ldc_I8, c.Long.Value);
                     break;
-                case TypeCode.Single:
+                case NativeType.Single:
                     ilg.Emit(OpCodes.Ldc_R4, c.Float.Value);
                     break;
-                case TypeCode.Double:
+                case NativeType.Double:
                     ilg.Emit(OpCodes.Ldc_R8, c.Double.Value);
                     break;
-                case TypeCode.String:
+                case NativeType.String:
                     ilg.Emit(OpCodes.Ldstr, c.String);
                     break;
-                case TypeCode.DateTime:
-                case TypeCode.Decimal:
-                case TypeCode.Object:
+                case NativeType.DateTime:
+                case NativeType.Decimal:
                     // TODO nvk
                     break;
-                case TypeCode.Empty:
+                case NativeType.Object:
                     ilg.Emit(OpCodes.Ldnull);
                     break;
                 default:

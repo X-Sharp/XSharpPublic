@@ -224,16 +224,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
                     {
-                        if (_options.ParseLevel == ParseLevel.Complete)
-                        {
-                            mustPreprocess = true;
-                        }
-                        else
-                        {
-                            // no need to pre process in partial compilation 
-                            // if lexer does not contain UDCs, Messages or Includes
-                            mustPreprocess = lexer.MustBeProcessed;
-                        }
+                        mustPreprocess = true;
                     }
                     else
                     {
@@ -269,17 +260,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
             // for info about optimization flags such as the next line
 
-            if (_options.ParseLevel < ParseLevel.Complete)
-            {
-                //parser.Interpreter.enable_global_context_dfa = true;    // default = false
-                parser.Interpreter.tail_call_preserves_sll = false;     // default = true   Setting to FALSE will reduce memory used by parser
-            //    parser.Interpreter.always_try_local_context = true;     // default = true
-            //    parser.Interpreter.force_global_context = true;         // default = false
-            //    parser.Interpreter.optimize_unique_closure = true; // default = true
-            //    parser.Interpreter.treat_sllk1_conflict_as_ambiguity = true; // default = false
-                parser.Interpreter.reportAmbiguities = true;
-                
-            }
             parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
             parser.AllowNamedArgs = _options.Dialect.AllowNamedArgs();
             parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
@@ -315,16 +295,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         string msg = _GetInnerExceptionMessage(e);
                         _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: " + msg + ". Trying again in LL mode.");
                     }
-                    if (_options.ParseLevel < ParseLevel.Complete)
-                    {
-                        parser.ErrorHandler = new XSharpBailErrorStrategy(_fileName, parseErrors);
-                    }
-                    else
-                    {
-                        var errorListener = new XSharpErrorListener(_fileName, parseErrors);
-                        parser.AddErrorListener(errorListener);
-                        parser.ErrorHandler = new XSharpErrorStrategy();
-                    }
+                    var errorListener = new XSharpErrorListener(_fileName, parseErrors);
+                    parser.AddErrorListener(errorListener);
+                    parser.ErrorHandler = new XSharpErrorStrategy();
                     parser.Interpreter.PredictionMode = PredictionMode.Ll;
                     ppStream.Reset();
                     if (_options.Verbose && pp != null)
@@ -376,7 +349,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 walker.Walk(errchecker, tree);
             }
             //
-
+             
             XSharpTreeTransformation treeTransform;
             if (_options.IsDialectVO)
             {

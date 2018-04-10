@@ -146,4 +146,41 @@
         internal const string Void2 = "global::System.Void";
         internal const string CollectionsGeneric = "global::System.Collections.Generic";
     }
+    internal static class OperatorNames
+    {
+        internal const string Implicit = "op_Implicit";
+        internal const string Explicit = "op_Explicit";
+        internal const string Addition = "op_Addition";
+        internal const string BitwiseAnd = "op_BitwiseAnd";
+        internal const string BitwiseOr = "op_BitwiseOr";
+        internal const string Decrement = "op_Decrement";
+        internal const string Division = "op_Division";
+        internal const string Equality = "op_Equality";
+        internal const string ExclusiveOr = "op_ExclusiveOr";
+        internal const string False = "op_False";
+        internal const string GreaterThan = "op_GreaterThan";
+        internal const string GreaterThanOrEqual = "op_GreaterThanOrEqual";
+        internal const string Increment = "op_Increment";
+        internal const string Inequality = "op_Inequality";
+        internal const string LeftShift = "op_LeftShift";
+        internal const string UnsignedLeftShift = "op_UnsignedLeftShift";
+        internal const string LessThan = "op_LessThan";
+        internal const string LessThanOrEqual = "op_LessThanOrEqual";
+        internal const string LogicalNot = "op_LogicalNot";
+        internal const string LogicalOr = "op_LogicalOr";
+        internal const string LogicalAnd = "op_LogicalAnd";
+        internal const string Modulus = "op_Modulus";
+        internal const string Multiply = "op_Multiply";
+        internal const string OnesComplement = "op_OnesComplement";
+        internal const string RightShift = "op_RightShift";
+        internal const string UnsignedRightShift = "op_UnsignedRightShift";
+        internal const string Subtraction = "op_Subtraction";
+        internal const string True = "op_True";
+        internal const string UnaryNegation = "op_UnaryNegation";
+        internal const string UnaryPlus = "op_UnaryPlus";
+        internal const string Concatenate = "op_Concatenate";
+        internal const string Exponent = "op_Exponent";
+        internal const string IntegerDivision = "op_IntegerDivision";
+        internal const string Like = "op_Like";
+    }
 }

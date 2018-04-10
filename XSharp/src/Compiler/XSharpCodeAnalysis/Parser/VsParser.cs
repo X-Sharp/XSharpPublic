@@ -61,24 +61,107 @@ namespace XSharp.Parser
 
         }
 
-        public static bool Parse(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener, 
-            out ITokenStream tokens, out XSharpParser.SourceContext tree)
+        //public static bool Parse(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener, 
+        //    out ITokenStream tokens, out XSharpParser.SourceContext tree)
+        //{
+        //    tree = null;
+        //    tokens = null;
+        //    var parseErrors = ParseErrorData.NewBag();
+        //    try
+        //    {
+        //        var lexer = XSharpLexer.Create(sourceText, fileName, options);
+        //        lexer.AllowXBaseVariables = options.Dialect.AllowXBaseVariables();
+        //        BufferedTokenStream tokenStream = lexer.GetTokenStream();
+        //        tokenStream.Fill();
+        //        tokens = (ITokenStream)tokenStream;
+
+        //        GetLexerErrors(lexer, tokenStream, parseErrors);
+
+        //         // do we need to preprocess
+        //        #region Determine if we really need the preprocessor
+        //        bool mustPreprocess = true;
+        //        if (lexer.HasPreprocessorTokens || !options.NoStdDef)
+        //        {
+        //            // no need to pre process in partial compilation 
+        //            // if lexer does not contain UDCs, Messages or Includes
+        //            mustPreprocess = lexer.MustBeProcessed;
+        //        }
+        //        else
+        //        {
+        //            mustPreprocess = false;
+
+        //        }
+        //        #endregion
+        //        XSharpPreprocessor pp = null;
+        //        BufferedTokenStream ppStream = null;
+        //        pp = new XSharpPreprocessor(lexer, tokenStream, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
+
+        //        if (mustPreprocess)
+        //        {
+        //            var ppTokens = pp.PreProcess();
+        //            ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+        //        }
+        //        else
+        //        {
+        //            // No Standard Defs and no preprocessor tokens in the lexer
+        //            // so we bypass the preprocessor and use the lexer token stream
+        //            ppStream = new CommonTokenStream(new ListTokenSource(tokenStream.GetTokens()));
+        //        }
+        //        ppStream.Fill();
+        //        var parser = new XSharpParser(ppStream);
+        //        parser.Interpreter.tail_call_preserves_sll = false;     // default = true   Setting to FALSE will reduce memory used by parser
+        //        parser.Interpreter.reportAmbiguities = true;
+        //        parser.AllowFunctionInsideClass = options.Dialect.AllowFunctionsInsideClass();
+        //        parser.AllowNamedArgs = options.Dialect.AllowNamedArgs();
+        //        parser.AllowXBaseVariables = options.Dialect.AllowXBaseVariables();
+        //        tree = null;
+        //        parser.RemoveErrorListeners();
+        //        parser.Interpreter.PredictionMode = PredictionMode.Sll;
+        //        parser.ErrorHandler = new BailErrorStrategy();
+        //        try
+        //        {
+        //            tree = parser.source();
+        //        }
+        //        catch (Exception)
+        //        {
+        //            var errorListener = new XSharpLanguageParser.XSharpErrorListener(fileName, parseErrors);
+        //            parser.AddErrorListener(errorListener);
+        //            parser.ErrorHandler = new XSharpErrorStrategy();
+        //            parser.Interpreter.PredictionMode = PredictionMode.Ll;
+        //            ppStream.Reset();
+        //            parser.Reset();
+        //            try
+        //            {
+        //                tree = parser.source();
+        //            }
+        //            catch (Exception)
+        //            {
+        //                tree = null;
+        //            }
+
+        //        }
+        //    }
+        //    catch (Exception )
+        //    {
+        //        tree = null;
+        //    }
+        //    ReportErrors(parseErrors, listener);
+        //    return tree != null;
+        //}
+        public static bool Lex(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener, 
+            out ITokenStream tokens)
         {
-            tree = null;
             tokens = null;
             var parseErrors = ParseErrorData.NewBag();
             try
             {
                 var lexer = XSharpLexer.Create(sourceText, fileName, options);
                 lexer.AllowXBaseVariables = options.Dialect.AllowXBaseVariables();
-                BufferedTokenStream tokenStream = lexer.GetTokenStream();
+                var tokenStream = lexer.GetTokenStream();
                 tokenStream.Fill();
-                tokens = (ITokenStream)tokenStream;
-
+                tokens = tokenStream; 
                 GetLexerErrors(lexer, tokenStream, parseErrors);
-
-                 // do we need to preprocess
-                #region Determine if we really need the preprocessor
+                #region Determine if we need to preprocess
                 bool mustPreprocess = true;
                 if (lexer.HasPreprocessorTokens || !options.NoStdDef)
                 {
@@ -108,56 +191,6 @@ namespace XSharp.Parser
                     ppStream = new CommonTokenStream(new ListTokenSource(tokenStream.GetTokens()));
                 }
                 ppStream.Fill();
-                var parser = new XSharpParser(ppStream);
-                parser.Interpreter.tail_call_preserves_sll = false;     // default = true   Setting to FALSE will reduce memory used by parser
-                parser.Interpreter.reportAmbiguities = true;
-                parser.AllowFunctionInsideClass = options.Dialect.AllowFunctionsInsideClass();
-                parser.AllowNamedArgs = options.Dialect.AllowNamedArgs();
-                parser.AllowXBaseVariables = options.Dialect.AllowXBaseVariables();
-                tree = null;
-                parser.RemoveErrorListeners();
-                parser.Interpreter.PredictionMode = PredictionMode.Sll;
-                parser.ErrorHandler = new BailErrorStrategy();
-                try
-                {
-                    tree = parser.source();
-                }
-                catch (Exception)
-                {
-                    parser.ErrorHandler = new XSharpBailErrorStrategy(fileName, parseErrors);
-                    parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                    ppStream.Reset();
-                    parser.Reset();
-                    try
-                    {
-                        tree = parser.source();
-                    }
-                    catch (Exception)
-                    {
-                        tree = null;
-                    }
-
-                }
-            }
-            catch (Exception )
-            {
-                tree = null;
-            }
-            ReportErrors(parseErrors, listener);
-            return tree != null;
-        }
-        public static bool Lex(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener, out ITokenStream tokens)
-        {
-            tokens = null;
-            var parseErrors = ParseErrorData.NewBag();
-            try
-            {
-                var lexer = XSharpLexer.Create(sourceText, fileName, options);
-                lexer.AllowXBaseVariables = options.Dialect.AllowXBaseVariables();
-                var tokenStream = lexer.GetTokenStream();
-                tokenStream.Fill();
-                tokens = tokenStream; 
-                GetLexerErrors(lexer, tokenStream, parseErrors);
             }
             catch (Exception)
             {

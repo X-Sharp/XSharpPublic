@@ -234,7 +234,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (_defTree == null)
                     {
-                        var t = new XSharpTreeTransformation(null,CSharpParseOptions.Default , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+                        var opt = CSharpParseOptions.Default;
+                        XSharpSpecificCompilationOptions xopt = new XSharpSpecificCompilationOptions();
+                        xopt.TargetDLL = targetDLL;
+                        opt = opt.WithXSharpSpecificOptions(xopt);
+                        var t = new XSharpTreeTransformation(null,opt , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
                         string globalClassName = t.GetGlobalClassName(targetDLL);
 
@@ -2356,11 +2360,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public void FinalizeGlobalEntities()
         {
-            string className = GlobalClassName;
             if (GlobalEntities.GlobalClassMembers.Count > 0)
             {
-                AddUsingWhenMissing(GlobalEntities.Usings, className, true);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.GlobalClassMembers));
+                AddUsingWhenMissing(GlobalEntities.Usings, GlobalClassName, true);
+                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, false, GlobalEntities.GlobalClassMembers));
                 GlobalEntities.GlobalClassMembers.Clear();
 
             }
@@ -2369,7 +2372,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string filename = PathUtilities.GetFileName(_fileName);
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = RemoveUnwantedCharacters(filename);
-                className = className + "$" + filename + "$";
+                string className = GlobalClassName + "$" + filename + "$";
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
                 GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.StaticGlobalClassMembers));
                 GlobalEntities.StaticGlobalClassMembers.Clear();
@@ -4325,12 +4328,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.ReadOnlyKeyword, SyntaxKind.StaticKeyword);
                 }
             }
-            context.Put(_syntaxFactory.FieldDeclaration(
+            var field = _syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
                 modifiers,
                 _syntaxFactory.VariableDeclaration(type, variables),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            context.Put(field);
             _pool.Free(variables);
+            GlobalEntities.Globals.Add(field);
         }
 
 
@@ -5688,12 +5693,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCatchBlock([NotNull] XP.CatchBlockContext context)
         {
             context.SetSequencePoint(context.end);
-            context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
-                context.Id == null ? null : _syntaxFactory.CatchDeclaration(
+            CatchDeclarationSyntax decl = null;
+            if (context.Type != null || context.Id != null)
+            {
+                SyntaxToken id = null;
+                TypeSyntax type = null;
+                if (context.Id != null)
+                {
+                    id = context.Id.Get<SyntaxToken>();
+                }
+                if (context.Type != null)
+                {
+                    type = context.Type.Get<TypeSyntax>();
+                }
+                else
+                {
+                    type = GenerateQualifiedName("System.Exception");
+                }
+                decl = _syntaxFactory.CatchDeclaration(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    context.Type?.Get<TypeSyntax>() ?? MissingType(),
-                    context.Id.Get<SyntaxToken>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)),
+                    type, 
+                    id,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            }
+
+            context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
+                decl,
                 null, // TODO: (grammar) catch filters?
                 context.StmtBlk.Get<BlockSyntax>()));
         }
@@ -6766,7 +6791,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Syntax then there is no need to explicitely add the Checked
             // for example C578: 
             // DEFINE d2 := unchecked ((WORD) -1)
-            if (_options.IsDialectVO  && !(context.Parent is XP.CheckedExpressionContext))
+            if (_options.IsDialectVO  && _options.TargetDLL  == XSharpTargetDLL.Other && !(context.Parent is XP.CheckedExpressionContext))
             {
                 expr = MakeChecked(expr, _options.Overflow);
             }

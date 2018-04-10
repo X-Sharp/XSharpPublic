@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
                 loweredReceiver = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject, loweredReceiver);
-            return _factory.StaticCall(_compilation.FunctionsType(), XSharpFunctionNames.IVarGet,
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.IVarGet,
                 MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
                 new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)));
         }
@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
                 loweredReceiver = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject, loweredReceiver);
-            return _factory.StaticCall(_compilation.FunctionsType(), XSharpFunctionNames.IVarPut,
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.IVarPut,
                 MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
                 new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                 loweredValue.Type == null ? new BoundDefaultOperator(loweredValue.Syntax, usualType)
@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                    convArgs.Add(MakeConversionNode(a, usualType, false));
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
-            return _factory.StaticCall(_compilation.FunctionsType(), XSharpFunctionNames.Send,
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.Send,
                     MakeConversionNode(loweredReceiver, usualType, false),
                     new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                     aArgs);
@@ -83,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     convArgs.Add(MakeConversionNode(a, usualType, false));
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
-            var expr = _factory.StaticCall(_compilation.FunctionsType(), XSharpFunctionNames.ASend,
+            var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.ASend,
                     MakeConversionNode(loweredReceiver, arrayType, false),
                     new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                     aArgs);

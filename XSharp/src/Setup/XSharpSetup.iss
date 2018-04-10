@@ -2,39 +2,38 @@
 ; Note that all folder name variables include the trailing backslash !
 ;
 
-#define SetupFolder     "c:\XSharp\Dev\XSharp\src\Setup\"
-#define SetupFolderNoBackSlash     "c:\XSharp\Dev\XSharp\src\Setup"
 #define Compression     "lzma2/ultra64"
 ;#define Compression     "none"
-
-;
-; preprocess the help cab files
-;
-#expr Exec( SetupFolder+'makecabs.cmd')
-
 #define FOX
-#ifdef FOX
-#define SetupExeName        "XSharpSetup120Fox"
-#define BinFolder           "C:\Xsharp\Dev\XSharp\Binaries\Release_AnyCPU\"
-#define BinPFolder          "C:\Xsharp\DevPublic\Binaries\Release\"
-#define BinRtFolder         "C:\Xsharp\DevPublic\Binaries\Release\"
-#define DebuggerObjFolder   "c:\XSharp\DevPublic\Binaries\Obj\Release\XSharpDebugger\"
-#define ProjectObjFolder    "c:\XSharp\DevPublic\Binaries\Obj\Release\XSharpProject\"
-#else   
-#define SetupExeName        "XSharpSetup120Public"
-#define BinFolder          "C:\Xsharp\Dev\XSharp\Binaries\Debug_AnyCPU\"
-#define BinPFolder          "C:\Xsharp\DevPublic\Binaries\Debug\"
-#define BinRtFolder         "C:\Xsharp\DevPublic\Binaries\Debug\"
-#define DebuggerObjFolder   "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpDebugger\"
-#define ProjectObjFolder    "c:\XSharp\DevPublic\Binaries\Obj\Debug\XSharpProject\"
-#endif
+
 
 ; version info and similar stuff.
   
-#define Version             "1.2"
-#define VIVersion           "1.2.0.0"
-#define TouchDate           "2018-03-16"
-#define TouchTime           "01:20:00"
+#define Version             "1.2.1"
+#define FileNameVersion     "121"
+#define VIVersion           "1.2.1.0"
+#define TouchDate           "2018-04-10"
+#define TouchTime           "01:21:00"
+
+#define DevFolder           "C:\Xsharp\Dev\XSharp"
+#define DevPublicFolder     "C:\Xsharp\DevPublic"
+#define SetupFolder         DevFolder + "\src\Setup"
+
+#define BinPFolder          DevPublicFolder + "\Binaries\Release\"
+#define BinRtFolder         "C:\Xsharp\DevRt\Binaries\Release\"
+#define ObjFolder           DevPublicFolder +"\Binaries\Obj\"
+#define DebuggerObjFolder   ObjFolder + "Release\XSharpDebugger\"
+#define ProjectObjFolder    ObjFolder + "Release\XSharpProject\"
+
+#ifdef FOX
+#define Suffix              "Fox"
+#define BinFolder           DevFolder + "\Binaries\Release_AnyCPU\"
+#else   
+#define Suffix              "Public"
+#define BinFolder           DevFolder + "\Binaries\Debug_AnyCPU\"
+#endif
+
+#define SetupExeName        "XSharpSetup"+FileNameVersion+Suffix
 
 #define Product             "XSharp"
 #define ProdBuild           "XSharp version "+ Version
@@ -45,7 +44,7 @@
 #define InstallPath         "XSharpPath"
 
 ; Code Signing
-#define KeyFile             "C:\XSharp\Dev\XSharp\build\Signatures\XSharpCert.pfx"
+#define KeyFile             DevFolder + "\build\Signatures\XSharpCert.pfx"
 #define TimeStampURL        "http://timestamp.globalsign.com/scripts/timstamp.dll"
 #define KeyPassword         "J1O39dGG6FPLXWj"
 #define Description         "XSharp, xBase compiler for .Net"
@@ -55,28 +54,33 @@
 
 ;Source Folders and other related stuff
 
-#define CommonFolder        "C:\Xsharp\Dev\XSharp\src\Common\"
-#define ToolsFolder         "C:\Xsharp\Dev\XSharp\src\Tools\"
-#define VOXporterFolder     "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\"
-#define VOXporterBinFolder  "C:\XSharp\Dev\XSharp\src\Tools\VOXPorter\Bin\Release\"
-#define ExamplesFolder      "C:\Xsharp\DevPublic\Samples\"
-#define ScriptFolder        "C:\XSharp\DevPublic\ScriptSamples\"
-#define OutPutFolder        "C:\XSharp\Dev\XSharp\Binaries\Setup"
-#define DocFolder           "C:\Xsharp\Dev\XSharp\Binaries\Help\"
-#define XIDEFolder          "C:\Xsharp\Dev\XSharp\Xide\"
-#define SnippetsSource      "C:\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets\"
-#define XIDESetup           "XIDE_Set_up_1.12.exe"
-#define XIDEVersion         "1.12"
+#define CommonFolder        DevFolder + "\src\Common\"
+#define ToolsFolder         DevFolder + "\src\Tools\"
+#define VOXporterFolder     DevFolder + "\src\Tools\VOXPorter\"
+#define VOXporterBinFolder  DevFolder + "\src\Tools\VOXPorter\Bin\Release\"
+#define ExamplesFolder      DevPublicFolder + "\Samples\"
+#define ScriptFolder        DevPublicFolder + "\ScriptSamples\"
+#define OutPutFolder        DevFolder + "\Binaries\Setup"
+#define DocFolder           DevFolder + "\Binaries\Help\"
+#define XIDEFolder          DevFolder + "\Xide\"
+#define SnippetsSource      DevPublicFolder + "\VisualStudio\ProjectPackage\Snippets\"
+#define XIDESetup           "XIDE_Set_up_1.13.exe"
+#define XIDEVersion         "1.13"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define Provider            "XSharp.CodeDom.XSharpCodeDomProvider, Culture=neutral, PublicKeyToken=31c59c566fa38f21, Version="
 #define ImmutableVersion    "System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define MetadataVersion     "System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 
+;
+; preprocess the help cab files
+;
+#expr Exec( SetupFolder+'\makecabs.cmd')
+
 ; Write version to VSIX files
 ; The updatevsix.exe is created from updatevsix.prg in this folder
-#expr Exec(SetupFolder+'updatevsix.exe', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,SetupFolderNoBackSlash,1,sw_ShowNormal)
-#expr Exec(SetupFolder+'updatevsix.exe', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,SetupFolderNoBackSlash,1,sw_ShowNormal)
+#expr Exec(SetupFolder+'\updatevsix.exe', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,SetupFolder,1,sw_ShowNormal)
+#expr Exec(SetupFolder+'\updatevsix.exe', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,SetupFolder,1,sw_ShowNormal)
 
 ; Registry name for prgx extension
 #define XSScript            "XSharpScript"
@@ -108,11 +112,7 @@ DisableWelcomePage=no
 DisableStartupPrompt=yes
 DisableReadyMemo=yes
 DisableFinishedPage=no
-#ifdef FOX
-InfoBeforeFile=Baggage\ReadmeShortFox.rtf
-#else
-InfoBeforeFile=Baggage\ReadmeShortPublic.rtf
-#endif
+InfoBeforeFile=Baggage\ReadmeShort{# Suffix}.rtf
 AppName={#Product}
 AppVersion={#Version}
 AppCopyright={# CopyRight}
@@ -295,11 +295,7 @@ Source: "{#VOXPorterFolder}Templates\*";                 DestDir: "{app}\VOXPort
 
 
 ; Support files
-#ifdef FOX
-Source: "Baggage\ReadmeFox.rtf";                          DestDir: "{app}";   DestName:"Readme.rtf" ; Flags: isreadme {#StdFlags}; 
-#else
-Source: "Baggage\ReadmePublic.rtf";                       DestDir: "{app}";   DestName:"Readme.rtf" ; Flags: isreadme {#StdFlags}; 
-#endif
+Source: "Baggage\Readme{# Suffix}.rtf";                          DestDir: "{app}";   DestName:"Readme.rtf" ; Flags: isreadme {#StdFlags}; 
 Source: "Baggage\Whatsnew.rtf";                           DestDir: "{app}";   DestName:"Whatsnew.rtf" ; Flags: isreadme {#StdFlags}; 
 
 Source: "Baggage\Redist.txt";                             DestDir: "{app}\Redist" ; Flags: {#StdFlags}; 
@@ -1313,7 +1309,9 @@ procedure InitializeWizard();
 begin
     
     Log('InitializeWizard start');
+    { Kill running process to help success the installation}
     TaskKill('xscompiler.exe');
+    TaskKill('msbuild.exe');
     PrintButton := TButton.Create(WizardForm);
     PrintButton.Caption := '&Print...';
     PrintButton.Left := WizardForm.InfoAfterPage.Left + 96;

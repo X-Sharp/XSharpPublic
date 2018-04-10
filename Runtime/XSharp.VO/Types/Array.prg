@@ -28,6 +28,7 @@ begin namespace XSharp
 			if elements == null
 				throw ArgumentNullException{nameof(elements)}
 			endif
+			_internalList:Capacity := elements:Length
 			_internalList:AddRange(elements) 
 			return
 		

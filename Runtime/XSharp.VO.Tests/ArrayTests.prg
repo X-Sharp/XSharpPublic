@@ -29,8 +29,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArraySwapTest() as void
-			local values := <object>{1,2,3} as object[]
-			local testArray := Array{values} as Array
+			local testArray := {1,2,3} as Array
 			local newValue := 4 as int
 			local oldValue := ArraySwap(testArray, 2,newValue) as Usual
 			Assert.Equal( 2 , (int) oldValue)
@@ -40,8 +39,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayDeleteTest() as void
-			local values := <object>{1,2,3} as object[]
-			local testArray := Array{values} as Array
+			local testArray := {1,2,3} as Array
 			Adel(testArray, 1)
 			Assert.Equal( (dword)3 , testArray:Length)
 			Assert.Equal( NIL ,  testArray[3])
@@ -65,6 +63,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			local testArray := Array{values} as Array
 			Assert.Equal( 3 , (int) testArray:Tail())
 		return
+
+ 		[Trait("Category", "Array")];
+		[Fact];
+		METHOD AFillTest() as void
+			local testArray := {}  as array
+			Asize(testArray, 10)
+			afill(testArray, "",1,9)
+			Assert.Equal( "" , testArray[1])
+			Assert.Equal( "" , testArray[9])
+			Assert.Equal( NIL , testArray[10])
+		return
+
 		
  		[Trait("Category", "Array")];
 		[Fact];

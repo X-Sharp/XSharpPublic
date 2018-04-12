@@ -109,6 +109,7 @@
     <Compile Include="ConversionTests.prg" />
     <Compile Include="CodeBlockTest.prg" />
     <Compile Include="DateTests.prg" />
+    <Compile Include="ErrorTests.prg" />
     <Compile Include="FloatTests.prg" />
     <Compile Include="MemoryTests.prg" />
     <Compile Include="OOPTests.prg" />

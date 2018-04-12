@@ -32,8 +32,7 @@ function AsHexString(uValue as usual) as string
 	/// <returns>
 	/// </returns>
 function AsPadr(u as usual,dwLen as dword) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	return PadR(AsString(u), dwLen)
 	
 	
 	/// <summary>
@@ -53,6 +52,26 @@ function AsString(u as usual) as string
 			result := Symbol2String( (symbol) u)
 		case u:IsDate
 			result := DTOC( (date) u)
+		case u:IsArray
+			VAR aValue := (ARRAY) u
+			//  {[0000000003]0x025400FC}
+			IF aValue == NULL_ARRAY
+				result := "{[0000000000]0x00000000}"
+			ELSE
+				var cHashCode := String.Format("{0:X8}", aValue:GetHashCode())
+				result := "{["+STRING.Format("{0:D8}",aValue:Length)+"]0x"+cHashCode+"}"
+			ENDIF
+
+		case u:IsObject
+			local oValue := u as OBJECT
+			IF oValue == NULL_OBJECT
+				result := "{(0x0000)0x00000000} CLASS "
+			ELSE
+				var oType := oValue:GetType()
+				var nSize := oType:GetFields():Length *4
+				var cHashCode := String.Format("{0:X8}", oValue:GetHashCode())
+				result := "{(0x"+String.Format("{0:X4}", nSize)+")0x"+cHashCode+"} CLASS " + oType:Name:ToUpperInvariant()
+			ENDIF
 		otherwise
 			result := u:ToString()
 	endcase

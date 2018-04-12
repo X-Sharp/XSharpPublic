@@ -12,7 +12,7 @@ using System.Diagnostics
 begin namespace XSharp	
 	[DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
 	[DebuggerTypeProxy(typeof(DateDebugView))];
-	[StructLayout(LayoutKind.Explicit)];
+	[StructLayout(LayoutKind.Explicit,Pack := 1)];
 	public structure __VODate implements System.IComparable, ;
 		System.IFormattable, ;
 		System.IConvertible, ;
@@ -98,10 +98,10 @@ begin namespace XSharp
 			constructor(year as int, month as int, day as int)
 				try
 					// this may throw an exception when the combination is not valid
-					var lhs := System.DateTime{year, month, day}
-					_year  := (word) lhs:Year
-					_month := (byte) lhs:Month
-					_day   := (byte) lhs:Day
+					//var lhs := System.DateTime{year, month, day}
+					_year  := (word) year // (word) lhs:Year
+					_month := (byte) month // (byte) lhs:Month
+					_day   := (byte) day // (byte) lhs:Day
 				catch e as Exception
 					_value := 0 // null_date
 					throw e

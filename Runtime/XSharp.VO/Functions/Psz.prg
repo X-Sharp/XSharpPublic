@@ -179,16 +179,6 @@ using System.Text
 		return false
 		
 	
-	
-	/// <summary>
-	/// </summary>
-	/// <param name="pObj"></param>
-	/// <returns>
-	/// </returns>
-	function ObjAsPsz(pObj as IntPtr) as Psz
-		/// THROW NotImplementedException{}
-		return (Psz) IntPtr.Zero
-	
 	/// <summary>
 	/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
 	/// </summary>
@@ -337,4 +327,6 @@ FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
        RETURN sb:ToString()
     ELSE
        RETURN ""
-    ENDIF   
+    endif   
+
+

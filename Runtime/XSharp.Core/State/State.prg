@@ -133,21 +133,7 @@ CLASS XSharp.RuntimeState
 		END LOCK
 		RETURN	result		
 
-    STATIC PROPERTY Ansi AS LOGIC ;
-        GET GetValue<LOGIC>(Set.Ansi);
-        SET SetValue<LOGIC>(Set.Ansi, VALUE)
-
-    STATIC PROPERTY AutoOrder AS LOGIC ;
-        GET GetValue<LOGIC>(Set.AutoOrder);
-        SET SetValue<LOGIC>(Set.AutoOrder, VALUE)
-
-    STATIC PROPERTY AutoOpen AS LOGIC ;
-        GET GetValue<LOGIC>(Set.AutoOpen);
-        SET SetValue<LOGIC>(Set.AutoOpen, VALUE)
-
-    STATIC PROPERTY AutoShareMode AS AutoShareMode ;
-        GET GetValue<AutoShareMode>(Set.AutoShare);
-        SET SetValue<AutoShareMode>(Set.AutoShare, VALUE)
+	#region properties from the Vulcan RuntimeState that are emulated
 
 	static property CompilerOptionVO11 as logic ;
         GET GetValue<LOGIC>(Set.OPTIONVO11);
@@ -160,6 +146,29 @@ CLASS XSharp.RuntimeState
 	static property CompilerOptionFOVF as logic ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
+
+    STATIC PROPERTY AppModule AS  System.Reflection.Module;
+        GET GetValue<System.Reflection.Module>(Set.AppModule);
+        set SetValue<System.Reflection.Module>(Set.AppModule, value)
+	#endregion
+
+    STATIC PROPERTY @@Ansi AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Ansi);
+        SET SetValue<LOGIC>(Set.Ansi, VALUE)
+
+
+
+    STATIC PROPERTY AutoOrder AS LOGIC ;
+        GET GetValue<LOGIC>(Set.AutoOrder);
+        SET SetValue<LOGIC>(Set.AutoOrder, VALUE)
+
+    STATIC PROPERTY AutoOpen AS LOGIC ;
+        GET GetValue<LOGIC>(Set.AutoOpen);
+        SET SetValue<LOGIC>(Set.AutoOpen, VALUE)
+
+    STATIC PROPERTY AutoShareMode AS AutoShareMode ;
+        GET GetValue<AutoShareMode>(Set.AutoShare);
+        SET SetValue<AutoShareMode>(Set.AutoShare, VALUE)
 
    STATIC PROPERTY Century AS LOGIC ;
         GET GetValue<LOGIC>(Set.Century);

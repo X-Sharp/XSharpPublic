@@ -8,7 +8,7 @@ using System.Runtime.InteropServices
 using System.Diagnostics
 using XSharp.Internal
 begin namespace XSharp
-    [StructLayout(LayoutKind.Sequential)];
+    [StructLayout(LayoutKind.Sequential, Pack := 4)];
     [DebuggerDisplay("{Value,nq} ({_usualType})", Type := "USUAL")];
     [DebuggerTypeProxy(typeof(UsualDebugView))];
     public structure __Usual implements IConvertible,IComparable
@@ -2106,7 +2106,7 @@ begin namespace XSharp
         member @@Invalid    :=99
     end enum
     
-    [StructLayout(LayoutKind.Explicit)];
+    [StructLayout(LayoutKind.Explicit, Pack := 1)];
     internal structure UsualFlags
         [FieldOffset(0)] export usualType as UsualType
         [FieldOffset(1)] export width as Sbyte

@@ -248,7 +248,7 @@ begin namespace XSharp.IO
 			endif
 			return false
 		
-		internal static method read(pHandle as ptr, refC out string, iCount as int, lOem2Ansi as logic) as int
+		internal static method read(pHandle as Intptr, refC out string, iCount as int, lOem2Ansi as logic) as int
 			local aBuffer := XSharp.IO.File.getBuffer(pHandle, iCount) as byte[]
 			iCount := (int) ReadBuff(pHandle, aBuffer, iCount, lOem2Ansi)
 			refC := Bytes2String(aBuffer, iCount)

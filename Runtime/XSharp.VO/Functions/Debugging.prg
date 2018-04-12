@@ -78,7 +78,6 @@ return global::Functions.ProcName ( (int) dwActivation +1)
 /// <returns>
 /// </returns>
 function Version() as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	return "XSharp "+__VERSION__
 
 

@@ -83,6 +83,13 @@ begin namespace XSharp
 			e:ArgNum      := iArgNum
 			//e:Description := SR.GetString( SR.ArgIsNULL )
 			return e
+		STATIC METHOD WrapRawException( ex AS Exception ) AS Error
+			LOCAL e AS Error
+			e := Error{ ex }
+			e:GenCode     := EG_EXCEPTION
+			e:Description := ErrString( EG_EXCEPTION )
+			e:Severity    := ES_ERROR
+			RETURN e
 		
 	end class
 end namespace 

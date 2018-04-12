@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
 	ProjectSection(SolutionItems) = preProject
@@ -35,6 +35,8 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.Tests", "Runtime\XSharp.VO.Tests\XSharp.VO.Tests.xsproj", "{16D523F2-B871-4BDC-94EF-33B3DB7AE617}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.xsproj", "{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}"
+EndProject
+Project("{5891B814-A2E0-4E64-9A2F-2C2ECAB940FE}") = "VulcanConsole", "VulcanConsole\VulcanConsole.vnproj", "{73B51F86-E1B2-4DE2-B88B-979D620EB138}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +72,10 @@ Global
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73B51F86-E1B2-4DE2-B88B-979D620EB138}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B51F86-E1B2-4DE2-B88B-979D620EB138}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B51F86-E1B2-4DE2-B88B-979D620EB138}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B51F86-E1B2-4DE2-B88B-979D620EB138}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

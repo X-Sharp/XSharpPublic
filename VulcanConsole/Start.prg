@@ -1,4 +1,4 @@
-﻿function Start() as void
+function Start() as void
 	local nX as Int
 	? Version()
 	? "Size of IntPtr", IntPtr.Size
@@ -75,9 +75,8 @@ PROCEDURE testDate()
 	
 	for local n := 1 as int upto 25000000
 		d1 := 2018.04.15
-		d2 := d1+1
+		d2 := d1
 		d1 := d2
-
 	NEXT
 
 	? "Time elapsed:", (DateTime.Now - d):ToString()

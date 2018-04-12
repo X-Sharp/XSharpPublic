@@ -524,3 +524,53 @@ RETURN String.Empty
 [ObsoleteAttribute( "'FloatNext()' is not supported and always returns 0")];
 FUNCTION FloatNext(f AS Float) AS Float
 RETURN 0   
+
+[ObsoleteAttribute( "'Psz2Float()' is not supported and always returns 0")];
+function Psz2Float(ptrBuff as IntPtr,nLen as int,nDec as int) as float
+	return 0   
+
+[ObsoleteAttribute( "'Any2Usual()' is not supported and always returns NIL")];
+function Any2Usual(x as usual,nType as dword) as usual
+	return NIL   
+
+
+[ObsoleteAttribute( "'StrToLong()' is not supported and always returns 0")];
+FUNCTION StrToLong(c AS STRING,dwRadix AS DWORD) AS Float
+RETURN 0   
+
+
+[ObsoleteAttribute( "'ObjAsPsz()' is not supported and always returns NULL_PSZ")];
+function ObjAsPsz(pObj as IntPtr) as Psz
+	return NULL_PSZ
+
+
+[ObsoleteAttribute( "'Float2Str()' is not supported and always returns an empty string")];
+function Float2Str(ptrUsual AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+return ""
+
+[Obsolete];
+FUNCTION FunctionCount() AS DWORD
+return 0   
+
+[Obsolete];
+FUNCTION FunctionList() AS Array
+RETURN NULL_ARRAY   
+
+
+[Obsolete];
+FUNCTION UnDeclareClass(symClass AS Symbol) AS INT
+RETURN 0   
+
+[Obsolete];
+FUNCTION DeclareMethod(symClass AS Symbol,symMeth AS Symbol,nType AS DWORD,pFunc AS IntPTR,nArgs AS DWORD) AS INT
+RETURN 0   
+
+
+[Obsolete];
+FUNCTION FunctionSym2Ptr(symFunc AS Symbol) AS IntPTR
+RETURN IntPtr.Zero
+
+
+[Obsolete];
+function ArgCount() as dword
+return 0   

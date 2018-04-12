@@ -96,3 +96,32 @@ function VarGetSym(symVar as Symbol) as Usual
 function VarPutSym(symVar as Symbol,u as Usual) as Usual
 	/// THROW NotImplementedException{}
 	return NIL  
+
+	/// <summary>
+	/// Obtain a set-get code block for a given memory variable.
+	/// </summary>
+	/// <param name="symVar"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION MemVarBlockSym(symVar AS Symbol) AS OBJECT
+		/// THROW NotImplementedException{}
+	RETURN NULL_OBJECT   
+
+	/// <summary>
+	/// </summary>
+	/// <param name="symVar"></param>
+	/// <returns> 
+	/// </returns>
+	FUNCTION MemVarGetSym(symVar AS Symbol) AS Usual
+		/// THROW NotImplementedException{}
+	RETURN NIL   
+
+	/// <summary>
+	/// </summary>
+	/// <param name="symVar"></param>
+	/// <param name="u"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION MemVarPutSym(symVar AS Symbol,u AS Usual) AS Usual
+		/// THROW NotImplementedException{}
+	RETURN NIL      

@@ -333,7 +333,8 @@ begin namespace XSharp
             internal property IsNil as logic
                 get
                     return self:_usualType == UsualType.Void .or. ;
-                    (self:IsReferenceType .and. self:_refData  == null)
+						(self:IsReferenceType .and. self:_refData  == null) .or. ;
+						(self:_usualType == UsualType.Ptr .and. self:_ptrValue == IntPtr.Zero)
                     
                 end get
             end property

@@ -13,7 +13,7 @@ using System.Collections.Generic
 #define MAXDECIMALS             15	
 
 static class StringHelpers
-	static private usCulture as CultureInfo
+	static internal usCulture as CultureInfo
 	static private formatStrings as Dictionary<Int, String>
 	static constructor
 		usCulture := CultureInfo{"en-US"} 

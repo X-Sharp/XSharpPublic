@@ -279,9 +279,9 @@ STATIC FUNCTION TransformNumeric( nValue AS USUAL, cPicture AS STRING ) AS STRIN
       cReturn := cTemplate:Replace('#' , '*'):Replace('0' , '*')
    ELSE
       IF lIsInt64
-         cReturn := ((INT64)nValue):ToString( cTemplate )
+         cReturn := ((INT64)nValue):ToString( cTemplate , StringHelpers.usCulture)
       ELSE
-         cReturn := ((FLOAT)nValue):Value:ToString( cTemplate )
+         cReturn := ((FLOAT)nValue):Value:ToString( cTemplate , StringHelpers.usCulture)
       ENDIF
    ENDIF
 

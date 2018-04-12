@@ -519,6 +519,7 @@ namespace XSharp.Project
             char car;
             int currrentPos = start;
             int pos = 0;
+            bool mayContinue = false;
             char[] newLine = Environment.NewLine.ToCharArray();
             do
             {
@@ -527,15 +528,25 @@ namespace XSharp.Project
                 {
                     if (pos == newLine.Length - 1)
                     {
-                        found = true;
-                        break;
+                        if (!mayContinue)
+                        {
+                            found = true;
+                            break;
+                        }
+                        pos = 0;
                     }
-                    pos++;
+                    else
+                        pos++;
                 }
                 else
                 {
+                    if (car == ';')
+                        mayContinue = true;
+                    else
+                        mayContinue = false;
                     pos = 0;
                 }
+                //
                 currrentPos++;
                 if (currrentPos >= snapshot.Length)
                 {
@@ -586,7 +597,8 @@ namespace XSharp.Project
         private String getFirstKeywordInLine(ITextSnapshotLine line, int start, int length)
         {
             String keyword = "";
-            List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine( line.Snapshot, start, length);
+            List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line.Snapshot, start, length);
+            bool inAttribute = false;
             //
             if (tagList.Count > 0)
             {
@@ -628,6 +640,39 @@ namespace XSharp.Project
                                 keyword = keyword.Substring(0, 2);
                             }
                         }
+                    }
+                    else if (currentTag.ClassificationType.IsOfType("punctuation"))
+                    {
+                        var spans = currentSpan.GetSpans(_buffer);
+                        if (spans.Count > 0)
+                        {
+                            SnapshotSpan kwSpan = spans[0];
+                            keyword = kwSpan.GetText();
+                            if (keyword == "[")
+                            {
+                                inAttribute = true;
+                                tagIndex++;
+                                keyword = "";
+                                continue;
+                            }
+                            else if (keyword == "]")
+                            {
+                                inAttribute = false;
+                                tagIndex++;
+                                keyword = "";
+                                continue;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (inAttribute)
+                        {
+                            // Skip All Content
+                            tagIndex++;
+                            continue;
+                        }
+                            
                     }
                     // out please
                     break;

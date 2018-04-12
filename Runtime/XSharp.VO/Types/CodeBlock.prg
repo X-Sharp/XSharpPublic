@@ -8,15 +8,18 @@ using System.Collections.Generic
 using System.Linq
 using System.Diagnostics
 using XSharp
+using System.Runtime.CompilerServices
 
 // Base class for runtime compiled macros and compiletime codeblocks
 [DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
 abstract class XSharp.CodeBlock implements ICodeBlock
 	private initonly _pcount as int
-	property PCount as int get _pcount
+	
+	public virtual method PCount as int 
+		return _Pcount
 	
 	[DebuggerStepThrough] ;
-	public constructor (pCount as int)
+	PROTECTED constructor (pCount as int)
 		_pcount := pCount
 		
    /// <summary>
@@ -27,9 +30,9 @@ abstract class XSharp.CodeBlock implements ICodeBlock
    /// returns NIL.</returns>
    /// <remarks>This method is abstract and is implemented in the derived class
    /// created by the compiler.</remarks>
-	public abstract method Eval(args params usual[] ) as usual
+	public abstract method Eval(args params const usual[] ) as usual
 		
-	public method EvalBlock(args params object[] ) as object
+	public VIRTUAL method EvalBlock(args params object[] ) as object
 		var num := args:Length
 		var uArgs := usual[]{num}
 		for var i := 1 to num
@@ -39,7 +42,11 @@ abstract class XSharp.CodeBlock implements ICodeBlock
 		
 	public override method ToString() as string
 		return "{|" + self:_pcount:ToString() + "| ... }"
-		
+
+    // This method is used in the compiled codeblocks to get the arguments
+	// from the parameter list
+    protected static method _BlockArg( args as CONST usual[], index as const int ) as usual
+         return iif( index < args:Length, args[index + 1], NIL )
 	end class
 
 // Base class for runtime compiled macros	
@@ -49,7 +56,7 @@ public class XSharp._CodeBlock inherit XSharp.CodeBlock
 	protect _cMacro		as string
 
 	public constructor(innerBlock as ICodeBlock, cMacro as string)
-		super(innerBlock:Pcount)
+		super(innerBlock:Pcount())
 		_innerBlock := innerBlock
 		_cMacro		:= cMacro
 		

@@ -8,8 +8,8 @@ BEGIN NAMESPACE XSharp
 	/// This interface defines Compile time and runtime codeblocks
 	/// </summary>
 	INTERFACE ICodeBlock
-		METHOD		EvalBlock( args PARAMS OBJECT[]) AS OBJECT
-		PROPERTY	PCount AS LONG GET
+		METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT
+		METHOD	PCount AS LONG 
 	END INTERFACE
 
 	/// <summary>

@@ -67,3 +67,16 @@ function Eval( obj as object,  args params usual[] ) as usual
 	endif
 	
 	return result
+
+
+/// <summary>
+/// Return the number of arguments that a code block is expecting.
+/// </summary>
+/// <param name="uCodeBlock"></param>
+/// <returns>
+/// </returns>
+function CParamCount(oCodeBlock as CodeBlock) as dword
+	if oCodeBlock == null_object
+		throw Error.NullArgumentError(__ENTITY__, nameof(oCodeBlock), 1)
+	endif
+	return (DWORD) oCodeBlock:PCount()

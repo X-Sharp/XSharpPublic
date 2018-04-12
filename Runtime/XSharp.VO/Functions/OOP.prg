@@ -94,10 +94,8 @@ static class OOPHelpers
 	   return 0U
 
 	STATIC METHOD IVarList( t AS Type ) AS ARRAY
-	   LOCAL aList   AS ARRAY
-	   aList := {}
 	   IF t == NULL
-		  RETURN aList
+		  RETURN NULL_ARRAY
 	   ENDIF
    
 	   var aFields := t:GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
@@ -120,10 +118,7 @@ static class OOPHelpers
 				list:Add(name)
 			 ENDIF
 	   NEXT
-	   foreach var name in List
-			aadd(aList, String2Symbol(name))
-	   next
-	   RETURN aList
+	   RETURN list:ToVoSymArray()
    
 
 	   static method MethodList(t as Type) as ARRAY
@@ -136,14 +131,18 @@ static class OOPHelpers
 				  endif   
 			endif
 		   next
-		   local aList as array
-		   aList := {}
-		   foreach cMethod as string in list
-				aadd(aList, String2Symbol(cMethod))
-		   next
-		   return aList
+		   return list:ToVoSymArray()
+
+	static method ToVoSymArray(self list as List<string>) as array
+		// convert List<STRING> to Array of Symbols
+		local aResult as array
+		aResult := {}
+		foreach var name in list
+			aadd(aResult, String2Symbol(name))
+		next
+		return aResult
+
 	STATIC METHOD TreeHelper( t AS Type ) AS ARRAY 
-	   LOCAL aInstance , aMethod AS ARRAY
 	   LOCAL aList := NULL_ARRAY AS ARRAY
 	   IF t == NULL
    		  RETURN aList
@@ -154,14 +153,10 @@ static class OOPHelpers
    		  aInheritance:Add(t)
    		  t := t:BaseType
 	   END DO
-   
+	   aList := {}
 	   FOREACH type as Type in aInheritance
-   		  aInstance := {}
-   		  aMethod := {}
-   		  AAdd(aList , {(SYMBOL) type:FullName, aInstance, aMethod})
 		  var listMethod := List<string>{}
 		  var listVar    := List<String>{}
-	   
    		  var aInfo := type:GetMembers(BindingFlags.Instance + BindingFlags.Public + BindingFlags.NonPublic)
    		  FOREACH oInfo as MemberInfo in aInfo
 			var name := oInfo:Name:Toupper()
@@ -180,12 +175,9 @@ static class OOPHelpers
          		END IF
 			 END CASE
    		  next
-	  	   foreach var name in listVar
-			AADD(aInstance, String2Symbol(name))
-		   next   
-	  	   foreach var name in listMethod
-			AADD(aMethod, String2Symbol(name))
-		   next   
+   		  var aInstance := listVar:ToVoSymArray()
+   		  var aMethod   := listMethod:ToVoSymArray()
+   		  AAdd(aList , {(SYMBOL) type:FullName, aInstance, aMethod})
 
 	   NEXT
 	   return aList
@@ -349,6 +341,19 @@ static class OOPHelpers
 			else
 				return Convert.ChangeType((OBJECT) uValue, toType)
 			endif
+	static method DoSend(oObject as object, cMethod as string, args as usual[] ) as usual
+		local result as USUAL
+		if ! SendHelper(oObject, cMethod, args, out result)
+			  LOCAL nomethodArgs := USUAL[]{ args:Length + 1 } AS USUAL[]
+			  cMethod := cMethod:ToUpperInvariant()
+			  RuntimeState.NoMethod := cMethod   // For NoMethod() function
+			  noMethodArgs[1]		:= cMethod
+			  Array.Copy( args, 0, noMethodArgs, 1, args:Length )
+			  if ! SendHelper(oObject, "NoMethod" , noMethodArgs, out result)
+				// Throw Exception
+			  endif
+		endif
+		return result
 
 end class
 
@@ -460,6 +465,8 @@ function CreateInstance(cClassName) as object
 		oRet := ctor:Invoke( <object>{args})	
 	 elseif ctor:IsDefined(typeof( System.Runtime.CompilerServices.CompilerGeneratedAttribute ), false )
 		// generated default ctor without args
+		oRet := ctor:Invoke( NULL)	
+	 elseif ctor:GetParameters():Length == 0
 		oRet := ctor:Invoke( NULL)	
 	 else
 		// convert args to array of objects
@@ -777,9 +784,8 @@ FUNCTION MethodListClass( c AS STRING ) AS ARRAY
 /// </summary>
 /// <returns>
 /// </returns>
-function NoMethod() as Symbol
-	/// THROW NotImplementedException{}
-	return null_symbol   
+function NoMethod() as STRING
+	return RuntimeState.NoMethod
 
 
 
@@ -794,24 +800,6 @@ function Object2Array(o as object) as Array
 	return null_array   
 
 
-/// <summary>
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
-function OClone(o as object) as object
-	/// THROW NotImplementedException{}
-	return null_object   
-
-
-/// <summary>
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
-function OMemSize(o as object) as dword
-	/// THROW NotImplementedException{}
-	return 0  
 
 /// <summary>
 /// Return a multidimensional Array of all object-oriented programming Symbols that constitute the class.
@@ -861,38 +849,13 @@ function Send(o ,uMethod ) as usual
 	for nArg := 1 to nArgs
 		args[nArg] := _GetFParam(nArg+2)
 	next
-	return __DoSend(oObject, cMethod, args)
+	return OopHelpers.DoSend(oObject, cMethod, args)
 
 // This is called by the compiler when a late bound call is made on a USUAL.
 // It is strongly typed and more efficient than Send(), which must use the
 // CLIPPER calling convention for compatiblity with VO.
 FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args params USUAL[] ) AS USUAL
-   return __DoSend(oObject, cMethod, args)
+   return OopHelpers.DoSend(oObject, cMethod, args)
 
-internal function __DoSend(oObject as object, cMethod as string, args as usual[] ) as usual
-	local result as USUAL
-	if ! OOPHelpers.SendHelper(oObject, cMethod, args, out result)
-		  LOCAL nomethodArgs := USUAL[]{ args:Length + 1 } AS USUAL[]
-		  cMethod := cMethod:ToUpperInvariant()
-		  //Todo Add Nomethod to RuntimeState
-		  //RuntimeState.NoMethod := cMethod   // For NoMethod() function
-		  noMethodArgs[1]		:= cMethod
-		  Array.Copy( args, 0, noMethodArgs, 1, args:Length )
-		  if ! OOPHelpers.SendHelper(oObject, "NoMethod" , noMethodArgs, out result)
-			// Throw Exception
-		  endif
-	endif
-	return result
 
-/// <summary>
-/// Invoke a method with a specified class.
-/// </summary>
-/// <param name="o"></param>
-/// <param name="symMethod"></param>
-/// <param name="symClassName"></param>
-/// <returns>
-/// </returns>
-function SendClass(o as Usual,symMethod as Usual,symClassName as Usual) as Usual
-	/// THROW NotImplementedException{}
-	return NIL   
 

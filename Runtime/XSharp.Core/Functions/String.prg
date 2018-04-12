@@ -123,30 +123,6 @@ function AllTrim(c as string) as string
 	return c:Trim(trimChars)
 
 
-/// <summary>
-/// Convert a string of ANSI characters to OEM characters.
-/// </summary>
-/// <param name="cSource"></param>
-/// <returns>
-/// </returns>
-function Ansi2Oem(cSource as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
-
-function Ansi2Oem(bSource as byte[]) as byte[]
-	/// THROW NotImplementedException{}
-	return bSource
-
-
-/// <summary>
-/// Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
-/// </summary>
-/// <param name="cSource"></param>
-/// <returns>
-/// </returns>
-function Ansi2OemA(cSource as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
 
 internal function _Asc(c as string, lAnsi as logic) as dword
 	local ascValue := 0 as dword
@@ -511,9 +487,39 @@ function CryptA(cSource as string,cKey as string) as string
 /// <param name="hfOut"></param>
 /// <returns>
 /// </returns>
-unsafe function DecodeBase64(cMailPart as string,hfOut as ptr) as int
-	/// THROW NotImplementedException{}
-return 0   
+function DecodeBase64(cMailPart as string,hFile as IntPtr) as int
+	if cMailPart == null .or. cMailPart:Length== 0
+		return 0
+	endif
+	var aBytes := Convert.FromBase64String( cMailPart )
+	return (INT) FWrite3(hFile, aBytes, (DWORD) aBytes:Length)
+
+
+	
+/// <summary>
+/// Encode a file for e-mail transfer.
+/// </summary>
+/// <param name="hfIn"></param>
+/// <param name="hfOut"></param>
+/// <returns>
+/// </returns>
+function EncodeBase64(hFileIn as IntPtr,hFileOut as IntPtr) as int
+	local nSize as dword
+	local nRead as dword
+	// determine file size
+	FSeek3(hFileIn, 0, FS_END)
+	nSize := Ftell(hFileIn)
+	FSeek3(hFileIn, 0, FS_SET)
+	var aBuffer := byte[]{ (int) nSize}
+	nRead := Fread3(hFileIn, aBuffer, nSize)
+	if nRead != nSize
+		return 0
+	endif
+	var cContents := Convert.ToBase64String(aBuffer, Base64FormattingOptions.InsertLineBreaks)
+	nSize := FWrite(hFileOut, cContents)
+	return (int) nSize
+
+
 
 /// <summary>
 /// </summary>
@@ -745,6 +751,46 @@ function Occurs3(cSrc as string,c as string,nOffset as dword) as dword
 	return count
 
 /// <summary>
+/// Convert a string of ANSI characters to OEM characters.
+/// </summary>
+/// <param name="cSource"></param>
+/// <returns>
+/// </returns>
+function Ansi2Oem(cSource as string) as string
+	local aBytes as byte[]
+	local iLen	 as int
+	iLen := cSource:Length
+	aBytes := String2Bytes(cSource)
+	aBytes := Ansi2Oem(aBytes, iLen)
+	return Bytes2String(aBytes, iLen)
+
+function Ansi2Oem(bSource as byte[]) as byte[]
+	return Ansi2Oem(bSource, bSource:Length)
+
+
+function Ansi2Oem(bSource as byte[], iLen as INT) as byte[]
+	local bDest as byte[]
+	bDest := byte[]{iLen}
+	OemToCharBuffA(bSource, bDest, (dword) iLen)
+	return bDest
+
+/// <summary>
+/// Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
+/// </summary>
+/// <param name="cSource"></param>
+/// <returns>
+/// </returns>
+function Ansi2OemA(cSource ref string) as string
+	local aBytes as byte[]
+	local iLen	 as int
+	iLen := cSource:Length
+	aBytes := String2Bytes(cSource)
+	aBytes := Ansi2Oem(aBytes, iLen)
+	cSource := Bytes2String(aBytes, iLen)  
+	return cSource
+
+
+/// <summary>
 /// Convert a string of OEM characters to ANSI characters.
 /// </summary>
 /// <param name="cSource"></param>
@@ -762,7 +808,40 @@ function Oem2Ansi(bSource as byte[]) as byte[]
 	return Oem2Ansi(bSource, bSource:Length)
 
 function Oem2Ansi(bSource as byte[], iLen as int) as byte[]
-	return bSource
+	local bDest as byte[]
+	bDest := byte[]{iLen}
+	CharToOemBuffA(bSource, bDest, (dword) iLen)
+	return bDest
+
+/// <summary>
+/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+/// </summary>
+/// <param name="pszDest"></param>
+/// <param name="pszSource"></param>
+/// <param name="dwCount"></param>
+/// <returns>
+/// </returns>
+function Oem2AnsiBuff(bDest as byte[],bSource as byte[],dwCount as dword) as byte[]
+	OemToCharBuffA(bSource, bDest, dwCount)
+	return bDest
+
+/// <summary>
+/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+/// </summary>
+/// <param name="pszDest"></param>
+/// <param name="pszSource"></param>
+/// <param name="dwCount"></param>
+/// <returns>
+/// </returns>
+function Ansi2OemBuff(bDest as byte[],bSource as byte[],dwCount as dword) as byte[]
+	CharToOemBuffA(bSource, bDest, dwCount)
+	return bDest
+
+
+
+INTERNAL _DLL FUNCTION CharToOemBuffA( lpszSrc AS byte[], lpszDst AS byte[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.CharToOemBuffA
+INTERNAL _DLL FUNCTION OemToCharBuffA( lpszSrc AS byte[], lpszDst AS byte[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.OemToCharBuffA
+
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
@@ -770,10 +849,14 @@ function Oem2Ansi(bSource as byte[], iLen as int) as byte[]
 /// <param name="cSource"></param>
 /// <returns>
 /// </returns>
-function Oem2AnsiA(cSource as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
-
+function Oem2AnsiA(cSource REF string) as string
+	local aBytes as byte[]
+	local iLen	 as int
+	iLen := cSource:Length
+	aBytes := String2Bytes(cSource)
+	aBytes := Oem2Ansi(aBytes, iLen)
+	cSource := Bytes2String(aBytes, iLen)
+	return cSource
 
 
 /// <summary>

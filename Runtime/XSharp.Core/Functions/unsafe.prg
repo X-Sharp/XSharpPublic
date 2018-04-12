@@ -16,18 +16,6 @@ UNSAFE	 FUNCTION DoSendMail(hWndOwner AS PTR,cFiles AS STRING,fAsynchWork AS LOG
 		/// THROW NotImplementedException{}
 	RETURN 
 	
-	/// <summary>
-	/// Encode a file for e-mail transfer.
-	/// </summary>
-	/// <param name="hfIn"></param>
-	/// <param name="hfOut"></param>
-	/// <returns>
-	/// </returns>
-UNSAFE  FUNCTION EncodeBase64(hfIn AS PTR,hfOut AS PTR) AS INT
-		/// THROW NotImplementedException{}
-	RETURN 0   
-	
-	
 
 	
 	

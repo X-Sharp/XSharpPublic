@@ -50,7 +50,7 @@ function EmptyUsual(dwType as dword) as __Usual
 	case CODEBLOCK
 		result := __Usual{null_codeblock}
 	otherwise
-		throw Error.ArgumentError("type", "Unknown type parameter")
+		throw Error.ArgumentError(__ENTITY__, nameof(dwType) , "Unknown type parameter")
 	end switch
 	return result
 /// <summary>

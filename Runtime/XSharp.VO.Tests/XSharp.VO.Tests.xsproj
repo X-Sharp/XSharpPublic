@@ -9,7 +9,6 @@
     </NuGetPackageImportStamp>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-
     <ProjectGuid>16d523f2-b871-4bdc-94ef-33b3db7ae617</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -111,11 +110,13 @@
     <Compile Include="DateTests.prg" />
     <Compile Include="FloatTests.prg" />
     <Compile Include="MemoryTests.prg" />
+    <Compile Include="OOPTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PszTests.prg" />
     <Compile Include="SymbolTests.prg" />
+    <Compile Include="TransformTests.prg" />
     <Compile Include="UsualTests.prg" />
     <Compile Include="WinBoolTest.prg" />
   </ItemGroup>

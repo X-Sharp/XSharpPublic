@@ -134,7 +134,7 @@ function Max(u1 as Usual,u2 as Usual) as Usual
 		return iif ((string) u1 > (string) u2, u1, u2)
 
 	else
-        throw Error.ArgumentError( nameof(u2) , "Incompatible types")
+        throw Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
 	endif
 	return u1
 
@@ -168,7 +168,7 @@ function Min(u1 as Usual,u2 as Usual) as Usual
 	elseif u1:IsString .and. u2:IsString
 		return iif ((string) u1 <(string) u2, u1, u2)
 	else
-        throw Error.ArgumentError( nameof(u2) , "Incompatible types")
+        throw Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
 	endif
 	return u1
 

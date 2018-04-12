@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Functions\Blob.prg" />
+    <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\Conversions.prg" />
     <Compile Include="Functions\Db.prg" />
     <Compile Include="Functions\DbBulk.prg" />
@@ -110,7 +111,6 @@
     <Compile Include="Functions\Error.prg" />
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\Array.prg" />
-    <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\Date.prg" />
     <Compile Include="Functions\Latebinding.prg" />
     <Compile Include="Functions\Math.prg" />
@@ -131,6 +131,7 @@
     <Compile Include="Functions\Registry.prg" />
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\Symbol.prg" />
+    <Compile Include="Functions\Transform.prg" />
     <Compile Include="Functions\Usual.prg" />
     <Compile Include="Functions\Vodb.prg" />
     <Compile Include="Functions\ItemAPI.prg" />
@@ -164,11 +165,6 @@
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.RDD</Name>
-      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

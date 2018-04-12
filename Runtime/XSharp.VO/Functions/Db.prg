@@ -5,6 +5,30 @@
 //
 
 #ifdef COMPILEIT
+
+/// <summary>
+/// Return a set-get code block for a field that is identified by its name.
+/// </summary>
+/// <param name="cVAr"></param>
+/// <returns>
+/// </returns>
+function FieldBlock(cVAr as string) as object
+	return 
+return null_object   
+	
+	
+/// <summary>
+/// Return a set-get code block for a field, specified as a string, in a specified work area.
+/// </summary>
+/// <param name="cVar"></param>
+/// <param name="nArea"></param>
+/// <returns>
+/// </returns>
+function FieldWBlock(cVar as string,nArea as dword) as object
+	
+	return null_object   
+
+
 /// <summary>
 /// Return a set-get code block for a field that is identified by a Symbol.
 /// </summary>

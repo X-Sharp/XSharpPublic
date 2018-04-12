@@ -324,7 +324,7 @@ begin namespace XSharp
 				elseif days:IsFloat
 					 return self:Add( (real8) days)
 				else
-					throw Error.ArgumentError(nameof(days), "Incompatible argument for Date:Add()")
+					throw Error.ArgumentError(__ENTITY__,nameof(days), "Incompatible argument for Date:Add()")
 				endif
 
 			method Add(days as real8) as Date
@@ -362,7 +362,7 @@ begin namespace XSharp
 				elseif days:IsFloat
 					 return self:Add( -(real8) days)
 				else
-					throw Error.ArgumentError(nameof(days), "Incompatible argument for Date:Subtract()")
+					throw Error.ArgumentError(__ENTITY__,nameof(days), "Incompatible argument for Date:Subtract()")
 				endif
 			
 			method Subtract(days as real8) as Date

@@ -206,6 +206,9 @@ begin namespace XSharp
                             elseif vartype == typeof(Symbol)
                                 self:_flags:usualType := UsualType.Symbol
                                 self:_valueData:s :=   (Symbol) o
+                            else
+                                self:_flags:usualType := UsualType.Object
+                                self:_refData := o
                             endif
                     end switch
                 endif
@@ -216,6 +219,11 @@ begin namespace XSharp
             self:_flags:usualType	:= UsualType.STRING
             self:_refData 			:= s
             return
+        private constructor(s as symbol)
+            self:_flags:usualType	:= UsualType.SYMBOL
+            self:_valueData:s       := s
+            return
+
         private constructor(o as object, lIsNull as logic)
             self:_flags:usualType	:= UsualType.OBJECT
             self:_refData 			:= null

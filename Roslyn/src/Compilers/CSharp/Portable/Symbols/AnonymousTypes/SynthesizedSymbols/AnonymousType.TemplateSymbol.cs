@@ -80,16 +80,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #if XSHARP
                 IsCodeblock = typeDescr.Fields.Length > 0 && typeDescr.Fields[0].Name.StartsWith("Cb$Param$");
-                _baseType = IsCodeblock ? manager.Vulcan_Codeblock : manager.System_Object;
+                _baseType = IsCodeblock ? manager.CodeblockType : manager.System_Object;
                 if (IsCodeblock)
                 {
-                    _baseType = manager.Vulcan_Codeblock;
+                    _baseType = manager.CodeblockType;
 
                     int cbParamCount = typeDescr.Fields.Length;
                     NamedTypeSymbol[] cbParameters = new NamedTypeSymbol[cbParamCount];
                     for (int i = 0; i < cbParamCount; i++)
                     {
-                        cbParameters[i] = manager.Vulcan_Usual;
+                        cbParameters[i] = manager.UsualType;
                     }
                     var cbDelegate = manager.SynthesizeDelegate(typeDescr.Fields.Length - 1, default(BitVector), false, 0).Construct(cbParameters);
 

@@ -2445,6 +2445,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             return;
                         break;
                     case "PCOUNT":
+                    case "ARGCOUNT":
                     case "_GETMPARAM":
                     case "_GETFPARAM":
                         if (CurrentEntity != null && CurrentEntity.Data.HasClipperCallingConvention)
@@ -2926,6 +2927,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
+            if (name == "ARGCOUNT")
+            {
+                // Number of declared arguments in the function/methods
+                if (CurrentEntity != null)
+                {
+                    var currEnt = this.CurrentEntity;
+                    int argCount = currEnt != null ? currEnt.Params.Count : 0;
+                    expr = GenerateLiteral(argCount);
+                }
+                else
+                {
+                    expr = GenerateLiteral(0);
+                }
+                if (argList.Arguments.Count != 0)
+                {
+                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+                }
+                context.Put(expr);
+                return true;
+
+            }
             if (name == "PCOUNT")
             {
                 expr = MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.ClipperArgs), GenerateSimpleName("Length"));
@@ -2951,15 +2973,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // _GETMPARAM or _GETFPARAM
                 if (CurrentEntity != null)
                     CurrentEntity.Data.UsesGetMParam = true;
+                // XS$Args.Length > ..
+                var clipperArgs = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
+                var argLen = MakeSimpleMemberAccess(clipperArgs, GenerateSimpleName("Length"));
+                var cond  = _syntaxFactory.BinaryExpression(
+                                   SyntaxKind.GreaterThanOrEqualExpression,
+                                   argLen,
+                                   SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
+                                   argList.Arguments[0].Expression);
+
+                // XS$Args[..]
                 var indices = _pool.AllocateSeparated<ArgumentSyntax>();
                 indices.Add(MakeArgument(argList.Arguments[0].Expression));
+                var left = _syntaxFactory.ElementAccessExpression(
+                    GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
+                    _syntaxFactory.BracketedArgumentList(
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        indices,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
 
-                expr = _syntaxFactory.ElementAccessExpression(
-                GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
-                _syntaxFactory.BracketedArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    indices,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                var right = MakeDefault(_usualType);
+                expr = _syntaxFactory.ConditionalExpression(
+                                cond,
+                                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                left,
+                                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                right);
+
                 context.Put(expr);
                 return true;
             }

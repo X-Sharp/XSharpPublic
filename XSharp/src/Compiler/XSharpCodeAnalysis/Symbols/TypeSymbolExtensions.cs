@@ -271,12 +271,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return (NamedTypeSymbol)((CodeblockTypePublicSymbol)cbType).Properties[0].Type;
         }
-        public NamedTypeSymbol Vulcan_Codeblock
+        public NamedTypeSymbol CodeblockType
         {
             get { return this.Compilation.CodeBlockType(); }
         }
 
-        public NamedTypeSymbol Vulcan_Usual
+        public NamedTypeSymbol UsualType
         {
             get { return this.Compilation.UsualType(); }
         }

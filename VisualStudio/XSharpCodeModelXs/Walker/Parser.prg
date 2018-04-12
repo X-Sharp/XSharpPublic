@@ -739,10 +739,13 @@ begin namespace XSharpModel
 							if cUpperWord == "LOCAL" .or. cUpperWord == "CATCH" .or. cUpperWord == "FOREACH"
 								state:lLocal := true
 								state:lImpliedLocal := false
-							end if
-							if cUpperWord == "FOREACH"
-								_SetLineType(oStatementLine, LineType.TokenIn)
-							endif
+							
+							    if cUpperWord == "FOREACH"
+    								_SetLineType(oStatementLine, LineType.TokenIn)
+                                ELSEIF cUpperWord == "CATCH"
+                                    _SetLineType(oStatementLine, LineType.TokenInOut)
+							    ENDIF
+                            end if
 						case lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. (cUpperWord == "VAR" .and. state:lFirstWord)
 							state:lVisFound := true
 							if cUpperWord == "VAR"

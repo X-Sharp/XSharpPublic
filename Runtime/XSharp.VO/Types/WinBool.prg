@@ -7,7 +7,7 @@ using System.Collections
 using System.Collections.Generic
 using System.Linq
 using System.Diagnostics
-using XSharp
+
 begin namespace XSharp	
 	
 	[DebuggerDisplay("{ToString(),nq}", Type := "LOGIC")];

@@ -1,4 +1,10 @@
-﻿using System.Reflection
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+using System.Reflection
 using System.Diagnostics
 /// <summary>
 /// Either determine whether the Debugger can be invoked manually or programmatically define a breakpoint in an application.

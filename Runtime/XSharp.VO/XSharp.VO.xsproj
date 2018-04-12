@@ -109,6 +109,7 @@
     <Compile Include="..\..\Common\constants.prg" />
     <Compile Include="Functions\Blob.prg" />
     <Compile Include="Functions\Codeblock.prg" />
+    <Compile Include="Functions\CompilerSupport.prg" />
     <Compile Include="Functions\Conversions.prg" />
     <Compile Include="Functions\Db.prg" />
     <Compile Include="Functions\DbBulk.prg" />
@@ -119,7 +120,6 @@
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\Array.prg" />
     <Compile Include="Functions\Date.prg" />
-    <Compile Include="Functions\Latebinding.prg" />
     <Compile Include="Functions\Math.prg" />
     <Compile Include="Functions\OS.prg" />
     <Compile Include="Functions\Psz.prg" />

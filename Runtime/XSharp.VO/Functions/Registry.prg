@@ -3,7 +3,7 @@
 /// <param name="cSubKey"></param>
 /// <returns>
 /// </returns>
-using XSharp
+
 FUNCTION QueryRTRegArray(cSubKey AS STRING) AS Array
 	/// THROW NotImplementedException{}
 RETURN NULL_ARRAY   

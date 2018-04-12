@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-#using XSharp
+using XSharp
 BEGIN NAMESPACE XSharp
 	/// <Summary>Values that match the Visual Objects SET_* defines </Summary>
 	ENUM Set                                

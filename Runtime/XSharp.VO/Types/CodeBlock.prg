@@ -7,7 +7,7 @@ using System.Collections
 using System.Collections.Generic
 using System.Linq
 using System.Diagnostics
-using XSharp
+
 using System.Runtime.CompilerServices
 
 // Base class for runtime compiled macros and compiletime codeblocks

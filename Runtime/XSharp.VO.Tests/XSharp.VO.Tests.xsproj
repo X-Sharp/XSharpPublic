@@ -108,6 +108,8 @@
     <Compile Include="ArrayTests.prg" />
     <Compile Include="ConversionTests.prg" />
     <Compile Include="CodeBlockTest.prg" />
+    <Compile Include="ClipperCallingTests.prg" />
+    <Compile Include="OemTests.prg" />
     <Compile Include="DateTests.prg" />
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FloatTests.prg" />

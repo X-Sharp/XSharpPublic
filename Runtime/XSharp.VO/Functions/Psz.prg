@@ -8,27 +8,39 @@ using System.Runtime.InteropServices
 using System.Text
 
 #region functions
-	/// <summary>
-	/// Remove spaces from a file name specified as a Psz, changing the contents of the original file name as well as the returned file name.
-	/// </summary>
-	/// <param name="pszFileName"></param>
-	/// <returns>
-	/// </returns>
-	function AdjustFNamePSZ(pszFileName as Psz) as Psz
-		/// THROW NotImplementedException{}
-		return (Psz) IntPtr.Zero
+
+/// <summary>
+/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
+/// </summary>
+/// <param name="pszDest"></param>
+/// <param name="pszSource"></param>
+/// <param name="dwCount"></param>
+/// <returns>
+/// </returns>
+function Oem2AnsiBuff(pszDest as psz,pszSource as psz,dwCount as dword) as psz
+	var aSource := byte[]{dwCount}
+	var aDest   := byte[]{dwCount}
+	Marshal.Copy(pszDest:Address,aSource,0, (int) dwCount)
+	global::Functions.Oem2AnsiBuff(aDest, aSource, dwCount)
+	Marshal.Copy(aDest,pszDest:Address,0, (int) dwCount)
+	return pszDest
+
+/// <summary>
+/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
+/// </summary>
+/// <param name="pszDest"></param>
+/// <param name="pszSource"></param>
+/// <param name="dwCount"></param>
+/// <returns>
+/// </returns>
+function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
+	var aSource := byte[]{dwCount}
+	var aDest   := byte[]{dwCount}
+	Marshal.Copy(pszDest:Address,aSource,0, (int) dwCount)
+	global::Functions.Ansi2OemBuff(aDest, aSource, dwCount)
+	Marshal.Copy(aDest,pszDest:Address,0, (int) dwCount)
+	return pszDest
 	
-	/// <summary>
-	/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
-	/// </summary>
-	/// <param name="pszDest"></param>
-	/// <param name="pszSource"></param>
-	/// <param name="dwCount"></param>
-	/// <returns>
-	/// </returns>
-	function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
-		/// THROW NotImplementedException{}
-		return (Psz) IntPtr.Zero
 	
 	/// <summary>
 	/// Convert a value to a static Psz.
@@ -80,8 +92,10 @@ using System.Text
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	function IsAlNum(pszC as Psz) as logic
-		/// THROW NotImplementedException{}
+	function IsAlNum(pszSource as Psz) as logic
+		if pszSource != NULL_PSZ
+			return System.Char.IsLetterorDigit(pszSource:Item[0])
+		endif
 		return false   
 	
 	/// <summary>
@@ -178,21 +192,6 @@ using System.Text
 		endif
 		return false
 		
-	
-	/// <summary>
-	/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
-	/// </summary>
-	/// <param name="pszDest"></param>
-	/// <param name="pszSource"></param>
-	/// <param name="dwCount"></param>
-	/// <returns>
-	/// </returns>
-	function Oem2AnsiBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
-		/// THROW NotImplementedException{}
-		return NULL_PSZ
-	
-
-	
 	/// <summary>
 	/// Convert a null-terminated string to a strongly typed string.
 	/// </summary>

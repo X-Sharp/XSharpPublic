@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS ErrorTests
 	 
 		[Fact, Trait("Category", "Error")]; 
-		method ConversionTests as void
+		method Tests as void
 			local u as usual
 			begin sequence
 				Assert.Equal (true, canBreak())

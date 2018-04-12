@@ -42,8 +42,10 @@ static class XSharp.Internal.CompilerServices
 		next
 		return 
 	static method EnterBeginSequence as void
-		throw NotImplementedException{}
+		RuntimeState.GetInstance():BreakLevel+= 1
 	static method ExitBeginSequence	 as void
-		throw NotImplementedException{}
-	
+		RuntimeState.GetInstance():BreakLevel-= 1
+	static method CanBreak as LOGIC
+		return RuntimeState.GetInstance():BreakLevel > 0
+
 end class

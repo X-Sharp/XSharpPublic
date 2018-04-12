@@ -41,8 +41,7 @@ FUNCTION DebOut32( u AS USUAL) AS VOID
 /// <returns>
 /// </returns>
 function CanBreak() as logic
-	/// THROW NotImplementedException{}
-	return false   
+	return XSharp.Internal.CompilerServices.CanBreak()
 
 
 /// <summary>

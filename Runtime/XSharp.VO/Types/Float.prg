@@ -270,7 +270,7 @@ begin namespace XSharp
 				elseif  rhs:IsLong
 					result := Float{ self:_value + (long) rhs, self:Digits, self:Decimals}
 				else
-					throw Error.ArgumentError(nameof(rhs), "Argument is not numeric")
+					throw Error.ArgumentError(__ENTITY__,nameof(rhs), "Argument is not numeric")
 				endif
 				return result
 			
@@ -287,7 +287,7 @@ begin namespace XSharp
 				elseif  rhs:IsLong
 					result := Float{ self:_value - (long) rhs, self:Digits, self:Decimals}			
 				else
-					throw Error.ArgumentError(nameof(rhs), "Argument is not numeric")
+					throw Error.ArgumentError(__ENTITY__,nameof(rhs), "Argument is not numeric")
 				endif
 				return result
 			

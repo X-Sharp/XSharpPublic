@@ -33,7 +33,7 @@ CLASS XSharp.RuntimeState
 		self:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
 		oSettings := Dictionary<INT, OBJECT>{}
 		if initialize
-
+			self:BreakLevel := 0 
 			self:_SetThreadValue(Set.DateFormat ,"MM/DD/YYYY")
 			self:_SetThreadValue(Set.Epoch, 1900U)
 			self:_SetThreadValue(Set.EpochYear, 0U)
@@ -94,7 +94,7 @@ CLASS XSharp.RuntimeState
 	/// <Summary>Retrieve state name</Summary>
 	/// <Returns>String value, such as "State for Thread 123"</Returns>
 	PUBLIC PROPERTY Name AS STRING AUTO
-
+	PUBLIC PROPERTY BreakLevel as INT AUTO
 	/// <Summary>ToString() override</Summary>
 	/// <Returns>String value, such as "State for Thread 123"</Returns>
 	PUBLIC VIRTUAL METHOD ToString() AS STRING
@@ -258,9 +258,9 @@ CLASS XSharp.RuntimeState
 
 	/// <Summary>The default number of decimals for new FLOAT values that are created without explicit decimals</Summary>
 	/// <Returns>DWORD value</Returns>
-    STATIC PROPERTY ThousandSep AS LONG ;
-        GET GetValue<LONG>(Set.ThousandSep);
-        SET SetValue<LONG>(Set.ThousandSep, VALUE)
+    STATIC PROPERTY ThousandSep AS WORD ;
+        GET GetValue<WORD>(Set.ThousandSep);
+        SET SetValue<WORD>(Set.ThousandSep, VALUE)
 
 
     STATIC PROPERTY Unique AS LOGIC ;
@@ -282,8 +282,8 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.Century, FALSE)
 		self:_SetThreadValue(Set.DateCountry, 1)
 		self:_SetThreadValue(Set.Decimals, 2)
-		self:_SetThreadValue(Set.DECIMALSEP, ".")
-		self:_SetThreadValue(Set.THOUSANDSEP, ",")
+		self:_SetThreadValue(Set.DECIMALSEP, (word) 46) // .
+		self:_SetThreadValue(Set.THOUSANDSEP, (word) 44)	// ,
 		self:_SetThreadValue(Set.DateFormat, "MM/DD/YYYY")
 		self:_SetThreadValue(Set.Intl, CollationMode.Clipper)
 
@@ -314,8 +314,8 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.DateCountry, 1)
 		self:_SetThreadValue(Set.DECIMALS , 2)
 		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
-		self:_SetThreadValue(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
-		self:_SetThreadValue(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
+		self:_SetThreadValue(Set.DECIMALSEP, (Word) numberformat:NumberDecimalSeparator[0])
+		self:_SetThreadValue(Set.THOUSANDSEP, (word) numberformat:NumberGroupSeparator[0])
 		self:_SetThreadValue(Set.EPOCH, 1910U)
 		self:_SetThreadValue(Set.EpochYear, 10U)
 		self:_SetThreadValue(Set.EpochCent, 1900U)

@@ -61,10 +61,15 @@ begin namespace XSharp
 			self:Gencode := dwgencode
 			self:SubCode := dwSubcode
 		
-		static method ArgumentError(name as string, description as string) as Error
+		static method ArgumentError(cFuncName as string, name as string, description as string) as Error
+			return ArgumentError(cFuncName, name, description, 0)
+
+		static method ArgumentError(cFuncName as string, name as string, description as string, iArgnum as int) as Error
 			var err := Error{Gencode.EG_ARG}
+			err:FuncSym     := cFuncName
 			err:Arg  := name
 			err:Description := Description
+			err:Argnum  := iArgNum
 			return err
 		
 		static method NullArgumentError( cFuncName as string, cArgName as string, iArgNum as int ) as Error

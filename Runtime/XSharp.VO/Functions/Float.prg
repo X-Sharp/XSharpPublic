@@ -153,59 +153,7 @@ FUNCTION SetFloatDelta() AS Real8
 	return RuntimeState.FloatDelta
 
 
-/// <summary>
-/// Convert a numeric expression to a string.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-FUNCTION Str1(f AS Float) AS STRING
-	/// THROW NotImplementedException{}
-RETURN String.Empty   
-
-/// <summary>
-/// Convert a numeric expression to a string of a specified length.
-/// </summary>
-/// <param name="f"></param>
-/// <param name="dwLen"></param>
-/// <returns>
-/// </returns>
-FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
-	/// THROW NotImplementedException{}
-RETURN String.Empty   
-
-/// <summary>
-/// Convert a numeric expression to a string of specific length and decimal places.
-/// </summary>
-/// <param name="f"></param>
-/// <param name="dwLen"></param>
-/// <param name="dwDec"></param>
-/// <returns>
-/// </returns>
-FUNCTION Str3(f AS Float,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-	/// THROW NotImplementedException{}
-RETURN String.Empty   
 
 
-
-/// <summary>
-/// </summary>
-/// <param name="c"></param>
-/// <param name="dwRadix"></param>
-/// <returns>
-/// </returns>
-FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS Float
-	/// THROW NotImplementedException{}
-RETURN 0   
-
-/// <summary>
-/// </summary>
-/// <param name="c"></param>
-/// <param name="dwRadix"></param>
-/// <returns>
-/// </returns>
-FUNCTION StrToLong(c AS STRING,dwRadix AS DWORD) AS Float
-	/// THROW NotImplementedException{}
-RETURN 0   
 
 

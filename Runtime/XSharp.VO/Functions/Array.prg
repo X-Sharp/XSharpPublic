@@ -28,7 +28,7 @@ FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS Array
    LOCAL x AS INT
    
    IF dwDim > (DWORD) aValues:Length
-      Throw Error.ArgumentError( nameof(dwDim), "Element too big")
+      Throw Error.ArgumentError( __ENTITY__, nameof(dwDim), "Element too big")
    ENDIF
    
    aTemp := ArrayNew(aValues:Length)

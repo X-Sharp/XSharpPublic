@@ -46,26 +46,6 @@ function ArgCount() as dword
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
-	/// <summary>
-	/// Determine if a class exists.
-	/// </summary>
-	/// <param name="symClassName"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IsClass(symClassName AS Symbol) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-	/// <summary>
-	/// Determine if one class is a subclass of another class.
-	/// </summary>
-	/// <param name="symClassName"></param>
-	/// <param name="symSuperClassName"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION IsClassOf(symClassName AS Symbol,symSuperClassName AS Symbol) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
 
 	/// <summary>
 	/// Check whether a particular method can be sent to a class.

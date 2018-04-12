@@ -13,7 +13,7 @@ using static XSharp.Functions
 // Todo: Implement System.IConvertible ?
 
 begin namespace XSharp
-	[DebuggerDisplay("{_debuggervalue,nq}",Type := "SYMBOL")];
+	[DebuggerDisplay("{Value,nq}",Type := "SYMBOL")];
     [DebuggerTypeProxy(typeof(SymbolDebugView))];
 	public structure __Symbol ;
 		implements IEqualityComparer<__Symbol>, ;
@@ -60,14 +60,6 @@ begin namespace XSharp
 		internal property _value as STRING
 		get
 			return SymbolTable.GetString(self:_index)
-		end get
-		end property
-		internal property _debuggervalue as STRING
-		get
-			if (_index == 0)
-				return "NULL_SYMBOL"
-			endif
-			return "#"+_value
 		end get
 		end property
 		internal static property PszDict as Dictionary<dword, Psz>

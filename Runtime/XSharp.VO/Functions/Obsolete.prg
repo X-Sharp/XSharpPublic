@@ -484,3 +484,13 @@ FUNCTION APageCount(a AS Array) AS DWORD
 [Obsolete( "'ArrayGetPtr()' is not supported and always returns IntPtr.Zero" )] ;
 function ArrayGetPtr(a as array,dwEl as dword) as intPtr
 	return IntPtr.Zero
+
+
+[Obsolete( "'IVarPutSuper()' is not supported and always returns the value that is set" )] ;
+function IVarPutSuper(o as object,symIvar as Symbol,u as Usual,symClassName as Symbol) as Usual
+	return u   
+
+[Obsolete( "'IVarGetSuper()' is not supported and always returns NIL" )] ;
+function IVarGetSuper(o as object,symIvar as Symbol,symClassName as Symbol) as Usual
+	return NIL
+

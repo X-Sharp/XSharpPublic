@@ -267,6 +267,12 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.Unique);
         SET SetValue<LOGIC>(Set.Unique, VALUE)
 
+    STATIC PROPERTY NoMethod AS STRING ;
+        GET GetValue<STRING>(Set.NoMethod);
+        SET SetValue<STRING>(Set.NoMethod, VALUE)
+
+
+
 	STATIC METHOD SetInternational(mode AS CollationMode, force := FALSE AS LOGIC) AS VOID
 		IF mode != RuntimeState.International	.or. force
 			if mode == CollationMode.Clipper

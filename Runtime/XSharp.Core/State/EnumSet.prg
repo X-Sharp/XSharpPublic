@@ -46,18 +46,11 @@ BEGIN NAMESPACE XSharp
 		MEMBER MCENTER     := 37		// LOGIC
 		member SCROLLBREAK := 38		// LOGIC
 		member ERRRORLOG   := 39		// LOGIC
-		// extra helper values
-		member EpochCent   := 40		// Numeric
-		member EpochYear   := 41		// Numeric
-		member DateFormatNet := 42		// String
-		member DateFormatEmpty := 43    // String
-		member OPTIONVO11		:= 44	// Logic
-		member OPTIONOVF		:= 45	// Logic
 
 		// 48 and 49 unused
 		MEMBER DIGITS      	:= 50	// INT   Vulcan had 39
 		MEMBER NETERR      	:= 51	// LOGIC Vulcan had 40
-		MEMBER ANSI      	:= 53	// LOGIC Vulcan had 44
+		MEMBER @@ANSI      	:= 53	// LOGIC Vulcan had 44
 		MEMBER YIELD     	:= 54	// LOGIC Vulcan had 45
 		MEMBER LOCKTRIES   	:= 55	// INT   Vulcan had 46
 		MEMBER AMEXT		:= 56	// STRING
@@ -76,6 +69,16 @@ BEGIN NAMESPACE XSharp
 		MEMBER INTERNATIONAL:= 68	// STRING
 		MEMBER DATECOUNTRY  := 69	// INT
 		// 65 - 97 unused
+
+		// X# helper state
+		member EpochCent   := 70		// Numeric
+		member EpochYear   := 71		// Numeric
+		member DateFormatNet := 72		// String
+		member DateFormatEmpty := 73    // String
+		member OPTIONVO11	:= 74	// Logic
+		member OPTIONOVF	:= 75	// Logic
+		member NOMETHOD		:= 76	// STRING
+
 		MEMBER DICT        := 98	// LOGIC
 		MEMBER INTL        := 99	// LOGIC
 
@@ -90,11 +93,11 @@ BEGIN NAMESPACE XSharp
 		MEMBER NEWINDEXLOCK := 107      // LOGIC 
 		MEMBER AUTOSHARE    := 108		// LOGIC
 		MEMBER STRICTREAD   := 109		// LOGIC
-		MEMBER BLOBCIRCREF	:= 110			
+		MEMBER BLOBCIRCREF	:= 110		// LOGIC
 		MEMBER OPTIMIZE     := 111		// LOGIC
 		MEMBER FOXLOCK      := 112		// LOGIC
-		MEMBER WINCODEPAGE	:= 113
-		MEMBER DOSCODEPAGE	:= 114
+		MEMBER WINCODEPAGE	:= 113		// Numeric
+		MEMBER DOSCODEPAGE	:= 114		// Numeric
 		MEMBER COLLATIONMODE:= 115		// COLLATIONMODE (STRING)
 		
 		// Advantage extensions

@@ -11,30 +11,8 @@ using XSharp
 /// <returns>
 /// </returns>
 FUNCTION AbsFloat(f AS Float) AS Float
-RETURN Float{Math.Abs(f:Value)}
+	RETURN Float{Math.Abs(f:Value)}
 
-
-
-/// <summary>
-/// Convert a string containing a 80-bit Floating point number to a Float value.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION Bin2F(c AS STRING) AS Float
-	/// THROW NotImplementedException{}
-RETURN 0   
-
-
-/// <summary>
-/// Convert a Float to a string containing an 80-bit Floating point number.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-FUNCTION F2Bin(f AS Float) AS STRING
-	/// THROW NotImplementedException{}
-RETURN String.Empty
 
 /// <summary>
 /// Calculate the factorial of a number.
@@ -93,28 +71,6 @@ FUNCTION FloatFormat(f AS Float,nLen AS INT,nDec AS INT) AS Float
 	endif
 	RETURN Float{f:Value, nLen, nDec}  
 
-/// <summary>
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-FUNCTION FloatNext(f AS Float) AS Float
-	/// THROW NotImplementedException{}
-RETURN 0   
-
-
-/// <summary>
-/// </summary>
-/// <param name="uValue"></param>
-/// <param name="dwLen"></param>
-/// <param name="dwDec"></param>
-/// <returns>
-/// </returns>
-UNSAFE FUNCTION Float2Str(uValue AS Usual,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-	/// THROW NotImplementedException{}
-RETURN String.Empty
-		
-
 
 /// <summary>
 /// Return the fractional portion of a number.
@@ -123,8 +79,8 @@ RETURN String.Empty
 /// <returns>
 /// </returns>
 FUNCTION Frac(f AS Float) AS Float
-	/// THROW NotImplementedException{}
-RETURN 0   
+	return f - Integer(f)
+
 
 
 /// <summary>
@@ -134,21 +90,25 @@ RETURN 0
 /// <returns>
 /// </returns>
 FUNCTION MyDalFloatVal(xd AS REAL8,wDec AS WORD) AS Float
-	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN Float{xd, wDec}
 
 
-	/// <summary>
-	/// Return and optionally change the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
-	/// </summary>
-	/// <param name="fDelta"></param>
-	/// <returns>
-	/// </returns>
+/// <summary>
+/// Return and change the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
+/// </summary>
+/// <param name="fDelta"></param>
+/// <returns>
+/// </returns>
 FUNCTION SetFloatDelta(fDelta AS Real8) AS Real8
 	var result := RuntimeState.FloatDelta
 	RuntimeState.FloatDelta := fDelta
 	return result
 
+/// <summary>
+/// Return the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
+/// </summary>
+/// <returns>
+/// </returns>
 FUNCTION SetFloatDelta() AS Real8
 	return RuntimeState.FloatDelta
 

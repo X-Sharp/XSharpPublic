@@ -4,18 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using XSharp
-
-
-
-/// Return the operating system name.
-/// </summary>
-/// <param name="lExtended"></param>
-/// <returns>
-/// </returns>
-function OS(lExtended as Usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
-
+using System.Reflection
 
 
 /// <summary>
@@ -55,3 +44,26 @@ function DiskChange(pszDisk as Psz) as logic
 	return global::Functions.DiskChange(Psz2String(pszDisk))
  
 	
+
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+function GetRTFullPath() as string
+	return Assembly.GetAssembly(typeof(XSharp.__Usual)):Location
+
+	/// <summary>
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetThreadCount() as dword
+	return (DWORD) System.Diagnostics.Process.GetCurrentProcess():Threads:Count
+
+
+	/// <summary>
+	/// Get the number of 1/10000 seconds that have elapsed since Windows was started.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+function GetTickCountLow() as dword
+	RETURN (DWORD)Environment.TickCount*10	

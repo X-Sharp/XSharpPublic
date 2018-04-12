@@ -104,15 +104,7 @@ function GetPMExt() as string
 	getstate string Set.PmExt
 	
 	
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-function GetRTFullPath() as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
-	
-	
+
 	/// <summary>
 	/// </summary>
 	/// <param name="dwRes"></param>
@@ -122,21 +114,7 @@ function GetStringDXAX(dwRes as dword) as string
 	/// THROW NotImplementedException{}
 	return String.Empty
 	
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-function GetThreadCount() as dword
-	/// THROW NotImplementedException{}
-	return 0   
 	
-	/// <summary>
-	/// Get the number of 1/10000 seconds that have elapsed since Windows was started.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-function GetTickCountLow() as dword
-	RETURN (DWORD)Environment.TickCount*10	
 	/// <summary>
 	/// Return the current separation character used in time strings.
 	/// </summary>
@@ -153,3 +131,7 @@ function GetTimeSep() as dword
 function GetTimeZoneDiff() as int
 return TimeZoneInfo.Local.BaseUtcOffSet:Hours
 
+
+
+function GetYield as logic
+	return SetYield()

@@ -48,6 +48,15 @@ function GetEnv(cVar as string) as string
 	return System.Environment.GetEnvironmentVariable(cVar)
 
 
+	/// <summary>
+/// Update or replace the contents of a DOS environment variable.
+/// </summary>
+/// <param name="cVar"></param>
+/// <param name="cValue"></param>
+/// <returns>
+/// </returns>
+function SetEnv(cVar as string,cValue as string) as logic
+	return SetEnv(cVar, cValue, false)
 /// <summary>
 /// Update or replace the contents of a DOS environment variable.
 /// </summary>
@@ -72,7 +81,7 @@ function SetEnv(cVar as string,cValue as string,lAppend as logic) as logic
 	catch
 		result := false
 	END TRY
-	RETURN FALSE   
+	RETURN result   
 
 
 
@@ -332,3 +341,49 @@ function DiskChange(c as string) as logic
 	endif
 	c := c:Substring(0,1)+Path.VolumeSeparatorChar:ToString()+Path.DirectorySeparatorChar:ToString()
 	return DirChange(c) == 0
+
+
+/// Return the operating system name.
+/// </summary>
+/// <returns>
+/// </returns>
+function OS() as string
+	return OS(FALSE)
+
+/// Return the operating system name.
+/// </summary>
+/// <param name="lExtended"></param>
+/// <returns>
+/// </returns>
+function OS(lExtended as LOGIC) as string
+    local cOs as string
+    var o := Environment.OSVersion
+	cOs := o:ToString()
+	if !lExtended
+		switch o:Platform
+		CASE PlatformID.Win32NT
+			cOs := "Windows NT"
+		CASE PlatformID.Win32S
+			cOs := "Win32s on Windows 3.1"
+		CASE PlatformID.Win32Windows
+			IF o:Version:Major == 4
+				IF o:Version:Minor == 0
+					cOs := "Windows 95"
+				ELSEIF o:Version:Minor == 10
+					cOs := "Windows 98"
+					IF o:Version:Build == 2222
+						cOs := "Windows 98 SE"
+					ENDIF
+				ELSEIF o:Version:Minor == 90
+					cOs := "Windows ME"
+				ENDIF
+			ENDIF
+		CASE PlatformID.WinCE
+			cOs := "Windows CE"
+		OTHERWISE
+			cOs := o:ToString()
+		end switch
+	endif
+    return cOs
+ 
+

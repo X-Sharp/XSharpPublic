@@ -61,7 +61,7 @@ function DynToOldSpace( u as usual ) as usual
 function DynToOldSpaceArray( a as array ) as array
     return a
 
-[Obsolete( "DynToOldSpaceFloat() is not supported and returns the original float", true )] ; 
+[Obsolete( "DynToOldSpaceFloat() is not supported and returns the original float" )] ; 
 function DynToOldSpaceFloat( f as float ) as float
     return f
 
@@ -195,7 +195,7 @@ function CreateVOThread(pSecAttr as IntPtr,nStackSize as dword,pFunc as IntPtr,p
     return IntPtr.Zero
 
 
-[Obsolete( "'StrEvaluate()' is not supported", true )] ;
+[Obsolete( "'StrEvaluate()' is not supported" )] ;
 function StrEvaluate( s as string ) as string
    return s
 
@@ -389,25 +389,25 @@ function CreateGCDump(pDump as IntPtr,nValType as dword) as dword
 
 
 
-[Obsolete( "'DBToSB()' is not supported", true )] ;
+[Obsolete( "'DBToSB()' is not supported" )] ;
 function DBToSB(c as string) as string
     return string.Empty 
 
-[Obsolete( "'ToHira()' is not supported", true )] ;
+[Obsolete( "'ToHira()' is not supported" )] ;
 function ToHira(c as string) as string
     return String.Empty   
 
-[Obsolete( "'ToJNum()' is not supported", true )] ;
+[Obsolete( "'ToJNum()' is not supported" )] ;
 function ToJNum(c as string) as string
     return String.Empty   
 
 
-[Obsolete( "'ToKata()' is not supported", true )] ;
+[Obsolete( "'ToKata()' is not supported" )] ;
 function ToKata(c as string) as string
     return String.Empty  
 
 
-[Obsolete( "'IsKanji()' is not supported", true )] ;
+[Obsolete( "'IsKanji()' is not supported" )] ;
 function IsKanji(c as string) as logic
     return false   
 
@@ -421,7 +421,7 @@ function WagnerExit() as dword
     return     0   
 
 
-[Obsolete( "'Buffer()' is not supported, use MemAlloc() and MemFree() instead", true )] ;
+[Obsolete( "'Buffer()' is not supported, use MemAlloc() and MemFree() instead" )] ;
 FUNCTION Buffer( n AS DWORD ) AS STRING
   return null
 
@@ -494,3 +494,18 @@ function IVarPutSuper(o as object,symIvar as Symbol,u as Usual,symClassName as S
 function IVarGetSuper(o as object,symIvar as Symbol,symClassName as Symbol) as Usual
 	return NIL
 
+[ObsoleteAttribute( "'SendClass()' is not supported and always returns NIL")] ;
+function SendClass( o , symMethod , symClassName ) as usual 
+   return NIL
+
+[ObsoleteAttribute( "'OClone()' is not supported and always returns NULL_OBJECT")] ;
+function OClone(o as object) as object
+	return null_object   
+
+[ObsoleteAttribute( "'OMemSize()' is not supported and always returns 0")] ;
+function OMemSize(o as object) as dword
+	return 0  
+
+[ObsoleteAttribute( "'PClone()' is not supported and always returns NIL")];
+function PClone(x as Usual) as Usual
+	return NIL   

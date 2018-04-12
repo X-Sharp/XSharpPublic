@@ -27,15 +27,7 @@ function Between(val as Usual,min as Usual,max as Usual) as logic
 	return val >=min .and.  val<=max
 
 
-/// <summary>
-/// Return the number of arguments that a code block is expecting.
-/// </summary>
-/// <param name="uCodeBlock"></param>
-/// <returns>
-/// </returns>
-function CParamCount(uCodeBlock as Usual) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+ 
 
 
 
@@ -194,29 +186,6 @@ function PaletteRGB(bR as Usual,bG as Usual,bB as byte) as int
 function Pause() as dword
 	/// THROW NotImplementedException{}
 	return 0   
-
-/// <summary>
-/// Duplicate a polymorphic variable.
-/// </summary>
-/// <param name="x"></param>
-/// <returns>
-/// </returns>
-function PClone(x as Usual) as Usual
-	/// THROW NotImplementedException{}
-	return NIL   
-
-/// <summary>
-/// Return the position of the last argument in the list of arguments passed when a procedure or function is invoked.
-/// </summary>
-/// <returns>
-/// </returns>
-function PCount() as dword
-	/// THROW NotImplementedException{}
-	return 0   
-
-
-
-
 
 
 /// <summary>

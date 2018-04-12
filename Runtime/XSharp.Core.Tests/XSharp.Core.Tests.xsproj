@@ -132,6 +132,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OSTests.prg" />
     <Compile Include="TimeTest.prg" />
     <Compile Include="ConversionTests.prg" />
     <Compile Include="DynamicTest.prg" />

@@ -509,3 +509,18 @@ function OMemSize(o as object) as dword
 [ObsoleteAttribute( "'PClone()' is not supported and always returns NIL")];
 function PClone(x as Usual) as Usual
 	return NIL   
+
+[ObsoleteAttribute( "'Bin2F()' is not supported and always returns 0")];
+function Bin2F(c as string) as float
+// VO stores the 8 bytes real8 + float header = 12 bytes.
+RETURN 0   
+
+[ObsoleteAttribute( "'F2Bin()' is not supported and always returns an empty string")];
+function F2Bin(f as float) as string
+// VO stores the 8 bytes real8 + float header = 12 bytes.
+RETURN String.Empty
+
+
+[ObsoleteAttribute( "'FloatNext()' is not supported and always returns 0")];
+FUNCTION FloatNext(f AS Float) AS Float
+RETURN 0   

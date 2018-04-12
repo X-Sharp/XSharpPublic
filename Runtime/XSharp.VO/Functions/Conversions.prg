@@ -86,7 +86,7 @@ function AsString(u as usual) as string
 	/// The Symbol representing the given string or Psz.
 	/// </returns>
 function AsSymbol(u as usual) as symbol
-	return symbol{(string)u}   
+	return symbol{(string)u, TRUE}   
 	
 	
 	
@@ -965,3 +965,15 @@ INTERNAL FUNCTION __MyRound( xd AS FLOAT, nDec AS DWORD ) AS Double
 
 internal function _Double2String( d as Double, nSize as dword, nDec as dword )
 	return ""
+
+
+/// <summary>
+/// </summary>
+/// <param name="uValue"></param>
+/// <param name="dwLen"></param>
+/// <param name="dwDec"></param>
+/// <returns>
+/// </returns>
+UNSAFE FUNCTION Float2Str(uValue AS Usual,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	/// THROW NotImplementedException{}
+RETURN String.Empty

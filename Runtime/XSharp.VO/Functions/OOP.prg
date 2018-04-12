@@ -3,14 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-/// <summary>
-/// Invoke a method for every element in an Array of objects.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="symMethod"></param>
-/// <returns>
-/// </returns>
-using XSharp
+
+
+
 using XSharp.Internal
 using System.Reflection
 using System.Collections.Generic
@@ -367,6 +362,13 @@ end class
 
 	
 
+/// <summary>
+/// Invoke a method for every element in an Array of objects.
+/// </summary>
+/// <param name="a"></param>
+/// <param name="symMethod"></param>
+/// <returns>
+/// </returns>
 function ASend(a as Usual,symMethod as Usual) as Array
 	/// THROW NotImplementedException{}
 	return null_array   

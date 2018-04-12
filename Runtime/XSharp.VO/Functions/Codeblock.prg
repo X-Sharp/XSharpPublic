@@ -1,8 +1,9 @@
-﻿// Functions_Codeblock.prg
-// Created by    : robert
-// Creation Date : 2/16/2017 1:37:24 PM
-// Created for   : 
-// WorkStation   : ZEUS
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
 using System.Runtime.InteropServices
 using System.Reflection
 

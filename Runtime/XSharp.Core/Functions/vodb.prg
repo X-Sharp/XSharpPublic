@@ -3,8 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-USING XSharp
-USING XSharp.RDD
+using XSharp
+using XSharp.RDD
 
 /// <summary>
 /// Return the full path of the file

@@ -12,7 +12,7 @@ using XUnit
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS MemoryTests
-		[Fact, Trait("Memory", "Allocation")]; 
+		[Fact, Trait("Category", "Memory")]; 
 		UNSAFE METHOD MemoryTest() AS VOID
 			LOCAL p,q as IntPtr
 			p := MemAlloc(10)
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			MemFree(pMem2)
 		RETURN
 		
-		[Fact, Trait("Memory", "Locate Data")]; 
+		[Fact, Trait("Category", "Memory")]; 
 		UNSAFE METHOD MemoryTest2() AS VOID
 			LOCAL pMem AS IntPtr
 			pMem := MemAlloc(100)

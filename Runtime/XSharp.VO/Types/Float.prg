@@ -9,7 +9,7 @@ using System.Runtime.InteropServices
 begin namespace XSharp
 	// use explicit layout so we can compact the size into 12 bytes
 	// Type is Immutable, so no settable properties
-	[StructLayout(LayoutKind.Explicit)];
+	[StructLayout(LayoutKind.Explicit, Pack := 4)];
 	public structure __VOFloat implements IFLoat, ;
 		IConvertible,; 
 		IFormattable, ;

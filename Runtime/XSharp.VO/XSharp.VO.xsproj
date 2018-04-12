@@ -96,6 +96,11 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Windows.Forms</Name>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -126,13 +131,13 @@
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Memory.prg" />
     <Compile Include="Functions\MemVar.prg" />
-    <Compile Include="Functions\Meta.prg" />
     <Compile Include="Functions\Misc.prg" />
     <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Functions\OOP.prg" />
     <Compile Include="Functions\Registry.prg" />
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\Symbol.prg" />
+    <Compile Include="Functions\Terminal.prg" />
     <Compile Include="Functions\Transform.prg" />
     <Compile Include="Functions\Usual.prg" />
     <Compile Include="Functions\Vodb.prg" />

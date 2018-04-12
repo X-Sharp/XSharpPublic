@@ -45,17 +45,22 @@ static class OOPHelpers
          ENDIF
       ENDIF
     NEXT   
-    RETURN ret
-	static method IsMethod( t AS System.Type, cName AS STRING ) AS LOGIC
-	   LOCAL lReturn AS LOGIC
+    return ret
+
+	static method FindMethod(t AS System.Type, cName AS STRING ) AS MethodInfo
+	   LOCAL oMI := NULL AS MethodInfo
    
 	   TRY
-		  lReturn := t:GetMethod(cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public ) != NULL
+		  oMI := t:GetMethod(cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public ) 
 	   CATCH AS System.Reflection.AmbiguousMatchException
-		  lReturn := TRUE
+		  oMI := NULL
 	   END TRY
    
-	   RETURN lReturn
+	   RETURN oMI
+
+	static method IsMethod( t AS System.Type, cName AS STRING ) AS LOGIC
+	   return FindMethod(t, cName) != null
+
 	static method ClassTree( t AS Type ) AS ARRAY   
 	   LOCAL aList := {} AS ARRAY
 	   DO WHILE t != NULL
@@ -335,12 +340,13 @@ static class OOPHelpers
 		endif
 		return true
 
-		static method MyConvert(uValue as usual,toType as System.type) as object
-			if toType == typeof(float)
-				return (Float) uValue
-			else
-				return Convert.ChangeType((OBJECT) uValue, toType)
-			endif
+	static method MyConvert(uValue as usual,toType as System.type) as object
+		if toType == typeof(float)
+			return (Float) uValue
+		else
+			return Convert.ChangeType((OBJECT) uValue, toType)
+		endif
+
 	static method DoSend(oObject as object, cMethod as string, args as usual[] ) as usual
 		local result as USUAL
 		if ! SendHelper(oObject, cMethod, args, out result)
@@ -651,6 +657,13 @@ function IsMethodUsual(oX as usual,cName as string) as logic
 	endif
 	return false
 
+/// <summary>
+/// Check whether a particular method can be sent to a class.
+/// </summary>
+/// <param name="c"></param>
+/// <param name="cName"></param>
+/// <returns>
+/// </returns>
 FUNCTION IsMethodClass( c AS STRING, cName AS STRING ) AS LOGIC
    var t := OOPHelpers.FindClass( c )
    
@@ -697,9 +710,9 @@ function IvarList(oObject as object) as Array
 
 
 /// <summary>
-/// Store all instance variables of a type into an Array.
+/// Store all instance variables of a class into an Array.
 /// </summary>
-/// <param name="oObject"></param>
+/// <param name="symClassName"></param>
 /// <returns>
 /// </returns>
 function IvarListClass(cName as string) as array
@@ -856,6 +869,51 @@ function Send(o ,uMethod ) as usual
 // CLIPPER calling convention for compatiblity with VO.
 FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args params USUAL[] ) AS USUAL
    return OopHelpers.DoSend(oObject, cMethod, args)
+
+
+
+
+
+
+/// <summary>
+/// Return the number of arguments that a method is expecting.
+/// </summary>
+/// <param name="cClass"></param>
+/// <param name="cMethod"></param>
+/// <returns>
+/// </returns>
+FUNCTION MParamCount(cClass AS Symbol,cMethod AS Symbol) AS DWORD
+	local type as Type
+	type := OOPHelpers.FindClass(cClass)	
+	if type != null
+		local met as MethodInfo
+		met := OOPHelpers.FindMethod(type, cMethod)
+		if met != null
+			// todo: Handle clipper calling convention parameters
+			// they are now seen as 1 (the usual[])
+			return (DWORD) met:GetParameters():Length
+		endif
+	endif
+RETURN 0   
+
+
+
+
+
+
+
+
+/// <summary>
+/// Return the number of local arguments that a function with the CLIPPER calling convention is expecting.
+/// </summary>
+/// <param name="symFunc"></param>
+/// <returns>
+/// </returns>
+FUNCTION FParamCount(cFunc AS STRING) AS DWORD
+	
+RETURN 0   
+
+
 
 
 

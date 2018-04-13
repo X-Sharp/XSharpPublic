@@ -101,24 +101,13 @@ function ProcLine(activation as INT) as dword
    RETURN line   	
 
 
-
-/// <summary>
-/// Return the name of an activated entity.
-/// </summary>
-/// <param name="dwActivation"></param>
-/// <returns>
-/// </returns>
-
-function ProcName(dwActivation as DWORD) as string
-	return ProcName((int) dwActivation + 1) 
-
 /// <summary>
 /// Return the name of an activated entity.
 /// </summary>
 /// <returns>
 /// </returns>
-function ProcName() as string
-	return ProcName( (int) 1)
+function ProcName() as string 
+	return ProcName( 1)
 
 /// <summary>
 /// Return the name of an activated entity.

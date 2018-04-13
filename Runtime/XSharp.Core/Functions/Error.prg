@@ -42,3 +42,10 @@ function DosErrString(nDosErr as dword) as string
 	// when not found return string from RT_MSG_DOSERR_UNKNOWN
 	return cResource
 
+
+
+//Todo String lookup
+FUNCTION __CavoStr( resid AS DWORD ) AS STRING
+   return ""
+
+

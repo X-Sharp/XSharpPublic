@@ -9,7 +9,7 @@
 #define MB_TOPMOST 0x40000 
 
 
-FUNCTION _accept() AS STRING
+FUNCTION _accept() AS STRING STRICT
    RETURN _accept( "" )
    
 FUNCTION _accept( prompt AS STRING ) AS STRING
@@ -26,18 +26,18 @@ FUNCTION _accept( prompt AS STRING ) AS STRING
    
    RETURN iif( retval == NULL, "", retval )
 
-FUNCTION cls() AS VOID
+FUNCTION cls() AS VOID STRICT
    Console.Clear()
    RETURN
    
-FUNCTION Col() AS SHORT
+FUNCTION Col() AS SHORT STRICT
    RETURN (SHORT) Console.CursorLeft  
 
-FUNCTION QOut() AS VOID
+FUNCTION QOut() AS VOID STRICT
    Console.WriteLine()
    RETURN
 
-FUNCTION QOut( o AS USUAL ) AS VOID
+FUNCTION QOut( o AS USUAL ) AS VOID 
    Console.WriteLine()
    QQOut( o )
    RETURN
@@ -71,7 +71,7 @@ FUNCTION SetPos( nRow AS INT, nCol AS INT ) AS VOID
    Console.SetCursorPosition( nCol, nRow )
    RETURN
 
- FUNCTION _wait() AS STRING
+ FUNCTION _wait() AS STRING STRICT
    RETURN _wait( "Press any key to continue")
 
 FUNCTION _wait( prompt AS STRING ) AS STRING

@@ -237,8 +237,8 @@ begin namespace XSharp
 					result := Date{dt}
 				endif
 				return result
-			
-			static operator explicit(v as System.DateTime) as Date
+
+			static operator implicit(v as System.DateTime) as Date
 				return Date{v}
 			
 			method ToDateTime() as System.DateTime
@@ -383,7 +383,7 @@ begin namespace XSharp
 			method Subtract(days as uint64) as Date
 				return self:Add(-(int64)days)
 		#endregion
-		
+		 
 		#region IConvertable 
 			// forward most methods to the DateTime class so there will
 			// be a proper (localized) error message
@@ -508,7 +508,8 @@ begin namespace XSharp
 				end set
 			end property
 			
-			static property NullDate as Date get _NULL_DATE
+			static method NullDate as date 
+				return  _NULL_DATE
 			
 			static method ElapTime(cStartTime as string, cEndTime as string) as string
 				return System.DateTime.ParseExact(cEndTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture):Subtract(System.DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)):ToString()

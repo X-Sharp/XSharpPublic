@@ -7,68 +7,7 @@
 
 using XSharp
 using System.Runtime.InteropServices
-/// <summary>
-/// Create a file or open and truncate an existing file.
-/// </summary>
-/// <param name="cFile"></param>
-/// <param name="uxFileAttr"></param>
-/// <returns>
-/// </returns>
-function FCreate(cFile as string ,uxFileAttr as usual) as IntPtr
-	if uxFileAttr == NIL
-		return global::Functions.FCreate(cFile)
-	else
-		return global::Functions.FCreate2(cFile, uxFileAttr)
-	endif
 
-
-/// <summary>
-/// Read a line from an open file.
-/// </summary>
-/// <param name="pFile"></param>
-/// <param name="nBuffLen"></param>
-/// <returns>
-/// </returns>
-function FGetS(pFile ,nBuffLen ) as string
-	if (nBuffLen == NIL)
-		return global::Functions.FGets(pFile)
-	else
-		return global::Functions.FGetS2(pFile, nBuffLen)
-	endif
-
-
-
-/// <summary>
-/// Open a file.
-/// </summary>
-/// <param name="cFile"></param>
-/// <param name="wMode"></param>
-/// <returns>
-/// </returns>
-function FOpen(cFile ,wMode ) as IntPtr
-	if wMode == NIL
-		return global::Functions.Fopen(cFile)
-	else
-		return global::Functions.Fopen2(cFile, wMode)
-	endif
-
-
-
-
-/// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file.
-/// </summary>
-/// <param name="pFile"></param>
-/// <param name="c"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-function FPutS(pFile ,c ,nCount ) as dword
-	if nCount == NIL
-		return global::Functions.FPutS(pFile, c)
-	else
-		return global::Functions.FPutS(pFile, c, nCount)
-	endif
 
 
 /// <summary>

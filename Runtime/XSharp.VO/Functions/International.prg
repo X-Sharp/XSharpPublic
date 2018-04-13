@@ -38,3 +38,5 @@ function LoadResString(cDef as usual,id as usual,xModule as usual) as string
 function MBSUBSTR(c as usual,iStart as usual,wLen as usual) as string
 	/// THROW NotImplementedException{}
 	return String.Empty   
+
+

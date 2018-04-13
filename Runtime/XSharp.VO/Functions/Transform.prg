@@ -450,3 +450,9 @@ FUNCTION Transform( uValue AS USUAL, picture AS STRING ) AS STRING
    ENDIF
 
    RETURN ret
+
+
+//Todo: Implement unformat
+function Unformat( cString, cPicture, cType)
+	return NIL
+

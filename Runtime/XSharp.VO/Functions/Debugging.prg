@@ -51,34 +51,6 @@ function CanBreak() as logic
 
 
 /// <summary>
-/// Return the source file for the active code line
-/// </summary>
-/// <param name="dwActivation"></param>
-/// <returns>
-/// </returns>
-function ProcFile(dwActivation ) as string
-	return global::Functions.ProcFile ( (int) dwActivation +1)
-
-/// <summary>
-/// Return the source line number of the last line executed in an activated entity.
-/// </summary>
-/// <param name="dwActivation"></param>
-/// <returns>
-/// </returns>
-function ProcLine(dwActivation ) as dword
-	return global::Functions.ProcLine ( (int) dwActivation +1)
-
-/// <summary>
-/// Return the name of an activated entity.
-/// </summary>
-/// <param name="dwActivation"></param>
-/// <returns>
-/// </returns>
-function ProcName(dwActivation ) as string
-return global::Functions.ProcName ( (int) dwActivation +1)
-
-
-/// <summary>
 /// Returns the version of <%APP%> you are using.
 /// </summary>
 /// <returns>

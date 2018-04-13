@@ -181,6 +181,9 @@ FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS Array
 	FUNCTION ArraySwap(a AS Array,dwEl AS DWORD,u AS Usual) AS Usual
 	RETURN a:Swap(dwEl, u)
 
+
+	Function Ascan(a, b,c,d)
+		return 0
 	/// <summary>
 	/// Scan a sorted Array until a value is found or a code block returns 0.
 	/// </summary>
@@ -369,7 +372,7 @@ return	 NIL
 	/// <param name="iCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AEval(a AS Usual,cb AS Usual,iStart AS Usual,iCount AS Usual) AS Usual
+	FUNCTION AEval(a,cb ,iStart ,iCount ) AS Usual
 		/// THROW NotImplementedException{}
 	RETURN NIL   
 

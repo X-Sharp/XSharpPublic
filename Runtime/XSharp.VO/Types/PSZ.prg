@@ -249,8 +249,8 @@ begin namespace XSharp
 				return p:_value
 			
 			// PSZ -> STRING
-			operator implicit( p as Psz ) as string
-				return p:ToString()
+			//operator implicit( p as Psz ) as string
+			//	return p:ToString()
 			
 			// PSZ -> INT
 			operator implicit( p as Psz ) as int

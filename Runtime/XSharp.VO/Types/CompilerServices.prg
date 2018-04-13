@@ -28,8 +28,10 @@ static class XSharp.Internal.CompilerServices
 			var encoding := System.Text.Encoding.Default
 			var bytes    := encoding:GetBytes(s)
 			var len      := bytes:Length
-			pResult := Marshal.AllocHGlobal(len)
+			pResult := Marshal.AllocHGlobal(len+1)
+			MemSet(pResult, 0, (dword) len+1)
 			Marshal.Copy(bytes, 0, pResult, len)
+			
 		endif
 		pszList:Add(pResult)
 		return pResult

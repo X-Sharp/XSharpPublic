@@ -85,112 +85,6 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	function ErrorMessageBox(pszText as Psz,pszCapt as Psz,dwB1 as dword,dwB2 as dword,dwB3 as dword) as dword
 		/// THROW NotImplementedException{}
 		return 0     
-	
-	/// <summary>
-	/// Determine if the leftmost character in a string is alphanumeric.
-	/// </summary>
-	/// <param name="pszC"></param>
-	/// <returns>
-	/// </returns>
-	function IsAlNum(pszSource as Psz) as logic
-		if pszSource != NULL_PSZ
-			return System.Char.IsLetterorDigit(pszSource:Item[0])
-		endif
-		return false   
-	
-	/// <summary>
-	/// Determine if the leftmost character in a string is alphabetic.
-	/// </summary>
-	/// <param name="pszSource"></param>
-	/// <returns>
-	/// </returns>
-	function IsAlpha(pszSource as psz) as logic
-		if pszSource != NULL_PSZ
-			return System.Char.IsLetter(pszSource:Item[0])
-		endif
-		return false
-	
-	/// <summary>
-	/// </summary>
-	/// <param name="pszSource"></param>
-	/// <returns>
-	/// </returns>
-	function IsAlphaNum(pszSource as Psz) as logic
-		if pszSource != NULL_PSZ
-			return System.Char.IsLetterOrDigit(pszSource:Item[0])	
-		endif
-		return false
-	/// <summary>
-	/// Determine if the leftmost character in a string is a binary digit (0 or 1).
-	/// </summary>
-	/// <param name="pszC"></param>
-	/// <returns>
-	/// </returns>
-	function IsBDigit(pszSource as Psz) as logic
-		if pszSource != NULL_PSZ
-			return pszSource:Item[0] == '0' .or. pszSource:Item[0] == '1'
-		endif
-		return false
-	/// <summary>
-	/// Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).
-	/// </summary>
-	/// <param name="pszC"></param>
-	/// <returns>
-	/// </returns>
-	function IsDigit(pszSource as Psz) as logic
-		if pszSource != NULL_PSZ
-			return System.Char.IsDigit(pszSource:Item[0])	
-		endif
-		return false
-	
-	/// <summary>
-	/// Determine if the leftmost character in a string is a lowercase letter.
-	/// </summary>
-	/// <param name="pszSource"></param>
-	/// <returns>
-	/// </returns>
-	function IsLower(pszSource as Psz) as logic
-		if pszSource != NULL_PSZ
-			return System.Char.IsLower(pszSource:Item[0])	
-		endif
-		return false
-
-	
-	/// <summary>
-	/// Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).
-	/// </summary>
-	/// <param name="pszC"></param>
-	/// <returns>
-	/// </returns>
-	function IsSpace(pszSource as Psz) as logic
-		if pszSource != NULL_PSZ
-			return System.Char.IsWhiteSpace(pszSource:Item[0])	
-		endif
-		return false
-	/// <summary>
-	/// Determine if the leftmost character in a string is uppercase.
-	/// </summary>
-	/// <param name="pszSource"></param>
-	/// <returns>
-	/// </returns>
-	function IsUpper(pszSource as Psz) as logic
-		if pszSource != NULL_PSZ
-			return System.Char.IsUpper(pszSource:Item[0])	
-		endif
-		return false
-	
-	/// <summary>
-	/// Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).
-	/// </summary>
-	/// <param name="pszC"></param>
-	/// <returns>
-	/// </returns>
-	function IsXDigit(pszSource as Psz) as logic
-		if pszSource != null_psz
-			local ch := pszSource:Item[0] as char
-			return System.Char.IsDigit(ch) .or. (ch >= 'A' .and. ch <= 'F') .or. (ch >= 'a' .and. ch <= 'f')
-		endif
-		return false
 		
 	/// <summary>
 	/// Convert a null-terminated string to a strongly typed string.
@@ -200,7 +94,7 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// </returns>
 	function Psz2String(pszSource as psz) as string
 		// The compiler converts to a call to the implicit converter
-		return pszSource
+		return pszSource:ToString()
 
 	/// <summary>
 	/// Convert a null-terminated string to a Usual with a string value
@@ -329,3 +223,19 @@ FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
     endif   
 
 
+
+// parameters are 0 based
+FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS DWORD
+   LOCAL ret AS DWORD
+   IF p != NULL_PSZ
+      ret := ((BYTE PTR)p)[dwOffset+1]
+   ENDIF
+   RETURN ret   
+
+// parameters are 0 based   
+FUNCTION _NPut( p AS PSZ, dwOffset AS DWORD, b AS BYTE ) AS VOID
+   IF p != NULL_PSZ
+      ((BYTE PTR)p)[dwOffset+1] := b
+   ENDIF
+   RETURN
+   

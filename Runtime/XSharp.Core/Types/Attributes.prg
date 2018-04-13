@@ -95,22 +95,6 @@ begin namespace XSharp.Internal
 		
 	end class
 	
-	
-	/// <summary>
-	/// this class records the compiler version used to build an assembly
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Assembly)];
-		sealed class ImplicitNamespaceAttribute inherit Attribute
-		private initonly _namespace as string
-		
-		property Namespace as string get _namespace
-		
-		constructor(namespace as string)
-			_namespace := namespace
-		
-	end class
-	
-	
 	/// <summary>
 	/// this class is used to describe VOSTRUCT and UNION structures which have a different semantics
 	/// AS actually means Struct PTR. IS means Struct
@@ -127,6 +111,25 @@ begin namespace XSharp.Internal
 		constructor(size as int, largestMemberSize as int)
 			_size := size
 			_largestMemberSize := largestMemberSize
+		
+	end class
+	
+end namespace
+
+
+begin namespace XSharp
+	/// <summary>
+	/// this class records the compiler version used to build an assembly
+	/// Not internal because it is supposed to be used by 3rd party vendors as well
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Assembly)];
+		sealed class ImplicitNamespaceAttribute inherit Attribute
+		private initonly _namespace as string
+		
+		property Namespace as string get _namespace
+		
+		constructor(namespace as string)
+			_namespace := namespace
 		
 	end class
 	

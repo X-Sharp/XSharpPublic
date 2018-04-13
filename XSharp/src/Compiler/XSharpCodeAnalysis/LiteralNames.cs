@@ -111,6 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class XSharpFunctionNames
     {
+        // these are all expected in the VO Function type
         internal const string StringCompare = "__StringCompare";
         internal const string StringEquals = "__StringEquals";
         internal const string StringSubtract = "StringSubtract";
@@ -122,10 +123,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Send = "__InternalSend";
         internal const string ASend = "ASend";
         internal const string Eval = "Eval";
-        internal const string FunctionsClass = "Functions";
-        internal const string RunInitProcs = "RunInitProcs";
         internal const string GetElement = "__GetElement";
         internal const string SetElement = "__SetElement";
+        // These are in the generated code
+        internal const string FunctionsClass = "Functions";
+        internal const string RunInitProcs = "RunInitProcs";
+
     }
     internal static class VulcanQualifiedFunctionNames
     {
@@ -152,8 +155,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal static class XSharpQualifiedFunctionNames
     {
         // In core
-        internal const string Chr = "global::XSharp.Functions.Chr";
-        internal const string InStr = "global::XSharp.Functions.Instr";
+        internal const string Chr = "global::Functions.Chr";
+        internal const string InStr = "global::Functions.Instr";
         internal const string WrapException = "global::XSharp.Error.WrapRawException";
         // In VO assembly
         internal const string FieldGet = "global::XSharp.VO.Functions.__FieldGet";

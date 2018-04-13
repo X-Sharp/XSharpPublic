@@ -128,7 +128,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp_Internal_ImplicitNamespaceAttribute);
+                return compilation.GetWellKnownType(WellKnownType.XSharp_ImplicitNamespaceAttribute);
             }
             else
             {

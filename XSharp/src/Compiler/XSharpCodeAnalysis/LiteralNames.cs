@@ -183,7 +183,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         // please note that these MUST be lowercase !
         internal const string VulcanRT = "vulcanrt";
         internal const string VulcanRTFuncs = "vulcanrtfuncs";
-        internal const string XSharpBase = "xsharp.base";
         internal const string XSharpCore = "xsharp.core";
         internal const string XSharpVO = "xsharp.vo";
     }

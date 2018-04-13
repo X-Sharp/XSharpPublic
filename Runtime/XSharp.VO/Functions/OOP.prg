@@ -244,21 +244,25 @@ static class OOPHelpers
 		t := oObject:GetType()
 		var fldInfo := FindField(t, cIVarName,FALSE)
 		//Todo: optimization
-		if fldInfo != NULL_OBJECT
-			if !IsFieldVisible(fldInfo, lSelf)
-			// todo
+		if fldInfo != null_object
+			IF !IsFieldVisible(fldInfo, lSelf)
+				// todo
 				// Throw Error.VOError( EG_NOVARMETHOD, IIF( isSelf, "IVarGetSelf", "IVarGet" ), "cName", 2, { cName } )
-			endif
+			ENDIF
+			oValue := MyConvert(oValue, fldInfo:FieldType)
 			fldInfo:SetValue(oObject, oValue)
-			return
-		endif
-		var propInfo := FindProperty(t, cIVarName, lSelf)
-		if propInfo != NULL_OBJECT
-			if !propInfo:CanWrite
-			// todo
+			RETURN
+		ENDIF
+		LOCAL propInfo AS PropertyInfo
+		propInfo := FindProperty(t, cIVarName, lSelf)
+		IF propInfo != NULL_OBJECT 
+			
+			IF !propInfo:CanWrite
+				// todo
 				// Throw Error.VOError( EG_NOVARMETHOD, IIF( isSelf, "IVarGetSelf", "IVarGet" ), "cName", 2, { cName } )
 			endif
-			propInfo:SetValue(oObject, oValue, null)
+			oValue := MyConvert(oValue, propInfo:PropertyType)
+			propInfo:SetValue(oObject,oValue , NULL)
 			return
 		endif
 			// todo
@@ -300,7 +304,7 @@ static class OOPHelpers
 						// We need to box a usual here 
 						var oTemp := object[]{ 1 }
 						oTemp[1] := arg
-						oArgs[nPar] := Activator.CreateInstance(typeof(Xsharp.__Usual), oTemp)
+						oArgs[nPar] := Myconvert(arg, typeof(__USUAL))
 					elseif pi:ParameterType:IsAssignableFrom(arg:SystemType) .or. arg == null
 						oArgs[nPar] := uArgs[nPar]
 					elseif pi:GetCustomAttributes( typeof( ParamArrayAttribute ), false ):Length > 0
@@ -339,7 +343,18 @@ static class OOPHelpers
 		if toType == typeof(float)
 			return (Float) uValue
 		else
-			return Convert.ChangeType((OBJECT) uValue, toType)
+			if toType == typeof(usual)
+				// todo: better mechanism for boxing
+				// box the usual
+				var oTemp := object[]{ 1 }
+				oTemp[1] := uValue
+				return Activator.CreateInstance(typeof(XSharp.__Usual), oTemp)
+			endif
+			var o := (object) uValue 
+			IF toType:IsAssignableFrom(o:GetType())
+				RETURN o
+			ENDIF
+			return Convert.ChangeType(o, toType)
 		endif
 
 	static method DoSend(oObject as object, cMethod as string, args as usual[] ) as usual
@@ -369,7 +384,7 @@ end class
 /// <param name="symMethod"></param>
 /// <returns>
 /// </returns>
-function ASend(a as Usual,symMethod as Usual) as Array
+function ASend(a ,symMethod ) as Array
 	/// THROW NotImplementedException{}
 	return null_array   
 
@@ -866,13 +881,27 @@ function Send(o ,uMethod ) as usual
 	next
 	return OopHelpers.DoSend(oObject, cMethod, args)
 
+
 // This is called by the compiler when a late bound call is made on a USUAL.
 // It is strongly typed and more efficient than Send(), which must use the
 // CLIPPER calling convention for compatiblity with VO.
 FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args params USUAL[] ) AS USUAL
    return OopHelpers.DoSend(oObject, cMethod, args)
 
+FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY ) AS USUAL
 
+   LOCAL elements AS INT
+   LOCAL uargs    AS USUAL[]
+   LOCAL x        AS INT
+   
+   elements := (INT) args:Length
+   uargs    := USUAL[]{ elements }
+   
+   FOR x := 1 UPTO elements
+      uargs[x] := args[x]
+   NEXT
+
+   return OopHelpers.DoSend(oObject, cMethod, uargs)
 
 
 

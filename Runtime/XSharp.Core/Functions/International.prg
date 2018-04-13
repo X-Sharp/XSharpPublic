@@ -300,3 +300,15 @@ function MAKELANGID( p as word, s as word ) as word
 
 function MAKELCID( lgid as word, srtid as word ) as dword
 	return (dword) ( ( ( (dword)(srtid) ) << 16) | ( (int)(dword) lgid ) )
+
+
+FUNCTION IsBiDi() AS LOGIC
+   return System.Windows.Forms.SystemInformation.MidEastEnabled   
+
+
+_DLL FUNCTION String2W( sz AS STRING ) AS IntPtr PASCAL:OLEAUT32.SysAllocString
+
+
+//Todo Nation DLL for string resources
+function GetNatDllHandle() as IntPtr strict
+	return IntPtr.Zero

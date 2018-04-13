@@ -80,4 +80,10 @@ function CParamCount(oCodeBlock as CodeBlock) as dword
 	if oCodeBlock == null_object
 		throw Error.NullArgumentError(__ENTITY__, nameof(oCodeBlock), 1)
 	endif
-	return (DWORD) oCodeBlock:PCount()
+	return (dword) oCodeBlock:PCount()
+
+
+// Todo write canEval based on type
+
+function __CanEval() Clipper
+	return false

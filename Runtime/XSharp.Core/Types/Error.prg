@@ -23,9 +23,15 @@ begin namespace XSharp
 		/// <Summary>A string that describes the error condition.</Summary>
 		property Description as string auto
 		property Arg as string auto
-		property ArgType as string auto
+		property ArgType as INT auto
 		property ArgTypeReq as System.Type auto
 		property ArgNum as long auto
+		property MethodSelf as object auto
+		property CallFuncSym as string auto
+		property Args as object auto
+		property CanDefault as logic auto
+		property Tries as int auto
+
 		
 		private method setDefaultValues() as void
 			self:Gencode := 0
@@ -93,4 +99,7 @@ begin namespace XSharp
 		
 	end class
 end namespace 
+
+
+
 

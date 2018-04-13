@@ -129,3 +129,14 @@ FUNCTION SwapQWord( qw AS UINT64 ) AS UINT64
    RETURN (UINT64)  ( qw << 32 ) | ( qw >> 32 ) 
 
  
+
+
+
+ FUNCTION MakeDWord( wLow AS WORD, wHigh AS WORD ) AS DWORD
+   RETURN DWORD( ( wHigh << 16 ) | wLow )
+
+FUNCTION MakeLong( wLow AS WORD, wHigh AS WORD ) AS INT
+   RETURN (INT)( ( wHigh << 16 ) | wLow )
+
+FUNCTION MakeWord( bLow AS BYTE, bHigh AS BYTE ) AS WORD
+	RETURN WORD( ( WORD(bHigh) << 8 ) | bLow )

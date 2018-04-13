@@ -857,19 +857,21 @@ function FCreate(cFile as string ) as IntPtr
 /// <param name="dwFileAttr"></param>
 /// <returns>
 /// </returns>
-function FCreate(cFile as string ,dwFileAttr as DWORD) as IntPtr
-	return FCreate2(cFile, dwFileAttr)
+function FCreate(cFile as string ) as IntPtr
+	return FCreate2(cFile, FC_NORMAL)
 
 
 /// <summary>
 /// Create a file or open and truncate an existing file.
 /// </summary>
 /// <param name="cFile"></param>
-/// <param name="iFileAttr "></param>
+/// <param name="dwFileAttr"></param>
 /// <returns>
 /// </returns>
-function FCreate(cFile as string ,iFileAttr as int) as IntPtr
-	return FCreate2(cFile, (DWORD) iFileAttr)
+function FCreate(cFile as string ,dwFileAttr as DWORD) as IntPtr
+	return FCreate2(cFile, dwFileAttr)
+
+
 
 
 /// <summary>

@@ -197,17 +197,28 @@ begin namespace XSharp
                             self:_refData  := (string)o 
                         
                         otherwise
-                            if vartype == typeof(Array)
-                                self:_flags:usualType := UsualType.Array
+                            IF vartype == typeof(ARRAY)
+                                SELF:_flags:usualType := UsualType.Array
                                 self:_refData  := o
-                            elseif vartype == typeof(Date)
-                                self:_flags:usualType := UsualType.Date
-                                self:_valueData:d :=  (Date) o
-                            elseif vartype == typeof(Symbol)
-                                self:_flags:usualType := UsualType.Symbol
-                                self:_valueData:s :=   (Symbol) o
-                            else
-                                self:_flags:usualType := UsualType.Object
+							// CodeBlock ?
+							// _CodeBlock ?
+                            ELSEIF vartype == typeof(DATE)
+                                SELF:_flags:usualType := UsualType.Date
+                                SELF:_valueData:d :=  (DATE) o
+                            ELSEIF vartype == typeof(SYMBOL)
+                                SELF:_flags:usualType := UsualType.Symbol
+                                SELF:_valueData:s :=   (SYMBOL) o
+                            ELSEIF vartype == typeof(System.Reflection.Pointer)
+                                self:_flags:usualType := UsualType.Ptr
+                                self:_valueData:p	  := Intptr{System.Reflection.Pointer.UnBox(o)}
+							elseif o is IFloat
+								local f := (IFLoat) o as IFloat
+								self:_valueData:r8		:= f:Value
+								self:_flags:usualType	:= UsualType.Float
+								self:_flags:Width		:= (Sbyte) f:Digits
+								self:_flags:Decimals	:= (Sbyte) f:Decimals
+                            ELSE
+                                SELF:_flags:usualType := UsualType.Object
                                 self:_refData := o
                             endif
                     end switch
@@ -627,13 +638,13 @@ begin namespace XSharp
                 case UsualType.Date
                     switch (rhs:_usualType)
                         case UsualType.Date		; return lhs:_dateValue		>= rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateTimeValue >= (Date) rhs:_dateTimeValue
+                        case UsualType.DateTime	; return lhs:_dateTimeValue >= rhs:_dateTimeValue
                         otherwise
                             nop
                     end switch
                 case UsualType.DateTime
                     switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue		>= (DateTime) rhs:_dateValue
+                        case UsualType.Date		; return lhs:_dateValue		>=  rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateTimeValue >=  rhs:_dateTimeValue
                         otherwise
                             nop
@@ -705,7 +716,7 @@ begin namespace XSharp
                     end switch
                 case UsualType.DateTime
                     switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue		< (DateTime) rhs:_dateValue
+                        case UsualType.Date		; return lhs:_dateValue		<  rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateTimeValue <  rhs:_dateTimeValue
                         otherwise
                             nop
@@ -777,7 +788,7 @@ begin namespace XSharp
                     end switch
                 case UsualType.DateTime
                     switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue		<= (DateTime) rhs:_dateValue
+                        case UsualType.Date		; return lhs:_dateValue		<=  rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateTimeValue <=  rhs:_dateTimeValue
                         otherwise
                             nop
@@ -816,6 +827,9 @@ begin namespace XSharp
             endif
             
             method UsualEquals( rhs as __Usual, operator as string) as logic
+			if rhs:IsNil
+				return self:IsNil
+			endif
             switch self:_usualType
                 case UsualType.Object
                     if rhs:_usualType == UsualType.Object
@@ -1379,7 +1393,7 @@ begin namespace XSharp
                         return (Array) u:_refData
                     endif
             end switch
-            throw ConversionError("ARRAY", typeof(Array), u)
+            throw ConversionError(ARRAY, typeof(Array), u)
             
             // Todo
             //STATIC OPERATOR IMPLICIT(u AS __Usual) AS CodeBlock
@@ -1393,7 +1407,7 @@ begin namespace XSharp
                 case UsualType.Decimal	; return u:_decimalValue != 0
                 case UsualType.Void		; return false
                 otherwise
-                    throw ConversionError("LOGIC", typeof(logic), u)
+                    throw ConversionError(LOGIC, typeof(logic), u)
             end switch
             
             static operator implicit(u as __Usual) as Date
@@ -1402,7 +1416,7 @@ begin namespace XSharp
                 case UsualType.DateTime	; return (Date) u:_dateTimeValue
                 case UsualType.Void		; return Date{0}
                 otherwise
-                    throw ConversionError("DATE", typeof(Date), u)
+                    throw ConversionError(DATE, typeof(Date), u)
             end switch
             
             static operator implicit(u as __Usual) as DateTime
@@ -1411,18 +1425,19 @@ begin namespace XSharp
                 case UsualType.DateTime	; return u:_dateTimeValue
                 case UsualType.Void		; return DateTime.MinValue
                 otherwise
-                    throw ConversionError("DATE", typeof(Date), u)
+                    throw ConversionError(DATE, typeof(Date), u)
             end switch
             
             static operator implicit(u as __Usual) as System.IntPtr
             switch u:_usualType
-                case UsualType.Ptr		; return u:_ptrValue
+                CASE UsualType.Ptr		; RETURN u:_ptrValue
+				case UsualType.Psz		; return u:_ptrValue
                 case UsualType.LONG		; return (IntPtr) u:_intValue
                 case UsualType.Int64		; return (IntPtr) u:_i64Value
                 case UsualType.Decimal	; return (IntPtr) u:_decimalValue 
                 case UsualType.Void		; return IntPtr.Zero
                 otherwise
-                    throw ConversionError("PTR", typeof(IntPtr), u)
+                    throw ConversionError(PTR, typeof(IntPtr), u)
             end switch
             
             static operator implicit(u as __Usual) as string
@@ -1431,7 +1446,7 @@ begin namespace XSharp
                 case UsualType.Void	; return ""
                 case UsualType.SYMBOL	; return (string) u:_symValue
                 otherwise
-                    throw ConversionError("STRING", typeof(string), u)
+                    throw ConversionError(STRING, typeof(string), u)
             end switch
             
             static operator implicit(u as __Usual) as Symbol
@@ -1440,7 +1455,7 @@ begin namespace XSharp
                 case UsualType.Void	; return Symbol{""}
                 case UsualType.SYMBOL	; return u:_symValue
                 otherwise
-                    throw ConversionError("SYMBOL", typeof(Symbol), u)
+                    throw ConversionError(SYMBOL, typeof(Symbol), u)
             end switch
             
             static operator implicit(u as __Usual) as Psz
@@ -1449,7 +1464,7 @@ begin namespace XSharp
                 case UsualType.String	; return Psz{u:_stringValue}
                 case UsualType.Void	; return Null_Psz
                 otherwise
-                    throw ConversionError("PSZ", typeof(Psz), u)
+                    throw ConversionError(PSZ, typeof(Psz), u)
             end switch
             
         #endregion
@@ -1474,7 +1489,7 @@ begin namespace XSharp
 						endif
                     case UsualType.Void		; return  0
                     otherwise
-                        throw ConversionError("BYTE", typeof(byte), u)
+                        throw ConversionError(BYTE, typeof(byte), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "BYTE", typeof(byte), u)
@@ -1504,7 +1519,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("SHORT", typeof(short), u)
+                        throw ConversionError(SHORT, typeof(short), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "SHORT", typeof(short), u)
@@ -1530,7 +1545,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("LONG", typeof(long), u)
+                        throw ConversionError(LONG, typeof(long), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "LONG", typeof(long), u)
@@ -1557,7 +1572,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("INT64", typeof(int64), u)
+                        throw ConversionError(INT64, typeof(int64), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "INT64", typeof(int64), u)
@@ -1573,7 +1588,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("DECIMAL", typeof(int64), u)
+                        throw ConversionError(UsualType.DECIMAL, typeof(int64), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "DECIMAL", typeof(int64), u)
@@ -1589,7 +1604,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return (SByte) iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("SBYTE", typeof(SByte), u)
+                        throw ConversionError(BYTE, typeof(SByte), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "SBYTE", typeof(SByte), u)
@@ -1606,7 +1621,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("WORD", typeof(word), u)
+                        throw ConversionError(WORD, typeof(word), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "WORD", typeof(word), u)
@@ -1622,7 +1637,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("DWORD", typeof(dword), u)
+                        throw ConversionError(DWORD, typeof(dword), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "DWORD", typeof(dword), u)
@@ -1638,7 +1653,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("UINT64", typeof(uint64), u)
+                        throw ConversionError(UINT64, typeof(uint64), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "UINT64", typeof(uint64), u)
@@ -1655,7 +1670,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("REAL4", typeof(real4), u)
+                        throw ConversionError(REAL4, typeof(real4), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "REAL4", typeof(real4), u)
@@ -1671,7 +1686,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
                     case UsualType.Void	; return 0
                     otherwise
-                        throw ConversionError("REAL8", typeof(real8), u)
+                        throw ConversionError(REAL8, typeof(real8), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "REAL8", typeof(real8), u)
@@ -1687,7 +1702,7 @@ begin namespace XSharp
                     case UsualType.Logic	; return Float{iif(u:_logicValue, 1, 0)}
                     case UsualType.Void	; return Float{0}
                     otherwise
-                        throw ConversionError("FLOAT", typeof(Float), u)
+                        throw ConversionError(FLOAT, typeof(Float), u)
                 end switch
             catch ex as OverflowException
                 throw OverflowError(ex, "FLOAT", typeof(Float), u)
@@ -1917,31 +1932,6 @@ begin namespace XSharp
         #endregion
         
         #region Error Method
-            internal method TypeString() as string
-            switch self:_usualType
-                case UsualType.Array		; return "ARRAY"
-                case UsualType.CodeBlock	; return "CODEBLOCK"
-                case UsualType.Date		; return "DATE"
-                case UsualType.DateTime	; return "DATETIME"
-                case UsualType.DECIMAL	; return "DECIMAL"
-                case UsualType.FLOAT		; return "FLOAT"
-                case UsualType.Int64		; return "INT64"
-                case UsualType.Long		; return "LONG"
-                case UsualType.Logic		; return "LOGIC"
-                case UsualType.PTR		; return "PTR"
-                case UsualType.String		; return "STRING"
-                case UsualType.Symbol		; return "SYMBOL"
-                case UsualType.Void		; return "USUAL"
-                otherwise
-                    if self:isReferenceType
-                        if _refData == null
-                            return ""
-                        else
-                            return _refData:GetType():FullName
-                        endif
-                    endif
-            end switch
-            return "?"
            internal method ValType() as string
             switch self:_usualType
                 case UsualType.Array		; return "A"
@@ -1964,28 +1954,40 @@ begin namespace XSharp
 			return "?"                        
 
             static method ConversionError(toTypeString as string, toType as System.Type, u as __Usual) as Error
-            var err			:= Error{InvalidCastException{}}
-            err:GenCode		:= GenCode.EG_DataType
-            err:Severity	:= Severity.ES_Error
-            err:ArgTypeReq	:= toType
-            err:ArgNum		:= 1
-            err:FuncSym		:= "USUAL => "+toTypeString
-            err:ArgType		:= toTypeString
-            err:Description := i"Conversion Error from USUAL ({u:TypeString()})  to {toTypeString}"  
-            err:Arg			:= u:ToString()
-            return err
+				var err			:= Error{InvalidCastException{}}
+				err:GenCode		:= GenCode.EG_DataType
+				err:Severity	:= Severity.ES_Error
+				err:ArgTypeReq	:= toType
+				err:ArgNum		:= 1
+				err:FuncSym		:= "USUAL => "+toTypeString
+				//err:ArgType		:= toTypeString
+				err:Description := i"Conversion Error from USUAL ({u:TypeString()})  to {toTypeString}"  
+				err:Arg			:= u:ToString()
+				return err
+
+            static method ConversionError(typeNum as INT, toType as System.Type, u as __Usual) as Error
+				var err			:= Error{InvalidCastException{}}
+				err:GenCode		:= GenCode.EG_DataType
+				err:Severity	:= Severity.ES_Error
+				err:ArgTypeReq	:= toType
+				err:ArgNum		:= 1
+				err:FuncSym		:= "USUAL => "+TypeString((DWORD) typeNum)
+				err:ArgType		:= typeNum
+				err:Description := "Conversion Error from USUAL (" +TypeString(UsualType(u))+") to ("+typeString(DWORD(typeNum))+")" 
+				err:Arg			:= u:ToString()
+				return err
             
             static method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as __Usual) as Error
-            var err := Error{ex}
-            err:GenCode		 := GenCode.EG_DataType
-            err:Severity	 := Severity.ES_Error
-            err:ArgTypeReq	 := toType
-            err:ArgNum		 := 1
-            err:FuncSym		 := "USUAL => "+toTypeString
-            err:ArgType		 := toTypeString
-            err:Description  := i"Overflow error converting from USUAL({u:TypeString()})  to {toTypeString}"  
-            err:Arg			 := u:ToString()
-            return err
+				var err := Error{ex}
+				err:GenCode		 := GenCode.EG_DataType
+				err:Severity	 := Severity.ES_Error
+				err:ArgTypeReq	 := toType
+				err:ArgNum		 := 1
+				err:FuncSym		 := "USUAL => "+toTypeString
+				//err:ArgType		 := toTypeString
+				err:Description  := i"Overflow error converting from USUAL({u:TypeString()})  to {toTypeString}"  
+				err:Arg			 := u:ToString()
+				return err
             
             static method BinaryError( operator as string, message as string, left as logic, lhs as __Usual, rhs as __Usual) as Error
             var err := Error{ArgumentException{}}

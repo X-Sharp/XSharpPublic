@@ -387,3 +387,46 @@ function OS(lExtended as LOGIC) as string
     return cOs
  
 
+
+
+FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL
+    LOCAL           nPos        AS DWORD
+    LOCAL           cPath       AS STRING
+
+    nPos  := RAt("\", cFile)
+    IF nPos = 0
+        cPath := cFile
+    ELSE
+        cPath := cFile:SubString(0, (int) nPos)
+    ENDIF
+
+    return cPath
+
+FUNCTION _ExecName() AS STRING
+    RETURN System.Reflection.Assembly.GetExecutingAssembly():Location
+
+FUNCTION ExecName( lFull AS LOGIC ) AS STRING
+    LOCAL   nPos        AS DWORD
+    LOCAL   cPath       AS STRING
+
+    cPath := _ExecName()
+
+    IF ! lFull
+        nPos  := RAt( "\", cPath )
+
+        IF nPos != 0
+            cPath := SubStr2( cPath, nPos + 1 )
+        ENDIF
+    ENDIF
+
+    RETURN cPath
+
+FUNCTION ModuleName( lFull AS LOGIC ) AS STRING 
+    return ExecName( lFull )
+
+
+FUNCTION GetMimeType(sFileName AS STRING) AS STRING
+    LOCAL iDot AS DWORD
+    LOCAL sExt AS STRING
+	sExt := System.IO.Path.GetExtension(sFileName)
+    RETURN Microsoft.Win32.Registry.GetValue("HKEY_CLASSES_ROOT\"+sExt,"Content Type",""):ToString()

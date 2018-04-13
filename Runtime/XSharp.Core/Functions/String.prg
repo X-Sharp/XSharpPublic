@@ -9,113 +9,7 @@ using System.Text
 internal global trimChars := <char>{ ' ' } as char[]
 
 
-/// <summary>
-/// Compare 2 strings. This function is used by the compiler for string comparisons
-/// </summary>
-/// <param name="strLHS">The first string .</param>
-/// <param name="strRHS">The second string.</param>
-/// <returns>
-/// -1 strA precedes strB in the sort order. 
-///  0 strA occurs in the same position as strB in the sort order. 
-///  1 strA follows strB in the sort order. 
-/// Note this this function should respect SetCollation() and SetInternational() and SetExact()
-/// </returns>
 
-function __StringCompare(strLHS as string, strRHS as string) as int
-	local ret as int
-	
-	if strLHS == null
-		if strRHS == null			// null and null are equal
-			ret := 0
-		else
-			ret := -1				// null precedes a string
-		endif
-	elseif strRHS == null			// a string comes after null
-		ret := 1
-	else							// both not null
-		// With Not Exact comparison we only compare the length of the RHS string
-		if .not. RuntimeState.Exact
-			local lengthRHS as int
-			lengthRHS := strRHS:Length
-			if lengthRHS == 0 
-				return 0
-			elseif lengthRHS<= strLHS:Length 
-				if String.Compare( strLHS, 0, strRHS, 0, lengthRHS , StringComparison.Ordinal ) == 0
-					return 0
-				endif
-			endif
-		endif
-		// either exact or RHS longer than LHS
-		// TODO: Use Clipper Collation based comparison
-		ret := String.Compare( strLHS, 0, strRHS, 0, strRHS:Length, StringComparison.Ordinal )
-	endif
-	return ret
-
-
-/// <summary>
-/// Compare 2 strings. This function is used by the compiler for string comparisons
-/// </summary>
-/// <param name="strLHS">The first string .</param>
-/// <param name="strRHS">The second string.</param>
-/// <returns>
-/// TRUE when the strings are equal, FALSE when they are not equal
-/// This function respects SetExact()
-/// </returns>
-function  __StringEquals(strLHS as string, strRHS as string) as logic
-	local equals := FALSE as logic
-	local lengthRHS as int
-	
-	if RuntimeState.Exact
-		equals := strLHS == strRHS
-	elseif strLHS != null .and. strRHS != null
-		lengthRHS := strRHS:Length
-		if lengthRHS == 0
-			equals := true        // With SetExact(FALSE) then "aaa" = "" returns TRUE
-		elseif lengthRHS <= strLHS:Length
-			equals := String.Compare( strLHS, 0, strRHS, 0, lengthRHS, StringComparison.Ordinal ) == 0
-		endif
-	elseif strLHS == null .and. strRHS == null
-		equals := true
-	endif
-	return equals
-
-/// <summary>
-/// Compare 2 strings. This function is used by the compiler for string comparisons
-/// </summary>
-/// <param name="strLHS">The first string .</param>
-/// <param name="strRHS">The second string.</param>
-/// <returns>
-/// TRUE when the strings are not equal, FALSE when they are equal
-/// This function respects SetExact()
-/// </returns>
-function  __StringNotEquals(strLHS as string, strRHS as string) as logic
-	local notEquals := FALSE as logic
-	local lengthRHS as int
-	
-	if RuntimeState.Exact
-		notEquals := strLHS != strRHS
-	elseif strLHS != null .and. strRHS != null
-		lengthRHS := strRHS:Length
-		if lengthRHS == 0
-			notEquals := false        // With SetExact(FALSE) then "aaa" = "" returns TRUE
-		elseif lengthRHS <= strLHS:Length
-			notEquals := String.Compare( strLHS, 0, strRHS, 0, lengthRHS, StringComparison.Ordinal ) != 0
-		endif
-	elseif strLHS == null .and. strRHS == null
-		notEquals := false
-	else
-		notEquals := true
-	endif
-	return notEquals
-
-
-/// <summary>
-/// Remove leading and trailing spaces from a string.
-/// </summary>
-/// <param name="c">The string to be trimmed.</param>
-/// <returns>
-/// The original string without leading and trailing spaces
-/// </returns>
 function AllTrim(c as string) as string
 	if ( c == null )
 		return c
@@ -459,6 +353,48 @@ function CHR(dwChar as dword) as string
 
 
 /// <summary>
+/// Convert an ASCII code to a character value.
+/// </summary>
+/// <param name="dwChar"></param>
+/// <returns>
+/// </returns>
+function ChrA(c as dword) as string
+  LOCAL b   AS BYTE
+  local ret as STRING
+   b := (BYTE)( c & 0xFF )  // VO ignores the high 24 bits
+
+   IF b <= 0x7F
+      ret := Convert.ToChar( b ):ToString()
+   ELSE
+      LOCAL encoding AS Encoding
+
+      encoding := Encoding.Default
+
+      LOCAL chars := Char[]{ 1 } AS Char[]
+      LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
+      LOCAL decoder := encoding:GetDecoder() AS Decoder
+      bytes[1] := b
+      decoder:GetChars( bytes, 0, 1, chars, 0 )
+      ret := chars[1]:ToString()
+
+   ENDIF
+
+   RETURN ret
+
+
+/// <summary>
+/// Convert an ASCII code to a character value.
+/// </summary>
+/// <param name="dwChar"></param>
+/// <returns>
+/// </returns>
+function ChrW(c as dword) as string
+   IF c > 0xFFFF
+      throw Error.ArgumentError( __ENTITY__, "dwChar", "Number too High")
+   ENDIF
+   RETURN Convert.ToChar( (INT) ( c & 0xFFFF ) ):ToString()
+ 
+/// <summary>
 /// Encrypt or decrypt a string.
 /// </summary>
 /// <param name="cSource"></param>
@@ -620,22 +556,6 @@ function Left(c as string, dwLen as dword) as string
 		endif
 	endif
 	return c
-
-
-/// <summary>
-/// Return the length of a string 
-/// </summary>
-/// <param name="c">The string to measure.</param>
-/// <returns>
-/// The length of the string..
-/// </returns>
-function Len(c as string) as dword
-	local len := 0 as dword
-	if c != null
-		len := (dword) c:Length
-	endif
-	return len
-
 
 
 /// <summary>

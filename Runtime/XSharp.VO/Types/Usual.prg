@@ -313,6 +313,7 @@ begin namespace XSharp
 				case UsualType.Array
 					return _refData == null .or. ((Array)_refData):Length == 0
 				case UsualType.CodeBlock
+				case UsualType.Object
 					return _refData == null 
 				case UsualType.Date
 					return _dateValue:IsEmpty

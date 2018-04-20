@@ -847,18 +847,8 @@ function FCreate2(cFile as string) as IntPtr
 /// <returns>
 /// </returns>
 function FCreate(cFile as string ) as IntPtr
-	return FCreate2(cFile, FA_NORMAL)
-
-
-/// <summary>
-/// Create a file or open and truncate an existing file.
-/// </summary>
-/// <param name="cFile"></param>
-/// <param name="dwFileAttr"></param>
-/// <returns>
-/// </returns>
-function FCreate(cFile as string ) as IntPtr
 	return FCreate2(cFile, FC_NORMAL)
+
 
 
 /// <summary>

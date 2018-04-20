@@ -226,7 +226,7 @@ FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
 
 // parameters are 0 based
 FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS DWORD
-   LOCAL ret AS DWORD
+   LOCAL ret := 0 AS DWORD
    IF p != NULL_PSZ
       ret := ((BYTE PTR)p)[dwOffset+1]
    ENDIF

@@ -96,7 +96,10 @@ begin namespace XSharp
 			e:Description := ErrString( EG_EXCEPTION )
 			e:Severity    := ES_ERROR
 			RETURN e
-		
+
+	method @@Throw as void strict
+		// must override in subclass
+		return		
 	end class
 end namespace 
 

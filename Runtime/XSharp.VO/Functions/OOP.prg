@@ -892,7 +892,7 @@ FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY )
 
    LOCAL elements AS INT
    LOCAL uargs    AS USUAL[]
-   LOCAL x        AS INT
+   LOCAL x        AS dword
    
    elements := (INT) args:Length
    uargs    := USUAL[]{ elements }

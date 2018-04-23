@@ -3143,7 +3143,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.AddError(new ParseErrorData(context.Start, ErrorCode.ERR_AbstractHasBody));
                 }
             }
-            if (isAbstract && context.Modifiers?._EXTERN != null)
+            if (isAbstract && context.Modifiers?.EXTERN().Count() > 0)
             {
                 context.AddError(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
             }
@@ -3371,7 +3371,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)
         {
             context.SetSequencePoint(context.end);
-            if (context.Modifiers?._EXTERN != null)
+            if (context.Modifiers?.EXTERN().Count() > 0)
             {
                 if (context.StmtBlk?._Stmts?.Count > 0)
                 {
@@ -3444,7 +3444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitDestructor([NotNull] XP.DestructorContext context)
         {
             context.SetSequencePoint(context.end);
-            if (context.Modifiers?._EXTERN != null)
+            if (context.Modifiers?.EXTERN().Count() > 0)
             {
                 if (context.StmtBlk?._Stmts?.Count > 0)
                 {
@@ -3817,7 +3817,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitOperator_([NotNull] XP.Operator_Context context)
         {
             context.SetSequencePoint(context.end);
-            if (context.Modifiers?._EXTERN != null)
+            if (context.Modifiers?.EXTERN().Count() > 0)
             {
                 if (context.StmtBlk?._Stmts?.Count > 0)
                 {

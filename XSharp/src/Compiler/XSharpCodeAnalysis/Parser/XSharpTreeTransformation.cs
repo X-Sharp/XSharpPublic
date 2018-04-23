@@ -3115,8 +3115,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 context.SetSequencePoint(context.end);
             var isInInterface = context.isInInterface();
-            var isExtern = context.Modifiers?._EXTERN != null;
-            var isAbstract = context.Modifiers?._ABSTRACT != null;
+            var isExtern = context.Modifiers?.EXTERN().Count() > 0;
+            var isAbstract = context.Modifiers?.ABSTRACT().Count() > 0;
             bool HasBody = (context.Auto != null || context.Multi != null);
             if (!HasBody)
             {
@@ -3274,13 +3274,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitPropertyLineAccessor([NotNull] XP.PropertyLineAccessorContext context)
         {
             bool forceBody = false;
+            var property = context.Parent as XP.PropertyContext;
+            var isExtern = property.Modifiers?.EXTERN().Count() > 0;
+            var isAbstract = property.Modifiers?.ABSTRACT().Count() > 0;
             if (context.Key.Type == XP.SET)
             {
                 if (context.ExprList == null)
                 {
-                    var property = context.Parent as XP.PropertyContext;
-                    var isExtern = property.Modifiers?._EXTERN != null;
-                    var isAbstract = property.Modifiers?._ABSTRACT != null;
                     if (!isExtern && !isAbstract && !property.isInInterface() && property._LineAccessors.Count > 1 &&
                         (property._LineAccessors[0].Expr != null || property._LineAccessors[1].Expr != null))
                     {
@@ -3292,6 +3292,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.ExprList.SetSequencePoint();
                 }
             }
+
             if (context.Key.Type == XP.GET && context.Expr != null)
             {
                 context.Expr.SetSequencePoint();
@@ -3309,9 +3310,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ,
                 expressionBody: null,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            if (context.Expr == null && context.ExprList == null)
+            if (context.Expr == null && context.ExprList == null && ! isAbstract)
             {
-                var property = context.Parent as XP.PropertyContext;
                 if (! property.isInInterface())
                 {
                     decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GetSetMustHaveBody));

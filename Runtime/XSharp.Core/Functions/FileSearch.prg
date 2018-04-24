@@ -9,10 +9,10 @@ using System.IO
 using System.Linq
 
 internal static class XSharp.FileSearch
-	static foundEntries	:= List<Object>{} as List<Object>
-	static enumerator   := null as IEnumerator<Object>
-	static currentItem	:= null as Object
-	static isAtEnd		:= true as logic
+	static private foundEntries	:= List<Object>{} as List<Object>
+	static private enumerator   := null as IEnumerator<Object>
+	static private currentItem	:= null as Object
+	static private isAtEnd		:= true as logic
 	const timeFormat := "HH:MM:ss" as string
 	
 	public static method FFCount( filespec as string , attributes as dword ) as dword
@@ -60,7 +60,8 @@ internal static class XSharp.FileSearch
 			endif
 		endif
 		enumerator := foundEntries:GetEnumerator()
-		isAtEnd := enumerator:MoveNext()
+		enumerator:Reset()
+		isAtEnd := !enumerator:MoveNext()
 		if  !isAtEnd
 			currentItem := enumerator:Current
 		endif
@@ -198,17 +199,14 @@ function FNext() as logic
 	/// <returns>
 	/// </returns>
 	FUNCTION FSize() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
+		return XSharp.FileSearch.FSize() 
 	/// <summary>
 	/// Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
 	FUNCTION FTime() AS STRING
-		/// THROW NotImplementedException{}
-	RETURN String.Empty   
+		return XSharp.FileSearch.FTime() 
 
 
 

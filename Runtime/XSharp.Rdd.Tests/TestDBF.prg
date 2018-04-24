@@ -8,16 +8,23 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING Xunit
+USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.RDD.Tests
-
-	/// <summary>
+    
+    /// <summary>
     /// The TestDBF class.
     /// </summary>
-	CLASS TestDBF
- 
-    CONSTRUCTOR()
-         RETURN
-
-	END CLASS
+    CLASS TestDBF
+        
+        [Fact, Trait("Dbf", "Open")];
+            METHOD OpenDBF() AS VOID
+            VAR dbInfo := DbOpenInfo{ "TestDBF.DBF", "TestDBF", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            //myDBF:Open( dbInfo )
+            RETURN
+        
+    END CLASS
 END NAMESPACE // XSharp.RDD.Tests

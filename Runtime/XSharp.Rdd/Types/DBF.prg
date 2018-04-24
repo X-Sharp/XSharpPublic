@@ -69,6 +69,8 @@ BEGIN NAMESPACE XSharp.RDD
             //	METHOD Open(info AS DbOpenInfo) AS LOGIC
         VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
             SELF:_OpenInfo := info
+
+            RETURN TRUE
             
             // Filtering and Scoping 
             //	METHOD ClearFilter() 	AS LOGIC
@@ -359,7 +361,8 @@ BEGIN NAMESPACE XSharp.RDD
             // Matches the DBF layout  
             // Read/Write to/from the Stream with the Buffer 
             // and access individual values using the other fields
-            [FieldOffSet(00)] PUBLIC Buffer     AS BYTE	 []
+            [FieldOffSet(00)] PUBLIC Buffer     AS BYTE[]
+
             [FieldOffSet(00)] PUBLIC Version  	AS DBFVersion	  
             [FieldOffSet(01)] PUBLIC Year		AS BYTE	  
             [FieldOffSet(02)] PUBLIC Month		AS BYTE	  
@@ -379,7 +382,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Dbase (7?) Extends this with
             // [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
             // [FieldOffSet(63)] PUBLIC Reserved6 AS LONG    
-                                                                                    /*
+            /*
             0x02   FoxBASE
             0x03   FoxBASE+/Dbase III plus, no memo
             0x04   dBase 4

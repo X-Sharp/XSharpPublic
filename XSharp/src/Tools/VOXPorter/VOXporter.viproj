@@ -1,6 +1,6 @@
 [General]
 PROJECT = VOXPorter
-IDEVersion = 1.11
+IDEVersion = 1.13
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 465D6C49-8695-4D98-AC32-A781064D6E52
@@ -33,7 +33,7 @@ DefaultPropertiesGuid = DC6FD78A-F117-431E-8C2D-F6667142861F
 
 ; ************** APPLICATION VOXPorter *************
 Application = VOXPorter
-IDEVersion = 1.11
+IDEVersion = 1.13
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -94,7 +94,7 @@ Modified = 0
 Resource = Icon , %AppPath%\Resources\XSharp.ico
 ResourceGuid = 51DF50DF-CDE8-48EB-AF15-E849348BEA52
 Resource = Icon , %AppPath%\Resources\XSharpSm.ico
-ResourceGuid = 420463AB-B5D7-4E36-8569-C36F6BF7490E
+ResourceGuid = 9E143693-9BFF-4AD1-B6FF-390D4BBA124D
 [VOXPorter Native Resources]
 NativeResourceFile = External , %AppPath%\Resources\VersionInfo.rc
 ResourceFileGuid = C37529B1-9E79-466D-9098-8A3E1BFE3212
@@ -156,7 +156,7 @@ ENDApplication = VOXPorter
 
 ; ************** APPLICATION Fab_VO_Entities *************
 Application = Fab_VO_Entities
-IDEVersion = 1.11
+IDEVersion = 1.13
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 

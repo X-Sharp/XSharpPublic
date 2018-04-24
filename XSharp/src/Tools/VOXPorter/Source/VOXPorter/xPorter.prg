@@ -207,32 +207,6 @@ CLASS VOFolder
 	RETURN _scFolder
 END CLASS
 
-DEFINE VOSDK_GUID_Solution := 			"B5F3B9DE-B1DA-4FA4-B575-3CF4DFCB546B"
-
-DEFINE VOSDK_GUID_SystemLibrary := 		"F11E0A8B-2311-463C-857B-9AA2626529B8"
-DEFINE VOSDK_GUID_SystemClasses := 		"AAD3275E-A1E1-4916-A605-BC3F1415CE51"
-DEFINE VOSDK_GUID_Win32ApiLibrary := 	"F852B077-7A70-47A1-85AF-5C0AD0854B06"
-DEFINE VOSDK_GUID_ConsoleClasses := 	"AB0D6395-4D82-4458-99B9-57AA169BA293"
-DEFINE VOSDK_GUID_RddClasses := 		"62BCB545-60E5-442F-89A6-1DB4A5474787"
-DEFINE VOSDK_GUID_SqlClasses := 		"24F1B2B9-95BC-4612-BA34-C5CCFBE7D508"
-DEFINE VOSDK_GUID_ReportClasses := 		"2F417789-7199-43BD-8D86-546331B6AA11"
-DEFINE VOSDK_GUID_InternetClasses := 	"C9CCB7F9-F719-48FC-BE31-E3F37840C6A9"
-DEFINE VOSDK_GUID_GuiClasses := 		"E1E6E9DA-5CC0-4499-8AF9-C6650CF3AC6A"
-
-ENUM VOSDK_Library
-	MEMBER None
-	MEMBER SystemLibrary
-	MEMBER Win32ApiLibrary
-	MEMBER SystemClasses
-	MEMBER ConsoleClasses
-	MEMBER RddClasses
-	MEMBER SqlClasses
-	MEMBER ReportClasses
-	MEMBER InternetClasses
-	MEMBER GuiClasses
-END ENUM
-
-
 STRUCTURE xPorterOptions
 	EXPORT RemoveClassClause AS LOGIC
 //	EXPORT ChangePascalToStrict AS LOGIC
@@ -326,32 +300,6 @@ CLASS xPorter
 			oProject:xPort(cOutputFolder)
 		ENDIF
 	RETURN
-
-	STATIC METHOD xPort_SDK_Defines(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING , cAppName AS STRING) AS VOID
-		xPorter.Reset()
-		
-		Options:ExportOnlyDefines := TRUE
-		Options:IgnoreDuplicateDefines := TRUE
-		Options:DontGenerateEmptyFiles := TRUE
-		
-		LOCAL oProject AS VOProjectDescriptor
-		oProject := VOProjectDescriptor{cSolutionName , NewGuid()}
-		LOCAL oApp AS ApplicationDescriptor
-		oApp := oProject:AddApplication(cAppName)
-		oApp:LoadFromFolder(cSourceFolder + "\SysLib")
-		oApp:LoadFromFolder(cSourceFolder + "\SysClass")
-		oApp:LoadFromFolder(cSourceFolder + "\Win32")
-		oApp:LoadFromFolder(cSourceFolder + "\Console")
-		oApp:LoadFromFolder(cSourceFolder + "\GUi")
-		oApp:LoadFromFolder(cSourceFolder + "\Internet")
-		oApp:LoadFromFolder(cSourceFolder + "\Rdd")
-		oApp:LoadFromFolder(cSourceFolder + "\Report")
-		oApp:LoadFromFolder(cSourceFolder + "\SQL")
-		
-		IF oApp:Loaded
-			oProject:xPort(cOutputFolder)
-		ENDIF
-	RETURN
 		
 	STATIC METHOD xPort_AppFromAef(cAefFile AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING , cAppName AS STRING) AS VOID
 		xPorter.Reset()		
@@ -391,89 +339,6 @@ CLASS xPorter
 		oProject:xPort(cOutputFolder)
 	RETURN
 
-	STATIC METHOD xPort_VOSDK(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING) AS VOID
-		xPorter.Reset()
-		xPorter.Options:IgnoreDuplicateDefines := TRUE
-		xPorter.Options:AdjustCallbackFunctions := TRUE
-
-		LOCAL oProject AS VOProjectDescriptor
-//		oProject := VOProjectDescriptor{"VOSDK_xported" , VOSDK_GUID_Solution}
-		oProject := VOProjectDescriptor{cSolutionName , VOSDK_GUID_Solution}
-
-		LOCAL aSDK AS Dictionary<VOSDK_Library , ApplicationDescriptor>
-		aSDK := Create_VOSDK_Structure(oProject)
-
-		FOREACH IMPLIED oPair IN aSDK
-			oProject:AddApplication(oPair:Value)
-		NEXT
-
-		aSDK[VOSDK_Library.SystemLibrary]:LoadFromFolder(cSourceFolder + "\SysLib")
-		aSDK[VOSDK_Library.Win32ApiLibrary]:LoadFromFolder(cSourceFolder + "\Win32")
-		aSDK[VOSDK_Library.SystemClasses]:LoadFromFolder(cSourceFolder + "\SysClass")
-		aSDK[VOSDK_Library.ConsoleClasses]:LoadFromFolder(cSourceFolder + "\Console")
-		aSDK[VOSDK_Library.RddClasses]:LoadFromFolder(cSourceFolder + "\Rdd")
-		aSDK[VOSDK_Library.SqlClasses]:LoadFromFolder(cSourceFolder + "\Sql")
-		aSDK[VOSDK_Library.InternetClasses]:LoadFromFolder(cSourceFolder + "\Internet")
-		aSDK[VOSDK_Library.GuiClasses]:LoadFromFolder(cSourceFolder + "\GUI")
-//		aSDK[VOSDK_Library.ReportClasses]:LoadFromFolder(cSourceFolder + "\Report")
-		
-		oProject:xPort(cOutputFolder)
-	RETURN
-
-	STATIC METHOD Create_VOSDK_Structure(oProject AS VOProjectDescriptor) AS Dictionary<VOSDK_Library , ApplicationDescriptor>
-		LOCAL aSDK AS Dictionary<VOSDK_Library , ApplicationDescriptor>
-		aSDK := Dictionary<VOSDK_Library , ApplicationDescriptor>{}
-
-		aSDK[VOSDK_Library.SystemLibrary] := ApplicationDescriptor{"SystemLibrary" , VOSDK_GUID_SystemLibrary , VOSDK_Library.SystemLibrary , oProject}
-
-		aSDK[VOSDK_Library.Win32ApiLibrary] := ApplicationDescriptor{"Win32ApiLibrary" , VOSDK_GUID_Win32ApiLibrary , VOSDK_Library.Win32ApiLibrary , oProject}
-		aSDK[VOSDK_Library.Win32ApiLibrary] :AddReference( aSDK[VOSDK_Library.SystemLibrary] )
-
-		aSDK[VOSDK_Library.SystemClasses] := ApplicationDescriptor{"SystemClasses" , VOSDK_GUID_SystemClasses , VOSDK_Library.SystemClasses , oProject}
-		aSDK[VOSDK_Library.SystemClasses] :AddReference( aSDK[VOSDK_Library.SystemLibrary] )
-		aSDK[VOSDK_Library.SystemClasses] :AddReference( aSDK[VOSDK_Library.Win32ApiLibrary] )
-
-		aSDK[VOSDK_Library.ConsoleClasses] := ApplicationDescriptor{"ConsoleClasses" , VOSDK_GUID_ConsoleClasses , VOSDK_Library.ConsoleClasses , oProject}
-		aSDK[VOSDK_Library.ConsoleClasses] :AddReference( aSDK[VOSDK_Library.SystemLibrary] )
-		aSDK[VOSDK_Library.ConsoleClasses] :AddReference( aSDK[VOSDK_Library.Win32ApiLibrary] )
-
-		aSDK[VOSDK_Library.RddClasses] := ApplicationDescriptor{"RddClasses" , VOSDK_GUID_RddClasses , VOSDK_Library.RddClasses , oProject}
-		aSDK[VOSDK_Library.RddClasses] :AddReference( aSDK[VOSDK_Library.SystemLibrary] )
-		aSDK[VOSDK_Library.RddClasses] :AddReference( aSDK[VOSDK_Library.SystemClasses] )
-
-		aSDK[VOSDK_Library.SqlClasses] := ApplicationDescriptor{"SqlClasses" , VOSDK_GUID_SqlClasses , VOSDK_Library.SqlClasses , oProject}
-		aSDK[VOSDK_Library.SqlClasses] :AddReference( aSDK[VOSDK_Library.SystemLibrary] )
-		aSDK[VOSDK_Library.SqlClasses] :AddReference( aSDK[VOSDK_Library.SystemClasses] )
-		aSDK[VOSDK_Library.SqlClasses] :AddReference( aSDK[VOSDK_Library.Win32ApiLibrary] )
-
-		aSDK[VOSDK_Library.InternetClasses] := ApplicationDescriptor{"InternetClasses" , VOSDK_GUID_InternetClasses , VOSDK_Library.InternetClasses , oProject}
-		aSDK[VOSDK_Library.InternetClasses] :AddReference( aSDK[VOSDK_Library.SystemLibrary] )
-		aSDK[VOSDK_Library.InternetClasses] :AddReference( aSDK[VOSDK_Library.Win32ApiLibrary] )
-		
-		aSDK[VOSDK_Library.GuiClasses] := ApplicationDescriptor{"GuiClasses" , VOSDK_GUID_GuiClasses , VOSDK_Library.GuiClasses , oProject}
-		aSDK[VOSDK_Library.GuiClasses] :AddReference( aSDK[VOSDK_Library.SystemLibrary] )
-		aSDK[VOSDK_Library.GuiClasses] :AddReference( aSDK[VOSDK_Library.SystemClasses] )
-		aSDK[VOSDK_Library.GuiClasses] :AddReference( aSDK[VOSDK_Library.Win32ApiLibrary] )
-
-		aSDK[VOSDK_Library.ReportClasses] := ApplicationDescriptor{"ReportClasses" , VOSDK_GUID_ReportClasses , VOSDK_Library.ReportClasses , oProject}
-		aSDK[VOSDK_Library.ReportClasses] :AddReference( aSDK[VOSDK_Library.SystemLibrary] )
-		aSDK[VOSDK_Library.ReportClasses] :AddReference( aSDK[VOSDK_Library.SystemClasses] )
-		aSDK[VOSDK_Library.ReportClasses] :AddReference( aSDK[VOSDK_Library.Win32ApiLibrary] )
-		aSDK[VOSDK_Library.ReportClasses] :AddReference( aSDK[VOSDK_Library.GuiClasses] )
-		
-	RETURN aSDK
-
-	STATIC PROTECT SystemLibrary_OnlyDefinesFromModules := <STRING>{;
-	"ATRANSL","ERRORGEN","ERRORSYS","LANGUAGE","MACRO","MEMORY","MEMSAVE","RDD","RDDAPI",;
-	"TRANSFRM","USUAL","UTIL","SETINTL";
-	} AS STRING[]
-
-	STATIC PROTECT GUIClasses_IgnoreDefines := <STRING>{;
-	"WM_THEMECHANGED","TB_GETMAXSIZE","RB_MAXIMIZEBAND","GCL_HBRBACKGROUND","USERCLASSTYPE_APPNAME",;
-	"USERCLASSTYPE_SHORT","SB_SETICON","SBT_TOOLTIPS","TO_SIMPLELINEBREAK","TO_ADVANCEDTYPOGRAPHY",;
-	"EM_SETTYPOGRAPHYOPTIONS","","","","","";
-	} AS STRING[]
-
 	STATIC METHOD AllowEntity(oEntity AS EntityObject , oModule AS ModuleDescriptor) AS LOGIC
 		IF xPorter.Options:IgnoreDuplicateDefines
 			IF oEntity:eType == EntityType._Define
@@ -485,71 +350,10 @@ CLASS xPorter
 				END IF
 			END IF
 		END IF
-		
-		IF oModule:Application:VOSDK == VOSDK_Library.SystemLibrary
-			IF oEntity:cName == "ConvertFromCodePageToCodePage"
-				RETURN TRUE
-			END IF
-			IF oEntity:eType != EntityType._Define
-				RETURN FALSE
-			END IF
-/*			LOCAL cModuleUpper AS STRING
-			cModuleUpper := oModule:Name:ToUpper()
-			IF cModuleUpper == "RDDAPI" .or. cModuleUpper == "ERRORDAT" .or. ;
-				cModuleUpper == "STDLIB"
-				IF oEntity:eType != EntityType._Define
-					RETURN FALSE
-				END IF
-			END IF
-			IF System.Array.IndexOf(SystemLibrary_OnlyDefinesFromModules , cModuleUpper) != -1
-				IF oEntity:eType != EntityType._Define .and. oEntity:eType != EntityType._Structure .and. oEntity:eType != EntityType._VOStruct
-					RETURN FALSE
-				END IF
-			END IF
-			LOCAL cUpper AS STRING
-			cUpper := oEntity:cName:ToUpper()
-			IF cUpper == "_CODEBLOCK" .or. cUpper == "VOENTERCRITICALSECTION" .or. ;
-				cUpper == "VOLEAVECRITICALSECTION" .or. cUpper == "_RDDFUNCS" .or. cUpper == "_WORKAREASTATUS" .or. ;
-				cUpper == "_DBRELINFO" .or. cUpper == "_DBORDERCONDINFO" .or. cUpper == "_ORDERSTATUS" .or. ;
-				cUpper == "_DBORDERCREATEINFO" .or. cUpper == "_FIELD" .or. cUpper == "_DBOPENINFO" .or. ;
-				cUpper == "_FIELDLIST" .or. cUpper == "_DBORDERINFO" .or. cUpper == "_FIELDTAB" .or. ;
-				cUpper == "_WINMSG" .or. cUpper == "_WINPOINT" .or. cUpper == "_WINFILETIME" .or. ;
-				cUpper == "_RDDLIST" .or. cUpper == "_JOINLIST" .or. cUpper == "_FIELDNAMES" .or. ;
-				cUpper == "_DBSORTINFO" .or. cUpper == "_DBTRANSINFO" .or. cUpper == "_AREA"
-				RETURN FALSE
-			END IF*/
-		END IF
-		
-		IF oEntity:eType == EntityType._Define .and. oModule:Application:VOSDK == VOSDK_Library.SystemLibrary
-			IF System.Array.IndexOf(;
-				<STRING>{"CRLF","VOVER_FILE_VERSION","VOVER_PROD_VERSION","RDD_FUNCCOUNT",;
-						"NULL","NULL_PTR","NULL_ARRAY","NULL_OBJECT","NULL_DATE",;
-						"NULL_CODEBLOCK","NULL_STRING","NULL_PSZ","NULL_SYMBOL"} , oEntity:cName:ToUpper()) != -1
-				RETURN FALSE
-			END IF
-		END IF
-		IF oEntity:eType == EntityType._Define .and. oModule:Application:VOSDK == VOSDK_Library.GuiClasses
-			IF System.Array.IndexOf(GUIClasses_IgnoreDefines , oEntity:cName:ToUpper()) != -1
-				RETURN FALSE
-			END IF
-		END IF
-		
 	RETURN TRUE
 
 	STATIC METHOD AllowModule(oModule AS ModuleDescriptor) AS LOGIC
-		// duplicate with FuncsDeCoder.prg in the latest VO28SDK
-/*		IF oModule:Name == "Funcs Coder" .and. oModule:Application:VOSDK == VOSDK_Library.InternetClasses
-			RETURN FALSE
-		END IF*/
-		IF oModule:Application:VOSDK == VOSDK_Library.SystemLibrary
-			LOCAL cModuleUpper AS STRING
-			cModuleUpper := oModule:Name:ToUpper()
-			IF cModuleUpper == "ITEMAPI" .or. cModuleUpper == "ERRORSYS" .or. ;
-				cModuleUpper == "MEMORY" .or. cModuleUpper == "RUNTIME" .or. ;
-				cModuleUpper == "TRANSFRM"
-				RETURN FALSE
-			END IF
-		END IF
+		// There were SDK related checks here
 	RETURN TRUE
 	
 		
@@ -729,7 +533,6 @@ END ENUM
 CLASS ApplicationDescriptor
 	PROTECT _cName AS STRING
 	PROTECT _cGuid AS STRING
-	PROTECT _eVOSDK AS VOSDK_Library
 //	PROTECT _cAppFile_VS AS STRING
 //	PROTECT _cAppFile_XIDE AS STRING
 	PROTECT _lLoaded AS LOGIC
@@ -750,12 +553,11 @@ CLASS ApplicationDescriptor
 	PROTECT _oProject AS VOProjectDescriptor
 	
 	CONSTRUCTOR(cName AS STRING , oProject AS VOProjectDescriptor)
-		SELF(cName , NewGuid() , VOSDK_Library.None , oProject)
+		SELF(cName , NewGuid() , oProject)
 	RETURN
-	CONSTRUCTOR(cName AS STRING , cGuid AS STRING , eVOSDK AS VOSDK_Library , oProject AS VOProjectDescriptor)
+	CONSTRUCTOR(cName AS STRING , cGuid AS STRING , oProject AS VOProjectDescriptor)
 		SELF:_cName := cName
 		SELF:_cGuid := cGuid
-		SELF:_eVOSDK := eVOSDK
 		SELF:_aModules := List<ModuleDescriptor>{}
 		SELF:_aReferences := List<ApplicationDescriptor>{}
 		SELF:_aGACReferences := List<STRING>{}
@@ -780,7 +582,6 @@ CLASS ApplicationDescriptor
 	
 	PROPERTY Name AS STRING GET SELF:_cName
 	PROPERTY PathValidName AS STRING GET MakePathLegal( SELF:_cName )
-	PROPERTY VOSDK AS VOSDK_Library GET SELF:_eVOSDK
 	PROPERTY Guid AS STRING GET SELF:_cGuid
 	PROPERTY Loaded AS LOGIC GET SELF:_lLoaded
 	PROPERTY Saved AS LOGIC GET SELF:_lSaved
@@ -1022,7 +823,7 @@ CLASS ApplicationDescriptor
 	METHOD AddModule(cName AS STRING , aCode AS IEnumerable) AS ModuleDescriptor
 		LOCAL oModule AS ModuleDescriptor
 		DO WHILE SELF:ContainsModuleName(cName)
-			cName := cName + "_" // ahppens when creating the SDK_Defines library, where modules from all libraries are added into a single one
+			cName := cName + "_" // happens when creating the SDK_Defines library, where modules from all libraries are added into a single one
 		END DO
 		oModule := ModuleDescriptor{cName , SELF , aCode}
 		SELF:_aModules:Add(oModule)
@@ -1065,14 +866,6 @@ CLASS ApplicationDescriptor
 			LOCAL oCode AS OutputCode
 			oCode := oModule:Generate()
 
-			LOCAL lExcludeModule := FALSE AS LOGIC
-			lExcludeModule := SELF:VOSDK == VOSDK_Library.GuiClasses .and. ;
-								(oModule:Name == "OleControl" .or. oModule:Name == "OleObject")
-			IF lExcludeModule
-				oCode:InsertLine("#ifdef __DONOTINCLUDE__")
-				oCode:AddLine("#endif")
-			END IF
-			
 			IF oModule:Generated
 				xPorter.Message("  Generating module :" , oModule:Name)
 				File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.Default)
@@ -1302,9 +1095,9 @@ CLASS ApplicationDescriptor
 						cFileName := SELF:Project:Solution_SDKDefines_Filename
 					END IF
 					IF lXide
-						#warning XIDE 1.09 did not support relative <browse> references
-//						oOutput:WriteLine(String.Format("ReferenceBrowse = {0},1,1" , cFileName:Replace(SELF:Project:ProjectFolder , "%ProjectPath%") ) )
-						oOutput:WriteLine(String.Format("ReferenceBrowse = {0},1,1" , cFileName ) )
+//						#warning XIDE 1.09 did not support relative <browse> references
+						oOutput:WriteLine(String.Format("ReferenceBrowse = {0},1,1" , cFileName:Replace(SELF:Project:ProjectFolder , "%ProjectPath%") ) )
+//						oOutput:WriteLine(String.Format("ReferenceBrowse = {0},1,1" , cFileName ) )
 					ELSE
 						LOCAL cName AS STRING
 						cName := FileInfo{cFileName}:Name
@@ -1572,12 +1365,6 @@ CLASS ModuleDescriptor
 		
 		FOREACH oEntity AS EntityDescriptor IN SELF:_aEntities
 			
-			IF SELF:Application:VOSDK == VOSDK_Library.SystemLibrary .and. oEntity:Name == "ConvertFromCodePageToCodePage"
-				oConvertFromCodePageToCodePage := oEntity
-				// copy it to Internet classes
-				LOOP
-			END IF
-			
 			DO CASE
 			CASE oEntity:IsClassOrMember
 				NOP
@@ -1604,13 +1391,6 @@ CLASS ModuleDescriptor
 		
 		oCode := OutputCode{}
 
-/*		DO CASE
-		CASE SELF:Application:VOSDK == VOSDK_Library.SystemLibrary
-			oCode:AddLine("GLOBAL Dummy1 AS INT")
-			RETURN oCode
-		END CASE*/
-		
-		
 		IF xPorter.Options:ExportOnlyDefines
 			oCode:Combine(oDefines)
 		ELSE
@@ -1627,16 +1407,6 @@ CLASS ModuleDescriptor
 			oCode:Combine(oRest)
 		END IF
 
-		IF .not. xPorter.Options:ExportOnlyDefines
-			IF SELF:Application:VOSDK == VOSDK_Library.InternetClasses .and. SELF:Name:ToUpper() == "FUNCS"
-				IF oConvertFromCodePageToCodePage != NULL
-					oCode:Combine(oConvertFromCodePageToCodePage:Generate())
-				END IF
-				oCode:AddLine("INTERNAL PROCEDURE WinSockExit_Handler(o AS OBJECT, e AS EventArgs)")
-				oCode:AddLine("WinSockExit()")
-			END IF
-		END IF
-		
 		IF .not. (xPorter.Options:DontGenerateEmptyFiles .and. oCode:IsEmpty() .and. .not. SELF:HasResources())
 			SELF:_lGenerated := TRUE
 		ENDIF
@@ -1862,117 +1632,14 @@ CLASS EntityDescriptor
 				LOOP
 			END IF
 
-			DO CASE
-			CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.Win32ApiLibrary
-				IF xPorter.Options:ExportOnlyDefines .and. cLine:ToUpper():Contains("_WINNMDATETIMESTRING")
-					EXIT
-				END IF
-				DO CASE
-				CASE SELF:_cName == "FormatMessage"
-					cLine := cLine:Replace("lpBuffer AS PSZ" , "lpBuffer AS PTR")
-				CASE cLine:Contains("_DLL FUNC LoadLibrary(")
-					LOCAL cTemp AS STRING
-					cTemp := cLine
-					cTemp := cTemp:Replace("LoadLibrary(" , "LoadLibraryW(")
-					cTemp := cTemp:Replace("PSZ" , "STRING")
-					cTemp := cTemp:Replace(".LoadLibraryA" , ".LoadLibraryW")
-					oCode:AddLine(cTemp)
-				END CASE
-			CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.RddClasses
-				IF cLine:Contains("MemFree( RDDLIST )") .or. cLine:Contains("MemFree( pJoinList )")
-//					oCode:AddLine("#ifndef __VULCAN__")
-					oCode:AddLine("#ifdef __REMOVED__")
-					lAddEndif := TRUE
-				END IF
-			CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.InternetClasses
-				DO CASE
-				CASE SELF:_cName == "__ConnectThread"
-					DO CASE
-					CASE cLine:Contains("phT AS PTR")
-						cLine := cLine:Replace("PTR" , "System.Threading.Thread")
-						oCode:AddLine(cLine)
-						LOOP
-					CASE cLine:Contains("CloseHandle")
-						LOOP
-					CASE cLine:Contains("CreateVOThread")
-						oCode:AddLine("   phT := System.Threading.Thread{System.Threading.ParameterizedThreadStart{__ConnectFunc }}")
-						oCode:AddLine("   phT:Start(@condata)")
-						oCode:AddLine("   phT:Join(nWait)")
-						LOOP
-					CASE cLine:Contains("WaitForSingleObject")
-						LOOP
-					END CASE
-				CASE SELF:_cName == "__ConnectFunc"
-					DO CASE
-					CASE cLine:Contains("__ConnectFunc")
-						cLine := cLine:Replace("pData AS _THREAD_DATA" , "oData AS OBJECT")
-						oCode:AddLine(cLine)
-						oCode:AddLine("LOCAL pData AS _THREAD_DATA")
-						oCode:AddLine("pData := (_THREAD_DATA PTR)oData")
-						LOOP
-					CASE cLine:Contains("@pData:ServerAddress")
-						cLine := cLine:Replace("@" , "(_WINsockaddr PTR) @")
-						oCode:AddLine(cLine)
-						LOOP
-					CASE cLine:Contains("ExitVOThread")
-						LOOP
-					END CASE
-				CASE SELF:_cName == "getpeername" .or. SELF:_cName == "getsockname"
-					DO CASE
-					CASE cLine:Contains("LOCAL sin_addr") .or. cLine:Contains("sin_addr:=") .or. cLine:Contains("sin_addr :=")
-						LOOP
-					CASE cLine:Contains("inet_ntoa(sin_addr)")
-						cLine := cLine:Replace("sin_addr" , "sin.sin_addr")
-					END CASE
-				CASE SELF:_cName == "LibInit"
-					IF cLine:Contains("_RegisterExit")
-						cLine := "AppDomain.CurrentDomain:ProcessExit += EventHandler{WinSockExit_Handler}"
-					END IF
-				END CASE
-			CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.GuiClasses
-				DO CASE
-				CASE SELF:Name == "Font" .and. SELF:_cClass == "TextControl" .and. (SELF:Type == EntityType._Access .or. SELF:Type == EntityType._Assign)
-					cLine := "// " + cLine
-				CASE cLine:Contains("@DefWindowProc()")
-					cLine := "// " + cLine
-					oCode:AddLine(e"LOCAL hDll := LoadLibraryW( \"user32.dll\" ) AS PTR")
-					oCode:AddLine(e"wc:lpfnWndProc := GetProcAddress( hDll, String2Psz( \"DefWindowProcA\" ) )")
-					oCode:AddLine(e"FreeLibrary( hDll )")
-				CASE cLine:Contains("OBJECT(_CAST, dwCookie)")
-					cLine := "// " + cLine
-					oCode:AddLine(e"LOCAL gch := System.Runtime.InteropServices.GCHandle.FromIntPtr( (IntPtr) dwCookie ) AS System.Runtime.InteropServices.GCHandle")
-					oCode:AddLine(e"oRTFEdit := (RichEdit) gch:Target")
-				CASE cLine:Contains("oEdit := OleObject")
-					LOCAL nAt := cLine:IndexOf("OleObject") AS INT
-					cLine := cLine:Substring(0 , nAt) + "NULL_OBJECT // " + cLine:Substring(nAt)
-				CASE cLine:Contains("_VOOLERegisterAutomationObject") .or. cLine:Contains("_VOOLEUnRegisterAutomationObject")
-					cLine := "// " + cLine
-				CASE cLine:Contains("Memory(kMemoryType)")
-					cLine := "// " + cLine
-				END CASE
-			END CASE
-
 			IF oLine:oEntity != NULL
 				lCommentEntity := FALSE
 				oCurrentEntity := oLine:oEntity
 			ENDIF
 
-			IF SELF:_oModule:Application:VOSDK == VOSDK_Library.RddClasses
-				IF oLine:oEntity != NULL .and. oLine:oEntity:cName == "OrderKeyNo" .and. ;
-					(oLine:oEntity:eType == EntityType._Access .or. oLine:oEntity:eType == EntityType._Assign)
-					oCode:AddLine("// xPorter: conflict with METHOD OrderKeyNo()")
-					lCommentEntity := TRUE
-				END IF
-				IF oCurrentEntity != NULL .and. oCurrentEntity:cName == "__DBSSeek" .and. ;
-					oCurrentEntity:eType == EntityType._Function
-					IF cLine:Contains("dbsci")
-						LOOP
-					END IF
-				END IF
-			ENDIF
-
 			IF xPorter.Options:RemoveDeclareMethod .and. oCurrentEntity != NULL .and. ;
 				oCurrentEntity:eType == EntityType._Class
+				#warning DECLAREs recognition needs to be improved as well
 				IF cLine:ToUpper():Contains("DECLARE METHOD") .or. ;
 					cLine:ToUpper():Contains("DECLARE ACCESS") .or. ;
 					cLine:ToUpper():Contains("DECLARE ASSIGN")
@@ -1995,6 +1662,7 @@ CLASS EntityDescriptor
 				END IF
 			ENDIF*/
 
+			#warning Ouch, Init/Axit/Super tokens are still specified like that? Need changing ASAP!
 			IF xPorter.Options:ChangeInitAxitToCtorDtor
 				IF oLine:oEntity == NULL
 					LOCAL cUpper AS STRING
@@ -2042,35 +1710,6 @@ CLASS EntityDescriptor
 			END IF
 		NEXT
 		
-		IF SELF:_oModule:Application:VOSDK == VOSDK_Library.Win32ApiLibrary
-			LOCAL cLine AS STRING
-			DO CASE
-			CASE SELF:_cName == "getsockname"
-				FOREACH oLine AS LineObject IN SELF:_aLines
-					cLine := oLine:LineText
-					cLine := cLine:Replace("_winsockaddr" , "_winsockaddr_in")
-					oCode:AddLine(cLine)
-				NEXT
-			CASE SELF:_cName == "getsockopt"
-				FOREACH oLine AS LineObject IN SELF:_aLines
-					cLine := oLine:LineText
-					cLine := cLine:Replace("PSZ" , "INT PTR")
-					oCode:AddLine(cLine)
-				NEXT
-			CASE SELF:_cName == "setsockopt"
-				FOREACH oLine AS LineObject IN SELF:_aLines
-					cLine := oLine:LineText
-					cLine := cLine:Replace("PSZ" , "INT PTR")
-					oCode:AddLine(cLine)
-				NEXT
-				FOREACH oLine AS LineObject IN SELF:_aLines
-					cLine := oLine:LineText
-					cLine := cLine:Replace("PSZ" , "_winlinger PTR")
-					oCode:AddLine(cLine)
-				NEXT
-			END CASE
-		END IF
-		
 	RETURN oCode
 
 	PROTECTED METHOD ConvertLine(oLine AS LineObject , cCallBack REF STRING) AS STRING
@@ -2078,13 +1717,9 @@ CLASS EntityDescriptor
 		LOCAL cLine , cLineUpper AS STRING
 		LOCAL sLine AS System.Text.StringBuilder
 
-		LOCAL lMustParse := FALSE AS LOGIC
-		
 		cCallBack := NULL
 		
 		cLine := oLine:LineText
-//		cLine := cline:Replace(e"'\"'" , e"e\"\\\"\"")
-//		cLine := cline:Replace(" _code " , " @@_code ")
 		cLineUpper := cLine:ToUpper():Trim()
 		
 		IF cLineUpper:StartsWith("VTRACE") .or. cLineUpper:StartsWith("VMETHOD")
@@ -2092,247 +1727,131 @@ CLASS EntityDescriptor
 			RETURN cLine
 		END IF
 		
-		DO CASE
-		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.None
-			NOP
-		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.SystemLibrary
-			DO CASE
-			CASE cLineUpper:Contains("INTERNET_ERROR_BASE")
-//				cLine := "// " + cLine
-				RETURN cLine
-			END CASE
-		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.InternetClasses
-			IF oLine:oEntity != NULL .and. oLine:oEntity:eType == EntityType._Define .and. ;
-				(cLineUpper:Contains("WSABASEERR") .or. oLine:oEntity:cName == "WSANO_ADDRESS" .or. ;
-				oLine:oEntity:cName == "INVALID_SOCKET" .or. oLine:oEntity:cName == "SD_BOTH" .or. ;
-				oLine:oEntity:cName == "SD_RECEIVE" .or. oLine:oEntity:cName == "SD_SEND")
-//				cLine := "// " + cLine
-				RETURN cLine
-			END IF
-		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.SystemClasses
-			NOP
-		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.Win32ApiLibrary
-			DO CASE
-			CASE cLineUpper:Contains("MEMBER _WINNMDATETIMESTRING")
-				cLine := cLine:Replace("MEMBER" , "VOSTRUCT")
-				RETURN cLine
-			CASE cLineUpper:Contains("DEFEREDFILLIN PTR")
-				cLine := cLine:Replace("DeferedFillIn " , "")
-				RETURN cLine
-			CASE cLineUpper:Contains("LPSERVICE_MAIN_FUNCTION PTR")
-				cLine := cLine:Replace("LPSERVICE_MAIN_FUNCTION " , "")
-				RETURN cLine
-			CASE cLineUpper:Contains("AS WORKITEMFUNC")
-				cLine := cLine:Replace("WorkItemFunc", "PTR")
-				RETURN cLine
-			CASE cLineUpper:Contains("AS WAITORTIMERCALLBACK")
-				cLine := cLine:Replace("WaitOrTimerCallback", "PTR")
-				RETURN cLine
-			CASE cLineUpper:Contains("PCALL(HFUNC")
-				cLine := cLine:Replace("PCALL(" , "PCallNative<INT>(")
-				RETURN cLine
-			CASE cLineUpper:EndsWith("AS DWOR")
-				cLine := cLine + "D"
-				RETURN cLine
-			END CASE
-		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.SqlClasses
-			DO CASE
-				CASE cLineUpper:Contains("PCALL( PFUNC,")
-				cLine := cLine:Replace("PCALL(" , "PCallNative<SHORT>(")
-				RETURN cLine
-			CASE cLineUpper:Contains("ODATA:LONGVALUE := BUFFER(")
-				cLine := cLine:Replace("Buffer" , "Space")
-				RETURN cLine
-			END CASE
-		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.RddClasses
-			DO CASE
-			CASE cLineUpper:Contains("PJOINLIST.UIDESTSEL := DWTO")
-				cLine := cLine:Replace('.' , ':')
-				RETURN cLine
-			CASE cLineUpper:Contains("PSZRELTEXT") .or. cLineUpper:Contains("PSZSTUFF")
-				DO CASE
-				CASE cLineUpper:Contains("LOCAL")
-					cLine := cLine:Replace("pszStuff" , "cStuff")
-					cLine := cLine:Replace("pszRelText" , "cRelText")
-					cLine := cLine:Replace("PSZ" , "STRING")
-				CASE cLineUpper:Contains("VODBRELATION(") .or. cLineUpper:Contains("VODBORDSETFOCUS(")
-					cLine := cLine:Replace("@pszRelText" , "REF cRelText")
-					cLine := cLine:Replace("@pszStuff" , "REF cStuff")
-				CASE cLine:Contains("cRelation := Psz2String( pszRelText )")
-					cLine := cLine:Replace("Psz2String( pszRelText )" , "cRelText")
-				END CASE
-				RETURN cLine
-			CASE cLineUpper:Contains("_DLL") .and. cLineUpper:Contains("VO28RUN")
-				cLine := "// " + cLine
-				RETURN cLine
-			END CASE
-		CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.GuiClasses
-			DO CASE
-			CASE cLine:Contains("_VOOLETranslateMsg(@msg)")
-				cLine := cLine:Replace("_VOOLETranslateMsg(@msg)" , "FALSE // _VOOLETranslateMsg(@msg)")
-			END CASE
-		END CASE
-
-		lMustParse := TRUE
-		
-		IF lMustParse
-			IF xPorter.Options:RemoveExportLocalClause .and. oLine:HasExportLocalClause
-				IF oLine:oMoreInfo:ExportLocalClause:Begins != 0
-					IF oLine:oMoreInfo:ExportLocalClause:Ends != 0
-						cLine := cLine:Substring(0 , oLine:oMoreInfo:ExportLocalClause:Begins - 1) + cLine:Substring(oLine:oMoreInfo:ExportLocalClause:Ends - 1)
-					END IF
+		IF xPorter.Options:RemoveExportLocalClause .and. oLine:HasExportLocalClause
+			IF oLine:oMoreInfo:ExportLocalClause:Begins != 0
+				IF oLine:oMoreInfo:ExportLocalClause:Ends != 0
+					cLine := cLine:Substring(0 , oLine:oMoreInfo:ExportLocalClause:Begins - 1) + cLine:Substring(oLine:oMoreInfo:ExportLocalClause:Ends - 1)
 				END IF
 			END IF
-			IF xPorter.Options:RemoveClassClause .and. oLine:HasClassClause
-				IF oLine:oMoreInfo:ClassClause:Begins != 0
-					IF oLine:oMoreInfo:ClassClause:Ends != 0
-						cLine := cLine:Substring(0 , oLine:oMoreInfo:ClassClause:Begins - 1) + cLine:Substring(oLine:oMoreInfo:ClassClause:Ends - 1)
-					ELSE
-						cLine := cLine:Substring(0 , oLine:oMoreInfo:ClassClause:Begins - 1)
-					END IF
-				ELSE
-					cLine := cLine:Substring(oLine:oMoreInfo:ClassClause:Ends - 1)
-				END IF
-			END IF
-/*			IF xPorter.Options:ChangePascalToStrict .and. oLine:HasPascalClause
-				cLine := cLine:Substring(0 , oLine:oMoreInfo:PascalClause:Begins - 1) + "STRICT" + cLine:Substring(oLine:oMoreInfo:PascalClause:Begins + 6 - 1)
-			END IF*/
-			
-			aWords := AnalyzeLine(cLine)
-			sLine := System.Text.StringBuilder{cLine:Length + 5}
-			
-			IF SELF:PartialClass .and. oLine:oEntity != NULL .and. oLine:oEntity:eType == EntityType._Class
-				sLine:Append("PARTIAL ")
-			END IF
-			
-			LOCAL lInBracketString := FALSE AS LOGIC
-			LOCAL lLastWasColon := FALSE AS LOGIC
-			LOCAL lInIndexedProperty := FALSE AS LOGIC
-			
-			FOR LOCAL nWord := 0 AS INT UPTO aWords:Count - 1
-				LOCAL oWord , oNextWord , oNextNextWord , oPrevWord AS WordObject
-				oWord := aWords[nWord]
-				IF nWord < aWords:Count - 1
-					oNextWord := aWords[nWord + 1]
-				ELSE
-					oNextWord := NULL
-				END IF
-				IF nWord < aWords:Count - 2
-					oNextNextWord := aWords[nWord + 2]
-				ELSE
-					oNextNextWord := NULL
-				END IF
-				IF nWord > 0
-					oPrevWord := aWords[nWord - 1]
-				ELSE
-					oPrevWord := NULL
-				END IF
-				
-				LOCAL cWord, cWordUpper AS STRING
-				cWord := oWord:cWord
-
-				DO CASE
-
-				CASE cWord == "%" .and. oNextNextWord != NULL .and. oNextNextWord:cWord == "%" .and. oNextWord:cWord:ToUpper() == "CAVOSAMPLESROOTDIR"
-					cWord := ""
-					oNextWord:cWord := VOFolder.Get() + "\Samples"
-					oNextNextWord:cWord := ""
-					
-				CASE oWord:eStatus == WordStatus.Text // no literals or comments
-					cWordUpper := cWord:ToUpper()
-					DO CASE
-					CASE cWordUpper:StartsWith("STRU") .and. oWord:eSubStatus == WordSubStatus.TextReserved
-						cWord := "VOSTRUCT"
-					CASE cWordUpper == "THROW" .and. (oPrevWord == NULL .or. .not. oPrevWord:cWord:StartsWith("@"))
-						cWord := "@@" + cWord
-					CASE cWordUpper == "_NC" .or. cWordUpper == "_CO"
-						cWord := ""
-					CASE cWordUpper == "@" .and. (oNextWord != NULL .and. SELF:_oModule:Application:ContainsCallback(oNextWord:cWord))
-//						MessageBox.Show(oNextWord:cWord , "Callback!")
-						cCallBack := oNextWord:cWord
-					END CASE
-
-				CASE oWord:eStatus == WordStatus.Literal
-					IF lInBracketString
-						IF cWord == "]"
-							lInBracketString := FALSE
-							cWord := e"\""
-						ELSE
-							IF cWord == e"\"" .or. cWord == "\"
-								cWord := "\" + cWord
-							END IF
-						END IF
-					ELSE
-						IF cWord == "["
-							IF oPrevWord == NULL .or. oPrevWord:eStatus != WordStatus.Literal
-								lInBracketString := TRUE
-								cWord := e"e\""
-							END IF
-						END IF
-					ENDIF
-				END CASE
-				
-				IF lInIndexedProperty .and. oWord:eStatus == WordStatus.Text .and. oWord:cWord == ","
-					sLine:Append('[')
-					lInIndexedProperty := FALSE
-					lLastWasColon := FALSE
-					LOOP // don't add the first comma
-				ENDIF
-				IF lLastWasColon .and. oWord:eStatus == WordStatus.Text .and. oWord:cWord == "["
-					lInIndexedProperty := TRUE
-					lLastWasColon := FALSE
-					LOOP // do not add the "[" now
-				END IF
-				IF oWord:eStatus == WordStatus.Text .and. oWord:cWord == ":"
-					lLastWasColon := TRUE
-				ELSEIF .not. oWord:IsWhiteSpace
-					lLastWasColon := FALSE
-				END IF
-				
-				sLine:Append(cWord)
-				
-				// not needed anymore?
-/*				IF oWord:eStatus == WordStatus.Literal
-					IF oWord:cWord == "#" .and. oNextWord != NULL .and. oNextWord:cWord:ToUpper() == "NIL"
-						sLine:Append((Char)' ')
-					END IF
-				END IF*/
-			NEXT
-
-			cLine := sLine:ToString()
-
-			DO CASE
-			CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.InternetClasses
-				DO CASE
-				CASE SELF:_oModule:Name == "CSOCKET" .and. cLine:Contains("ServerAddress")
-					cLine := cLine:Replace("." , ":")
-				CASE SELF:_oModule:Name == "CSOCKET" .and. cLine:Contains("STATIC VOSTRUCT")
-					cLine := cLine:Replace("STATIC VOSTRUCT" , "INTERNAL VOSTRUCT")
-				END CASE
-			CASE SELF:_oModule:Application:VOSDK == VOSDK_Library.GuiClasses
-				DO CASE
-				CASE cLine:Contains("_WINCALL")
-					cLine := cLine:Replace("_WINCALL" , "/*_WINCALL*/")
-				CASE cLine:Contains("].")
-					cLine := cLine:Replace("]." , "]:")
-				CASE cLine:Contains("IF (PCount() != ")
-					cLine := "IF FALSE"
-				CASE cLine:EndsWith("ENDI") .and. cLine:Trim() == "ENDI"
-					cLine := cLine:Replace("ENDI" , "ENDIF")
-				CASE cLine:Contains("ACCESS Protected") .or. cLine:Contains("ASSIGN Protected")
-					cLine := cLine:Replace("Protected" , "@@Protected")
-				CASE cLine:Contains("SELF:[Rows, oUpdate:symToolBar] := oUpdate:nMenuItemID")
-					cLine := cLine:Replace("SELF:[Rows, oUpdate:symToolBar] := oUpdate:nMenuItemID" , "SELF:Rows[oUpdate:symToolBar] := oUpdate:nMenuItemID")
-				CASE cLine:Contains("ASSIGN TabCaption (symTabName,cCaption)")
-					cLine := cLine:Replace("ASSIGN TabCaption (symTabName,cCaption)" , "ASSIGN TabCaption (cCaption,symTabName) ")
-				CASE cLine:Contains("FOR idx = iLen DOWNTO 1")
-					cLine := cLine:Replace(" = " , " := ")
-				CASE cLine:EndsWith("CLAS __WindApp")
-					cLine := cLine:Replace("CLAS __WindApp" , "CLASS __WindApp")
-				END CASE
-			END CASE
-			
 		END IF
+		IF xPorter.Options:RemoveClassClause .and. oLine:HasClassClause
+			IF oLine:oMoreInfo:ClassClause:Begins != 0
+				IF oLine:oMoreInfo:ClassClause:Ends != 0
+					cLine := cLine:Substring(0 , oLine:oMoreInfo:ClassClause:Begins - 1) + cLine:Substring(oLine:oMoreInfo:ClassClause:Ends - 1)
+				ELSE
+					cLine := cLine:Substring(0 , oLine:oMoreInfo:ClassClause:Begins - 1)
+				END IF
+			ELSE
+				cLine := cLine:Substring(oLine:oMoreInfo:ClassClause:Ends - 1)
+			END IF
+		END IF
+/*		IF xPorter.Options:ChangePascalToStrict .and. oLine:HasPascalClause
+			cLine := cLine:Substring(0 , oLine:oMoreInfo:PascalClause:Begins - 1) + "STRICT" + cLine:Substring(oLine:oMoreInfo:PascalClause:Begins + 6 - 1)
+		END IF*/
+		
+		aWords := AnalyzeLine(cLine)
+		sLine := System.Text.StringBuilder{cLine:Length + 5}
+		
+		IF SELF:PartialClass .and. oLine:oEntity != NULL .and. oLine:oEntity:eType == EntityType._Class
+			sLine:Append("PARTIAL ")
+		END IF
+		
+		LOCAL lInBracketString := FALSE AS LOGIC
+		LOCAL lLastWasColon := FALSE AS LOGIC
+		LOCAL lInIndexedProperty := FALSE AS LOGIC
+		
+		FOR LOCAL nWord := 0 AS INT UPTO aWords:Count - 1
+			LOCAL oWord , oNextWord , oNextNextWord , oPrevWord AS WordObject
+			oWord := aWords[nWord]
+			IF nWord < aWords:Count - 1
+				oNextWord := aWords[nWord + 1]
+			ELSE
+				oNextWord := NULL
+			END IF
+			IF nWord < aWords:Count - 2
+				oNextNextWord := aWords[nWord + 2]
+			ELSE
+				oNextNextWord := NULL
+			END IF
+			IF nWord > 0
+				oPrevWord := aWords[nWord - 1]
+			ELSE
+				oPrevWord := NULL
+			END IF
+			
+			LOCAL cWord, cWordUpper AS STRING
+			cWord := oWord:cWord
+
+			DO CASE
+
+			CASE cWord == "%" .and. oNextNextWord != NULL .and. oNextNextWord:cWord == "%" .and. oNextWord:cWord:ToUpper() == "CAVOSAMPLESROOTDIR"
+				cWord := ""
+				oNextWord:cWord := VOFolder.Get() + "\Samples"
+				oNextNextWord:cWord := ""
+				
+			CASE oWord:eStatus == WordStatus.Text // no literals or comments
+				cWordUpper := cWord:ToUpper()
+				DO CASE
+				CASE cWordUpper:StartsWith("STRU") .and. oWord:eSubStatus == WordSubStatus.TextReserved
+					cWord := "VOSTRUCT"
+				CASE cWordUpper == "THROW" .and. (oPrevWord == NULL .or. .not. oPrevWord:cWord:StartsWith("@"))
+					cWord := "@@" + cWord
+				CASE cWordUpper == "_NC" .or. cWordUpper == "_CO"
+					cWord := ""
+				CASE cWordUpper == "@" .and. (oNextWord != NULL .and. SELF:_oModule:Application:ContainsCallback(oNextWord:cWord))
+//					MessageBox.Show(oNextWord:cWord , "Callback!")
+					cCallBack := oNextWord:cWord
+				END CASE
+
+			CASE oWord:eStatus == WordStatus.Literal
+				IF lInBracketString
+					IF cWord == "]"
+						lInBracketString := FALSE
+						cWord := e"\""
+					ELSE
+						IF cWord == e"\"" .or. cWord == "\"
+							cWord := "\" + cWord
+						END IF
+					END IF
+				ELSE
+					IF cWord == "["
+						IF oPrevWord == NULL .or. oPrevWord:eStatus != WordStatus.Literal
+							lInBracketString := TRUE
+							cWord := e"e\""
+						END IF
+					END IF
+				ENDIF
+			END CASE
+			
+			IF lInIndexedProperty .and. oWord:eStatus == WordStatus.Text .and. oWord:cWord == ","
+				sLine:Append('[')
+				lInIndexedProperty := FALSE
+				lLastWasColon := FALSE
+				LOOP // don't add the first comma
+			ENDIF
+			IF lLastWasColon .and. oWord:eStatus == WordStatus.Text .and. oWord:cWord == "["
+				lInIndexedProperty := TRUE
+				lLastWasColon := FALSE
+				LOOP // do not add the "[" now
+			END IF
+			IF oWord:eStatus == WordStatus.Text .and. oWord:cWord == ":"
+				lLastWasColon := TRUE
+			ELSEIF .not. oWord:IsWhiteSpace
+				lLastWasColon := FALSE
+			END IF
+			
+			sLine:Append(cWord)
+			
+			// not needed anymore?
+/*			IF oWord:eStatus == WordStatus.Literal
+				IF oWord:cWord == "#" .and. oNextWord != NULL .and. oNextWord:cWord:ToUpper() == "NIL"
+					sLine:Append((Char)' ')
+				END IF
+			END IF*/
+		NEXT
+
+		cLine := sLine:ToString()
+			
 	RETURN cLine
 	
 
@@ -2368,7 +1887,7 @@ CLASS EntityDescriptor
 			LOCAL lHasWizDir := FALSE AS LOGIC
 			cLine := oLine:LineText
 			lHasWizDir := cLine:ToUpper():Contains("%APPWIZDIR%")
-			cLine := cLine:Replace("%" , tag) // so that %something% is trated as one word
+			cLine := cLine:Replace("%" , tag) // so that %something% is treated as one word
 
 			LOCAL aWords AS List<WordObject>
 			aWords := AnalyzeLine(cLine)
@@ -2499,7 +2018,6 @@ Probably we need to do that also to every other string in every line in the reso
 	STATIC METHOD AnalyzeLine(cLine AS STRING) AS List<WordObject>
 		LOCAL aWords AS List<WordObject>
 		aWords := List<WordObject>{}
-//		#warning do proper parsing
 		FOREACH oWord AS WordObject IN EditorBuffer.ParseLine(FileType.VO , cLine)
 			IF oWord:cWord:Length != 0
 				aWords:Add(oWord)
@@ -2589,7 +2107,7 @@ FUNCTION StripCommentsFromCode(cCode AS STRING) AS STRING
 RETURN sCode:ToString()
 
 FUNCTION MakePathLegal(cPath AS STRING) AS STRING
-// vary neat piece of code above, found in stackoverflow!
+// vary neat piece of code below, found in stackoverflow!
 RETURN String.Join("_" , cPath:Split( Path.GetInvalidFileNameChars() ) )
 
 FUNCTION SafeFileExists(cFileName AS STRING) AS LOGIC

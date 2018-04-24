@@ -231,7 +231,9 @@ function SetDefault() as string
 /// <returns>
 /// </returns>
 function SetDefault(cDefault as string) as string
+	__SetPathArray(null)
 	setstate string Set.Default cDefault
+	
 
 /// <summary>
 /// Return the setting that determines whether to ignore or include records that are marked for deletion.
@@ -413,7 +415,7 @@ function SetMath(nFPU as dword) as dword
 
 
 /// <summary>
-/// Return the setting that determines the <%APP%> search path for opening files.
+/// Return the setting that determines the search path for opening files. This may be a semi colon separated list of folders.
 /// </summary>
 /// <returns>
 /// </returns>
@@ -424,11 +426,34 @@ function SetPath() as string
 /// <summary>
 /// Change the setting that determines the search path for opening files.
 /// </summary>
-/// <param name="cPath"></param>
+/// <param name="cPath">New path. This may be a semi colon separated list of folders.</param>
 /// <returns>
 /// </returns>
 function SetPath(cPath as string) as string
+	__SetPathArray(null)
 	setstate string Set.Path cPath
+
+
+/// <summary>
+/// Return the Path array that is used by the File() function to locate files outside of the current directory.
+/// This is a combination of the SetDefault() and SetPath() variables
+/// This may be null if the file function has never been called or never been called for files outside of the current
+/// directory.
+/// </summary>
+/// <returns>
+/// </returns>
+function __SetPathArray() as string[]
+	getstate string[] Set.PathArray 
+
+/// <summary>
+/// Set the Path array that is used by the File() function to locate files outside of the current directory.
+/// This is a combination of the SetDefault() and SetPath() variables
+/// </summary>
+/// <param name="aPath"></param>
+/// <returns>
+/// </returns>
+function __SetPathArray(aPath as string[]) as string[]
+	setstate string[] Set.PathArray aPath
 
 /// <summary>
 /// Returns a string representing the evening extension for time strings in 12-hour format.

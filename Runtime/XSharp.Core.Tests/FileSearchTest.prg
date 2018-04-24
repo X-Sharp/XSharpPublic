@@ -39,10 +39,25 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal(true, String.IsNullOrEmpty(cName))
 			ASsert.Equal(TRUE, FFCount("XSharp.*.dll", 0) > 3)
 
-
-			 
-						
 		RETURN
+		[Fact, Trait("Category", "File Search")]; 
+		method File2Test() as void
+			local cName as string
+			local cName2 as STRING
+			FErase("FOO.TXT")
+			Assert.Equal(false, File("FOO.TXT"))
+			FClose(Fcreate("FOO.TXT"))
+			Assert.Equal(true, File("FOO.TXT"))
+			cName := FPathName()
+			Assert.Equal(false, String.IsNullOrEmpty(cName))
+			Assert.Equal(true, File("FO?.TXT"))
+			cName2 := FPathName()
+			Assert.Equal(cName, cName2)
+			Assert.Equal(true, File("XCOPY.EXE"))	// uses GetEnv("PATH")
+			cName := FPathName()
+			Assert.Equal(true, File("XCOP*.EXE"))	// uses GetEnv("PATH")
+			cName2 := FPathName()
+			Assert.Equal(cName:ToLower(), cName2:ToLower())
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

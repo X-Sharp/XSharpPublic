@@ -5,6 +5,8 @@
 //
 
 USING System.Runtime.InteropServices
+USING System.IO
+
 BEGIN NAMESPACE XSharp.RDD
     CLASS DBF INHERIT Workarea  
         PROTECT _Header			AS DbfHeader    
@@ -41,6 +43,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _oMemo			AS BaseMemo
         
         CONSTRUCTOR()
+            SELF:_Header := DbfHeader{}
             
             
             
@@ -69,8 +72,29 @@ BEGIN NAMESPACE XSharp.RDD
             //	METHOD Open(info AS DbOpenInfo) AS LOGIC
         VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
             SELF:_OpenInfo := info
+            // Should we set to .DBF per default ?
+            IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
+                SELF:_OpenInfo:Extension := ".DBF"
+                //
+                Self:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
+            ENDIF
+            //
+            SELF:_FileName := SELF:_OpenInfo:FileName
+            SELF:_Shared := SELF:_OpenInfo:Shared
+            SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
+            //
+            SELF:_Stream := FileStream{ SELF:_FileName, FileMode.Open, ;
+                    IIF( SELF:_ReadOnly, FileAccess.Read, FileAccess.ReadWrite ), ;
+                    IIF( SELF:_Shared, FileShare.ReadWrite, FileShare.None ) }
+            //
 
             RETURN TRUE
+
+        PRIVATE METHOD _fillHeader() AS VOID
+            //
+            SELF:_Stream:Read( SELF:_Header:Buffer, 0, (INT)SIZEOF( DBFHeader ) )
+            //
+            RETURN
             
             // Filtering and Scoping 
             //	METHOD ClearFilter() 	AS LOGIC

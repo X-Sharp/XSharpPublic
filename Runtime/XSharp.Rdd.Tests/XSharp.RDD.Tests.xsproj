@@ -86,7 +86,12 @@
     <Compile Include="TestDBF.prg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dbase_03.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="dbase_03_summary.txt" />
     <None Include="packages.config" />
+    <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+USING System.IO
 // The classes below are simple. No properties, but all public fields.
 
 BEGIN NAMESPACE XSharp.RDD
@@ -58,6 +58,7 @@ CLASS DbOpenInfo
 		
 	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, liWorkArea AS LONG, lShared AS LOGIC, lReadOnly AS LOGIC)
 		FileName 	:= sFileName
+        Extension   := Path.GetExtension(fileName)
 		Alias	 	:= sAlias
 		WorkArea	:= liWorkArea
 		Shared		:= lShared

@@ -432,10 +432,19 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 			RETURN
 		END IF
 
+		IF String.IsNullOrWhiteSpace(cOutputFolder)
+			MessageBox.Show("Please specify the Output folder." , "xPorter")
+			RETURN
+		END IF
 /*		IF .not. Directory.Exists(cOutputFolder)
 			MessageBox.Show("Output folder does not exist" , "xPorter")
 		END IF*/
-		Directory.CreateDirectory(cOutputFolder)
+		TRY
+			Directory.CreateDirectory(cOutputFolder)
+		CATCH
+			MessageBox.Show("Could not create output folder." , "xPorter")
+			RETURN
+		END TRY
 
 		LOCAL oType AS Type
 		oType := TypeOf(xPorterOptions)

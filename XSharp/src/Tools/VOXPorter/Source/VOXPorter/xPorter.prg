@@ -723,7 +723,7 @@ CLASS ApplicationDescriptor
 		oApp:_lOptionIntDiv := oAef:lOptionIntegerDivisions
 		
 //		LOCAL lGUI,lWin32API,lAnySDK AS LOGIC
-		LOCAL lWin32API AS LOGIC
+		LOCAL lWin32API :=FALSE AS LOGIC
 		
 		FOREACH cLibrary AS STRING IN oAef:LibraryNameListList
 			LOCAL cGAC := NULL AS STRING
@@ -1986,7 +1986,7 @@ Probably we need to do that also to every other string in every line in the reso
 		IF nNestLevel > 5
 			RETURN cUpper
 		END IF
-		LOCAL cNewDefine AS STRING
+		LOCAL cNewDefine := NULL AS STRING
 		IF SELF:_oModule:HasDefine(cUpper)
 			cNewDefine := SELF:_oModule:GetDefineValue(cUpper)
 		ELSEIF SELF:_oModule:Application:HasDefine(cUpper)

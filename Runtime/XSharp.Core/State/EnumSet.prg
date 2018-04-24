@@ -79,6 +79,7 @@ BEGIN NAMESPACE XSharp
 		member OPTIONOVF	:= 75	// Logic
 		member NOMETHOD		:= 76	// STRING
 		member APPMODULE	:= 77	// System.Reflection.Module
+		member PATHARRAY    := 78	// String[]
 
 		MEMBER DICT        := 98	// LOGIC
 		MEMBER INTL        := 99	// LOGIC

@@ -13,7 +13,7 @@ using XSharp
 /// An uninitialized of the given length.
 /// </returns>
 FUNCTION ArrayCreate(dwDim AS DWORD) AS Array 
-	RETURN Array{(int)dwDim}
+	RETURN Array{dwDim}
 
 
 /// <summary>
@@ -25,7 +25,7 @@ FUNCTION ArrayCreate(dwDim AS DWORD) AS Array
 /// </returns>
 FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS Array 
    LOCAL aTemp AS ARRAY
-   LOCAL x AS INT
+   LOCAL x AS dword
    
    IF dwDim > (DWORD) aValues:Length
       Throw Error.ArgumentError( __ENTITY__, nameof(dwDim), "Element too big")
@@ -78,6 +78,18 @@ FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS Array
 	RETURN a
 
 	/// <summary>
+	/// Delete an Array element.
+	/// </summary>
+	/// <param name="a"></param>
+	/// <param name="dwEl"></param>
+	/// <returns>
+	/// </returns>
+	FUNCTION ATrueDel(a AS Array,dwEl AS DWORD) AS Array
+		a:RemoveAt(dwEl)  
+	RETURN a
+
+
+	/// <summary>
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
@@ -113,8 +125,11 @@ FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS Array
 	/// <returns>
 	/// </returns>
 	FUNCTION ALen(a AS Array) AS DWORD
-		RETURN a:Length
-	
+		if a != NULL_ARRAY
+		return a:Length
+		else
+		return 0
+		endif
 
 	/// <summary>
 	/// Removes write protection from an entire Array.
@@ -298,7 +313,7 @@ FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS Array
 	/// <returns>
 	/// </returns>
 	FUNCTION AReplicate<T>(x AS Usual,nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-		var a:=__ArrayBase<T>{(int)nCount} 
+		var a:=__ArrayBase<T>{nCount} 
 		//Todo
 		//Array.ArrayFill(a,x)
 	RETURN a

@@ -192,10 +192,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 	[Fact, Trait("Category", "String")];
 	METHOD LenTest() as void
-		Assert.Equal(0U, Len(""))
-		Assert.Equal(0U, Len(null))
-		Assert.Equal(1U, Len("x"))
-		Assert.Equal(5U, Len("12345"))
+		Assert.Equal(0U, SLen(""))
+		Assert.Equal(0U, SLen(null))
+		Assert.Equal(1U, SLen("x"))
+		Assert.Equal(5U, SLen("12345"))
 	RETURN
 
 	[Fact, Trait("Category", "String")];

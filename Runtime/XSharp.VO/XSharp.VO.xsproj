@@ -138,7 +138,6 @@
     <Compile Include="Functions\Misc.prg" />
     <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Functions\OOP.prg" />
-    <Compile Include="Functions\Registry.prg" />
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\Symbol.prg" />
     <Compile Include="Functions\Terminal.prg" />

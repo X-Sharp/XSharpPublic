@@ -809,9 +809,9 @@ function AdjustFName(cName as string) as string
 /// <param name="cName"></param>
 /// <returns>
 /// </returns>
-function AdjustFNameA(cName as string) as string
-	throw NotImplementedException{}
-/// RETURN String.Empty   
+function AdjustFNameA(cName REF string) as string
+	cName := AdjustFName(cName)
+	return cName
 
 
 

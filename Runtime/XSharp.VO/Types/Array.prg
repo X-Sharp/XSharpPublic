@@ -13,14 +13,13 @@ using XSharp
 begin namespace XSharp	
 	
 	[DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
-	[DefaultMember("Item")];
 	[DebuggerTypeProxy(typeof(ArrayDebugView))];
 	public sealed class __Array inherit __ArrayBase<usual>
 		
 		constructor()
 			super()
 		
-		constructor(capacity as int)
+		constructor(capacity as dword)
 			super(capacity)
 
 		constructor( elements as usual[] )
@@ -75,9 +74,9 @@ begin namespace XSharp
 			return newArray
 		
 		public static method __ArrayNewHelper(dimensions as int[], currentDim as int) as Array
-			local capacity  as int // one based ?
+			local capacity  as dword // one based ?
 			local newArray as Array
-			capacity := dimensions[currentDim]
+			capacity := (dword) dimensions[currentDim]
 			newArray := Array{capacity} 
 			if currentDim != dimensions:Length
 				local nextDim := currentDim+1 as int
@@ -90,30 +89,49 @@ begin namespace XSharp
 			endif
 			return newArray
 
-		 property Item[index1 as int,index2 as int, index3 as int] as usual
+		internal new method Clone() as Array
+			local aResult as Array
+			local nCount as dword
+			nCount := (dword) _internalList:Count
+			aResult := Array{nCount}
+			for var I := 0 to nCount-1
+				var u := _internalList[i]
+				if u:isArray
+					var aElement := (Array) u
+					aResult:_internalList[i] := aElement:Clone()
+				else
+					aResult:_internalList[i] := u
+				endif
+			next
+			return aResult
+
+		internal method CloneShallow() as Array
+			return (Array) super:Clone()
+
+		public property self[i as dword, j as dword, k as DWORD] as usual
 			get
-				return __GetElement(index1, index2,index3)
-			end get
-			set 
-				__SetElement(value, index1, index2,index3)
-			end set
-		end property
-		
-		 property Item[index1 as int,index2 as int] as usual
-			get
-				return __GetElement(<int> {index1, index2})
-			end get
-			set 
-				__SetElement(value, <int> {index1, index2})
-			end set
-		end property
-		
-		property Item[index as int] as usual
-			get
-				return __GetElement(index)
+				return __GetElement((int)i,(int)j, (int) k)
 			end get
 			set
-				__SetElement(value, index)
+				self:__SetElement(value,(int)i,(int)j,(int) k)
+			end set
+		end property
+
+		public property self[i as dword, j as dword] as usual
+			get
+				return __GetElement((int)i,(int)j)
+			end get
+			set
+				self:__SetElement(value,(int)i,(int)j)
+			end set
+		end property
+	
+		new property self[index as dword] as usual
+			get
+				return __GetElement((int)index)
+			end get
+			set
+				__SetElement(value, (int)index)
 			end set
 		end property
 		
@@ -194,9 +212,4 @@ begin namespace XSharp
 	end	class
 	
 	
-	public interface IArray
-		public method Clone() as IArray
-		public method CloneShallow() as IArray
-		public method RemoveAt(pos as int) as void
-	end	interface
 end namespace

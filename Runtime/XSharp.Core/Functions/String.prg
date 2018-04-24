@@ -457,15 +457,6 @@ function EncodeBase64(hFileIn as IntPtr,hFileOut as IntPtr) as int
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="cSubKey"></param>
-/// <returns>
-/// </returns>
-function DeleteRTRegKey(cSubKey as string) as logic
-	/// THROW NotImplementedException{}
-	return false   
-
 
 
 /// <summary>

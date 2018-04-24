@@ -1,5 +1,5 @@
 ﻿function Start() as void
-	local nX as Int
+	local nX as dword
 	? Version()
 	? "Size of IntPtr", IntPtr.Size
 	? "Size of USUAL", SizeOf(USUAL)

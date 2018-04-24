@@ -29,9 +29,8 @@ static class XSharp.Internal.CompilerServices
 			var bytes    := encoding:GetBytes(s)
 			var len      := bytes:Length
 			pResult := Marshal.AllocHGlobal(len+1)
-			MemSet(pResult, 0, (dword) len+1)
 			Marshal.Copy(bytes, 0, pResult, len)
-			
+			Marshal.WriteByte(pResult, len, 0)	 // end of string
 		endif
 		pszList:Add(pResult)
 		return pResult

@@ -132,6 +132,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RegistryChecks.prg" />
+    <Compile Include="FileSearchTest.prg" />
     <Compile Include="OSTests.prg" />
     <Compile Include="TimeTest.prg" />
     <Compile Include="ConversionTests.prg" />

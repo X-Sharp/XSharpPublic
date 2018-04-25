@@ -63,7 +63,8 @@ CLASS DbOpenInfo
 		WorkArea	:= liWorkArea
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly
-	property FileMode as DWORD 
+
+	public property FileMode as DWORD 
 	get
 		local nMode as DWORD
 		nMode := FO_COMPAT

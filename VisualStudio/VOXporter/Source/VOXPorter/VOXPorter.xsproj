@@ -142,6 +142,10 @@
     <EmbeddedResource Include="Resources\Designers.resources" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\ReadMe.rtf">
+      <Link>ReadMe.rtf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\Templates\template_VS.sln">
       <Link>Templates\template_VS.sln</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -158,10 +162,8 @@
       <Link>Templates\template_XIDE.xiproj</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="ReadMe.rtf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="VOXPorter.ini">
+    <None Include="..\..\VOXPorter.ini">
+      <Link>VOXPorter.ini</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

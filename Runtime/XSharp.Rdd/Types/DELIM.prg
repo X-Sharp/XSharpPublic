@@ -9,7 +9,7 @@ BEGIN NAMESPACE XSharp.RDD
 CLASS DELIM INHERIT Workarea  
 	CONSTRUCTOR
 		SUPER()                     
-		SELF:_Stream := NULL
+		SELF:_hFile         := IntPtr.Zero
 		SELF:_TransRec 		:= TRUE
 		SELF:_RecordLength 	:= 0
 		SELF:_BufferSize 	:= 0

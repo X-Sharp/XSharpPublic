@@ -43,7 +43,8 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _oMemo			AS BaseMemo
         
         CONSTRUCTOR()
-            SELF:_Header := DbfHeader{}
+            self:_Header := DbfHeader{}
+			self:_Header:initialize()
             
             
             
@@ -82,17 +83,14 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_FileName := SELF:_OpenInfo:FileName
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
-            //
-            SELF:_Stream := FileStream{ SELF:_FileName, FileMode.Open, ;
-                    IIF( SELF:_ReadOnly, FileAccess.Read, FileAccess.ReadWrite ), ;
-                    IIF( SELF:_Shared, FileShare.ReadWrite, FileShare.None ) }
-            //
+            self:_hFile    := Fopen(self:_FileName, self:_OpenInfo:FileMode) 
 
+			self:_fillHeader()
             RETURN TRUE
 
         PRIVATE METHOD _fillHeader() AS VOID
             //
-            SELF:_Stream:Read( SELF:_Header:Buffer, 0, (INT)SIZEOF( DBFHeader ) )
+			FRead3(self:_hFile, SELF:_Header:Buffer, HDROFFSETS.SIZE)
             //
             RETURN
             
@@ -377,32 +375,93 @@ BEGIN NAMESPACE XSharp.RDD
         //	PROPERTY LastGenCode	AS LONG GET
         //	PROPERTY LastSubCode	AS LONG GET
         //	PROPERTY LastError		AS Exception GET
+		public enum HDROFFSETS
+			member SIG			:= 0
+			member YEAR			:= 1
+			member MONTH	    := 2
+			member DAY          := 3
+			member RECCOUNT     := 4
+			member DATAOFFSET   := 8
+			member RECSIZE      := 10
+			member RESERVED1    := 12
+			member TRANSACTION  := 14
+			member ENCRYPTED    := 15
+			member DBASELAN     := 16
+			member MULTIUSER    := 20
+			member RESERVED2   := 24
+			member HASTAGS	    := 28
+			member CODEPAGE     := 29
+			member RESERVED3    := 30
+			member SIZE         := 32
+
+		end enum
+
         
-        
-        [StructLayout(LayoutKind.Explicit)];
-            STRUCTURE DbfHeader                     
+        STRUCTURE DbfHeader                     
             // Fixed Buffer of 32 bytes
             // Matches the DBF layout  
             // Read/Write to/from the Stream with the Buffer 
             // and access individual values using the other fields
-            [FieldOffSet(00)] PUBLIC Buffer     AS BYTE[]
+            public Buffer   as byte[]
+			public isHot	as LOGIC
+			property Version    as DBFVersion	;
+				get (DBFVersion) Buffer[HDROFFSETS.SIG] ;
+				SET Buffer[HDROFFSETS.SIG] := (Byte) value
+            property Year		as byte			;
+				get Buffer[HDROFFSETS.YEAR]	;
+				SET Buffer[HDROFFSETS.YEAR] := value, isHot := TRUE
+            property Month		as byte			;
+				get Buffer[HDROFFSETS.MONTH]	;
+				SET Buffer[HDROFFSETS.MONTH] := value, isHot := TRUE
+            property Day		as byte			;
+				get Buffer[HDROFFSETS.DAY]	;
+				SET Buffer[HDROFFSETS.DAY] := value, isHot := TRUE
+            property RecCount	as long			;
+				get BitConverter.ToInt32(Buffer, HDROFFSETS.RECCOUNT) ;
+				set Array.Copy(BitConverter.GetBytes(value),0, Buffer, HDROFFSETS.RECCOUNT, sizeof(long)), isHot := TRUE
+            property HeaderLen	as short		;
+				get BitConverter.ToInt16(Buffer, HDROFFSETS.DATAOFFSET);
+				set Array.Copy(BitConverter.GetBytes(value),0, Buffer, HDROFFSETS.DATAOFFSET, sizeof(short)), isHot := TRUE
+			// Length of one data record, including deleted flag
+            property RecordLen	as short		;
+				get BitConverter.ToInt16(Buffer, HDROFFSETS.RECSIZE);
+				set Array.Copy(BitConverter.GetBytes(value),0, Buffer, HDROFFSETS.RECSIZE, sizeof(short)), isHot := TRUE
+            property Reserved1	as short		;
+				get BitConverter.ToInt16(Buffer, HDROFFSETS.RESERVED1);
+				set Array.Copy(BitConverter.GetBytes(value),0, Buffer, HDROFFSETS.RESERVED1, sizeof(short)), isHot := TRUE
+            property Transaction as byte		;
+				get Buffer[HDROFFSETS.TRANSACTION];
+				set Buffer[HDROFFSETS.TRANSACTION] := value, isHot := true
+            property Encrypted	as byte			;
+				GET Buffer[HDROFFSETS.ENCRYPTED];
+				set Buffer[HDROFFSETS.ENCRYPTED] := value, isHot := true
+            property DbaseLan	as long			;
+				get BitConverter.ToInt32(Buffer, HDROFFSETS.DBASELAN) ;
+				set Array.Copy(BitConverter.GetBytes(value),0, Buffer, HDROFFSETS.DBASELAN, sizeof(long)), isHot := TRUE
 
-            [FieldOffSet(00)] PUBLIC Version  	AS DBFVersion	  
-            [FieldOffSet(01)] PUBLIC Year		AS BYTE	  
-            [FieldOffSet(02)] PUBLIC Month		AS BYTE	  
-            [FieldOffSet(03)] PUBLIC Day		AS BYTE
-            [FieldOffSet(04)] PUBLIC RecCount	AS LONG
-            [FieldOffSet(08)] PUBLIC HeaderLen	AS SHORT 		// Position of first data record
-            [FieldOffSet(10)] PUBLIC RecordLen	AS SHORT  		// Length of one data record, including deleted flag
-            [FieldOffSet(12)] PUBLIC Reserved1	AS SHORT
-            [FieldOffSet(14)] PUBLIC Transaction AS BYTE
-            [FieldOffSet(15)] PUBLIC Encrypted	AS BYTE
-            [FieldOffSet(16)] PUBLIC Reserved2	AS LONG 		// DbaseLan
-            [FieldOffSet(20)] PUBLIC Reserved3	AS LONG			// MultiUser
-            [FieldOffSet(24)] PUBLIC Reserved4	AS LONG
-            [FieldOffSet(28)] PUBLIC HasTags	AS DBFTableFlags    		
-            [FieldOffSet(29)] PUBLIC CodePage	AS BYTE        	// depends on dialect
-            [FieldOffSet(30)] PUBLIC Reserved5	AS SHORT                             
+            property MultiUser	as long			;
+				GET BitConverter.ToInt32(Buffer, HDROFFSETS.MULTIUSER)	;
+				set Array.Copy(BitConverter.GetBytes(value),0, Buffer, HDROFFSETS.MULTIUSER, sizeof(long)), isHot := TRUE
+            property Reserved2	as long			;
+				GET BitConverter.ToInt32(Buffer, HDROFFSETS.RESERVED2);
+				set Array.Copy(BitConverter.GetBytes(value),0, Buffer, HDROFFSETS.RESERVED2, sizeof(long))
+            property HasTags	as DBFTableFlags ;
+				get (DBFTableFlags)Buffer[HDROFFSETS.HASTAGS] ;
+				SET Buffer[HDROFFSETS.HASTAGS] := (byte) value, isHot := TRUE
+            property CodePage	as byte			 ;
+				get Buffer[HDROFFSETS.CODEPAGE]  ;
+				set Buffer[HDROFFSETS.CODEPAGE] := (byte) value, isHot := true
+            property Reserved3	as short         ;
+				GET BitConverter.ToInt16(Buffer, HDROFFSETS.RESERVED3);
+				set Array.Copy(BitConverter.GetBytes(value),0, Buffer, HDROFFSETS.RESERVED3, sizeof(short)), isHot := true
+
+			property LastUpdate as DateTime      ;
+				get DateTime{1900+Year, Month, Day} ;
+				SET Year := (byte) value:Year % 100, Month := (byte) value:Month, Day := (byte) value:Day, isHot := true
+			METHOD initialize() as void strict
+				Buffer := Byte[]{HDROFFSETS.SIZE}
+				isHot  := false
+				return
             // Dbase (7?) Extends this with
             // [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
             // [FieldOffSet(63)] PUBLIC Reserved6 AS LONG    
@@ -523,7 +582,7 @@ BEGIN NAMESPACE XSharp.RDD
         END ENUM
         
         [Flags];
-            ENUM DBFTableFlags AS BYTE
+        ENUM DBFTableFlags AS BYTE
             MEMBER HasMemoField:=2
             MEMBER HasStructuralCDX:=1
             MEMBER IsDBC:=4

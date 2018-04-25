@@ -8,7 +8,7 @@ BEGIN NAMESPACE XSharp.RDD
 CLASS SDF INHERIT Workarea  
 	CONSTRUCTOR
 		SUPER()     
-		SELF:_Stream := NULL
+		SELF:_hFile    := IntPtr.Zero
 		SELF:_TransRec := TRUE
 		SELF:_RecordLength := 0
 		SELF:_BufferSize := 0
@@ -42,15 +42,15 @@ METHOD Recall() AS LOGIC
 		
 	// Open and Close   
 METHOD Close() 			AS LOGIC      
-	IF SELF:_Stream != NULL
+	IF SELF:_hFile   != IntPtr.Zero
 		SELF:GoCold()
-		IF !SELF:_ReadOnly // && hb_setGetEOF
-			SELF:_Stream:WriteByte(32)
+		if !self:_ReadOnly // && hb_setGetEOF
+			FWrite(self:_hFile, " ", 1)
 			SELF:_Flush := TRUE
 		ENDIF                  
 		SELF:Flush()
-		SELF:_Stream:Close()
-		SELF:_Stream := NULL
+		FClose(SELF:_hFile)
+		SELF:_hFile := IntPtr.Zero
 	ENDIF
 	RETURN SUPER:Close()
 METHOD Create(info AS DbOpenInfo) AS LOGIC  

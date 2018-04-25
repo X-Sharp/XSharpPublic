@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
         
         [Fact, Trait("Dbf", "Open")];
             METHOD OpenDBF() AS VOID
-            VAR dbInfo := DbOpenInfo{ "dbase_03.DBF", "dbase_03", 1, FALSE, FALSE }
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
             //
             VAR myDBF := DBF{}
             myDBF:Open( dbInfo )

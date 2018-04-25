@@ -34,6 +34,12 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpModelXs", "VisualStud
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XsCodeModelTest", "VisualStudio\XsCodeModelTest\XsCodeModelTest.xsproj", "{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOXporter", "VOXporter", "{9C47DB34-B1DB-4749-8B96-544AC730392E}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Fab_VO_Entities", "VisualStudio\VOXporter\Source\Fab_VO_Entities\Fab_VO_Entities.xsproj", "{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOXPorter", "VisualStudio\VOXporter\Source\VOXPorter\VOXPorter.xsproj", "{939B111B-6EBD-490F-A7F4-CE923D758A3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,8 +136,28 @@ Global
 		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Release|Any CPU.Build.0 = Release|Any CPU
 		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Release|x86.ActiveCfg = Release|Any CPU
 		{123EC0E4-F7EE-4556-90B0-2A28BDBDEB65}.Release|x86.Build.0 = Release|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Debug|x86.Build.0 = Debug|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Release|x86.ActiveCfg = Release|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Release|x86.Build.0 = Release|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Debug|x86.Build.0 = Debug|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Release|x86.ActiveCfg = Release|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34} = {9C47DB34-B1DB-4749-8B96-544AC730392E}
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B} = {9C47DB34-B1DB-4749-8B96-544AC730392E}
 	EndGlobalSection
 EndGlobal

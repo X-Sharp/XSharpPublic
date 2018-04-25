@@ -58,11 +58,28 @@ CLASS DbOpenInfo
 		
 	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, liWorkArea AS LONG, lShared AS LOGIC, lReadOnly AS LOGIC)
 		FileName 	:= sFileName
-        Extension   := Path.GetExtension(fileName)
+        Extension   := Path.GetExtension(sFileName)
 		Alias	 	:= sAlias
 		WorkArea	:= liWorkArea
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly
+	property FileMode as DWORD 
+	get
+		local nMode as DWORD
+		nMode := FO_COMPAT
+		if (Shared)
+			nMode |= FO_SHARED
+		else
+			nMode |= FO_EXCLUSIVE
+		endif
+		if (ReadOnly)
+			nMode |= FO_READ
+		else
+			nMode |= FO_READWRITE
+		endif
+		return nMode
+	end get
+	end property
 END CLASS  
 
 CLASS DbOrderCondInfo                     

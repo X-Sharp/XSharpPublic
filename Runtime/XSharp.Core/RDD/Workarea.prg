@@ -36,8 +36,8 @@ CLASS Workarea IMPLEMENTS IRdd
 	PUBLIC _Delimiter		AS STRING	// Field Delimiter
 	PUBLIC _Separator	    AS STRING	// Field Separator
 	PUBLIC _ReadOnly		AS LOGIC	// ReadOnly ?  
-	PUBLIC _Shared		AS LOGIC	// Shared ?  
-	PUBLIC _Stream		AS FileStream // File. 
+	PUBLIC _Shared			AS LOGIC	// Shared ?  
+	PUBLIC _hFile			AS IntPtr
 	PUBLIC _Flush			AS LOGIC		// Must flush ? 
 
 	// Memo and Order Implementation

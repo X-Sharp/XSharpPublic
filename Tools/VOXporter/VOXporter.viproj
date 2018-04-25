@@ -103,7 +103,7 @@ NativeResourceFile = External , %AppPath%\Resources\VersionInfo.rc
 ResourceFileGuid = C37529B1-9E79-466D-9098-8A3E1BFE3212
 [VOXPorter License files]
 [VOXPorter General Options]
-Switches=
+Switches=/debug:full
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -247,7 +247,7 @@ FileType = Code
 [Fab_VO_Entities Native Resources]
 [Fab_VO_Entities License files]
 [Fab_VO_Entities General Options]
-Switches=
+Switches=/debug:full
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0

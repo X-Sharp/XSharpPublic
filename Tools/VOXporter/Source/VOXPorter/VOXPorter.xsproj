@@ -77,9 +77,10 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings />
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>

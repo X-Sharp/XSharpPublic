@@ -19,7 +19,7 @@
     <RootNamespace>XSharp.Project</RootNamespace>
     <AssemblyName>XSharpProject</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.6</TargetFrameworkMoniker>
     <TargetFrameworkProfile />
@@ -412,6 +412,7 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
+    <None Include="XSharp.snk" />
     <ZipProject Include="Templates\Projects\Test\NUnitClassLibrary\packages.config" />
     <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\packages.config" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />

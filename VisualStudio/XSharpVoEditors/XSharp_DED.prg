@@ -5,7 +5,7 @@ USING System.IO
 USING Xide
 USING XSharpModel
 USING System.Reflection
-
+using XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 	PROTECT oXProject as XProject

@@ -2,21 +2,44 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <Name>RegisterProvider</Name>
-    <ProjectGuid>5190e508-e052-41d5-8824-ea472241489a</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>73c0dca6-bfe5-40cb-9240-3db1c37f5b34</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RegisterProvider</RootNamespace>
-    <AssemblyName>RegisterProvider</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>Fab_VO_Entities</RootNamespace>
+    <AssemblyName>Fab_VO_Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <Name>Fab_VO_Entities</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
-    <OutputName>RegisterProvider</OutputName>
+    <OutputName>Fab_VO_Entities</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <LB>false</LB>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <INS>false</INS>
+    <NS>false</NS>
+    <VO1>false</VO1>
+    <VO2>false</VO2>
+    <VO3>false</VO3>
+    <VO4>false</VO4>
+    <VO5>false</VO5>
+    <VO6>false</VO6>
+    <VO7>false</VO7>
+    <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>false</VO13>
+    <VO14>false</VO14>
+    <VO15>false</VO15>
+    <VO16>false</VO16>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,22 +47,21 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings />
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>165</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>..\xsharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStdDef>false</NoStdDef>
-    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
-    <Prefer32Bit>True</Prefer32Bit>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(SolutionDir)Common</IncludePaths>
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -47,45 +69,45 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>..\xsharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk </AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStdDef>false</NoStdDef>
-    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
-    <Prefer32Bit>True</Prefer32Bit>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(SolutionDir)Common</IncludePaths>
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Xml</Name>
-      <AssemblyName>System.XML.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Program.prg">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="AEF File.prg" />
+    <Compile Include="Application Abstract.prg" />
+    <Compile Include="Base Object.prg" />
+    <Compile Include="Definitions.prg" />
+    <Compile Include="EntityBase.prg" />
+    <Compile Include="FabTools.prg" />
+    <Compile Include="MEF Entity.prg" />
+    <Compile Include="MEF File.prg" />
+    <Compile Include="ModuleBase.prg" />
+    <Compile Include="PRG Entity.prg" />
+    <Compile Include="PRG File.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="VN Entity.prg" />
+    <Compile Include="VN File.prg" />
+    <Compile Include="_xCompatinility.prg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <None Include="GlobalDefines.vh" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Common\BuildNumber.h">
-      <Link>BuildNumber.h</Link>
-    </None>
+    <Folder Include="Properties" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

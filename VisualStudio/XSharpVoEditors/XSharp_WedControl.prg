@@ -2,6 +2,7 @@
 USING System.IO
 using XSharp.VOEditors
 using System.Windows.Forms
+using XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 

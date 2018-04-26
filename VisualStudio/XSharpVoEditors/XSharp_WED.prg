@@ -2,7 +2,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-
+using XSharp.VODesigners
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor

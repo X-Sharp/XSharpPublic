@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners", "src\Vs\VODesigners\VODesigners.xsproj", "{FAAC947E-0355-4F8D-ADB9-C57B1C9357D2}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners", "src\Tools\VODesigners\VODesigners.xsproj", "{FAAC947E-0355-4F8D-ADB9-C57B1C9357D2}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners_tester", "src\Vs\VODesigners_tester\VODesigners_tester.xsproj", "{63D22C03-1D1A-4746-8E24-7BB1248696EE}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners_tester", "src\Tools\VODesigners_tester\VODesigners_tester.xsproj", "{63D22C03-1D1A-4746-8E24-7BB1248696EE}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "CodeGenerator", "src\Tools\CodeGenerator\CodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
 EndProject

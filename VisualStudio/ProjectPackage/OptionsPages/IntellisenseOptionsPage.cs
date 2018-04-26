@@ -20,6 +20,13 @@ namespace XSharp.Project.OptionsPages
             set { completionListTabs = value; }
         }
 
+        private bool keywordsInAll = true;
+        public bool KeywordsInAll
+        {
+            get { return keywordsInAll; }
+            set { keywordsInAll = value; }
+        }
+
         private bool useDotAsUniversalSelector = false;
         public bool UseDotAsUniversalSelector
         {

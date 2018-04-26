@@ -30,6 +30,7 @@
         {
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
+            this.chkKeywordsInAll = new System.Windows.Forms.CheckBox();
             this.chkShowAfterChar = new System.Windows.Forms.CheckBox();
             this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
             this.grpCase = new System.Windows.Forms.GroupBox();
@@ -80,20 +81,32 @@
             // 
             // grpCompletionListTabs
             // 
+            this.grpCompletionListTabs.Controls.Add(this.chkKeywordsInAll);
             this.grpCompletionListTabs.Controls.Add(this.chkShowAfterChar);
             this.grpCompletionListTabs.Controls.Add(this.chkDotAsUniversalSelector);
             this.grpCompletionListTabs.Controls.Add(this.chkCompletionListtabs);
             this.grpCompletionListTabs.Location = new System.Drawing.Point(12, 6);
             this.grpCompletionListTabs.Name = "grpCompletionListTabs";
-            this.grpCompletionListTabs.Size = new System.Drawing.Size(373, 87);
+            this.grpCompletionListTabs.Size = new System.Drawing.Size(373, 103);
             this.grpCompletionListTabs.TabIndex = 0;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
             // 
+            // chkKeywordsInAll
+            // 
+            this.chkKeywordsInAll.AutoSize = true;
+            this.chkKeywordsInAll.Location = new System.Drawing.Point(13, 39);
+            this.chkKeywordsInAll.Name = "chkKeywordsInAll";
+            this.chkKeywordsInAll.Size = new System.Drawing.Size(168, 17);
+            this.chkKeywordsInAll.TabIndex = 3;
+            this.chkKeywordsInAll.Text = "Add Keywords to the mainTab";
+            this.chkKeywordsInAll.UseVisualStyleBackColor = true;
+            this.chkKeywordsInAll.CheckedChanged += new System.EventHandler(this.chkKeywordsInAll_CheckedChanged);
+            // 
             // chkShowAfterChar
             // 
             this.chkShowAfterChar.AutoSize = true;
-            this.chkShowAfterChar.Location = new System.Drawing.Point(13, 59);
+            this.chkShowAfterChar.Location = new System.Drawing.Point(13, 80);
             this.chkShowAfterChar.Name = "chkShowAfterChar";
             this.chkShowAfterChar.Size = new System.Drawing.Size(243, 17);
             this.chkShowAfterChar.TabIndex = 2;
@@ -104,7 +117,7 @@
             // chkDotAsUniversalSelector
             // 
             this.chkDotAsUniversalSelector.AutoSize = true;
-            this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 38);
+            this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 59);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
             this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(241, 17);
             this.chkDotAsUniversalSelector.TabIndex = 1;
@@ -118,7 +131,7 @@
             this.grpCase.Controls.Add(this.chkAlignDoCase);
             this.grpCase.Controls.Add(this.grpKeywordCase);
             this.grpCase.Controls.Add(this.chkIdentifierCase);
-            this.grpCase.Location = new System.Drawing.Point(12, 94);
+            this.grpCase.Location = new System.Drawing.Point(12, 115);
             this.grpCase.Name = "grpCase";
             this.grpCase.Size = new System.Drawing.Size(373, 129);
             this.grpCase.TabIndex = 1;
@@ -224,7 +237,7 @@
             // 
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
-            this.grpNavigationBars.Location = new System.Drawing.Point(12, 224);
+            this.grpNavigationBars.Location = new System.Drawing.Point(12, 245);
             this.grpNavigationBars.Name = "grpNavigationBars";
             this.grpNavigationBars.Size = new System.Drawing.Size(373, 64);
             this.grpNavigationBars.TabIndex = 2;
@@ -270,7 +283,7 @@
             this.groupBox1.Controls.Add(this.chkDisableHighlightWord);
             this.groupBox1.Controls.Add(this.chkBraceMatching);
             this.groupBox1.Controls.Add(this.chkDisableParameters);
-            this.groupBox1.Location = new System.Drawing.Point(12, 294);
+            this.groupBox1.Location = new System.Drawing.Point(12, 315);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(373, 245);
             this.groupBox1.TabIndex = 3;
@@ -447,7 +460,7 @@
             this.Controls.Add(this.grpCase);
             this.Controls.Add(this.grpCompletionListTabs);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(397, 542);
+            this.Size = new System.Drawing.Size(397, 577);
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);
@@ -495,5 +508,6 @@
         private System.Windows.Forms.CheckBox chkBraceMatching;
         private System.Windows.Forms.CheckBox chkDisableParameters;
         private System.Windows.Forms.CheckBox chkDisableCodeCompletion;
+        private System.Windows.Forms.CheckBox chkKeywordsInAll;
     }
 }

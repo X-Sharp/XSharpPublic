@@ -2145,7 +2145,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitParameter([NotNull] XP.ParameterContext context)
         {
             base.ExitParameter(context);
-            if (context.Default != null)
+            // Only apply the vulcan default parameter attribute when there
+            // are no Attributes on the parameter, such as [CallerMember]
+            if (context.Default != null && context.Attributes == null)
             {
                 AttributeSyntax attr = EncodeVulcanDefaultParameter(context.Default);
                 if (attr != null)

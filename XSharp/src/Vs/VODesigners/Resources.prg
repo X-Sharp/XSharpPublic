@@ -1,0 +1,5 @@
+STATIC CLASS Resources
+	STATIC PROPERTY EditorName AS STRING GET "VOEditors"
+	STATIC PROPERTY PropertiesCaption AS STRING GET "Properties"
+	STATIC PROPERTY ToolboxCaption AS STRING GET "Toolbox"
+END CLASS

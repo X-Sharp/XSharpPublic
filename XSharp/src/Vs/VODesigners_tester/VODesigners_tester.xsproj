@@ -3,24 +3,27 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\..\..\build\Targets\Settings.props" />
   <PropertyGroup>
-    <Name>CodeGenerator</Name>
+    <Name>VODesigners_tester</Name>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
-    <ProjectGuid>b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>63d22c03-1d1a-4746-8e24-7bb1248696ee</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CodeGenerator</RootNamespace>
-    <AssemblyName>XSharp.CodeGenerator</AssemblyName>
+    <RootNamespace>VODesigners_tester</RootNamespace>
+    <AssemblyName>VODesigners_tester</AssemblyName>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
-    <OutputName>CodeGenerator</OutputName>
-    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <OutputName>VODesigners_tester</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <StartupObject />
+    <ApplicationIcon />
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,16 +34,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>165</DisabledWarnings>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings />
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
-    <Prefer32Bit>False</Prefer32Bit>
+    <IncludePaths>$(Solutiondir)src\common</IncludePaths>
+    <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,45 +54,37 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>165</DisabledWarnings>
-    <SignAssembly>true</SignAssembly>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings />
+    <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
+    <IncludePaths>$(Solutiondir)src\common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll</HintPath>
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Start.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <None Include="VOWEDTest.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssembyInfo.prg" />
-    <Compile Include="XIDE_Buffer.prg" />
-    <Compile Include="XIDE_CodeGenerator.prg" />
-    <Compile Include="XIDE_EntityObject.prg" />
-    <Compile Include="XIDE_LineObject.prg" />
-    <Compile Include="XIDE_VulcanBuffer.prg" />
-    <Compile Include="XIDE_WordObject.prg" />
-    <Compile Include="XIDE_XSharpBuffer.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Compiler\Xsc\Xsc.csproj">
-      <Name>Xsc</Name>
-      <Project>{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}</Project>
+    <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
+      <Name>VODesigners</Name>
+      <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
@@ -100,11 +95,13 @@
     </ProjectCapabilities>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \XSharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PostBuildEvent>
+    <PreBuildEvent />
+    <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).%2a \XSharp\DevPublic\External\$(Configuration)\%2a.%2a /y</PostBuildEvent>
+    <PreBuildEvent />
+    <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

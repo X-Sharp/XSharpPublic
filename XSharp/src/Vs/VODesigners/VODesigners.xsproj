@@ -3,24 +3,49 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\..\..\build\Targets\Settings.props" />
   <PropertyGroup>
-    <Name>CodeGenerator</Name>
+    <Name>VODesigners</Name>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
-    <ProjectGuid>b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc</ProjectGuid>
+    <ProjectGuid>faac947e-0355-4f8d-adb9-c57b1c9357d2</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CodeGenerator</RootNamespace>
-    <AssemblyName>XSharp.CodeGenerator</AssemblyName>
+    <RootNamespace>XSharp.VODesigners</RootNamespace>
+    <AssemblyName>XSharp.VODesigners</AssemblyName>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
-    <OutputName>CodeGenerator</OutputName>
+    <OutputName>VODesigners</OutputName>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <LB>false</LB>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <INS>false</INS>
+    <NS>true</NS>
+    <VO1>false</VO1>
+    <VO2>false</VO2>
+    <VO3>true</VO3>
+    <VO4>false</VO4>
+    <VO5>false</VO5>
+    <VO6>false</VO6>
+    <VO7>false</VO7>
+    <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>false</VO13>
+    <VO14>false</VO14>
+    <VO15>false</VO15>
+    <VO16>false</VO16>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <StartupObject />
+    <ApplicationIcon />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,15 +56,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>165</DisabledWarnings>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>165,649,170</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
+    <IncludePaths>$(Solutiondir)src\common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -51,47 +76,57 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>165</DisabledWarnings>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
+    <IncludePaths>$(Solutiondir)src\common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll</HintPath>
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base.prg" />
+    <Compile Include="ControlOrder.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls.prg" />
+    <Compile Include="EntityParser.prg" />
+    <Compile Include="FillUsing.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Funcs.prg" />
+    <Compile Include="Properties.prg" />
+    <Compile Include="Properties\AssembyInfo.prg" />
+    <Compile Include="PropGrid.prg" />
+    <Compile Include="Resources.prg" />
+    <Compile Include="Template.prg" />
+    <Compile Include="ToolBox.prg" />
+    <Compile Include="Various.prg" />
+    <Compile Include="VODBServerEditor.prg" />
+    <Compile Include="VODBServerEditorIO.prg" />
+    <Compile Include="VOEditorsShared.prg" />
+    <Compile Include="VOFieldSpecEditor.prg" />
+    <Compile Include="VOFieldSpecEditorIO.prg" />
+    <Compile Include="VOMenuEditor.prg" />
+    <Compile Include="VOMenuEditorIO.prg" />
+    <Compile Include="VOWEDControl.prg" />
+    <Compile Include="VOWindowEditor.prg" />
+    <Compile Include="VOWindowEditorIO.prg" />
+    <Compile Include="Editor.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssembyInfo.prg" />
-    <Compile Include="XIDE_Buffer.prg" />
-    <Compile Include="XIDE_CodeGenerator.prg" />
-    <Compile Include="XIDE_EntityObject.prg" />
-    <Compile Include="XIDE_LineObject.prg" />
-    <Compile Include="XIDE_VulcanBuffer.prg" />
-    <Compile Include="XIDE_WordObject.prg" />
-    <Compile Include="XIDE_XSharpBuffer.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Compiler\Xsc\Xsc.csproj">
-      <Name>Xsc</Name>
-      <Project>{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

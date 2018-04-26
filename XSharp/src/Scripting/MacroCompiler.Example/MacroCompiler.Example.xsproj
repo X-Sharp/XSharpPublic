@@ -93,13 +93,6 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>

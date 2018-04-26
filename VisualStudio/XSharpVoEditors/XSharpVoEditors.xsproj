@@ -103,19 +103,19 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="VulcanDesigners2015, Version=4.0.401.0, Culture=neutral, PublicKeyToken=0e73a8bf006af00c">
-      <Name>VulcanDesigners2015</Name>
-      <AssemblyName>VulcanDesigners2015.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\PrivateAssemblies\VulcanDesigners2015.dll</HintPath>
-    </Reference>
     <Reference Include="XSharp.CodeGenerator, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21">
       <Name>XSharp.CodeGenerator</Name>
       <AssemblyName>XSharp.CodeGenerator.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <HintPath>..\..\External\Debug\XSharp.CodeGenerator.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VODesigners, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21">
+      <Name>XSharp.VODesigners</Name>
+      <AssemblyName>XSharp.VODesigners.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\External\Debug\XSharp.VODesigners.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

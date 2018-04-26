@@ -4,6 +4,8 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 USING XSharpModel
+using XSharp.VODesigners
+
 BEGIN NAMESPACE XSharp.VOEditors
 
 CLASS XSharpDesignWindowItem inherit DesignWindowItem

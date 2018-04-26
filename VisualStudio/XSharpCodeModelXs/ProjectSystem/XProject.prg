@@ -107,7 +107,9 @@ begin namespace XSharpModel
 					endif
 				next
 				foreach path as string in Loaded
-					self:_unprocessedAssemblyReferences:Remove(path)
+					if self:_unprocessedAssemblyReferences:ContainsKey(path)
+						self:_unprocessedAssemblyReferences:Remove(path)
+					endif
 				next
 			endif
 			return 

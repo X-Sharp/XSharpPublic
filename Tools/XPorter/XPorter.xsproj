@@ -52,9 +52,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk </AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <EmitDebugInformation>true</EmitDebugInformation>
@@ -73,9 +73,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk </AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <DefineConstants>DEBUG;TRACE</DefineConstants>

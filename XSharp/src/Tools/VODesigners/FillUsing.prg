@@ -20,16 +20,16 @@ CLASS FillUsingClass
 	RETURN
 	METHOD ToString() AS STRING
 		LOCAL cRet AS STRING
-		DO CASE
-		CASE SELF:eType == FillUsingType.UseArray
+		SWITCH SELF:eType 
+		CASE FillUsingType.UseArray
 			cRet := SELF:cValue
-		CASE SELF:eType == FillUsingType.UseMethod
+		CASE FillUsingType.UseMethod
 			cRet := "SELF:" + SELF:cValue + "()"
-		CASE SELF:eType == FillUsingType.UseServer
+		CASE FillUsingType.UseServer
 			cRet := SELF:cValue + "{} , #"
 			cRet += SELF:cField1 + " , #"
 			cRet += SELF:cField2
-		END CASE
+		END SWITCH
 	RETURN cRet
 	
 END CLASS
@@ -70,19 +70,19 @@ CONSTRUCTOR(cControl AS STRING , _oValue AS FillUsingClass)
 		SELF:oValue := FillUsingClass{}
 	ENDIF
 	
-	DO CASE
-	CASE SELF:oValue:eType == FillUsingType.UseArray
+	SWITCH SELF:oValue:eType 
+	CASE FillUsingType.UseArray
 		SELF:oUseArrayRadio:Checked := TRUE
 		SELF:oValueTextBox:Text := SELF:oValue:cValue
-	CASE SELF:oValue:eType == FillUsingType.UseMethod
+	CASE FillUsingType.UseMethod
 		SELF:oUseMethodRadio:Checked := TRUE
 		SELF:oValueTextBox:Text := SELF:oValue:cValue
-	CASE SELF:oValue:eType == FillUsingType.UseServer
+	CASE FillUsingType.UseServer
 		SELF:oServerCombo:Text := SELF:oValue:cValue
 		SELF:oField1Combo:Text := SELF:oValue:cField1
 		SELF:oField2Combo:Text := SELF:oValue:cField2
 		SELF:oUseServerRadio:Checked := TRUE
-	END CASE
+	END SWITCH
 	
 	SELF:ShowControls()
 

@@ -778,26 +778,26 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL aDesign := ArrayList{} AS ArrayList
 		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL n,m AS INT
-		DO CASE
-		CASE eType == DBServerItemType.DBServer
+		SWITCH eType
+		CASE DBServerItemType.DBServer
 			aDesign:Add(SELF:oMainDesign)
-		CASE eType == DBServerItemType.Field
+		CASE DBServerItemType.Field
 			FOR n := 0 UPTO SELF:oFieldList:Items:Count - 1
 				aDesign:Add(((DBEDesignListViewItem)SELF:oFieldList:Items[n]):oDesign)
 			NEXT
-		CASE eType == DBServerItemType.Index
+		CASE DBServerItemType.Index
 			FOR n := 0 UPTO SELF:oIndexList:Items:Count - 1
 				oDesign := ((DBEDesignListViewItem)SELF:oIndexList:Items[n]):oDesign
 				aDesign:Add(oDesign)
 			NEXT
-		CASE eType == DBServerItemType.Order
+		CASE DBServerItemType.Order
 			FOR n := 0 UPTO SELF:oIndexList:Items:Count - 1
 				oDesign := ((DBEDesignListViewItem)SELF:oIndexList:Items[n]):oDesign
 				FOR m := 0 UPTO oDesign:aOrders:Count - 1
 					aDesign:Add((DBEDesignDBServer)oDesign:aOrders[m])
 				NEXT
 			NEXT
-		END CASE
+		END SWITCH
 	RETURN aDesign		
 
 	METHOD GetAllDesignItems() AS ArrayList
@@ -954,29 +954,29 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , cProp , oValue})
 			IF cProp == "type"
 				LOCAL nLength,nDecimal AS INT
-				DO CASE
-				CASE (INT)oValue == 0
+				SWITCH (INT)oValue 
+				CASE 0
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 1
+				CASE 1
 					nLength := 12
 					nDecimal := 2
-				CASE (INT)oValue == 2
+				CASE 2
 					nLength := 8
 					nDecimal := 0
-				CASE (INT)oValue == 3
+				CASE 3
 					nLength := 1
 					nDecimal := 0
-				CASE (INT)oValue == 4
+				CASE 4
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 5
+				CASE 5
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 6
+				CASE 6
 					nLength := 8
 					nDecimal := 0
-				END CASE
+				END SWITCH
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "Len" , nLength})
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "Dec" , nDecimal})
 				oDesign:GetProperty("Len"):lReadOnly := (INT)oValue > 1
@@ -1040,9 +1040,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL oRet AS OBJECT
 		LOCAL eType AS DBServerItemType
 
-		DO CASE
+		SWITCH eAction
 
-		CASE eAction == DesignerBasicActionType.Create
+		CASE DesignerBasicActionType.Create
 			cGuid := uData:cGuid
 			IF cGuid == NULL
 				cGuid := Guid.NewGuid():ToString()
@@ -1114,7 +1114,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			ENDIF
 //			SELF:AddAffected(oDesign)
 
-		CASE eAction == DesignerBasicActionType.Remove
+		CASE DesignerBasicActionType.Remove
 			cGuid := uData:cGuid
 			oDesign := SELF:GetDesignItemFromGuid(cGuid)
 			nIndex := oDesign:oItem:Index
@@ -1167,7 +1167,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				oAction:aRedo:Add(oRedo)
 			ENDIF
 
-		CASE eAction == DesignerBasicActionType.SetIndex
+		CASE DesignerBasicActionType.SetIndex
 			LOCAL lModified AS LOGIC
 			lModified := FALSE
 			nIndex := (INT)uData:oData
@@ -1214,7 +1214,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 //				SELF:AddAffected(oDesign)
 			ENDIF
 	
-		CASE eAction == DesignerBasicActionType.SetProperty
+		CASE DesignerBasicActionType.SetProperty
 			oDesign := SELF:GetDesignItemFromGuid(uData:cGuid)
 			oProp := oDesign:GetProperty(uData:cData)
 			IF !oProp:TextValue == oProp:GetTextValue(uData:oData) .or. oProp:Name == "type"
@@ -1235,7 +1235,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 //				SELF:AddAffected(oDesign)
 			ENDIF
 	
-		END CASE
+		END SWITCH
 
 		oAction:lExecuted := TRUE
 
@@ -1249,23 +1249,20 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
 		SELF:BeginAction()
 
-		DO CASE
-		CASE eAction == DesignerActionType.SelectAll
-			
-		CASE eAction == DesignerActionType.RemoveSelected
-
-		CASE eAction == DesignerActionType.DeSelectAll
-
-		CASE eAction == DesignerActionType.Cut
-		CASE eAction == DesignerActionType.Copy
-		CASE eAction == DesignerActionType.Paste
-
-		CASE eAction == DesignerActionType.Undo
+		SWITCH eAction
+		CASE DesignerActionType.SelectAll
+		CASE DesignerActionType.RemoveSelected
+		CASE DesignerActionType.DeSelectAll
+		CASE DesignerActionType.Cut
+		CASE DesignerActionType.Copy
+		CASE DesignerActionType.Paste
+            nop
+		CASE DesignerActionType.Undo
 			SELF:Undo()
-		CASE eAction == DesignerActionType.Redo
+		CASE DesignerActionType.Redo
 			SELF:Redo()
 
-		END CASE
+		END SWITCH
 
 		SELF:EndAction()
 
@@ -1465,17 +1462,17 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL cValue AS STRING
 		LOCAL dbfpath,dbfname AS STRING
 
-		DO CASE
-		CASE eType == DBServerItemType.Field
+		SWITCH eType
+		CASE DBServerItemType.Field
 			aDesign := SELF:GetAllIncludedFields()
 			cMacro := VODBServerEditor.Template:cFieldDesc
-		CASE eType == DBServerItemType.Index
+		CASE DBServerItemType.Index
 			aDesign := SELF:GetAllDesignItems(DBServerItemType.Index)
 			cMacro := VODBServerEditor.Template:cIndexList
-		CASE eType == DBServerItemType.Order
+		CASE DBServerItemType.Order
 			aDesign := oIndex:aOrders
 			cMacro := VODBServerEditor.Template:cOrderList
-		END CASE
+		END SWITCH
 
 		FOR m := 0 UPTO aDesign:Count - 1
 			oDesign := (DBEDesignDBServer)aDesign[m]

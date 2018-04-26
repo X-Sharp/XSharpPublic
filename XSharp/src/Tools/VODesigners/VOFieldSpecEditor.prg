@@ -169,29 +169,29 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , cProp , oValue})
 			IF cProp == "type"
 				LOCAL nLength,nDecimal AS INT
-				DO CASE
-				CASE (INT)oValue == 0
+				SWITCH  (INT)oValue 
+				CASE 0
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 1
+				CASE 1
 					nLength := 12
 					nDecimal := 2
-				CASE (INT)oValue == 2
+				CASE 2
 					nLength := 8
 					nDecimal := 0
-				CASE (INT)oValue == 3
+				CASE 3
 					nLength := 1
 					nDecimal := 0
-				CASE (INT)oValue == 4
+				CASE 4
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 5
+				CASE 5
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 6
+				CASE 6
 					nLength := 8
 					nDecimal := 0
-				END CASE
+				END SWITCH
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "Len" , nLength})
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "Dec" , nDecimal})
 				oDesign:GetProperty("Len"):lReadOnly := (INT)oValue > 1
@@ -215,11 +215,17 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 		LOCAL oDesign AS FSEDesignFieldSpec
 		oDesign :=(FSEDesignFieldSpec)_oDesign
 		
-		DO CASE
-		CASE oProp:Name == "classname" .or. oProp:Name == "type" .or. oProp:Name == "dec" .or. oProp:Name == "len" .or. ;
-				oProp:Name == "picture" .or. oProp:Name == "required" .or. oProp:Name == "minlen" .or. oProp:Name == "validation"
+		switch oProp:Name 
+        case "classname" 
+        case "type" 
+        case "dec" 
+        case "len" 
+	    case "picture" 
+        case "required" 
+        case "minlen" 
+        case "validation"
 			oDesign:oItem:SetValues()
-		END CASE
+		end switch
 		
 	RETURN
 	
@@ -312,8 +318,8 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 		LOCAL oRet AS OBJECT
 		LOCAL n AS INT
 
-		DO CASE
-		CASE eAction == DesignerBasicActionType.Create
+		SWITCH eAction
+		CASE DesignerBasicActionType.Create
 			cGuid := uData:cGuid
 			IF cGuid == NULL
 				cGuid := Guid.NewGuid():ToString()
@@ -351,7 +357,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				END DO
 			ENDIF
 			
-		CASE eAction == DesignerBasicActionType.Remove
+		CASE DesignerBasicActionType.Remove
 			cGuid := uData:cGuid
 			oDesign := SELF:GetDesignItemFromGuid(cGuid)
 			LOCAL nIndex AS INT
@@ -386,7 +392,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				oAction:aRedo:Add(oRedo)
 			ENDIF
 
-		CASE eAction == DesignerBasicActionType.SetProperty
+		CASE DesignerBasicActionType.SetProperty
 			oDesign := SELF:GetDesignItemFromGuid(uData:cGuid)
 			oProp := oDesign:GetProperty(uData:cData)
 			IF !oProp:TextValue == oProp:GetTextValue(uData:oData)
@@ -407,7 +413,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 //				SELF:AddAffected(oDesign)
 			ENDIF
 	
-		END CASE
+		END SWITCH
 
 		oAction:lExecuted := TRUE
 
@@ -421,23 +427,20 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 
 		SELF:BeginAction()
 
-		DO CASE
-		CASE eAction == DesignerActionType.SelectAll
-			
-		CASE eAction == DesignerActionType.RemoveSelected
-
-		CASE eAction == DesignerActionType.DeSelectAll
-
-		CASE eAction == DesignerActionType.Cut
-		CASE eAction == DesignerActionType.Copy
-		CASE eAction == DesignerActionType.Paste
-
-		CASE eAction == DesignerActionType.Undo
+		SWITCH eAction
+		CASE DesignerActionType.SelectAll
+		CASE DesignerActionType.RemoveSelected
+		CASE DesignerActionType.DeSelectAll
+		CASE DesignerActionType.Cut
+		CASE DesignerActionType.Copy
+		CASE DesignerActionType.Paste
+            nop
+		CASE DesignerActionType.Undo
 			SELF:Undo()
-		CASE eAction == DesignerActionType.Redo
+		CASE DesignerActionType.Redo
 			SELF:Redo()
 
-		END CASE
+		END SWITCH
 
 		SELF:EndAction()
 
@@ -1248,12 +1251,12 @@ CLASS FieldSpecCode
 			    	LOOP
 			    ENDIF
 			    cUpper := cLine:Trim():ToUpper()
-			    DO CASE
-			    CASE cUpper == "[CLASS]"
+			    SWITCH cUpper
+			    CASE "[CLASS]"
 			    	aRead := SELF:aClass
-			    CASE cUpper == "[INIT]"
+			    CASE "[INIT]"
 			    	aRead := SELF:aInit
-			    CASE cUpper == "[DBSERVER]"
+			    CASE "[DBSERVER]"
 			    	aRead := NULL
 				OTHERWISE
 					IF aRead != NULL
@@ -1265,7 +1268,7 @@ CLASS FieldSpecCode
 							aRead:Add(cLine)
 						END IF
 					ENDIF
-			    ENDCASE
+			    END SWITCH
 			END DO
 			oStream:Close()
 			RETURN TRUE
@@ -1294,18 +1297,18 @@ CLASS FSETextBox INHERIT TextBox
 	RETURN
 	PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 		SUPER:OnKeyDown(e)
-		DO CASE
-		CASE e:KeyData==Keys.Enter
+		SWITCH e:KeyData
+		CASE Keys.Enter
 			IF SELF:Text:Trim()==""
 				RETURN
 			END IF
 			SELF:oList:AcceptEdit()
 			SELF:Hide()
-		CASE e:KeyData==Keys.Escape
+		CASE Keys.Escape
 			SELF:Text := ""
 			SELF:oList:CancelEdit()
 			SELF:Hide()
-		END CASE
+		END SWITCH
 	RETURN
 	PROTECTED METHOD OnKeyPress(e AS KeyPressEventArgs) AS VOID
 		SUPER:OnKeyPress(e)

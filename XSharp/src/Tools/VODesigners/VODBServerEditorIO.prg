@@ -210,14 +210,14 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
 		oXmlNode := oMainNode:FirstChild
 		DO WHILE oXmlNode != NULL
-			DO CASE
-			CASE oXmlNode:Name:ToUpper() == "FIELDS"
+			SWITCH oXmlNode:Name:ToUpper() 
+			CASE "FIELDS"
 				oSubNode := oXmlNode:FirstChild
 				DO WHILE oSubNode != NULL
 					SELF:OpenXmlField(oSubNode , cModule)
 					oSubNode := oSubNode:NextSibling
 				END DO
-			CASE oXmlNode:Name:ToUpper() == "INDEXES"
+			CASE "INDEXES"
 				oSubNode := oXmlNode:FirstChild
 				DO WHILE oSubNode != NULL
 					SELF:OpenXmlIndex(oSubNode)
@@ -225,7 +225,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				END DO
 			OTHERWISE
 				Funcs.ReadXmlProperty(oXmlNode , SELF:oMainDesign)
-			END CASE
+			END SWITCH
 			
 			oXmlNode := oXmlNode:NextSibling
 		END DO
@@ -554,14 +554,15 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			NEXT
 			
 			cValue := oDesign:GetProperty("Type"):TextValue:ToUpper()
-			DO CASE
-			CASE cValue == "CHARACTER" .or. cValue == "MEMO"
+			SWITCH cValue
+			case "CHARACTER" 
+            CASE "MEMO"
 				cValue := "STRING"
-			CASE cValue == "NUMERIC"
+			CASE "NUMERIC"
 				cValue := "FLOAT"
 			OTHERWISE
 				cValue := "USUAL"
-			END CASE
+			END SWITCH
 			aValues:Add("usualtype" , cValue)
 			
 			FOR k := 0 UPTO VODBServerEditor.Template:aAccessAssign:Count - 1

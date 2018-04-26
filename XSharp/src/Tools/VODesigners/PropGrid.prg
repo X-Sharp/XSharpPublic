@@ -151,7 +151,6 @@ CLASS DesignerGrid INHERIT Panel
 	METHOD Fill(_aSelected AS ArrayList) AS VOID
 		LOCAL oDesign AS DesignItem
 		LOCAL aProperties AS ArrayList
-		LOCAL oProp AS DesignProperty
 		LOCAL lSkip AS LOGIC
 		LOCAL n,m AS INT
 		
@@ -174,8 +173,7 @@ CLASS DesignerGrid INHERIT Panel
 			SELF:oHierarchy:SelectedIndex := 0
 		END IF
 
-		FOR n := 0 UPTO oDesign:aProperties:Count - 1
-			oProp := (DesignProperty)oDesign:aProperties[n]
+		FOREACH oProp AS DesignProperty IN oDesign:aProperties
 			lSkip := FALSE
 			IF oProp:cPage:ToUpper() == SELF:cPage:ToUpper()
 				IF SELF:aSelected:Count > 1
@@ -276,8 +274,8 @@ CLASS PropertyPanel INHERIT PictureBox
 	METHOD EventButtonClicked(o AS OBJECT,e AS EventArgs) AS VOID
 		SELF:oProperty := (VODesignProperty)SELF:aProperties[SELF:nCurY]
 		IF SELF:oProperty:cSpecialClass != NULL
-			DO CASE
-			CASE SELF:oProperty:cSpecialClass == "Color" //.or. SELF:oProperty:cSpecialClass == "Brush"
+			SWITCH  SELF:oProperty:cSpecialClass 
+			CASE "Color" //.or. SELF:oProperty:cSpecialClass == "Brush"
 				LOCAL oColorDlg AS ColorDialog
 				oColorDlg := ColorDialog{}
 				IF SELF:oProperty:Value:GetType() == TypeOf(Color)
@@ -286,7 +284,7 @@ CLASS PropertyPanel INHERIT PictureBox
 				IF oColorDlg:ShowDialog() == DialogResult.OK
 					SELF:SetProperty(oColorDlg:Color)
 				ENDIF
-			CASE SELF:oProperty:cSpecialClass == "Font"
+			CASE "Font"
 				LOCAL oFontDlg AS FontDialog
 				oFontDlg := FontDialog{}
 				IF SELF:oProperty:Value:GetType() == TypeOf(Font)
@@ -296,7 +294,7 @@ CLASS PropertyPanel INHERIT PictureBox
 					SELF:SetProperty(oFontDlg:Font)
 				ENDIF
 
-			CASE SELF:oProperty:cSpecialClass == "FillUsing"
+			CASE "FillUsing"
 				LOCAL oUsingDlg AS FillUsingPickerDlg
 				IF SELF:oProperty:Value:GetType() == TypeOf(FillUsingClass)
 					oUsingDlg := FillUsingPickerDlg{"" , (FillUsingClass)SELF:oProperty:Value}
@@ -311,14 +309,14 @@ CLASS PropertyPanel INHERIT PictureBox
 					ENDIF
 				ENDIF
 
-			CASE SELF:oProperty:cSpecialClass == "__MenuAccelerator"
+			CASE "__MenuAccelerator"
 				LOCAL oAccelDlg AS AccelSelectDlg
 				oAccelDlg := AccelSelectDlg{(MenuAccelerator)SELF:oProperty:Value}
 				IF oAccelDlg:ShowDialog() == DialogResult.OK
 					SELF:SetProperty(oAccelDlg:oAccelerator)
 					SELF:Invalidate()
 				ENDIF
-			END CASE
+			END SWITCH
 			
 		ELSEIF SELF:oProperty:Type == PropertyType.Callback
 			
@@ -368,7 +366,7 @@ CLASS PropertyPanel INHERIT PictureBox
 		oGraphics := e:Graphics
 		oFont := SELF:Font
 		oBlackPen := Pen{Color.Black}
-		FOR n := 0 UPTO SELF:aProperties:Count - 1
+		FOR  n := 0 UPTO SELF:aProperties:Count - 1
 			oProp := (DesignProperty)SELF:aProperties[n]
 			cText := oProp:Caption
 			IF SELF:nCurX == 1 .and. SELF:nCurY == n
@@ -408,36 +406,37 @@ CLASS PropertyPanel INHERIT PictureBox
 
 	PROTECTED METHOD DummyPreviewKeyDown(o AS OBJECT , e AS PreviewKeyDownEventArgs) AS VOID
 
-		DO CASE
-		CASE e:KeyData == Keys.Left
+		SWITCH e:KeyData 
+		CASE Keys.Left
 			IF SELF:nCurX == 2
 				SELF:nCurX := 1
 			END IF
-		CASE e:KeyData == Keys.Right
+		CASE Keys.Right
 			IF SELF:nCurX == 1
 				SELF:nCurX := 2
 			END IF
-		CASE e:KeyData == Keys.Up
+		CASE Keys.Up
 			IF SELF:nCurY > 0
 				SELF:nCurY -= 1
 			END IF
-		CASE e:KeyData == Keys.Down
+		CASE Keys.Down
 			IF SELF:nCurY < SELF:aProperties:Count - 1
 				SELF:nCurY += 1
 			END IF
-		CASE e:KeyData == Keys.Home
+		CASE Keys.Home
 			SELF:nCurY := 0
-		CASE e:KeyData == Keys.End
+		CASE Keys.End
 			SELF:nCurY := SELF:aProperties:Count - 1
-		CASE e:KeyData == Keys.Prior
+		CASE Keys.Prior
 			SELF:nCurY := 0
-		CASE e:KeyData == Keys.Next
+		CASE Keys.Next
 			SELF:nCurY := SELF:aProperties:Count - 1
-		CASE e:KeyData == Keys.Enter .or. e:KeyData == Keys.F2
+		case Keys.Enter 
+        case Keys.F2
 			IF SELF:nCurX == 2
 				SELF:ShowControl()
 			ENDIF
-		END CASE
+		END SWITCH
 		SELF:Invalidate()
 		SELF:ShowButton()
 		
@@ -504,8 +503,9 @@ CLASS PropertyPanel INHERIT PictureBox
 			RETURN
 		END IF
 		
-		DO CASE
-		CASE SELF:oProperty:Type == PropertyType.Numeric .or. SELF:oProperty:Type == PropertyType.Text
+		SWITCH SELF:oProperty:Type 
+		case PropertyType.Numeric 
+        CASE PropertyType.Text
 			SELF:oEdit:Text := SELF:oProperty:TextValue
 			SELF:oEdit:oProperty := SELF:oProperty
 /*			SELF:oEdit:lOnlyNumbers := SELF:oProperty:Type == PropertyType.Number
@@ -514,8 +514,8 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:oEdit:Width := SELF:Width - SELF:nSplit
 			SELF:oEdit:Show(SELF:lMultiple , SELF:oProperty:Name != "validation") // HACK
 //		CASE SELF:oProperty:Type == PropertyType.Boolean .or. ;
-		CASE SELF:oProperty:Type == PropertyType.Enumerated .or. ;
-				SELF:oProperty:Type == PropertyType.Type
+		CASE PropertyType.Enumerated 
+	    CASE PropertyType.Type
 //			SELF:oCombo:DropDownStyle := ComboBoxStyle.DropDownList
 			SELF:oCombo:Location := Point{SELF:nSplit + 1 , SELF:nCurY * SELF:nItemHeight + 1}
 			SELF:oCombo:Width := SELF:Width - SELF:nSplit
@@ -562,7 +562,7 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:oCombo:oProperty := SELF:oProperty
 			SELF:oCombo:Show(SELF:lMultiple)
 			SELF:oCombo:DroppedDown := TRUE
-		END CASE
+		END SWITCH
 	RETURN
 	
 	METHOD ShowButton() AS VOID
@@ -698,16 +698,16 @@ METHOD Show(_lMultiple AS LOGIC) AS VOID
 RETURN
 PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 	SUPER:OnKeyDown(e)
-	DO CASE
-	CASE e:KeyData==Keys.Escape
+	SWITCH e:KeyData
+	CASE Keys.Escape
 		SELF:lCanceled := TRUE
 		SELF:Hide()
-	CASE e:KeyData==Keys.Enter
+	CASE Keys.Enter
 //		IF SELF:oProperty:lAllowNULL .or. !AllTrim(SELF:Text) == ""
 			SELF:SetProperty()
 			SELF:Hide()
 //		END IF
-	END CASE
+	END SWITCH
 RETURN
 PROTECTED METHOD OnLostFocus(e AS EventArgs) AS VOID
 	SUPER:OnLostFocus(e)

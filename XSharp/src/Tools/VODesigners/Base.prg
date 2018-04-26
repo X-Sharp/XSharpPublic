@@ -470,57 +470,59 @@ CLASS WindowDesignerBase INHERIT DesignerBase
 	STATIC METHOD HandleWndProc(oDesign AS DesignWindowItem , m REF Message) AS LOGIC
 	LOCAL oPoint AS Point
 	
-	DO CASE
-	CASE m:Msg == WM_SETFOCUS
+	SWITCH m:Msg
+	CASE WM_SETFOCUS
 		RETURN TRUE
-	CASE m:Msg == WM_NCHITTEST
+	CASE WM_NCHITTEST
 //		m:Result := 0x12
 		m:Result := 0x02
 		RETURN TRUE
-	CASE m:Msg == WM_NCLBUTTONDBLCLK
+	CASE WM_NCLBUTTONDBLCLK
 		oPoint := IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDoubleClick(oDesign,MouseButtons.Left,oPoint)
 		RETURN TRUE
-	CASE m:Msg == WM_NCMOUSEMOVE
+	CASE WM_NCMOUSEMOVE
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseMove(oDesign,MouseButtons.None,oPoint)
 		RETURN TRUE
 	
-	CASE m:Msg == WM_NCLBUTTONDOWN
+	CASE WM_NCLBUTTONDOWN
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDown(oDesign,MouseButtons.Left,oPoint)
 		RETURN TRUE
-	CASE m:Msg == WM_NCLBUTTONUP
+	CASE WM_NCLBUTTONUP
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseUp(oDesign,MouseButtons.Left,oPoint)
 		RETURN TRUE
 	
-	CASE m:Msg == WM_NCRBUTTONDOWN
+	CASE WM_NCRBUTTONDOWN
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDown(oDesign,MouseButtons.Right,oPoint)
 		RETURN TRUE
-	CASE m:Msg == WM_NCMBUTTONDOWN
+	CASE WM_NCMBUTTONDOWN
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDown(oDesign,MouseButtons.Middle,oPoint)
 		RETURN TRUE
 
-	CASE m:Msg == WM_SETCURSOR
+	CASE WM_SETCURSOR
 		RETURN TRUE
 
-	END CASE
+	END SWITCH
 	
 	RETURN FALSE
 
 // make sure overflow checks are off. On a multi monitor system we may get negative screen
 // coordinates that would otherwise cause an overflow
-#pragma options("ovf", off)
+
     STATIC METHOD IntPtrToPoint(LParam AS IntPtr) AS Point
         LOCAL d := (DWORD)LParam AS DWORD
-        LOCAL Hi, Lo AS LONG
-        Hi := (SHORT) (d >> 16)
-        Lo := (SHORT) (d & 0xFFFF)
-        RETURN Point{Lo , Hi}
-#pragma options("ovf", default)
+		BEGIN UNCHECKED
+			LOCAL Hi, Lo AS LONG
+			Hi := (SHORT) (d >> 16)
+			Lo := (SHORT) (d & 0XFFFF)
+			RETURN Point{Lo , Hi}
+		END UNCHECKED
+
 END CLASS
 
 
@@ -578,22 +580,16 @@ CLASS DesignItem
 		NEXT
 	RETURN NULL
 	METHOD GetPropertyByMember(cMember AS STRING) AS VODesignProperty
-		LOCAL oProp AS VODesignProperty
-		LOCAL n AS INT
 		cMember := cMember:ToUpper()
-		FOR n := 0 UPTO SELF:aProperties:Count - 1
-			oProp := (VODesignProperty)SELF:aProperties[n]
+		FOREACH oProp AS VODesignProperty in SELF:aProperties
 			IF oProp:cMember != NULL .and. oProp:cMember:ToUpper() == cMember
 				RETURN oProp
 			ENDIF
 		NEXT
 	RETURN NULL
 	METHOD GetPropertyByMemberAndPos(cMember AS STRING , nMultiPos AS INT) AS VODesignProperty
-		LOCAL oProp AS VODesignProperty
-		LOCAL n AS INT
 		cMember := cMember:ToUpper()
-		FOR n := 0 UPTO SELF:aProperties:Count - 1
-			oProp := (VODesignProperty)SELF:aProperties[n]
+		FOREACH oProp AS VODesignProperty in SELF:aProperties
 			IF oProp:cMember != NULL .and. oProp:cMember:ToUpper() == cMember .and. oProp:nMultiPos == nMultiPos
 				RETURN oProp
 			ENDIF

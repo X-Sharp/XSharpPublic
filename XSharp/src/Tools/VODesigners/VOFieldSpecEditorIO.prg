@@ -110,22 +110,22 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 
 //		oDesign:GetProperty("Type"):Value := __ReadNextVNFsString(aBytes , nPos , 1)
 		cValue := __ReadNextVNFsString(aBytes , nPos , 1)
-		DO CASE
-		CASE cValue == "C"
+		SWITCH cValue
+		CASE "C"
 			oDesign:GetProperty("Type"):Value := 0
-		CASE cValue == "N"
+		CASE "N"
 			oDesign:GetProperty("Type"):Value := 1
-		CASE cValue == "D"
+		CASE "D"
 			oDesign:GetProperty("Type"):Value := 2
-		CASE cValue == "L"
+		CASE "L"
 			oDesign:GetProperty("Type"):Value := 3
-		CASE cValue == "M"
+		CASE "M"
 			oDesign:GetProperty("Type"):Value := 4
-		CASE cValue == "O"
+		CASE "O"
 			oDesign:GetProperty("Type"):Value := 5
-		CASE cValue == "X"
+		CASE "X"
 			oDesign:GetProperty("Type"):Value := 6
-		END CASE
+		END SWITCH
 		
 		oDesign:GetProperty("TypeDiag"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
 		oDesign:GetProperty("TypeHelp"):Value := __ReadNextVNFsString(aBytes , nPos , 64)

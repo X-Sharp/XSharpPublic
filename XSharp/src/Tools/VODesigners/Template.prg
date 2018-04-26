@@ -468,33 +468,26 @@ STATIC CLASS VOWindowEditorTemplate
 	STATIC METHOD Get(n AS INT) AS VOControlTemplate
 	RETURN (VOControlTemplate)VOWindowEditorTemplate.aControls[n]
 	STATIC METHOD Get(cControl AS STRING) AS VOControlTemplate
-		LOCAL oTemplate AS VOControlTemplate
-		LOCAL n AS INT
 		cControl := cControl:ToUpper()
-		FOR n := 0 UPTO VOWindowEditorTemplate.aControls:Count - 1
-			oTemplate := (VOControlTemplate)VOWindowEditorTemplate.aControls[n]
+		FOREACH oTemplate AS VOControlTemplate IN VOWindowEditorTemplate.aControls
 			IF oTemplate:cControl:ToUpper() == cControl
 				RETURN oTemplate
 			ENDIF
 		NEXT
 	RETURN NULL
+
 	STATIC METHOD GetFromFullClass(cFullClass AS STRING) AS VOControlTemplate
-		LOCAL oTemplate AS VOControlTemplate
-		LOCAL n AS INT
 		cFullClass := cFullClass:ToUpper()
-		FOR n := 0 UPTO VOWindowEditorTemplate.aControls:Count - 1
-			oTemplate := (VOControlTemplate)VOWindowEditorTemplate.aControls[n]
+		FOREACH oTemplate AS VOControlTemplate IN VOWindowEditorTemplate.aControls
 			IF oTemplate:cFullClass:ToUpper() == cFullClass
 				RETURN oTemplate
 			ENDIF
 		NEXT
 	RETURN NULL
+
 	STATIC METHOD GetParent(cParent AS STRING) AS VOControlTemplate
-		LOCAL oTemplate AS VOControlTemplate
-		LOCAL n AS INT
 		cParent := cParent:ToUpper()
-		FOR n := 0 UPTO VOWindowEditorTemplate.aControls:Count - 1
-			oTemplate := (VOControlTemplate)VOWindowEditorTemplate.aControls[n]
+		FOREACH oTemplate AS VOControlTemplate IN VOWindowEditorTemplate.aControls
 			IF oTemplate:cFullClass:ToUpper() == cParent
 				RETURN oTemplate
 			ENDIF

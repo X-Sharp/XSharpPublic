@@ -82,7 +82,7 @@
     <Compile Include="XIDE_CodeGenerator.prg" />
     <Compile Include="XIDE_EntityObject.prg" />
     <Compile Include="XIDE_LineObject.prg" />
-    <Compile Include="XIDE_VulcanBuffer.prg" />
+    <Compile Include="XIDE_BaseBuffer.prg" />
     <Compile Include="XIDE_WordObject.prg" />
     <Compile Include="XIDE_XSharpBuffer.prg" />
   </ItemGroup>

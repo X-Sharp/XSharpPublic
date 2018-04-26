@@ -247,8 +247,6 @@ CLASS CodeEditor
 	
 	INTERNAL METHOD FindEntityLine(cName AS STRING , cClass AS STRING , eType AS EntityType) AS INT
 		LOCAL aEntities , aDefines AS ArrayList
-		LOCAL oInfo AS ParseInfo
-		LOCAL n AS INT
 		
 		aEntities := ArrayList{}
 		aDefines := ArrayList{}
@@ -256,8 +254,7 @@ CLASS CodeEditor
 		SELF:Parse(aEntities , aDefines)
 		cName := cName:ToUpper()
 		cClass := cClass:ToUpper()
-		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+		FOREACH oInfo AS ParseInfo IN aEntities
 			IF oInfo:eType == eType .and. oInfo:cName:ToUpper() == cName .and. oInfo:cClass:ToUpper() == cClass
 				RETURN oInfo:nLine
 			ENDIF
@@ -266,9 +263,8 @@ CLASS CodeEditor
 
 	INTERNAL METHOD DeleteEntity(cName AS STRING , cClass AS STRING , eType AS EntityType) AS LOGIC
 		LOCAL aEntities , aDefines AS ArrayList
-		LOCAL oInfo AS ParseInfo
 		LOCAL nLine AS INT
-		LOCAL n,m AS INT
+		LOCAL m AS INT
 		
 		aEntities := ArrayList{}
 		aDefines := ArrayList{}
@@ -276,8 +272,7 @@ CLASS CodeEditor
 		SELF:Parse(aEntities , aDefines)
 		cName := cName:ToUpper()
 		cClass := cClass:ToUpper()
-		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+		FOREACH oInfo AS ParseInfo IN aEntities
 			IF oInfo:eType == eType .and. oInfo:cName:ToUpper() == cName .and. oInfo:cClass:ToUpper() == cClass
 				nLine := oInfo:nLine
 				FOR m := 1 UPTO oInfo:nLength
@@ -349,14 +344,14 @@ CLASS CodeEditor
 		NEXT
 		
 		IF !lProceed // Entity not found to replace, try to create from scratch
-			DO CASE
-			CASE eType == EntityType._Class // Create the class at the end of the file
+			SWITCH eType
+			CASE EntityType._Class // Create the class at the end of the file
 				lProceed := TRUE
 				nInsert := SELF:aLines:Count
 				aEntity:Insert(0 , "")
 				aEntity:Add("")
 				aEntity:Add("END CLASS")
-			CASE eType == EntityType._Constructor // Create it, after the class definition
+			CASE EntityType._Constructor // Create it, after the class definition
 				FOR n := 0 UPTO aEntities:Count - 1
 					oInfo := (ParseInfo)aEntities[n]
 					IF oInfo:eType == EntityType._Class .and. oInfo:cName:ToUpper() == cClass .and. oInfo:cClass:ToUpper() == cClass
@@ -365,7 +360,9 @@ CLASS CodeEditor
 						EXIT
 					ENDIF
 				NEXT
-			CASE eType == EntityType._Access .or. eType == EntityType._Assign .or. eType == EntityType._Method // Create it, at the end of the class
+			case EntityType._Access 
+            case EntityType._Assign 
+            CASE EntityType._Method // Create it, at the end of the class
 				FOR n := 0 UPTO aEntities:Count - 1
 					oInfo := (ParseInfo)aEntities[n]
 					IF oInfo:cClass:ToUpper() == cClass
@@ -373,7 +370,7 @@ CLASS CodeEditor
 						nInsert := oInfo:nLine + oInfo:nLength - 1
 					ENDIF
 				NEXT
-			END CASE
+			END SWITCH
 		ENDIF
 
 		IF lProceed
@@ -386,10 +383,8 @@ CLASS CodeEditor
 
 	INTERNAL METHOD AddEntity(cName AS STRING , cClass AS STRING , eType AS EntityType , aEntity AS List<STRING>) AS LOGIC
 		LOCAL aEntities , aDefines AS ArrayList
-		LOCAL oInfo AS ParseInfo
 		LOCAL lProceed AS LOGIC
 		LOCAL nInsert AS INT
-		LOCAL n AS INT
 		
 		aEntities := ArrayList{}
 		aDefines := ArrayList{}
@@ -397,15 +392,13 @@ CLASS CodeEditor
 		SELF:Parse(aEntities , aDefines)
 		cName := cName:ToUpper()
 		cClass := cClass:ToUpper()
-		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+		FOREACH oInfo AS ParseInfo IN aEntities
 			IF oInfo:eType == eType .and. oInfo:cName:ToUpper() == cName .and. oInfo:cClass:ToUpper() == cClass
 				RETURN TRUE
 			ENDIF
 		NEXT
 		
-		FOR n := 0 UPTO aEntities:Count - 1 // find last entity in class
-			oInfo := (ParseInfo)aEntities[n]
+		FOREACH oInfo AS ParseInfo IN aEntities
 			IF oInfo:cClass:ToUpper() == cClass
 				lProceed := TRUE
 				nInsert := oInfo:nLine + oInfo:nLength - 1
@@ -413,7 +406,7 @@ CLASS CodeEditor
 		NEXT
 
 		IF lProceed
-			FOR n := 0 UPTO aEntity:Count - 1
+			FOR VAR n := 0 UPTO aEntity:Count - 1
 				SELF:aLines:Insert(nInsert + n, aEntity[n])
 			NEXT
 		END IF
@@ -422,17 +415,14 @@ CLASS CodeEditor
 
 	INTERNAL METHOD GetLastClassLine(cClass AS STRING) AS INT
 		LOCAL aEntities , aDefines AS ArrayList
-		LOCAL oInfo AS ParseInfo
 		LOCAL nLine AS INT
-		LOCAL n AS INT
 		
 		aEntities := ArrayList{}
 		aDefines := ArrayList{}
 		
 		SELF:Parse(aEntities , aDefines)
 		cClass := cClass:ToUpper()
-		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+		FOREACH oInfo AS ParseInfo IN aEntities
 			IF oInfo:cClass:ToUpper() == cClass
 				nLine := oInfo:nLine + oInfo:nLength - 1
 			ENDIF
@@ -572,14 +562,14 @@ CLASS CodeEditor
 
 				IF state:nBracketCount == 0 .and. .not. state:lFindingType
 					IF cOldChar == '{' .or. cOldChar == '['
-						DO CASE
-						CASE cOldChar == '{'
+						SWITCH cOldChar
+						CASE '{'
 							state:cBracketOpen := '{'
 							state:cBracketClose := '}'
-						CASE cOldChar == '['
+						CASE '['
 							state:cBracketOpen := '['
 							state:cBracketClose := ']'
-						END CASE
+						END SWITCH
 						state:nBracketCount := 1
 					END IF
 				END IF
@@ -721,21 +711,24 @@ CLASS CodeEditor
 					IF .not. lIntellisense
 						cModifiers += cUpperWord + " "
 					END IF
-					DO CASE
-					CASE cUpperWord == "PROTECT" .or. cUpperWord == "PROTECTED" .or. cUpperWord == "INSTANCE"
+					SWITCH cUpperWord
+					case "PROTECT" 
+                    case "PROTECTED" 
+                    case "INSTANCE"
 						eAccessLevel := AccessLevel.Protected
-					CASE cUpperWord == "HIDDEN" .or. cUpperWord == "PRIVATE"
+					case "HIDDEN" 
+                    case "PRIVATE"
 						eAccessLevel := AccessLevel.Hidden
-					CASE cUpperWord == "INTERNAL"
+					CASE "INTERNAL"
 						eAccessLevel := AccessLevel.Internal
-					CASE cUpperWord == "STATIC"
+					CASE "STATIC"
 						eAccessLevel := AccessLevel.Static  // must be removed
 						state:lStatic := TRUE
-					CASE cUpperWord == "CONST"
+					CASE "CONST"
 						state:lStatic := TRUE
-					CASE cUpperWord == "PARTIAL"
+					CASE "PARTIAL"
 						state:lPartial := TRUE
-					END CASE
+					END SWITCH
 					IF lIntellisense
 						IF System.Array.IndexOf(<STRING>{"PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"} , cUpperWord) != -1
 							// Allow multiple names in same line
@@ -769,21 +762,22 @@ CLASS CodeEditor
 						oInfo := ParseInfo{}
 						oInfo:eType := GetEntityType(cUpperWord)
 						IF state:lEntityIsClass
-							DO CASE
-							CASE cUpperWord == "CLASS"
+							SWITCH cUpperWord
+							CASE "CLASS"
 								oInfo:cInherit := "System.Object"
-							CASE cUpperWord == "STRUCTURE" .or. cUpperWord == "STRUCT"
+							case "STRUCTURE" 
+                            case "STRUCT"
 								oInfo:cInherit := "System.ValueType"
-							CASE cUpperWord == "DELEGATE"
+							CASE "DELEGATE"
 								oInfo:cInherit := "System.MultiCastDelegate"
 								oInfo:cRetType := "USUAL" // Default
-							CASE cUpperWord == "ENUM"
+							CASE "ENUM"
 								oInfo:cInherit := "System.Enum"
 								oInfo:cRetType := "INT"
 								cEnumType := "INT"
 							OTHERWISE
 								oInfo:cInherit := ""
-							END CASE
+							END SWITCH
 						ELSE
 							IF oInfo:eType == EntityType._Method .or. oInfo:eType == EntityType._Access .or. ;
 								oInfo:eType == EntityType._Function .or. oInfo:eType == EntityType._Global
@@ -1037,40 +1031,43 @@ CLASS CodeEditor
 
 	INTERNAL STATIC METHOD GetEntityType(cWord AS STRING) AS EntityType
 		LOCAL eType AS EntityType
-		DO CASE
-		CASE cWord == "METHOD"
+		SWITCH cWord
+		CASE "METHOD"
 			eType := EntityType._Method
-		CASE cWord == "CONSTRUCTOR"
+		CASE "CONSTRUCTOR"
 			eType := EntityType._Constructor
-		CASE cWord == "CLASS"
+		CASE "CLASS"
 			eType := EntityType._Class
-		CASE cWord == "DESTRUCTOR"
+		CASE "DESTRUCTOR"
 			eType := EntityType._Destructor
-		CASE cWord == "ACCESS"
+		CASE "ACCESS"
 			eType := EntityType._Access
-		CASE cWord == "ASSIGN"
+		CASE "ASSIGN"
 			eType := EntityType._Assign
-		CASE cWord == "FUNCTION" .or. cWord == "FUNC"
+		case "FUNCTION" 
+        CASE "FUNC"
 			eType := EntityType._Function
-		CASE cWord == "PROCEDURE" .or. cWord == "PROC"
+		case "PROCEDURE" 
+        CASE "PROC"
 			eType := EntityType._Function
-		CASE cWord == "ENUM"
+		CASE "ENUM"
 			eType := EntityType._Enum
-		CASE cWord == "STRUCTURE" .or. cWord == "STRUCT"
+		case "STRUCTURE" 
+        case "STRUCT"
 			eType := EntityType._Structure
-		CASE cWord == "VOSTRUCT"
+		CASE "VOSTRUCT"
 			eType := EntityType._VOStruct
-		CASE cWord == "UNION"
+		CASE "UNION"
 			eType := EntityType._Union
-		CASE cWord == "GLOBAL"
+		CASE "GLOBAL"
 			eType := EntityType._Global
-		CASE cWord == "DELEGATE"
+		CASE "DELEGATE"
 			eType := EntityType._Delegate
-		CASE cWord == "EVENT"
+		CASE "EVENT"
 			eType := EntityType._Event
-		CASE cWord == "INTERFACE"
+		CASE "INTERFACE"
 			eType := EntityType._Interface
-		END CASE
+		END SWITCH
 	RETURN eType
 	
 	PROTECTED STATIC METHOD GetNameSpace(aNameSpaces AS Stack<STRING>) AS STRING

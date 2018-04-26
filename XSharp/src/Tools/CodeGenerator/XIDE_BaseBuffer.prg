@@ -4,7 +4,7 @@
 
 BEGIN NAMESPACE Xide
 
-CLASS VulcanBuffer INHERIT LanguageBuffer
+CLASS BaseBuffer INHERIT LanguageBuffer
 	
 	CONSTRUCTOR(eFileType AS FileType, _aLines AS List<LineObject>)
 		SUPER(eFileType , _aLines)
@@ -1622,46 +1622,49 @@ state:Reset()
 
 	PROTECTED STATIC METHOD GetEntityType(cWord AS STRING) AS EntityType
 		LOCAL eType AS EntityType
-		DO CASE
-		CASE cWord == "METHOD"
+		SWITCH cWord
+		CASE "METHOD"
 			eType := EntityType._Method
-		CASE cWord == "CONSTRUCTOR"
+		CASE "CONSTRUCTOR"
 			eType := EntityType._Constructor
-		CASE cWord == "CLASS"
+		CASE "CLASS"
 			eType := EntityType._Class
-		CASE cWord == "DESTRUCTOR"
+		CASE "DESTRUCTOR"
 			eType := EntityType._Destructor
-		CASE cWord == "PROPERTY"
+		CASE "PROPERTY"
 			eType := EntityType._Property
-		CASE cWord == "ACCESS"
+		CASE "ACCESS"
 			eType := EntityType._Access
-		CASE cWord == "ASSIGN"
+		CASE "ASSIGN"
 			eType := EntityType._Assign
-		CASE cWord == "FUNCTION" .or. cWord == "FUNC"
+		case "FUNCTION" 
+        CASE "FUNC"
 			eType := EntityType._Function
-		CASE cWord == "PROCEDURE" .or. cWord == "PROC"
+		case "PROCEDURE" 
+        CASE "PROC"
 			eType := EntityType._Procedure
-		CASE cWord == "ENUM"
+		CASE "ENUM"
 			eType := EntityType._Enum
-		CASE cWord == "STRUCTURE" .or. cWord == "STRUCT"
+		case "STRUCTURE" 
+        CASE "STRUCT"
 			eType := EntityType._Structure
-		CASE cWord == "VOSTRUCT"
+		CASE "VOSTRUCT"
 			eType := EntityType._VOStruct
-		CASE cWord == "UNION"
+		CASE "UNION"
 			eType := EntityType._Union
-		CASE cWord == "GLOBAL"
+		CASE "GLOBAL"
 			eType := EntityType._Global
-		CASE cWord == "DELEGATE"
+		CASE "DELEGATE"
 			eType := EntityType._Delegate
-		CASE cWord == "EVENT"
+		CASE "EVENT"
 			eType := EntityType._Event
-		CASE cWord == "INTERFACE"
+		CASE "INTERFACE"
 			eType := EntityType._Interface
-		CASE cWord == "OPERATOR"
+		CASE "OPERATOR"
 			eType := EntityType._Operator
-		CASE cWord == "DEFINE"
+		CASE "DEFINE"
 			eType := EntityType._Define
-		END CASE
+		END SWITCH
 	RETURN eType
 	
 	PROTECTED STATIC METHOD GetNameSpace(aNameSpaces AS List<STRING>) AS STRING

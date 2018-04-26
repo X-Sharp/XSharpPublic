@@ -153,25 +153,26 @@ PUBLIC STATIC PARTIAL CLASS Funcs
 
    INTERNAL STATIC METHOD StringToColor(cColor AS STRING) AS Color
       LOCAL oColor AS Color
-      oColor := Color.Empty
-      DO CASE
-      CASE cColor == "COLORBLACK"
+      SWITCH cColor
+      CASE "COLORBLACK"
          oColor := Color.Black
-      CASE cColor == "COLORBLUE"
+      CASE "COLORBLUE"
          oColor := Color.Blue
-      CASE cColor == "COLORCYAN"
+      CASE "COLORCYAN"
          oColor := Color.Cyan
-      CASE cColor == "COLORGREEN"
+      CASE "COLORGREEN"
          oColor := Color.Green
-      CASE cColor == "COLORMAGENTA"
+      CASE "COLORMAGENTA"
          oColor := Color.Magenta
-      CASE cColor == "COLORRED"
+      CASE "COLORRED"
          oColor := Color.Red
-      CASE cColor == "COLORYELLOW"
+      CASE "COLORYELLOW"
          oColor := Color.Yellow
-      CASE cColor == "COLORWHITE"
+      CASE "COLORWHITE"
          oColor := Color.White
-      END CASE
+      OTHERWISE
+         oColor := Color.Empty
+      END SWITCH
    RETURN oColor
 
    INTERNAL STATIC METHOD GetFileDir(cFileName AS STRING) AS STRING

@@ -1034,22 +1034,22 @@ PARTIAL CLASS VOFieldSpecEditor
 
 //		oItem:aProperties:Add("Type" , __ReadNextVNFsString(aBytes , nPos , 1))
 		cValue := __ReadNextVNFsString(aBytes , nPos , 1)
-		DO CASE
-		CASE cValue == "C"
+		SWITCH cValue
+		CASE "C"
 			cValue := "Character"
-		CASE cValue == "N"
+		CASE "N"
 			cValue := "Numeric"
-		CASE cValue == "D"
+		CASE "D"
 			cValue := "Date"
-		CASE cValue == "L"
+		CASE "L"
 			cValue := "Logic"
-		CASE cValue == "M"
+		CASE "M"
 			cValue := "Memo"
-		CASE cValue == "O"
+		CASE "O"
 			cValue := "OLE"
-		CASE cValue == "X"
+		CASE "X"
 			cValue := "Multimedia"
-		END CASE
+		END SWITCH
 		oItem:aProperties:Add("Type" , cValue)
 		
 		oItem:aProperties:Add("TypeDiag" , __ReadNextVNFsString(aBytes , nPos , 128))

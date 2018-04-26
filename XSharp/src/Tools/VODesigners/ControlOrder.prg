@@ -282,10 +282,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		END IF
 	RETURN
 	PROTECTED METHOD GetItem(oDesign AS DesignItem) AS ListViewItem
-		LOCAL oItem AS ListViewItem
-		LOCAL n AS INT
-		FOR n := 0 UPTO SELF:oControlsList:Items:Count - 1
-			oItem := SELF:oControlsList:Items[n]
+		FOREACH oItem AS ListViewItem in SELF:oControlsList:Items
 			IF oItem:Tag == oDesign
 				RETURN oItem
 			END IF
@@ -340,11 +337,8 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 	RETURN
 	
 	PROTECTED METHOD OKButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
-		LOCAL oDesign AS DesignWindowItem
-		LOCAL n AS INT
 		SELF:aNewOrder := ArrayList{SELF:oControlsList:Items:Count}
-		FOR n := 0 UPTO SELF:oControlsList:Items:Count - 1
-			oDesign := (DesignWindowItem)SELF:oControlsList:Items[n]:Tag
+		FOREACH oDesign AS DesignWindowItem IN SELF:oControlsList:Items
 			SELF:aNewOrder:Add(oDesign)
 		NEXT
 		SELF:DialogResult := DialogResult.OK

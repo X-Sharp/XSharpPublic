@@ -76,23 +76,22 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			RETURN FALSE
 		ENDIF
 		
-		DO CASE
-		CASE eAction == DesignerActionType.Cut .or. eAction == DesignerActionType.Copy .or. ;
-			eAction == DesignerActionType.RemoveSelected
+		SWITCH eAction
+		case DesignerActionType.Cut 
+        case DesignerActionType.Copy 
+		case DesignerActionType.RemoveSelected
 			RETURN !SELF:oWindowDesign:lSelected .and. SELF:aSelected:Count != 0
-		CASE eAction == DesignerActionType.Paste
+		CASE DesignerActionType.Paste
 			RETURN Clipboard:Count != 0
-		CASE eAction == DesignerActionType.Undo
+		CASE DesignerActionType.Undo
 			RETURN SELF:nAction >= 1
-		CASE eAction == DesignerActionType.Redo
+		CASE DesignerActionType.Redo
 			RETURN SELF:nAction < SELF:aActions:Count
-
-		CASE eAction == DesignerActionType.AlignLeft
+		CASE DesignerActionType.AlignLeft
 			RETURN SELF:aSelected:Count >= 2
-		CASE eAction == DesignerActionType.SpacingHorzEqual
+		CASE DesignerActionType.SpacingHorzEqual
 			RETURN SELF:aSelected:Count >= 3
-
-		END CASE
+		END SWITCH
 	RETURN FALSE
 	
 	PROTECTED METHOD AddDummy() AS VOID
@@ -141,11 +140,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 				yy := (INT)oDesign:GetProperty("_Height"):Value
 				dx := SELF:oActionEnd:X - SELF:oActionStart:X
 				dy := SELF:oActionEnd:Y - SELF:oActionStart:Y
-				DO CASE
-				CASE eCurrent == WEDAction.Move
+				SWITCH eCurrent
+				CASE WEDAction.Move
 					x += dx
 					y += dy
-				CASE eCurrent == WEDAction.Resize
+				CASE WEDAction.Resize
 					LOCAL oRect AS Rectangle
 					oRect := Rectangle{x,y,xx,yy}
 					oRect := SELF:AdjustResizeRect(oRect , dx , dy , SELF:nResizeGonia)
@@ -153,7 +152,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 					y := oRect:Y
 					xx := oRect:Width
 					yy := oRect:Height
-				END CASE
+				END SWITCH
 				cText := oDesign:Name
 				cText += " : " + oDesign:cControl
 				cText += "  (" + x:ToString() + " , " + y:ToString() + " ) "

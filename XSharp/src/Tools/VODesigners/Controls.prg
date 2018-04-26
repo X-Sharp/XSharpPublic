@@ -88,27 +88,29 @@ INTERNAL CLASS DesignPushButton INHERIT Button
 		CATCH
 			cValue := "AUTO"
 		END TRY
-		DO CASE
-		CASE cValue == "LEFT"
+		SWITCH cValue
+		CASE "LEFT"
 			SELF:oSF:Alignment := StringAlignment.Near
-		CASE cValue == "CENTER" .or. cValue == "AUTO"
+		case "CENTER" 
+        case "AUTO"
 			SELF:oSF:Alignment := StringAlignment.Center
-		CASE cValue == "RIGHT"
+		CASE "RIGHT"
 			SELF:oSF:Alignment := StringAlignment.Far
-		END CASE
+		END SWITCH
 		TRY
 			cValue := SELF:oItem:GetProperty("Vertical Alignment"):TextValue:ToUpper()
 		CATCH
 			cValue := "AUTO"
 		END TRY
-		DO CASE
-		CASE cValue == "TOP"
+		SWITCH cValue
+		CASE "TOP"
 			SELF:oSF:LineAlignment := StringAlignment.Near
-		CASE cValue == "CENTER" .or. cValue == "AUTO"
+		case "CENTER" 
+        case "AUTO"
 			SELF:oSF:LineAlignment := StringAlignment.Center
-		CASE cValue == "BOTTOM"
+		CASE "BOTTOM"
 			SELF:oSF:LineAlignment := StringAlignment.Far
-		END CASE
+		END SWITCH
 		TRY
 			IF SELF:oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
 				SELF:oSF:Alignment := StringAlignment.Far
@@ -906,24 +908,24 @@ INTERNAL FUNCTION GetButtonAlignment(oItem AS DesignWindowItem , lText AS LOGIC)
 	CATCH
 		cValue := "CENTER"
 	END TRY
-	DO CASE
-	CASE cValue == "TOP"
+	SWITCH cValue
+	CASE "TOP"
 		y := 0x1
-	CASE cValue == "CENTER"
+	CASE "CENTER"
 		y := 0x10
-	CASE cValue == "BOTTOM"
+	CASE "BOTTOM"
 		y := 0x100
 	OTHERWISE // "AUTO"
 		y := 0x10
-	END CASE
+	END SWITCH
 
 	TRY
 		cValue := oItem:GetProperty("Horizontal Alignment"):TextValue:ToUpper()
 	CATCH
 		cValue := "LEFT"
 	END TRY
-	DO CASE
-	CASE cValue == "LEFT"
+	SWITCH cValue
+	CASE "LEFT"
 		IF lText
 			IF lExLeft
 				x := 0x2 // kai omws, center!
@@ -937,7 +939,7 @@ INTERNAL FUNCTION GetButtonAlignment(oItem AS DesignWindowItem , lText AS LOGIC)
 				x := 0x1
 			ENDIF
 		END IF
-	CASE cValue == "CENTER"
+	CASE "CENTER"
 		IF lText
 			x := 0x2
 		ELSE
@@ -947,7 +949,7 @@ INTERNAL FUNCTION GetButtonAlignment(oItem AS DesignWindowItem , lText AS LOGIC)
 				x := 0x1
 			END IF
 		END IF
-	CASE cValue == "RIGHT"
+	CASE "RIGHT"
 		IF lText
 			x := 0x4
 		ELSE
@@ -963,7 +965,7 @@ INTERNAL FUNCTION GetButtonAlignment(oItem AS DesignWindowItem , lText AS LOGIC)
 		ELSE
 			x := 0x1
 		ENDIF
-	END CASE
+	END SWITCH
 	IF .not. lText // check/radio
 		IF lTextLeft
 			x := 0x4
@@ -979,7 +981,13 @@ INTERNAL FUNCTION GetButtonAlignment(oItem AS DesignWindowItem , lText AS LOGIC)
 RETURN eAlignment
 
 INTERNAL FUNCTION IsVisibleStyle(cProp AS STRING) AS LOGIC
-	LOCAL cUpper AS STRING
-	cUpper := cProp:ToUpper()
-RETURN cUpper == "BORDER" .or. cUpper == "CLIENT EDGE" .or. cUpper == "STATIC EDGE" .or. cUpper == "MODAL FRAME"
+	switch cProp:ToUpper()
+    case "BORDER" 
+    case "CLIENT EDGE" 
+    case "STATIC EDGE" 
+    case "MODAL FRAME"
+        return true
+    OTHERWISE
+        return false
+    end switch
 

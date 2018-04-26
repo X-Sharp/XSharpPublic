@@ -140,19 +140,19 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 			RETURN FALSE
 		ENDIF
 		
-		DO CASE
-		CASE eAction == DesignerActionType.Undo
+		SWITCH eAction
+		CASE DesignerActionType.Undo
 			RETURN SELF:nAction >= 1
-		CASE eAction == DesignerActionType.Redo
+		CASE DesignerActionType.Redo
 			RETURN SELF:nAction < SELF:aActions:Count
 
-		CASE eAction == DesignerActionType.Cut
+		CASE DesignerActionType.Cut
 			RETURN SELF:oTree:SelectedNode:Parent != NULL
-		CASE eAction == DesignerActionType.Copy
+		CASE DesignerActionType.Copy
 			RETURN SELF:oTree:Nodes[0]:Nodes:Count != 0
-		CASE eAction == DesignerActionType.Paste
+		CASE DesignerActionType.Paste
 			RETURN VOMenuEditor.Clipboard:Count != 0
-		END CASE
+		END SWITCH
 	RETURN FALSE
 
 	VIRTUAL METHOD BeginAction() AS VOID
@@ -211,8 +211,8 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		LOCAL n,nIndex AS INT
 		LOCAL oRet AS OBJECT
 
-		DO CASE
-		CASE eAction == DesignerBasicActionType.Create
+		SWITCH eAction
+		CASE DesignerBasicActionType.Create
 			cGuid := uData:cGuid
 			IF cGuid == NULL
 				cGuid := Guid.NewGuid():ToString()
@@ -247,7 +247,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 			ENDIF
 //			SELF:AddAffected(oDesign)
 			
-		CASE eAction == DesignerBasicActionType.Remove
+		CASE DesignerBasicActionType.Remove
 			cGuid := uData:cGuid
 			oDesign := SELF:GetDesignItemFromGuid(cGuid)
 			nIndex := oDesign:oNode:Index
@@ -282,7 +282,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 				oAction:aRedo:Add(oRedo)
 			ENDIF
 
-		CASE eAction == DesignerBasicActionType.SetParent
+		CASE DesignerBasicActionType.SetParent
 			LOCAL nOldIndex AS INT
 			LOCAL cOldParent AS STRING
 			cGuid := uData:cGuid
@@ -310,7 +310,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 				oAction:aRedo:Add(oRedo)
 			ENDIF
 
-		CASE eAction == DesignerBasicActionType.SetProperty
+		CASE DesignerBasicActionType.SetProperty
 			oDesign := SELF:GetDesignItemFromGuid(uData:cGuid)
 			oProp := oDesign:GetProperty(uData:cData)
 			IF !oProp:TextValue == oProp:GetTextValue(uData:oData)
@@ -331,7 +331,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 //				SELF:AddAffected(oDesign)
 			ENDIF
 	
-		END CASE
+		END SWITCH
 
 		oAction:lExecuted := TRUE
 
@@ -354,15 +354,15 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
 		SELF:BeginAction()
 
-		DO CASE
-		CASE eAction == DesignerActionType.SelectAll
-		CASE eAction == DesignerActionType.SelectAdd
+		SWITCH eAction
+		CASE DesignerActionType.SelectAll
+		CASE DesignerActionType.SelectAdd
 			oDesign := SELF:GetDesignItemFromGuid(cGuid)
 			SELF:oTree:SelectedNode := oDesign:oNode
 /*			oDesign:oNode:lSelected := TRUE
 			SELF:oTree:SetNodeColor(oDesign:oNode)*/
 			
-		CASE eAction == DesignerActionType.RemoveSelected
+		CASE DesignerActionType.RemoveSelected
 			aSelected := SELF:GetSelected()
 			FOR n := 0 UPTO aSelected:Count - 1
 				oDesign := (DesignMenuItem)aSelected[n]
@@ -379,22 +379,22 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 //			SELF:StartAction(DesignerBasicActionType.Remove , ActionData{oDesign:cGuid})
 //			SELF:EndAction()
 
-		CASE eAction == DesignerActionType.DeSelectAll
+		CASE DesignerActionType.DeSelectAll
 			SELF:oTree:DeSelectAll()
 
-		CASE eAction == DesignerActionType.Cut
+		CASE DesignerActionType.Cut
 			SELF:Cut()
-		CASE eAction == DesignerActionType.Copy
+		CASE DesignerActionType.Copy
 			SELF:Copy()
-		CASE eAction == DesignerActionType.Paste
+		CASE DesignerActionType.Paste
 			SELF:Paste()
 
-		CASE eAction == DesignerActionType.Undo
+		CASE DesignerActionType.Undo
 			SELF:Undo()
-		CASE eAction == DesignerActionType.Redo
+		CASE DesignerActionType.Redo
 			SELF:Redo()
 
-		END CASE
+		END SWITCH
 
 		SELF:EndAction()
 
@@ -530,25 +530,26 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		LOCAL oDesign AS DesignMenuItem
 		oDesign :=(DesignMenuItem)_oDesign
 		
-		DO CASE
-		CASE oProp:Name == "Name"
+		SWITCH oProp:Name
+		CASE "Name"
 			IF oDesign:nType == 999
 				oDesign:oNode:Text := oProp:TextValue
 			END IF
-		CASE oProp:Name == "Caption"
+		CASE "Caption"
 			IF oDesign:nType != 999
 				oDesign:oNode:Text := Funcs.TranslateCaption(oProp:TextValue , FALSE)
 			END IF
-		CASE oProp:Name=="Enabled"
+		CASE "Enabled"
 			SELF:oTree:SetNodeColor(oDesign:oNode)
-		CASE oProp:Name=="ButtonBmp"
+		CASE "ButtonBmp"
 /*			LOCAL cValue AS STRING
 			cValue := oProp:TextValue_
 			IF !cValue == ""
 				oDesign:PropertyValueSelected_("ButtonCaption" , cValue)
 				oDesign:PropertyValueSelected_("ButtonToolTip" , cValue)
 			ENDIF*/
-		END CASE
+            NOP
+		END SWITCH
 		
 		
 	RETURN
@@ -1634,17 +1635,17 @@ CLASS MEditorTreeView INHERIT TreeView
 	RETURN
 
 	PROTECTED METHOD ProcessDialogKey(KeyData AS Keys) AS LOGIC
-		DO CASE
-		CASE KeyData == Keys.Insert
+		SWITCH KeyData
+		CASE Keys.Insert
 			SELF:InsertNode()
 			RETURN TRUE
-		CASE KeyData == Keys.Tab
+		CASE Keys.Tab
 			SELF:TabIt()
 			RETURN TRUE
-		CASE KeyData == Keys.Tab + Keys.Shift
+		CASE Keys.Tab + Keys.Shift
 			SELF:UnTabIt()
 			RETURN TRUE
-		END CASE
+		END SWITCH
 	RETURN FALSE
 	
 	PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID

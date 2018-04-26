@@ -264,16 +264,16 @@ CLASS VODesignProperty INHERIT DesignProperty
 							ENDIF
 						END TRY
 						FOR n := 3 UPTO aFont:Length
-							DO CASE
-							CASE aFont[n]:ToUpper() == "BOLD"
+							SWITCH aFont[n]:ToUpper() 
+							CASE "BOLD"
 								eStyle += FontStyle.Bold
-							CASE aFont[n]:ToUpper() == "ITALIC"
+							CASE "ITALIC"
 								eStyle += FontStyle.Italic
-							CASE aFont[n]:ToUpper() == "STRIKETHRU"
+							CASE "STRIKETHRU"
 								eStyle += FontStyle.Strikeout
-							CASE aFont[n]:ToUpper() == "UNDERLINE"
+							CASE "UNDERLINE"
 								eStyle += FontStyle.Underline
-							END CASE
+							END SWITCH
 						NEXT
 						TRY
 							oFont := Font{cFont , rSize , eStyle}

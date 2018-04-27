@@ -10,6 +10,7 @@ BEGIN NAMESPACE XSharp.RDD.App
         //
         myTest:OpenDBF()
         myTest:OpenDBFShowFields()
+        myTest:CheckFieldInfo()
         //
         Console.WriteLine("Hello World!")
         Console.WriteLine("Press any key to continue...")
@@ -59,6 +60,31 @@ BEGIN NAMESPACE XSharp.RDD.App
             myDBF:Close()
             
             RETURN  
+            
+        METHOD CheckFieldInfo() AS VOID
+            VAR fieldDefs := "CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
+            VAR fields := fieldDefs:Split( ';' )
+            //
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            IF myDBF:Open( dbInfo ) 
+                //
+                // Right number of Fields ?
+                Console.WriteLine(fields:Length + " / " + myDBF:FieldCount)
+                FOR VAR i := 1 TO myDBF:FIELDCount
+                    // Right decoding ?
+                    VAR fieldInfo := fields[i]:Split( ',' )
+                    Console.WriteLine( fieldInfo[DBS_NAME]+ " / " + myDBF:FieldInfo( i, DBS_NAME, NIL ) )
+                    Console.WriteLine( fieldInfo[DBS_TYPE]+ " / " + myDBF:FieldInfo( i, DBS_TYPE, NIL ) )
+                    Console.WriteLine( fieldInfo[DBS_LEN]+ " / " + myDBF:FieldInfo( i, DBS_LEN, NIL ) )
+                    Console.WriteLine( fieldInfo[DBS_DEC]+ " / " + myDBF:FieldInfo( i, DBS_DEC, NIL ) )
+                    Console.WriteLine( fieldInfo[DBS_NAME]+ " / " + myDBF:FieldInfo( i, DBS_ALIAS, NIL ) )
+                NEXT
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
             
     END CLASS
     
